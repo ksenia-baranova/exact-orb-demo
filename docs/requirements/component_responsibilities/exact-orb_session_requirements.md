@@ -284,10 +284,12 @@ clear продлевает state, удаляет dialog и не меняет п�
 диалога нет — это пустой диалог, не ошибка. Обратное — осиротевшие
 персональные данные, и оно исключается порядком удаления (§5.3).
 
-Private `_DialogRecord.expires_at` в InMemory хранится для изоморфизма с
-SQLite и будущего reaper, но не читается публичными операциями и не является
-вторым источником liveness: live/missing/expired всегда определяется только
-по parent `SessionState`.
+Private `_DialogRecord.expires_at` в InMemory и persisted
+`session_dialogs.expires_at_us` в SQLite хранятся как lifecycle-зеркало, но
+не являются вторым источником liveness и не участвуют в предикате reaper:
+live/missing/expired всегда определяется только по parent `SessionState`.
+Записывающие lifecycle-операции синхронизируют возможный drift с parent
+deadline.
 
 ### 3.3. `SessionStore` — `session/store.py`
 
@@ -457,7 +459,7 @@ lookup и до любой мутации. `delete` времени не прин�
 Истечение на границе порта логическое: `now >= expires_at` или
 `now >= hard_expires_at` немедленно даёт `SessionAbsent("expired")`, и
 `ExpiredSessionTransitionError` из чистых функций наружу persistence не
-выходит. InMemory P2 физически запись не удаляет; SQLite P4 удалит её reaper.
+выходит. InMemory P2 физически запись не удаляет; SQLite P4 удаляет её reaper.
 После purge тот же ID наблюдается как `not_found`, поскольку tombstone не
 хранится.
 
@@ -964,14 +966,16 @@ ADR-0013 называл кэш интерпретаций вторым уров�
 `SessionPersistence` и `CalculationCache` остаются теми же `Protocol`. Это и
 есть то, ради чего порт вводился (`build_natal_components.md` §1.3.3).
 
-Поддерживаемая composition root процессной ступени —
-`InMemorySessionPersistence()`. Aggregate создаёт один private backend с
-одним `asyncio.Lock` и отдаёт стабильные facets `.sessions` и `.dialogs` над
-ним; zero-argument создание отдельных facet не поддерживается. Два aggregate
-полностью изолированы. Все now-bearing методы InMemory, а в P4 и SQLite,
-используют публичный контракт `exact_orb.session.require_utc` через внутренний
-wrapper `session/adapters/_time.py`; импорт приватных имён контрактных модулей
-для adapter-слоя запрещён.
+Поддерживаемые process-local composition roots —
+`InMemorySessionPersistence()` для тестов и
+`await SqliteSessionPersistence.open(path, executor=...)` для file-backed
+стенда. Каждый aggregate отдаёт стабильные facets `.sessions` и `.dialogs`
+над одним private backend; zero-argument создание отдельных facet не
+поддерживается. Два aggregate полностью изолированы. Все now-bearing методы
+обеих реализаций используют публичный контракт
+`exact_orb.session.require_utc` через внутренний wrapper
+`session/adapters/_time.py`; импорт приватных имён контрактных модулей для
+adapter-слоя запрещён.
 
 ### 12.3. SQLite закрывает все хранилища
 
@@ -998,10 +1002,27 @@ guarded CAS с `RESET_DELTA`; RESET_DELTA-aware CAS очищает диалог 
 dialog с тем же deadline; clear продлевает state и удаляет dialog, не меняя
 предметные поля или `state_version`. Частичное изменение state/dialog
 недопустимо; liveness определяется только parent state, а persisted dialog
-deadline нужен reaper.
+deadline является проверяемым postcondition, но не предикатом чтения или
+reaper. Его drift не закрывает чтение и исправляется следующей записывающей
+lifecycle-операцией.
 
-**TTL.** Колонка `expires_at`, проверка при чтении и периодическая чистка.
-Встроенного TTL у SQLite нет, reaper писать придётся.
+**TTL.** Колонка `expires_at`, проверка при чтении и явная чистка. Встроенного
+TTL у SQLite нет; P4 предоставляет one-shot `reap_expired(now=...)`, который
+удаляет только parent rows с `expires_at <= now`, а dialogs удаляются через
+`ON DELETE CASCADE`. Планирование периодического запуска принадлежит
+runtime-композиции.
+
+SQLite aggregate использует переданный извне executor, открывает и закрывает
+соединение внутри worker на каждую операцию и потому не имеет `close` или
+`aclose`. Стоимость connect и connection PRAGMA входит в полный путь каждой
+операции и в benchmark P4.
+
+Concurrent first-open сначала читает persistent journal mode и меняет его
+только при необходимости. Если два свежих соединения столкнулись при переходе
+в WAL и SQLite немедленно разорвал upgrade-deadlock numeric `BUSY/LOCKED`,
+проигравшее соединение закрывается и допускается ровно одна свежая попытка
+configuration до migration transaction. Повторный BUSY выходит наружу; sleep,
+retry loop и process-global lock не вводятся.
 
 **`ResearchCorpus`.** Группировка и агрегаты по миллионам строк — нормальная
 для SQLite работа; в режиме WAL читатели не блокируют писателей, поэтому
@@ -1015,9 +1036,10 @@ deadline нужен reaper.
    рестарт — то есть ровно тот случай, ради которого всё затевается, — но при
    потере питания может потерять последние транзакции. `FULL` безопаснее и
    заметно медленнее из-за fsync на каждый коммит. Для демо берём `NORMAL`.
-2. **`sqlite3` блокирующий.** Выполнять в том же `ThreadPoolExecutor`, что
-   уже используется в `EngineService`, либо добавить `aiosqlite`. Первое не
-   добавляет зависимостей и повторяет принятый в проекте приём.
+2. **`sqlite3` блокирующий.** P4 принимает `ThreadPoolExecutor` извне и не
+   владеет его lifecycle; все SQLite-вызовы выполняются в нём. Решение,
+   разделяет ли composition root этот executor с `EngineService` или выделяет
+   отдельный, остаётся за application-слоем. `aiosqlite` не вводится.
 3. **Одна машина, один файл.** Несколько процессов на одном файле в WAL
    работают, но с оговорками; несколько машин — нет.
 
@@ -1107,6 +1129,10 @@ P4 повторяет замер через публичный порт на fil
 VersionConflict, aggregate touch/reset/delete и конкурирующих писателей.
 До этого допустим только вывод, что голый SQL-примитив не выглядит очевидным
 узким местом при ожидаемых десятках записей в секунду.
+
+Фактические machine-specific показатели полного adapter path публикуются в
+датированном [benchmark report P4](../../benchmarks/2026-09-06-session-sqlite.md),
+а не дублируются как нормативные числа требований.
 
 ### 13.4. Что из этого следует
 

@@ -51,6 +51,7 @@ SESSION_ADAPTER_MODULES: tuple[str, ...] = (
     "exact_orb.session.adapters",
     "exact_orb.session.adapters._time",
     "exact_orb.session.adapters.in_memory",
+    "exact_orb.session.adapters.sqlite",
 )
 
 SESSION_SERVICE_MODULES: tuple[str, ...] = (
@@ -89,6 +90,12 @@ SESSION_ADAPTER_FORBIDDEN_AT_RUNTIME: tuple[str, ...] = tuple(
     module
     for module in SESSION_FORBIDDEN_AT_RUNTIME
     if module != "exact_orb.session.adapters"
+)
+
+SESSION_SQLITE_ADAPTER_FORBIDDEN_AT_RUNTIME: tuple[str, ...] = tuple(
+    module
+    for module in SESSION_ADAPTER_FORBIDDEN_AT_RUNTIME
+    if module != "sqlite3"
 )
 
 SESSION_SERVICE_FORBIDDEN_AT_RUNTIME: tuple[str, ...] = tuple(
@@ -658,6 +665,51 @@ def test_session_adapters_import_cleanly_with_positive_controls() -> None:
             f"forbidden = {list(SESSION_ADAPTER_FORBIDDEN_AT_RUNTIME)!r}",
             "missing = sorted(name for name in required if not hasattr(package, name))",
             "positive = hasattr(time_module, 'validate_now') and all(hasattr(in_memory, name) for name in required)",
+            "sqlite_loaded = 'exact_orb.session.adapters.sqlite' in sys.modules",
+            "found = sorted(",
+            "    name",
+            "    for name in sys.modules",
+            "    for bad in forbidden",
+            "    if name == bad or name.startswith(bad + '.')",
+            ")",
+            "print(json.dumps({'missing': missing, 'positive': positive, 'sqlite_loaded': sqlite_loaded, 'found': found}))",
+        )
+    )
+
+    env = dict(os.environ)
+    env["PYTHONPATH"] = str(SRC_ROOT)
+    completed = subprocess.run(
+        [sys.executable, "-c", script],
+        cwd=str(REPO_ROOT),
+        env=env,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert completed.returncode == 0, (
+        "импорт session adapters завершился ошибкой:\n" + completed.stderr
+    )
+    result = json.loads(completed.stdout.strip().splitlines()[-1])
+    assert result["positive"], "positive control не импортировал adapter symbols"
+    assert not result["sqlite_loaded"], "adapter package импортировал SQLite concrete module"
+    assert not result["missing"], "adapter package API неполон: " + ", ".join(
+        result["missing"]
+    )
+    assert not result["found"], "adapter import загрузил запрещённое: " + ", ".join(
+        result["found"]
+    )
+
+
+def test_session_sqlite_adapter_imports_cleanly_with_positive_controls() -> None:
+    script = "\n".join(
+        (
+            "import importlib, json, sys",
+            "module = importlib.import_module('exact_orb.session.adapters.sqlite')",
+            "required = ['SqliteSessionStore', 'SqliteDialogStore', 'SqliteSessionPersistence']",
+            f"forbidden = {list(SESSION_SQLITE_ADAPTER_FORBIDDEN_AT_RUNTIME)!r}",
+            "missing = sorted(name for name in required if not hasattr(module, name))",
+            "positive = 'sqlite3' in sys.modules and not missing",
             "found = sorted(",
             "    name",
             "    for name in sys.modules",
@@ -680,14 +732,14 @@ def test_session_adapters_import_cleanly_with_positive_controls() -> None:
     )
 
     assert completed.returncode == 0, (
-        "импорт session adapters завершился ошибкой:\n" + completed.stderr
+        "импорт session SQLite adapter завершился ошибкой:\n" + completed.stderr
     )
     result = json.loads(completed.stdout.strip().splitlines()[-1])
-    assert result["positive"], "positive control не импортировал adapter symbols"
-    assert not result["missing"], "adapter package API неполон: " + ", ".join(
+    assert result["positive"], "positive control не импортировал SQLite symbols"
+    assert not result["missing"], "SQLite adapter API неполон: " + ", ".join(
         result["missing"]
     )
-    assert not result["found"], "adapter import загрузил запрещённое: " + ", ".join(
+    assert not result["found"], "SQLite adapter импорт загрузил запрещённое: " + ", ".join(
         result["found"]
     )
 

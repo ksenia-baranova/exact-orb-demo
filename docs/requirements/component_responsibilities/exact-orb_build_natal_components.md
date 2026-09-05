@@ -150,7 +150,7 @@ src/exact_orb/
         persistence.py          SessionSnapshot, SessionPersistence (Protocol)
         context.py              ContextService (P3)
         adapters/
-            __init__.py         public concrete adapter exports
+            __init__.py         public InMemory adapter exports
             _time.py            internal wrapper над public require_utc для P2/P4
             in_memory.py        P2
             sqlite.py           P4
@@ -1229,13 +1229,16 @@ now=now)`: агрегат только делегирует, а RESET_DELTA-awar
 атомарно удаляет обе записи. Реализация через два независимых вызова фасетов
 недопустима.
 
-Поддерживаемая InMemory-композиция — `InMemorySessionPersistence()`, который
-владеет одним private backend и одним `asyncio.Lock`, а стабильные
-`.sessions`/`.dialogs` создаёт над ними. Отдельные facet требуют backend
-позиционно и не создаются без аргумента. Parent `SessionState` — единственный
-источник liveness; private dialog deadline в P2 хранится, но не читается.
+Поддерживаемые process-local композиции — `InMemorySessionPersistence()` и
+явно импортируемый из `session.adapters.sqlite`
+`await SqliteSessionPersistence.open(path, executor=...)`. Каждый aggregate
+владеет одним private backend и отдаёт стабильные `.sessions`/`.dialogs` над
+ним. Отдельные facet требуют backend позиционно и не создаются без аргумента.
+Parent `SessionState` — единственный источник liveness; private/persisted
+dialog deadline хранится как lifecycle-зеркало, но не используется чтением
+или reaper и синхронизируется следующей записывающей lifecycle-операцией.
 
-Все now-bearing методы InMemory и будущего SQLite используют публичный
+Все now-bearing методы InMemory и SQLite используют публичный
 контракт `exact_orb.session.require_utc`. Внутренний wrapper
 `session/adapters/_time.py` фиксирует для портов имя `now`, не импортируя
 приватные имена контрактных модулей. Контракт требует aware UTC offset `0` и
