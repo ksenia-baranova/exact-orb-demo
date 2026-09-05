@@ -7,6 +7,14 @@ TTL-сессии, а не пользовательский профиль. От�
 возвращает frozen `SessionSnapshot { state, dialog }` через агрегат
 `SessionPersistence`; фасетные `get`/`read` read-only.
 
+`ContextService` получает один aggregate и явный clock. Публичные create,
+load, save, append_turn, clear_dialog и reset_all не принимают `now`: каждый
+вызов читает clock ровно один раз и передаёт проверенное UTC-значение вниз.
+Naive или non-zero-offset результат даёт `ValueError` до persistence. Delete
+clock не читает. Любой persistence error отображается по операции: load — в
+`StateReadFailed`, мутации — в `StateCommitFailed`, независимо от error
+subclass.
+
 Успешные CAS, append и clear являются write-and-renew. Append продлевает
 parent state и dialog одним deadline; clear продлевает state и очищает
 dialog, сохраняя предметные поля и `state_version`. `touch` остаётся
@@ -31,6 +39,11 @@ create — transport гасит cookie и генерирует свежий ID.
 Межзаписные touch/reset/delete принадлежат одному `SessionPersistence`.
 Полный reset агрегат только делегирует фасетному CAS с `RESET_DELTA`;
 RESET_DELTA-aware CAS сам очищает диалог в общей backend-секции.
+
+`StateReadFailed` — fail-closed результат незавершённого обязательного
+load-and-renew: он не различает отказ чтения и отказ продления после чтения и
+сам по себе не означает утрату сессии. `Superseded` также читается нейтрально
+как mismatch actual и intent, а не как доказанная победа другой операции.
 
 Sequence намеренно сворачивают внутренности расчётного и интерпретационного
 конвейеров. Их подробности остаются в `../build_natal/` и

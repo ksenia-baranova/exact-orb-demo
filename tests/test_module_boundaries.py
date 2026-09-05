@@ -53,6 +53,10 @@ SESSION_ADAPTER_MODULES: tuple[str, ...] = (
     "exact_orb.session.adapters.in_memory",
 )
 
+SESSION_SERVICE_MODULES: tuple[str, ...] = (
+    "exact_orb.session.context",
+)
+
 SESSION_ALLOWED_PROJECT_IMPORTS: tuple[str, ...] = (
     "exact_orb.session.",
     "exact_orb.birth.types",
@@ -61,6 +65,7 @@ SESSION_ALLOWED_PROJECT_IMPORTS: tuple[str, ...] = (
 
 SESSION_FORBIDDEN_AT_RUNTIME: tuple[str, ...] = (
     "exact_orb.session.adapters",
+    "exact_orb.session.context",
     "swisseph",
     "sqlite3",
     "aiosqlite",
@@ -86,11 +91,36 @@ SESSION_ADAPTER_FORBIDDEN_AT_RUNTIME: tuple[str, ...] = tuple(
     if module != "exact_orb.session.adapters"
 )
 
+SESSION_SERVICE_FORBIDDEN_AT_RUNTIME: tuple[str, ...] = tuple(
+    module
+    for module in SESSION_FORBIDDEN_AT_RUNTIME
+    if module != "exact_orb.session.context"
+)
+
 SESSION_ADAPTER_FORBIDDEN_IMPORTS: tuple[str, ...] = (
     "os",
     "random",
     "time",
     "uuid",
+    "exact_orb.birth",
+    "exact_orb.calculation",
+    "exact_orb.config",
+    "exact_orb.application",
+    "exact_orb.agent",
+    "exact_orb.orchestration",
+    "exact_orb.tools",
+    "exact_orb.llm",
+    "exact_orb.cli",
+    "exact_orb.engine",
+    "exact_orb.swiss_backend",
+)
+
+SESSION_SERVICE_FORBIDDEN_IMPORTS: tuple[str, ...] = (
+    "os",
+    "random",
+    "time",
+    "uuid",
+    "exact_orb.session.adapters",
     "exact_orb.birth",
     "exact_orb.calculation",
     "exact_orb.config",
@@ -245,6 +275,15 @@ def _session_contract_source_files() -> list[Path]:
 
 def _session_adapter_source_files() -> list[Path]:
     return sorted((PACKAGE_ROOT / "session" / "adapters").rglob("*.py"))
+
+
+def _session_service_source_files() -> list[Path]:
+    contract_modules = {"exact_orb.session", *SESSION_CONTRACT_MODULES}
+    return sorted(
+        path
+        for path in (PACKAGE_ROOT / "session").glob("*.py")
+        if _module_name(path) not in contract_modules
+    )
 
 
 def _find_import_cycle(graph: dict[str, set[str]]) -> tuple[str, ...] | None:
@@ -424,39 +463,43 @@ def test_session_adapters_only_import_session_project_modules() -> None:
     )
 
 
-def test_session_adapters_do_not_import_private_contract_names() -> None:
+def test_session_contract_consumers_do_not_import_private_contract_names() -> None:
     violations: list[str] = []
-    observed_contract_imports: list[str] = []
     contract_sources = {"exact_orb.session", *SESSION_CONTRACT_MODULES}
 
-    for path in _session_adapter_source_files():
-        module = _module_name(path)
-        is_package = path.name == "__init__.py"
-        tree = ast.parse(path.read_text(encoding="utf-8"), str(path))
-        for node in ast.walk(tree):
-            if not isinstance(node, ast.ImportFrom):
-                continue
-            source = (
-                _resolve_relative(module, is_package, node.level, node.module)
-                if node.level
-                else node.module or ""
-            )
-            if source not in contract_sources:
-                continue
-            observed_contract_imports.extend(
-                f"{module} -> {source}.{alias.name}" for alias in node.names
-            )
-            violations.extend(
-                f"{module} -> {source}.{alias.name}"
-                for alias in node.names
-                if alias.name.startswith("_")
-            )
+    for consumer_kind, paths in (
+        ("adapter", _session_adapter_source_files()),
+        ("service", _session_service_source_files()),
+    ):
+        observed_contract_imports: list[str] = []
+        for path in paths:
+            module = _module_name(path)
+            is_package = path.name == "__init__.py"
+            tree = ast.parse(path.read_text(encoding="utf-8"), str(path))
+            for node in ast.walk(tree):
+                if not isinstance(node, ast.ImportFrom):
+                    continue
+                source = (
+                    _resolve_relative(module, is_package, node.level, node.module)
+                    if node.level
+                    else node.module or ""
+                )
+                if source not in contract_sources:
+                    continue
+                observed_contract_imports.extend(
+                    f"{module} -> {source}.{alias.name}" for alias in node.names
+                )
+                violations.extend(
+                    f"{module} -> {source}.{alias.name}"
+                    for alias in node.names
+                    if alias.name.startswith("_")
+                )
+        assert observed_contract_imports, (
+            f"positive control: {consumer_kind} contract imports were not discovered"
+        )
 
-    assert observed_contract_imports, (
-        "positive control: adapter contract imports were not discovered"
-    )
     assert not violations, (
-        "session adapters импортируют приватные имена контрактов:\n"
+        "session consumers импортируют приватные имена контрактов:\n"
         + "\n".join(sorted(violations))
     )
 
@@ -489,6 +532,63 @@ def test_session_adapters_do_not_read_wall_or_monotonic_time() -> None:
     )
 
     assert not violations, "session adapters читают скрытое время:\n" + "\n".join(
+        violations
+    )
+
+
+def test_session_service_source_file_is_discovered() -> None:
+    modules = {_module_name(path) for path in _session_service_source_files()}
+
+    assert modules == set(SESSION_SERVICE_MODULES)
+
+
+def test_session_service_only_imports_session_contracts() -> None:
+    violations = sorted(
+        {
+            f"{_module_name(path)} -> {imported}"
+            for path in _session_service_source_files()
+            for imported in _declared_imports(path)
+            if imported.startswith("exact_orb.")
+            and not (
+                imported == "exact_orb.session"
+                or imported.startswith("exact_orb.session.")
+            )
+        }
+    )
+
+    assert not violations, "session service импортирует вне allowlist:\n" + "\n".join(
+        violations
+    )
+
+
+def test_session_service_declares_no_adapter_clock_id_or_edge_imports() -> None:
+    violations = sorted(
+        {
+            f"{_module_name(path)} -> {forbidden}"
+            for path in _session_service_source_files()
+            for imported in _declared_imports(path)
+            for forbidden in SESSION_SERVICE_FORBIDDEN_IMPORTS
+            if _violates(imported, forbidden)
+        }
+    )
+
+    assert not violations, "session service импортирует запрещённое:\n" + "\n".join(
+        violations
+    )
+
+
+def test_session_service_does_not_read_wall_or_monotonic_time() -> None:
+    violations = sorted(
+        f"{_module_name(path)} -> {call}"
+        for path in _session_service_source_files()
+        for node in ast.walk(ast.parse(path.read_text(encoding="utf-8"), str(path)))
+        if isinstance(node, ast.Call)
+        and isinstance(node.func, ast.Attribute)
+        and node.func.attr in {"now", "utcnow", "time", "monotonic"}
+        for call in (ast.unparse(node.func),)
+    )
+
+    assert not violations, "session service читает скрытое время:\n" + "\n".join(
         violations
     )
 
@@ -588,6 +688,44 @@ def test_session_adapters_import_cleanly_with_positive_controls() -> None:
         result["missing"]
     )
     assert not result["found"], "adapter import загрузил запрещённое: " + ", ".join(
+        result["found"]
+    )
+
+
+def test_session_service_imports_cleanly_with_positive_control() -> None:
+    script = "\n".join(
+        (
+            "import importlib, json, sys",
+            "module = importlib.import_module('exact_orb.session.context')",
+            f"forbidden = {list(SESSION_SERVICE_FORBIDDEN_AT_RUNTIME)!r}",
+            "positive = hasattr(module, 'ContextService')",
+            "found = sorted(",
+            "    name",
+            "    for name in sys.modules",
+            "    for bad in forbidden",
+            "    if name == bad or name.startswith(bad + '.')",
+            ")",
+            "print(json.dumps({'positive': positive, 'found': found}))",
+        )
+    )
+
+    env = dict(os.environ)
+    env["PYTHONPATH"] = str(SRC_ROOT)
+    completed = subprocess.run(
+        [sys.executable, "-c", script],
+        cwd=str(REPO_ROOT),
+        env=env,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert completed.returncode == 0, (
+        "импорт session service завершился ошибкой:\n" + completed.stderr
+    )
+    result = json.loads(completed.stdout.strip().splitlines()[-1])
+    assert result["positive"], "positive control не импортировал ContextService"
+    assert not result["found"], "service import загрузил запрещённое: " + ", ".join(
         result["found"]
     )
 

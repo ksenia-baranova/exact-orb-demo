@@ -129,6 +129,17 @@ def test_session_id_conflict_requires_a_non_empty_id() -> None:
         SessionIdConflict(session_id="")
 
 
+def test_already_applied_allows_zero_but_not_negative_versions() -> None:
+    assert AlreadyApplied(state_version=0).state_version == 0
+    with pytest.raises(ValidationError):
+        AlreadyApplied(state_version=-1)
+
+
+def test_committed_still_rejects_version_zero() -> None:
+    with pytest.raises(ValidationError):
+        Committed(state_version=0)
+
+
 class _Sessions:
     async def create(self, session_id: str, *, now: datetime):
         return SessionCreated(state=new_session(session_id, now=now))

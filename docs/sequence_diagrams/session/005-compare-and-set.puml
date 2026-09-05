@@ -49,12 +49,14 @@ end box
 == Обе операции стартуют на одной версии ==
 
 A -> Context : load(session_id)
-Context -> Persistence : touch(session_id, now_A)
+Context -> Context : now_A_load = require_utc(clock(), name="clock")
+Context -> Persistence : touch(session_id, now_A_load)
 Persistence --> Context : SessionSnapshot(state_version = 5)
 Context --> A : state_version = 5
 
 B -> Context : load(session_id)
-Context -> Persistence : touch(session_id, now_B)
+Context -> Context : now_B_load = require_utc(clock(), name="clock")
+Context -> Persistence : touch(session_id, now_B_load)
 Persistence --> Context : SessionSnapshot(state_version = 5)
 Context --> B : state_version = 5
 
@@ -68,7 +70,8 @@ end note
 == Побеждает та, что записала первой ==
 
 A -> Context : save(delta, expected_version = 5)
-Context -> Store : compare_and_set(expected = 5, delta_A, now_A)
+Context -> Context : now_A_save = require_utc(clock(), name="clock")
+Context -> Store : compare_and_set(expected = 5, delta_A, now_A_save)
 activate Store
 Store -> Store : проверить version; применить delta_A;\nназначить version=6; записать атомарно
 Store --> Context : 6
@@ -89,7 +92,8 @@ end note
 == Проигравшая получает отказ, а не исключение ==
 
 B -> Context : save(delta, expected_version = 5)
-Context -> Store : compare_and_set(expected = 5, delta_B, now_B)
+Context -> Context : now_B_save = require_utc(clock(), name="clock")
+Context -> Store : compare_and_set(expected = 5, delta_B, now_B_save)
 activate Store
 Store -> Store : 5 != 6 — запись отклонена
 Store --> Context : VersionConflict(actual = state after A)
@@ -110,8 +114,9 @@ alt намерение B отличается от актуального сос
 
     Context --> B : Superseded
     note right of B
-    Состояние ушло к другому намерению.
-    Пользователь просил одно, в сессии другое.
+    Actual не соответствует намерению B.
+    Outcome сам по себе не доказывает гонку;
+    сообщение пользователю нейтрально.
     Клиент восстанавливает состояние (см. 002).
     end note
 
@@ -133,7 +138,8 @@ VersionConflict + equal intent → AlreadyApplied;
 VersionConflict + other intent → Superseded.
 ContextService не делает дополнительный get,
 не повторяет CAS и не меняет original expected.
-StateWriteError(error_code) — StateCommitFailed,
+Любой SessionPersistenceError(error_code) из save
+— StateCommitFailed,
 а не VersionConflict или Superseded.
 end note
 
@@ -160,6 +166,11 @@ state_version и не конфликтует с построением
 SessionPersistence только делегирует reset этому CAS;
 RESET_DELTA-aware facet CAS сам очищает dialog
 в своей backend-секции. Второго алгоритма нет.
+
+Save(RESET_DELTA) и reset_all на одинаковом lifecycle
+дают одинаковую классификацию результата. Fresh actual
+версии 0 уже соответствует RESET_DELTA и даёт
+AlreadyApplied(0), хотя Committed начинается с версии 1.
 end note
 
 @enduml

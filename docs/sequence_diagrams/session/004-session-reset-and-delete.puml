@@ -63,7 +63,8 @@ User -> FE : «Очистить переписку»
 FE -> API : ResetSessionCommand(scope = dialog)
 API -> Orch : execute(command, session_id, run)
 
-Orch -> Context : clear_dialog(session_id, now)
+Orch -> Context : clear_dialog(session_id)
+Context -> Context : now = require_utc(clock(), name="clock")
 Context -> Dialog : clear(session_id, now)
 activate Dialog
 Dialog -> Dialog : shared backend section:\ntouched(parent state, now)\n+ delete dialog row
@@ -89,7 +90,8 @@ User -> FE : «Начать заново»
 FE -> API : ResetSessionCommand(scope = all)
 API -> Orch : execute(command, session_id, run)
 
-Orch -> Context : reset_all(session_id,\n original expected_version = 4, now)
+Orch -> Context : reset_all(session_id,\n original expected_version = 4)
+Context -> Context : now = require_utc(clock(), name="clock")
 Context -> Persistence : reset(session_id, expected=4, now)
 activate Persistence
 Persistence -> Store : compare_and_set(4, RESET_DELTA, now)
@@ -118,7 +120,7 @@ reset — не второй алгоритм: Persistence только
 делегирует SessionStore.compare_and_set с
 RESET_DELTA. RESET_DELTA-aware facet CAS сам
 очищает dialog внутри backend-секции. При
-VersionConflict, SessionAbsent или StateWriteError(error_code)
+VersionConflict, SessionAbsent или SessionPersistenceError(error_code)
 частично сброшенного агрегата нет.
 end note
 
@@ -137,6 +139,11 @@ Persistence -> Store : удалить state\nв той же атомарной �
 Persistence --> Context : ok
 deactivate Persistence
 Context --> Orch : Deleted
+
+note over Context, Persistence
+delete — единственная публичная операция сервиса,
+которая не читает clock.
+end note
 
 Orch --> API : Deleted
 API --> FE : Set-Cookie с истёкшим сроком

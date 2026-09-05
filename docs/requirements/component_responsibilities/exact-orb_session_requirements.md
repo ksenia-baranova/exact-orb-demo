@@ -184,7 +184,10 @@ StateReadFailed { error_code: str }
 StateCommitFailed { error_code: str }
 ```
 
-Все модели контракта frozen. У `SessionState` тройка `birth_input`,
+Все модели контракта frozen. `Committed.state_version >= 1`, а
+`AlreadyApplied.state_version >= 0`: версия `0` допустима для уже пустой
+fresh-сессии и `RESET_DELTA`, но не является подтверждённым commit. У
+`SessionState` тройка `birth_input`,
 `birth_resolved`, `base_chart` либо целиком пуста, либо целиком заполнена;
 то же правило действует для тройки полей `StateDelta`. `session_id` непуст,
 `state_version >= 0`, `ChartRef.state_version >= 1`, а при наличии ссылки
@@ -327,9 +330,13 @@ class SessionStore(Protocol):
 `SessionPersistenceError(error_code)`; `StateReadError` и `StateWriteError`
 наследуют её и несут безопасный строковый `error_code`. Сырые
 `sqlite3.Error`, `OSError` и тексты исключений не пересекают границу порта.
-`ContextService` в P3 переводит read-ошибки в
-`StateReadFailed(error_code)`, а write-ошибки — в
-`StateCommitFailed(error_code)`.
+`ContextService` переводит общий `SessionPersistenceError` по виду публичной
+операции, а не по подклассу исключения: любой такой отказ обязательного
+`load`/`touch` даёт `StateReadFailed(error_code)`, а отказ create/save/
+append/clear/reset/delete — `StateCommitFailed(error_code)`. Поэтому
+`StateWriteError` из touch остаётся read-failure для потребителя, а
+`StateReadError` из CAS — commit-failure. `error_code` переносится без
+нормализации и fallback.
 
 ### 3.4. Агрегат persistence — `session/persistence.py`
 
@@ -388,6 +395,20 @@ I/O, хранилища и `asyncio`; атомарность инкремент�
 Правило нетривиально: к «обновить три поля и сбросить производные»
 добавились инкремент версии при сбросе вместо обнуления (§5.2), два объёма
 сброса и вытеснение диалога по трём пределам (§3.2).
+
+### 3.6. `ContextService` — граница блока
+
+`ContextService` получает ровно один агрегат `SessionPersistence` и явный
+clock через keyword-only конструктор. Его публичные async-операции —
+`create`, `load`, `save`, `append_turn`, `clear_dialog`, `reset_all` и
+`delete`; параметра `now` в их сигнатурах нет. Все операции, кроме `delete`,
+один раз получают время через `require_utc(clock(), name="clock")` и передают
+тот же объект вниз. `delete` часов не читает.
+
+Сервис не экспортируется из корневого contract-only пакета
+`exact_orb.session`: явный импорт — `exact_orb.session.context`. Он не знает
+concrete adapter, не генерирует `session_id`, не гасит cookie и не делает
+скрытых retry, rebase или дополнительного чтения после CAS-конфликта.
 
 ---
 
@@ -698,10 +719,12 @@ ADR-0010 утверждает, что после истечения сессии
 запись. `idempotency_key` не защищает ничего, что не защищено уже, — и это
 ровно та машинерия, от которой отказался `build_natal_components.md` §1.4.
 
-**Неточным было только имя исхода.** `Superseded` означает «результат
-вытеснен более новым», то есть состояние ушло не туда, куда просил
-пользователь. При двойном клике оно ушло ровно туда. Отсюда мигание
-интерфейса на ровном месте и зашумлённая метрика конкурентности.
+**Неточной была прежняя трактовка исхода.** `Superseded` означает только то,
+что актуальное состояние не соответствует намерению операции. Обычно это
+результат конкурентного изменения, но сам outcome не доказывает гонку:
+например, fresh state версии `0` с завышенным expected и populated delta даёт
+тот же mismatch. Поэтому application использует нейтральное сообщение и не
+утверждает без дополнительных данных, что другой запрос «успел раньше».
 
 **Решение — отдельный исход `AlreadyApplied`.** При конфликте сравнивается
 намерение отклонённой операции с актуальным состоянием:
@@ -731,15 +754,16 @@ async def compare_and_set(...) -> int | VersionConflict(actual: SessionState)
 ровно полученные `delta` и original `expected_state_version`; `int` переводит
 в `Committed`, `VersionConflict(actual)` — в `AlreadyApplied`, если
 `matches_intent(actual, delta)`, иначе в `Superseded(actual)`,
-`SessionAbsent` сохраняет как штатный исход, а `StateWriteError` переводит в
-`StateCommitFailed` с тем же безопасным `error_code`. Сервис не перечитывает
+`SessionAbsent` сохраняет как штатный исход, а любой
+`SessionPersistenceError` из save переводит в `StateCommitFailed` с тем же
+безопасным `error_code`. Сервис не перечитывает
 состояние после конфликта, не подменяет expected свежей версией и не повторяет
 CAS автоматически.
 
 Store вправе вернуть `VersionConflict(actual)` с `actual.state_version == 0`,
-например если вызывающий передал expected `1` для свежей сессии. Поскольку
-`AlreadyApplied.state_version >= 1`, P3 обязан классифицировать этот случай
-тотально и не конструировать `AlreadyApplied(0)` автоматически.
+например если вызывающий передал expected `1` для свежей сессии.
+`RESET_DELTA` в этом случае уже выполнена и даёт `AlreadyApplied(0)`;
+populated intent не совпадает и даёт нейтральный `Superseded(actual)`.
 
 ---
 
@@ -747,9 +771,9 @@ Store вправе вернуть `VersionConflict(actual)` с `actual.state_ver
 
 ### 8.1. Отказ на чтении
 
-`SessionStore.get` может ответить не «пусто», а «не смог ответить» — timeout,
-connection refused, storage error. Эти два ответа легко перепутать, и цена
-ошибки несимметрична:
+`SessionPersistence.touch` может не завершить обязательный load-and-renew:
+не пройти чтение либо запись продлённого deadline после чтения. Это легко
+перепутать с «сессии нет», и цена ошибки несимметрична:
 
 - трактовать отказ как отсутствие сессии → показать пустую форму →
   пользователь строит карту заново → хранилище оживает, а в нём лежала целая
@@ -757,8 +781,13 @@ connection refused, storage error. Эти два ответа легко пер�
   мы;
 - отдать `503` → карта не тронута, пользователь ждёт.
 
-**Решение: `StateReadFailed(error_code)` → `503`.** N8 покрывает только отказ при записи;
-этот случай добавляется в `build_chart/exact_orb_negative_corner_scenarios.md`.
+**Решение: `StateReadFailed(error_code)` → `503`.** Outcome намеренно не
+различает «не удалось прочитать» и «данные прочитаны, но не подтверждено
+обязательное продление TTL». Это fail-closed: partial/старый snapshot наружу
+не выдаётся, однако один `StateReadFailed` не доказывает, что persisted-сессия
+утрачена или истекла. Application сообщает о временной недоступности, а не об
+утрате сессии. N8 покрывает только отказ при записи; этот случай добавляется
+в `build_chart/exact_orb_negative_corner_scenarios.md`.
 
 Диаграмма: `sequence_diagrams/session/003-session-store-read-failure.puml`.
 
@@ -794,41 +823,54 @@ connection refused, storage error. Эти два ответа легко пер�
 
 ### 8.4. Acceptance-набор P3
 
-P3 обязан закрепить одним явным набором следующие десять свойств:
+P3 обязан закрепить одним явным набором следующие свойства:
 
-1. Каждый публичный вызов `ContextService` получает `now` один раз и
+1. `inspect.signature(ContextService.__init__)` содержит ровно `self` и
+   keyword-only `persistence`, `clock`; один агрегат является единственной
+   persistence-зависимостью.
+2. Ни одна из семи публичных async-операций не принимает `now`.
+3. Каждый отдельный now-bearing вызов `ContextService` получает `now` один
+   раз и
    передаёт это же значение без повторного чтения часов во все persistence-
-   операции данного вызова.
-2. Restore/load вызывает ровно один required
+   операции данного вызова; два save в N7/N8 читают clock дважды, по одному
+   разу на публичный вызов. `delete` clock не читает.
+4. Naive/non-zero-offset результат clock даёт ровно `ValueError` до I/O;
+   сообщение содержит `clock`, но тест не привязан ко всей строке.
+5. Restore/load вызывает ровно один required
    `SessionPersistence.touch(session_id, now=now)` и при успехе возвращает
    полученный `SessionSnapshot`, не собирая снимок отдельными `get`/`read`.
-3. `StateReadError(error_code)` из required touch превращается только в
-   `StateReadFailed` с тем же `error_code`, никогда не в `SessionAbsent`.
-4. Если required touch завершился ошибкой, ранее прочитанный или
+6. Любой `SessionPersistenceError(error_code)` из required touch превращается
+   только в `StateReadFailed` с тем же `error_code`, никогда не в
+   `SessionAbsent`, независимо от error subclass.
+7. Если required touch завершился ошибкой, ранее прочитанный или
    закэшированный snapshot не возвращается как успех: итог только
    `StateReadFailed`.
-5. Save вызывает CAS ровно один раз с исходными `delta`, original
+8. Save вызывает CAS ровно один раз с исходными `delta`, original
    `expected_state_version` и единым `now`; `int` превращается в
    `Committed(state_version)`.
-6. `StateWriteError(error_code)` превращается только в
-   `StateCommitFailed` с тем же `error_code`, никогда не в
+9. Любой `SessionPersistenceError(error_code)` из mutating-операции
+   превращается только в `StateCommitFailed` с тем же `error_code`, никогда в
    `VersionConflict`, `Superseded` или `AlreadyApplied`.
-7. `VersionConflict(actual)` классифицируется без дополнительного `get`:
+10. `VersionConflict(actual)` классифицируется без дополнительного `get`:
    совпадение `birth_resolved + base_chart_spec` даёт
    `AlreadyApplied(actual.state_version)`, различие — `Superseded(actual)`;
-   различие только в `birth_input` намерение не меняет.
-8. N7: два конкурентных save с одинаковыми delta и original expected дают
+   различие только в `birth_input` намерение не меняет; version `0` с
+   `RESET_DELTA` даёт `AlreadyApplied(0)`.
+11. N7: два конкурентных save с одинаковыми delta и original expected дают
    один `Committed` и один `AlreadyApplied`; итоговая версия увеличивается
    ровно на единицу.
-9. N8: последовательный retry после неподтверждённого commit повторяет те же
+12. N8: последовательный retry после неподтверждённого commit повторяет те же
    delta и original expected без load/rebase; если первый commit состоялся,
    retry даёт `AlreadyApplied`, а версия за обе попытки растёт только на
    единицу.
-10. `scope="all"` вызывает ровно `SessionPersistence.reset`, а не
+13. `scope="all"` вызывает ровно `SessionPersistence.reset`, а не
     `DialogStore.clear` плюс отдельный CAS. Успех инкрементирует версию и
     очищает диалог атомарно; `VersionConflict` не очищает диалог, а
-    `StateWriteError` не может дать наблюдаемое частично сброшенное состояние
+    persistence error не может дать наблюдаемое частично сброшенное состояние
     и переводится в `StateCommitFailed(error_code)`.
+14. `save(..., RESET_DELTA)` и `reset_all` на эквивалентных lifecycle дают
+    одинаковые outcomes для success, absence и конфликтов. Проверка
+    поведенческая; имя или identity private helper не являются контрактом.
 
 ---
 
@@ -1150,8 +1192,10 @@ VersionConflict, aggregate touch/reset/delete и конкурирующих пи
 
 **Отказы и хранилище**
 
-- отказ чтения даёт `StateReadFailed`, а не пустое состояние;
-- публичная ошибка хранилища и соответствующий failure-outcome сохраняют
+- отказ обязательного load-and-renew даёт `StateReadFailed`, а не пустое
+  состояние или partial snapshot; outcome не утверждает утрату сессии;
+- любой публичный persistence error и соответствующий operation-based
+  failure-outcome сохраняют
   один безопасный `error_code`, не выпуская raw exception;
 - превышение лимита построений даёт типизированный отказ, а не расчёт;
 - состояние и диалог переживают рестарт процесса на реализации `Sqlite*`;

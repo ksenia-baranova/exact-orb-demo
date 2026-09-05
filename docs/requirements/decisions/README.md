@@ -25,7 +25,7 @@
 | 0011 | Intent Extractor — только для natural-language входа              | Принято, ревизия |
 | 0012 | Bootstrap + chart/chat page; streaming для интерпретации          | Принято, ревизия |
 | 0013 | Защита бюджета по классам операций; AdmissionControl              | Принято, ревизия |
-| 0014 | Изменение базовых данных и вида карты — явные операции            | Принято          |
+| 0014 | Изменение базовых данных и вида карты — явные операции            | Принято, ревизия |
 | 0015 | Demo и subscription различаются capability, не только квотой      | Принято          |
 | 0016 | Натал — базовое состояние, транзит — производный расчёт           | Принято          |
 | 0017 | Calculation Cache воспроизводим; сессия хранит `ChartSpec`        | Принято          |
@@ -64,7 +64,12 @@ lifecycle-решений:
 * **0009** — `touch` остаётся единственным read-and-renew; фасетные
   `get`/`read` read-only, а успешные CAS/append/clear являются
   write-and-renew. Append продлевает state и dialog одним deadline, clear
-  продлевает state без изменения content/version и удаляет dialog.
+  продлевает state без изменения content/version и удаляет dialog. Неуспех
+  любой части обязательного touch даёт единый fail-closed `StateReadFailed`,
+  который сам по себе не доказывает утрату persisted-сессии.
+* **0014** — `Superseded` означает mismatch actual и intent, а не доказанную
+  победу конкурентного запроса; `AlreadyApplied(0)` допустим для уже пустой
+  fresh-сессии. Save с `RESET_DELTA` и reset-all классифицируются одинаково.
 * **0024** — SQLite append/clear обязаны выполнять то же изменение одной
   `BEGIN IMMEDIATE … COMMIT`; parent state является единственным источником
   liveness, а persisted dialog deadline используется согласованным lifecycle

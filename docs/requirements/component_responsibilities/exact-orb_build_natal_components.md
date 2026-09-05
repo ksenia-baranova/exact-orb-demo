@@ -1253,9 +1253,14 @@ now=now)`: агрегат только делегирует, а RESET_DELTA-awar
 **Назначение.** Единственная application-граница блока сессий и владелец
 семантической классификации persistence outcomes (ADR-0009, ADR-0014).
 
-`ContextService` получает `SessionPersistence`. Restore/load использует
-агрегатный `touch`, а не отдельные `get`, `read` и `touch`. Сохранение
-передаёт `SessionStore.compare_and_set` исходные `delta` и
+`ContextService` получает ровно один `SessionPersistence` и явный clock через
+keyword-only конструктор. Публичные async-методы `create`, `load`, `save`,
+`append_turn`, `clear_dialog`, `reset_all`, `delete` не принимают `now`.
+Каждый отдельный вызов, кроме delete, читает clock ровно один раз, проверяет
+его через `require_utc(..., name="clock")` и передаёт тот же объект в
+persistence. Restore/load использует агрегатный `touch`, а не отдельные
+`get`, `read` и `touch`. Сохранение передаёт
+`SessionStore.compare_and_set` исходные `delta` и
 `expected_state_version` без построения кандидата.
 
 ```text
@@ -1266,10 +1271,11 @@ VersionConflict(actual) + matches_intent(actual, delta)
 VersionConflict(actual) + not matches_intent(actual, delta)
     -> Superseded(actual)
 SessionAbsent
-    -> SessionAbsent
-StateReadError(error_code)
+    -> тот же SessionAbsent
+load + любой SessionPersistenceError(error_code)
     -> StateReadFailed(error_code)
-StateWriteError(error_code)
+create/save/append/clear/reset/delete
+    + любой SessionPersistenceError(error_code)
     -> StateCommitFailed(error_code)
 ```
 
@@ -1278,14 +1284,29 @@ StateWriteError(error_code)
 `VersionConflict`: сервис не делает дополнительный `get`, не выполняет
 скрытый retry и не перебазирует операцию на свежую версию.
 
+`AlreadyApplied.state_version >= 0`: конфликт fresh-состояния версии `0` с
+`RESET_DELTA` означает, что reset-intent уже выполнен. `Superseded` означает
+только mismatch actual и intent, а не доказанную победу другого запроса;
+application обязан формулировать его нейтрально.
+
+`StateReadFailed` намеренно объединяет настоящий read-failure и случай, когда
+данные прочитаны, но обязательное продление TTL не подтвердилось. Это
+fail-closed контракт: partial snapshot не возвращается, однако outcome не
+доказывает утрату persisted-сессии, поэтому application сообщает о временной
+недоступности.
+
 Полный reset идёт только через `SessionPersistence.reset`; delete — только
 через `SessionPersistence.delete`. `scope="dialog"` использует
 `DialogStore.clear` и не меняет `state_version`.
 
-**Acceptance P3.** Проверяются все строки таблицы выше, отсутствие второго
-чтения после конфликта, сохранение original expected при повторе N7/N8,
-точное сохранение `error_code`, а также то, что reset-all и delete вызывают
-ровно агрегатные методы.
+**Acceptance P3.** Через `inspect.signature` проверяются точный конструктор и
+отсутствие публичного `now`. Проверяются все строки таблицы выше для обоих
+подклассов persistence error, одно чтение clock на каждый публичный вызов,
+отсутствие второго чтения после конфликта, сохранение original expected при
+повторе N7/N8 и точное сохранение `error_code`. Reset-all и delete вызывают
+ровно агрегатные методы; эквивалентность классификации reset-all и
+`save(..., RESET_DELTA)` проверяется по outcomes, а не по имени private
+helper.
 
 ---
 

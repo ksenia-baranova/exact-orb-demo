@@ -61,23 +61,25 @@ API -> API : lookup session_id только из cookie
 API -> Orch : execute(query, session_id, run)
 
 Orch -> Context : load(session_id)
+Context -> Context : now = require_utc(clock(), name="clock")
 Context -> Persistence : touch(session_id, now)
 activate Persistence
-Persistence --> Context : StateReadError(error_code)
+Persistence --> Context : SessionPersistenceError(error_code)
 deactivate Persistence
 
 note right of Store
-Это **не** "пусто". Это "не смог ответить".
-Запись, скорее всего, цела и лежит на месте.
+Это **не** "пусто". Могло не пройти чтение
+либо обязательное продление после чтения.
+Outcome не доказывает утрату записи.
 end note
 
-Context -> Context : отказ чтения != SessionAbsent
+Context -> Context : failed load-and-renew != SessionAbsent
 Context --> Orch : StateReadFailed(error_code)
 
 Orch --> API : StateReadFailed(error_code)
 API --> FE : 503
 FE -> FE : "сервис временно недоступен,\n обновите страницу"
-FE --> User : карта не тронута, ждём
+FE --> User : не утверждаем утрату сессии; ждём
 
 note over FE, Store
 Отвергнутая альтернатива: трактовать отказ
@@ -104,7 +106,8 @@ FE -> API : BuildNatalCommand(тот же birth_input)
 API -> Orch : execute(command, session_id, run)
 
 Orch -> Orch : Calculation Cache hit;\nне менять original expected=5
-Orch -> Context : save(delta, expected=5, now)
+Orch -> Context : save(delta, expected=5)
+Context -> Context : now = require_utc(clock(), name="clock")
 Context -> Store : compare_and_set(expected=5, delta, now)
 
 alt прошлый commit не состоялся
@@ -117,9 +120,9 @@ else прошлый commit состоялся
 else победило другое намерение
     Store --> Context : VersionConflict(actual)
     Context -> Context : matches_intent(actual, delta) == false
-    Context --> Orch : Superseded(actual)
-else write снова не подтверждён
-    Store --> Context : StateWriteError(error_code)
+    Context --> Orch : Superseded(actual) — neutral mismatch
+else persistence снова не подтвердил save
+    Store --> Context : SessionPersistenceError(error_code)
     Context --> Orch : StateCommitFailed(error_code)
 end
 

@@ -62,6 +62,7 @@ API -> API : lookup session_id только из cookie
 API -> Orch : execute(query, session_id, run)
 
 Orch -> Context : load(session_id)
+Context -> Context : now = require_utc(clock(), name="clock")
 Context -> Persistence : touch(session_id, now)
 activate Persistence
 Persistence -> Store : обновить TTL состояния
@@ -101,6 +102,7 @@ API -> API : lookup session_id только из cookie
 API -> Orch : execute(query, session_id, run)
 
 Orch -> Context : load(session_id)
+Context -> Context : now = require_utc(clock(), name="clock")
 Context -> Persistence : touch(session_id, now)
 Persistence --> Context : SessionAbsent(reason)
 Context --> Orch : SessionAbsent

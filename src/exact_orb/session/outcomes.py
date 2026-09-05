@@ -39,13 +39,13 @@ class Committed(_FrozenOutcome):
 
 
 class AlreadyApplied(_FrozenOutcome):
-    """The same logical intent was committed previously."""
+    """The current state already reflects the requested logical intent."""
 
-    state_version: int = Field(ge=1)
+    state_version: int = Field(ge=0)
 
 
 class Superseded(_FrozenOutcome):
-    """A different intent won the version race."""
+    """The current state does not reflect the requested logical intent."""
 
     actual: SessionState
 

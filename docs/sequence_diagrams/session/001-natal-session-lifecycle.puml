@@ -76,7 +76,8 @@ FE -> FE : показывает форму данных рождения
 FE -> FE : карта и диалог недоступны
 FE -> API : bootstrap (cookie отсутствует)
 API -> API : сгенерировать свежий server session_id
-API -> Context : create(session_id, now)
+API -> Context : create(session_id)
+Context -> Context : now = require_utc(clock(), name="clock")
 Context -> Store : create(session_id, now)
 Store --> Context : SessionCreated(state_version = 0)
 Context --> API : SessionCreated
@@ -96,6 +97,7 @@ FE -> API : BuildNatalCommand(birth_input)
 API -> Orch : execute(command, session_id, run)
 
 Orch -> Context : load(session_id)
+Context -> Context : now = require_utc(clock(), name="clock")
 Context -> Persistence : touch(session_id, now)
 Persistence --> Context : SessionSnapshot(state_version = 0,\ndialog = ())
 Context --> Orch : SessionSnapshot
@@ -111,6 +113,7 @@ Build --> Orch : BuildNatalSuccess(artifact, delta)
 deactivate Build
 
 Orch -> Context : save(session_id, original expected=0, delta)
+Context -> Context : now = require_utc(clock(), name="clock")
 Context -> Store : compare_and_set(expected_version=0, delta, now)
 Store -> Store : применить delta и назначить version=1\nв атомарной CAS-секции
 Store --> Context : 1
@@ -154,6 +157,7 @@ FE -> API : InterpretSelectionCommand(topic, focus)
 API -> Orch : execute(command, session_id, run)
 
 Orch -> Context : load(session_id)
+Context -> Context : now = require_utc(clock(), name="clock")
 Context -> Persistence : touch(session_id, now)
 Persistence --> Context : SessionSnapshot(state_version=1,\n base_chart={state_version=1, spec}, dialog)
 Context --> Orch : SessionSnapshot
@@ -187,6 +191,7 @@ Selection --> Orch : Success(result)
 deactivate Selection
 
 Orch -> Context : append_turn(session_id, DialogTurn(\n selection, state_version_at_answer = 1,\n status = complete, text))
+Context -> Context : now = require_utc(clock(), name="clock")
 Context -> Dialog : append(session_id, turn, now)
 Dialog --> Context : ok
 
@@ -216,6 +221,7 @@ FE -> API : UpdateBirthDataCommand(new_birth_input)
 API -> Orch : execute(command, session_id, run)
 
 Orch -> Context : load(session_id)
+Context -> Context : now = require_utc(clock(), name="clock")
 Context -> Persistence : touch(session_id, now)
 Persistence --> Context : SessionSnapshot(state_version=1, dialog)
 Context --> Orch : SessionSnapshot
@@ -231,6 +237,7 @@ Build --> Orch : BuildNatalSuccess(new_artifact, delta)
 deactivate Build
 
 Orch -> Context : save(session_id, original expected=1, delta)
+Context -> Context : now = require_utc(clock(), name="clock")
 Context -> Store : compare_and_set(expected_version=1, delta, now)
 Store -> Store : применить delta и назначить version=2\nв атомарной CAS-секции
 Store --> Context : 2

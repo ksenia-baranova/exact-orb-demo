@@ -13,7 +13,9 @@ read-only, согласованный read-and-renew выполняет агре
 `SessionSnapshot`; reset/delete атомарны между состоянием и диалогом;
 успешные CAS/append/clear являются write-and-renew; `session_id` создаётся
 только доверенным серверным генератором, а cookie используется только для
-поиска.
+поиска. Ревизия P3: отказ любой части обязательного `touch` отображается в
+единый `StateReadFailed`; этот fail-closed outcome не является доказательством
+утраты persisted-сессии.
 Статус: принято.
 
 ## Контекст
@@ -68,6 +70,13 @@ SessionState {
 являются write-and-renew: append продлевает parent state и сохраняет dialog
 с тем же deadline, а clear продлевает parent state и удаляет dialog. Append
 и clear не меняют предметные поля state и `state_version`.
+
+`touch` является обязательным load-and-renew целиком. Если чтение удалось,
+но запись нового deadline не подтвердилась, `ContextService.load` не выдаёт
+прочитанный snapshot и возвращает тот же `StateReadFailed`, что и при отказе
+чтения. Различие сознательно не вынесено в публичный outcome: приложение
+сообщает о временной недоступности и не утверждает по одному
+`StateReadFailed`, что сессия утрачена или истекла.
 
 Хранятся оба представления данных рождения: только `birth_input` означал бы,
 что обновление `tzdata` молча сдвинет карту; только `birth_resolved` — что нечего
@@ -129,6 +138,9 @@ clear обновляет state deadline и удаляет dialog.
 - В пределах сессии пользователь не повторяет исходные данные.
 - Read-only фасеты не продлевают TTL скрыто; агрегатный `touch` продлевает
   состояние и диалог вместе **в пределах абсолютного потолка**.
+- Неуспех любой части обязательного `touch` закрывает load без snapshot;
+  `StateReadFailed` не различает read и renew failure и не доказывает утрату
+  persisted-сессии.
 - Успешные CAS, append и clear являются write-and-renew; append сохраняет
   одинаковый deadline обеих записей, а clear продлевает state и очищает
   dialog без изменения предметного state или `state_version`.
