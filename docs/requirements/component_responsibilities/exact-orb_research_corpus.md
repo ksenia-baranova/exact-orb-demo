@@ -196,6 +196,10 @@ balance state = deficit, balanced, excess
 quality kind = rating, regenerate, copy, reading_time
 ```
 
+Vocabulary `quality kind` задаётся `Literal`-дискриминаторами четырёх моделей
+событий, а не отдельным enum: discriminated union остаётся единственным
+источником истины.
+
 Фаза Луны хранится номером восьмифазной системы Рудьяра: `1..8`. Имена
 `PHASE_NAMES` остаются в engine и в корпус не переносятся.
 
@@ -291,6 +295,10 @@ Record digest исключает только `research_id`. Event digest иск
 datetime `YYYY-MM-DDTHH:00:00Z`, arrays для tuple и `null` для None.
 JSON кодируется UTF-8 с `ensure_ascii=False`, `allow_nan=False`,
 `sort_keys=True`, separators `(',', ':')`. Digest — lowercase SHA-256 hex.
+Finite float сериализуется стандартным Python `json.dumps` в shortest
+round-trip representation: например, `0.1 + 0.2` кодируется как
+`0.30000000000000004`. Все адаптеры обязаны использовать общий digest helper,
+а не воспроизводить канонизацию самостоятельно.
 
 Публичная константа `RESEARCH_DIGEST_FORMAT_VERSION = 1` обозначает алгоритм,
 но не дублируется отдельным полем каждой записи. Точные canonical JSON и
@@ -306,7 +314,9 @@ artifact и не читает часы.
 
 Неизвестная категория даёт безопасный
 `ResearchProjectionError("RESEARCH_PROJECTION_UNSUPPORTED_VALUE")`; значение
-и artifact content не входят в exception text.
+и artifact content не входят в exception text. Подавленный `ValidationError`
+оставляет одну warning-запись с безопасными `loc` и `type`; входное значение,
+сообщение валидатора и содержимое artifact в диагностические поля не входят.
 
 Перед построением моделей проекция канонизирует имена точек: alias из
 `AspectConfig.point_aliases` заменяется raw-именем тела. Два artifact,
@@ -371,9 +381,10 @@ InMemory и SQLite проходят один behavioral conformance. Factory в�
 cross-handle race вырождается.
 
 Публичной фабрики backend нет. Чтобы получить две фасеты над одним backend,
-InMemory-override в `conformance.py` создаёт private backend напрямую — это
+InMemory-override в `test_in_memory.py` создаёт private backend напрямую — это
 единственное санкционированное обращение к приватному имени, ограниченное
-телом фабрики. SQLite в нём не нуждается: два handle получаются двумя
+concrete test factory. Общий `conformance.py` не импортирует и не конструирует
+адаптеры. SQLite в private backend не нуждается: два handle получаются двумя
 вызовами `open()` над одним файлом.
 
 Generic race использует внешний start gate и доказывает полный multiset

@@ -3,7 +3,7 @@
 Дата: 2026-09-04. Ревизия: 2026-09-06 — threat model полного вектора,
 контракт Research v1 и append-only quality events; уточнение того же дня —
 каноническое написание точки, сужение углов до `asc`/`mc` и отказ от имени
-фазы Луны. **Заменяет ADR-0010.**
+фазы Луны; сериализация float в digest format v1. **Заменяет ADR-0010.**
 Статус: принято.
 
 ## Контекст
@@ -174,7 +174,10 @@ Content digest format v1:
    `YYYY-MM-DDTHH:00:00Z`;
 4. канонический JSON использует UTF-8, Unicode без ASCII escaping, ключи в
    лексикографическом порядке, separators `,` и `:`, без NaN/Infinity;
-5. digest — lowercase SHA-256 hex из канонического JSON.
+5. finite float кодируется стандартным Python `json.dumps` в shortest
+   round-trip representation (`0.1 + 0.2` → `0.30000000000000004`); адаптеры
+   используют общий digest helper и не реализуют формат повторно;
+6. digest — lowercase SHA-256 hex из канонического JSON.
 
 Перестановка семантически неупорядоченных feature tuples не меняет модель
 после канонизации и не меняет digest. Смена алгоритма или канонического

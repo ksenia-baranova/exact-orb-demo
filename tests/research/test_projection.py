@@ -5,6 +5,7 @@ from __future__ import annotations
 import ast
 from datetime import UTC, datetime
 import inspect
+import logging
 from pathlib import Path
 from typing import get_args
 
@@ -91,6 +92,9 @@ from exact_orb.research import (
 from exact_orb.research.projection import project_chart_features
 from tests.fixtures.calculation import artifact, chart_spec, raw_chart
 from tests.research.conformance import make_record
+
+
+pytestmark = pytest.mark.no_ephemeris_autoinit
 
 
 def _zodiac(sign: str, *, longitude: float = 10.25) -> ZodiacPosition:
@@ -424,7 +428,7 @@ def test_source_collection_order_does_not_change_projection() -> None:
     assert project_chart_features(reordered) == project_chart_features(source)
 
 
-def test_unknown_categorical_value_is_a_safe_typed_error() -> None:
+def test_unknown_categorical_value_is_a_safe_typed_error(caplog: pytest.LogCaptureFixture) -> None:
     source = rich_artifact()
     sun = source.chart.bodies["sun"]
     poisoned = source.model_copy(
@@ -446,6 +450,40 @@ def test_unknown_categorical_value_is_a_safe_typed_error() -> None:
     assert str(caught.value) == "RESEARCH_PROJECTION_UNSUPPORTED_VALUE"
     assert "SECRET_UNKNOWN" not in str(caught.value)
     assert caught.value.__cause__ is None
+    assert len(caplog.records) == 1
+    record = caplog.records[0]
+    assert record.levelno == logging.WARNING
+    assert record.getMessage() == "Research projection validation failed"
+    assert record.error_code == "RESEARCH_PROJECTION_UNSUPPORTED_VALUE"
+    assert record.validation_errors == (("sign", "enum"),)
+    assert "SECRET_UNKNOWN" not in str((record.msg, record.args, record.validation_errors))
+
+
+def test_structural_projection_failure_has_distinct_safe_diagnostics(
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    source = rich_artifact()
+    duplicate = source.chart.bodies["moon"].model_copy(update={"name": "sun"})
+    poisoned = source.model_copy(
+        update={
+            "chart": source.chart.model_copy(
+                update={"bodies": {**source.chart.bodies, "moon": duplicate}}
+            )
+        }
+    )
+    with pytest.raises(ResearchProjectionError) as caught:
+        project_chart_features(poisoned)
+    assert caught.value.error_code == str(caught.value) == (
+        "RESEARCH_PROJECTION_UNSUPPORTED_VALUE"
+    )
+    assert caught.value.__cause__ is None
+    assert len(caplog.records) == 1
+    record = caplog.records[0]
+    assert record.levelno == logging.WARNING
+    assert record.validation_errors == (("bodies", "value_error"),)
+    serialized_diagnostics = str((record.msg, record.args, record.validation_errors))
+    assert "sun" not in serialized_diagnostics
+    assert "moon" not in serialized_diagnostics
 
 
 def test_cosmogram_keeps_house_absent_and_does_not_invent_house_families() -> None:

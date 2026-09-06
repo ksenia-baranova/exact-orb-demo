@@ -245,13 +245,6 @@ class BalanceState(str, Enum):
     EXCESS = "excess"
 
 
-class QualityKind(str, Enum):
-    RATING = "rating"
-    REGENERATE = "regenerate"
-    COPY = "copy"
-    READING_TIME = "reading_time"
-
-
 class _FrozenModel(BaseModel):
     model_config = ConfigDict(frozen=True, extra="forbid")
 
@@ -690,7 +683,6 @@ __all__ = [
     "LunarPhaseFeature",
     "Modality",
     "ModalityBalanceFeature",
-    "QualityKind",
     "RatingEvent",
     "ReadingTimeEvent",
     "RegenerateEvent",

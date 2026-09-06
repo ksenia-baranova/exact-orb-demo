@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import logging
+
 from pydantic import ValidationError
 
 from exact_orb.calculation.types import ChartArtifact
@@ -24,6 +26,7 @@ from exact_orb.research.models import (
 )
 
 
+_LOGGER = logging.getLogger(__name__)
 _ALIAS_TO_RAW_POINT = {
     "north_node": "true_node",
     "lilith": "mean_apog",
@@ -153,7 +156,25 @@ def project_chart_features(artifact: ChartArtifact, /) -> ChartFeatures:
             balance=balance,
             lunar_phase=lunar_phase,
         )
-    except ValidationError:
+    except ValidationError as exc:
+        validation_errors = tuple(
+            (
+                ".".join(str(part) for part in error["loc"]),
+                error["type"],
+            )
+            for error in exc.errors(
+                include_input=False,
+                include_context=False,
+                include_url=False,
+            )
+        )
+        _LOGGER.warning(
+            "Research projection validation failed",
+            extra={
+                "error_code": RESEARCH_PROJECTION_UNSUPPORTED_VALUE,
+                "validation_errors": validation_errors,
+            },
+        )
         raise ResearchProjectionError(RESEARCH_PROJECTION_UNSUPPORTED_VALUE) from None
 
 

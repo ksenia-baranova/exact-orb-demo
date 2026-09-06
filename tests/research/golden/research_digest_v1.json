@@ -60,6 +60,33 @@
     "canonical_json": "{\"calculation_version\":\"calculation-v1\",\"chart_features\":{\"angles\":[{\"point\":\"asc\",\"sign\":\"Libra\"},{\"point\":\"mc\",\"sign\":\"Capricorn\"}],\"aspects\":[{\"aspect_type\":\"square\",\"category\":\"working\",\"from_point\":\"sun\",\"to_point\":\"vertex\"}],\"balance\":[{\"axis\":\"element\",\"bucket\":\"fire\",\"state\":\"excess\"},{\"axis\":\"modality\",\"bucket\":\"fixed\",\"state\":\"deficit\"}],\"bodies\":[{\"house\":4,\"point\":\"moon\",\"retrograde\":false,\"sign\":\"Cancer\"},{\"house\":1,\"point\":\"sun\",\"retrograde\":false,\"sign\":\"Aries\"}],\"chart_kind\":\"natal\",\"configurations\":[{\"category\":\"tight\",\"configuration_type\":\"t_square\",\"element\":null,\"modality\":\"cardinal\",\"points\":[{\"point\":\"sun\",\"role\":\"apex\"},{\"point\":\"asc\",\"role\":\"base_1\"},{\"point\":\"moon\",\"role\":\"base_2\"}]}],\"dignities\":[{\"point\":\"moon\",\"status\":\"domicile\",\"system\":\"modern\"},{\"point\":\"sun\",\"status\":\"exaltation\",\"system\":\"modern\"}],\"feature_schema_version\":1,\"lunar_phase\":{\"phase_number\":5},\"strengths\":[{\"category\":\"moderate\",\"house_type\":\"cadent\",\"point\":\"moon\"},{\"category\":\"strong\",\"house_type\":\"angular\",\"point\":\"sun\"}]},\"cost_usd\":0.125,\"created_at\":\"2026-09-06T12:00:00Z\",\"latency_ms\":42.5,\"model\":\"provider/model@v1\",\"recipe_version\":\"recipe-v1\",\"selection\":{\"focus\":\"general\",\"topic\":\"natal\"},\"tokens_in\":10,\"tokens_out\":20}",
     "sha256": "26f98c954a5557466783bc691274ffa22401c762d14f5a38490ba37b5a7b478c"
   },
+  "float_record": {
+    "canonical_payload": {
+      "calculation_version": "calculation-v1",
+      "chart_features": {
+        "angles": null,
+        "aspects": null,
+        "balance": null,
+        "bodies": null,
+        "chart_kind": "natal",
+        "configurations": null,
+        "dignities": null,
+        "feature_schema_version": 1,
+        "lunar_phase": null,
+        "strengths": null
+      },
+      "cost_usd": 0.3333333333333333,
+      "created_at": "2026-09-06T12:00:00Z",
+      "latency_ms": 0.30000000000000004,
+      "model": "provider/model@v1",
+      "recipe_version": "recipe-v1",
+      "selection": {"focus": "general", "topic": "natal"},
+      "tokens_in": 10,
+      "tokens_out": 20
+    },
+    "canonical_json": "{\"calculation_version\":\"calculation-v1\",\"chart_features\":{\"angles\":null,\"aspects\":null,\"balance\":null,\"bodies\":null,\"chart_kind\":\"natal\",\"configurations\":null,\"dignities\":null,\"feature_schema_version\":1,\"lunar_phase\":null,\"strengths\":null},\"cost_usd\":0.3333333333333333,\"created_at\":\"2026-09-06T12:00:00Z\",\"latency_ms\":0.30000000000000004,\"model\":\"provider/model@v1\",\"recipe_version\":\"recipe-v1\",\"selection\":{\"focus\":\"general\",\"topic\":\"natal\"},\"tokens_in\":10,\"tokens_out\":20}",
+    "sha256": "49a5022535fe970f19ee3f951e78d94e97dd732b5264de4476c0a27f6ff69893"
+  },
   "events": {
     "rating": {
       "event_id": "33333333-3333-4333-8333-333333333333",

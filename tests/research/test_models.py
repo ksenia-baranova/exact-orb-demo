@@ -7,10 +7,14 @@ from hashlib import sha256
 import math
 from datetime import UTC, datetime, timedelta, timezone, tzinfo
 from pathlib import Path
+from typing import get_args
 from uuid import UUID
 
 import pytest
 from pydantic import TypeAdapter, ValidationError
+
+import exact_orb.research as research_api
+import exact_orb.research.models as research_models
 
 from exact_orb.research import (
     ANGLE_FEATURE_POINTS,
@@ -47,7 +51,6 @@ from exact_orb.research import (
     ModalityBalanceFeature,
     QualityAlreadyStored,
     QualityEventIdConflict,
-    QualityKind,
     QualityStored,
     RatingEvent,
     ReadingTimeEvent,
@@ -82,6 +85,9 @@ from tests.research.conformance import (
     make_event,
     make_record,
 )
+
+
+pytestmark = pytest.mark.no_ephemeris_autoinit
 
 
 GOLDEN_PATH = Path(__file__).parent / "golden" / "research_digest_v1.json"
@@ -212,11 +218,24 @@ def test_nested_collections_are_immutable_tuples() -> None:
         (Element, {"fire", "earth", "air", "water"}),
         (Modality, {"cardinal", "fixed", "mutable"}),
         (BalanceState, {"deficit", "balanced", "excess"}),
-        (QualityKind, {"rating", "regenerate", "copy", "reading_time"}),
     ],
 )
 def test_closed_vocabularies_are_exact(enum_type: type, expected: set[str]) -> None:
     assert {item.value for item in enum_type} == expected
+
+
+def test_quality_event_kinds_are_derived_from_discriminated_union() -> None:
+    event_union = get_args(ResearchQualityEvent)[0]
+    event_models = get_args(event_union)
+    assert event_models
+    observed = {
+        kind
+        for event_model in event_models
+        for kind in get_args(event_model.model_fields["kind"].annotation)
+    }
+    assert observed == {"rating", "regenerate", "copy", "reading_time"}
+    assert not hasattr(research_models, "QualityKind")
+    assert not hasattr(research_api, "QualityKind")
 
 
 def test_point_vocabularies_are_exact_and_disjoint_from_aliases() -> None:
@@ -584,6 +603,24 @@ def test_digest_matches_frozen_canonical_json_and_hashes() -> None:
     assert golden["record"]["canonical_payload"] == json.loads(golden["record"]["canonical_json"])
     for data in golden["events"].values():
         assert data["canonical_payload"] == json.loads(data["canonical_json"])
+
+
+def test_float_digest_matches_frozen_shortest_round_trip_json() -> None:
+    golden = json.loads(GOLDEN_PATH.read_text(encoding="utf-8"))["float_record"]
+    payload = make_record().model_dump(mode="python")
+    payload.update(latency_ms=0.1 + 0.2, cost_usd=1 / 3)
+    record = ResearchRecord.model_validate(payload)
+    canonical_json = json.dumps(
+        record.model_dump(mode="json", exclude={"research_id"}),
+        ensure_ascii=False,
+        allow_nan=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    )
+    assert canonical_json == golden["canonical_json"]
+    assert json.loads(canonical_json) == golden["canonical_payload"]
+    assert sha256(canonical_json.encode("utf-8")).hexdigest() == golden["sha256"]
+    assert record_content_digest(record) == golden["sha256"]
 
 
 def test_typed_errors_have_stable_safe_codes() -> None:

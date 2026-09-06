@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import ast
+from contextlib import asynccontextmanager
 import inspect
 from pathlib import Path
 
@@ -23,11 +24,31 @@ from tests.research.conformance import (
     RESEARCH_ID,
     ResearchCorpusConformance,
     ResearchCorpusFactory,
+    ResearchHandles,
     make_event,
-    make_in_memory_factory,
     make_record,
     race,
 )
+
+
+pytestmark = pytest.mark.no_ephemeris_autoinit
+
+
+def make_in_memory_factory() -> ResearchCorpusFactory:
+    """Build two test facades without promoting the shared backend to public API."""
+
+    from exact_orb.research.adapters.in_memory import _InMemoryResearchBackend
+
+    @asynccontextmanager
+    async def factory():
+        # This is the sole sanctioned construction of the private backend.
+        backend = _InMemoryResearchBackend()
+        yield ResearchHandles(
+            primary=InMemoryResearchCorpus(backend),
+            peer=InMemoryResearchCorpus(backend),
+        )
+
+    return factory
 
 
 class TestInMemoryResearchCorpus(ResearchCorpusConformance):
@@ -42,7 +63,7 @@ def test_concrete_suite_collects_inherited_tests_and_only_overrides_factory() ->
         for name in dir(TestInMemoryResearchCorpus)
         if name.startswith("test_") and name not in TestInMemoryResearchCorpus.__dict__
     }
-    assert inherited
+    assert len(inherited) == 12
     declared = {
         name for name in TestInMemoryResearchCorpus.__dict__ if not name.startswith("__")
     }
@@ -124,14 +145,48 @@ def test_critical_section_contains_no_await_after_entry(method_name: str) -> Non
     )
 
 
-def test_private_backend_is_constructed_only_by_conformance_factory() -> None:
+def test_private_backend_is_constructed_only_by_in_memory_factory() -> None:
     source_root = Path(__file__).parents[2] / "src" / "exact_orb" / "research"
     test_root = Path(__file__).parent
     occurrences: list[str] = []
     for path in (*source_root.rglob("*.py"), *test_root.rglob("*.py")):
         tree = ast.parse(path.read_text(encoding="utf-8"), str(path))
         for node in ast.walk(tree):
-            if isinstance(node, ast.Call) and isinstance(node.func, ast.Name):
-                if node.func.id == "_InMemoryResearchBackend":
-                    occurrences.append(path.name)
-    assert occurrences == ["conformance.py"]
+            if not isinstance(node, ast.Call):
+                continue
+            called_name = (
+                node.func.id
+                if isinstance(node.func, ast.Name)
+                else node.func.attr
+                if isinstance(node.func, ast.Attribute)
+                else None
+            )
+            if called_name == "_InMemoryResearchBackend":
+                occurrences.append(path.name)
+    assert occurrences == ["test_in_memory.py"]
+
+
+def test_generic_conformance_has_no_research_adapter_imports() -> None:
+    path = Path(__file__).with_name("conformance.py")
+    assert path.is_file()
+    tree = ast.parse(path.read_text(encoding="utf-8"), str(path))
+    assert any(
+        isinstance(node, ast.ClassDef) and node.name == "ResearchCorpusConformance"
+        for node in tree.body
+    )
+    imported_modules = {
+        node.module
+        for node in ast.walk(tree)
+        if isinstance(node, ast.ImportFrom) and node.module is not None
+    }
+    imported_modules.update(
+        alias.name
+        for node in ast.walk(tree)
+        if isinstance(node, ast.Import)
+        for alias in node.names
+    )
+    assert not any(
+        module == "exact_orb.research.adapters"
+        or module.startswith("exact_orb.research.adapters.")
+        for module in imported_modules
+    )

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import asyncio
 from collections.abc import Callable, Coroutine
-from contextlib import AbstractAsyncContextManager, asynccontextmanager
+from contextlib import AbstractAsyncContextManager
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
@@ -97,26 +97,6 @@ class ResearchHandles:
 
 
 ResearchCorpusFactory = Callable[[], AbstractAsyncContextManager[ResearchHandles]]
-
-
-def make_in_memory_factory() -> ResearchCorpusFactory:
-    """Test seam: the sole direct construction of the private InMemory backend."""
-
-    from exact_orb.research.adapters.in_memory import (
-        InMemoryResearchCorpus,
-        _InMemoryResearchBackend,
-    )
-
-    @asynccontextmanager
-    async def factory():
-        # Two facades need one backend without promoting that backend to public API.
-        backend = _InMemoryResearchBackend()
-        yield ResearchHandles(
-            primary=InMemoryResearchCorpus(backend),
-            peer=InMemoryResearchCorpus(backend),
-        )
-
-    return factory
 
 
 def _pair(
@@ -365,7 +345,6 @@ __all__ = [
     "ResearchCorpusFactory",
     "ResearchHandles",
     "make_event",
-    "make_in_memory_factory",
     "make_record",
     "race",
 ]
