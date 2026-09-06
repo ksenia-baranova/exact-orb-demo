@@ -10,7 +10,7 @@
 ADR-0012 в ревизии 2026-08-26 отложил durable execution protocol:
 детерминированные расчёты остаются обычным request/response, восстановление
 незавершённого build после reopen требует отдельного решения. Актуальность
-результата обеспечивается compare-and-set по `profile_version` (ADR-0014).
+результата обеспечивается compare-and-set по `state_version` (ADR-0014).
 
 **Действующий набор — `../build_natal/`.**
 
@@ -34,5 +34,5 @@ ADR-0012 в ревизии 2026-08-26 отложил durable execution protocol:
 устойчиво превышающий несколько сотен миллисекунд, либо асинхронный build.
 
 То же касается `docs/requirements/build_chart/exact_orb_negative_corner_scenarios.md`
-§1.1 и §1.3: они описывают `BuildAttempt` и `build_revision` как действующий
-контракт, и их следует читать как отложенные.
+§1.1 и §1.3: содержащаяся там будущая модель `BuildAttempt` явно отложена и
+не является контрактом первого MVP-среза.

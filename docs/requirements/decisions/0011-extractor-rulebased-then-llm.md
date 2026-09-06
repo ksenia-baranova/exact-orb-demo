@@ -2,6 +2,9 @@
 
 Дата: 2026-08-21. Ревизия: 2026-08-25 — structured bootstrap и preset выведены
 из-под Extractor; в MVP Extractor не извлекает данные рождения (ADR-0019).
+Ревизия: 2026-09-06 — preset привязан к единственной `base_chart` первого
+MVP, а источник данных рождения переименован в `SessionState` по ADR-0009 и
+ADR-0016.
 Статус: принято.
 
 ## Контекст
@@ -18,7 +21,7 @@
 
 ```
 Start Form  → BirthDataInput → BirthDataResolver     Extractor не вызывается
-Preset      → {topic, focus, active_view}            Extractor не вызывается
+Preset      → {topic, focus, base_chart}             Extractor не вызывается
 Free-form   → InputGuard → IntentService → …         Extractor вызывается
 ```
 
@@ -28,7 +31,7 @@ Free-form   → InputGuard → IntentService → …         Extractor вызы�
 **Extractor не извлекает данные рождения.** Его результат
 `UnderstandingResult { contract_fields, interpretation_query }` — тема, фокус
 и вопрос; `birth_slots` относятся к отложенной функции (ADR-0019). Единственным
-источником данных рождения остаётся `SessionProfile`. Отдельно работает детектор
+источником данных рождения остаётся `SessionState`. Отдельно работает детектор
 даты и топонима, дающий `InputRequired` с кодом `UNSUPPORTED`.
 
 Rule-based — первая и единственная реализация. Переход к schema-constrained

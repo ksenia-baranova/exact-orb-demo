@@ -280,7 +280,7 @@ ensure_natal в эту MVP-схему не входит.
 
 derived_chart, active_view и SetActiveView
 в MVP отсутствуют: транзиты не входят
-в первый срез, активный вид всегда base.
+в первый срез, доступна только base_chart.
 end note
 
 note over Context, Dialog

@@ -1,5 +1,8 @@
 @startuml
-title exact-orb — A-6: ensure_derived, композит из базовых артефактов
+title exact-orb — A-6 после MVP: ensure_derived, композит из базовых артефактов
+
+' Целевой поток следующего этапа. В первом MVP ensure_derived и производные
+' поля session state отсутствуют согласно ADR-0016.
 
 autonumber
 hide footbox

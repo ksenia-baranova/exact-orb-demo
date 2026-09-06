@@ -1,0 +1,112 @@
+@startuml
+title exact-orb — N3: InputRequired и техническая ошибка BirthDataResolver
+
+autonumber
+hide footbox
+
+skinparam shadowing false
+skinparam responseMessageBelowArrow true
+skinparam sequence {
+    ArrowColor #2563EB
+    LifeLineBorderColor #64748B
+    LifeLineBackgroundColor #FFFFFF
+    ParticipantBorderColor #64748B
+    ParticipantFontColor #0F172A
+    ParticipantBackgroundColor #F8FAFC
+    ActorBorderColor #64748B
+    ActorFontColor #0F172A
+    ActorBackgroundColor #DBEAFE
+    GroupBorderColor #94A3B8
+    GroupHeaderFontColor #1E293B
+    DividerBorderColor #94A3B8
+    DividerFontColor #1E293B
+    NoteBorderColor #94A3B8
+    NoteBackgroundColor #FFFBEA
+    NoteFontColor #334155
+}
+
+actor "Пользователь" as User
+
+box "CLIENT / API" #DBEAFE
+    boundary "Frontend" as FE
+    boundary "FastAPI" as API
+end box
+
+box "APPLICATION" #FFEDD5
+    control "Orchestrator" as Orch
+    control "BuildNatalHandler" as Handler
+end box
+
+box "SESSION STATE" #D1FAE5
+    control "ContextService" as Context
+    database "Session Store" as Store
+end box
+
+box "RESOLUTION" #D9F9FF
+    control "BirthDataResolver" as Resolver
+    control "Place / TZ dependency" as Dependency
+end box
+
+box "CALCULATION" #FFF7CC
+    control "ChartArtifactResolver" as Artifact
+    control "CalculationEnginePort" as Engine
+end box
+
+User -> FE : Отправляет данные рождения
+FE -> API : POST /charts/natal
+API -> Orch : BuildNatalCommand
+
+Orch -> Context : start_build(...)
+Context -> Store : save BuildAttempt(PROCESSING)
+Store --> Context : saved
+Context --> Orch : build registered
+
+Orch -> Handler : handle(command, SessionContext)
+Handler -> Resolver : resolve(BirthInput)
+Resolver -> Dependency : place / timezone lookup
+
+alt Пользовательский ввод неполон, неверен или неоднозначен
+    Dependency --> Resolver : candidates / validation facts
+    Resolver --> Handler : InputRequired {\n field = "birth.place",\n code = AMBIGUOUS,\n candidates = [...] }
+    Handler --> Orch : InputRequired
+
+    Orch -> Context : finish_input_required(run_id)
+    Context -> Store : clear current_build\n[optional: retain form draft]
+    Store --> Context : saved
+    Context --> Orch : confirmed
+
+    Orch --> API : InputRequired
+    API --> FE : 422 typed issues
+    FE --> User : Подсвечивает поле\nи показывает candidates
+
+    note over Artifact, Engine
+    Calculation Cache и Engine
+    не вызываются.
+    end note
+
+else Техническая зависимость resolver недоступна
+    Dependency -[#C62828]-> Resolver : timeout / unavailable / exception
+    Resolver --> Handler : ResolutionUnavailable\n(error_code, retryable=true)
+    Handler --> Orch : ResolutionUnavailable
+
+    Orch -> Context : mark_build_failed(run_id, error_code)
+    Context -> Store : PROCESSING → FAILED
+    Store --> Context : saved
+    Context --> Orch : confirmed
+
+    Orch --> API : 503 RESOLUTION_UNAVAILABLE
+    API --> FE : retryable system error
+    FE --> User : «Не удалось определить место\nили время. Повторите позже»
+
+    note over Artifact, Engine
+    Техническая ошибка не преобразуется
+    в InputRequired. Engine не вызывается.
+    end note
+end
+
+note over Context, Store
+В обеих ветках ранее успешный
+SessionProfile остаётся неизменным.
+end note
+
+@enduml

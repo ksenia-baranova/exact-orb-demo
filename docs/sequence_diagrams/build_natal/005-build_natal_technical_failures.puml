@@ -63,7 +63,7 @@ end box
 
 box "СЕССИЯ" #D1FAE5
     control "ContextService" as Context
-    database "SessionStore" as Store
+    database "SessionPersistence" as Store
 end box
 
 
@@ -72,9 +72,11 @@ FE -> API : POST /charts/natal
 API -> Orch : BuildNatalCommand
 
 Orch -> Context : load(session_id)
-Context --> Orch : SessionContext
+Context -> Store : touch(session_id, now)
+Store --> Context : SessionSnapshot(state = SessionState)
+Context --> Orch : SessionSnapshot
 
-Orch -> Handler : handle(command, context)
+Orch -> Handler : handle(command, snapshot.state, run)
 activate Handler
 
 
@@ -149,7 +151,7 @@ end note
 
 note over Context, Store
 В обеих ветках commit не выполняется.
-Ранее успешный SessionProfile
+Ранее успешный SessionState
 остаётся неизменным.
 end note
 

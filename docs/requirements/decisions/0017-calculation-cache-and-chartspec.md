@@ -1,6 +1,10 @@
 # ADR-0017. Calculation Cache воспроизводим; сессия хранит `ChartSpec`
 
-Дата: 2026-08-25. Статус: принято.
+Дата: 2026-08-25.
+Ревизия: 2026-09-06 — `ActiveChart.profile_version` приведён к актуальному
+контракту `ChartRef.state_version` из ADR-0014; смысл хранения `ChartSpec` не
+изменён.
+Статус: принято.
 
 ## Контекст
 
@@ -23,7 +27,7 @@ ADR-0009 и ADR-0010.
 спецификацию, ключ выводится из неё чистой функцией:
 
 ```
-ActiveChart { profile_version, spec: ChartSpec }
+ChartRef { state_version, spec: ChartSpec }
 calculation_key = KeyFactory(CalculationInput, ChartSpec, CalculationVersion)
 ```
 

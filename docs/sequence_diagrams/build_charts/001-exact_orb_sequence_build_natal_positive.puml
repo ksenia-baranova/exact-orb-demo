@@ -6,7 +6,7 @@ title exact-orb — BuildNatal: сквозной путь от запроса д
 ' Детальный прикладной путь и разбор промаха кэша — в 001.
 '
 ' Модель актуальна на дату правки: BuildAttempt отсутствует, актуальность
-' результата держит CAS по state_version (ADR-0014, README build_charts).
+' результата держит CAS по profile_version (ADR-0014, README build_charts).
 
 autonumber
 hide footbox
@@ -57,12 +57,13 @@ end box
 box "3. APPLICATION" #FFEDD5
     control "ApplicationOrchestrator" as Orch
     control "BuildNatalHandler" as Handler
+    control "ProfileService" as Profile
 end box
 
 
 box "4. SESSION STATE" #D1FAE5
     control "ContextService" as Context
-    database "SessionPersistence\n(.sessions = SessionStore)" as Store
+    database "SessionStore" as Store
 end box
 
 
@@ -119,15 +120,14 @@ end note
 == Загрузка контекста ==
 
 Orch -> Context : load(session_id)
-Context -> Store : touch(session_id, now)
-Store --> Context : SessionSnapshot(\nstate = SessionState(state_version = 0),\ndialog = ())
-Context --> Orch : SessionSnapshot
+Context -> Store : get(session_id)
+Store --> Context : None
+Context --> Orch : SessionContext(profile = None)
 
 note right of Context
-Middleware уже создал fresh SessionState.
-load выполняет агрегатный touch и возвращает
-согласованный SessionSnapshot; отсутствие
-выражается типом SessionAbsent, не None.
+Store возвращает SessionProfile | None.
+SessionContext собирает ContextService,
+чтобы None не расходился по вызывающим.
 end note
 
 Orch -> Orch : handler = handlers[BuildNatalCommand]
@@ -137,7 +137,7 @@ note right of Orch
 Словарь, не LLM (ADR-0006).
 end note
 
-Orch -> Handler : handle(command, snapshot.state, run)
+Orch -> Handler : handle(command, context, run)
 activate Handler
 
 
@@ -184,7 +184,7 @@ end note
 
 == Получение артефакта ==
 
-Handler -> Artifacts : ensure_chart(spec, resolved, run)
+Handler -> Artifacts : ensure_chart(spec, resolved)
 activate Artifacts
 
 Artifacts -> Keys : calculation_key(\ncalculation_input_from(resolved),\nspec, CALCULATION_VERSION)
@@ -199,10 +199,7 @@ ResolvedBirthData: canonical_place
 
 CALCULATION_VERSION =
   ENGINE_VERSION
-+ версия содержимого профилей
 + swisseph.version
-+ имя/версия дистрибутива биндинга
-+ sha256(native module)
 + sha256(ephe/*.se1)
 
 Чистая функция без состояния (ADR-0017).
@@ -211,7 +208,7 @@ end note
 Artifacts -> Cache : get(key)
 Cache --> Artifacts : None — промах
 
-Artifacts -> Engine : calculate(spec, resolved, run)
+Artifacts -> Engine : calculate(spec, resolved)
 activate Engine
 
 Engine -> Engine : run_in_executor(executor, ...)
@@ -229,18 +226,17 @@ end note
 Engine -> Swiss : with ephemeris_session():\ncalculate_natal(...)
 Swiss --> Engine : NatalChart\n(chart_kind = "natal", warnings)
 
-Engine --> Artifacts : CalculationResult
+Engine --> Artifacts : ChartArtifact
 deactivate Engine
 
-Artifacts -> Artifacts : ChartArtifact(key, version, result)
-Artifacts -> Cache : put(key, bytes)
+Artifacts -> Cache : put(key, artifact)
 Artifacts --> Handler : ChartArtifact
 deactivate Artifacts
 
 note over Artifacts, Cache
-Вызов ensure_chart скрывает тело:
-key → get → miss → calculate
-→ build artifact → encode → put.
+Шаг 23 — вызов ensure_chart;
+шаги 24–33 — его тело:
+key → get → miss → calculate → put.
 Handler кэша не видит и знает
 только ensure_chart.
 
@@ -252,13 +248,17 @@ end note
 
 == Формирование дельты ==
 
-Handler -> Handler : StateDelta(\nbirth_input, birth_resolved,\nbase_chart_spec = spec)
+Handler -> Profile : commit_base_chart(None, birth_input,\nbirth_resolved, spec)
+Profile --> Handler : ContextDelta(profile,\nexpected_version = 0)
 
-note right of Handler
-Handler формирует только all-set StateDelta.
-Original expected_state_version = 0
-сохранил оркестратор при load. Новую версию
-присвоит store атомарно в CAS (ADR-0014).
+note over Handler, Profile
+ProfileService выполняет чистую мутацию
+и не имеет собственного хранилища.
+
+Версию он НЕ присваивает: в дельте лежит
+expected_version — версия, при которой
+операция началась. Новую версию присвоит
+store атомарно в CAS (ADR-0014).
 end note
 
 Handler --> Orch : BuildNatalSuccess(artifact, delta)
@@ -267,7 +267,7 @@ deactivate Handler
 note right of Handler
 Handler не получает ни SessionStore,
 ни ContextService: вход — аргумент
-SessionState, выход — StateDelta.
+context, выход — ContextDelta.
 Одна запись на операцию — условие
 корректности CAS.
 end note
@@ -275,10 +275,10 @@ end note
 
 == Commit состояния ==
 
-Orch -> Context : save(session_id,\nexpected_state_version = 0, delta)
-Context -> Store : sessions.compare_and_set(\nsession_id, 0, StateDelta, now)
-Store --> Context : 1
-Context --> Orch : Committed(state_version = 1)
+Orch -> Context : save(session_id, delta)
+Context -> Store : compare_and_set(session_id, profile,\nexpected_version = 0)
+Store --> Context : profile_version = 1
+Context --> Orch : 1
 
 note over Context, Store
 Версия присваивается здесь и только здесь.
@@ -289,7 +289,7 @@ end note
 
 == Ответ клиенту ==
 
-Orch --> API : Success(chart, state_version = 1)
+Orch --> API : Success(chart,\nprofile_version = 1, active_view = base)
 API --> Frontend : 200 JSON
 
 Frontend -> Frontend : render natal SVG

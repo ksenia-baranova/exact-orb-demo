@@ -1,0 +1,74 @@
+@startuml
+title exact-orb — N2: application / Orchestrator недоступен
+
+autonumber
+hide footbox
+
+skinparam shadowing false
+skinparam responseMessageBelowArrow true
+skinparam sequence {
+    ArrowColor #2563EB
+    LifeLineBorderColor #64748B
+    LifeLineBackgroundColor #FFFFFF
+    ParticipantBorderColor #64748B
+    ParticipantFontColor #0F172A
+    ParticipantBackgroundColor #F8FAFC
+    ActorBorderColor #64748B
+    ActorFontColor #0F172A
+    ActorBackgroundColor #DBEAFE
+    GroupBorderColor #94A3B8
+    GroupHeaderFontColor #1E293B
+    DividerBorderColor #94A3B8
+    DividerFontColor #1E293B
+    NoteBorderColor #94A3B8
+    NoteBackgroundColor #FFFBEA
+    NoteFontColor #334155
+}
+
+actor "Пользователь" as User
+
+box "CLIENT" #DBEAFE
+    boundary "Frontend" as FE
+end box
+
+box "API / TRANSPORT" #EDE9FE
+    boundary "FastAPI" as API
+    control "Session Middleware" as Session
+    control "RateLimiter" as Rate
+end box
+
+box "APPLICATION" #FFEDD5
+    control "Orchestrator" as Orch
+    control "BuildNatalHandler" as Handler
+end box
+
+box "STATE / CALCULATION" #D1FAE5
+    control "ContextService" as Context
+    control "BirthDataResolver" as Resolver
+    control "CalculationEnginePort" as Engine
+end box
+
+User -> FE : Нажимает «Построить карту»
+FE -> API : POST /charts/natal
+API -> Session : resolve_or_create(cookie)
+Session --> API : session_id
+API -> Rate : check(IP, session_id, endpoint)
+Rate --> API : RequestPermit
+
+API -> Orch : BuildNatalCommand
+Orch -[#C62828]-> API : ApplicationUnavailable\n/ unexpected internal failure
+API --> FE : 503 SERVICE_UNAVAILABLE\nили 500 INTERNAL_ERROR
+FE --> User : «Не удалось выполнить запрос.\nПопробуйте ещё раз»
+
+note over Orch, Handler
+BuildNatalHandler не запускается.
+Сессионная мутация не регистрируется.
+BuildAttempt и build_revision в MVP отсутствуют.
+end note
+
+note over Context, Engine
+ContextService, BirthDataResolver и Engine
+не вызываются. SessionState не изменяется.
+end note
+
+@enduml

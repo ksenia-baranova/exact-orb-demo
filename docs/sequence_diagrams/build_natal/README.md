@@ -6,7 +6,7 @@
 
 Ключевое отличие от прежнего набора в `build_charts/`: `BuildAttempt`,
 `build_revision` и статусы попытки не используются. Актуальность результата
-обеспечивается compare-and-set по `profile_version` внутри `SessionStore`
+обеспечивается compare-and-set по `state_version` внутри `SessionStore`
 (ADR-0014), durable recovery незавершённого build отложена (ADR-0012).
 
 | № | Файл | Сценарий | Исход |
@@ -18,7 +18,7 @@
 | 004 | `004-build_natal_input_required.puml` | Неизвестный `place_id`; несуществующее или удвоенное локальное время | `InputRequired` |
 | 005 | `005-build_natal_technical_failures.puml` | Отказ зависимости резолва; отказ движка | `ResolutionUnavailable`, `CalculationFailed` |
 | 006 | `006-build_natal_superseded_cas.puml` | Два конкурентных построения в одной сессии | `Superseded` |
-| 007 | `007-build_natal_commit_failure_and_session_expired.puml` | Store недоступен при commit; истёк TTL сессии | `StateCommitFailed`, `SessionExpired` |
+| 007 | `007-build_natal_commit_failure_and_session_expired.puml` | Store недоступен при commit; истёк TTL сессии | `StateCommitFailed`, `SessionAbsent(reason = expired)` |
 
 Набор покрывает все члены `ApplicationResult`; `000` показывает сквозной
 путь, остальные диаграммы разбирают отдельные сценарии.

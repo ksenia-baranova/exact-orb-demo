@@ -2,6 +2,8 @@
 
 Дата: 2026-08-25.  
 Ревизия: 2026-08-26 — Agent Runtime явно отделён от `Application Orchestrator`; runtime вызывается interpretation handlers, но не является общим application coordinator; `Tool` определён как agent-facing adapter к общей deterministic capability.  
+Ревизия: 2026-09-06 — отменённый термин `profile_version` заменён актуальным
+`state_version` по ADR-0014; ответственность Agent Runtime не изменилась.
 Статус: принято.
 
 ## Контекст
@@ -422,7 +424,7 @@ Agent Runtime:
 - не управляет session cookie;
 - не владеет Session Store;
 - не выполняет state commit;
-- не создаёт `profile_version`;
+- не создаёт `state_version`;
 - не реализует расчётные алгоритмы;
 - не обращается напрямую к Swiss Ephemeris;
 - не использует пользовательский текст как инструкцию к ToolExecutor;
