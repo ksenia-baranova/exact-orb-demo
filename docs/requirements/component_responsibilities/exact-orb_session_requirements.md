@@ -552,9 +552,9 @@ IP-лимит и дневной потолок (ADR-0013).
 
 Формулировка для пользователя обязана быть точной:
 
-> Данные рождения и переписка удалены. Обезличенная статистика качества
-> ответов — без даты, времени и места рождения — сохраняется для улучшения
-> сервиса.
+> Данные рождения и переписка удалены. Категориальные признаки карты и
+> статистика качества — без прямого идентификатора, даты, точного времени и
+> места рождения — сохраняются бессрочно для улучшения сервиса.
 
 Диаграмма: `sequence_diagrams/session/004-session-reset-and-delete.puml`.
 
@@ -562,75 +562,89 @@ IP-лимит и дневной потолок (ADR-0013).
 
 ## 6. Исследовательские хранилища
 
+Полный нормативный контракт sibling-компонента находится в
+`exact-orb_research_corpus.md`; здесь зафиксировано только его отношение к
+session lifecycle.
+
 ### 6.1. Разделение
 
-| Хранилище | Содержит ПДн | Срок | Удаляется кнопкой |
+| Хранилище | Идентифицируемые данные | Срок | Удаляется кнопкой |
 |---|---|---|---|
 | Session Store | да | TTL | да |
 | Dialog Store | да | тот же TTL | да |
-| Research Corpus | нет | бессрочно | нечего удалять |
-| Raw Query Corpus | да | отдельный | да, по `consent_id` |
+| Research Corpus | без прямых ID; полный вектор остаётся linkable | бессрочно по принятому решению | нет |
+| Consented corpus | да | отдельный | да, по `consent_id` |
+
+`Research Corpus` — отдельный sibling-компонент, а не часть session.
+`ContextService` остаётся единственной границей управления состоянием и
+диалогом; session не импортирует Research и не отвечает за его retention.
 
 ### 6.2. `Research Corpus`
 
 ```text
 ResearchRecord {
-    research_id      случайный, не производный ни от чего
-    created_at       округлён до часа
-    chart_features   категориальные признаки
-    selection        topic, focus
+    research_id: UUID4        передан caller
+    created_at: UTC hour
+    chart_features: ChartFeatures(feature_schema_version=1)
+    selection: {topic=natal, focus}
+    calculation_version
     recipe_version, model
-    response_text
-    quality          rating | regenerate | copy | время чтения
     tokens, cost, latency
 }
+
+ResearchQualityEvent =
+    RatingEvent | RegenerateEvent | CopyEvent | ReadingTimeEvent
 ```
 
-**`chart_features` — только категориальные признаки:** знак и дом каждого
-тела, тип аспекта и его категория (`exact` / `working` / `background`),
-конфигурации, достоинства, баланс стихий и крестов, `chart_kind`.
+Базовая запись создаётся в момент готовности ответа. Rating, regenerate, copy
+и время чтения приходят позже и сохраняются отдельными append-only событиями
+с caller-owned `event_id` и `observed_at`, округлённым до UTC hour. Событие не
+создаёт parent автоматически.
+
+**`chart_features` — только закрытые категориальные признаки:** знак, дом и
+ретроградность тела; знак угла; тип и категория аспекта; тип, категория и
+роли конфигурации; достоинство; категория силы и тип дома; состояния баланса
+стихий и крестов; фаза Луны; `chart_kind`. `None` означает «семейство не
+вычислялось», пустой tuple — «вычислялось, результатов нет».
+
+Research v1 принимает только `topic=natal`,
+`focus ∈ {general, career, money, love}` и `chart_kind ∈ {natal, cosmogram}`.
+Продуктовый `topic=transit` из ADR-0015 сохраняется, но его Research-запись
+отложена до multi-chart/transit feature schema.
 
 **Запрещено хранить:** `birth_input`, `place_id`, координаты, точное время,
-`julian_day_ut`, градусы и минуты, `calculation_key`, `session_id`, cookie, IP.
+`julian_day_ut`, градусы и минуты, орбисы, скорости, `calculation_key`,
+`session_id`, cookie, IP, `run_id`, `ChartSpec`, полный `ChartArtifact`,
+warnings, generic metadata, query text и response text.
 
 Про `calculation_key` отдельно: он строится из точного UTC-времени и
 координат. Хэш не спасает — при известном каталоге мест перебор по минутам
 восстанавливает вход за секунды.
 
-Полностью обезличить натальную карту нельзя: она по построению есть функция
-от времени и места. Необратимость даёт именно огрубление до знака и дома —
-сочетание «Солнце в Деве, 4 дом» описывает миллионы людей. Для улучшения
-рецептов интерпретации градусы не нужны, а группировать по категориям
-удобнее.
+Схема доказывает отсутствие прямых и восстановимых идентификаторов, но не
+unlinkability. Полный вектор карты вместе с UTC hour, selection, model и
+recipe version остаётся квазиидентификатором. Возможность сопоставить запись
+с известными birth data — принятый остаточный риск закрытого стенда, а не
+свойство, устранённое огрублением. Каждый новый признак оценивается отдельно.
 
-### 6.3. `Raw Query Corpus` — контракт без реализации
+Бессрочный retention и отсутствие удаления по кнопке сессии — продуктовое
+решение ADR-0023. Оно не выводится из отсутствия `session_id` и требует
+отдельной проверки перед публичным развёртыванием.
+
+`RESEARCH_DIGEST_FORMAT_VERSION = 1`; content digest — lowercase SHA-256 от
+канонического UTF-8 JSON.
+Record digest исключает только `research_id`; event digest исключает только
+`event_id` и сохраняет `research_id`, вид и время события. Формат UUID,
+datetime, Enum, порядок ключей и feature tuples нормативны и закрепляются
+golden fixture.
+
+### 6.3. Consented corpus — решение до реализации
 
 В первом срезе свободного чата нет: `selection` — пара enum-значений, сырого
-пользовательского текста не существует. Собирать нечего, поэтому реализация
-откладывается вместе с freeform-режимом (ADR-0013, класс
-`freeform_interpretation`).
-
-Контракт фиксируется сейчас, чтобы согласие не пришлось изобретать задним
-числом:
-
-```text
-RawQueryRecord {
-    record_id
-    consent_id           по нему выполняется удаление
-    created_at
-    query_text           сырой текст пользователя
-    selection_resolved   что извлёк intent-слой
-    recipe_version, model
-}
-
-Consent {
-    consent_id
-    granted_at
-    consent_text_version   на что именно человек согласился
-    scope
-    revoked_at | None
-}
-```
+пользовательского текста не существует. Query text, response text и полный
+artifact не добавляются nullable-полями в always-on `ResearchRecord`.
+Конкретная схема consented-корпуса и решение, какие из этих payload'ов там
+хранить, откладываются вместе с freeform-режимом.
 
 Требования к контуру согласия:
 
@@ -638,10 +652,12 @@ Consent {
 2. `consent_text_version` обязателен: без него через полгода нельзя
    установить, на что человек соглашался;
 3. отзыв согласия — отдельное действие, не равное удалению сессии;
-4. `DeleteMyDataCommand` доходит до `Raw Query Corpus` по `consent_id`;
-5. **между `Research Corpus` и `Raw Query Corpus` нет общего
-   идентификатора.** Иначе удаление сырого текста оставит связанную с ним
-   карту, и обезличенность первого превратится в фикцию.
+4. `DeleteMyDataCommand` доходит до будущего consented-корпуса по
+   `consent_id`;
+5. между `Research Corpus` и consented-корпусом нет общего стабильного ID;
+6. отсутствие общего ID не объявляется невозможностью корреляции по времени
+   и категориальным признакам;
+7. точный payload-контракт принимается до начала записи, а не задним числом.
 
 **Сырой текст остаётся недоверенными данными (ADR-0018).** Когда из корпуса
 собирается eval-набор, текст не должен попадать в позицию инструкции.
@@ -651,9 +667,10 @@ Consent {
 ### 6.4. Отношение к ADR-0010
 
 ADR-0010 утверждает, что после истечения сессии персональных данных не
-остаётся нигде. `Research Corpus` этому не противоречит — персональных
-данных там нет по построению. `Raw Query Corpus` противоречит и допускается
-только под явным согласием.
+остаётся нигде. ADR-0023 уточняет границу: TTL-данные сессии удаляются,
+Research Corpus сохраняет бессрочный de-identified, но потенциально linkable
+вектор по отдельному принятому решению, а идентифицируемый сырой контент может
+появиться только под явным согласием.
 
 Оформлено **ADR-0023, заменяющим ADR-0010**, а не правкой на месте: изменилось
 само решение, а не его границы.
@@ -1263,7 +1280,10 @@ VersionConflict, aggregate touch/reset/delete и конкурирующих пи
 **Приватность**
 
 - в `ResearchRecord` отсутствуют `birth_input`, координаты, точное время,
-  градусы и `calculation_key`.
+  градусы, `calculation_key`, прямые идентификаторы, query/response text и
+  полный artifact;
+- полный категориальный вектор не объявляется unlinkable; остаточный риск и
+  бессрочный retention зафиксированы ADR-0023 отдельно.
 
 ---
 
@@ -1271,14 +1291,14 @@ VersionConflict, aggregate touch/reset/delete и конкурирующих пи
 
 | Документ | Что меняется | Статус |
 |---|---|---|
-| **ADR-0023** | заменяет ADR-0010: два исследовательских корпуса и контур согласия | сделано |
+| **ADR-0023** | заменяет ADR-0010; фиксирует de-identified Research v1, linkage-риск, append-only events и будущий consented-контур | сделано, ревизия 2026-09-06 |
 | **ADR-0024** | SQLite как реализация хранилищ, `BEGIN IMMEDIATE`, guarded CAS, aggregate lifecycle и граница benchmark | сделано |
 | ADR-0009 | ревизия: отдельная запись диалога, `SessionPersistence`, read-only фасеты, server-generated ID и cookie lookup | сделано |
 | ADR-0013 | ревизия: IP-лимит с привязкой к классу `calculation`, сессионные лимиты, ключ кэша интерпретаций | сделано |
 | ADR-0014 | ревизия: store применяет delta, `RESET_DELTA`, `AlreadyApplied`, original-expected retry без rebase | сделано |
 | ADR-0016 | ревизия: сужение MVP до одной базовой карты, условие снятия | сделано |
 | ADR-0010 | помечен «Заменено ADR-0023» | сделано |
-| `decisions/README.md` | строки 0023 и 0024, раздел «Ревизии 2026-09-04» | сделано |
+| `decisions/README.md` | строки 0023/0024 и разделы ревизий 2026-09-04—2026-09-06 | сделано |
 | `negative_corner_scenarios.md` | N7/N8: delta отдельно от expected, exact retry с original expected, `error_code`, без rebase | сделано |
 | `build_natal_components.md` §2 | пакетная структура контрактов, адаптеров и `session/persistence.py` | сделано |
 | `build_natal_components.md` §3.5, §6 | `SessionState`, `StateDelta`, `SessionSnapshot`, три runtime-checkable порта | сделано |
