@@ -1,0 +1,204 @@
+@startuml
+title exact-orb — компонент Research Corpus (изолированно)
+
+skinparam componentStyle rectangle
+skinparam packageStyle rectangle
+skinparam shadowing false
+skinparam linetype ortho
+skinparam DefaultFontSize 13
+skinparam ArrowFontSize 11
+skinparam nodesep 34
+skinparam ranksep 46
+
+skinparam component {
+  BorderColor #64748B
+  FontColor #0F172A
+}
+
+skinparam database {
+  BorderColor #15803D
+  FontColor #0F172A
+}
+
+skinparam package {
+  BorderColor #94A3B8
+  FontColor #334155
+}
+
+
+' ─────────────────────────────  ВХОД  ─────────────────────────────
+
+component "<b>ChartArtifact</b>\ncalculation.types\n\ncalculation_key, ChartSpec\ndatetime_utc, JD, широта, долгота\nградусы, орбисы, скорости\nбаллы, куспиды, предупреждения" as Artifact #FFF7CC
+
+component "<b>Прикладной слой</b>\nотложен: отдельная задача после P5b\n\nвладеет UUID и часами\nрешает write-always / fail-open" as App #F1F5F9
+
+
+' ────────────────────────────  КОМПОНЕНТ  ─────────────────────────
+
+package "exact_orb.research" as Research #F8FAFC {
+
+  component "<b>projection</b>\nproject_chart_features()\n\nчистая, детерминированная\nтолько whitelist\nfail-closed на неизвестной категории" as Projection #FDE68A
+
+  component "<b>models</b>\nChartFeatures, ResearchRecord\nQualityEvent (4 вида)\nзакрытые словари\nfloor_to_utc_hour()\ncontent digest" as Models #DBEAFE
+
+  component "<b>corpus</b>\nПорт ResearchCorpus\n\nput_record()\nput_quality_event()\n\nтолько запись" as Port #EDE9FE
+
+  package "adapters" as Adapters #FFFFFF {
+    component "<b>in_memory</b>\nP5a" as InMemory #D1FAE5
+    component "<b>sqlite</b>\nP5b" as Sqlite #D1FAE5
+  }
+}
+
+
+' ─────────────────────────────  ВЫХОД  ─────────────────────────────
+
+database "<b>research storage</b>\nодна строка на ответ\n+ append-only события качества\n\nбессрочно" as Store #D1FAE5
+
+actor "Аналитик" as Analyst
+
+
+' ────────────────────────────  СВЯЗИ  ─────────────────────────────
+
+Artifact -[#B45309]-> Projection : **единственная точка входа**\nартефакта в компонент
+
+Projection -[#2563EB]-> Models : ChartFeatures\n(только категории)
+
+App -[#2563EB,dashed]-> Models : research_id, event_id\nnow, версии, метрики
+
+Models -[#2563EB]-> Port : ResearchRecord\nResearchQualityEvent
+
+Port -[#2E7D32]-> InMemory
+Port -[#2E7D32]-> Sqlite
+
+Sqlite -[#2E7D32]-> Store
+
+Analyst .[#7E57C2].> Store : ручной SQL\nвне runtime
+
+
+' ─────────────────────────────  ЗАМЕТКИ  ──────────────────────────
+
+note right of Projection
+<b>Не переносится ничего из этого:</b>
+
+calculation_key, ChartSpec
+datetime_utc, julian_day_ut
+широта, долгота
+longitude, degree, minute, second
+orb, exact_angle, max_orb
+скорости, расстояния, баллы, проценты
+куспиды, координаты углов
+знаки вспомогательных углов
+интерцепции, флаги градусов
+имя фазы Луны
+предупреждения, ephemeris provenance
+данные рождения
+session_id, cookie, IP, run_id
+
+<b>Переносится:</b> знак и дом 1..12 тела,
+ретроградность, знак Asc и MC,
+тип и категория аспекта, конфигурации,
+достоинства, категория силы, баланс,
+номер фазы Луны, chart_kind
+
+Имя точки канонизируется к raw-форме:
+north_node → true_node, lilith → mean_apog,
+pars → pars_fortune.
+end note
+
+
+note bottom of Models
+<b>Компонент не создаёт</b>
+UUID, время и случайность.
+
+research_id, event_id и now
+приходят снаружи, один раз
+на logical write.
+
+created_at и observed_at
+округлены до часа.
+
+Research v1: topic=natal,
+chart_kind=natal|cosmogram.
+Transit ждёт multi-chart schema.
+
+feature_schema_version делает
+будущее добавление признаков
+анализируемым: запись v1 физически
+не содержит семейств v2.
+end note
+
+
+note bottom of Port
+Порт **только пишет**.
+
+Нет get, list, delete,
+delete_by_session, touch,
+TTL, reaper и consent.
+
+Повтор с тем же id и тем же
+content digest — AlreadyStored.
+С другим — IdConflict без перезаписи.
+
+Digest v1: canonical UTF-8 JSON,
+lowercase SHA-256. Event digest
+включает research_id и kind.
+end note
+
+
+note right of Store
+<b>Query/response text здесь нет.</b>
+
+Решение о полном артефакте и тексте
+принадлежит будущему consented-контуру
+и не предрешено nullable-полями v1.
+
+Общего стабильного ID не будет,
+но корреляция по времени и полному
+вектору всё равно возможна.
+end note
+
+
+note bottom of Analyst
+Аналитическое чтение выполняется
+вне рантайма и вне порта.
+
+Кнопка «удалить мои данные»
+сюда не доходит по отдельному
+retention-решению ADR-0023,
+а не как следствие отсутствия ID.
+end note
+
+
+note top of Research
+<b>Изоляция.</b>
+
+Research contracts и adapters не
+импортируют session, application,
+LLM, calculation и engine.
+
+Порт и модели не знают о ChartArtifact:
+его видит только projection.
+
+Projection явно импортирует
+calculation.types и в текущем графе
+транзитивно загружает engine/swisseph.
+
+Обычный импорт exact_orb.research
+не тянет projection, adapters,
+sqlite3 и нативный стек.
+end note
+
+
+legend bottom
+<b>Research Corpus v1 — natal/cosmogram-признаки без прямых ID; linkage-риск принят отдельно</b>
+
+<color:#B45309><b>━━━━▶</b></color> артефакт расчёта: входит только в projection
+
+<color:#2563EB><b>━━━━▶</b></color> de-identified категориальные модели
+
+<color:#2E7D32><b>━━━━▶</b></color> запись в хранилище
+
+<color:#7E57C2><b>┄┄┄┄▶</b></color> ручное аналитическое чтение вне рантайма
+endlegend
+
+@enduml

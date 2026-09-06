@@ -44,9 +44,9 @@
 
 | Категория | Что это | Что происходит при разрезе |
 |-----------|---------|----------------------------|
-| **Shared contracts** | Типы и чистые функции, разделяемые обеими сторонами шва: `domain`, `errors`, `outcomes`, `calculation.spec`, `calculation.keys`, `calculation.cache`, `calculation.errors`, `birth.types` | Копируются или публикуются на обе стороны. Не вызываются по сети |
+| **Shared contracts** | Типы и чистые функции, разделяемые обеими сторонами шва: `domain`, `errors`, `outcomes`, `calculation.spec`, `calculation.keys`, `calculation.cache`, `calculation.errors`, `birth.types`, session contracts, Research models/outcomes/errors/corpus | Копируются или публикуются на обе стороны. Не вызываются по сети |
 | **Logical services** | Единицы с осмысленным data-in/data-out: движок, артефакты карт, состояние, интерпретация | Становятся вызовом по сети |
-| **Ports / adapters** | Фасады и подключения: `tools` (ADR-0002), `llm.gateway`, кэш, каталог мест | Меняется реализация адаптера, контракт порта — нет |
+| **Ports / adapters** | Фасады и подключения: `tools` (ADR-0002), `llm.gateway`, кэш, каталог мест, фасеты `SessionStore`/`DialogStore`, агрегат `SessionPersistence`, write-only `ResearchCorpus` | Меняется реализация адаптера, контракт порта — нет |
 
 `Calculation Key / Spec` — **не сервис**, а shared kernel. `Tool / Agent-facing` —
 **не сервис**, а порт (ADR-0002). Ни то, ни другое не получает сетевую границу.
@@ -65,8 +65,9 @@ contract: сегодня они зависят от моделей резуль�
 |-----|----------------------|---------------------|-----------|
 | **Engine** | `ephemeris_runtime` сериализует все вызовы Swiss Ephemeris процессным локом; native-биндинг; профиль нагрузки — CPU | Высокая | Шов есть: `swiss_backend` — единственная точка импорта. Движок при этом читает `config` (см. долг) |
 | **Interpretation / LLM** | Внешняя latency и стоимость, стриминг, собственные лимиты | Высокая | `llm.gateway` выделен; ADR-0012, ADR-0018 |
-| **Calculation Cache** | Redis — уже другой процесс | Уже разрезан | Значение — `bytes`, не объект (ADR-0017) |
-| **State / Session** | CAS, версии, TTL | Средняя | ADR-0009, ADR-0014 |
+| **Calculation Cache** | Отдельный порт и opaque payload | Средняя | Сейчас in-memory; SQLite — ADR-0024. Значение — `bytes`, не объект (ADR-0017) |
+| **State / Session** | CAS, версии, TTL и атомарный lifecycle двух записей | Средняя | Фасетные порты плюс `SessionPersistence`; ADR-0009, ADR-0014, ADR-0024 |
+| **Research Corpus** | Бессрочный append-only write path и аналитический профиль хранения отличаются от session/cache | Средняя | Отдельный write-only порт; модели без прямых ID и whitelist-проекция из artifact; ADR-0023 |
 | **Birth Resolution** | Чистая функция плюс локальный справочник | Низкая | Выносить дороже, чем держать внутри |
 | **Tool / Agent-facing** | — | Не сервис | Порт с адаптерами `Local` / `Remote` (ADR-0002) |
 
@@ -77,9 +78,23 @@ contract: сегодня они зависят от моделей резуль�
 ### I1. Контрактный слой не импортирует native, runtime и edge
 
 `domain`, `errors`, `outcomes`, `calculation.spec`, `calculation.keys`,
-`calculation.cache`, `calculation.errors`, `birth.types` не импортируют
-`swisseph`, клиентов хранилищ и сети, `config`, `engine`, `llm`,
-`logging_setup`, `orchestration`, `tools`, `cli`.
+`calculation.cache`, `calculation.errors`, `birth.types`, session-контракты и
+Research contract-модули не импортируют
+`swisseph`, `sqlite3`, клиентов хранилищ и сети, `config`, `engine`, `llm`,
+`logging_setup`, `application`, `agent`, `orchestration`, `tools`, `cli`.
+
+Для всего пакета `session/` действует более сильная project-import allowlist:
+`exact_orb.session.*`, `exact_orb.birth.types` и
+`exact_orb.calculation.spec`. Отдельная runtime-проверка импорта
+`exact_orb.session` запрещает транзитивно поднимать native/runtime/edge и
+`sqlite3`; package root экспортирует только контракты, но не адаптеры.
+
+Для Research действует такой же разделённый граф: package root и contract API
+не загружают projection, adapters, `calculation.types`, engine, `sqlite3` и
+native stack. `research.projection` не входит в contract layer: он явно
+принимает `ChartArtifact` и поэтому в текущем графе транзитивно загружает
+`calculation.types`, engine и `swisseph`. Это изолированное и проверяемое
+исключение, а не разрешение contract/adapters импортировать engine.
 
 **Зачем сегодня.** Слой, который решает «идти ли в движок», не обязан поднимать
 движок: ключ кэша строится и проверяется без биндинга, тесты ключей идут
@@ -132,7 +147,14 @@ Calculation Cache остаётся opaque binary KV; decode и валидаци�
 прочитанное из окружения, в ключ не попадает.
 
 **Проверка.** AST-скан на запрещённые вызовы в контрактном и детерминированном
-слоях — расширение `tests/test_module_boundaries.py`.
+слоях — расширение `tests/test_module_boundaries.py`. Поэтому session-функции
+получают `now` аргументом, а новый `session_id` создаёт transport и передаёт
+его `SessionStore.create`; persistence не вызывает `datetime.now()` или
+`uuid4()` скрыто.
+
+Research принимает caller-owned `research_id`, `event_id` и timestamps.
+Импорт immutable-типа `UUID` разрешён; запрещены именно генерация `uuid4()`,
+чтение часов, randomness и environment access.
 
 **Исключение.** `RunContext` — телеметрия, а не доменные данные; фабрика
 `RunContext.new()` берёт время и `uuid` явно и остаётся единственным местом,
@@ -140,7 +162,11 @@ Calculation Cache остаётся opaque binary KV; decode и валидаци�
 
 ### I6. Модели, пересекающие шов, неизменяемы
 
-`model_config = ConfigDict(frozen=True)` на всех моделях контрактного слоя.
+`model_config = ConfigDict(frozen=True)` на всех моделях контрактного слоя,
+включая `SessionState`, `StateDelta`, session outcomes, persistence-снимок
+`SessionSnapshot { state, dialog }`, Research features, records, events и
+outcomes. Вложенные Research-коллекции также immutable и канонически
+упорядочены.
 
 **Зачем сегодня.** Получатель не может незаметно испортить вход отправителя.
 Мутация переданной модели — поведение, которое по сети не воспроизводится,
@@ -156,11 +182,15 @@ Calculation Cache остаётся opaque binary KV; decode и валидаци�
 * **Поток данных однонаправлен.** Никаких обратных вызовов из движка
   в оркестратор или состояние.
 * **Ни одна операция не требует атомарности между двумя logical services.**
-  Сегодня «положить в кэш и обновить состояние» кажется одним действием
-  просто потому, что это один процесс.
+  `SessionStore` и `DialogStore` — фасеты одного logical service, поэтому их
+  совместные touch/reset/delete принадлежат одному агрегату
+  `SessionPersistence`. Между кэшем расчёта и состоянием общей транзакции
+  нет.
 * **Ошибки между logical services типизированы.** Контракт уже есть:
-  `InputRequired`, `Issue`, `ResolutionUnavailable`. Исключения runtime-слоя
-  наружу шва не проходят.
+  `InputRequired`, `Issue`, `ResolutionUnavailable` и
+  `SessionPersistenceError(error_code)` с наследниками read/write, а также
+  `ResearchProjectionError` и `ResearchPersistenceError(error_code)`.
+  Исключения runtime-слоя наружу шва не проходят.
 * **Версионируется то, что пересекает границу процесса или хранения**, —
   кэш, сессия, контракт LLM. Внутрипроцессные вызовы payload'ов не имеют;
   версионировать каждую функцию — ровно тот оверхед, от которого эта рамка
@@ -188,6 +218,8 @@ Calculation Cache остаётся opaque binary KV; decode и валидаци�
 * **Interpretation / LLM.** Стриминг и лимиты требуют собственной политики
   масштабирования и деплоя, не совпадающей с расчётным путём.
 * **State / Session.** Сессия должна пережить отдельный инстанс приложения.
+* **Research Corpus.** Аналитические чтения начинают конкурировать с runtime
+  write path либо объём/retention требуют независимого масштабирования.
 
 До срабатывания триггера компонент не выносится, даже если «уже готов».
 
@@ -237,7 +269,10 @@ Calculation Cache остаётся opaque binary KV; decode и валидаци�
 
 ## Связанные записи
 
-ADR-0021 (решение), ADR-0002 (порт `Tool`), ADR-0009 и ADR-0010 (границы
-персональных данных), ADR-0014 (явные мутации состояния), ADR-0017
-(воспроизводимость кэша и `ChartSpec`), ADR-0018 (недоверенный ввод).
-Диаграммы компонентов — `docs/architecture/exact_orb_overview_components.puml`.
+ADR-0021 (решение), ADR-0002 (порт `Tool`), ADR-0009 и заменивший ADR-0010
+ADR-0023 (session/Research privacy-границы), ADR-0014 (явные мутации
+состояния), ADR-0017 (воспроизводимость кэша и `ChartSpec`), ADR-0018
+(недоверенный ввод). Research contract —
+`docs/requirements/component_responsibilities/exact-orb_research_corpus.md`.
+Диаграммы компонентов — `docs/architecture/exact_orb_overview_components.puml`
+и `docs/architecture/exact_orb_research_component.puml`.

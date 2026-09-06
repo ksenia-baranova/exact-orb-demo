@@ -1,0 +1,56 @@
+@startuml
+title Research v1 — base record и позднее quality event
+
+skinparam shadowing false
+skinparam sequenceMessageAlign center
+
+actor Caller
+participant "research.projection" as Projection
+participant "ResearchCorpus" as Corpus
+database "Research storage" as Store
+
+note over Caller,Store
+Нормативный поток; application producer и durable adapter пока не реализованы.
+Research v1 принимает topic=natal и chart_kind=natal|cosmogram.
+end note
+
+Caller -> Caller: создать research_id один раз
+Caller -> Caller: floor_to_utc_hour(now)
+Caller -> Projection: project_chart_features(ChartArtifact)
+Projection --> Caller: ChartFeatures v1
+note right of Projection
+Только whitelist категорий.
+Нет birth data, calculation_key,
+точных координат/времени,
+градусов, текста и provenance.
+end note
+
+Caller -> Caller: собрать ResearchRecord
+Caller -> Corpus: put_record(record)
+Corpus -> Store: atomic insert-or-classify by ID + digest
+Store --> Corpus: stored | same digest | different digest
+Corpus --> Caller: ResearchStored\nили ResearchAlreadyStored\nили ResearchIdConflict
+
+... позже, независимо от base write ...
+
+Caller -> Caller: создать event_id один раз
+Caller -> Caller: floor_to_utc_hour(observed_at)
+Caller -> Corpus: put_quality_event(event)
+Corpus -> Store: проверить event_id; для нового ID проверить parent
+Store --> Corpus: stored | same digest | different digest | parent absent
+Corpus --> Caller: QualityStored\nили QualityAlreadyStored\nили QualityEventIdConflict\nили ResearchRecordAbsent
+
+note over Corpus,Store
+Record digest исключает только research_id.
+Event digest исключает только event_id;
+research_id, kind и observed_at входят в digest.
+Событие не создаёт parent и не обновляет base record.
+end note
+
+note over Caller,Store
+Research Corpus не содержит прямого идентификатора субъекта,
+но полный вектор и UTC hour остаются потенциально linkable.
+Бессрочный retention — отдельное решение ADR-0023.
+end note
+
+@enduml
