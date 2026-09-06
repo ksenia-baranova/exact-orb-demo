@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 import asyncio
+import logging
 import sqlite3
-import sys
 from collections.abc import Callable
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
@@ -57,6 +57,7 @@ _SESSION_COMPONENT: Final = "session"
 _STATE_PAYLOAD_VERSION: Final = 1
 _DIALOG_PAYLOAD_VERSION: Final = 1
 _EPOCH: Final = datetime(1970, 1, 1, tzinfo=UTC)
+_LOGGER = logging.getLogger(__name__)
 
 _STATE_COLUMNS: Final = """
     session_id,
@@ -141,6 +142,10 @@ class _CommitFailure(Exception):
     """A commit was invoked but did not return confirmation."""
 
 
+class _WalNotConfirmed(Exception):
+    """Initialization could not confirm the persistent WAL journal mode."""
+
+
 @dataclass(frozen=True, slots=True)
 class _SqliteBackend:
     db_path: Path
@@ -201,20 +206,24 @@ def _typed_code(exc: sqlite3.Error | OSError, *, default: str) -> str:
     return default
 
 
-def _close_preserving_active_error(
+def _close_connection(
     connection: sqlite3.Connection,
-    *,
-    error_type: type[StateReadError] | type[StateWriteError],
-    default_code: str,
-) -> None:
-    active_error = sys.exc_info()[0] is not None
+) -> sqlite3.Error | OSError | None:
     try:
         connection.close()
     except sqlite3.ProgrammingError:
         raise
     except (sqlite3.Error, OSError) as exc:
-        if not active_error:
-            raise error_type(_typed_code(exc, default=default_code)) from None
+        return exc
+    return None
+
+
+def _warn_cleanup_failure(action: str) -> None:
+    _LOGGER.warning(
+        "session SQLite connection cleanup failed during %s; "
+        "the exception detail is suppressed",
+        action,
+    )
 
 
 def _execute_no_result(
@@ -306,7 +315,7 @@ def _configure_connection(
                 mismatch_code=mismatch_code,
             )
             if not isinstance(journal_mode, str) or journal_mode.casefold() != "wal":
-                raise _AdapterFailure(mismatch_code)
+                raise _WalNotConfirmed()
 
     _execute_no_result(connection, "PRAGMA synchronous = NORMAL")
     if (
@@ -325,8 +334,6 @@ def _open_configured_connection(
     *,
     initialization: bool,
     mismatch_code: str,
-    error_type: type[StateReadError] | type[StateWriteError],
-    default_code: str,
 ) -> sqlite3.Connection:
     connection = _CONNECTION_FACTORY(
         str(backend.db_path),
@@ -346,18 +353,21 @@ def _open_configured_connection(
         return connection
     finally:
         if not configured:
-            _close_preserving_active_error(
-                connection,
-                error_type=error_type,
-                default_code=default_code,
-            )
+            close_error = _close_connection(connection)
+            if close_error is not None:
+                _warn_cleanup_failure("failed connection configuration")
 
 
-def _rollback_best_effort(connection: sqlite3.Connection) -> None:
+def _rollback_best_effort(
+    connection: sqlite3.Connection,
+) -> sqlite3.Error | OSError | None:
     try:
         connection.rollback()
-    except (sqlite3.Error, OSError):
-        pass
+    except sqlite3.ProgrammingError:
+        raise
+    except (sqlite3.Error, OSError) as exc:
+        return exc
+    return None
 
 
 def _commit(connection: sqlite3.Connection) -> None:
@@ -382,8 +392,6 @@ def _run_connection(
             backend,
             initialization=False,
             mismatch_code=default_code,
-            error_type=error_type,
-            default_code=default_code,
         )
         return operation(connection)
     except _AdapterFailure as exc:
@@ -392,11 +400,9 @@ def _run_connection(
         raise error_type(_typed_code(exc, default=default_code)) from None
     finally:
         if connection is not None:
-            _close_preserving_active_error(
-                connection,
-                error_type=error_type,
-                default_code=default_code,
-            )
+            close_error = _close_connection(connection)
+            if close_error is not None:
+                _warn_cleanup_failure("operation close")
 
 
 def _run_immediate(
@@ -406,23 +412,40 @@ def _run_immediate(
     error_type: type[StateReadError] | type[StateWriteError],
     default_code: str,
 ) -> _T:
+    return _run_transaction(
+        backend,
+        operation,
+        begin_statement="BEGIN IMMEDIATE",
+        error_type=error_type,
+        default_code=default_code,
+    )
+
+
+def _run_transaction(
+    backend: _SqliteBackend,
+    operation: Callable[[sqlite3.Connection], _TransactionResult[_T]],
+    *,
+    begin_statement: str,
+    error_type: type[StateReadError] | type[StateWriteError],
+    default_code: str,
+) -> _T:
     connection: sqlite3.Connection | None = None
     transaction_open = False
     commit_invoked = False
+    rollback_error: sqlite3.Error | OSError | None = None
     try:
         connection = _open_configured_connection(
             backend,
             initialization=False,
             mismatch_code=default_code,
-            error_type=error_type,
-            default_code=default_code,
         )
-        _execute_no_result(connection, "BEGIN IMMEDIATE")
+        _execute_no_result(connection, begin_statement)
         transaction_open = True
         result = operation(connection)
         if not result.commit:
-            connection.rollback()
-            transaction_open = False
+            rollback_error = _rollback_best_effort(connection)
+            if rollback_error is None:
+                transaction_open = False
             return result.value
 
         commit_invoked = True
@@ -433,19 +456,29 @@ def _run_immediate(
         raise error_type(_COMMIT_UNKNOWN) from None
     except _AdapterFailure as exc:
         if connection is not None and transaction_open and not commit_invoked:
-            _rollback_best_effort(connection)
+            cleanup_error = _rollback_best_effort(connection)
+            if cleanup_error is not None:
+                _warn_cleanup_failure("rollback after operation failure")
         raise error_type(exc.code) from None
+    except sqlite3.ProgrammingError:
+        raise
     except (sqlite3.Error, OSError) as exc:
         if connection is not None and transaction_open and not commit_invoked:
-            _rollback_best_effort(connection)
+            cleanup_error = _rollback_best_effort(connection)
+            if cleanup_error is not None:
+                _warn_cleanup_failure("rollback after operation failure")
         raise error_type(_typed_code(exc, default=default_code)) from None
     finally:
         if connection is not None:
-            _close_preserving_active_error(
-                connection,
-                error_type=error_type,
-                default_code=default_code,
-            )
+            close_error = _close_connection(connection)
+            if close_error is not None:
+                _warn_cleanup_failure("transaction close")
+                if rollback_error is not None:
+                    raise error_type(
+                        _typed_code(rollback_error, default=default_code)
+                    ) from None
+            elif rollback_error is not None:
+                _warn_cleanup_failure("normal-outcome rollback")
 
 
 def _datetime_to_micros(value: datetime) -> int:
@@ -787,34 +820,23 @@ def _sync_dialog_read(
 ) -> tuple[DialogTurn, ...] | SessionAbsent:
     def operation(
         connection: sqlite3.Connection,
-    ) -> tuple[DialogTurn, ...] | SessionAbsent:
-        transaction_open = False
-        try:
-            _execute_no_result(connection, "BEGIN DEFERRED")
-            transaction_open = True
-            state = _select_live_state(connection, session_id, now=now)
-            if isinstance(state, SessionAbsent):
-                connection.rollback()
-                transaction_open = False
-                return state
+    ) -> _TransactionResult[tuple[DialogTurn, ...] | SessionAbsent]:
+        state = _select_live_state(connection, session_id, now=now)
+        if isinstance(state, SessionAbsent):
+            return _TransactionResult(state, commit=False)
 
-            hook = _DIALOG_READ_AFTER_PARENT_HOOK
-            if hook is not None:
-                hook()
+        hook = _DIALOG_READ_AFTER_PARENT_HOOK
+        if hook is not None:
+            hook()
 
-            row = _select_dialog_row(connection, session_id)
-            turns = () if row is None else _decode_dialog_row(row)
-            connection.rollback()
-            transaction_open = False
-            return turns
-        except (_AdapterFailure, sqlite3.Error, OSError):
-            if transaction_open:
-                _rollback_best_effort(connection)
-            raise
+        row = _select_dialog_row(connection, session_id)
+        turns = () if row is None else _decode_dialog_row(row)
+        return _TransactionResult(turns, commit=False)
 
-    return _run_connection(
+    return _run_transaction(
         backend,
         operation,
+        begin_statement="BEGIN DEFERRED",
         error_type=StateReadError,
         default_code=_READ_FAILED,
     )
@@ -1220,11 +1242,9 @@ def _sync_initialize(backend: _SqliteBackend) -> None:
                 backend,
                 initialization=True,
                 mismatch_code=_OPEN_FAILED,
-                error_type=StateWriteError,
-                default_code=_OPEN_FAILED,
             )
-        except sqlite3.Error as exc:
-            if _sqlite_primary_code(exc) not in (
+        except (_WalNotConfirmed, sqlite3.Error) as exc:
+            if isinstance(exc, sqlite3.Error) and _sqlite_primary_code(exc) not in (
                 sqlite3.SQLITE_BUSY,
                 sqlite3.SQLITE_LOCKED,
             ):
@@ -1238,8 +1258,6 @@ def _sync_initialize(backend: _SqliteBackend) -> None:
                 backend,
                 initialization=True,
                 mismatch_code=_OPEN_FAILED,
-                error_type=StateWriteError,
-                default_code=_OPEN_FAILED,
             )
         phase_code = _MIGRATION_FAILED
         _execute_no_result(connection, "BEGIN IMMEDIATE")
@@ -1250,21 +1268,25 @@ def _sync_initialize(backend: _SqliteBackend) -> None:
         transaction_open = False
     except _CommitFailure:
         raise StateWriteError(_COMMIT_UNKNOWN) from None
+    except _WalNotConfirmed:
+        raise StateWriteError(_OPEN_FAILED) from None
     except _AdapterFailure as exc:
         if connection is not None and transaction_open and not commit_invoked:
-            _rollback_best_effort(connection)
+            cleanup_error = _rollback_best_effort(connection)
+            if cleanup_error is not None:
+                _warn_cleanup_failure("initialization rollback")
         raise StateWriteError(exc.code) from None
     except (sqlite3.Error, OSError) as exc:
         if connection is not None and transaction_open and not commit_invoked:
-            _rollback_best_effort(connection)
+            cleanup_error = _rollback_best_effort(connection)
+            if cleanup_error is not None:
+                _warn_cleanup_failure("initialization rollback")
         raise StateWriteError(_typed_code(exc, default=phase_code)) from None
     finally:
         if connection is not None:
-            _close_preserving_active_error(
-                connection,
-                error_type=StateWriteError,
-                default_code=phase_code,
-            )
+            close_error = _close_connection(connection)
+            if close_error is not None:
+                _warn_cleanup_failure("initialization close")
 
 
 class SqliteSessionStore:

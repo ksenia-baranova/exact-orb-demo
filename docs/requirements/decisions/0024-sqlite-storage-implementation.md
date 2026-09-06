@@ -5,7 +5,9 @@
 проверкой `rowcount`; append/clear закреплены как атомарные write-and-renew.
 Ревизия: 2026-09-06 — P4 зафиксировал per-operation connections,
 component-scoped migrations, parent-only reaper и границу full-adapter
-benchmark.
+benchmark; P4.1 разделил подтверждённый transaction outcome и cleanup,
+расширил однократный WAL recovery на неподтверждённый read-back и закрепил
+совместимость payload v1 frozen fixture.
 Статус: принято.
 
 ## Контекст
@@ -98,10 +100,33 @@ deadline не читает.
 глобальный `PRAGMA user_version`.
 
 Concurrent first-open читает persistent journal mode до попытки переключения.
-Если SQLite разрывает одновременный WAL upgrade numeric `BUSY/LOCKED`,
-проигравшее соединение закрывается и получает одну свежую configuration
-attempt до начала migration transaction. Повторный BUSY не скрывается; циклы,
+Если SQLite разрывает одновременный WAL upgrade numeric `BUSY/LOCKED` либо
+`PRAGMA journal_mode = WAL` возвращает не-`wal` без исключения, проигравшее
+соединение закрывается и получает одну свежую configuration attempt до начала
+migration transaction. Повторный numeric BUSY не скрывается, повторный
+не-`wal` является open failure; прочие PRAGMA mismatch не повторяются. Циклы,
 sleep и process-global lock не используются.
+
+**Transaction outcome и cleanup.** Подтверждённый commit и завершённое чтение
+не превращаются в persistence failure из-за последующего отказа `close`:
+ошибка освобождения ресурса диагностируется отдельно. `COMMIT_UNKNOWN`
+означает только исключение непосредственно из `commit()`. Normal no-commit
+outcome требует подтверждённого rollback либо успешного close после отказа
+rollback; если оба cleanup-вызова бросили, наружу выходит typed persistence
+failure. `ProgrammingError` остаётся ошибкой реализации и не типизируется.
+
+**Payload compatibility.** State и dialog сохраняются с независимыми payload
+versions. Frozen v1 fixture содержит JSON, relational metadata и действовавшие
+dialog limits. Старые строки читаются через публичные порты, а публичные
+create/CAS/append сверяются с той же семантической JSON-структурой. Изменения
+моделей, validators, serializers или лимитов требуют явного решения об
+обратной совместимости; несовместимое изменение получает новую payload version
+и старый decoder либо migration.
+
+**Путь к файлу.** Адаптер не выбирает путь и не читает environment/config.
+Переданный caller относительный `db_path` канонизируется через `Path.resolve()`
+в момент `open`, поэтому один relative config разрешается в разные файлы при
+разном текущем рабочем каталоге процесса.
 
 **`Research Corpus`.** Группировка и агрегаты по миллионам строк —
 нормальная для SQLite работа. В режиме WAL читатели не блокируют писателей,

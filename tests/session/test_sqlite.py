@@ -37,7 +37,12 @@ from exact_orb.session.dialog import (
     Selection,
 )
 from exact_orb.session.errors import StateReadError, StateWriteError
-from exact_orb.session.outcomes import SessionAbsent, SessionCreated, SessionIdConflict
+from exact_orb.session.outcomes import (
+    SessionAbsent,
+    SessionCreated,
+    SessionIdConflict,
+    VersionConflict,
+)
 from exact_orb.session.persistence import SessionSnapshot
 from exact_orb.session.state import HARD_TTL, SLIDING_TTL, ChartRef, SessionState, StateDelta
 from tests.session.conformance import (
@@ -57,6 +62,7 @@ pytestmark = pytest.mark.no_ephemeris_autoinit
 
 SQLITE_TEST_EXECUTOR_WORKERS = 4
 SRC_ROOT = Path(__file__).resolve().parents[2] / "src"
+GOLDEN_PAYLOAD_V1 = Path(__file__).with_name("golden") / "session_sqlite_payload_v1.json"
 
 BUSY = "SESSION_SQLITE_BUSY"
 OPEN_FAILED = "SESSION_SQLITE_OPEN_FAILED"
@@ -545,6 +551,170 @@ class BusyWalTransitionConnection(sqlite3.Connection):
         return super().execute(sql, parameters)
 
 
+class ScalarCursor:
+    def __init__(self, value: object) -> None:
+        self._row = (value,)
+
+    def fetchone(self) -> tuple[object] | None:
+        row = self._row
+        self._row = None
+        return row
+
+    def close(self) -> None:
+        pass
+
+
+class WalReadbackConnection(sqlite3.Connection):
+    outcomes: list[str] = []
+    set_attempts = 0
+
+    def execute(
+        self,
+        sql: str,
+        parameters: tuple[object, ...] = (),
+        /,
+    ) -> sqlite3.Cursor:
+        normalized = " ".join(sql.strip().upper().split())
+        if normalized == "PRAGMA JOURNAL_MODE = WAL":
+            outcome = type(self).outcomes[type(self).set_attempts]
+            type(self).set_attempts += 1
+            if outcome == "non-wal":
+                return ScalarCursor("delete")  # type: ignore[return-value]
+            if outcome == "busy":
+                error = sqlite3.OperationalError("synthetic WAL transition busy")
+                error.sqlite_errorcode = sqlite3.SQLITE_BUSY
+                error.sqlite_errorname = "SQLITE_BUSY"
+                raise error
+        return super().execute(sql, parameters)
+
+
+class SynchronousMismatchConnection(sqlite3.Connection):
+    def execute(
+        self,
+        sql: str,
+        parameters: tuple[object, ...] = (),
+        /,
+    ) -> sqlite3.Cursor:
+        normalized = " ".join(sql.strip().upper().split())
+        if normalized == "PRAGMA SYNCHRONOUS":
+            return ScalarCursor(2)  # type: ignore[return-value]
+        return super().execute(sql, parameters)
+
+
+class ConfigurationAndCloseFaultConnection(SynchronousMismatchConnection):
+    close_failures = 0
+
+    def close(self) -> None:
+        super().close()
+        if type(self).close_failures == 0:
+            type(self).close_failures += 1
+            raise sqlite3.OperationalError("synthetic configuration close failure")
+
+
+@pytest.mark.parametrize(
+    ("outcomes", "expected_code"),
+    [
+        (("non-wal", "wal"), None),
+        (("non-wal", "non-wal"), OPEN_FAILED),
+        (("non-wal", "busy"), BUSY),
+    ],
+)
+async def test_wal_readback_recovery_is_one_fresh_attempt(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    outcomes: tuple[str, str],
+    expected_code: str | None,
+) -> None:
+    path = tmp_path / f"wal-readback-{'-'.join(outcomes)}.sqlite3"
+    WalReadbackConnection.outcomes = list(outcomes)
+    WalReadbackConnection.set_attempts = 0
+    opens = 0
+
+    def factory(*args: Any, **kwargs: Any) -> sqlite3.Connection:
+        nonlocal opens
+        opens += 1
+        return sqlite3.connect(*args, **kwargs, factory=WalReadbackConnection)
+
+    monkeypatch.setattr(sqlite_adapter, "_CONNECTION_FACTORY", factory)
+    executor = ThreadPoolExecutor(max_workers=SQLITE_TEST_EXECUTOR_WORKERS)
+    try:
+        if expected_code is None:
+            persistence = await SqliteSessionPersistence.open(path, executor=executor)
+            assert opens == 2
+            assert isinstance(
+                await persistence.sessions.create("wal-readback", now=NOW),
+                SessionCreated,
+            )
+            assert opens == 3
+        else:
+            with pytest.raises(StateWriteError) as caught:
+                await SqliteSessionPersistence.open(path, executor=executor)
+            assert caught.value.error_code == expected_code
+            assert opens == 2
+
+        assert WalReadbackConnection.set_attempts == 2
+    finally:
+        executor.shutdown(wait=True)
+
+
+async def test_non_wal_pragma_mismatch_does_not_retry_initialization(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    opens = 0
+
+    def factory(*args: Any, **kwargs: Any) -> sqlite3.Connection:
+        nonlocal opens
+        opens += 1
+        return sqlite3.connect(
+            *args,
+            **kwargs,
+            factory=SynchronousMismatchConnection,
+        )
+
+    monkeypatch.setattr(sqlite_adapter, "_CONNECTION_FACTORY", factory)
+    executor = ThreadPoolExecutor(max_workers=SQLITE_TEST_EXECUTOR_WORKERS)
+    try:
+        with pytest.raises(StateWriteError) as caught:
+            await SqliteSessionPersistence.open(
+                tmp_path / "synchronous-mismatch.sqlite3",
+                executor=executor,
+            )
+
+        assert caught.value.error_code == OPEN_FAILED
+        assert opens == 1
+    finally:
+        executor.shutdown(wait=True)
+
+
+async def test_configuration_error_is_not_replaced_by_close_failure(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    ConfigurationAndCloseFaultConnection.close_failures = 0
+
+    def factory(*args: Any, **kwargs: Any) -> sqlite3.Connection:
+        return sqlite3.connect(
+            *args,
+            **kwargs,
+            factory=ConfigurationAndCloseFaultConnection,
+        )
+
+    monkeypatch.setattr(sqlite_adapter, "_CONNECTION_FACTORY", factory)
+    executor = ThreadPoolExecutor(max_workers=SQLITE_TEST_EXECUTOR_WORKERS)
+    try:
+        with pytest.raises(StateWriteError) as caught:
+            await SqliteSessionPersistence.open(
+                tmp_path / "configuration-and-close-fail.sqlite3",
+                executor=executor,
+            )
+
+        assert caught.value.error_code == OPEN_FAILED
+        assert ConfigurationAndCloseFaultConnection.close_failures == 1
+    finally:
+        executor.shutdown(wait=True)
+
+
 async def test_open_retries_wal_transition_busy_on_one_fresh_connection(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
@@ -760,6 +930,451 @@ def _observed_factory(*args: Any, **kwargs: Any) -> sqlite3.Connection:
     return sqlite3.connect(*args, **kwargs, factory=ObservedConnection)
 
 
+class CloseAfterRealCloseConnection(sqlite3.Connection):
+    armed = False
+    failures = 0
+
+    def close(self) -> None:
+        super().close()
+        if type(self).armed and type(self).failures == 0:
+            type(self).failures += 1
+            raise sqlite3.OperationalError("synthetic post-close failure")
+
+
+def _close_fault_factory(*args: Any, **kwargs: Any) -> sqlite3.Connection:
+    return sqlite3.connect(*args, **kwargs, factory=CloseAfterRealCloseConnection)
+
+
+def _database_snapshot(path: Path) -> tuple[list[tuple[Any, ...]], list[tuple[Any, ...]]]:
+    return (
+        _fetchall(
+            path,
+            "SELECT session_id, state_version, created_at_us, expires_at_us, "
+            "hard_expires_at_us, payload_version, state_json "
+            "FROM session_states ORDER BY session_id",
+        ),
+        _fetchall(
+            path,
+            "SELECT session_id, expires_at_us, payload_version, turns_json "
+            "FROM session_dialogs ORDER BY session_id",
+        ),
+    )
+
+
+async def _exercise_close_path(
+    path: Path,
+    operation: str,
+    *,
+    fail_close: bool,
+) -> tuple[object, tuple[list[tuple[Any, ...]], list[tuple[Any, ...]]]]:
+    executor = ThreadPoolExecutor(max_workers=SQLITE_TEST_EXECUTOR_WORKERS)
+    CloseAfterRealCloseConnection.armed = operation == "open" and fail_close
+    try:
+        persistence = await SqliteSessionPersistence.open(path, executor=executor)
+        CloseAfterRealCloseConnection.armed = False
+        if operation == "open":
+            outcome: object = (
+                isinstance(persistence, SqliteSessionPersistence),
+                persistence.sessions is persistence.sessions,
+                persistence.dialogs is persistence.dialogs,
+                await persistence.sessions.create("post-open", now=NOW),
+            )
+        else:
+            if operation == "create":
+                pass
+            elif operation in {"get", "compare_and_set", "append"}:
+                await create_session(persistence, "close-target")
+            elif operation in {"read", "clear", "touch", "delete"}:
+                await create_session(persistence, "close-target")
+                await persistence.dialogs.append(
+                    "close-target",
+                    make_turn(1),
+                    now=NOW,
+                )
+            elif operation == "reset":
+                await populate_with_dialog(persistence, "close-target")
+            else:
+                await create_session(
+                    persistence,
+                    "close-target",
+                    now=NOW - timedelta(days=8),
+                )
+
+            CloseAfterRealCloseConnection.armed = fail_close
+            if operation == "create":
+                outcome = await persistence.sessions.create("close-target", now=NOW)
+            elif operation == "get":
+                outcome = await persistence.sessions.get("close-target", now=NOW)
+            elif operation == "compare_and_set":
+                outcome = await persistence.sessions.compare_and_set(
+                    "close-target",
+                    0,
+                    DELTA,
+                    now=NOW,
+                )
+            elif operation == "append":
+                outcome = await persistence.dialogs.append(
+                    "close-target",
+                    make_turn(1),
+                    now=NOW,
+                )
+            elif operation == "read":
+                outcome = await persistence.dialogs.read("close-target", now=NOW)
+            elif operation == "clear":
+                outcome = await persistence.dialogs.clear("close-target", now=NOW)
+            elif operation == "touch":
+                outcome = await persistence.touch("close-target", now=NOW)
+            elif operation == "reset":
+                outcome = await persistence.reset(
+                    "close-target",
+                    1,
+                    now=NOW,
+                )
+            elif operation == "delete":
+                outcome = await persistence.delete("close-target")
+            else:
+                outcome = await persistence.reap_expired(now=NOW)
+            CloseAfterRealCloseConnection.armed = False
+
+        return outcome, _database_snapshot(path)
+    finally:
+        CloseAfterRealCloseConnection.armed = False
+        executor.shutdown(wait=True)
+
+
+@pytest.mark.parametrize(
+    "operation",
+    [
+        "open",
+        "create",
+        "get",
+        "compare_and_set",
+        "append",
+        "read",
+        "clear",
+        "touch",
+        "reset",
+        "delete",
+        "reap_expired",
+    ],
+)
+async def test_close_failure_does_not_replace_completed_public_outcome(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    caplog: pytest.LogCaptureFixture,
+    operation: str,
+) -> None:
+    monkeypatch.setattr(sqlite_adapter, "_CONNECTION_FACTORY", _close_fault_factory)
+    baseline_path = tmp_path / f"close-baseline-{operation}.sqlite3"
+    fault_path = tmp_path / f"close-fault-{operation}.sqlite3"
+
+    CloseAfterRealCloseConnection.failures = 0
+    baseline = await _exercise_close_path(
+        baseline_path,
+        operation,
+        fail_close=False,
+    )
+    caplog.clear()
+    fault = await _exercise_close_path(
+        fault_path,
+        operation,
+        fail_close=True,
+    )
+
+    assert fault == baseline
+    assert CloseAfterRealCloseConnection.failures == 1
+    messages = [record.getMessage() for record in caplog.records]
+    assert len(messages) == 1
+    assert "cleanup failed" in messages[0]
+    assert "close-target" not in messages[0]
+    assert str(fault_path) not in messages[0]
+
+
+class ProgrammingCloseConnection(sqlite3.Connection):
+    armed = False
+    failures = 0
+
+    def close(self) -> None:
+        super().close()
+        if type(self).armed and type(self).failures == 0:
+            type(self).failures += 1
+            raise sqlite3.ProgrammingError("synthetic programming defect")
+
+
+def _programming_close_factory(*args: Any, **kwargs: Any) -> sqlite3.Connection:
+    return sqlite3.connect(*args, **kwargs, factory=ProgrammingCloseConnection)
+
+
+async def test_programming_error_from_close_is_not_typed(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    path = tmp_path / "programming-close.sqlite3"
+    monkeypatch.setattr(
+        sqlite_adapter,
+        "_CONNECTION_FACTORY",
+        _programming_close_factory,
+    )
+    ProgrammingCloseConnection.armed = False
+    ProgrammingCloseConnection.failures = 0
+    executor = ThreadPoolExecutor(max_workers=SQLITE_TEST_EXECUTOR_WORKERS)
+    try:
+        persistence = await SqliteSessionPersistence.open(path, executor=executor)
+        await create_session(persistence, "programming-close")
+        ProgrammingCloseConnection.armed = True
+
+        with pytest.raises(sqlite3.ProgrammingError):
+            await persistence.sessions.get("programming-close", now=NOW)
+
+        assert ProgrammingCloseConnection.failures == 1
+    finally:
+        ProgrammingCloseConnection.armed = False
+        executor.shutdown(wait=True)
+
+
+async def test_close_classification_does_not_depend_on_callers_except_context(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    path = tmp_path / "caller-except-close.sqlite3"
+    monkeypatch.setattr(sqlite_adapter, "_CONNECTION_FACTORY", _close_fault_factory)
+    CloseAfterRealCloseConnection.armed = False
+    CloseAfterRealCloseConnection.failures = 0
+    executor = ThreadPoolExecutor(max_workers=SQLITE_TEST_EXECUTOR_WORKERS)
+    try:
+        persistence = await SqliteSessionPersistence.open(path, executor=executor)
+        expected = await create_session(persistence, "caller-except")
+        CloseAfterRealCloseConnection.armed = True
+
+        try:
+            raise LookupError("unrelated caller error")
+        except LookupError:
+            actual = await persistence.sessions.get("caller-except", now=NOW)
+
+        assert actual == expected
+        assert CloseAfterRealCloseConnection.failures == 1
+    finally:
+        CloseAfterRealCloseConnection.armed = False
+        executor.shutdown(wait=True)
+
+
+class RollbackFaultConnection(sqlite3.Connection):
+    rollback_armed = False
+    close_armed = False
+    rollback_failures = 0
+    close_failures = 0
+
+    def rollback(self) -> None:
+        if type(self).rollback_armed and type(self).rollback_failures == 0:
+            type(self).rollback_failures += 1
+            raise sqlite3.OperationalError("synthetic rollback failure")
+        super().rollback()
+
+    def close(self) -> None:
+        super().close()
+        if type(self).close_armed and type(self).close_failures == 0:
+            type(self).close_failures += 1
+            raise sqlite3.OperationalError("synthetic post-close failure")
+
+
+def _rollback_fault_factory(*args: Any, **kwargs: Any) -> sqlite3.Connection:
+    return sqlite3.connect(*args, **kwargs, factory=RollbackFaultConnection)
+
+
+class ProgrammingRollbackConnection(sqlite3.Connection):
+    armed = False
+
+    def rollback(self) -> None:
+        if type(self).armed:
+            raise sqlite3.ProgrammingError("synthetic rollback programming defect")
+        super().rollback()
+
+
+def _programming_rollback_factory(*args: Any, **kwargs: Any) -> sqlite3.Connection:
+    return sqlite3.connect(*args, **kwargs, factory=ProgrammingRollbackConnection)
+
+
+async def _prepare_normal_no_commit_outcome(
+    persistence: SqliteSessionPersistence,
+    operation: str,
+) -> tuple[object, Callable[[], Any]]:
+    if operation == "create-conflict":
+        await create_session(persistence, "rollback-target")
+        expected: object = SessionIdConflict(session_id="rollback-target")
+
+        async def invoke() -> object:
+            return await persistence.sessions.create("rollback-target", now=NOW)
+
+    elif operation == "cas-conflict":
+        expected_state = await create_session(persistence, "rollback-target")
+        expected = VersionConflict(actual=expected_state)
+
+        async def invoke() -> object:
+            return await persistence.sessions.compare_and_set(
+                "rollback-target",
+                7,
+                DELTA,
+                now=NOW,
+            )
+
+    elif operation == "touch-absent":
+        expected = SessionAbsent(reason="not_found")
+
+        async def invoke() -> object:
+            return await persistence.touch("rollback-target", now=NOW)
+
+    else:
+        await create_session(persistence, "rollback-target")
+        turn = make_turn(1)
+        await persistence.dialogs.append("rollback-target", turn, now=NOW)
+        expected = (turn,)
+
+        async def invoke() -> object:
+            return await persistence.dialogs.read("rollback-target", now=NOW)
+
+    return expected, invoke
+
+
+@pytest.mark.parametrize(
+    "operation",
+    ["create-conflict", "cas-conflict", "touch-absent", "dialog-read"],
+)
+async def test_rollback_failure_preserves_normal_outcome_when_close_succeeds(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    operation: str,
+) -> None:
+    path = tmp_path / f"rollback-close-success-{operation}.sqlite3"
+    monkeypatch.setattr(sqlite_adapter, "_CONNECTION_FACTORY", _rollback_fault_factory)
+    RollbackFaultConnection.rollback_armed = False
+    RollbackFaultConnection.close_armed = False
+    RollbackFaultConnection.rollback_failures = 0
+    RollbackFaultConnection.close_failures = 0
+    executor = ThreadPoolExecutor(max_workers=SQLITE_TEST_EXECUTOR_WORKERS)
+    try:
+        persistence = await SqliteSessionPersistence.open(path, executor=executor)
+        expected, invoke = await _prepare_normal_no_commit_outcome(
+            persistence,
+            operation,
+        )
+        before = _database_snapshot(path)
+        RollbackFaultConnection.rollback_armed = True
+
+        assert await invoke() == expected
+
+        RollbackFaultConnection.rollback_armed = False
+        assert RollbackFaultConnection.rollback_failures == 1
+        assert RollbackFaultConnection.close_failures == 0
+        assert _database_snapshot(path) == before
+    finally:
+        RollbackFaultConnection.rollback_armed = False
+        RollbackFaultConnection.close_armed = False
+        executor.shutdown(wait=True)
+
+
+async def test_rollback_and_close_failure_is_typed_and_releases_test_handle(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    path = tmp_path / "rollback-and-close-fail.sqlite3"
+    monkeypatch.setattr(sqlite_adapter, "_CONNECTION_FACTORY", _rollback_fault_factory)
+    RollbackFaultConnection.rollback_armed = False
+    RollbackFaultConnection.close_armed = False
+    RollbackFaultConnection.rollback_failures = 0
+    RollbackFaultConnection.close_failures = 0
+    executor = ThreadPoolExecutor(max_workers=SQLITE_TEST_EXECUTOR_WORKERS)
+    try:
+        persistence = await SqliteSessionPersistence.open(path, executor=executor)
+        expected_state = await create_session(persistence, "rollback-target")
+        RollbackFaultConnection.rollback_armed = True
+        RollbackFaultConnection.close_armed = True
+
+        with pytest.raises(StateWriteError) as caught:
+            await persistence.sessions.compare_and_set(
+                "rollback-target",
+                7,
+                DELTA,
+                now=NOW,
+            )
+
+        RollbackFaultConnection.rollback_armed = False
+        RollbackFaultConnection.close_armed = False
+        assert caught.value.error_code == WRITE_FAILED
+        assert RollbackFaultConnection.rollback_failures == 1
+        assert RollbackFaultConnection.close_failures == 1
+        assert await persistence.sessions.get(
+            "rollback-target",
+            now=NOW,
+        ) == expected_state
+        _execute(
+            path,
+            "UPDATE session_states SET state_version = state_version "
+            "WHERE session_id = 'rollback-target'",
+        )
+    finally:
+        RollbackFaultConnection.rollback_armed = False
+        RollbackFaultConnection.close_armed = False
+        executor.shutdown(wait=True)
+
+
+async def test_programming_error_from_rollback_is_not_typed(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    path = tmp_path / "programming-rollback.sqlite3"
+    monkeypatch.setattr(
+        sqlite_adapter,
+        "_CONNECTION_FACTORY",
+        _programming_rollback_factory,
+    )
+    ProgrammingRollbackConnection.armed = False
+    executor = ThreadPoolExecutor(max_workers=SQLITE_TEST_EXECUTOR_WORKERS)
+    try:
+        persistence = await SqliteSessionPersistence.open(path, executor=executor)
+        await create_session(persistence, "programming-rollback")
+        ProgrammingRollbackConnection.armed = True
+
+        with pytest.raises(sqlite3.ProgrammingError):
+            await persistence.sessions.compare_and_set(
+                "programming-rollback",
+                7,
+                DELTA,
+                now=NOW,
+            )
+    finally:
+        ProgrammingRollbackConnection.armed = False
+        executor.shutdown(wait=True)
+
+
+async def test_close_failure_does_not_replace_existing_typed_error(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    path = tmp_path / "error-and-close-fail.sqlite3"
+    monkeypatch.setattr(sqlite_adapter, "_CONNECTION_FACTORY", _close_fault_factory)
+    CloseAfterRealCloseConnection.armed = False
+    CloseAfterRealCloseConnection.failures = 0
+    executor = ThreadPoolExecutor(max_workers=SQLITE_TEST_EXECUTOR_WORKERS)
+    try:
+        persistence = await SqliteSessionPersistence.open(path, executor=executor)
+        await create_session(persistence, "corrupt-and-close")
+        _execute(
+            path,
+            "UPDATE session_states SET state_json = '{' "
+            "WHERE session_id = 'corrupt-and-close'",
+        )
+        CloseAfterRealCloseConnection.armed = True
+
+        with pytest.raises(StateReadError) as caught:
+            await persistence.sessions.get("corrupt-and-close", now=NOW)
+
+        assert caught.value.error_code == DATA_CORRUPT
+        assert CloseAfterRealCloseConnection.failures == 1
+    finally:
+        CloseAfterRealCloseConnection.armed = False
+        executor.shutdown(wait=True)
+
+
 def _normalized_statements(connection: ObservedConnection) -> list[str]:
     return [" ".join(statement.strip().upper().split()) for statement in connection.statements]
 
@@ -957,6 +1572,321 @@ async def test_foreign_key_cascade_is_effective_in_public_delete(tmp_path: Path)
 
 
 MICRO_NOW = datetime(2026, 9, 5, 12, 34, 56, 789_123, tzinfo=UTC)
+
+PAYLOAD_COMPATIBILITY_FAILURE = (
+    "persisted payload v1 changed; either prove the change remains backward "
+    "compatible and update the golden fixture, add a new payload version with "
+    "an old-version decoder or migration, or prove that only irrelevant test "
+    "representation/Pydantic output changed"
+)
+
+
+def _golden_models() -> tuple[
+    dict[str, SessionState],
+    tuple[DialogTurn, ...],
+    dict[str, StateDelta],
+]:
+    unknown_birth = BirthInput(
+        birth_date=date(1987, 1, 2),
+        birth_time=None,
+        place_id="moscow-earth",
+    )
+    unknown_resolved = ResolvedBirthData(
+        utc_datetime=datetime(1987, 1, 2, 9, 0, 0, 654_321, tzinfo=UTC),
+        latitude=55.75,
+        longitude=37.62,
+        tz_id="Europe/Moscow",
+        utc_offset_seconds=10_800,
+        canonical_place="Moscow",
+        time_unknown=True,
+        warnings=(
+            ResolutionWarning(
+                source="time",
+                code="TIME_UNKNOWN",
+                message="Assumed noon",
+            ),
+        ),
+    )
+    unknown_spec = NatalChartSpec(
+        chart_kind="natal",
+        include=("rulers", "positions", "houses", "aspects"),
+        rulership=RulershipScheme.TRADITIONAL,
+        near_interception_threshold=0.125,
+    )
+    known_birth = BirthInput(
+        birth_date=date(1990, 6, 15),
+        birth_time=time(8, 30),
+        place_id="paris",
+    )
+    known_resolved = ResolvedBirthData(
+        utc_datetime=datetime(1990, 6, 15, 6, 30, tzinfo=UTC),
+        latitude=48.86,
+        longitude=2.35,
+        tz_id="Europe/Paris",
+        utc_offset_seconds=7_200,
+        canonical_place="Paris",
+        time_unknown=False,
+        warnings=(),
+    )
+    known_spec = NatalChartSpec(
+        chart_kind="cosmogram",
+        include=("positions", "aspects"),
+    )
+    states = {
+        "golden-empty": SessionState(
+            session_id="golden-empty",
+            birth_input=None,
+            birth_resolved=None,
+            state_version=0,
+            base_chart=None,
+            created_at=MICRO_NOW,
+            expires_at=MICRO_NOW + SLIDING_TTL,
+            hard_expires_at=MICRO_NOW + HARD_TTL,
+        ),
+        "golden-full": SessionState(
+            session_id="golden-full",
+            birth_input=unknown_birth,
+            birth_resolved=unknown_resolved,
+            state_version=1,
+            base_chart=ChartRef(state_version=1, spec=unknown_spec),
+            created_at=MICRO_NOW,
+            expires_at=MICRO_NOW + SLIDING_TTL,
+            hard_expires_at=MICRO_NOW + HARD_TTL,
+        ),
+        "golden-known": SessionState(
+            session_id="golden-known",
+            birth_input=known_birth,
+            birth_resolved=known_resolved,
+            state_version=1,
+            base_chart=ChartRef(state_version=1, spec=known_spec),
+            created_at=MICRO_NOW,
+            expires_at=MICRO_NOW + SLIDING_TTL,
+            hard_expires_at=MICRO_NOW + HARD_TTL,
+        ),
+    }
+    dialog = (
+        DialogTurn(
+            turn_id="complete",
+            created_at=MICRO_NOW + timedelta(microseconds=1),
+            selection=Selection(topic="natal", focus="relationships"),
+            state_version_at_answer=1,
+            status="complete",
+            truncated=True,
+            text="Unicode: ☃",
+        ),
+        DialogTurn(
+            turn_id="partial",
+            created_at=MICRO_NOW + timedelta(microseconds=2),
+            selection=Selection(topic="natal", focus="career"),
+            state_version_at_answer=99,
+            status="partial",
+            truncated=False,
+            text="partial answer",
+        ),
+    )
+    deltas = {
+        "golden-full": StateDelta(
+            birth_input=unknown_birth,
+            birth_resolved=unknown_resolved,
+            base_chart_spec=unknown_spec,
+        ),
+        "golden-known": StateDelta(
+            birth_input=known_birth,
+            birth_resolved=known_resolved,
+            base_chart_spec=known_spec,
+        ),
+    }
+    return states, dialog, deltas
+
+
+def _load_golden_payload_v1() -> dict[str, Any]:
+    return json.loads(GOLDEN_PAYLOAD_V1.read_text(encoding="utf-8"))
+
+
+def _assert_payload_contract_equal(actual: object, expected: object) -> None:
+    assert actual == expected, PAYLOAD_COMPATIBILITY_FAILURE
+
+
+def _insert_golden_payload_v1(path: Path, fixture: dict[str, Any]) -> None:
+    connection = _connect(path)
+    try:
+        connection.execute("BEGIN IMMEDIATE")
+        for row in fixture["states"]:
+            metadata = row["metadata"]
+            connection.execute(
+                "INSERT INTO session_states "
+                "(session_id, state_version, created_at_us, expires_at_us, "
+                "hard_expires_at_us, payload_version, state_json) "
+                "VALUES (?, ?, ?, ?, ?, ?, ?)",
+                (
+                    metadata["session_id"],
+                    metadata["state_version"],
+                    metadata["created_at_us"],
+                    metadata["expires_at_us"],
+                    metadata["hard_expires_at_us"],
+                    metadata["payload_version"],
+                    _json(row["payload"]),
+                ),
+            )
+        dialog = fixture["dialog"]
+        metadata = dialog["metadata"]
+        connection.execute(
+            "INSERT INTO session_dialogs "
+            "(session_id, expires_at_us, payload_version, turns_json) "
+            "VALUES (?, ?, ?, ?)",
+            (
+                metadata["session_id"],
+                metadata["expires_at_us"],
+                metadata["payload_version"],
+                _json(dialog["payload"]),
+            ),
+        )
+        connection.commit()
+    finally:
+        connection.close()
+
+
+def test_payload_v1_manifest_matches_codec_versions_and_dialog_limits() -> None:
+    fixture = _load_golden_payload_v1()
+
+    _assert_payload_contract_equal(
+        fixture["state_payload_version"],
+        sqlite_adapter._STATE_PAYLOAD_VERSION,
+    )
+    _assert_payload_contract_equal(
+        fixture["dialog_payload_version"],
+        sqlite_adapter._DIALOG_PAYLOAD_VERSION,
+    )
+    _assert_payload_contract_equal(
+        fixture["dialog_limits"],
+        {
+            "max_turns": MAX_DIALOG_TURNS,
+            "max_turn_chars": MAX_DIALOG_TURN_CHARS,
+            "max_chars": MAX_DIALOG_CHARS,
+        },
+    )
+    assert set(fixture["reference_environment"]) == {
+        "python",
+        "sqlite",
+        "pydantic",
+    }
+
+
+async def test_frozen_payload_v1_is_read_through_public_ports(
+    tmp_path: Path,
+) -> None:
+    path = tmp_path / "golden-v1-read.sqlite3"
+    fixture = _load_golden_payload_v1()
+    expected_states, expected_dialog, _ = _golden_models()
+    live_now = datetime.fromisoformat(fixture["reference_now"]["live"])
+    touch_now = datetime.fromisoformat(fixture["reference_now"]["touch"])
+    expired_now = datetime.fromisoformat(fixture["reference_now"]["expired"])
+
+    async with _opened(path) as (persistence, _):
+        _insert_golden_payload_v1(path, fixture)
+
+        for session_id, expected in expected_states.items():
+            _assert_payload_contract_equal(
+                await persistence.sessions.get(session_id, now=live_now),
+                expected,
+            )
+        _assert_payload_contract_equal(
+            await persistence.dialogs.read("golden-full", now=live_now),
+            expected_dialog,
+        )
+        _assert_payload_contract_equal(
+            await persistence.touch("golden-full", now=touch_now),
+            SessionSnapshot(
+                state=expected_states["golden-full"],
+                dialog=expected_dialog,
+            ),
+        )
+
+        for session_id in expected_states:
+            assert await persistence.sessions.get(
+                session_id,
+                now=expired_now,
+            ) == SessionAbsent(reason="expired")
+
+        assert _fetchone(path, "SELECT COUNT(*) FROM session_states") == (3,)
+
+
+async def test_public_writes_match_frozen_payload_v1(
+    tmp_path: Path,
+) -> None:
+    path = tmp_path / "golden-v1-write.sqlite3"
+    fixture = _load_golden_payload_v1()
+    expected_states, expected_dialog, deltas = _golden_models()
+
+    async with _opened(path) as (persistence, _):
+        for session_id in expected_states:
+            assert isinstance(
+                await persistence.sessions.create(session_id, now=MICRO_NOW),
+                SessionCreated,
+            )
+        for session_id, delta in deltas.items():
+            assert await persistence.sessions.compare_and_set(
+                session_id,
+                0,
+                delta,
+                now=MICRO_NOW,
+            ) == 1
+        for turn in expected_dialog:
+            assert await persistence.dialogs.append(
+                "golden-full",
+                turn,
+                now=MICRO_NOW,
+            ) is None
+
+        fixture_states = {
+            row["metadata"]["session_id"]: row for row in fixture["states"]
+        }
+        for session_id, expected in expected_states.items():
+            row = _fetchone(
+                path,
+                "SELECT state_version, created_at_us, expires_at_us, "
+                "hard_expires_at_us, payload_version, state_json "
+                "FROM session_states WHERE session_id = ?",
+                (session_id,),
+            )
+            fixture_row = fixture_states[session_id]
+            metadata = fixture_row["metadata"]
+            _assert_payload_contract_equal(
+                row[:5],
+                (
+                    metadata["state_version"],
+                    metadata["created_at_us"],
+                    metadata["expires_at_us"],
+                    metadata["hard_expires_at_us"],
+                    metadata["payload_version"],
+                ),
+            )
+            _assert_payload_contract_equal(
+                json.loads(row[5]),
+                fixture_row["payload"],
+            )
+            assert await persistence.sessions.get(
+                session_id,
+                now=MICRO_NOW,
+            ) == expected
+
+        dialog_row = _fetchone(
+            path,
+            "SELECT expires_at_us, payload_version, turns_json "
+            "FROM session_dialogs WHERE session_id = 'golden-full'",
+        )
+        dialog_metadata = fixture["dialog"]["metadata"]
+        _assert_payload_contract_equal(
+            dialog_row[:2],
+            (
+                dialog_metadata["expires_at_us"],
+                dialog_metadata["payload_version"],
+            ),
+        )
+        _assert_payload_contract_equal(
+            json.loads(dialog_row[2]),
+            fixture["dialog"]["payload"],
+        )
 
 
 async def test_full_models_round_trip_losslessly_across_independent_handles(

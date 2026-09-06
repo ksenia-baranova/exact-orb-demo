@@ -58,6 +58,38 @@ SESSION_SERVICE_MODULES: tuple[str, ...] = (
     "exact_orb.session.context",
 )
 
+SESSION_RUNTIME_BASE_REQUIRED: frozenset[str] = frozenset(
+    {
+        "exact_orb",
+        "exact_orb.session",
+        "exact_orb.session.errors",
+        "exact_orb.session.state",
+        "exact_orb.session.outcomes",
+        "exact_orb.session.dialog",
+        "exact_orb.session.store",
+        "exact_orb.session.persistence",
+        "exact_orb.birth",
+        "exact_orb.birth.types",
+        "exact_orb.calculation",
+        "exact_orb.calculation.spec",
+        "exact_orb.domain",
+    }
+)
+
+# These modules are current eager-package fallout, not allowed architectural
+# dependencies. Removing any of them is compatible with this upper-bound test.
+SESSION_RUNTIME_KNOWN_TRANSITIVE_DEBT: frozenset[str] = frozenset(
+    {
+        "exact_orb.birth.places",
+        "exact_orb.birth.resolver",
+        "exact_orb.birth.tz",
+        "exact_orb.calculation.cache",
+        "exact_orb.calculation.keys",
+        "exact_orb.outcomes",
+        "exact_orb.run_context",
+    }
+)
+
 SESSION_ALLOWED_PROJECT_IMPORTS: tuple[str, ...] = (
     "exact_orb.session.",
     "exact_orb.birth.types",
@@ -600,6 +632,25 @@ def test_session_service_does_not_read_wall_or_monotonic_time() -> None:
     )
 
 
+def _assert_session_runtime_module_upper_bound(
+    loaded_names: list[str],
+    *,
+    required: frozenset[str],
+) -> None:
+    loaded = frozenset(loaded_names)
+    missing = sorted(required - loaded)
+    unexpected = sorted(
+        loaded - required - SESSION_RUNTIME_KNOWN_TRANSITIVE_DEBT
+    )
+    assert not missing, "session runtime import missing required modules:\n" + "\n".join(
+        missing
+    )
+    assert not unexpected, (
+        "session runtime import loaded unexpected modules:\n"
+        + "\n".join(unexpected)
+    )
+
+
 def test_session_package_import_keeps_runtime_and_edge_modules_out() -> None:
     """A clean package import exposes the API without loading implementations."""
 
@@ -624,7 +675,8 @@ def test_session_package_import_keeps_runtime_and_edge_modules_out() -> None:
             "    for bad in forbidden",
             "    if name == bad or name.startswith(bad + '.')",
             ")",
-            "print(json.dumps({'missing': missing, 'found': found}))",
+            "loaded = sorted(name for name in sys.modules if name == 'exact_orb' or name.startswith('exact_orb.'))",
+            "print(json.dumps({'missing': missing, 'found': found, 'loaded': loaded}))",
         )
     )
 
@@ -652,6 +704,10 @@ def test_session_package_import_keeps_runtime_and_edge_modules_out() -> None:
         "package import транзитивно загрузил запрещённое: "
         + ", ".join(result["found"])
     )
+    _assert_session_runtime_module_upper_bound(
+        result["loaded"],
+        required=SESSION_RUNTIME_BASE_REQUIRED,
+    )
 
 
 def test_session_adapters_import_cleanly_with_positive_controls() -> None:
@@ -672,7 +728,8 @@ def test_session_adapters_import_cleanly_with_positive_controls() -> None:
             "    for bad in forbidden",
             "    if name == bad or name.startswith(bad + '.')",
             ")",
-            "print(json.dumps({'missing': missing, 'positive': positive, 'sqlite_loaded': sqlite_loaded, 'found': found}))",
+            "loaded = sorted(name for name in sys.modules if name == 'exact_orb' or name.startswith('exact_orb.'))",
+            "print(json.dumps({'missing': missing, 'positive': positive, 'sqlite_loaded': sqlite_loaded, 'found': found, 'loaded': loaded}))",
         )
     )
 
@@ -699,6 +756,17 @@ def test_session_adapters_import_cleanly_with_positive_controls() -> None:
     assert not result["found"], "adapter import загрузил запрещённое: " + ", ".join(
         result["found"]
     )
+    _assert_session_runtime_module_upper_bound(
+        result["loaded"],
+        required=SESSION_RUNTIME_BASE_REQUIRED
+        | frozenset(
+            {
+                "exact_orb.session.adapters",
+                "exact_orb.session.adapters._time",
+                "exact_orb.session.adapters.in_memory",
+            }
+        ),
+    )
 
 
 def test_session_sqlite_adapter_imports_cleanly_with_positive_controls() -> None:
@@ -716,7 +784,8 @@ def test_session_sqlite_adapter_imports_cleanly_with_positive_controls() -> None
             "    for bad in forbidden",
             "    if name == bad or name.startswith(bad + '.')",
             ")",
-            "print(json.dumps({'missing': missing, 'positive': positive, 'found': found}))",
+            "loaded = sorted(name for name in sys.modules if name == 'exact_orb' or name.startswith('exact_orb.'))",
+            "print(json.dumps({'missing': missing, 'positive': positive, 'found': found, 'loaded': loaded}))",
         )
     )
 
@@ -742,6 +811,18 @@ def test_session_sqlite_adapter_imports_cleanly_with_positive_controls() -> None
     assert not result["found"], "SQLite adapter импорт загрузил запрещённое: " + ", ".join(
         result["found"]
     )
+    _assert_session_runtime_module_upper_bound(
+        result["loaded"],
+        required=SESSION_RUNTIME_BASE_REQUIRED
+        | frozenset(
+            {
+                "exact_orb.session.adapters",
+                "exact_orb.session.adapters._time",
+                "exact_orb.session.adapters.in_memory",
+                "exact_orb.session.adapters.sqlite",
+            }
+        ),
+    )
 
 
 def test_session_service_imports_cleanly_with_positive_control() -> None:
@@ -757,7 +838,8 @@ def test_session_service_imports_cleanly_with_positive_control() -> None:
             "    for bad in forbidden",
             "    if name == bad or name.startswith(bad + '.')",
             ")",
-            "print(json.dumps({'positive': positive, 'found': found}))",
+            "loaded = sorted(name for name in sys.modules if name == 'exact_orb' or name.startswith('exact_orb.'))",
+            "print(json.dumps({'positive': positive, 'found': found, 'loaded': loaded}))",
         )
     )
 
@@ -779,6 +861,11 @@ def test_session_service_imports_cleanly_with_positive_control() -> None:
     assert result["positive"], "positive control не импортировал ContextService"
     assert not result["found"], "service import загрузил запрещённое: " + ", ".join(
         result["found"]
+    )
+    _assert_session_runtime_module_upper_bound(
+        result["loaded"],
+        required=SESSION_RUNTIME_BASE_REQUIRED
+        | frozenset({"exact_orb.session.context"}),
     )
 
 

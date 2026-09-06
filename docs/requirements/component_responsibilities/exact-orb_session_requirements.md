@@ -412,6 +412,14 @@ clock через keyword-only конструктор. Его публичные 
 concrete adapter, не генерирует `session_id`, не гасит cookie и не делает
 скрытых retry, rebase или дополнительного чтения после CAS-конфликта.
 
+Runtime-проверка импортов дополняет AST-границу: для чистых импортов
+`exact_orb.session`, `.adapters`, `.adapters.sqlite` и `.context` задано
+обязательное подмножество project-модулей и верхняя граница, допускающая
+только явно названный transitive debt. Удаление debt не ломает проверку, новый
+неназванный `exact_orb.*` ломает её. Текущий debt приходит из eager
+`birth/__init__.py` и `calculation/__init__.py`; это наблюдаемое ограничение,
+а не разрешённая зависимость session-слоя.
+
 ---
 
 ## 4. Жизненный цикл
@@ -1017,12 +1025,35 @@ SQLite aggregate использует переданный извне executor, 
 `aclose`. Стоимость connect и connection PRAGMA входит в полный путь каждой
 операции и в benchmark P4.
 
+Исход операции и освобождение connection различаются. Подтверждённый commit,
+завершённое чтение или normal no-commit outcome после подтверждённого rollback
+не заменяются ошибкой `close`; cleanup failure фиксируется безопасной
+диагностикой. `SESSION_SQLITE_COMMIT_UNKNOWN` относится только к исключению
+непосредственно из `commit()`. Если rollback normal no-commit ветки бросил,
+успешный `close` разрешает транзакцию и сохраняет outcome; двойной отказ
+rollback и close является typed persistence failure. `ProgrammingError`
+считается programming defect и не типизируется.
+
+`db_path` задаёт caller: адаптер не выбирает его и не читает environment или
+config. Переданный относительный путь канонизируется через `Path.resolve()` в
+момент `open` и потому разрешается относительно текущего рабочего каталога
+процесса.
+
+State/dialog JSON имеют отдельные payload versions. Совместимость v1
+закреплена frozen fixture с relational metadata и проверяется в обе стороны:
+старые строки читаются через публичные порты, а публичные create/CAS/append
+пишут ту же семантическую JSON-структуру. Модели, validators, serializers и
+три dialog limits входят в решение о совместимости; несовместимое изменение
+требует новой payload version и чтения старой версии либо migration.
+
 Concurrent first-open сначала читает persistent journal mode и меняет его
 только при необходимости. Если два свежих соединения столкнулись при переходе
-в WAL и SQLite немедленно разорвал upgrade-deadlock numeric `BUSY/LOCKED`,
-проигравшее соединение закрывается и допускается ровно одна свежая попытка
-configuration до migration transaction. Повторный BUSY выходит наружу; sleep,
-retry loop и process-global lock не вводятся.
+в WAL и SQLite немедленно разорвал upgrade-deadlock numeric `BUSY/LOCKED` либо
+WAL set/read-back вернул не-`wal` без исключения, проигравшее соединение
+закрывается и допускается ровно одна свежая попытка configuration до migration
+transaction. Повторный numeric BUSY выходит как `SESSION_SQLITE_BUSY`,
+повторный не-`wal` — как `SESSION_SQLITE_OPEN_FAILED`; mismatch остальных
+PRAGMA не получает retry. Sleep, retry loop и process-global lock не вводятся.
 
 **`ResearchCorpus`.** Группировка и агрегаты по миллионам строк — нормальная
 для SQLite работа; в режиме WAL читатели не блокируют писателей, поэтому
