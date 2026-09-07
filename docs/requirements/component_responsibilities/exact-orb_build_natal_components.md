@@ -2,6 +2,8 @@
 
 **Статус:** рабочий документ
 **Дата:** 2026-08-26
+**Ревизия:** 2026-09-07 — контракт `CalculationVersion` и статус A2
+синхронизированы с реализацией; startup wiring оставлен за C3.
 **Область:** application-путь `BuildNatalCommand` — от входа в `Application
 Orchestrator` до возврата результата и подтверждённого изменения состояния.
 **Основание:** ADR-0002, 0005, 0006, 0007, 0008, 0009, 0012, 0013, 0014, 0015,
@@ -482,39 +484,80 @@ correlation scope, начиная с `API request`; резолв cookie, rate li
 
 **Контракт.**
 
-```text
-compute_calculation_version(ephemeris_path: str) -> str
-CALCULATION_VERSION: str        вычисляется один раз при старте
+```python
+compute_calculation_version_record(
+    *,
+    ephemeris_path: str | os.PathLike[str],
+    selena_method: str,
+    body_ids: Mapping[str, int],
+    ephemeris_flags: int,
+) -> CalculationVersionRecord
+
+calculation_version_of(record: CalculationVersionRecord) -> str
+
+compute_calculation_version(
+    *,
+    ephemeris_path: str | os.PathLike[str],
+    selena_method: str,
+    body_ids: Mapping[str, int],
+    ephemeris_flags: int,
+) -> str
+
+log_calculation_version(record: CalculationVersionRecord) -> None
 ```
+
+`CalculationVersionRecord` — frozen strict-модель ровно из девяти компонент.
+Сборщик record читает файловую систему и metadata окружения, но не логирует;
+`calculation_version_of()` чисто хэширует готовую запись; convenience-функция
+`compute_calculation_version()` соединяет эти два шага и тоже не логирует.
+Startup-логирование вынесено в отдельную функцию. Вычисляемой при импорте
+глобальной `CALCULATION_VERSION` нет.
 
 **Состав отпечатка.**
 
-1. версия расчётного кода — явная константа `ENGINE_VERSION` в
+1. версия расчётного кода — ручная константа `ENGINE_VERSION` в
    `engine/__init__.py`, поднимаемая при изменении алгоритма или дефолтных
    конфигов;
-2. версия содержимого профилей, влияющих на числа расчёта:
-   orb/aspect/configuration/strength;
-3. `swisseph.version`;
+2. sha256 канонического содержимого `AspectConfig.natal()`,
+   `AspectConfig.transit()`, `ConfigurationConfig()` и `StrengthConfig()`;
+3. непустой `swisseph.version`;
 4. имя и версия установленного дистрибутива, который предоставляет модуль
    `swisseph`;
 5. sha256 нативного модуля `swisseph`, если путь к файлу доступен;
-6. sha256 содержимого всех `*.se1` в каталоге эфемерид, имена отсортированы;
+6. упорядоченный набор `(basename, sha256)` всех непосредственных файлов
+   каталога с суффиксом `.se1` без учёта регистра;
 7. `selena_method` — имя методики из замороженной startup-конфигурации;
-8. отпечаток набора тел по умолчанию — отсортированные пары имя → `swe_id`;
-9. эффективное значение `ephemeris_flags`, с которым техника вызывает ядро.
+8. sha256 набора тел по умолчанию — отсортированные пары имя → `swe_id`;
+9. `DEFAULT_EPHEMERIS_FLAGS` — значение, с которым техника вызывает
+   `calculate_natal()` до внутреннего добавления `swe.FLG_SPEED`.
 
 Компоненты 7–9 закрывают Т-ГРН-7: параметры, влияющие на числа, но не
 выбираемые пользователем, покрываются отпечатком, а не полями `ChartSpec`
 (ревизия ADR-0017 от 2026-09-07). Список обязан совпадать с §3.1.5
 `exact-orb_chart_artifacts.md` позиция в позицию.
 
-Если модуль `swisseph` невозможно однозначно сопоставить с установленным
-дистрибутивом или найдено несколько дистрибутивов, претендующих на этот
-модуль, приложение не стартует. Это ошибка окружения, а не runtime-выбор
-«первого подходящего» биндинга.
+Для provider mapping одинаковые имена дистрибутива дедуплицируются без учёта
+регистра. Ровно один provider записывается как `name==version`; отсутствие
+provider'а даёт стабильный маркер `<unresolved>`; несколько различимых
+provider'ов дают `EphemerisBindingAmbiguousError`. Ошибка чтения mapping,
+версии единственного provider'а или `swisseph.version` даёт
+`EphemerisConfigurationError`.
+
+Нативные `.pyd`/`.so` распознаются без учёта регистра. Недоступный digest не
+блокирует сборку record: значение становится `None`, а отдельный startup-вызов
+`log_calculation_version()` пишет WARNING `calculation_version_weakened`.
+Обычное событие `calculation_version_computed` уровня INFO содержит record без
+абсолютных путей.
+
+Каталог эфемерид обязан существовать. Пустой или частично заполненный каталог
+даёт валидный record; отсутствующий путь, не-каталог или нечитаемый `.se1` —
+`EphemerisConfigurationError`. Файлы сортируются по
+`(name.casefold(), name)`, поэтому порядок обхода не влияет на результат.
 
 Отпечаток вычисляется после того, как `configure_ephemeris()` заморозил путь
-и методику Селены: компоненты 6 и 7 читаются из замороженного состояния.
+и методику Селены. Точка композиции явно передаёт `status.path`,
+`get_selena_method_name()`, `DEFAULT_BODY_IDS` и
+`DEFAULT_EPHEMERIS_FLAGS`; сборщик не читает startup-конфигурацию повторно.
 
 **Чего не делает.** Не включает версию `tzdata`: она влияет на `utc_datetime`
 внутри `ResolvedBirthData`, который уже входит в ключ (ADR-0017). **Не включает
@@ -523,9 +566,13 @@ CALCULATION_VERSION: str        вычисляется один раз при с
 компонентой 6.
 
 **Тесты.** Подмена байта в `.se1` меняет отпечаток; порядок файлов на
-отпечаток не влияет; отсутствие каталога даёт явную ошибку, а не пустой
+отпечаток не влияет; `.se1` сопоставляется без учёта регистра; отсутствие
+каталога даёт типизированную ошибку, а существующий пустой каталог — валидный
 отпечаток; смена методики Селены меняет отпечаток; смена пути к каталогу при
-неизменном содержимом файлов отпечаток **не** меняет.
+неизменном содержимом файлов отпечаток **не** меняет. Интеграционный тест с
+двумя резолверами и общим кэшем доказывает механизм B-7: другой отпечаток при
+тех же данных и спеке даёт промах и новый расчёт. В реальном application-пути
+инвариант вступит в силу после startup wiring в C3.
 
 ---
 
@@ -696,10 +743,11 @@ near_interception_threshold  ← spec.near_interception_threshold
 спека с другим кодом даёт `ChartCalculationError(SPEC_INVALID)` и не доходит
 до Swiss Ephemeris.
 
-Текущий `ChartSpec` ещё не содержит `selena_method` и `orb_profile`, поэтому
-полный mapping §10 `chart_artifacts.md` выполняется только для уже
-spec-owned полей. Остальные параметры остаются известным долгом до появления
-`CalculationVersion` и расширения спеки.
+`selena_method`, `body_ids`, `ephemeris_flags` и три расчётных конфига
+намеренно не являются полями текущего `ChartSpec`: это не пользовательские
+настройки, они заморожены процессом и покрыты `CalculationVersion` (§4.1,
+ADR-0017). Адаптер использует именованные дефолты ядра; расширение спеки для
+них не требуется до появления пользовательского выбора.
 
 2. Исполнение вне event loop:
 
@@ -796,7 +844,7 @@ return artifact
 становится ли карта активной.
 
 **Тесты.** Промах вызывает движок ровно один раз; попадание не вызывает его
-вовсе; смена `CALCULATION_VERSION` даёт промах на тех же данных; два вызова
+вовсе; смена переданного `version` даёт промах на тех же данных; два вызова
 с одинаковыми аргументами возвращают равные артефакты; нечитаемые байты
 отбрасываются как corrupt cache и ведут к новому расчёту.
 
@@ -1541,7 +1589,15 @@ NatalTool
 
 ```text
 def build_application(settings) -> ApplicationOrchestrator:
-    version   = compute_calculation_version(settings.ephemeris_path)
+    status = configure_ephemeris(settings.ephemeris_path)
+    version_record = compute_calculation_version_record(
+        ephemeris_path=status.path,
+        selena_method=get_selena_method_name(),
+        body_ids=DEFAULT_BODY_IDS,
+        ephemeris_flags=DEFAULT_EPHEMERIS_FLAGS,
+    )
+    version = calculation_version_of(version_record)
+    log_calculation_version(version_record)
     cache     = InMemoryCalculationCache(...)
     executor  = ThreadPoolExecutor(max_workers=settings.calc_workers)
     engine    = EngineService(
@@ -1560,6 +1616,9 @@ def build_application(settings) -> ApplicationOrchestrator:
 ```
 
 Реестры наполняются здесь и дальше только читаются (И-9).
+`bootstrap.py` пока не существует: пример фиксирует обязательное wiring C3,
+а не описывает текущий CLI. Значение версии создаётся один раз локально и
+передаётся в `ChartArtifactResolver`; побочного эффекта при импорте нет.
 
 ### 9.2. Зависимости
 
@@ -1592,7 +1651,7 @@ ADR-0012 требует до перехода к background execution измер
 | B-4 | `chart_kind` — явное поле, не выводится по отсутствию домов (И-8) | spec, artifact, DTO |
 | B-5 | Один `calculation_key` для UI-пути и agent-пути (ADR-0002) | тест на два пути |
 | B-6 | Ключ восстановим из `ChartSpec` и `ResolvedBirthData` (И-12) | keys |
-| B-7 | Обновление эфемерид инвалидирует кэш | version + artifacts |
+| B-7 | Обновление эфемерид инвалидирует кэш | механизм: version + artifacts; application wiring: C3 |
 | B-8 | Build-путь не импортирует `agent/`, `tools/`, `intent/` | тест на импорты |
 | B-9 | Предупреждения расчёта доходят до артефакта (И-7) | engine, artifact |
 | B-10 | Персональные данные не попадают в журнал (И-14) | logging |
@@ -1653,9 +1712,10 @@ B-8 в виде теста на импорты стоит дёшево и лов
    Атрибут отменён, подстановка остаётся текстом в форме (§3.1
    и `exact-orb_birth_data_resolution.md` §3.4).
 
-3. **`ENGINE_VERSION` — константа или хэш исходников.** Константа требует
-   дисциплины при правке алгоритма; хэш меняется от любой правки комментария
-   и обнуляет кэш чаще, чем нужно.
+3. ~~**Форма `ENGINE_VERSION`.**~~ **Закрыт:**
+   выбрана ручная константа в `engine/__init__.py`. Она требует повышения при
+   изменении алгоритма или численно значимого дефолта, зато не обнуляет кэш от
+   правок комментариев и форматирования.
 
 4. **Размер пула расчётных потоков.** Смысл имеет только после замера
    конкурентности: при process-wide блокировке несколько воркеров могут

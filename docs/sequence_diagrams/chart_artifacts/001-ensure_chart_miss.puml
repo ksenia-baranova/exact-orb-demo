@@ -65,7 +65,7 @@ end note
 
 == 1. Ключ ==
 
-Artifacts -> Keys : calculation_key(\ncalculation_input_from(resolved),\nspec, CALCULATION_VERSION)
+Artifacts -> Keys : calculation_key(\ncalculation_input_from(resolved),\nspec, calculation_version)
 
 Keys -> Keys : проекция: utc_datetime,\nlatitude, longitude\n(6 знаков, без микросекунд)
 Keys -> Keys : канонический JSON,\ninclude — отсортированный кортеж
@@ -79,17 +79,22 @@ ResolvedBirthData: canonical_place
 каталога и обновления tzdata,
 не меняя ни одного числа (§3.1.2).
 
-CALCULATION_VERSION (§3.1.5) =
+calculation_version (§3.1.5) =
   ENGINE_VERSION
-+ версия содержимого orb/aspect/
++ digest содержимого aspect/
   configuration/strength профилей
 + swisseph.version
 + имя и версия дистрибутива биндинга
 + sha256(native module)
 + sha256(ephe/*.se1)
++ selena_method
++ digest(DEFAULT_BODY_IDS)
++ DEFAULT_EPHEMERIS_FLAGS
 
-Чистая функция: ни кэша, ни часов,
-ни окружения.
+Это локальное startup-значение resolver;
+сборщик читает файлы и metadata до
+request path. calculation_key чиста:
+ни кэша, ни часов, ни окружения.
 end note
 
 
@@ -123,7 +128,7 @@ Artifacts -> Artifacts : журнал: cache_miss(run_id, key)
 Artifacts -> Engine : calculate(spec, resolved, run)
 activate Engine
 
-Engine -> Engine : предпроверка: include ↔ chart_kind,\nкоординаты, near_interception_threshold,\nhouse_system, rulership, selena_method,\nналичие orb_profile
+Engine -> Engine : предпроверка: include ↔ chart_kind,\nкоординаты, near_interception_threshold,\nhouse_system, rulership
 
 note right of Engine
 Проверяется ВСЁ, что не требует
@@ -156,7 +161,7 @@ Engine -> Engine : await loop.run_in_executor(executor, ...)
 Engine -> Adapter : calculate(spec, resolved)
 activate Adapter
 
-Adapter -> Adapter : маппинг спеки в аргументы:\nhouse_system, rulership, include,\nselena_method, orb_profile
+Adapter -> Adapter : маппинг спеки в аргументы:\nhouse_system, rulership, include,\nnear_interception_threshold; остальные\ndefaults покрыты CalculationVersion
 
 Adapter -> Swiss : with ephemeris_session():\ncalculate_natal(...)
 Swiss --> Adapter : NatalChart(warnings)

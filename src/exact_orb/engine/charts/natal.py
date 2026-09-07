@@ -35,6 +35,7 @@ from exact_orb.engine.ephemeris.calc import (
 from exact_orb.engine.ephemeris.runtime import ephemeris_session
 from exact_orb.engine.ephemeris.types import (
     DEFAULT_BODY_IDS,
+    DEFAULT_EPHEMERIS_FLAGS,
     EPSILON,
     FULL_CIRCLE,
     ZODIAC_SIGNS,
@@ -122,7 +123,7 @@ def calculate_natal(
     chart_kind: ChartKind,
     house_system: str | bytes = b"P",
     body_ids: Mapping[str, int] | None = None,
-    ephemeris_flags: int = swiss_backend.swe.FLG_SWIEPH,
+    ephemeris_flags: int = DEFAULT_EPHEMERIS_FLAGS,
     rulership: RulershipScheme | str = RulershipScheme.COMBINED,
     near_interception_threshold: float = 1.0,
     ephemeris_path: str | None = None,

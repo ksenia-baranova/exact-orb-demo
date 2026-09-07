@@ -86,6 +86,8 @@ DEFAULT_BODY_IDS: dict[str, int] = {
     "mean_apog": swiss_backend.swe.MEAN_APOG,
 }
 
+DEFAULT_EPHEMERIS_FLAGS: int = swiss_backend.swe.FLG_SWIEPH
+
 ANGLE_INDICES: tuple[tuple[str, int], ...] = (
     ("asc", swiss_backend.swe.ASC),
     ("mc", swiss_backend.swe.MC),

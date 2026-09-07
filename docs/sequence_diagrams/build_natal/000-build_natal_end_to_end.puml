@@ -187,7 +187,7 @@ end note
 Handler -> Artifacts : ensure_chart(spec, resolved, run)
 activate Artifacts
 
-Artifacts -> Keys : calculation_key(\ncalculation_input_from(resolved),\nspec, CALCULATION_VERSION)
+Artifacts -> Keys : calculation_key(\ncalculation_input_from(resolved),\nspec, calculation_version)
 Keys --> Artifacts : key
 
 note right of Keys
@@ -197,15 +197,21 @@ latitude, longitude), а не из всего
 ResolvedBirthData: canonical_place
 и warnings в ключ не входят (§4.2).
 
-CALCULATION_VERSION =
+calculation_version =
   ENGINE_VERSION
 + версия содержимого профилей
 + swisseph.version
 + имя/версия дистрибутива биндинга
 + sha256(native module)
 + sha256(ephe/*.se1)
++ selena_method
++ digest(DEFAULT_BODY_IDS)
++ DEFAULT_EPHEMERIS_FLAGS
 
-Чистая функция без состояния (ADR-0017).
+Это локальное startup-значение resolver.
+Его сбор после configure_ephemeris
+войдёт в wiring C3; calculation_key
+остаётся чистой функцией (ADR-0017).
 end note
 
 Artifacts -> Cache : get(key)

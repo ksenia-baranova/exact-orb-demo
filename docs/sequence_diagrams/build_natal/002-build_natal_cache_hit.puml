@@ -91,7 +91,7 @@ Handler -> Handler : ChartSpec(...)\nидентична предыдущей
 Handler -> Artifacts : ensure_chart(spec, resolved, run)
 activate Artifacts
 
-Artifacts -> Keys : calculation_key(\ncalculation_input_from(resolved),\nspec, CALCULATION_VERSION)
+Artifacts -> Keys : calculation_key(\ncalculation_input_from(resolved),\nspec, calculation_version)
 Keys --> Artifacts : тот же key
 
 Artifacts -> Cache : get(key)

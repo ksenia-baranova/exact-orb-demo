@@ -58,7 +58,7 @@ note over Handler, Artifacts
 синастрия поверх готового натала.
 end note
 
-Artifacts -> Keys : calculation_key(\ncalculation_input_from(resolved),\nspec, CALCULATION_VERSION)
+Artifacts -> Keys : calculation_key(\ncalculation_input_from(resolved),\nspec, calculation_version)
 Keys --> Artifacts : key
 
 Artifacts -> Artifacts : inflight[key] = InFlight(\ntask = create_task(_resolve_and_store(...)),\nleader_run_id = run_id, state)
@@ -126,7 +126,7 @@ else не совпало — в исправной системе невозмо
     deactivate Artifacts
 
     note right of Artifacts
-    Эта ветка не про деплой. CALCULATION_VERSION
+    Эта ветка не про деплой. calculation_version
     входит в хэш ключа: после выкатки те же данные
     дают ДРУГОЙ ключ, и записи прежней версии просто
     недостижимы. Они занимают память до TTL

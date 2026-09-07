@@ -11,6 +11,10 @@ class EphemerisConfigurationError(EphemerisRuntimeError):
     """Base class for ephemeris configuration failures."""
 
 
+class EphemerisBindingAmbiguousError(EphemerisConfigurationError):
+    """Raised when more than one distribution provides ``swisseph``."""
+
+
 class EphemerisNotInitializedError(EphemerisConfigurationError):
     """Raised when calculations run before explicit ephemeris startup."""
 
