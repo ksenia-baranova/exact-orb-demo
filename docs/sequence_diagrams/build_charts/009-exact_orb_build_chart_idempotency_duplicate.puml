@@ -1,0 +1,112 @@
+@startuml
+title exact-orb — N7: double click, retry и idempotency key
+
+autonumber
+hide footbox
+
+skinparam shadowing false
+skinparam responseMessageBelowArrow true
+skinparam sequence {
+    ArrowColor #2563EB
+    LifeLineBorderColor #64748B
+    LifeLineBackgroundColor #FFFFFF
+    ParticipantBorderColor #64748B
+    ParticipantFontColor #0F172A
+    ParticipantBackgroundColor #F8FAFC
+    ActorBorderColor #64748B
+    ActorFontColor #0F172A
+    ActorBackgroundColor #DBEAFE
+    GroupBorderColor #94A3B8
+    GroupHeaderFontColor #1E293B
+    DividerBorderColor #94A3B8
+    DividerFontColor #1E293B
+    NoteBorderColor #94A3B8
+    NoteBackgroundColor #FFFBEA
+    NoteFontColor #334155
+}
+
+actor "Пользователь" as User
+
+box "CLIENT / API" #DBEAFE
+    boundary "Frontend" as FE
+    boundary "FastAPI" as API
+end box
+
+box "APPLICATION" #FFEDD5
+    control "Orchestrator" as Orch
+    control "BuildNatalHandler" as Handler
+end box
+
+box "SESSION STATE" #D1FAE5
+    control "ContextService" as Context
+    database "Session Store" as Store
+end box
+
+box "CALCULATION" #FFF7CC
+    control "ChartArtifactResolver" as Artifact
+    control "CalculationEnginePort" as Engine
+end box
+
+User -> FE : Нажимает «Построить»
+FE -> FE : generate idempotency_key = X\nrequest_fingerprint = F
+
+FE -> API : POST /charts/natal\nkey=X, fingerprint=F
+API -> Orch : BuildNatalCommand
+
+Orch -> Context : register_or_get_build(X, F)
+Context -> Store : atomic lookup / insert
+Store --> Context : CREATED run A\nrevision=N, status=PROCESSING
+Context --> Orch : run A created
+
+Orch ->> Handler : execute(run A)
+Handler ->> Artifact : ensure_natal(A)
+Artifact ->> Engine : calculate(A)
+
+== Повторная доставка того же логического запроса ==
+
+FE -> API : retry / double click\nkey=X, fingerprint=F
+API -> Orch : same BuildNatalCommand
+Orch -> Context : register_or_get_build(X, F)
+Context -> Store : lookup idempotency key
+Store --> Context : EXISTING run A\nstatus=PROCESSING
+Context --> Orch : existing run A
+Orch --> API : 202 ExistingBuild(run_id=A)
+API --> FE : тот же run_id; новый расчёт не создан
+
+Engine --> Artifact : ChartArtifact A
+Artifact --> Handler : ChartArtifact A
+Handler --> Orch : BuildCompleted A
+Orch -> Context : commit_build_success(A)
+Context -> Store : atomic commit profile\n+ mark idempotency result completed
+Store --> Context : committed
+Context --> Orch : success
+
+== Retry после завершения ==
+
+FE -> API : повтор key=X, fingerprint=F
+API -> Orch : BuildNatalCommand
+Orch -> Context : register_or_get_build(X, F)
+Context -> Store : lookup
+Store --> Context : EXISTING COMPLETED run A
+Context --> Orch : completed result reference
+Orch --> API : existing BuildResult A
+API --> FE : тот же логический результат
+
+alt Тот же key X использован с другим payload
+    FE -> API : key=X, fingerprint=F2
+    API -> Orch : conflicting request
+    Orch -> Context : register_or_get_build(X, F2)
+    Context -> Store : compare fingerprint
+    Store --> Context : IDEMPOTENCY_KEY_REUSED
+    Context --> Orch : conflict
+    Orch --> API : 409 IDEMPOTENCY_KEY_REUSED
+    API --> FE : client error
+end
+
+note over Handler, Engine
+Для key=X запускается максимум один Engine calculation
+и выполняется максимум одна мутация SessionProfile.
+Idempotency key не увеличивает build_revision при duplicate delivery.
+end note
+
+@enduml

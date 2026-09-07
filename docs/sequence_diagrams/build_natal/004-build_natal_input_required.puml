@@ -2,7 +2,7 @@
 title exact-orb — BuildNatal: InputRequired (недоверенный place_id и время перехода)
 
 ' Пользовательская ошибка ввода. Кэш и движок не вызываются,
-' SessionProfile не изменяется.
+' SessionState не изменяется.
 
 autonumber
 hide footbox
@@ -59,7 +59,7 @@ end box
 
 box "СЕССИЯ" #D1FAE5
     control "ContextService" as Context
-    database "SessionStore" as Store
+    database "SessionPersistence" as Store
 end box
 
 
@@ -68,11 +68,11 @@ FE -> API : POST /charts/natal
 API -> Orch : BuildNatalCommand
 
 Orch -> Context : load(session_id)
-Context -> Store : get(session_id)
-Store --> Context : SessionProfile | None
-Context --> Orch : SessionContext
+Context -> Store : touch(session_id, now)
+Store --> Context : SessionSnapshot(state = SessionState)
+Context --> Orch : SessionSnapshot
 
-Orch -> Handler : handle(command, context)
+Orch -> Handler : handle(command, snapshot.state, run)
 activate Handler
 
 Handler -> Resolver : resolve(birth_input)
@@ -137,7 +137,7 @@ end note
 
 note over Context, Store
 Записи в Session Store нет.
-Ранее успешный SessionProfile
+Ранее успешный SessionState
 остаётся неизменным.
 
 Многоходового состояния нет: клиент

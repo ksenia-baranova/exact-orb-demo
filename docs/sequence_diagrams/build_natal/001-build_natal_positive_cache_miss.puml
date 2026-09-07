@@ -2,7 +2,7 @@
 title exact-orb — BuildNatal: первое построение, промах кэша
 
 ' Текущая модель реализации (build_natal_components.md).
-' BuildAttempt отсутствует: актуальность держит CAS по profile_version.
+' BuildAttempt отсутствует: актуальность держит CAS по state_version.
 
 autonumber
 hide footbox
@@ -64,9 +64,8 @@ box "РАСЧЁТ" #FFFFF0
 end box
 
 box "СЕССИЯ" #D1FAE5
-    control "ProfileService" as Profile
     control "ContextService" as Context
-    database "SessionStore" as Store
+    database "SessionPersistence\n(.sessions = SessionStore)" as Store
 end box
 
 
@@ -95,9 +94,9 @@ end note
 == Загрузка контекста ==
 
 Orch -> Context : load(session_id)
-Context -> Store : get(session_id)
-Store --> Context : None
-Context --> Orch : SessionContext(profile = None)
+Context -> Store : touch(session_id, now)
+Store --> Context : SessionSnapshot(\nstate = SessionState(state_version = 0),\ndialog = ())
+Context --> Orch : SessionSnapshot
 
 Orch -> Orch : handler = handlers[BuildNatalCommand]
 
@@ -106,7 +105,7 @@ note right of Orch
 Словарь, не LLM (ADR-0006).
 end note
 
-Orch -> Handler : handle(command, context, run)
+Orch -> Handler : handle(command, snapshot.state, run)
 activate Handler
 
 
@@ -223,13 +222,13 @@ end note
 
 == Формирование дельты ==
 
-Handler -> Profile : commit_base_chart(None, birth_input,\nbirth_resolved, spec)
-Profile --> Handler : ContextDelta(profile,\nexpected_version = 0)
+Handler -> Handler : StateDelta(\nbirth_input, birth_resolved,\nbase_chart_spec = spec)
 
-note over Handler, Profile
-ProfileService выполняет чистую мутацию
-и не имеет собственного хранилища.
-Версию присвоит store (ADR-0014).
+note right of Handler
+Handler формирует только StateDelta.
+Original expected_state_version = 0
+сохранил оркестратор; версию присвоит
+store внутри CAS (ADR-0014).
 end note
 
 Handler --> Orch : BuildNatalSuccess(artifact, delta)
@@ -238,15 +237,15 @@ deactivate Handler
 
 == Commit состояния ==
 
-Orch -> Context : save(session_id, delta)
-Context -> Store : compare_and_set(session_id, profile,\nexpected_version = 0)
-Store --> Context : profile_version = 1
-Context --> Orch : 1
+Orch -> Context : save(session_id,\nexpected_state_version = 0, delta)
+Context -> Store : sessions.compare_and_set(\nsession_id, 0, StateDelta, now)
+Store --> Context : 1
+Context --> Orch : Committed(state_version = 1)
 
 
 == Ответ ==
 
-Orch --> API : Success(chart,\nprofile_version = 1, active_view = base)
+Orch --> API : Success(chart, state_version = 1)
 API --> FE : 200 JSON
 FE -> FE : render natal SVG
 FE --> User : натальная карта

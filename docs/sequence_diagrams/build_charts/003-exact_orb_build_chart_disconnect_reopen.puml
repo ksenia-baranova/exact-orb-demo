@@ -1,0 +1,133 @@
+@startuml
+title exact-orb — N1: закрытие вкладки и восстановление незавершённого build
+
+autonumber
+hide footbox
+
+skinparam shadowing false
+skinparam responseMessageBelowArrow true
+skinparam sequence {
+    ArrowColor #2563EB
+    LifeLineBorderColor #64748B
+    LifeLineBackgroundColor #FFFFFF
+    ParticipantBorderColor #64748B
+    ParticipantFontColor #0F172A
+    ParticipantBackgroundColor #F8FAFC
+    ActorBorderColor #64748B
+    ActorFontColor #0F172A
+    ActorBackgroundColor #DBEAFE
+    GroupBorderColor #94A3B8
+    GroupHeaderFontColor #1E293B
+    DividerBorderColor #94A3B8
+    DividerFontColor #1E293B
+    NoteBorderColor #94A3B8
+    NoteBackgroundColor #FFFBEA
+    NoteFontColor #334155
+}
+
+actor "Пользователь" as User
+
+box "CLIENT" #DBEAFE
+    boundary "Frontend" as FE
+end box
+
+box "API / APPLICATION" #EDE9FE
+    boundary "FastAPI" as API
+    control "Orchestrator" as Orch
+    control "BuildNatalHandler" as Handler
+    control "ProfileService" as Profile
+end box
+
+box "SESSION STATE" #D1FAE5
+    control "ContextService" as Context
+    database "Session Store" as Store
+end box
+
+box "CALCULATION" #FFF7CC
+    control "ChartArtifactResolver" as Artifact
+    control "CalculationEnginePort" as Engine
+end box
+
+== Команда принята backend ==
+
+User -> FE : Заполняет форму и нажимает «Построить»
+FE -> API : POST /charts/natal
+API -> Orch : command + session_id\nBuildNatalCommand
+
+Orch -> Context : load(session_id)
+Context -> Store : get(session_id)
+Store --> Context : SessionContext\nprofile_version = 0
+Context --> Orch : SessionContext
+
+Orch -> Handler : prepare(command, SessionContext)
+Handler --> Orch : BuildAttempt A\nrevision = N\nexpected_profile_version = 0
+
+Orch -> Context : start_build(session_id, A)
+Context -> Store : CAS current_build = A(PROCESSING)
+Store --> Context : saved
+Context --> Orch : build registered
+
+Orch ->> Handler : execute(A)
+Handler ->> Artifact : ensure_natal(A)
+Artifact ->> Engine : calculate_natal(A)
+
+== Клиент отключается и открывает страницу снова ==
+
+User -> FE : Закрывает вкладку
+FE ->x API : HTTP / SSE connection closed
+
+User -> FE : Открывает страницу снова
+FE -> API : GET /session/view\nHttpOnly cookie
+API -> Orch : GetSessionView
+Orch -> Context : load(session_id)
+Context -> Store : get(session_id)
+Store --> Context : current_build = A(PROCESSING)
+Context --> Orch : SessionContext
+Orch --> API : BuildStatus(PROCESSING, run_id=A)
+API --> FE : 200 «Расчёт выполняется»
+FE --> User : Показывает статус выполнения
+
+== Backend завершает расчёт независимо от вкладки ==
+
+Engine --> Artifact : ChartArtifact
+Artifact --> Handler : ChartArtifact
+Handler -> Profile : prepare_base_delta(A, ChartArtifact)
+Profile --> Handler : SessionProfileDelta
+Handler --> Orch : BuildCompleted(A, delta)
+
+Orch -> Context : commit_build_success(\nrun_id=A, revision=N,\nexpected_profile_version=0, delta)
+Context -> Store : atomic CAS profile + clear current_build
+Store --> Context : committed\nprofile_version = 1
+Context --> Orch : commit confirmed
+
+== Повторное чтение готового состояния ==
+
+FE -> API : GET /session/view
+API -> Orch : GetSessionView
+Orch -> Context : load(session_id)
+Context -> Store : get(session_id)
+Store --> Context : SessionProfile(base_chart)\ncurrent_build = None
+Context --> Orch : SessionContext
+Orch -> Artifact : restore(base_chart.spec)
+Artifact --> Orch : ChartArtifact
+Orch --> API : ChartView
+API --> FE : 200 Chart DTO
+FE --> User : Показывает готовую карту
+
+alt Backend не поддерживает detached execution
+    note over Orch, Store
+    Если request-scoped вычисление отменилось после disconnect,
+    PROCESSING хранится только до истечения run lease.
+    После timeout попытка становится INTERRUPTED,
+    а Frontend предлагает явный retry.
+    end note
+end
+
+note over Handler, Store
+Закрытие вкладки не мутирует SessionProfile
+и само по себе не отменяет уже принятый intent.
+Успешный результат применяется только через
+атомарный commit текущего BuildAttempt.
+end note
+
+@enduml

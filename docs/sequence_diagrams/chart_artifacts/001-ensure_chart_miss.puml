@@ -216,10 +216,11 @@ note over Handler
 Каждый caller получает собственный
 mutable-граф chart и вложенных моделей.
 
-Резолвер в сессию не пишет, profile_version
-не знает и не решает, становится ли карта
-активной. Это работа handler'а
-и ProfileService.
+Резолвер в сессию не пишет, state_version
+не знает и не решает, становится ли артефакт
+базовой картой. Handler формирует StateDelta,
+а commit координирует ApplicationOrchestrator
+через ContextService.
 end note
 
 @enduml

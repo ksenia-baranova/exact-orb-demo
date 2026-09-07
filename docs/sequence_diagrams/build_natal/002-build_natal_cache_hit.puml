@@ -61,9 +61,8 @@ box "РАСЧЁТ" #FFFFF0
 end box
 
 box "СЕССИЯ" #D1FAE5
-    control "ProfileService" as Profile
     control "ContextService" as Context
-    database "SessionStore" as Store
+    database "SessionPersistence\n(.sessions = SessionStore)" as Store
 end box
 
 
@@ -77,11 +76,11 @@ FE -> API : POST /charts/natal\nтот же BirthInput
 API -> Orch : BuildNatalCommand\n+ RunContext(новый run_id)
 
 Orch -> Context : load(session_id)
-Context -> Store : get(session_id)
-Store --> Context : SessionProfile\n(profile_version = 1)
-Context --> Orch : SessionContext(profile)
+Context -> Store : touch(session_id, now)
+Store --> Context : SessionSnapshot(\nstate = SessionState(state_version = 1), ...)
+Context --> Orch : SessionSnapshot
 
-Orch -> Handler : handle(command, context, run)
+Orch -> Handler : handle(command, snapshot.state, run)
 activate Handler
 
 Handler -> Resolver : resolve(birth_input)
@@ -111,18 +110,17 @@ EngineService не вызывается вовсе.
 не пускает второй commit.
 end note
 
-Handler -> Profile : commit_base_chart(profile, ...)
-Profile --> Handler : ContextDelta(expected_version = 1)
+Handler -> Handler : StateDelta(\nbirth_input, birth_resolved,\nbase_chart_spec = spec)
 
 Handler --> Orch : BuildNatalSuccess(artifact, delta)
 deactivate Handler
 
-Orch -> Context : save(session_id, delta)
-Context -> Store : compare_and_set(expected_version = 1)
-Store --> Context : profile_version = 2
-Context --> Orch : 2
+Orch -> Context : save(session_id,\nexpected_state_version = 1, delta)
+Context -> Store : sessions.compare_and_set(\nsession_id, 1, StateDelta, now)
+Store --> Context : 2
+Context --> Orch : Committed(state_version = 2)
 
-Orch --> API : Success(chart, profile_version = 2)
+Orch --> API : Success(chart, state_version = 2)
 API --> FE : 200 JSON
 FE --> User : та же карта
 

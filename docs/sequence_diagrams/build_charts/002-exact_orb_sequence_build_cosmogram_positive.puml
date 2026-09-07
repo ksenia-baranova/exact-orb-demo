@@ -1,0 +1,318 @@
+@startuml
+title exact-orb — позитивный сценарий: построение космограммы (MVP)
+
+' Первое построение базовой карты при неизвестном времени рождения:
+' дата и place_id известны, место разрешается однозначно,
+' cache miss, local engine, Луна не меняет знак в течение суток.
+
+autonumber
+hide footbox
+
+skinparam shadowing false
+skinparam responseMessageBelowArrow true
+skinparam sequence {
+    ArrowColor #2563EB
+    LifeLineBorderColor #64748B
+    LifeLineBackgroundColor #FFFFFF
+
+    ParticipantBorderColor #64748B
+    ParticipantFontColor #0F172A
+    ParticipantBackgroundColor #F8FAFC
+
+    ActorBorderColor #64748B
+    ActorFontColor #0F172A
+    ActorBackgroundColor #DBEAFE
+
+    GroupBorderColor #94A3B8
+    GroupHeaderFontColor #1E293B
+
+    DividerBorderColor #94A3B8
+    DividerFontColor #1E293B
+
+    NoteBorderColor #94A3B8
+    NoteBackgroundColor #FFFBEA
+    NoteFontColor #334155
+}
+
+actor "Пользователь" as User
+
+
+box "1. CLIENT" #DBEAFE
+    boundary "Frontend" as Frontend
+end box
+
+
+box "2. API / TRANSPORT" #EDE9FE
+    boundary "FastAPI" as API
+
+    control "Session Middleware" as Session
+
+    control "RateLimiter" as RateLimiter
+end box
+
+
+box "3. APPLICATION" #FFEDD5
+    control "Orchestrator" as Orch
+
+    control "BuildNatalHandler" as Handler
+
+    control "ProfileService" as Profile
+end box
+
+
+box "4. SESSION STATE" #D1FAE5
+    control "ContextService" as Context
+
+    database "Session Store" as SessionStore
+end box
+
+
+box "5. BIRTH DATA RESOLUTION" #D9F9FF
+    control "BirthDataResolver" as BirthResolver
+
+    control "PlaceResolverPort" as PlacePort
+
+    control "Place Adapter" as PlaceAdapter
+
+    control "Historical TZ Resolver" as TZResolver
+end box
+
+
+box "6. CHART ARTIFACTS" #E8F5E9
+    control "ChartArtifactResolver" as ArtifactResolver
+
+    control "CalculationKeyFactory" as KeyFactory
+
+    database "Calculation Cache" as CalcCache
+end box
+
+
+box "7. CALCULATION ENGINE" #FFFFF0
+    control "CalculationEnginePort" as EnginePort
+
+    control "LocalEngineAdapter" as LocalEngine
+
+    control "EngineService" as Engine
+
+    entity "Swiss Ephemeris" as Swiss
+end box
+
+
+== Ввод и транспортные проверки ==
+
+User -> Frontend : Вводит дату и место рождения\nи отмечает «время неизвестно»
+
+Frontend -> API : POST /charts/natal\nBirthInput(date, time_status = unknown, place_id)
+
+
+note over Frontend, BirthResolver
+Frontend передаёт дату, признак
+неизвестного времени и canonical place_id.
+
+Место остаётся жёстким слотом.
+Координаты, tz_id и reference UTC datetime
+определяются на backend.
+end note
+
+
+API -> Session : resolve_or_create(HttpOnly cookie)
+
+Session --> API : session_id
+
+
+API -> RateLimiter : check(IP, session_id, endpoint)
+
+RateLimiter --> API : RequestPermit
+
+
+API -> Orch : BuildNatalCommand\n(session_id, BirthInput)
+
+
+== Загрузка сессии ==
+
+Orch -> Context : load(session_id)
+
+Context -> SessionStore : get(session_id)
+
+SessionStore --> Context : SessionContext\n(profile_version = 0)
+
+Context --> Orch : SessionContext
+
+
+Orch -> Handler : handle(command, SessionContext)
+
+activate Handler
+
+
+== Разрешение места и опорного момента ==
+
+Handler -> BirthResolver : resolve(BirthInput)
+
+activate BirthResolver
+
+
+BirthResolver -> PlacePort : resolve(place_id)
+
+PlacePort -> PlaceAdapter : lookup(place_id)
+
+PlaceAdapter --> PlacePort : canonical place\n(latitude, longitude, tz_id)
+
+PlacePort --> BirthResolver : PlaceResolution
+
+
+BirthResolver -> BirthResolver : choose reference local time = 12:00\npositions only; time_assumed = true
+
+
+BirthResolver -> TZResolver : resolve(date @ 12:00, tz_id)
+
+TZResolver --> BirthResolver : utc_offset + reference_utc_datetime
+
+
+BirthResolver --> Handler : ResolvedBirthData\n(local_date, latitude, longitude, tz_id,\nreference_local_time = 12:00,\nreference_utc_datetime,\ntime_known = false, time_assumed = true)
+
+deactivate BirthResolver
+
+
+Handler -> Handler : create base Cosmogram ChartSpec\nchart_kind = cosmogram\ninclude = {positions, aspects, configurations}
+
+
+note right of Handler
+Полдень является только опорным
+моментом расчёта долгот.
+
+Он не превращается в «примерное»
+время рождения и не разрешает
+расчёт домов или асцендента.
+end note
+
+
+== Получение или расчёт ChartArtifact ==
+
+Handler -> ArtifactResolver : ensure_natal(\nbirth_resolved, Cosmogram ChartSpec)
+
+activate ArtifactResolver
+
+
+ArtifactResolver -> KeyFactory : build(ResolvedBirthData,\nCosmogram ChartSpec, CalculationVersion)
+
+
+note right of KeyFactory
+CalculationVersion включает:
+
+• engine version;
+• swisseph version;
+• fingerprint ephe/*.se1.
+end note
+
+
+KeyFactory --> ArtifactResolver : calculation_key
+
+
+ArtifactResolver -> CalcCache : get(calculation_key)
+
+CalcCache --> ArtifactResolver : cache miss
+
+
+ArtifactResolver -> EnginePort : calculate_natal(CalculationRequest)
+
+EnginePort -> LocalEngine : execute(request)
+
+LocalEngine -> Engine : calculate_natal(\ninclude = {positions, aspects, configurations})
+
+activate Engine
+
+
+Engine -> Swiss : planetary positions\nat reference UTC datetime
+
+Swiss --> Engine : ephemeris positions
+
+
+Engine -> Swiss : Moon longitude at boundaries\nof the local birth date
+
+Swiss --> Engine : Moon day-range positions
+
+
+Engine -> Engine : verify Moon sign is stable\ncalculate aspects and configurations
+
+
+Engine --> LocalEngine : ChartArtifact\nchart_kind = cosmogram\nbodies, aspects, configurations\ncusps = None, angles = None\nhouse_rulers = None, strength = None\nwarnings = [time_unknown]
+
+deactivate Engine
+
+
+LocalEngine --> EnginePort : ChartArtifact
+
+EnginePort --> ArtifactResolver : ChartArtifact
+
+
+ArtifactResolver -> CalcCache : put(calculation_key, ChartArtifact)
+
+ArtifactResolver --> Handler : ChartArtifact
+
+deactivate ArtifactResolver
+
+
+note over ArtifactResolver, CalcCache
+Calculation Cache удаляемый.
+
+При eviction космограмма полностью
+воспроизводится из birth_resolved,
+Cosmogram ChartSpec и CalculationVersion.
+end note
+
+
+== Атомарное обновление SessionProfile ==
+
+Handler -> Profile : commit_base_chart(\nexpected_version = 0,\nbirth_input, birth_resolved,\nCosmogram ChartSpec)
+
+
+Profile --> Handler : SessionProfileDelta\nprofile_version = 1\nbase_chart = {version: 1, cosmogram spec}\nderived_chart = None\nactive_view = base
+
+
+note over Handler, Profile
+SessionProfile изменяется только после
+успешного получения ChartArtifact.
+
+В сессии сохраняются и исходный ввод
+«время неизвестно», и разрешённый
+опорный момент для воспроизводимости.
+end note
+
+
+Handler --> Orch : BuildResult(ChartArtifact)\n+ ContextDelta
+
+deactivate Handler
+
+
+Orch -> Context : save(session_id, ContextDelta,\nexpected_version = 0)
+
+Context -> SessionStore : compare-and-set SessionProfile
+
+SessionStore --> Context : saved\nprofile_version = 1
+
+Context --> Orch : save confirmed
+
+
+== Ответ клиенту ==
+
+Orch --> API : BuildNatalResponse\nchart_kind = cosmogram\nChart DTO + warnings\nactive_view = base
+
+API --> Frontend : 200 JSON
+
+
+Frontend -> Frontend : render cosmogram SVG\nplanets + aspects; no houses
+
+Frontend --> User : Показывает космограмму\nс предупреждением о неизвестном времени
+
+
+note over Orch, Engine
+LLM в построении космограммы
+не участвует.
+
+Успешный результат явно несёт
+chart_kind = cosmogram и warning
+об неизвестном времени; отсутствие домов
+не используется для угадывания вида карты.
+end note
+
+@enduml

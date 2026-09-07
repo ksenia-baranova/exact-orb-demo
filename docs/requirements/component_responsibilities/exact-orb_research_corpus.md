@@ -9,9 +9,9 @@ privacy-риск принят.
 описывает Research кратко с точки зрения session. При расхождении нормативны
 настоящий документ и ADR-0023.
 
-Статус: **решения приняты, реализации нет.** P5a реализует contracts,
-projection и InMemory; P5b — SQLite и аналитически пригодную схему;
-application wiring выполняется отдельной задачей.
+Статус: **P5a реализован.** Contracts, whitelist-проекция и InMemory adapter
+готовы и покрыты тестами. P5b — SQLite и аналитически пригодная схема — ещё
+не реализован; application wiring выполняется отдельной задачей.
 
 Согласовано 2026-09-06.
 
@@ -33,7 +33,8 @@ append-only события качества.
 - whitelist-проекция `ChartArtifact -> ChartFeatures`;
 - canonical content digest format;
 - write-only `ResearchCorpus`;
-- InMemory и SQLite adapters за общим conformance.
+- реализованный InMemory adapter и запланированный SQLite adapter за общим
+  behavioral conformance.
 
 Не входят:
 
@@ -376,9 +377,10 @@ Session не импортирует Research. `ContextService` остаётся 
 
 ## 11. Реализации и conformance
 
-InMemory и SQLite проходят один behavioral conformance. Factory возвращает
-две разные фасеты `primary is not peer`, разделяющие один backend; иначе
-cross-handle race вырождается.
+P5a реализует InMemory adapter и общий behavioral conformance. P5b обязан
+подключить к тому же набору SQLite adapter. Factory возвращает две разные
+фасеты `primary is not peer`, разделяющие один backend; иначе cross-handle
+race вырождается.
 
 Публичной фабрики backend нет. Чтобы получить две фасеты над одним backend,
 InMemory-override в `test_in_memory.py` создаёт private backend напрямую — это
@@ -389,8 +391,8 @@ concrete test factory. Общий `conformance.py` не импортирует �
 
 Generic race использует внешний start gate и доказывает полный multiset
 outcomes и сохранённое содержимое повторными writes. Он не объявляется
-доказательством physical overlap внутри private critical section. InMemory и
-SQLite имеют adapter-specific positive controls.
+доказательством physical overlap внутри private critical section. InMemory
+имеет adapter-specific positive controls; SQLite должен получить их в P5b.
 
 InMemory выполняет проверку ID/digest/parent и вставку в одной backend-scoped
 секции без `await` после входа. SQLite atomicity, durable schema, restart и

@@ -2,6 +2,9 @@
 
 Дата: 2026-08-21.  
 Ревизия: 2026-08-26 — отменено ограничение редакции 2026-08-25 «Orchestrator только для потоков с интерпретацией»; разделены `Application Orchestrator` и `Agent Runtime`; построение и перестроение карты снова проходят через Application Orchestrator, но не через Agent Runtime.  
+Ревизия: 2026-09-06 — терминология session-flow приведена к ADR-0009 и
+ADR-0014: `SessionState`, `StateDelta`, CAS-предикат передаётся отдельно;
+`ProfileService` не вводится. `SetActiveView` отмечен как post-MVP по ADR-0016.
 Статус: принято.
 
 ## Контекст
@@ -19,7 +22,7 @@
 - correlation через `run_id`;
 - вызов соответствующего handler;
 - проверку актуальности результата;
-- применение `ContextDelta`;
+- применение `StateDelta`;
 - atomic state transition;
 - классификацию результата и отказа;
 - observability.
@@ -63,7 +66,7 @@ API → Application ───────┼─ InterpretSelectionHandler
 ```text
 BuildNatalCommand
 UpdateBirthDataCommand
-SetActiveViewCommand
+SetActiveViewCommand  // после MVP, вместе с производными картами
 InterpretSelectionCommand
 InterpretMessageCommand
 ```
@@ -91,7 +94,7 @@ Application Orchestrator:
 2. загружает необходимый application context;
 3. выбирает handler;
 4. запускает handler;
-5. принимает результат handler'а и `ContextDelta`;
+5. принимает результат handler'а и `StateDelta`;
 6. координирует сохранение состояния;
 7. контролирует application-level completion;
 8. приводит outcomes компонентов к контракту application/API;
@@ -111,8 +114,7 @@ API
 → BirthDataResolver
 → ChartArtifactResolver
 → EngineService
-→ ProfileService
-→ ContextDelta
+→ StateDelta
 → Application Orchestrator
 → ContextService
 ```
@@ -195,11 +197,11 @@ Application Orchestrator тем более не управляет отдель�
 
 `ContextService` остаётся владельцем persistence.
 
-`ProfileService` выполняет предметные мутации `SessionProfile` и формирует изменение состояния.
+Handler принимает `SessionState`, выполняет предметное решение и возвращает
+all-set `StateDelta`. Отдельный `ProfileService` не вводится.
 
-Handler вызывает `ProfileService` и возвращает `ContextDelta`.
-
-Application Orchestrator координирует применение дельты через `ContextService`.
+Application Orchestrator координирует применение дельты через `ContextService`,
+передавая отдельно исходный `expected_state_version` как CAS-предикат.
 
 Сам Application Orchestrator предметных решений о содержимом профиля не принимает.
 
@@ -216,7 +218,7 @@ Application Orchestrator не хранит пользовательское со
 - загруженный context;
 - выбранный handler;
 - handler result;
-- `ContextDelta`;
+- `StateDelta`;
 - correlation metadata;
 - application outcome;
 - открытый SSE-stream для interpretation-flow.
@@ -261,7 +263,7 @@ Application Orchestrator:
 - не выполняет DataSelector;
 - не принимает policy-решения вместо PolicyService;
 - не определяет стоимость вместо AdmissionControl;
-- не мутирует `SessionProfile` самостоятельно.
+- не мутирует `SessionState` самостоятельно.
 
 ## Чего Agent Runtime не делает
 
@@ -271,7 +273,7 @@ Agent Runtime:
 - не управляет session cookie;
 - не определяет верхнеуровневый тип application command;
 - не владеет Session Store;
-- не применяет `ContextDelta`;
+- не применяет `StateDelta`;
 - не создаёт предметное состояние пользователя;
 - не реализует астрологические расчёты.
 

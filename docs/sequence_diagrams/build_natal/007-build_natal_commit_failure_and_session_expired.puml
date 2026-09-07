@@ -1,5 +1,5 @@
 @startuml
-title exact-orb — BuildNatal: StateCommitFailed и SessionExpired
+title exact-orb — BuildNatal: StateCommitFailed и SessionAbsent(expired)
 
 ' Расчёт прошёл, состояние — нет. Успешный расчёт не равен
 ' успешной пользовательской операции (ADR-0006).
@@ -56,9 +56,8 @@ box "РАСЧЁТ" #FFFFF0
 end box
 
 box "СЕССИЯ" #D1FAE5
-    control "ProfileService" as Profile
     control "ContextService" as Context
-    database "SessionStore" as Store
+    database "SessionPersistence\n(.sessions = SessionStore)" as Store
 end box
 
 
@@ -67,11 +66,11 @@ FE -> API : POST /charts/natal
 API -> Orch : BuildNatalCommand
 
 Orch -> Context : load(session_id)
-Context -> Store : get(session_id)
-Store --> Context : SessionProfile\n(profile_version = 3)
-Context --> Orch : SessionContext
+Context -> Store : touch(session_id, now)
+Store --> Context : SessionSnapshot(\nstate = SessionState(state_version = 3), ...)
+Context --> Orch : SessionSnapshot
 
-Orch -> Handler : handle(command, context)
+Orch -> Handler : handle(command, snapshot.state, run)
 activate Handler
 
 Handler -> Artifacts : ensure_chart(spec, resolved, run)
@@ -81,8 +80,7 @@ Artifacts -> Artifacts : ChartArtifact(key, version, result)
 Artifacts -> Cache : put(key, bytes)
 Artifacts --> Handler : ChartArtifact
 
-Handler -> Profile : commit_base_chart(...)
-Profile --> Handler : ContextDelta(expected_version = 3)
+Handler -> Handler : StateDelta(\nbirth_input, birth_resolved,\nbase_chart_spec = spec)
 
 Handler --> Orch : BuildNatalSuccess(artifact, delta)
 deactivate Handler
@@ -95,8 +93,8 @@ end note
 
 alt Session Store недоступен при записи
 
-    Orch -> Context : save(session_id, delta)
-    Context -> Store : compare_and_set(expected_version = 3)
+    Orch -> Context : save(session_id, 3, delta)
+    Context -> Store : sessions.compare_and_set(\nsession_id, 3, delta, now)
     Store -[#C62828]-> Context : timeout / unavailable
     Context --> Orch : StateCommitFailed(error_code)
 
@@ -116,12 +114,12 @@ alt Session Store недоступен при записи
 
 else TTL сессии истёк во время расчёта
 
-    Orch -> Context : save(session_id, delta)
-    Context -> Store : compare_and_set(expected_version = 3)
-    Store --> Context : сессии нет
-    Context --> Orch : SessionExpired
+    Orch -> Context : save(session_id, 3, delta)
+    Context -> Store : sessions.compare_and_set(\nsession_id, 3, delta, now)
+    Store --> Context : SessionAbsent(reason = expired)
+    Context --> Orch : SessionAbsent(reason = expired)
 
-    Orch --> API : SessionExpired
+    Orch --> API : SessionAbsent(reason = expired)
     API --> FE : session_expired
     FE -> FE : возврат к bootstrap
     FE --> User : форма ввода данных рождения

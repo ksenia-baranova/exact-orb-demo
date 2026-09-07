@@ -1,0 +1,152 @@
+@startuml
+title exact-orb — N6/N10: конкурирующие build A и B, latest accepted build wins
+
+autonumber
+hide footbox
+
+skinparam shadowing false
+skinparam responseMessageBelowArrow true
+skinparam sequence {
+    ArrowColor #2563EB
+    LifeLineBorderColor #64748B
+    LifeLineBackgroundColor #FFFFFF
+    ParticipantBorderColor #64748B
+    ParticipantFontColor #0F172A
+    ParticipantBackgroundColor #F8FAFC
+    ActorBorderColor #64748B
+    ActorFontColor #0F172A
+    ActorBackgroundColor #DBEAFE
+    GroupBorderColor #94A3B8
+    GroupHeaderFontColor #1E293B
+    DividerBorderColor #94A3B8
+    DividerFontColor #1E293B
+    NoteBorderColor #94A3B8
+    NoteBackgroundColor #FFFBEA
+    NoteFontColor #334155
+}
+
+actor "Пользователь" as User
+
+box "CLIENT / API" #DBEAFE
+    boundary "Frontend" as FE
+    boundary "FastAPI" as API
+end box
+
+box "APPLICATION" #FFEDD5
+    control "Orchestrator" as Orch
+    control "BuildNatalHandler" as Handler
+    control "ProfileService" as Profile
+end box
+
+box "SESSION STATE" #D1FAE5
+    control "ContextService" as Context
+    database "Session Store" as Store
+end box
+
+box "CALCULATION" #FFF7CC
+    control "ChartArtifactResolver" as Artifact
+    control "CalculationEnginePort" as Engine
+    database "Calculation Cache" as Cache
+end box
+
+== Запуск A ==
+
+User -> FE : Отправляет BirthInput A
+FE -> API : POST /charts/natal [A]
+API -> Orch : BuildNatalCommand A
+
+Orch -> Context : register_build(A, expected_profile_version=5)
+Context -> Store : atomic increment revision
+Store --> Context : BuildAttempt A\nrevision=10, expected_profile_version=5
+Context --> Orch : A registered
+
+Orch ->> Handler : execute(A)
+Handler ->> Artifact : ensure_natal(A)
+Artifact ->> Engine : calculate(A)
+
+== Пользователь возвращается и отправляет более новые данные B ==
+
+User -> FE : Закрывает и снова открывает вкладку
+User -> FE : Отправляет BirthInput B
+FE -> API : POST /charts/natal [B]
+API -> Orch : BuildNatalCommand B
+
+Orch -> Context : register_build(B, expected_profile_version=5)
+Context -> Store : atomic increment revision\ncurrent_build = B
+Store --> Context : BuildAttempt B\nrevision=11, expected_profile_version=5
+Context --> Orch : B registered
+
+Orch ->> Handler : execute(B)
+Handler ->> Artifact : ensure_natal(B)
+Artifact ->> Engine : calculate(B)
+
+alt A завершается первым
+    Engine --> Artifact : ChartArtifact A
+    Artifact -> Cache : put(key_A, artifact_A)
+    Artifact --> Handler : ChartArtifact A
+    Handler -> Profile : prepare_base_delta(A)
+    Profile --> Handler : delta_A [pure, not persisted]
+    Handler --> Orch : BuildCompleted(A, delta_A)
+
+    Orch -> Context : commit_build_success(A, rev=10, expected=5, delta_A)
+    Context -> Store : atomic CAS current_build.rev=10\nAND profile_version=5
+    Store --> Context : STALE_BUILD\ncurrent_build.rev=11
+    Context --> Orch : STALE_BUILD
+
+    note over Profile, Store
+    delta_A не применяется.
+    Artifact A остаётся допустимым cache entry.
+    end note
+
+    Engine --> Artifact : ChartArtifact B
+    Artifact -> Cache : put(key_B, artifact_B)
+    Artifact --> Handler : ChartArtifact B
+    Handler -> Profile : prepare_base_delta(B)
+    Profile --> Handler : delta_B
+    Handler --> Orch : BuildCompleted(B, delta_B)
+
+    Orch -> Context : commit_build_success(B, rev=11, expected=5, delta_B)
+    Context -> Store : atomic CAS current_build.rev=11\nAND profile_version=5
+    Store --> Context : committed\nprofile_version=6, base_chart=B\ncurrent_build=None
+    Context --> Orch : success
+    Orch --> API : BuildResult B
+    API --> FE : Chart DTO B
+    FE --> User : Показывает карту B
+
+else B завершается первым; A — позже (N10)
+    Engine --> Artifact : ChartArtifact B
+    Artifact -> Cache : put(key_B, artifact_B)
+    Artifact --> Handler : ChartArtifact B
+    Handler -> Profile : prepare_base_delta(B)
+    Profile --> Handler : delta_B
+    Handler --> Orch : BuildCompleted(B, delta_B)
+
+    Orch -> Context : commit_build_success(B, rev=11, expected=5, delta_B)
+    Context -> Store : atomic CAS current_build.rev=11\nAND profile_version=5
+    Store --> Context : committed\nprofile_version=6, base_chart=B\ncurrent_build=None
+    Context --> Orch : success
+    Orch --> API : BuildResult B
+    API --> FE : Chart DTO B
+    FE --> User : Показывает карту B
+
+    Engine --> Artifact : ChartArtifact A
+    Artifact -> Cache : put(key_A, artifact_A)
+    Artifact --> Handler : ChartArtifact A
+    Handler -> Profile : prepare_base_delta(A)
+    Profile --> Handler : delta_A [pure, not persisted]
+    Handler --> Orch : BuildCompleted(A, delta_A)
+
+    Orch -> Context : commit_build_success(A, rev=10, expected=5, delta_A)
+    Context -> Store : atomic CAS current_build.rev=10\nAND profile_version=5
+    Store --> Context : STALE_BUILD\nprofile_version=6 / current build changed
+    Context --> Orch : STALE_BUILD
+end
+
+note over Context, Store
+Обе проверки обязательны:
+1) attempt.revision == current_build.revision;
+2) expected_profile_version == actual_profile_version.
+Старый run не делает rollback и не меняет active_view.
+end note
+
+@enduml

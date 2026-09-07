@@ -57,25 +57,25 @@ end box
 
 box "СЕССИЯ" #D1FAE5
     control "ContextService" as Context
-    database "SessionStore" as Store
+    database "SessionPersistence\n(.sessions = SessionStore)" as Store
 end box
 
 
-== Оба прогона стартуют при profile_version = 5 ==
+== Оба прогона стартуют при state_version = 5 ==
 
 User -> FE : правит дату рождения
 FE -> OrchA : BuildNatalCommand\n+ RunContext(run_id = A)
 OrchA -> Context : load(session_id)
-Context -> Store : get(session_id)
-Store --> Context : profile_version = 5
-Context --> OrchA : SessionContext
+Context -> Store : touch(session_id, now_A)
+Store --> Context : SessionSnapshot(\nstate.state_version = 5)
+Context --> OrchA : SessionSnapshot
 
 User -> FE : сразу правит ещё раз
 FE -> OrchB : BuildNatalCommand\n+ RunContext(run_id = B)
 OrchB -> Context : load(session_id)
-Context -> Store : get(session_id)
-Store --> Context : profile_version = 5
-Context --> OrchB : SessionContext
+Context -> Store : touch(session_id, now_B)
+Store --> Context : SessionSnapshot(\nstate.state_version = 5)
+Context --> OrchB : SessionSnapshot
 
 OrchA -> HandlerA : handle(...)
 OrchB -> HandlerB : handle(...)
@@ -89,12 +89,12 @@ end note
 
 == B заканчивается первым ==
 
-HandlerB --> OrchB : BuildNatalSuccess(artifact_B,\ndelta{expected_version = 5})
-OrchB -> Context : save(session_id, delta_B)
-Context -> Store : compare_and_set(expected_version = 5)
-Store --> Context : profile_version = 6
-Context --> OrchB : 6
-OrchB --> FE : Success(chart_B, profile_version = 6)
+HandlerB --> OrchB : BuildNatalSuccess(artifact_B, delta_B)
+OrchB -> Context : save(session_id, 5, delta_B)
+Context -> Store : sessions.compare_and_set(\nsession_id, 5, delta_B, now_B)
+Store --> Context : 6
+Context --> OrchB : Committed(state_version = 6)
+OrchB --> FE : Success(chart_B, state_version = 6)
 
 
 == A заканчивается позже ==
@@ -103,7 +103,7 @@ HandlerA -> Artifacts : ensure_chart(spec_A, resolved_A, run_A)
 Artifacts -> Cache : put(key_A, bytes_A)
 Artifacts --> HandlerA : ChartArtifact
 
-HandlerA --> OrchA : BuildNatalSuccess(artifact_A,\ndelta{expected_version = 5})
+HandlerA --> OrchA : BuildNatalSuccess(artifact_A, delta_A)
 
 note right of Cache
 Артефакт A **корректен** и остаётся
@@ -114,10 +114,10 @@ Calculation Cache не является
 пользовательским состоянием (ADR-0017).
 end note
 
-OrchA -> Context : save(session_id, delta_A)
-Context -> Store : compare_and_set(expected_version = 5)
-Store -[#C62828]-> Context : VersionConflict\n(actual = 6)
-Context --> OrchA : Superseded(expected = 5, actual = 6)
+OrchA -> Context : save(session_id, 5, delta_A)
+Context -> Store : sessions.compare_and_set(\nsession_id, 5, delta_A, now_A)
+Store -[#C62828]-> Context : VersionConflict\n(actual.state_version = 6)
+Context --> OrchA : Superseded(actual)
 
 OrchA --> FE : Superseded
 FE --> User : карта не меняется;\nактивной остаётся chart_B
@@ -137,7 +137,7 @@ note over OrchA, Store
 с неактивной картой.
 
 Прежняя модель решала это парой проверок
-attempt.revision и expected_profile_version.
+attempt.revision и expected state version.
 Одного CAS достаточно: A упирается в него
 независимо от того, знает ли система
 о существовании B.

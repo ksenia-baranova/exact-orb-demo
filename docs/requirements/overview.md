@@ -1,8 +1,12 @@
 # Архитектура exact-orb
 
-Статус документа: рабочий, версия 2.0 (2026-08-25).
+Статус документа: рабочий, версия 2.1 (2026-09-06).
 Заменяет версию 1.0, описывавшую систему как чистый веб-чат.
 Область: агентский и прикладной слой поверх детерминированного расчётного ядра.
+
+Ревизия 2026-09-06: session-модель приведена к ADR-0009/0014/0016 —
+`SessionState`, `StateDelta`, `state_version`, одна базовая карта в MVP и
+отдельный `DialogStore`; статусы реализованных компонентов актуализированы.
 
 ---
 
@@ -54,7 +58,7 @@ exact-orb интерпретирует астрологические техни
 | КЛИЕНТ | Frontend, Birth Form, Location Dropdown, Controls, Chart Renderer | транспорт | ввод и отображение |
 | API | FastAPI, Session Middleware, Build / Selection / Message API | транспорт | приём запроса, JSON и SSE |
 | КООРДИНАЦИЯ | Orchestrator, три Handler'а | детерминированное | последовательность вызовов |
-| СЕССИЯ | ContextService, ProfileService, Session Store | состояние | сессия с TTL, пока анонимная |
+| СЕССИЯ | ContextService, SessionPersistence, Session Store, Dialog Store | состояние | сессия с TTL, пока анонимная |
 | РЕЗОЛВ | BirthDataResolver, PlaceResolverPort, Historical TZ | детерминированное | ввод → расчётные параметры |
 | ПОНИМАНИЕ | ActionContractBuilder, InputGuard, IntentService, ContractValidator | смешанное | вход → контракт |
 | POLICY | CapabilityService, PolicyService, AdmissionControl | детерминированное | допуск, права, бюджет |
@@ -129,8 +133,9 @@ exact-orb интерпретирует астрологические техни
 ключ выводится из него чистой функцией (ADR-0017).
 
 **И-13. Состояние меняется только явной типизированной командой.**
-`UpdateBirthData`, `SetActiveView`. Упоминание даты в диалоге не мутирует
-профиль (ADR-0014).
+В MVP — `UpdateBirthData`; упоминание даты в диалоге не мутирует состояние.
+`SetActiveView` вернётся вместе с производными картами после первого среза
+(ADR-0014, ADR-0016).
 
 **И-14. Персональные данные не переживают сессию.**
 Ни в отдельном хранилище истории, ни в логах приложения. В observability идут
@@ -248,7 +253,7 @@ Ascendant, MC и управителей), различение видов в UI,
 `base_birth_time = 01:15`.
 
 Явная команда даёт ещё одно свойство — предсказуемый момент инкремента
-`profile_version`, а значит проверяемую защиту от stale-записи, когда медленный
+`state_version`, а значит проверяемую защиту от stale-записи, когда медленный
 запрос завершается после более свежего изменения.
 
 ---
@@ -261,8 +266,9 @@ Ascendant, MC и управителей), различение видов в UI,
 Обязательны дата и место, время опционально. Город выбирается из подсказок,
 наружу уходит `place_id`; координаты, `tz_id` и смещение определяет backend.
 
-**Chart page** — визуализация, базовые данные, явные контролы их изменения
-и переключения вида, preset-действия, чат при наличии capability.
+**Chart page** — визуализация, базовые данные, явные контролы их изменения,
+preset-действия, чат при наличии capability. Переключение вида появится вместе
+с производными картами после первого MVP-среза (ADR-0016).
 
 **Chart Renderer** — `Chart DTO → SVG`. Чистая функция, живёт на клиенте.
 
@@ -283,45 +289,57 @@ Ascendant, MC и управителей), различение видов в UI,
 
 ### 4.3 Координация
 
-**Orchestrator** — последовательность вызовов без предметных знаний: загрузить
+**ApplicationOrchestrator** — последовательность вызовов без предметных знаний: загрузить
 контекст → выбрать handler → план → policy → tools → интерпретация → сохранить
 дельту → стримить. Асинхронный. Границы — И-4 и ADR-0006.
-**Статус:** скелет, `handle()` бросает `NotImplementedError`.
+**Статус:** не реализован; package `application/` отсутствует. Существующий
+скелет `exact_orb.orchestration.Orchestrator` не является реализацией этого
+application-компонента.
 
 **Три handler'а** — `BuildNatalHandler`, `InterpretSelectionHandler`,
-`InterpretMessageHandler`. Handler владеет своим flow, вызывает `ProfileService`
-и возвращает `ContextDelta`; сохраняет оркестратор.
-**Статус:** новое.
+`InterpretMessageHandler`. Handler владеет своим flow и при мутации возвращает
+`StateDelta`; исходную `state_version` сохраняет и передаёт в
+`ContextService.save` оркестратор.
+**Статус:** не реализованы.
 
 ### 4.4 Сессия
 
-**ContextService** — единственный владелец persistence: `load` / `save`.
+**ContextService** — application-граница session persistence: `create`, `load`,
+`save`, `append_turn`, `clear_dialog`, `reset_all`, `delete`. Получает один
+`SessionPersistence`; `load` выполняет агрегатный `touch`, а `save` передаёт
+исходные `expected_state_version` и `StateDelta` в CAS.
 
-**ProfileService** — чистые мутации `SessionProfile`, инкремент `profile_version`
-через compare-and-set, отказ stale-записи. Собственного хранилища не имеет.
-
-SessionProfile {
-birth_input что ввёл пользователь — для формы
-birth_resolved ResolvedBirthData — для расчёта и ключа
-profile_version
-base_chart: { profile_version, spec: ChartSpec }
-derived_chart: { profile_version, spec: ChartSpec } | None
-active_view: base | derived
+SessionState {
+session_id
+birth_input: BirthInput | None
+birth_resolved: ResolvedBirthData | None
+state_version
+base_chart: { state_version, spec: ChartSpec } | None
+created_at
+expires_at
+hard_expires_at
 }
 
 Хранятся оба представления данных рождения: только `birth_input` означал бы,
 что обновление `tzdata` молча сдвинет карту, только `birth_resolved` — что нечего
 показать в форме.
 
-**Session Store** — внешнее хранилище с TTL. Долговременного `Profile DB` нет.
-**Статус:** новое.
+**Session Store** — состояние с TTL и compare-and-set. **Dialog Store** хранит
+ходы отдельно: append/clear не меняют `state_version`. Агрегат
+`SessionPersistence` владеет общими `touch`, `reset` и `delete`. Производных
+полей в MVP нет; сессия хранит только `base_chart` (ADR-0016).
+
+Долговременного `Profile DB` нет.
+**Статус:** contracts, `ContextService`, InMemory и SQLite adapters реализованы.
 
 ### 4.5 Резолв места и времени
 
-**BirthDataResolver** — вызывается до planning и calculation. Вход — примитивная
-структура (`place_id | place_text`, `local_date`, `local_time?`), не типы
-intent-слоя. Выход — `ResolvedBirthData` либо `InputRequired`. **В состояние
-не пишет:** результат обрабатывает вызвавший handler.
+**BirthDataResolver** — вызывается до planning и calculation. В текущем
+Build-пути вход — `BirthInput(place_id, local_date, local_time?)`, без
+`place_text` и других типов intent-слоя. Свободный текст места относится
+только к отложенному natural-language пути. Выход — `ResolvedBirthData` либо
+`InputRequired`. **В состояние не пишет:** результат обрабатывает вызвавший
+handler.
 
 **PlaceResolverPort** с адаптерами `LocalPlaceCatalog` и `RemoteGeocoder`.
 Порт возвращает исход `Resolved | Candidates | NotFound` с ограниченным числом
@@ -332,11 +350,13 @@ intent-слоя. Выход — `ResolvedBirthData` либо `InputRequired`. **
 отмены 2011 и 2014 годов. Несуществующее и удвоенное локальное время дают явный
 исход, а не исключение и не молчаливую догадку.
 Проверочный кейс: 02.09.1990, Москва → UTC+4, локальные 14:30 = 10:30 UTC.
-**Статус:** новое.
+**Статус:** реализовано.
 
 ### 4.6 Понимание запроса
 
-**ActionContractBuilder** — `topic + focus + active_view` → `ContractDraft`.
+**ActionContractBuilder** — `topic + focus` и базовая карта текущего
+`SessionState` → `ContractDraft`. Отдельный выбор `active_view` появится только
+вместе с производными картами.
 Вероятностного шага нет. Основной путь MVP.
 
 **InputGuard** — нормализация, **лимит длины входа**, детект инъекций
@@ -501,7 +521,7 @@ topic + focus`, запись разделяема между пользоват�
 | `Evidence` | DataSelector → PromptBuilder | структурирован по темам, несёт warnings |
 | `PromptBundle` | PromptBuilder → Gateway | `system`, `user`, `recipe_id`; один на сценарий |
 | `StreamEvent` | Orchestrator → канал | `status` / `input_required` / `token` / `done` / `error` |
-| `ContextDelta` | Handler → Orchestrator → ContextService | изменения состояния сессии |
+| `StateDelta` | Handler → Orchestrator → ContextService | all-set изменение `birth_input`, `birth_resolved`, `base_chart_spec`; expected version передаётся отдельно |
 
 ---
 
@@ -561,7 +581,7 @@ topic + focus`, запись разделяема между пользоват�
 Остальное существует как точка вызова с заглушкой (ADR-0020) либо как отложенное.
 
 **Входит:** Session Middleware, Build API, BuildNatalHandler, BirthDataResolver,
-LocalPlaceCatalog, Historical TZ, ContextService, ProfileService, Session Store,
+LocalPlaceCatalog, Historical TZ, ContextService, Session Store, Dialog Store,
 ChartArtifactResolver, KeyFactory, CalculationVersion, Calculation Cache,
 EngineService, Selection API, InterpretSelectionHandler, ActionContractBuilder,
 ContractValidator, каркас рантайма, InterpretationService, Gateway, OutputGuard,
@@ -584,7 +604,7 @@ RemoteGeocoder, RemoteTool, распознавание данных рожден
 ## 9. Порядок работ
 
 **Шаг 0. Контракты.** `ResolvedBirthData`, `InputRequired`, `ChartSpec`,
-`ResolvedContract`, `InterpretationPlan`, `StreamEvent`, `ContextDelta`.
+`ResolvedContract`, `InterpretationPlan`, `StreamEvent`, `StateDelta`.
 Три из них проектируются вперёд: `ResolvedContract` от free-form случая,
 `topics[]` как список, слот под query в рецептах.
 

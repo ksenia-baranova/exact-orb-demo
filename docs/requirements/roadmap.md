@@ -1,12 +1,14 @@
 # exact-orb — дорожная карта
 
-Дата: 2026-08-31. Статус: рабочий документ, ревизия плана работ.
+Дата исходного плана: 2026-08-31. Актуализация статусов: 2026-09-06.
+Статус: рабочий документ, ревизия плана работ.
 Исполнитель: один человек. Назначение репозитория: портфолио.
 
 Горизонт: публикация при первой работающей интерпретации (§2), затем полный
 объём до публичного сервиса (§4).
 
-Область: порядок работ поверх состояния репозитория на 2026-08-31.
+Область: порядок работ поверх состояния репозитория на 2026-08-31 и отметки
+фактического прогресса на 2026-09-06.
 Публикационный срез, разбор предложенного списка задач, перестановки,
 пропущенные блоки и разбиение на ветки под принятый в проекте рабочий процесс.
 
@@ -18,31 +20,34 @@
 ADR-0017, ADR-0019, ADR-0020.
 
 Единица оценки — день в объёме «анализ + разработка + QA».
+Все оценки ниже сохранены как исходный baseline 2026-08-31; статус
+`реализовано` не превращает оценку в оставшийся объём.
 
 ---
 
-## 1. Состояние на 2026-08-31
+## 1. Состояние на 2026-09-06
 
 Порядок реализации из `exact-orb_build_natal_components.md` §11 задаёт систему
 координат. По ней состояние такое.
 
 | Этап | Состав | Состояние | Комментарий |
 |---|---|---|---|
-| Э0 | контракты | частично | `birth/types.py`, `outcomes.py`, `calculation/spec.py`, `domain.py`, `run_context.py` есть. Нет `session/types.py` и `application/commands.py` |
+| Э0 | контракты | частично | Контракты сессии реализованы в `session/state.py`, `dialog.py`, `persistence.py`, `outcomes.py`; `application/commands.py` отсутствует |
 | Э1 | расчёт с кэшем | частично | `keys`, `cache`, `codec`, `types`, `errors`, `engine` (`EngineService` + `NatalTechniqueAdapter`), `artifacts` с single-flight. **Нет `calculation/version.py`** |
 | Э2 | резолв места и времени | готово | `birth/places.py`, `birth/tz.py`, `birth/resolver.py` с тестами |
-| Э3 | сессия | нет | пакета `session/` не существует |
+| Э3 | сессия | готово | Контракты, `ContextService`, `SessionPersistence`, раздельные state/dialog stores, in-memory и SQLite adapters, общие conformance-тесты реализованы (P1–P4.1) |
 | Э4 | координация | нет | пакета `application/` не существует |
 | Э5 | сведение с agent-слоем | нет | `orchestration/` не переименован; `NatalTool` идёт мимо резолвера артефактов |
 | Э6 | бенчмарк конкурентности | нет | замер одиночного натала сделан (§1.4), транзит и конкурентность — нет |
 
-Закрыто примерно 2.5 этапа из 6.
+Полностью закрыты Э2 и Э3; Э0 и Э1 закрыты частично. Э4–Э6 остаются впереди.
 
 **Готово вне этой шкалы.** `engine/` целиком — эфемериды, натал, транзит,
 аспекты, конфигурации, сила — с property-based тестами и золотым файлом;
 `cli.py` как прямая ветка расчёта; `config.py`, `logging_setup.py`,
 `llm/gateway.py` (транспорт); скелеты `tools/`, `intent/`, `interpretation/`,
-`orchestration/`.
+`orchestration/`; контракты, проекция и in-memory adapter исследовательского
+корпуса (P5a). SQLite-корпус P5b и его application wiring ещё не реализованы.
 
 `prompts/2026-08-31/05-calculation-coverage-audit.md` закрыл интеграционный тест
 блока `calculation` без Swiss Ephemeris, то есть Э1 фактически принят, кроме
@@ -98,7 +103,7 @@ ADR-0017, ADR-0019, ADR-0020.
 | A1 — ГРН-7 | 2 | Уже задокументирован как Т-ГРН-7 с обоснованием. Задокументированный пробел читается как зрелость; недоделанный рефакторинг контракта — нет. При фиксированном конфиге не проявляется |
 
 Блок C не сокращается. Разделение application- и agent-оркестрации,
-типизированные исходы и `ContextDelta` — это то, ради чего документы будут
+типизированные исходы и `StateDelta` — это то, ради чего документы будут
 читать. Без него двадцать ADR остаются литературой.
 
 ### 2.3. Что, наоборот, добавляется
@@ -167,15 +172,14 @@ ADR-0017, ADR-0019, ADR-0020.
 
 ### 3.1. Сессия должна быть до `BuildNatalHandler`
 
-В исходном списке `profile service` стоит пунктом 4.1, то есть после handler'а и
-после `ApplicationOrchestrator`. Но контракт handler'а (§7.1
-`exact-orb_build_natal_components.md`) принимает `SessionContext` и возвращает
-`ContextDelta`, а его четвёртый шаг — `ProfileService.commit_base_chart(...)`.
+В исходном списке session-слой стоял после handler'а и
+`ApplicationOrchestrator`. Принятое решение выполнено: session-слой реализован
+раньше application-слоя. Актуальный контракт handler'а (§7.1
+`exact-orb_build_natal_components.md`) принимает `SessionState` и возвращает
+all-set `StateDelta`; исходный `state_version` оркестратор передаёт в
+`ContextService.save(...)` отдельно как CAS-предикат.
 
-Без `session/` handler тестируется только на моке. Весь смысл порядка Э0→Э6 в
-том, чтобы каждый этап стоял на настоящем предыдущем, а не на моке.
-
-**Решение:** сессия становится отдельным блоком перед координацией.
+**Решение:** порядок сохраняется — готовая сессия предшествует координации.
 
 ### 3.2. `CalculationVersion` отсутствует
 
@@ -277,12 +281,15 @@ HTTP — это стоит зафиксировать явно. См. блок J
 
 | Файл | Ответственность |
 |---|---|
-| `session/types.py` | `SessionProfile`, `SessionContext`, `ContextDelta` |
-| `session/store.py` | `SessionStore`, `InMemorySessionStore` с TTL |
-| `session/profile.py` | чистые мутации, инкремент `profile_version` через compare-and-set, отказ stale-записи; собственного хранилища не имеет |
-| `session/context.py` | единственный владелец persistence: `load` / `save` |
+| `session/state.py` | `SessionState`, all-set `StateDelta` и `state_version` |
+| `session/store.py` | узкий state-порт `SessionStore` |
+| `session/dialog.py` | `DialogTurn` и отдельный `DialogStore` |
+| `session/persistence.py` | агрегатный `SessionPersistence` и согласованный `SessionSnapshot` |
+| `session/context.py` | application-facing `ContextService`: `load`, `save`, dialog operations и типизированные исходы |
+| `session/adapters/in_memory.py` | in-memory реализация с TTL и общим атомарным lock |
+| `session/adapters/sqlite.py` | SQLite реализация с транзакционным snapshot/CAS и retry policy |
 
-В профиле хранятся **оба** представления данных рождения: только `birth_input`
+В `SessionState` хранятся **оба** представления данных рождения: только `birth_input`
 означал бы, что обновление `tzdata` молча сдвинет карту; только `birth_resolved`
 — что нечего показать в форме.
 
@@ -330,9 +337,10 @@ HTTP — это стоит зафиксировать явно. См. блок J
 
 *(исходный пункт 1, названный конкретно)*
 
-Открытым остаётся `fix/artifact-singleflight` — текущая ветка, не запушена.
-Её нужно закрыть или удалить до старта A1: она трогает `artifacts.py`, который
-A1 будет менять.
+В исходном плане перед A1 требовалось закрыть `fix/artifact-singleflight`,
+поскольку эта работа затрагивала тот же `artifacts.py`. На 2026-09-06
+single-flight уже реализован; предварительный пункт закрыт, а порядок A1–A3
+сохраняется.
 
 | № | Ветка | Задача | Дней |
 |---|---|---|---|
@@ -347,17 +355,20 @@ A1 будет менять.
 Не входит: локализация фаз Луны (Т-СИЛ-9), единая таблица управителей (Т-НАТ-11),
 космограмма + транзиты. Не блокируют, съедят неделю.
 
-### Блок B. Сессия — 2 дня
+### Блок B. Сессия — исходная оценка 2 дня; реализовано
 
 *(исходный пункт 4.1, переставлен вперёд)*
 
 | № | Ветка | Задача | Дней |
 |---|---|---|---|
-| B1 | `feat/session-context` | `session/types.py`, `store.py`, `profile.py`, `context.py` | 2 |
+| B1 | `feat/session-context` | Контракты state/dialog/persistence, `ContextService`, in-memory adapter | 2 |
+| B2 | последующие P4/P4.1 | SQLite adapter, retry policy, benchmark и parity/conformance-проверки | вне исходной оценки |
 
-Пакет новый и ни с чем не пересекается, поэтому интеграции у блока нет.
+Блок реализован. Его исходная оценка сохранена для истории и не описывает
+фактически затраченный или оставшийся объём.
 
-Приёмка: compare-and-set работает, stale-запись отклоняется, TTL истекает.
+Приёмка выполнена: compare-and-set работает, stale-запись отклоняется, TTL
+истекает; in-memory и SQLite проходят общий conformance-набор.
 
 ### Блок C. Первый сквозной путь — 4 дня
 
@@ -369,7 +380,7 @@ A1 будет менять.
 | № | Ветка | Задача | Дней |
 |---|---|---|---|
 | C1 | `feat/build-natal-handler` | `application/commands.py`, `results.py`, `handlers/build_natal.py`. Единственное предметное решение handler'а — `ChartSpec`: дата + место + время → `natal`, дата + место → `cosmogram` (ADR-0008). Вопрос о времени не задаётся | 2 |
-| C2 | `feat/application-orchestrator` | `application/orchestrator.py` и классификация исходов: `Success`, `InputRequired`, `Superseded`, `SessionExpired`, `PolicyDenied`, `InfrastructureFailure`, `InternalFailure`. Плюс B-2 и B-3 | 1 |
+| C2 | `feat/application-orchestrator` | `application/orchestrator.py` и классификация исходов, включая `Success`, `InputRequired`, `Superseded`, `SessionAbsent`, `PolicyDenied`, `InfrastructureFailure`, `InternalFailure`. Плюс B-2 и B-3 | 1 |
 | C3 | `chore/bootstrap-composition` | `bootstrap.py` — композиция вместо DI-фреймворка, наполнение реестров (И-9) | 0.5 |
 | C4 | `refactor/agent-package-and-tool-path` | **Э5:** `orchestration/` → `agent/`; `NatalTool` через `ChartArtifactResolver` (B-5); тест на импорты (B-8). **Широкая ветка** | 0.5 |
 
@@ -426,7 +437,7 @@ A1 будет менять.
 | № | Ветка | Задача | Дней |
 |---|---|---|---|
 | G1 | `feat/interpretation-contracts` | `ResolvedContract` (проектируется от free-form, preset заполняет подмножество), `ScenarioDefinition`, `InterpretationPlan`, `Evidence`, `PromptBundle`, `StreamEvent` | 1 |
-| G2 | `feat/action-contract-builder` | `ActionContractBuilder` (`topic + focus + active_view → ContractDraft`), `ContractValidator`, `InputGuard` в объёме длины и управляющих символов | 1 |
+| G2 | `feat/action-contract-builder` | `ActionContractBuilder` (`topic + focus + base_chart → ContractDraft` в MVP), `ContractValidator`, `InputGuard` в объёме длины и управляющих символов | 1 |
 | G3 | `feat/agent-runtime` | `ScenarioRegistry` (≥ 2 сценария, И-3), `Planner`, async `Tool` port, `ToolExecutor`, проверка согласованности реестров на старте. **Широкая ветка:** переход порта на async ломает `NatalTool` и его тесты | 2 |
 | G4 | `feat/data-selector` | `DataSelector` → `Evidence`. Фокусы работают здесь и только здесь; обязателен перенос `warnings` (И-7) | 1 |
 | G5 | `feat/prompt-registry` | Композиционные рецепты с диска `base.<topic> + focus.<focus> + mode.<mode> + kind.<chart_kind>`, версия рецепта равна хэшу содержимого. `PromptBuilder` → один `PromptBundle` (И-2) | 1 |

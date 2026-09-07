@@ -1,0 +1,92 @@
+@startuml
+title exact-orb — N5: неуспешная замена карты, закрытие вкладки и восстановление
+
+autonumber
+hide footbox
+
+skinparam shadowing false
+skinparam responseMessageBelowArrow true
+skinparam sequence {
+    ArrowColor #2563EB
+    LifeLineBorderColor #64748B
+    LifeLineBackgroundColor #FFFFFF
+    ParticipantBorderColor #64748B
+    ParticipantFontColor #0F172A
+    ParticipantBackgroundColor #F8FAFC
+    ActorBorderColor #64748B
+    ActorFontColor #0F172A
+    ActorBackgroundColor #DBEAFE
+    GroupBorderColor #94A3B8
+    GroupHeaderFontColor #1E293B
+    DividerBorderColor #94A3B8
+    DividerFontColor #1E293B
+    NoteBorderColor #94A3B8
+    NoteBackgroundColor #FFFBEA
+    NoteFontColor #334155
+}
+
+actor "Пользователь" as User
+
+box "CLIENT / API" #DBEAFE
+    boundary "Frontend" as FE
+    boundary "FastAPI" as API
+end box
+
+box "APPLICATION" #FFEDD5
+    control "Orchestrator" as Orch
+end box
+
+box "SESSION STATE" #D1FAE5
+    control "ContextService" as Context
+    database "Session Store" as Store
+end box
+
+box "ARTIFACTS" #E8F5E9
+    control "ChartArtifactResolver" as Artifact
+end box
+
+ref over User, Store
+N4: построение по NEW данным завершилось ошибкой.
+В Store сохранены OLD SessionProfile и FAILED BuildAttempt(NEW).
+end ref
+
+User -> FE : Закрывает вкладку
+FE ->x API : connection closed
+
+User -> FE : Открывает страницу снова
+FE -> API : GET /session/view\nHttpOnly cookie
+API -> Orch : GetSessionView
+Orch -> Context : load(session_id)
+Context -> Store : get(session_id)
+
+alt Старая успешная карта существует
+    Store --> Context : SessionProfile(base_chart=OLD)\ncurrent_build=FAILED(NEW input, error_code)
+    Context --> Orch : SessionContext
+
+    Orch -> Artifact : restore(OLD base_chart.spec)
+    Artifact --> Orch : OLD ChartArtifact
+
+    Orch --> API : SessionView {\n chart=OLD,\n failed_build=NEW,\n error_code }
+    API --> FE : 200 Chart DTO + failure metadata
+
+    FE -> FE : render OLD chart
+    FE -> FE : fill form from NEW birth_input
+    FE --> User : Показывает старую карту и сообщение:\n«Новые данные не применены»
+
+else Успешной карты раньше не было
+    Store --> Context : profile=None\ncurrent_build=FAILED(NEW input, error_code)
+    Context --> Orch : SessionContext
+    Orch --> API : SessionView { form_draft=NEW, error_code }
+    API --> FE : 200 form state + failure metadata
+    FE -> FE : fill form from NEW birth_input
+    FE --> User : Показывает форму и ошибку
+end
+
+note over Context, Store
+FAILED BuildAttempt хранит форму для UX,
+но не становится SessionProfile.
+Пользователь может повторить, изменить данные
+или оставить OLD карту.
+end note
+
+@enduml

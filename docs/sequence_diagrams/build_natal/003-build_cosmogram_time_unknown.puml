@@ -63,9 +63,8 @@ box "РАСЧЁТ" #FFFFF0
 end box
 
 box "СЕССИЯ" #D1FAE5
-    control "ProfileService" as Profile
     control "ContextService" as Context
-    database "SessionStore" as Store
+    database "SessionPersistence\n(.sessions = SessionStore)" as Store
 end box
 
 
@@ -74,11 +73,11 @@ FE -> API : POST /charts/natal\nBirthInput(birth_time = None)
 API -> Orch : BuildNatalCommand
 
 Orch -> Context : load(session_id)
-Context -> Store : get(session_id)
-Store --> Context : SessionProfile | None
-Context --> Orch : SessionContext
+Context -> Store : touch(session_id, now)
+Store --> Context : SessionSnapshot(state = SessionState)
+Context --> Orch : SessionSnapshot
 
-Orch -> Handler : handle(command, context)
+Orch -> Handler : handle(command, snapshot.state, run)
 activate Handler
 
 Handler -> Resolver : resolve(birth_input)
@@ -148,15 +147,14 @@ Artifacts -> Cache : put(key, bytes)
 Artifacts --> Handler : ChartArtifact\n(chart_kind поднят наверх)
 deactivate Artifacts
 
-Handler -> Profile : commit_base_chart(...)
-Profile --> Handler : ContextDelta
-Handler --> Orch : BuildNatalSuccess
+Handler -> Handler : StateDelta(\nbirth_input, birth_resolved,\nbase_chart_spec = spec)
+Handler --> Orch : BuildNatalSuccess(artifact, delta)
 deactivate Handler
 
-Orch -> Context : save(session_id, delta)
-Context -> Store : compare_and_set(...)
-Store --> Context : profile_version + 1
-Context --> Orch : ok
+Orch -> Context : save(session_id,\nexpected_state_version, delta)
+Context -> Store : sessions.compare_and_set(\nsession_id, expected_state_version,\nStateDelta, now)
+Store --> Context : new state_version
+Context --> Orch : Committed(state_version)
 
 Orch --> API : Success(chart,\nchart_kind = cosmogram, warnings)
 API --> FE : 200 JSON
