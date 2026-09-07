@@ -27,7 +27,7 @@ class SelenaMethod(Protocol):
 
     name: str
 
-    def calculate(self, jd: float, flags: int) -> BodyPosition:
+    def calculate(self, jd: float, flags: int, *, chart: str) -> BodyPosition:
         """Calculate Selena for a Julian day UT."""
 
 
@@ -47,8 +47,8 @@ class MeanPerigeeSelena:
     name = "mean_perigee"
     apogee_id = swiss_backend.swe.MEAN_APOG
 
-    def calculate(self, jd: float, flags: int) -> BodyPosition:
-        return _calculate_perigee_selena(jd, flags, self.name, self.apogee_id)
+    def calculate(self, jd: float, flags: int, *, chart: str) -> BodyPosition:
+        return _calculate_perigee_selena(jd, flags, self.name, self.apogee_id, chart=chart)
 
 
 class TruePerigeeSelena:
@@ -67,8 +67,8 @@ class TruePerigeeSelena:
     name = "true_perigee"
     apogee_id = swiss_backend.swe.OSCU_APOG
 
-    def calculate(self, jd: float, flags: int) -> BodyPosition:
-        return _calculate_perigee_selena(jd, flags, self.name, self.apogee_id)
+    def calculate(self, jd: float, flags: int, *, chart: str) -> BodyPosition:
+        return _calculate_perigee_selena(jd, flags, self.name, self.apogee_id, chart=chart)
 
 
 SELENA_METHODS: dict[SelenaMethodName, SelenaMethod] = {
@@ -88,6 +88,8 @@ def _calculate_perigee_selena(
     flags: int,
     method_name: str,
     apogee_id: int,
+    *,
+    chart: str,
 ) -> BodyPosition:
     require_ephemeris_session()
     xx, retflags, warning = swiss_backend.swe.calc_ut(jd, apogee_id, flags)
@@ -105,7 +107,7 @@ def _calculate_perigee_selena(
     longitude = normalize_degrees(xx[0] + 180.0)
     return BodyPosition(
         name="selena",
-        chart="natal",
+        chart=chart,
         source="selena",
         method=method_name,
         swe_id=apogee_id,

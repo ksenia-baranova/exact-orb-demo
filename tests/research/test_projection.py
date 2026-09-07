@@ -120,6 +120,7 @@ def _body(
 ) -> BodyPosition:
     return BodyPosition(
         name=name,
+        chart="natal",
         source="derived" if name in {"south_node", "pars_fortune"} else "swisseph",
         method=None,
         swe_id=None,

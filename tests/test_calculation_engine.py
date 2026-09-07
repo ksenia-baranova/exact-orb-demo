@@ -443,7 +443,13 @@ def test_low_level_ephemeris_warning_log_omits_message_but_preserves_warning(
     monkeypatch.setattr(calc_module, "swiss_backend", FakeSwissBackend)
 
     with ephemeris_session():
-        bodies, warnings = calc_module.calculate_bodies(2448136.0, {"probe": 0}, FakeSwe.FLG_SPEED, None)
+        bodies, warnings = calc_module.calculate_bodies(
+            2448136.0,
+            {"probe": 0},
+            FakeSwe.FLG_SPEED,
+            None,
+            chart="natal",
+        )
 
     logs = "\n".join(record.getMessage() for record in caplog.records)
     assert warnings[0].message == SENSITIVE_MESSAGE
@@ -468,7 +474,13 @@ def test_selena_warning_log_and_runtime_error_omit_raw_warning(
 
     with ephemeris_session():
         with pytest.raises(RuntimeError) as exc_info:
-            selena_module._calculate_perigee_selena(2448136.0, FakeSwe.FLG_SPEED, "fake", 0)
+            selena_module._calculate_perigee_selena(
+                2448136.0,
+                FakeSwe.FLG_SPEED,
+                "fake",
+                0,
+                chart="natal",
+            )
 
     logs = "\n".join(record.getMessage() for record in caplog.records)
     assert SENSITIVE_MESSAGE not in str(exc_info.value)

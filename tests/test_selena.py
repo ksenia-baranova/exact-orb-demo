@@ -25,8 +25,8 @@ def test_selena_strategy_is_reproducible(method_name: str) -> None:
     method = get_selena_method(method_name)
 
     with ephemeris_session():
-        first = method.calculate(JULIAN_DAY_UT, FLAGS)
-        second = method.calculate(JULIAN_DAY_UT, FLAGS)
+        first = method.calculate(JULIAN_DAY_UT, FLAGS, chart="natal")
+        second = method.calculate(JULIAN_DAY_UT, FLAGS, chart="natal")
 
     assert first.longitude == second.longitude
     assert first.longitude_speed == second.longitude_speed
@@ -42,7 +42,7 @@ def test_selena_strategy_matches_golden_value(method_name: str, expected_longitu
     method = get_selena_method(method_name)
 
     with ephemeris_session():
-        result = method.calculate(JULIAN_DAY_UT, FLAGS)
+        result = method.calculate(JULIAN_DAY_UT, FLAGS, chart="natal")
 
     assert_longitude_close(
         result.longitude,
@@ -73,7 +73,7 @@ def test_selena_result_is_normalized(method_name: str) -> None:
     method = get_selena_method(method_name)
 
     with ephemeris_session():
-        result = method.calculate(JULIAN_DAY_UT, FLAGS)
+        result = method.calculate(JULIAN_DAY_UT, FLAGS, chart="natal")
 
     assert 0.0 <= result.longitude < 360.0
 

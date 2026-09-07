@@ -409,7 +409,7 @@ package "exact_orb.engine.ephemeris" as ephemeris {
 
   class BodyPosition <<Pydantic>> {
     +name: str
-    +chart: Literal["natal"]
+    +chart: str
     +source: Literal
     +method: str
     +swe_id: int
@@ -443,19 +443,19 @@ package "exact_orb.engine.ephemeris" as ephemeris {
 
   interface SelenaMethod <<Protocol>> {
     +name: str
-    +calculate(jd: float, flags: int): BodyPosition
+    +calculate(jd: float, flags: int, *, chart: str): BodyPosition
   }
 
   class MeanPerigeeSelena {
     +name: str
     +apogee_id: int
-    +calculate(jd: float, flags: int): BodyPosition
+    +calculate(jd: float, flags: int, *, chart: str): BodyPosition
   }
 
   class TruePerigeeSelena {
     +name: str
     +apogee_id: int
-    +calculate(jd: float, flags: int): BodyPosition
+    +calculate(jd: float, flags: int, *, chart: str): BodyPosition
   }
 }
 
@@ -850,6 +850,12 @@ package "exact_orb.engine.charts" as charts {
     +end: datetime
   }
 
+  class RelativeExactWindow <<Pydantic>> {
+    +months: int
+  }
+
+  class ExactWindow <<TypeAlias>>
+
   class TransitPointRef <<Pydantic>> {
     +chart: Literal["transit"]
     +body: str
@@ -951,6 +957,8 @@ TransitChart *-- HouseCusp
 TransitChart *-- AnglePosition
 TransitChart *-- CalculationWarning
 AspectName ..> AspectType : alias
+ExactWindow ..> RelativeExactWindow : alias member
+ExactWindow ..> TransitDateRange : alias member
 
 ' =========================
 ' AGENT / INTERPRETATION / TOOLS
@@ -1164,7 +1172,7 @@ BirthDataResolver -[#2563EB]-> ChartArtifactResolver : resolved birth data
 ChartArtifactResolver -[#2563EB]-> EngineService : cache miss
 EngineService -[#2563EB]-> NatalTechniqueAdapter : technique dispatch
 NatalTechniqueAdapter -[#2563EB]-> NatalChart : calculate_natal()
-NatalChart -[#2563EB]-> TransitChart : source for calculate_transits()
+NatalChart -[#2563EB]-> TransitChart : source for calculate_transit()
 Orchestrator -[#2563EB]-> ToolRegistry : resolve tools
 ToolRegistry -[#2563EB]-> NatalTool
 NatalTool -[#2563EB]-> NatalChart : local chart calculation

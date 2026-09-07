@@ -195,7 +195,7 @@ engine/         детерминированное ядро, о LLM не зна�
 - **И-2. Сценарий = один промпт = один вызов LLM** (ADR-0003). Сколько бы
   инструментов ни отработало, наружу уходит один `PromptBundle`.
 - **Натал — базовое состояние, транзит — производный расчёт** (ADR-0016):
-  `calculate_transits()` принимает готовый `NatalChart`.
+  `calculate_transit()` принимает готовый `NatalChart`.
 - **Вид карты хранится, а не выводится** (ADR-0008): `chart_kind` —
   обязательный явный аргумент, `natal` или `cosmogram`. Космограмма при
   неизвестном времени рождения — отдельный вид, а не натал с пустыми домами.
@@ -207,7 +207,7 @@ engine/         детерминированное ядро, о LLM не зна�
 | Пакет | Содержание |
 |---|---|
 | `engine/ephemeris/` | примитивы: `calculate_bodies`, `calculate_houses`, юлианский день, зодиакальная позиция, таблицы управителей, Фортуна, Селена |
-| `engine/charts/` | техники: `calculate_natal()`, `calculate_transits()` |
+| `engine/charts/` | техники: `calculate_natal()`, `calculate_transit()` |
 | `engine/aspects/` | `find_aspects()`, дифференцированные орбисы (по аспекту, по телу, по паре «аспект × тело»), категории по точности |
 | `engine/configurations/` | `find_configurations()`: тау-квадрат, большой крест, большой тригон, йод, трапеция, бисекстиль |
 | `engine/strength/` | достоинства, акцидентальная сила, цепочки диспозиторов, взаимные рецепции, баланс стихий и крестов, фаза Луны, особые градусы, интерцепции |
@@ -220,7 +220,7 @@ engine/         детерминированное ядро, о LLM не зна�
 ```python
 from datetime import datetime, timedelta, timezone
 from exact_orb.engine.charts.natal import calculate_natal
-from exact_orb.engine.charts.transit import calculate_transits
+from exact_orb.engine.charts.transit import calculate_transit
 
 natal = calculate_natal(
     datetime(1985, 9, 2, 0, 45, tzinfo=timezone(timedelta(hours=4))),
@@ -229,7 +229,7 @@ natal = calculate_natal(
     chart_kind="natal",
 )
 
-transits = calculate_transits(natal, datetime.now(timezone.utc))
+transits = calculate_transit(natal, datetime.now(timezone.utc))
 ```
 
 `include=` ограничивает набор считаемых блоков: `positions`, `houses`,

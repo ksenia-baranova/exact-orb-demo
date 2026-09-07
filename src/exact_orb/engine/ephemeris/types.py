@@ -120,7 +120,7 @@ class BodyPosition(BaseModel):
     """Geocentric ecliptic body or derived point position."""
 
     name: str
-    chart: Literal["natal"] = "natal"
+    chart: str = Field(..., min_length=1)
     source: Literal["swisseph", "derived", "selena"] = "swisseph"
     method: str | None = None
     swe_id: int | None

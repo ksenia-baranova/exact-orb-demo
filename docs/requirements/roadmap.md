@@ -361,7 +361,7 @@ single-flight уже реализован; предварительный пун
 |---|---|---|---|
 | A1a | `docs/adr-chart-spec-completeness` | Решение по ГРН-7 принято: **заморозка** остатка параметров в `CalculationVersion`, форма `ChartSpec` не меняется. Ревизия ADR-0017 от 2026-09-07 | 0.5 |
 | A2 | `feat/calculation-version` | **Реализовано:** девять компонент отпечатка, детерминизм, typed errors, ослабленное логирование и тесты Т-ГРН-7. Механизм B-7 доказан; application-инвариант включится после wiring C3 | 1 |
-| A3 | `refactor/engine-debt` | `calculate_transits` → `calculate_transit` с `exact_window`; `BodyPosition.chart`; один дистрибутив `swisseph`, зафиксированный в `pyproject.toml` | 1 |
+| A3 | `refactor/engine-debt` | **Реализовано:** `calculate_transit` с именованным `exact_window`; обязательная метка `BodyPosition.chart` задаётся техникой; единый дефолт эфемеридных флагов. Один дистрибутив `swisseph` уже зафиксирован как `pysweph` | 1 |
 
 **Ветка A1b удалена.** Она содержала реализацию полного `ChartSpec` со всеми
 адаптерами и была самой широкой в блоке. Заморозка не меняет форму спеки,

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from datetime import datetime, timezone
 import gzip
+from hashlib import sha256
 import json
 from typing import Any
 
@@ -15,16 +16,18 @@ from exact_orb.calculation.codec import (
     decode_chart_artifact,
     encode_chart_artifact,
 )
-from exact_orb.calculation.keys import CalculationInput, calculation_key
+from exact_orb.calculation.keys import KEY_PREFIX, CalculationInput, calculation_key
 from exact_orb.calculation.spec import NatalChartSpec
 from exact_orb.calculation.types import (
     ArtifactEphemerisStatus,
     ArtifactNatalChart,
     ChartArtifact,
 )
-from exact_orb.config import EphemerisStatus
-from exact_orb.engine.charts.natal import NatalChart
+from exact_orb.config import EphemerisStatus, configure_ephemeris
+from exact_orb.engine.charts.natal import NatalChart, calculate_natal
 from exact_orb.engine.ephemeris.types import CalculationWarning
+from tests.conftest import REPO_ROOT
+from tests.fixtures.natal_1985 import REFERENCE
 
 
 pytestmark = pytest.mark.no_ephemeris_autoinit
@@ -33,6 +36,10 @@ pytestmark = pytest.mark.no_ephemeris_autoinit
 BASE_UTC = datetime(1990, 9, 2, 10, 30, 45, tzinfo=timezone.utc)
 EPHE_FILES = ("sepl_18.se1", "semo_18.se1", "seas_18.se1")
 SENSITIVE_WARNING = "sensitive warning for 55.7558 37.6173 at 1990-09-02"
+
+# baseline: 55f0f03 + vendored ephe/*.se1; recalculate only for an intentional
+# ephemeris or serialized-schema update, never for this refactor's new result.
+NATAL_ARTIFACT_JSON_BASELINE_SHA256 = "439c597cfd65e9de809b8222c827c3f5721fedc0945d80415de960852e25d2af"
 
 
 def test_chart_artifact_normalizes_raw_chart_to_artifact_safe_chart() -> None:
@@ -106,6 +113,29 @@ def test_encode_returns_deterministic_gzip_bytes_with_utf8_json_payload() -> Non
     assert payload["chart"]["ephemeris"]["mode"] == "files"
     assert "path" not in payload["chart"]["ephemeris"]
     assert "source" not in payload["chart"]["ephemeris"]
+
+
+def test_reference_natal_artifact_json_matches_pre_refactor_baseline() -> None:
+    configure_ephemeris(REPO_ROOT / "ephe", selena_method="true_perigee")
+    chart = calculate_natal(
+        REFERENCE["datetime_utc"],
+        REFERENCE["latitude"],
+        REFERENCE["longitude"],
+        chart_kind="natal",
+        house_system=REFERENCE["house_system"],
+    )
+    artifact = ChartArtifact(
+        calculation_key=KEY_PREFIX + "0" * 64,
+        spec=NatalChartSpec(chart_kind="natal"),
+        calculation_version="baseline-version",
+        chart_kind="natal",
+        chart=chart,
+        warnings=chart.warnings,
+    )
+
+    digest = sha256(artifact.model_dump_json().encode("utf-8")).hexdigest()
+
+    assert digest == NATAL_ARTIFACT_JSON_BASELINE_SHA256
 
 
 def test_codec_round_trip_returns_equal_new_instance() -> None:

@@ -225,7 +225,13 @@ def _calculate_natal(
         cusps, angles = None, {}
         LOGGER.debug("natal_houses skipped include_houses=False")
     step_started_at = perf_counter()
-    bodies, warnings = calculate_bodies(julian_day_ut, body_ids or DEFAULT_BODY_IDS, flags, cusps)
+    bodies, warnings = calculate_bodies(
+        julian_day_ut,
+        body_ids or DEFAULT_BODY_IDS,
+        flags,
+        cusps,
+        chart="natal",
+    )
     if not houses_included:
         warnings.append(
             CalculationWarning(
@@ -244,7 +250,16 @@ def _calculate_natal(
         _elapsed_ms(step_started_at),
     )
     step_started_at = perf_counter()
-    _add_derived_points(bodies, angles, cusps, utc_datetime, julian_day_ut, flags, configured_selena_method)
+    _add_derived_points(
+        bodies,
+        angles,
+        cusps,
+        utc_datetime,
+        julian_day_ut,
+        flags,
+        configured_selena_method,
+        chart="natal",
+    )
     LOGGER.debug(
         "natal_derived_points ready bodies=%d duration_ms=%.3f",
         len(bodies),
@@ -688,13 +703,15 @@ def _add_derived_points(
     julian_day_ut: float,
     flags: int,
     selena_method_name: str,
+    *,
+    chart: str,
 ) -> None:
     if "true_node" in bodies and "south_node" not in bodies:
         true_node = bodies["true_node"]
         longitude = normalize_degrees(true_node.longitude + 180.0)
         bodies["south_node"] = BodyPosition(
             name="south_node",
-            chart="natal",
+            chart=chart,
             source="derived",
             swe_id=None,
             longitude=longitude,
@@ -719,7 +736,12 @@ def _add_derived_points(
             bodies["moon"].longitude,
             cusps,
         )
-        bodies["pars_fortune"] = _derived_point("pars_fortune", longitude, cusps)
+        bodies["pars_fortune"] = _derived_point(
+            "pars_fortune",
+            longitude,
+            cusps,
+            chart=chart,
+        )
         LOGGER.debug(
             "derived_point name=%s house=%s",
             "pars_fortune",
@@ -730,7 +752,7 @@ def _add_derived_points(
         from exact_orb.engine.ephemeris.selena import get_selena_method
 
         method = get_selena_method(selena_method_name)
-        selena = method.calculate(julian_day_ut, flags)
+        selena = method.calculate(julian_day_ut, flags, chart=chart)
         bodies["selena"] = selena.model_copy(
             update={
                 "house": house_for_longitude(selena.longitude, cusps)
@@ -753,12 +775,13 @@ def _derived_point(
     longitude: float,
     cusps: tuple[HouseCusp, ...] | None,
     *,
+    chart: str,
     source: Literal["derived", "selena"] = "derived",
 ) -> BodyPosition:
     normalized = normalize_degrees(longitude)
     return BodyPosition(
         name=name,
-        chart="natal",
+        chart=chart,
         source=source,
         method=None,
         swe_id=None,

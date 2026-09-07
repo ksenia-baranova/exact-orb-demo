@@ -27,6 +27,7 @@ from exact_orb.engine.ephemeris.calc import (
 )
 from exact_orb.engine.ephemeris.runtime import ephemeris_session, require_ephemeris_session
 from exact_orb.engine.ephemeris.types import (
+    DEFAULT_EPHEMERIS_FLAGS,
     AnglePosition,
     CalculationWarning,
     HouseCusp,
@@ -83,8 +84,22 @@ class TransitLocation(BaseModel):
 class TransitDateRange(BaseModel):
     """Explicit range for exact transit searches."""
 
+    model_config = ConfigDict(frozen=True)
+
     start: datetime
     end: datetime
+
+
+class RelativeExactWindow(BaseModel):
+    """Symmetric exact-search window around the transit moment."""
+
+    model_config = ConfigDict(frozen=True)
+
+    months: int = Field(ge=0)
+
+
+ExactWindow = RelativeExactWindow | TransitDateRange
+DEFAULT_EXACT_WINDOW = RelativeExactWindow(months=DEFAULT_EXACT_WINDOW_MONTHS)
 
 
 class TransitPointRef(BaseModel):
@@ -176,59 +191,63 @@ class TransitChart(BaseModel):
     warnings: tuple[CalculationWarning, ...] = ()
 
 
-def calculate_transits(
+def calculate_transit(
     natal: NatalChart,
-    moment: datetime | tuple[datetime, datetime] | TransitDateRange,
+    moment: datetime,
     location: TransitLocation | Mapping[str, object] | Sequence[object] | None = None,
     *,
+    exact_window: ExactWindow = DEFAULT_EXACT_WINDOW,
     body_ids: Mapping[str, int] | None = None,
-    ephemeris_flags: int = swiss_backend.swe.FLG_SWIEPH,
+    ephemeris_flags: int = DEFAULT_EPHEMERIS_FLAGS,
     max_orb: float = DEFAULT_ASPECT_ORB,
-    exact_window_months: int = DEFAULT_EXACT_WINDOW_MONTHS,
     station_body_ids: Mapping[str, int] | None = None,
     station_aspect_orb: float = DEFAULT_STATION_ASPECT_ORB,
     ephemeris_path: str | None = None,
 ) -> TransitChart:
-    """Calculate transits to a natal chart."""
+    """Calculate a transit chart for one moment and exact-search window."""
+
+    if not isinstance(moment, datetime):
+        raise TypeError("moment must be a datetime")
+    if not isinstance(exact_window, (RelativeExactWindow, TransitDateRange)):
+        raise TypeError("exact_window must be a RelativeExactWindow or TransitDateRange")
 
     with ephemeris_session():
-        return _calculate_transits(
+        return _calculate_transit(
             natal,
             moment,
             location,
+            exact_window=exact_window,
             body_ids=body_ids,
             ephemeris_flags=ephemeris_flags,
             max_orb=max_orb,
-            exact_window_months=exact_window_months,
             station_body_ids=station_body_ids,
             station_aspect_orb=station_aspect_orb,
             ephemeris_path=ephemeris_path,
         )
 
 
-def _calculate_transits(
+def _calculate_transit(
     natal: NatalChart,
-    moment: datetime | tuple[datetime, datetime] | TransitDateRange,
+    moment: datetime,
     location: TransitLocation | Mapping[str, object] | Sequence[object] | None,
     *,
+    exact_window: ExactWindow,
     body_ids: Mapping[str, int] | None,
     ephemeris_flags: int,
     max_orb: float,
-    exact_window_months: int,
     station_body_ids: Mapping[str, int] | None,
     station_aspect_orb: float,
     ephemeris_path: str | None,
 ) -> TransitChart:
-    """Calculate transits to a natal chart.
+    """Calculate a transit chart for one moment.
 
-    If ``moment`` is a datetime, positions are calculated at that instant and
-    exact aspects/stations are searched in a +/- ``exact_window_months`` window.
-    If ``moment`` is a range, positions are calculated at the range start and
-    exact aspects/stations are searched inside that explicit range.
+    Positions are calculated at ``moment``. Exact aspects and stations are
+    searched inside ``exact_window``, which may be relative to that moment or
+    an independent explicit date range.
     """
 
     ephemeris = validate_ephemeris_path(ephemeris_path)
-    moment_utc, window_start, window_end = _normalize_moment(moment, exact_window_months)
+    moment_utc, window_start, window_end = _normalize_exact_window(moment, exact_window)
     if max_orb < 0.0:
         raise ValueError("max_orb must be non-negative")
     if station_aspect_orb < 0.0:
@@ -279,34 +298,23 @@ def _calculate_transits(
     )
 
 
-def _normalize_moment(
-    moment: datetime | tuple[datetime, datetime] | TransitDateRange,
-    exact_window_months: int,
+def _normalize_exact_window(
+    moment: datetime,
+    exact_window: ExactWindow,
 ) -> tuple[datetime, datetime, datetime]:
-    if exact_window_months < 0:
-        raise ValueError("exact_window_months must be non-negative")
-
-    if isinstance(moment, TransitDateRange):
-        start = to_utc(moment.start)
-        end = to_utc(moment.end)
-        if end <= start:
-            raise ValueError("transit date range end must be after start")
-        return start, start, end
-
-    if isinstance(moment, tuple):
-        if len(moment) != 2:
-            raise ValueError("moment range must contain exactly two datetimes")
-        start = to_utc(moment[0])
-        end = to_utc(moment[1])
-        if end <= start:
-            raise ValueError("transit date range end must be after start")
-        return start, start, end
-
     moment_utc = to_utc(moment)
+
+    if isinstance(exact_window, TransitDateRange):
+        start = to_utc(exact_window.start)
+        end = to_utc(exact_window.end)
+        if end <= start:
+            raise ValueError("transit date range end must be after start")
+        return moment_utc, start, end
+
     return (
         moment_utc,
-        _add_months(moment_utc, -exact_window_months),
-        _add_months(moment_utc, exact_window_months),
+        _add_months(moment_utc, -exact_window.months),
+        _add_months(moment_utc, exact_window.months),
     )
 
 
