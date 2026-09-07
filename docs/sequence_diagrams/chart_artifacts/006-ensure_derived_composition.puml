@@ -97,13 +97,13 @@ end note
 Handler -> Artifacts : ensure_derived(\nspec = SynastrySpec(...),\nbases = (A, B),\nrun)
 activate Artifacts
 
-Artifacts -> Keys : calculation_key_from_bases(\n(key_A, key_B), spec, CALCULATION_VERSION)
+Artifacts -> Keys : calculation_key_from_bases(\n(key_A, key_B), spec, calculation_version)
 Keys --> Artifacts : derived_key
 
 note right of Keys
 Ключ композита выводится из ключей
 частей. Части уже несут и данные
-рождения, и CALCULATION_VERSION,
+рождения, и CalculationVersion,
 поэтому свойство «изменился любой вход
 → изменился ключ» сохраняется без
 повторного включения ResolvedBirthData.
