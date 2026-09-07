@@ -3,8 +3,10 @@
 from __future__ import annotations
 
 import pytest
+from pydantic import ValidationError
 
 from exact_orb.engine.charts.natal import calculate_natal
+from exact_orb.engine.ephemeris.types import BodyPosition
 from tests.fixtures.natal_1985 import (
     ARCSECOND_DEGREES,
     BODY_IDS,
@@ -27,6 +29,40 @@ def _chart_for_body(body_name: str):
         house_system=REFERENCE["house_system"],
         body_ids={body_name: BODY_IDS[body_name]},
     )
+
+
+def test_body_position_requires_chart_label() -> None:
+    position = _chart_for_body("sun").bodies["sun"]
+    payload = position.model_dump(mode="python", exclude={"chart"})
+
+    with pytest.raises(ValidationError, match="chart"):
+        BodyPosition.model_validate(payload)
+
+
+def test_calculate_natal_labels_all_bodies_with_natal_technique() -> None:
+    chart = calculate_natal(
+        REFERENCE["datetime_utc"],
+        REFERENCE["latitude"],
+        REFERENCE["longitude"],
+        chart_kind="natal",
+        house_system=REFERENCE["house_system"],
+    )
+
+    assert {"south_node", "pars_fortune", "selena"} <= set(chart.bodies)
+    assert {position.chart for position in chart.bodies.values()} == {"natal"}
+
+
+def test_calculate_natal_labels_cosmogram_bodies_with_natal_technique() -> None:
+    chart = calculate_natal(
+        REFERENCE["datetime_utc"],
+        REFERENCE["latitude"],
+        REFERENCE["longitude"],
+        chart_kind="cosmogram",
+        house_system=REFERENCE["house_system"],
+    )
+
+    assert chart.bodies
+    assert {position.chart for position in chart.bodies.values()} == {"natal"}
 
 
 @pytest.mark.parametrize(

@@ -1,4 +1,4 @@
-"""Derived deterministic points for natal charts."""
+"""Derived deterministic point calculations."""
 
 from __future__ import annotations
 

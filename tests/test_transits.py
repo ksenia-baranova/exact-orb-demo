@@ -9,7 +9,7 @@ restricted to the ten bodies exact-orb treats as "transiting"
 (``TRANSIT_BODY_IDS``: Sun through Pluto, no Chiron/nodes/Lilith/Selena/
 Vertex/angles as *sources*, though all of those remain valid *targets*).
 
-This gives us an externally-verified oracle for ``calculate_transits`` without
+This gives us an externally-verified oracle for ``calculate_transit`` without
 needing a second geocult.ru date: every orb below was cross-checked against
 the natal reference table for
 ``1985-09-01 20:45 UTC, Moscow (55.7522N, 37.6155E), Placidus``
@@ -18,28 +18,34 @@ https://geocult.ru/natalnaya-karta-onlayn-raschet?fd=2&fm=9&fy=1985&fh=0&fmn=45&
 A few of geocult's natal aspects exceed exact-orb's transit orb ceiling
 (``_default_transit_orbs`` hard-caps every transit aspect at 6 degrees,
 tighter still for fictitious points), so they are intentionally absent from
-``calculate_transits`` output; ``test_self_transit_orb_hard_capped_below_six_degrees``
+``calculate_transit`` output; ``test_self_transit_orb_hard_capped_below_six_degrees``
 documents that on purpose instead of leaving it as an unexplained gap.
 """
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
+from hashlib import sha256
+import inspect
+import json
 
 import pytest
+from pydantic import ValidationError
 import swisseph as swe
 
 from exact_orb.config import configure_ephemeris
 from exact_orb.engine.aspects import AspectConfig
 from exact_orb.engine.charts import transit as transit_calc
 from exact_orb.engine.charts.transit import (
+    RelativeExactWindow,
     TransitChart,
     TransitDateRange,
     TransitLocation,
-    calculate_transits,
+    calculate_transit,
 )
 from exact_orb.engine.charts.natal import NatalChart, calculate_natal
 from exact_orb.engine.ephemeris.runtime import ephemeris_session
+from exact_orb.engine.ephemeris.types import DEFAULT_EPHEMERIS_FLAGS
 from tests.conftest import REPO_ROOT
 from tests.fixtures.natal_1985 import REFERENCE
 
@@ -57,9 +63,26 @@ TRANSIT_BODIES = (
     "pluto",
 )
 
+# baseline: 55f0f03 + vendored ephe/*.se1; recalculate only for an intentional
+# ephemeris or serialized-schema update, never for this refactor's new result.
+TRANSIT_RANGE_BASELINE_SHA256 = "d60a69defbb2e4a9850e018c28c9ede1fd1c07bee0f8ea59b22bd8abb26e72e0"
+
 
 def _key(transit_body: str, aspect_type: str, natal_target: str) -> tuple[str, str, str]:
     return transit_body, aspect_type, natal_target
+
+
+def _transit_payload_digest(chart: TransitChart) -> str:
+    payload = chart.model_dump(mode="json")
+    payload["ephemeris"].pop("path", None)
+    payload["ephemeris"].pop("source", None)
+    canonical = json.dumps(
+        payload,
+        sort_keys=True,
+        separators=(",", ":"),
+        ensure_ascii=False,
+    ).encode("utf-8")
+    return sha256(canonical).hexdigest()
 
 
 # (transit_body, aspect_type, natal_target) -> orb, restricted to the 10
@@ -129,7 +152,7 @@ EXPECTED_TRANSIT_ASPECTS: dict[tuple[str, str, str], float] = {
 
 # Real natal aspects (see tests/test_aspects.py::EXPECTED_ASPECTS) whose orb
 # exceeds the 6-degree transit ceiling baked into
-# exact_orb.engine.aspects.types._default_transit_orbs. calculate_transits must not
+# exact_orb.engine.aspects.types._default_transit_orbs. calculate_transit must not
 # report these, regardless of the max_orb argument passed in, because the
 # per-aspect/per-body caps in that default table are independent of the
 # top-level ceiling.
@@ -163,11 +186,11 @@ def natal_chart() -> NatalChart:
 def self_transit(natal_chart: NatalChart) -> TransitChart:
     """Transits calculated at the exact natal moment (see module docstring)."""
 
-    return calculate_transits(
+    return calculate_transit(
         natal_chart,
         REFERENCE["datetime_utc"],
         max_orb=10.0,
-        exact_window_months=0,
+        exact_window=RelativeExactWindow(months=0),
     )
 
 
@@ -193,7 +216,7 @@ def test_self_transit_matches_geocult_reference(
     lookup = _lookup(self_transit)
     key = (transit_body, aspect_type, natal_target)
 
-    assert key in lookup, f"expected aspect {key} missing from calculate_transits() output"
+    assert key in lookup, f"expected aspect {key} missing from calculate_transit() output"
     assert round(lookup[key], 2) == expected_orb
 
 
@@ -236,7 +259,7 @@ def test_transiting_body_is_conjunct_its_own_natal_position(
         assert self_conjunction.exact_dates == (REFERENCE["datetime_utc"],)
 
 
-def test_calculate_transits_requires_natal_houses() -> None:
+def test_calculate_transit_requires_natal_houses() -> None:
     bare_natal = calculate_natal(
         REFERENCE["datetime_utc"],
         REFERENCE["latitude"],
@@ -247,31 +270,31 @@ def test_calculate_transits_requires_natal_houses() -> None:
     )
 
     with pytest.raises(ValueError, match="natal chart must include houses"):
-        calculate_transits(bare_natal, REFERENCE["datetime_utc"])
+        calculate_transit(bare_natal, REFERENCE["datetime_utc"])
 
 
-def test_calculate_transits_rejects_negative_max_orb(natal_chart: NatalChart) -> None:
+def test_calculate_transit_rejects_negative_max_orb(natal_chart: NatalChart) -> None:
     with pytest.raises(ValueError, match="max_orb must be non-negative"):
-        calculate_transits(natal_chart, REFERENCE["datetime_utc"], max_orb=-1.0)
+        calculate_transit(natal_chart, REFERENCE["datetime_utc"], max_orb=-1.0)
 
 
-def test_calculate_transits_rejects_negative_station_aspect_orb(natal_chart: NatalChart) -> None:
+def test_calculate_transit_rejects_negative_station_aspect_orb(natal_chart: NatalChart) -> None:
     with pytest.raises(ValueError, match="station_aspect_orb must be non-negative"):
-        calculate_transits(natal_chart, REFERENCE["datetime_utc"], station_aspect_orb=-1.0)
+        calculate_transit(natal_chart, REFERENCE["datetime_utc"], station_aspect_orb=-1.0)
 
 
-def test_calculate_transits_rejects_negative_exact_window_months(natal_chart: NatalChart) -> None:
-    with pytest.raises(ValueError, match="exact_window_months must be non-negative"):
-        calculate_transits(natal_chart, REFERENCE["datetime_utc"], exact_window_months=-1)
+def test_relative_exact_window_rejects_negative_months() -> None:
+    with pytest.raises(ValidationError):
+        RelativeExactWindow(months=-1)
 
 
-def test_calculate_transits_with_location_returns_transit_houses(natal_chart: NatalChart) -> None:
-    chart = calculate_transits(
+def test_calculate_transit_with_location_returns_transit_houses(natal_chart: NatalChart) -> None:
+    chart = calculate_transit(
         natal_chart,
         REFERENCE["datetime_utc"],
         location=(REFERENCE["latitude"], REFERENCE["longitude"], REFERENCE["house_system"]),
         max_orb=10.0,
-        exact_window_months=0,
+        exact_window=RelativeExactWindow(months=0),
     )
 
     assert chart.houses is not None
@@ -280,12 +303,12 @@ def test_calculate_transits_with_location_returns_transit_houses(natal_chart: Na
     assert "asc" in chart.angles
 
 
-def test_calculate_transits_without_location_omits_transit_houses(natal_chart: NatalChart) -> None:
-    chart = calculate_transits(
+def test_calculate_transit_without_location_omits_transit_houses(natal_chart: NatalChart) -> None:
+    chart = calculate_transit(
         natal_chart,
         REFERENCE["datetime_utc"],
         max_orb=10.0,
-        exact_window_months=0,
+        exact_window=RelativeExactWindow(months=0),
     )
 
     assert chart.houses is None
@@ -305,13 +328,13 @@ def test_calculate_transits_without_location_omits_transit_houses(natal_chart: N
 
 
 def test_exact_dates_and_closest_approach_are_self_consistent(natal_chart: NatalChart) -> None:
-    chart = calculate_transits(
+    chart = calculate_transit(
         natal_chart,
         REFERENCE["datetime_utc"],
         body_ids={"sun": swe.SUN},  # keep the scan to one fast body
         station_body_ids={"jupiter": swe.JUPITER},  # keep the station scan cheap
         max_orb=1.0,
-        exact_window_months=1,
+        exact_window=RelativeExactWindow(months=1),
     )
 
     sun_pars = next(
@@ -431,55 +454,157 @@ def test_normalize_location_rejects_wrong_length_sequence() -> None:
         transit_calc._normalize_location((1.0,))
 
 
-def test_normalize_moment_with_explicit_range_uses_start_as_window_start() -> None:
+def test_normalize_exact_window_uses_independent_moment_and_explicit_range() -> None:
+    moment_input = datetime(1985, 8, 1, tzinfo=timezone.utc)
     start = datetime(1985, 9, 1, tzinfo=timezone.utc)
     end = datetime(1985, 10, 1, tzinfo=timezone.utc)
 
-    moment, window_start, window_end = transit_calc._normalize_moment(
-        TransitDateRange(start=start, end=end), exact_window_months=12
+    moment, window_start, window_end = transit_calc._normalize_exact_window(
+        moment_input,
+        TransitDateRange(start=start, end=end),
     )
 
-    assert moment == start
+    assert moment == moment_input
     assert window_start == start
     assert window_end == end
 
 
-def test_normalize_moment_accepts_datetime_pair_tuple() -> None:
-    start = datetime(1985, 9, 1, tzinfo=timezone.utc)
-    end = datetime(1985, 10, 1, tzinfo=timezone.utc)
-
-    moment, window_start, window_end = transit_calc._normalize_moment((start, end), exact_window_months=12)
-
-    assert (moment, window_start, window_end) == (start, start, end)
-
-
-def test_normalize_moment_rejects_end_before_start() -> None:
+def test_normalize_exact_window_rejects_end_before_start() -> None:
+    moment = datetime(1985, 9, 1, tzinfo=timezone.utc)
     start = datetime(1985, 9, 2, tzinfo=timezone.utc)
     end = datetime(1985, 9, 1, tzinfo=timezone.utc)
 
     with pytest.raises(ValueError, match="end must be after start"):
-        transit_calc._normalize_moment(TransitDateRange(start=start, end=end), exact_window_months=12)
+        transit_calc._normalize_exact_window(
+            moment,
+            TransitDateRange(start=start, end=end),
+        )
+
+
+def test_normalize_exact_window_rejects_zero_length_explicit_range() -> None:
+    moment = REFERENCE["datetime_utc"]
+    exact_window = TransitDateRange(start=moment, end=moment)
+
+    with pytest.raises(ValueError, match="end must be after start"):
+        transit_calc._normalize_exact_window(moment, exact_window)
+
+
+def test_normalize_exact_window_builds_symmetric_relative_window() -> None:
+    moment_input = datetime(1985, 9, 1, 20, 45, tzinfo=timezone.utc)
+
+    moment, window_start, window_end = transit_calc._normalize_exact_window(
+        moment_input,
+        RelativeExactWindow(months=3),
+    )
+
+    assert moment == moment_input
+    assert window_start == transit_calc._add_months(moment_input, -3)
+    assert window_end == transit_calc._add_months(moment_input, 3)
+    assert transit_calc._normalize_exact_window(
+        moment_input,
+        RelativeExactWindow(months=0),
+    ) == (moment_input, moment_input, moment_input)
+
+
+@pytest.mark.parametrize(
+    "exact_window",
+    [
+        RelativeExactWindow(months=1),
+        TransitDateRange(
+            start=REFERENCE["datetime_utc"],
+            end=REFERENCE["datetime_utc"] + timedelta(days=1),
+        ),
+    ],
+)
+def test_exact_window_variants_are_frozen(
+    exact_window: RelativeExactWindow | TransitDateRange,
+) -> None:
+    with pytest.raises(ValidationError, match="frozen"):
+        setattr(
+            exact_window,
+            "months" if isinstance(exact_window, RelativeExactWindow) else "start",
+            2 if isinstance(exact_window, RelativeExactWindow) else REFERENCE["datetime_utc"],
+        )
+
+
+def test_migrated_explicit_range_matches_pre_refactor_baseline(natal_chart: NatalChart) -> None:
+    start = REFERENCE["datetime_utc"]
+    end = start + timedelta(days=2)
+
+    chart = calculate_transit(
+        natal_chart,
+        start,
+        exact_window=TransitDateRange(start=start, end=end),
+        body_ids={"sun": swe.SUN},
+        station_body_ids={"jupiter": swe.JUPITER},
+        max_orb=1.0,
+    )
+
+    assert (len(chart.positions), len(chart.aspects), len(chart.stations)) == (1, 4, 0)
+    assert _transit_payload_digest(chart) == TRANSIT_RANGE_BASELINE_SHA256
+
+
+def test_absolute_exact_window_may_be_after_moment(natal_chart: NatalChart) -> None:
+    moment = REFERENCE["datetime_utc"]
+    start = moment + timedelta(days=10)
+    end = start + timedelta(days=2)
+
+    chart = calculate_transit(
+        natal_chart,
+        moment,
+        exact_window=TransitDateRange(start=start, end=end),
+        body_ids={"sun": swe.SUN},
+        station_body_ids={"jupiter": swe.JUPITER},
+        max_orb=1.0,
+    )
+
+    assert chart.moment_utc == moment
+    assert (chart.window_start_utc, chart.window_end_utc) == (start, end)
 
 
 @pytest.mark.parametrize(
     "moment",
     [
-        TransitDateRange(start=REFERENCE["datetime_utc"], end=REFERENCE["datetime_utc"]),
-        (REFERENCE["datetime_utc"], REFERENCE["datetime_utc"]),
+        (REFERENCE["datetime_utc"], REFERENCE["datetime_utc"] + timedelta(days=1)),
+        TransitDateRange(
+            start=REFERENCE["datetime_utc"],
+            end=REFERENCE["datetime_utc"] + timedelta(days=1),
+        ),
     ],
 )
-def test_normalize_moment_rejects_zero_length_explicit_range(
-    moment: TransitDateRange | tuple[datetime, datetime],
+def test_calculate_transit_rejects_non_datetime_moment_before_session(
+    moment: object,
+    monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    with pytest.raises(ValueError, match="end must be after start"):
-        transit_calc._normalize_moment(moment, exact_window_months=0)
+    def unexpected_session() -> None:
+        raise AssertionError("ephemeris_session must not be acquired")
+
+    monkeypatch.setattr(transit_calc, "ephemeris_session", unexpected_session)
+
+    with pytest.raises(TypeError, match="moment must be a datetime"):
+        calculate_transit(None, moment)  # type: ignore[arg-type]
 
 
-def test_normalize_moment_builds_symmetric_window_around_single_datetime() -> None:
-    moment_input = datetime(1985, 9, 1, 20, 45, tzinfo=timezone.utc)
+def test_calculate_transit_rejects_invalid_exact_window_before_session(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    def unexpected_session() -> None:
+        raise AssertionError("ephemeris_session must not be acquired")
 
-    moment, window_start, window_end = transit_calc._normalize_moment(moment_input, exact_window_months=3)
+    monkeypatch.setattr(transit_calc, "ephemeris_session", unexpected_session)
 
-    assert moment == moment_input
-    assert window_start == transit_calc._add_months(moment_input, -3)
-    assert window_end == transit_calc._add_months(moment_input, 3)
+    with pytest.raises(
+        TypeError,
+        match="exact_window must be a RelativeExactWindow or TransitDateRange",
+    ):
+        calculate_transit(
+            None,  # type: ignore[arg-type]
+            REFERENCE["datetime_utc"],
+            exact_window=object(),  # type: ignore[arg-type]
+        )
+
+
+def test_calculate_transit_uses_shared_default_ephemeris_flags() -> None:
+    default = inspect.signature(calculate_transit).parameters["ephemeris_flags"].default
+
+    assert default == DEFAULT_EPHEMERIS_FLAGS

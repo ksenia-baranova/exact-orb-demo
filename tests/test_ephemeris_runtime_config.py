@@ -22,7 +22,7 @@ from exact_orb.config import (
     get_selena_method_name,
 )
 from exact_orb.engine.charts.natal import NatalChart, calculate_natal
-from exact_orb.engine.charts.transit import calculate_transits
+from exact_orb.engine.charts.transit import calculate_transit
 from tests.conftest import REPO_ROOT
 from tests.fixtures.natal_1985 import REFERENCE
 
@@ -62,13 +62,13 @@ def test_calculate_natal_requires_explicit_ephemeris_startup() -> None:
 
 
 @pytest.mark.no_ephemeris_autoinit
-def test_calculate_transits_requires_explicit_ephemeris_startup() -> None:
+def test_calculate_transit_requires_explicit_ephemeris_startup() -> None:
     configure_ephemeris(REPO_ROOT / "ephe")
     chart = _reference_natal_chart()
     config._reset_ephemeris_state_for_tests()
 
     with pytest.raises(EphemerisNotInitializedError):
-        calculate_transits(chart, datetime(2026, 1, 1, tzinfo=timezone.utc))
+        calculate_transit(chart, datetime(2026, 1, 1, tzinfo=timezone.utc))
 
 
 @pytest.mark.no_ephemeris_autoinit
@@ -365,7 +365,7 @@ def test_calculation_explicit_ephemeris_path_checks_against_frozen_path(
             ephemeris_path=str(mismatch),
         )
     with pytest.raises(EphemerisPathMismatchError):
-        calculate_transits(
+        calculate_transit(
             chart,
             datetime(2026, 1, 1, tzinfo=timezone.utc),
             ephemeris_path=str(mismatch),

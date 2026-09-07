@@ -71,6 +71,8 @@ def calculate_bodies(
     body_ids: Mapping[str, int],
     flags: int,
     cusps: tuple[HouseCusp, ...] | None,
+    *,
+    chart: str,
 ) -> tuple[dict[str, BodyPosition], list[CalculationWarning]]:
     bodies: dict[str, BodyPosition] = {}
     warnings: list[CalculationWarning] = []
@@ -101,7 +103,7 @@ def calculate_bodies(
 
         bodies[name] = BodyPosition(
             name=name,
-            chart="natal",
+            chart=chart,
             source="swisseph",
             swe_id=body_id,
             longitude=longitude_value,
