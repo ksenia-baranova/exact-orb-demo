@@ -354,6 +354,36 @@ CALCULATION_CACHE_FORBIDDEN: tuple[str, ...] = (
     "exact_orb.calculation.types",
 )
 
+# `_violates` uses module-boundary prefix matching, so `exact_orb.engine`
+# covers its submodules without also matching similarly named sibling modules.
+# Both concrete port implementations are forbidden: the handler receives the
+# birth and artifact resolvers through its constructor.
+# `exact_orb.calculation.types` is intentionally allowed because results.py
+# already needs ChartArtifact at runtime for Pydantic validation.
+APPLICATION_BUILD_NATAL_FORBIDDEN_DIRECT_IMPORTS: tuple[str, ...] = (
+    "exact_orb.birth.resolver",
+    "exact_orb.calculation.artifacts",
+    "exact_orb.calculation.cache",
+    "exact_orb.calculation.codec",
+    "exact_orb.calculation.engine",
+    "exact_orb.calculation.keys",
+    "exact_orb.calculation.version",
+    "exact_orb.cli",
+    "exact_orb.config",
+    "exact_orb.engine",
+    "exact_orb.ephemeris_runtime",
+    "exact_orb.intent",
+    "exact_orb.interpretation",
+    "exact_orb.llm",
+    "exact_orb.orchestration",
+    "exact_orb.session.adapters",
+    "exact_orb.session.context",
+    "exact_orb.session.persistence",
+    "exact_orb.session.store",
+    "exact_orb.swiss_backend",
+    "exact_orb.tools",
+)
+
 
 def _iter_source_files() -> list[Path]:
     return sorted(PACKAGE_ROOT.rglob("*.py"))
@@ -1437,6 +1467,49 @@ def test_calculation_artifacts_declares_no_edge_imports() -> None:
         "calculation.artifacts импортирует запрещённые edge-слои: "
         + ", ".join(violations)
     )
+
+
+def test_application_build_natal_declares_no_forbidden_direct_imports() -> None:
+    """BuildNatalHandler depends on contracts and injected ports, not adapters."""
+
+    path = PACKAGE_ROOT / "application" / "handlers" / "build_natal.py"
+    assert path.is_file(), "не найден application/handlers/build_natal.py"
+
+    imports = _declared_imports(path)
+    assert imports, "build_natal.py не содержит разобранных импортов"
+    assert "exact_orb.application.ports" in imports, (
+        "positive control: build_natal.py не импортирует application.ports"
+    )
+
+    violations = sorted(
+        {
+            f"{forbidden} <- {imported}"
+            for imported in imports
+            for forbidden in APPLICATION_BUILD_NATAL_FORBIDDEN_DIRECT_IMPORTS
+            if _violates(imported, forbidden)
+        }
+    )
+
+    assert not violations, (
+        "application.handlers.build_natal нарушает границу прямых импортов:\n"
+        + "\n".join(violations)
+    )
+
+
+def test_application_results_declares_allowed_calculation_types_import() -> None:
+    """The result contract intentionally embeds the runtime ChartArtifact type."""
+
+    path = PACKAGE_ROOT / "application" / "results.py"
+    assert path.is_file(), "не найден application/results.py"
+
+    imports = _declared_imports(path)
+    assert "exact_orb.calculation.types" in imports, (
+        "application.results должен импортировать calculation.types по §10.2"
+    )
+    assert not any(
+        _violates("exact_orb.calculation.types", forbidden)
+        for forbidden in APPLICATION_BUILD_NATAL_FORBIDDEN_DIRECT_IMPORTS
+    ), "calculation.types намеренно разрешён application-границей"
 
 
 def test_calculation_cache_declares_no_artifact_payload_imports() -> None:
