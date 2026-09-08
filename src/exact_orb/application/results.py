@@ -35,8 +35,9 @@ class BuildNatalSuccess(BaseModel):
         if self.artifact.spec != delta.base_chart_spec:
             raise ValueError("artifact.spec must equal delta.base_chart_spec")
 
-        # This follows from ChartArtifact identity plus the spec equality above,
-        # and remains as defense-in-depth if artifact invariants change later.
+        # Unreachable through validated ChartArtifact construction: its identity
+        # validator equates chart_kind with spec.chart_kind, and specs match above.
+        # Keep this as defense-in-depth if the artifact invariant changes later.
         if self.artifact.chart_kind != delta.base_chart_spec.chart_kind:
             raise ValueError(
                 "artifact.chart_kind must equal delta.base_chart_spec.chart_kind"

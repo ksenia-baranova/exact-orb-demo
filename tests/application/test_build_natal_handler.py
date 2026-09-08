@@ -81,7 +81,6 @@ async def _handle_with_real_resolver(
     return result, artifacts
 
 
-@pytest.mark.asyncio
 async def test_known_time_builds_natal_success_without_mutating_state() -> None:
     birth_input = _birth_input()
     command = BuildNatalCommand(birth_input=birth_input)
@@ -113,7 +112,6 @@ async def test_known_time_builds_natal_success_without_mutating_state() -> None:
     assert not hasattr(result, "chart_ref")
 
 
-@pytest.mark.asyncio
 async def test_unknown_time_builds_cosmogram_without_rewriting_birth_input() -> None:
     birth_input = _birth_input(birth_time=None)
     resolved = _resolved(time_unknown=True)
@@ -135,7 +133,6 @@ async def test_unknown_time_builds_cosmogram_without_rewriting_birth_input() -> 
     assert result.delta.birth_input.birth_time is None
 
 
-@pytest.mark.asyncio
 async def test_ready_artifact_produces_the_same_success_shape() -> None:
     resolved = _resolved()
     spec = NatalChartSpec(chart_kind="natal")
@@ -155,7 +152,6 @@ async def test_ready_artifact_produces_the_same_success_shape() -> None:
     assert result.delta.base_chart_spec == spec
 
 
-@pytest.mark.asyncio
 @pytest.mark.parametrize(
     "resolution",
     [
@@ -182,7 +178,6 @@ async def test_resolution_outcomes_short_circuit_with_the_same_object(
     assert artifacts.calls == 0
 
 
-@pytest.mark.asyncio
 async def test_empty_input_required_passes_through_unchanged() -> None:
     input_required = InputRequired(issues=())
     resolver = StubBirthDataResolver(input_required)
@@ -200,7 +195,6 @@ async def test_empty_input_required_passes_through_unchanged() -> None:
     assert artifacts.calls == 0
 
 
-@pytest.mark.asyncio
 async def test_unexpected_resolver_exception_propagates_unchanged() -> None:
     error = RuntimeError("resolver failed unexpectedly")
     resolver = StubBirthDataResolver(error)
@@ -218,7 +212,6 @@ async def test_unexpected_resolver_exception_propagates_unchanged() -> None:
     assert artifacts.calls == 0
 
 
-@pytest.mark.asyncio
 @pytest.mark.parametrize(
     "error_code",
     ["SPEC_INVALID", "GEOGRAPHY_INVALID", "HOUSES_DEGENERATE", "ENGINE_UNEXPECTED"],
@@ -242,7 +235,6 @@ async def test_chart_calculation_errors_become_calculation_failed(
     assert result == CalculationFailed(error_code=error_code)
 
 
-@pytest.mark.asyncio
 async def test_calculation_unavailable_becomes_calculation_failed() -> None:
     run = run_context()
     error = CalculationUnavailableError(
@@ -263,7 +255,6 @@ async def test_calculation_unavailable_becomes_calculation_failed() -> None:
     assert result == CalculationFailed(error_code="EPHEMERIS_UNAVAILABLE")
 
 
-@pytest.mark.asyncio
 async def test_unexpected_artifact_exception_propagates_with_typed_positive_control() -> None:
     resolved = _resolved()
     run = run_context()
@@ -290,7 +281,6 @@ async def test_unexpected_artifact_exception_propagates_with_typed_positive_cont
     assert typed_result == CalculationFailed(error_code="SPEC_INVALID")
 
 
-@pytest.mark.asyncio
 async def test_foreign_artifact_spec_is_rejected_by_success_validation() -> None:
     resolved = _resolved()
     requested_spec = NatalChartSpec(chart_kind="natal")
@@ -317,7 +307,6 @@ async def test_foreign_artifact_spec_is_rejected_by_success_validation() -> None
     assert foreign_artifact.spec == foreign_spec
 
 
-@pytest.mark.asyncio
 async def test_artifact_cancellation_propagates_unchanged() -> None:
     cancellation = asyncio.CancelledError()
     handler = BuildNatalHandler(
@@ -382,7 +371,6 @@ def test_handler_ast_does_not_mutate_state_or_create_a_timeout() -> None:
     assert calls_receiving_state == []
 
 
-@pytest.mark.asyncio
 async def test_real_resolver_known_time_builds_natal() -> None:
     result, artifacts = await _handle_with_real_resolver(_birth_input())
 
@@ -392,7 +380,6 @@ async def test_real_resolver_known_time_builds_natal() -> None:
     assert artifacts.received_resolved.time_unknown is False
 
 
-@pytest.mark.asyncio
 async def test_real_resolver_unknown_time_builds_cosmogram() -> None:
     result, artifacts = await _handle_with_real_resolver(_birth_input(birth_time=None))
 
@@ -402,7 +389,6 @@ async def test_real_resolver_unknown_time_builds_cosmogram() -> None:
     assert artifacts.received_resolved.time_unknown is True
 
 
-@pytest.mark.asyncio
 async def test_real_resolver_invalid_place_short_circuits() -> None:
     result, artifacts = await _handle_with_real_resolver(
         _birth_input(place_id="not-in-catalog")
@@ -413,7 +399,6 @@ async def test_real_resolver_invalid_place_short_circuits() -> None:
     assert artifacts.calls == 0
 
 
-@pytest.mark.asyncio
 async def test_real_resolver_unknown_timezone_stays_unavailable() -> None:
     result, artifacts = await _handle_with_real_resolver(_birth_input(place_id="9000001"))
 
@@ -423,7 +408,6 @@ async def test_real_resolver_unknown_timezone_stays_unavailable() -> None:
     assert artifacts.calls == 0
 
 
-@pytest.mark.asyncio
 async def test_real_resolver_unsupported_date_returns_constraints() -> None:
     result, artifacts = await _handle_with_real_resolver(
         _birth_input(birth_date=date(1899, 12, 31))
@@ -437,7 +421,6 @@ async def test_real_resolver_unsupported_date_returns_constraints() -> None:
     assert artifacts.calls == 0
 
 
-@pytest.mark.asyncio
 async def test_real_resolver_ambiguous_time_returns_offset_candidates() -> None:
     result, artifacts = await _handle_with_real_resolver(
         _birth_input(
