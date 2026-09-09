@@ -2,16 +2,18 @@
 
 **Статус:** рабочий документ
 **Дата:** 2026-08-26
-**Ревизия:** 2026-09-07 — контракт `CalculationVersion` и статус A2
-синхронизированы с реализацией; startup wiring оставлен за C3.
+**Ревизия:** 2026-09-09 — контракты handler и активные sequence-диаграммы
+сверены с реализацией; целевой orchestration/commit-слой отделён от уже
+реализованного среза, startup wiring оставлен за C3.
 **Область:** application-путь `BuildNatalCommand` — от входа в `Application
 Orchestrator` до возврата результата и подтверждённого изменения состояния.
 **Основание:** ADR-0002, 0005, 0006, 0007, 0008, 0009, 0012, 0013, 0014, 0015,
 0017, 0020; инварианты И-1, И-5, И-7, И-8, И-11, И-12, И-13, И-14.
 
-Документ фиксирует состав компонентов и контрактов до начала реализации. Он
-не заменяет ADR: каждое решение здесь либо следует принятому ADR, либо явно
-помечено как открытое.
+Документ фиксирует состав компонентов и контрактов пути. Он различает уже
+реализованный срез `BuildNatalHandler` и целевые компоненты внешней
+оркестрации. Документ не заменяет ADR: каждое решение здесь либо следует
+принятому ADR, либо явно помечено как открытое.
 
 ---
 
@@ -23,15 +25,15 @@ Orchestrator` до возврата результата и подтверждё
 
 ```text
 BuildNatalCommand
-    → Application Orchestrator
+    → Application Orchestrator (целевой, ещё не реализован)
     → BuildNatalHandler
     → BirthDataResolver
     → ChartArtifactResolver
     → EngineService
-    → StateDelta
-    → Application Orchestrator
+    → BuildNatalSuccess {ChartArtifact, StateDelta}
+    → Application Orchestrator (целевой)
     → ContextService (commit)
-    → BuildNatalResult
+    → ApplicationResult (целевой)
 ```
 
 Космограмма при неизвестном времени рассчитывается тем же путём (ADR-0008):
@@ -47,7 +49,7 @@ BuildNatalCommand
 | `InterpretationService`, LLM Gateway, OutputGuard | интерпретация |
 | `CapabilityService`, `PolicyService`, `AdmissionControl` | класс операции `calculation` доступен всем и бюджета не расходует (ADR-0013, ADR-0015) |
 | `IntentService`, `InputGuard` | natural-language путь (ADR-0019) |
-| Эндпоинт подсказок мест | отдельная операция; на build-пути `AMBIGUOUS` не возникает (ADR-0005) |
+| Эндпоинт подсказок мест | отдельная операция; при разрешении выбранного `place_id` `AMBIGUOUS` не возникает, но этот код остаётся возможен для удвоенного локального времени (ADR-0005) |
 | `BuildAttempt`, durable job, polling | отложено (ADR-0012), см. §13 |
 
 ### 1.3. Решения, принятые до этого документа
@@ -112,13 +114,14 @@ overview §4.10 — «самая дорогая операция системы�
 ```text
 src/exact_orb/
     outcomes.py                 общие типизированные исходы
+    run_context.py              RunContext
 
     application/
         __init__.py
-        commands.py             BuildNatalCommand
-        run_context.py          RunContext
-        orchestrator.py         ApplicationOrchestrator
-        results.py              BuildNatalResult и приведение исходов
+        commands.py             Command, BuildNatalCommand
+        ports.py                Handler, BirthDataResolverPort, ChartArtifactPort
+        results.py              BuildNatalSuccess, BuildNatalOutcome
+        orchestrator.py         ApplicationOrchestrator (целевой, ещё не реализован)
         handlers/
             __init__.py
             build_natal.py      BuildNatalHandler
@@ -305,9 +308,11 @@ SessionAbsent         { reason: Literal["expired", "not_found"] }
 > в `InputRequired`. Проверяется тестом на каждой границе, где это возможно
 > перепутать: resolver, engine, store.
 
-`AMBIGUOUS` на build-пути в MVP **не возникает**: форма выбирающая, Build API
-принимает только `place_id` (ADR-0005, ADR-0007). Код оставлен в перечислении,
-потому что его порождает эндпоинт подсказок и, позже, свободный текст.
+При разрешении места `AMBIGUOUS` на build-пути в MVP **не возникает**: форма
+выбирающая, Build API принимает только `place_id` (ADR-0005, ADR-0007). Для
+времени код остаётся допустимым исходом: resolver возвращает его при удвоенном
+локальном времени. Для места его порождает эндпоинт подсказок и, позже,
+свободный текст.
 
 ---
 
@@ -335,7 +340,9 @@ Tagged union не вводится, пока у union нет второго чл
 передачи тега. `TransitChartSpec` добавит union тогда, когда появится сама
 транзитная спека.
 
-**`include` по `chart_kind`** (проверяется движком, см. `_validate_chart_kind_include`):
+**`include` по `chart_kind`** задаётся и нормализуется моделью
+`NatalChartSpec`; движок дополнительно защищает согласованность через
+`_validate_chart_kind_include`:
 
 ```text
 natal      → {positions, houses, rulers, aspects, configurations, strength}
@@ -435,7 +442,7 @@ persistence-снимок состояния и диалога, а не ещё о
 
 ---
 
-### 3.6. `application/commands.py` и `application/run_context.py`
+### 3.6. `application/commands.py` и `exact_orb.run_context`
 
 ```text
 BuildNatalCommand {
@@ -900,10 +907,12 @@ class LocalPlaceCatalog(PlaceCatalog):
     def from_file(cls, path: str) -> "LocalPlaceCatalog": ...
 ```
 
-**`Candidates` в этот контракт не входит.** На build-пути `AMBIGUOUS`
-не возникает: Build API принимает только `place_id` (ADR-0005). Поиск по
-строке с несколькими кандидатами — отдельная операция эндпоинта подсказок,
-и её контракт определяется вместе с ней.
+**`Candidates` в этот контракт места не входит.** При разрешении места на
+build-пути `AMBIGUOUS` не возникает: Build API принимает только `place_id`
+(ADR-0005). Поиск по строке с несколькими кандидатами — отдельная операция
+эндпоинта подсказок, и её контракт определяется вместе с ней. Кандидаты
+UTC-offset при удвоенном времени относятся к `TzAmbiguous`, а не к
+`PlaceResolution`.
 
 **Ответственности.** Загрузка каталога на старте, дальше только чтение (И-9).
 Проверка недоверенного `place_id`: неизвестный идентификатор — `NotFound`,
@@ -1397,8 +1406,8 @@ class BuildNatalHandler:
     def __init__(
         self,
         *,
-        resolver:  BirthDataResolver,
-        artifacts: ChartArtifactResolver,
+        resolver:  BirthDataResolverPort,
+        artifacts: ChartArtifactPort,
     ) -> None: ...
 
     async def handle(
@@ -1419,6 +1428,10 @@ BuildNatalOutcome =
     | CalculationFailed
 ```
 
+`resolver` и `artifacts` передаются через constructor injection. Handler не
+импортирует конкретные `BirthDataResolver` и `ChartArtifactResolver` и знает
+только их application-порты.
+
 **Ответственности.**
 
 1. Резолв данных рождения; `InputRequired` и `ResolutionUnavailable`
@@ -1428,17 +1441,16 @@ BuildNatalOutcome =
 
 ```text
 chart_kind = "cosmogram" if resolved.time_unknown else "natal"
-
-include = {"positions", "aspects", "configurations"}
-          if chart_kind == "cosmogram"
-          else DEFAULT_INCLUDE
+spec = NatalChartSpec(chart_kind=chart_kind)
 ```
 
 Правило из ADR-0008: `дата + место + время → natal`,
 `дата + место → cosmogram`. Вопрос о времени не задаётся, пустое поле —
-это явное `time_unknown`, а не пробел, требующий уточнения.
+это явное `time_unknown`, а не пробел, требующий уточнения. Канонический
+`include` для выбранного `chart_kind` устанавливает сама модель
+`NatalChartSpec`.
 
-3. `artifacts.ensure_chart(spec, resolved, run)`.
+3. `artifacts.ensure_chart(spec, resolved, run=run)`.
 
 4. Сформировать all-set `StateDelta`; новую версию handler не вычисляет.
 
@@ -1447,15 +1459,19 @@ include = {"positions", "aspects", "configurations"}
 для лога. Не вызывает `Agent Runtime`, `Planner`, `ToolExecutor` и LLM
 (ADR-0012, ADR-0020).
 
-**Тесты.** Известное время даёт `chart_kind = natal` и полный `include`;
-пустое — `cosmogram` и суженный `include`, без вопроса пользователю;
-`InputRequired` от резолвера доходит наверх тем же типом; `ResolutionUnavailable`
-не превращается в `InputRequired`; handler не обращается к `SessionStore`
-напрямую.
+**Тесты.** Детальная матрица функционального покрытия приведена в требованиях
+handler, §12. Известное время даёт `chart_kind = natal` и полный `include`,
+неизвестное — `cosmogram` и суженный `include`, без вопроса пользователю;
+типизированные short-circuit исходы сохраняются. На сверенном commit отдельный
+import-boundary regression-тест для `build_natal.py` ещё не интегрирован.
 
 ---
 
 ### 7.2. `ApplicationOrchestrator` — `application/orchestrator.py`
+
+**Статус реализации.** Целевой компонент по ADR-0006; на сверенном commit
+`9b7a4179fa10ebda066ff998294b05aaa8930fd2` модуль ещё отсутствует. Следующий
+контракт описывает требуемое будущее поведение, а не уже доступный API.
 
 **Назначение.** Единая точка координации application-flow после транспортного
 слоя (ADR-0006).
@@ -1524,6 +1540,11 @@ class ApplicationOrchestrator:
 ---
 
 ### 7.3. Результат — `application/results.py`
+
+**Статус реализации.** Ниже приведён целевой внешний union после commit.
+В текущем `application/results.py` реализованы только внутренние
+`BuildNatalSuccess` и `BuildNatalOutcome` handler; `ApplicationResult` и его
+commit-исходы ещё не реализованы.
 
 ```text
 ApplicationResult =

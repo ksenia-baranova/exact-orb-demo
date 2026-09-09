@@ -1,32 +1,382 @@
 # exact-orb
 
-Детерминированный расчёт астрологических карт и слой их интерпретации языковой
-моделью, с жёсткой границей между «посчитать» и «рассказать».
+## О проекте
 
-Ключевое свойство системы — **вероятностное только по краям**. Языковая модель
-работает на выходе (изложение) и, в перспективе, на входе свободного вопроса.
-Всё, что между — резолв времени и места, решение о том, что считать, сам расчёт
-и отбор фактов — детерминировано, воспроизводимо и покрывается обычными тестами.
+**exact-orb — R&D-проект об управляемой разработке с AI-агентами.** Он исследует, насколько далеко специалист с сильными навыками управления, системного анализа и тестирования может продвинуть разработку программного продукта, делегируя агентам написание кода и часть технической проработки.
 
-Предметный объём: натальная карта, космограмма, транзиты; далее соляр и
-синастрия.
+Цель проекта — показать не только результат такой разработки, но и инженерные механизмы, необходимые для сохранения контроля над ней: формализацию требований, архитектурные решения, явные контракты и границы ответственности компонентов, проектирование сценариев, автоматизированные тесты и последовательную проверку результатов работы агентов.
+
+Предметная область выбрана не случайно. Расчёт астрологических карт позволяет на конкретном примере соединить два принципиально разных типа обработки:
+
+* точные, воспроизводимые и проверяемые детерминированные расчёты;
+* вероятностный слой интерпретации естественного языка с использованием LLM.
+
+Это делает проект удобным полигоном для исследования архитектуры систем, в которых языковая модель не является источником фактов, а работает только в пределах подготовленного и проверяемого контекста.
+
+Проект остаётся открытым: выбранная предметная область позволяет публиковать исходный код, требования, архитектурные решения, тестовые сценарии и результаты экспериментов без раскрытия корпоративных данных или внутренней бизнес-логики.
+
+> Предметная область используется как инженерный case study. Проект не исследует научную валидность астрологии; интерес представляет архитектурная задача разделения вычислимого источника фактов и вероятностного слоя их интерпретации.
 
 ---
 
-## Статус
+## Что исследует проект
 
-| Слой | Состояние |
-|---|---|
-| `engine/` — эфемериды, карты, аспекты, конфигурации, сила | **Работает**, покрыт тестами |
-| `cli.py` — расчёт и человекочитаемый / JSON вывод | **Работает** |
-| `logging_setup.py`, `config.py` | **Работает** |
-| `llm/gateway.py` — транспорт к провайдеру через LiteLLM | **Работает** (транспорт, без бизнес-логики) |
-| `tools/` — `Tool`-порт, `ToolRegistry`, `NatalTool` | Каркас + рабочий локальный адаптер натала |
-| `intent/`, `interpretation/`, `orchestration/` | **Каркас**: контракты и абстрактные классы, `Orchestrator.handle()` бросает `NotImplementedError` |
+У проекта две связанные исследовательские линии.
 
-Каркас заложен намеренно (ADR-0020): точки вызова существуют, содержание —
-рецепты интерпретации — наполняется отдельно. Основной объём работы находится
-не в каркасе, а в правилах отбора фактов и формулировках промптов.
+### Детерминированное ядро + LLM
+
+Главный архитектурный принцип:
+
+> **LLM не является источником расчётных фактов.**
+
+Положения небесных тел, дома, аспекты, конфигурации и другие вычисляемые показатели появляются только в результате детерминированного расчёта.
+
+Языковая модель может работать поверх подготовленного evidence:
+
+```text
+structured input
+      │
+      ▼
+deterministic resolution
+      │
+      ▼
+deterministic calculation
+      │
+      ▼
+validated chart artifact
+      │
+      ▼
+evidence selection
+      │
+      ▼
+LLM interpretation
+```
+
+LLM может интерпретировать и объяснять рассчитанные данные, но не должна самостоятельно достраивать отсутствующие факты карты.
+
+### Управляемая разработка с AI-агентами
+
+Вторая линия эксперимента — процесс создания самого проекта.
+
+LLM используется как инструмент анализа и исполнения в нескольких ограниченных ролях:
+
+* исследование архитектурных альтернатив и проверка их последствий;
+* помощь в выявлении и разборе corner cases;
+* проверка выбранного решения на противоречия и скрытые последствия;
+* формализация принятых владельцем решений в требования, ADR и диаграммы;
+* подготовка implementation tasks на основе утверждённых контрактов;
+* написание кода в заданных архитектурных и функциональных границах;
+* отдельный review реализации против требований;
+* помощь в проектировании regression-сценариев для найденных дефектов.
+
+**LLM расширяет пространство анализа и ускоряет реализацию, но не определяет продуктовую семантику и не принимает архитектурные решения.** Владелец проекта формулирует проблему и ограничения, выбирает между альтернативами, определяет допустимое поведение в спорных и пограничных сценариях, утверждает спецификацию и принимает итоговую реализацию.
+
+Подробное описание процесса:
+
+[`docs/development_approach/spec-driven-development.md`](docs/development_approach/spec-driven-development.md)
+
+Коротко:
+
+```text
+архитектурное обсуждение
+    → решение владельца
+    → ADR / требования / диаграммы
+    → implementation task
+    → реализация
+    → LLM-review
+    → детерминированная проверка
+    → коммит
+```
+
+---
+
+## Инженерные принципы
+
+* **Детерминированное ядро.** Одинаковый вход, версия расчёта и набор эфемерид должны давать одинаковый результат.
+* **LLM работает с evidence.** Вероятностный слой объясняет подготовленные системой факты, но не создаёт их.
+* **Явные границы компонентов.** Resolution, calculation, artifact/cache lifecycle, application coordination, session state и agent execution разделены.
+* **Типизированные контракты.** На границах используются commands, outcomes, ports, specifications и state deltas.
+* **Архитектурные правила по возможности исполняемы.** Существенные dependency boundaries закрепляются тестами.
+* **Дефект становится regression-тестом.** Исправление должно превращать найденный сценарий ошибки в воспроизводимую проверку.
+* **Минимальный scope изменения.** Implementation task не является разрешением на сопутствующий рефакторинг.
+
+---
+
+## Текущее состояние
+
+Проект находится в активной R&D-разработке.
+
+Первый детерминированный application-сценарий уже проходит через реальные компоненты:
+
+```text
+birth input
+    → birth-data resolution
+    → natal / cosmogram decision
+    → chart artifact resolution
+    → cache / version validation
+    → deterministic engine
+    → chart artifact
+    → StateDelta
+```
+
+### Состояние компонентов
+
+| Компонент                                           | Состояние                                                                                                                     |
+| --------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `engine/`                                           | **Реализован** — натальная карта, космограмма, транзиты, аспекты, конфигурации, сила и структура                              |
+| `birth/`                                            | **Реализован** — birth-data normalization, place и historical timezone resolution                                             |
+| `calculation/`                                      | **Реализован** — `ChartSpec`, calculation version/key, engine adapter, codec, cache и artifact resolution                     |
+| `session/`                                          | **Реализована основа** — state contracts, `ContextService`, persistence contracts, in-memory и SQLite adapters                |
+| `research/`                                         | **Частично реализован** — модели, projection и in-memory corpus; persistence и дальнейший application wiring ещё не завершены |
+| `application/commands.py`, `ports.py`, `results.py` | **Реализованы** типизированные application-контракты                                                                          |
+| `BuildNatalHandler`                                 | **Реализован и интеграционно протестирован**                                                                                  |
+| Application Orchestrator                            | **Следующий этап** — lifecycle пользовательской операции, freshness/idempotency и state commit                                |
+| `cli.py`                                            | **Работает** — human-readable и JSON output                                                                                   |
+| `llm/gateway.py`                                    | **Работает как транспортный слой**, без расчётной бизнес-логики                                                               |
+| Agent Orchestrator / interpretation flow            | Контракты и каркас; полный runtime ещё не реализован                                                                          |
+| UI / публичный API                                  | Не входят в текущий реализованный срез                                                                                        |
+
+Для integration-коммита `5406306`, вошедшего в `main` через PR #20, в истории проекта зафиксирован полный локальный прогон:
+
+```text
+pytest -q
+1423 passed in 39.26s
+```
+
+Количество тестов само по себе не считается метрикой качества проекта. Важнее, какие контракты, отказные сценарии, concurrency-инварианты и архитектурные границы они различают.
+
+---
+
+## Application flow
+
+`BuildNatalHandler` — первый реализованный application handler.
+
+```text
+BuildNatalCommand
+        │
+        ▼
+BuildNatalHandler
+        │
+        ├── BirthDataResolver
+        │
+        ├── chart_kind
+        │      ├── natal
+        │      └── cosmogram
+        │
+        └── ChartArtifactPort
+                  │
+                  ▼
+          ChartArtifactResolver
+                  │
+          ┌───────┼────────┐
+          │       │        │
+        cache   codec   EngineService
+                           │
+                           ▼
+                         engine/
+```
+
+Handler намеренно не владеет:
+
+* calculation cache lifecycle;
+* calculation key;
+* codec;
+* прямым вызовом расчётного движка;
+* persistence Session State;
+* application-level idempotency и revision lifecycle.
+
+При успехе он возвращает chart artifact и `StateDelta`, но не применяет изменение состояния самостоятельно.
+
+Следующий шаг — `Application Orchestrator`, который должен замкнуть:
+
+```text
+request
+    → context load
+    → operation registration
+    → handler selection
+    → handler execution
+    → result / StateDelta
+    → freshness checks
+    → state commit
+    → response
+```
+
+---
+
+## Два уровня оркестрации
+
+В целевой архитектуре разделены два уровня coordination:
+
+```text
+                         ┌─ BuildNatalHandler
+                         │
+API → Application ───────┼─ InterpretSelectionHandler
+      Orchestrator       │
+                         └─ InterpretMessageHandler
+                                      │
+                                      ▼
+                              Agent Orchestrator
+                                / Agent Runtime
+                                      │
+                              Planner / Tools
+                                      │
+                                      ▼
+                                 EngineService
+```
+
+### Application Orchestrator
+
+Управляет пользовательской операцией целиком:
+
+* context load/save;
+* выбором handler по типу команды;
+* lifecycle операции;
+* idempotency;
+* revision/freshness;
+* применением `StateDelta`;
+* формированием результата.
+
+Он не является агентом и не выполняет agent loop.
+
+### Agent Orchestrator / Agent Runtime
+
+Используется внутри операций, которым требуется LLM/agent execution:
+
+* planning;
+* выбор разрешённых tools;
+* выполнение tools;
+* сбор evidence;
+* построение контекста;
+* вызов LLM.
+
+Ключевая граница:
+
+> **Application Orchestrator управляет пользовательской операцией.
+> Agent Orchestrator управляет agent-сценарием.**
+
+Существующий `orchestration/Orchestrator` пока является каркасом будущего interpretation flow и не заменяет Application Orchestrator.
+
+---
+
+## Расчётное ядро
+
+Детерминированное ядро находится в `engine/`.
+
+| Пакет                    | Назначение                                                            |
+| ------------------------ | --------------------------------------------------------------------- |
+| `engine/ephemeris/`      | позиции тел, дома, Julian day, производные точки, таблицы управителей |
+| `engine/charts/`         | `calculate_natal()`, `calculate_transit()`                            |
+| `engine/aspects/`        | аспекты и дифференцированные орбисы                                   |
+| `engine/configurations/` | конфигурации аспектов                                                 |
+| `engine/strength/`       | достоинства, диспозиторы, рецепции, элементы структуры карты          |
+
+Движок не знает о:
+
+* LLM;
+* prompts;
+* agent runtime;
+* HTTP;
+* session state;
+* пользовательском диалоге.
+
+Пример прямого использования:
+
+```python
+from datetime import datetime, timedelta, timezone
+
+from exact_orb.engine.charts.natal import calculate_natal
+from exact_orb.engine.charts.transit import calculate_transit
+
+natal = calculate_natal(
+    datetime(
+        1985,
+        9,
+        2,
+        0,
+        45,
+        tzinfo=timezone(timedelta(hours=4)),
+    ),
+    latitude=55.7522,
+    longitude=37.6155,
+    chart_kind="natal",
+)
+
+transits = calculate_transit(
+    natal,
+    datetime.now(timezone.utc),
+)
+```
+
+Все результаты представлены типизированными моделями и могут сериализоваться в JSON.
+
+---
+
+## Calculation artifacts
+
+Между application-слоем и низкоуровневым engine существует отдельный calculation layer.
+
+Он разделяет два понятия:
+
+```text
+"получить такую карту"
+```
+
+и
+
+```text
+"снова выполнить физический расчёт"
+```
+
+Слой содержит:
+
+```text
+ChartSpec
+CalculationVersion
+calculation key
+codec
+cache
+ChartArtifactResolver
+EngineService adapter
+```
+
+Значимый параметр, изменяющий числовой результат, должен участвовать либо в `ChartSpec`, либо в `CalculationVersion`.
+
+Artifact resolver отвечает за cache hit/miss, version binding, serialization и необходимость повторного engine calculation.
+
+Для concurrent miss одного ключа используется single-flight, при этом разные вызывающие не получают общий изменяемый объект результата.
+
+---
+
+## Birth data resolution
+
+Пользовательский input отделён от расчётного input.
+
+Пользователь может передавать:
+
+```text
+date
+time
+place
+```
+
+а calculation layer получает уже разрешённые значения:
+
+```text
+UTC datetime
+coordinates
+timezone information
+time-known / time-unknown semantics
+```
+
+Исторический UTC offset вычисляется backend-компонентом, а не LLM.
+
+Если время рождения неизвестно, строится отдельный:
+
+```text
+chart_kind="cosmogram"
+```
+
+а не натал с фиктивными домами.
 
 ---
 
@@ -36,66 +386,65 @@
 
 ```bash
 python -m venv .venv
-.venv\Scripts\activate          # Windows
-# source .venv/bin/activate     # Linux / macOS
+```
 
+Windows:
+
+```bash
+.venv\Scripts\activate
+```
+
+Linux / macOS:
+
+```bash
+source .venv/bin/activate
+```
+
+Установка:
+
+```bash
 pip install -e ".[dev]"
 ```
 
-Зависимости: `pysweph` (Swiss Ephemeris), `pydantic` v2, `litellm`.
-Dev-набор: `pytest`, `hypothesis`.
+Основные зависимости:
 
-### Файлы эфемерид
+* `pysweph`;
+* `pydantic` v2;
+* `litellm`;
+* `tzdata`.
 
-Каталог `ephe/` хранится в репозитории, поэтому после `git clone` скачивать
-ничего не нужно и `pytest` проходит сразу. При отсутствии обязательных файлов
-`swisseph` переходит в fallback-режим Moshier для поддерживаемых тел. Однако
-сейчас Селена вычисляется для любой натальной карты и космограммы независимо
-от `include`, а её fallback-предупреждение считается ошибкой, поэтому такой
-расчёт завершается отказом (открытый Т-ЭФ-24).
+Dev-набор:
 
-Три файла с сайта Astrodienst
-(<https://www.astro.com/ftp/swisseph/ephe/>):
-
-```
-ephe/sepl_18.se1   # планеты
-ephe/semo_18.se1   # Луна
-ephe/seas_18.se1   # астероиды (Хирон)
-```
-
-Контрольные суммы, дата получения и предупреждение о том, что замена файлов
-меняет числовой результат, — в `ephe/README.md`.
-
-Путь к каталогу разрешается по приоритету: аргумент `--ephe-path` →
-`EXACT_ORB_EPHE_PATH` → `[tool.exact_orb].ephemeris_path` в проектном
-`pyproject.toml` → `data/ephe`. Текущий проектный конфиг указывает на `ephe`.
-
-При успешном расчёте фактический режим (`files` или `fallback`) виден в поле
-`ephemeris` карты и в заголовке лог-файла.
-
-Реализованный сборщик `CalculationVersion` дополнительно требует существующий
-каталог: пустой или частично заполненный каталог получает стабильный отпечаток,
-а отсутствующий путь даёт типизированную ошибку. Этот fail-fast станет частью
-запуска cache-enabled приложения после появления общей точки композиции; CLI
-пока напрямую со сборщиком версии не соединён.
+* `pytest`;
+* `pytest-asyncio`;
+* `hypothesis`.
 
 ---
 
 ## Быстрый старт
 
 ```bash
-exact-orb "2.09.1985 00.45 gmt+4" --place "Москва" --lat 55.7522 --lon 37.6155
+exact-orb "2.09.1985 00.45 gmt+4" \
+  --place "Москва" \
+  --lat 55.7522 \
+  --lon 37.6155
 ```
 
-Эквивалентно: `python -m exact_orb "..."`.
+Эквивалентно:
 
-Формат ввода строгий: `dd.mm.yyyy hh.mm gmt+x` (допустимы `hh:mm` и
-`gmt+4:30`). Смещение задаётся явно — исторические таймзоны в CLI не
-разрешаются, это задача будущего `BirthDataResolver`.
+```bash
+python -m exact_orb \
+  "2.09.1985 00.45 gmt+4" \
+  --place "Москва" \
+  --lat 55.7522 \
+  --lon 37.6155
+```
+
+CLI принимает явный UTC offset. Historical timezone resolution относится к отдельному `birth/` path.
 
 Фрагмент вывода:
 
-```
+```text
 НАТАЛЬНАЯ КАРТА
 2 сентября 1985, 00:45 (+04:00) · Москва 55.75N 37.62E · Плацидус
 
@@ -109,309 +458,491 @@ exact-orb "2.09.1985 00.45 gmt+4" --place "Москва" --lat 55.7522 --lon 37.
   ...
 ```
 
-Полный эталонный вывод — `tests/golden/natal_1985_human.txt`.
-Секции: `ПЛАНЕТЫ`, `ТОЧКИ`, `ДОМА`, `ИНТЕРЦЕПЦИИ`, `АСПЕКТЫ`,
-`КОНФИГУРАЦИИ`, `СИЛА И СТРУКТУРА`, `ОСОБЫЕ ГРАДУСЫ`.
+Полный эталонный вывод:
 
-### Флаги CLI
+```text
+tests/golden/natal_1985_human.txt
+```
 
-| Флаг | По умолчанию | Назначение |
-|---|---|---|
-| `--lat`, `--lon` | `55.7522`, `37.6155` | широта (север +), долгота (восток +) |
-| `--place` | `Москва` | название места для шапки вывода |
-| `--house-system` | `P` | система домов натала; сейчас поддерживается только `P` (Плацидус) |
-| `--rulership` | `combined` | таблица управителей: `combined`, `modern`, `traditional` |
-| `--ephe-path` | — | каталог файлов эфемерид |
-| `--format` | `human` | `human` или `json` |
-| `--max-aspect-orb` | `7.0` | максимальный орбис аспекта в градусах |
-| `--planets-only` | выкл. | скрыть производные точки (узлы, Лилит, Фортуна, Селена) |
-| `--no-aspects` | выкл. | не считать и не выводить аспекты и конфигурации |
-| `--no-warnings` | выкл. | скрыть предупреждения Swiss Ephemeris |
+### CLI-флаги
 
-Ввод можно передать и через stdin: `echo "2.09.1985 00.45 gmt+4" | exact-orb`.
+| Флаг               | По умолчанию         | Назначение                                           |
+| ------------------ | -------------------- | ---------------------------------------------------- |
+| `--lat`, `--lon`   | `55.7522`, `37.6155` | широта и долгота                                     |
+| `--place`          | `Москва`             | название места в выводе                              |
+| `--house-system`   | `P`                  | система домов; сейчас поддерживается только Плацидус |
+| `--rulership`      | `combined`           | `combined`, `modern`, `traditional`                  |
+| `--ephe-path`      | —                    | каталог файлов эфемерид                              |
+| `--format`         | `human`              | `human` или `json`                                   |
+| `--max-aspect-orb` | `7.0`                | максимальный орбис аспекта                           |
+| `--planets-only`   | выкл.                | скрыть производные точки                             |
+| `--no-aspects`     | выкл.                | не выводить аспекты и конфигурации                   |
+| `--no-warnings`    | выкл.                | скрыть предупреждения Swiss Ephemeris                |
 
-Коды возврата: `0` — успех, `2` — ошибка расчёта или разбора ввода.
+Input можно передать и через stdin:
+
+```bash
+echo "2.09.1985 00.45 gmt+4" | exact-orb
+```
+
+Коды возврата:
+
+* `0` — успех;
+* `2` — ошибка разбора input или расчёта.
+
+---
+
+## Эфемериды и воспроизводимость
+
+Файлы Swiss Ephemeris хранятся в:
+
+```text
+ephe/
+```
+
+В частности:
+
+```text
+ephe/sepl_18.se1
+ephe/semo_18.se1
+ephe/seas_18.se1
+```
+
+После `git clone` базовый test suite не требует отдельной загрузки файлов.
+
+Контрольные суммы и происхождение ресурсов описаны в:
+
+[`ephe/README.md`](ephe/README.md)
+
+Путь к эфемеридам разрешается по приоритету:
+
+```text
+--ephe-path
+    → EXACT_ORB_EPHE_PATH
+    → [tool.exact_orb].ephemeris_path
+    → default
+```
+
+Замена расчётно значимых ресурсов должна изменять `CalculationVersion`, а не незаметно переиспользовать старый artifact.
 
 ---
 
 ## Конфигурация
 
-Все настройки разрешаются по единому приоритету:
-**аргумент функции → переменная окружения → `[tool.exact_orb]` в проектном
-`pyproject.toml` → значение по умолчанию в коде.** Project config ищется вверх
-от каталога пакета `exact_orb`, а не от текущего рабочего каталога. Поэтому
-настройки одинаковы при запуске из корня приложения и из другой папки.
-Относительные пути из project config считаются от каталога `pyproject.toml`.
+Общий принцип:
 
-`configure_ephemeris()` читает источники один раз на старте и замораживает путь
-эфемерид вместе с методом Селены. Повторный вызов без параметра использует
-замороженное значение; явно переданный другой путь или метод считается ошибкой
-конфигурации и не меняет состояние процесса.
-
-| Переменная окружения | Ключ в `[tool.exact_orb]` | По умолчанию | Что задаёт |
-|---|---|---|---|
-| `EXACT_ORB_EPHE_PATH` | `ephemeris_path` | `data/ephe` | каталог файлов Swiss Ephemeris |
-| `EXACT_ORB_SELENA_METHOD` | `selena_method` | `mean_perigee` | методика расчёта Селены |
-| `EXACT_ORB_LOG_LEVEL` | `log_level` | `DEBUG` | уровень логирования |
-| `EXACT_ORB_LOG_DIR` | `log_dir` | `logs/` в корне проекта | каталог логов |
-| `EXACT_ORB_LOG_MAX_BYTES` | `log_max_bytes` | 10 MiB | размер файла до ротации |
-| `EXACT_ORB_LLM_MODEL` | `llm_model` | `deepseek/deepseek-v4-flash` | модель в нотации LiteLLM |
-| `EXACT_ORB_LLM_TIMEOUT` | `llm_timeout` | `60` | таймаут запроса, секунды |
-| `EXACT_ORB_LLM_RETRIES` | `llm_retries` | `2` | число повторов после первой попытки |
-
-Ключи API моделей берутся **только** из переменных окружения провайдера
-(например `DEEPSEEK_API_KEY`). Передать `api_key` в шлюз нельзя — вызов
-отклоняется. `.env` в `.gitignore`.
-
----
-
-## Архитектура
-
-```
-CLI / будущий API
-        │
-        ▼
-orchestration/  Orchestrator — координатор потока, stateless между запросами
-        │
-        ├── intent/          Planner: запрос → InterpretationPlan
-        ├── tools/           Tool-порт, ToolRegistry, NatalTool (локальный адаптер)
-        ├── interpretation/  DataSelector → PromptBuilder → PromptBundle
-        └── llm/             complete(): транспорт к провайдеру, ничего кроме
-        │
-        ▼
-engine/         детерминированное ядро, о LLM не знает вообще
+```text
+явный аргумент
+    → environment
+    → [tool.exact_orb] в pyproject.toml
+    → default в коде
 ```
 
-Контракт будущего потока зафиксирован в докстринге `Orchestrator.handle()`:
-план → проверка недостающих слотов → инструменты → отбор фактов → промпт →
-один вызов LLM → `OrchestrationResponse`.
+Текущий project config:
 
-### Сквозные инварианты
-
-- **И-1. Детерминированный путь не получает пользовательский текст.** `Planner`,
-  `Tool`, движок и реестры сырого текста не видят никогда; нормализованный
-  запрос доходит только до `PromptBuilder` как недоверенные данные в отдельном
-  слоте (ADR-0018).
-- **И-2. Сценарий = один промпт = один вызов LLM** (ADR-0003). Сколько бы
-  инструментов ни отработало, наружу уходит один `PromptBundle`.
-- **Натал — базовое состояние, транзит — производный расчёт** (ADR-0016):
-  `calculate_transit()` принимает готовый `NatalChart`.
-- **Вид карты хранится, а не выводится** (ADR-0008): `chart_kind` —
-  обязательный явный аргумент, `natal` или `cosmogram`. Космограмма при
-  неизвестном времени рождения — отдельный вид, а не натал с пустыми домами.
-
-Полный список инвариантов и обоснования — `docs/requirements/overview.md`, §3.
-
-### Расчётное ядро
-
-| Пакет | Содержание |
-|---|---|
-| `engine/ephemeris/` | примитивы: `calculate_bodies`, `calculate_houses`, юлианский день, зодиакальная позиция, таблицы управителей, Фортуна, Селена |
-| `engine/charts/` | техники: `calculate_natal()`, `calculate_transit()` |
-| `engine/aspects/` | `find_aspects()`, дифференцированные орбисы (по аспекту, по телу, по паре «аспект × тело»), категории по точности |
-| `engine/configurations/` | `find_configurations()`: тау-квадрат, большой крест, большой тригон, йод, трапеция, бисекстиль |
-| `engine/strength/` | достоинства, акцидентальная сила, цепочки диспозиторов, взаимные рецепции, баланс стихий и крестов, фаза Луны, особые градусы, интерцепции |
-
-Разделение «примитивы в `ephemeris`, техники в `charts`» — ADR-0001.
-
-Все результаты — модели `pydantic`, поэтому карта целиком сериализуется в JSON
-одним `model_dump(mode="json")`.
-
-```python
-from datetime import datetime, timedelta, timezone
-from exact_orb.engine.charts.natal import calculate_natal
-from exact_orb.engine.charts.transit import calculate_transit
-
-natal = calculate_natal(
-    datetime(1985, 9, 2, 0, 45, tzinfo=timezone(timedelta(hours=4))),
-    latitude=55.7522,
-    longitude=37.6155,
-    chart_kind="natal",
-)
-
-transits = calculate_transit(natal, datetime.now(timezone.utc))
+```toml
+[tool.exact_orb]
+ephemeris_path = "ephe"
+selena_method = "true_perigee"
+llm_timeout = 60
+llm_retries = 2
 ```
 
-`include=` ограничивает набор считаемых блоков: `positions`, `houses`,
-`rulers`, `aspects`, `configurations`, `strength`. Космограмма — это как раз
-сокращённый набор без домов, управителей и силы.
+### Переменные окружения
 
-### Слой инструментов
+| Переменная                | Ключ `[tool.exact_orb]` | По умолчанию                 | Назначение                         |
+| ------------------------- | ----------------------- | ---------------------------- | ---------------------------------- |
+| `EXACT_ORB_EPHE_PATH`     | `ephemeris_path`        | `data/ephe`                  | каталог Swiss Ephemeris            |
+| `EXACT_ORB_SELENA_METHOD` | `selena_method`         | `mean_perigee`               | метод расчёта Селены               |
+| `EXACT_ORB_LOG_LEVEL`     | `log_level`             | `DEBUG`                      | уровень логирования                |
+| `EXACT_ORB_LOG_DIR`       | `log_dir`               | `logs/`                      | каталог логов                      |
+| `EXACT_ORB_LOG_MAX_BYTES` | `log_max_bytes`         | 10 MiB                       | размер файла до ротации            |
+| `EXACT_ORB_LLM_MODEL`     | `llm_model`             | `deepseek/deepseek-v4-flash` | модель LiteLLM                     |
+| `EXACT_ORB_LLM_TIMEOUT`   | `llm_timeout`           | `60`                         | timeout запроса                    |
+| `EXACT_ORB_LLM_RETRIES`   | `llm_retries`           | `2`                          | число retries после первой попытки |
 
-`Tool` — порт с адаптерами (ADR-0002). Сегодня все инструменты локальные:
-`NatalTool` валидирует аргументы через `NatalToolArgs` и вызывает
-`calculate_natal()` в процессе. Удалённый адаптер по HTTP реализует тот же
-интерфейс, и ни `ToolRegistry`, ни `Orchestrator` от этого не меняются —
-меняется только регистрация в `ToolRegistry.default()`.
+API keys моделей берутся только из environment провайдера, например:
 
-### Точки без единого определения
+```text
+DEEPSEEK_API_KEY
+```
 
-#### Селена
+Передача `api_key` непосредственно в gateway не поддерживается.
 
-Селена / Белая Луна не является физическим телом и не входит в Swiss Ephemeris
-как единый канонический объект. В проекте она рассчитывается через заменяемые
-стратегии:
-
-- `mean_perigee` — точка, противоположная среднему апогею Луны
-  (`swe.MEAN_APOG + 180°`); средний перигей лунной орбиты, период около
-  8.85 года;
-- `true_perigee` — точка, противоположная оскулирующему апогею Луны
-  (`swe.OSCU_APOG + 180°`); истинный перигей с колебаниями относительно
-  среднего положения.
-
-Для карты `1985-09-01 20:45 UTC, Москва` фактические значения:
-
-| Методика | Долгота | Знак |
-|---|---|---|
-| `mean_perigee` | `220.201551°` | Скорпион 10°12'06" |
-| `true_perigee` | `225.502570°` | Скорпион 15°30'09" |
-| geocult (внешний источник) | ≈ `225.374167°` | Скорпион 15°22'27" |
-
-`true_perigee` близок к внешнему источнику и выбран в проектном конфиге.
-При отсутствии настройки базовое значение в коде остаётся `mean_perigee` —
-чтобы явно сохранять исходную традицию среднего перигея.
+`.env` находится в `.gitignore`.
 
 ---
 
 ## Логирование
 
-`init_logging()` поднимает три приёмника:
+`init_logging()` создаёт три output channel:
 
-- `logs/general/<timestamp>Z.log` — уровень INFO и выше;
-- `logs/debug/<timestamp>Z.log` — всё, включая промпты и ответы модели;
-- stderr — только WARNING и выше, в компактном виде.
+```text
+logs/general/<timestamp>Z.log
+logs/debug/<timestamp>Z.log
+stderr
+```
 
-Время в файлах всегда UTC. Каждая строка помечена коротким `session=<id>`
-процесса. Ротация — по размеру (10 MiB), с общим потолком удержания 200 MiB на
-поток. В заголовок нового файла пишется контекст запуска: версия пакета, версия
-Python, режим эфемерид и система домов по умолчанию.
+Назначение:
 
-Шлюз LLM вычищает секреты из текста ошибок: значения переменных окружения с
-`KEY` / `TOKEN` / `SECRET` / `PASSWORD` в имени и типовые пары `api_key=...`
-заменяются на `[REDACTED]`. Полное маскирование логов остаётся отдельной
-задачей и блокирует публичное размещение сервиса.
+* `general/` — INFO и выше;
+* `debug/` — полный debug-поток;
+* `stderr` — WARNING и выше.
+
+Временные метки файлов — UTC.
+
+Каждая строка файлового лога содержит явную метку компонента и полный logger,
+например:
+
+```text
+component=application.handlers.build_natal logger=exact_orb.application.handlers.build_natal
+```
+
+`component` — путь компонента без служебного префикса `exact_orb.`. Логи также
+содержат session/run correlation information, необходимую для анализа
+выполнения сценариев.
+
+На реализованном пути Build Natal каждая публичная граница дополнительно пишет
+на `DEBUG` полные входящие и исходящие сообщения:
+
+```text
+component_message direction=in operation=ensure_chart run_id=... status=ok message_type=EnsureChartRequest message={...}
+component_message direction=out operation=ensure_chart run_id=... status=ok message_type=ChartArtifact message={...}
+```
+
+Поле `message` — однострочный JSON без усечения. На выходе
+`BuildNatalHandler` оно содержит полный `BuildNatalSuccess`, включая
+`ChartArtifact` и натальную карту. Для просмотра этих записей используйте
+`logs/debug/*.log` или `pytest --log-cli-level=DEBUG`.
+
+LLM gateway маскирует типовые secrets в error messages, включая значения переменных с `KEY`, `TOKEN`, `SECRET` и `PASSWORD` в имени.
+
+Полные DEBUG-сообщения содержат birth-data, координаты, timezone-данные и
+результаты расчёта. Это намеренный режим локальной диагностики по ADR-0025;
+текущий проект не следует рассматривать как готовый production-сервис для
+обработки персональных данных.
 
 ---
 
-## Тесты
+## Тестирование
+
+Основной запуск:
 
 ```bash
 pytest
 ```
 
-`pythonpath = ["src"]` и `testpaths = ["tests"]` заданы в `pyproject.toml`,
-так что установка пакета для прогона не обязательна. Файлы эфемерид лежат
-в репозитории, поэтому ручной подготовки окружения тоже не требуется; если
-каталог `ephe/` всё-таки окажется неполным, прогон остановится одним
-сообщением с перечнем недостающих файлов.
+Тестовая стратегия включает несколько видов проверок.
 
-Что покрыто: эфемериды и дома, Селена, аспекты и орбисы, конфигурации, сила и
-структура, инварианты (property-based через `hypothesis`), краевые случаи,
-рендер CLI против золотого файла, гейтинг блоков `include`, каркас агента,
-реестр инструментов, транзиты, логирование, шлюз LLM.
+### Unit и contract tests
 
-Тестовые данные: `tests/fixtures/` (эталонная карта 1985 года),
-`tests/golden/` (эталонный текстовый вывод).
+Проверяют отдельные компоненты и типизированные границы.
 
-### Ручной smoke-тест LLM
+### Golden/reference tests
+
+Используются эталонные числовые и текстовые результаты:
+
+```text
+tests/fixtures/
+tests/golden/
+```
+
+### Property-based tests
+
+`hypothesis` проверяет инварианты на классах входов.
+
+### Boundary tests
+
+```text
+tests/test_module_boundaries.py
+```
+
+закрепляет существенную часть разрешённых зависимостей между модулями.
+
+Для agent-assisted разработки это принципиально: важная архитектурная граница по возможности должна быть исполняемой, а не существовать только в документации.
+
+### Integration tests
+
+Integration tests собирают реальные компоненты проверяемого пути.
+
+Для Build Natal проверяется цепочка:
+
+```text
+BuildNatalHandler
+→ BirthDataResolver
+→ ChartArtifactResolver
+→ CalculationCache
+→ codec
+→ EngineService
+→ Swiss Ephemeris
+```
+
+### Concurrency tests
+
+Для concurrent-сценариев используются управляемые fake components, `asyncio.Event`, barriers и другие детерминированные примитивы.
+
+`sleep` и случайная задержка не считаются доказательством корректного порядка выполнения.
+
+Timeout используется как защита от зависания теста, а не как доказательство синхронизации.
+
+---
+
+## Ручной LLM smoke-test
+
+Сетевой LLM smoke-test намеренно не входит в обычный `pytest`, поскольку выполняет реальный запрос к провайдеру.
+
+Windows:
 
 ```bash
-set DEEPSEEK_API_KEY=...        # Windows;  export ... на Linux/macOS
+set DEEPSEEK_API_KEY=...
 python scripts/llm_smoke_test.py
 ```
 
-Не входит в автотесты: делает реальный сетевой вызов и тратит реальные деньги.
-Данные карты берутся из настоящего `format_human()`, а не из скопированного
-вручную текста, поэтому промпт всегда в одном шаге от детерминированного слоя.
+Linux / macOS:
+
+```bash
+export DEEPSEEK_API_KEY=...
+python scripts/llm_smoke_test.py
+```
+
+Данные карты для smoke-test берутся из фактического deterministic output, а не из вручную скопированного примера.
+
+---
+
+## Как разрабатывается проект
+
+Рабочий метод — **AI-assisted specification-driven development**.
+
+Архитектурное обсуждение и implementation разделены.
+
+Владелец проекта задаёт исходную проблему, продуктовые и доменные ограничения, определяет спорную семантику и принимает архитектурные решения. LLM используется для расширения анализа: предлагает альтернативы, помогает находить дополнительные corner cases, проверять последствия и формализовывать уже выбранное решение.
+
+После выбора решение фиксируется в долгоживущем источнике истины:
+
+```text
+ADR
+requirements
+component responsibilities
+sequence diagrams
+boundary tests
+```
+
+Только после этого создаётся ограниченная implementation task.
+
+История таких задач хранится в:
+
+```text
+prompts/
+```
+
+Агент реализует задачу в заданных границах. После реализации отдельный review-проход сопоставляет diff с контрактом и пытается найти сценарий, в котором реализация его нарушает.
+
+Затем выполняется детерминированная приёмка:
+
+```text
+targeted regression
+    → component tests
+    → integration / boundary tests
+    → full pytest
+    → documentation checks
+```
+
+Таким образом разделяются три разные ответственности:
+
+```text
+владелец проекта
+    → определяет, что и почему должно быть построено
+
+LLM / coding agent
+    → помогает анализировать и реализует ограниченную задачу
+
+исполняемые проверки
+    → проверяют наблюдаемое поведение и архитектурные инварианты
+```
+
+Подробное описание метода:
+
+[`docs/development_approach/spec-driven-development.md`](docs/development_approach/spec-driven-development.md)
+
+Правила, которые получает coding agent непосредственно в репозитории:
+
+[`AGENTS.md`](AGENTS.md)
+
+---
+
+## Источники истины
+
+Для implementation/review действует следующий приоритет:
+
+```text
+текущая явная задача
+    → действующие ADR и требования
+    → актуальные тесты и реализация
+    → исторические prompts
+    → свободное архитектурное обсуждение
+```
+
+Свободный architectural discussion — исследовательский материал и может содержать отвергнутые варианты.
+
+Долгоживущий контракт должен находиться в требованиях, ADR или исполняемой проверке.
 
 ---
 
 ## Структура репозитория
 
-```
+```text
 src/exact_orb/
-  cli.py              разбор ввода, человекочитаемый и JSON вывод
-  config.py           эфемериды, методика Селены, чтение [tool.exact_orb]
-  logging_setup.py    два файловых потока, ротация, UTC, session id
-  engine/             детерминированное ядро
-  tools/              Tool-порт, реестр, NatalTool
-  intent/             Planner, UserRequest, InterpretationPlan
-  interpretation/     DataSelector, PromptBuilder, PromptRegistry
-  orchestration/      Orchestrator, OrchestrationResponse
-  llm/                транспортный шлюз поверх LiteLLM
+  application/       application commands, ports, outcomes и handlers
+  birth/             birth-data, place и timezone resolution
+  calculation/       specs, versioning, cache, codec, artifacts, engine adapter
+  engine/            детерминированное расчётное ядро
+  session/           state, ContextService и persistence adapters
+  research/          research models, projection и corpus
+  intent/            interpretation planning contracts
+  interpretation/    evidence selection и prompt construction
+  orchestration/     agent-orchestration skeleton
+  tools/             tool ports и registry
+  llm/               LLM transport gateway
+  cli.py             standalone deterministic CLI
+  config.py          project configuration
+  logging_setup.py   logging
 
 docs/
-  requirements/overview.md     архитектура, инварианты, объём MVP, порядок работ
-  requirements/scenarios.md    сценарии
-  requirements/decisions/      ADR-0001 … ADR-0022
-  architecture/*.puml          схемы компонентов
-  sequence_diagrams/           диаграммы последовательностей
+  development_approach/
+    spec-driven-development.md
+  project_management/
+    roadmap.md
+  requirements/
+    overview.md
+    scenarios.md
+    component_responsibilities/
+    decisions/
+  architecture/
+  sequence_diagrams/
 
-prompts/          датированные технические задания на реализованные задачи
-scripts/          ручные проверки, не входящие в автотесты
-tests/            автотесты, фикстуры, золотые файлы
-ephe/             файлы Swiss Ephemeris
-logs/             логи прогонов (не в репозитории)
+prompts/              датированные implementation tasks
+scripts/              ручные и сетевые smoke-checks
+tests/                unit, contract, integration, boundary и golden tests
+ephe/                 Swiss Ephemeris files
+AGENTS.md              правила работы coding agents
 ```
 
 ---
 
 ## Документация
 
-- `docs/requirements/overview.md` — рабочая архитектура v2.0: назначение,
-  декомпозиция на блоки, сквозные инварианты с обоснованиями, компоненты,
-  контракты, стоимость и лимиты, объём MVP, порядок работ, открытые вопросы.
-- `docs/requirements/decisions/` — ADR в формате «контекст — решение —
-  альтернативы — последствия». Решение действует, пока не появится запись,
-  явно его отменяющая; индекс со статусами — в `decisions/README.md`.
-- `prompts/` — датированные ТЗ, по которым писался код. Полезны как история
-  намерения: почему модуль устроен именно так.
+### Архитектура и инварианты
+
+[`docs/requirements/overview.md`](docs/requirements/overview.md)
+
+### Сквозные сценарии
+
+[`docs/requirements/scenarios.md`](docs/requirements/scenarios.md)
+
+### Ответственности компонентов
+
+[`docs/requirements/component_responsibilities/`](docs/requirements/component_responsibilities/)
+
+В частности:
+
+```text
+exact-orb_applicationOrchestrator_agentOrchestrator.md
+exact-orb_birth_data_resolution.md
+exact-orb_build_natal_components.md
+exact-orb_calculation_requirements.md
+exact-orb_chart_artifacts.md
+exact-orb_research_corpus.md
+exact-orb_session_requirements.md
+```
+
+### Архитектурные решения
+
+[`docs/requirements/decisions/`](docs/requirements/decisions/)
+
+ADR фиксируют:
+
+```text
+контекст
+→ решение
+→ альтернативы
+→ последствия
+```
+
+Решение действует, пока явно не заменено.
+
+### Sequence diagrams
+
+[`docs/sequence_diagrams/`](docs/sequence_diagrams/)
+
+### История implementation tasks
+
+[`prompts/`](prompts/)
+
+### Метод разработки
+
+[`docs/development_approach/spec-driven-development.md`](docs/development_approach/spec-driven-development.md)
 
 ---
 
 ## Известные ограничения
 
-- Натальный движок сейчас поддерживает только систему домов `P` (Плацидус).
-  Поле `house_system` и CLI-флаг сохранены для будущего выбора в UI, но все
-  остальные коды отклоняются, а не подменяются на Плацидус. Поддержка `K`,
-  `O`, `R`, `C`, `E` и `W` — отдельная будущая функция с backend-allowlist и
-  числовыми эталонами для каждой системы.
-- Орбитальные вычисления `pyswisseph` держат глобальное состояние, поэтому
-  параллельный вызов потребует блокировки или изоляции по процессам; целевой
-  p95 пока не задан, самая долгая операция — расчёт транзитов.
-- Транзиты требуют натальных домов, поэтому путь «космограмма + транзиты»
-  (неизвестное время рождения) ещё не закрыт.
-- Оркестрация, планирование и отбор фактов существуют как контракты, но не
-  как реализация.
-- Маскирование логов сделано частично — только в шлюзе LLM.
-- Соляр и синастрия не реализованы; место синастрии в структуре пакетов —
-  открытый вопрос.
+На текущем этапе:
+
+* `Application Orchestrator` ещё не реализован, поэтому первый application flow пока не замкнут общей lifecycle/state coordination;
+* interpretation handlers и полный Agent Runtime ещё не реализованы;
+* `research/` пока использует in-memory corpus; persistence и дальнейшее wiring остаются следующими этапами;
+* UI и публичный HTTP API отсутствуют;
+* натальный engine поддерживает только систему домов `P` — Плацидус;
+* free-form пользовательский dialog не входит в текущий demo-flow;
+* соляр и синастрия ещё не реализованы;
+* сетевые LLM smoke-tests не входят в основной test suite;
+* privacy-hardening логов пока не завершён.
+
+Это R&D-проект: открытый вопрос допустим, если его границы и последствия зафиксированы явно.
+
+---
+
+## Ближайший этап
+
+Следующая архитектурная цель — полностью замкнуть первый пользовательский сценарий:
+
+```text
+structured birth input
+    → Application Orchestrator
+    → BuildNatalHandler
+    → BirthDataResolver
+    → ChartArtifactResolver
+    → deterministic calculation
+    → StateDelta
+    → freshness / revision validation
+    → session commit
+    → response
+```
+
+После этого interpretation flow сможет строиться поверх уже проверенного application path, а не смешиваться с расчётной логикой.
 
 ---
 
 ## Лицензия
 
 exact-orb распространяется под **GNU Affero General Public License v3.0**.
-Полный текст — файл [`LICENSE`](LICENSE), обоснование выбора —
-[ADR-0022](docs/requirements/decisions/0022-project-license-agpl.md).
 
-Практически это значит следующее.
+Полный текст:
 
-**Если вы поднимаете сервис на этом коде** — AGPL §13 обязывает вас заметно
-предложить всем пользователям сервиса возможность бесплатно получить полный
-исходный код той версии, которая у вас работает. Обязательство возникает от
-того, что сервис доступен по сети, а не от того, публичен ли ваш
-репозиторий. Брать деньги за доступ AGPL не запрещает (§4); запрещает
-скрывать код от тех, кто сервисом пользуется.
+[`LICENSE`](LICENSE)
 
-**Swiss Ephemeris.** Расчёты идут через `pysweph` — производную работу от
-Swiss Ephemeris, которая распространяется по двойной лицензии: AGPL либо
-платная Professional License от Astrodienst. Проект использует вариант AGPL,
-поэтому файлы `ephe/*.se1` хранятся здесь же (см. `ephe/README.md`).
-Copyright notices Astrodienst сохраняются. Имена авторов Swiss Ephemeris и
-Astrodienst не используются для продвижения exact-orb без письменного
-разрешения — отдельное требование их лицензии.
+Обоснование:
 
-**Вклады.** Pull request'ы с кодом сейчас не принимаются; issues и
-обсуждения приветствуются. Причина и порядок — в
-[`CONTRIBUTING.md`](CONTRIBUTING.md).
+[`ADR-0022`](docs/requirements/decisions/0022-project-license-agpl.md)
+
+Проект использует `pysweph` / Swiss Ephemeris, распространяемый по двойной модели лицензирования. В exact-orb используется AGPL-совместимый вариант.
+
+Подробнее о файлах эфемерид и copyright notices:
+
+[`ephe/README.md`](ephe/README.md)
+
+Pull request'ы с кодом на текущем этапе не принимаются; issues и обсуждения приветствуются.
+
+Подробнее:
+
+[`CONTRIBUTING.md`](CONTRIBUTING.md)

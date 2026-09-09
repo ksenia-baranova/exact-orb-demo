@@ -1,5 +1,6 @@
 @startuml
-title exact-orb — высокоуровневая архитектура MVP
+title exact-orb — высокоуровневая архитектура и граница реализации
+scale max 2800 width
 
 left to right direction
 
@@ -9,145 +10,153 @@ skinparam shadowing false
 skinparam linetype ortho
 skinparam DefaultFontSize 13
 skinparam ArrowFontSize 11
-skinparam nodesep 42
-skinparam ranksep 48
+skinparam nodesep 44
+skinparam ranksep 52
 
+skinparam package {
+  BackgroundColor #F8FAFC
+  BorderColor #94A3B8
+  FontColor #1E293B
+}
 skinparam component {
   BorderColor #64748B
   FontColor #0F172A
 }
-
 skinparam database {
   BorderColor #15803D
   FontColor #0F172A
+}
+skinparam note {
+  BackgroundColor #FFFBEB
+  BorderColor #D97706
+  FontColor #451A03
 }
 
 actor "Пользователь" as User
 
 
-component "<b>Клиент</b>\nФорма данных рождения\nУправление картами\nОтрисовка и preset-интерпретации" as Client #DBEAFE
+component "<b>Standalone CLI</b>\n<color:#166534>[реализован]</color>\nПрямой deterministic flow:\nnatal / cosmogram / transit" as CLI #DCFCE7
 
 
-component "<b>API и сессия</b>\nFastAPI, DTO, JSON / SSE\nHttpOnly session cookie\nTransport rate limiting" as API #EDE9FE
+component "<b>Клиент и HTTP API</b>\n<color:#475569>[не реализованы]</color>\nФорма данных рождения, chart renderer\nTransport DTO, session cookie, JSON / SSE" as Edge #E5E7EB
 
 
-component "<b>Прикладная координация</b>\nOrchestrator + явные use cases\nBuild base / Build derived\nSet active view / Interpret preset" as App #FFEDD5
+component "<b>Application coordination</b>\n<color:#9A3412>[следующий этап]</color>\nApplicationOrchestrator: session lifecycle,\nhandler routing, freshness и state commit\n\nBuildNatalHandler: <color:#166534>реализован</color>" as App #FFEDD5
 
 
-component "<b>Детерминированное ядро</b>\nResolve и validate входных данных\nPlan и execute tools\nChart artifact resolution\nCalculation Engine Port" as Core #FFF7CC
+component "<b>Детерминированный контур</b>\n<color:#166534>[реализован]</color>\nBirthDataResolver\nChartArtifactResolver + CalculationCache(bytes)\nCalculationEnginePort → in-process EngineService\n\nПервый application-срез: natal / cosmogram" as Deterministic #DCFCE7
 
 
-component "<b>Слой интерпретации</b>\nОтбор Evidence\nСборка одного PromptBundle\nLLM Gateway + Output Guard" as Interpretation #F2D4CA
+database "<b>Session state</b>\n<color:#166534>[реализован]</color>\nSessionState + отдельный DialogStore\nstate_version, birth_input, birth_resolved,\nодна base ChartSpec, TTL и CAS" as SessionState #DCFCE7
 
 
-cloud "<b>LLM Provider</b>\nТолько формулирует ответ" as LLM #E5E7EB
+component "<b>Agent Runtime</b>\n<color:#92400E>[каркас]</color>\nPlanner + immutable scenarios\nPolicy boundary + ordered Tool execution\nНе управляет application lifecycle" as AgentRuntime #FEF3C7
 
 
-database "<b>Сессионное состояние и caches</b>\nSessionProfile с TTL\nbirth_input + birth_resolved\nbase / derived ChartSpec + active_view\nCalculation и preset interpretation caches" as State #D1FAE5
+component "<b>Interpretation Service</b>\n<color:#92400E>[контракты и каркас]</color>\nEvidence → один PromptBundle\nInterpretation cache + budget\nLLM Gateway (<color:#166534>transport реализован</color>)\nOutput Guard" as Interpretation #FEF3C7
 
 
-component "<b>Сквозные контроли</b>\nCapabilities и Policy\nQuota / global budget\nRedacted observability" as Controls #FCE7F3
+cloud "<b>LLM Provider</b>\nТолько формулирует ответ" as LLM #F1F5F9
 
 
-package "POST-MVP: NL / subscription extension" as Future #F8FAFC {
+component "<b>Сквозные контроли</b>\n<color:#92400E>[частично / план]</color>\nCapabilities, policy и admission\nStructured logging; metrics / tracing later" as Controls #FEF3C7
 
-  component "<b>Free-form understanding</b>\nInput Guard + Intent Service\nCapability / query policy\nFreeForm replay protection" as NL #E5E7EB
+
+component "<b>Research Corpus</b>\n<color:#92400E>[частично реализован]</color>\nWhitelist ChartArtifact → ChartFeatures\nAppend-only port + in-memory adapter\nProducer wiring и persistence — later" as Research #FEF3C7
+
+
+package "POST-MVP: FREE-FORM" as Future #F8FAFC {
+  component "<b>Request understanding</b>\nInputGuard → IntentService\n→ ContractValidator / query policy" as NL #E5E7EB
 }
 
 
-' Основной MVP-поток
-
-User -[#2563EB]-> Client
-
-Client -[#2563EB]-> API : typed commands
-
-API -[#2563EB]-> App : validated request\n+ session_id
+' Реализованный standalone-путь
+User -[#2563EB]-> CLI
+CLI -[#2563EB]-> Deterministic : direct calculation\n→ typed chart result
 
 
-' Состояние
+' Следующий application-срез
+User -[#7E57C2,dashed]-> Edge
+Edge -[#D97706,dashed]-> App : typed command + session_id\n→ JSON response
 
-App <-[#2E7D32]-> State : session load / save
+App -[#D97706,dashed]down-> SessionState : load / CAS commit StateDelta\n→ typed state outcome
 
+App -[#D97706,dashed]down-> Deterministic : BirthInput + NatalChartSpec\n→ ChartArtifact; handler forms StateDelta
 
-' Детерминированный расчётный контур
+' Целевой preset interpretation-flow
+App -[#7E57C2,dashed]-> AgentRuntime : interpretation handler\n+ ResolvedContract\n→ typed outcome
+AgentRuntime -[#7E57C2,dashed]down-> Deterministic : approved ToolRequests\n→ ToolResults
 
-App -[#2563EB]-> Core : calculate or obtain\nchart data
-
-Core -[#00838F]-> App : ChartArtifacts\n/ ToolResults
-
-Core -[#2E7D32]-> State : calculation cache
-
-
-' Интерпретационный контур
-
-App -[#2563EB]-> Interpretation : preset plan\n+ ToolResults
-
-Interpretation -[#EF6C00]-> LLM : one PromptBundle
-
-LLM -[#00838F]-> Interpretation : token stream
-
-Interpretation -[#00838F]-> App : safe response stream
-
-Interpretation -[#2E7D32]-> State : preset cache
+AgentRuntime -[#7E57C2,dashed]-> Interpretation : plan + ToolResults\n→ safe response
+Interpretation -[#EF6C00]-> LLM : one PromptBundle\n→ token stream
 
 
-' Возврат результата
+' Отложенный free-form input edge
+Edge -[#7E57C2,dashed]down-> NL : free-form question [future]
+NL -[#7E57C2,dashed]-> AgentRuntime : ResolvedContract only\nvia InterpretMessageHandler
+NL -[#7E57C2,dashed]-> Interpretation : AuthorizedInterpretationQuery
 
-App -[#00838F]-> API : JSON / SSE
 
-API -[#00838F]-> Client
+' Исследовательский write path не подключён к application lifecycle
+Deterministic -[#7E57C2,dashed]down-> Research : future producer wiring\nfrom ChartArtifact
 
 
 ' Сквозные контроли
-
-Controls -[#64748B,dashed]-> API
-
+Controls -[#64748B,dashed]-> Edge
 Controls -[#64748B,dashed]-> App
-
-Controls -[#64748B,dashed]-> Core
-
+Controls -[#64748B,dashed]-> AgentRuntime
 Controls -[#64748B,dashed]-> Interpretation
 
 
-' Отложенное NL-расширение
-
-API -[#7E57C2,dashed]-> NL : free-form question
-
-NL -[#7E57C2,dashed]-> App : typed ResolvedContract
-
-NL -[#7E57C2,dashed]-> Interpretation : authorized query data
-
-
-note bottom of Core
+note bottom of Deterministic
 <b>Вероятностное — только по краям.</b>
 
-В MVP вход типизирован формой
-и пользовательскими controls.
+Resolution, calculation key,
+расчёт карты, planning,
+tool execution и отбор Evidence
+детерминированы.
 
-Расчёты, планирование и отбор
-фактов детерминированы.
-
-Engine может исполняться local
-или remote через port / adapter.
+Engine находится за typed port,
+но сейчас исполняется в том же
+модульном монолите, без сети.
 end note
 
 
 note bottom of App
-SessionProfile меняют только
-явные команды:
+BuildNatalHandler рассчитывает карту
+и формирует StateDelta,
+но не применяет её.
 
-• Build base
-• Build derived
-• Set active view
+ApplicationOrchestrator возвращает
+окончательный success только после
+подтверждённого state commit.
+end note
 
-Интерпретация профиль не мутирует.
+
+note bottom of SessionState
+В первом MVP нет derived_chart,
+active_view и SetActiveView.
+
+Они возвращаются одним изменением
+границы только вместе с транзитами
+в application-срезе.
+end note
+
+
+note bottom of AgentRuntime
+Agent Runtime вызывается только
+из interpretation handlers.
+
+BuildNatalHandler обращается
+к ChartArtifactResolver напрямую
+и Agent Runtime не использует.
 end note
 
 
 note bottom of Interpretation
 LLM не рассчитывает карту,
 не выбирает tools
-и не изменяет состояние.
+и не изменяет SessionState.
 
 Один сценарий =
 один PromptBundle =
@@ -156,27 +165,30 @@ end note
 
 
 note bottom of NL
-Отложенная NL-ветка переиспользует
-тот же deterministic
-и interpretation flow.
+Raw text не входит в ResolvedContract
+и не влияет на planning, tools
+или параметры расчёта.
 
-Обычный пользовательский текст
-не изменяет SessionProfile.
+После policy он передаётся только
+в interpretation pipeline как
+AuthorizedInterpretationQuery.
 end note
 
 
 legend bottom
-<b>Основной принцип</b>
+<b>СТАТУС КОМПОНЕНТА</b>
+|<#DCFCE7>| Реализован |
+|<#FEF3C7>| Частично реализован / каркас |
+|<#FFEDD5>| Ближайший этап wiring |
+|<#E5E7EB>| Запланирован / post-MVP |
+|<#F1F5F9>| Внешняя система |
 
-<color:#2563EB><b>━━━━▶</b></color> основной command / data flow
-
-<color:#00838F><b>━━━━▶</b></color> result / response stream
-
-<color:#2E7D32><b>━━━━▶</b></color> session state и caches
-
-<color:#7E57C2><b>┄┄┄┄▶</b></color> post-MVP extension
-
-<color:#64748B><b>┄┄┄┄▶</b></color> cross-cutting controls
+<b>ТИП СВЯЗИ</b>
+|<color:#2563EB><b>━━━━▶</b></color>| Реализованный request / result flow |
+|<color:#D97706><b>┄┄┄┄▶</b></color>| Ближайший application wiring |
+|<color:#7E57C2><b>┄┄┄┄▶</b></color>| Целевой / post-MVP flow |
+|<color:#EF6C00><b>━━━━▶</b></color>| Вызов внешнего provider |
+|<color:#64748B><b>┄┄┄┄▶</b></color>| Cross-cutting control |
 endlegend
 
 @enduml
