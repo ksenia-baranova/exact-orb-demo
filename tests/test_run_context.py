@@ -94,12 +94,16 @@ async def test_success_logs_start_and_resolved_with_run_id(
 
     assert isinstance(result, ResolvedBirthData)
     messages = _resolver_messages(caplog)
-    assert len(messages) == 2
+    assert len(messages) == 4
     assert f"run_id={run.run_id}" in messages[0]
-    assert "event=start" in messages[0]
-    assert f"run_id={run.run_id}" in messages[1]
-    assert "outcome=resolved" in messages[1]
-    assert "tz_id=Europe/Moscow" in messages[1]
+    assert "direction=in" in messages[0]
+    assert "message_type=BirthResolutionRequest" in messages[0]
+    assert "event=start" in messages[1]
+    assert f"run_id={run.run_id}" in messages[2]
+    assert "outcome=resolved" in messages[2]
+    assert "tz_id=Europe/Moscow" in messages[2]
+    assert "direction=out" in messages[3]
+    assert "message_type=ResolvedBirthData" in messages[3]
 
 
 async def test_input_required_logs_run_id_and_issues(
@@ -116,12 +120,15 @@ async def test_input_required_logs_run_id_and_issues(
 
     assert isinstance(result, InputRequired)
     messages = _resolver_messages(caplog)
-    assert len(messages) == 2
+    assert len(messages) == 4
     assert f"run_id={run.run_id}" in messages[0]
-    assert "event=start" in messages[0]
-    assert f"run_id={run.run_id}" in messages[1]
-    assert "outcome=input_required" in messages[1]
-    assert "issues=birth.place:INVALID" in messages[1]
+    assert "direction=in" in messages[0]
+    assert "event=start" in messages[1]
+    assert f"run_id={run.run_id}" in messages[2]
+    assert "outcome=input_required" in messages[2]
+    assert "issues=birth.place:INVALID" in messages[2]
+    assert "direction=out" in messages[3]
+    assert "message_type=InputRequired" in messages[3]
 
 
 async def test_resolution_unavailable_logs_run_id_and_error_code(
@@ -138,12 +145,15 @@ async def test_resolution_unavailable_logs_run_id_and_error_code(
 
     assert isinstance(result, ResolutionUnavailable)
     messages = _resolver_messages(caplog)
-    assert len(messages) == 2
+    assert len(messages) == 4
     assert f"run_id={run.run_id}" in messages[0]
-    assert "event=start" in messages[0]
-    assert f"run_id={run.run_id}" in messages[1]
-    assert "outcome=resolution_unavailable" in messages[1]
-    assert "error_code=UNKNOWN_TIMEZONE" in messages[1]
+    assert "direction=in" in messages[0]
+    assert "event=start" in messages[1]
+    assert f"run_id={run.run_id}" in messages[2]
+    assert "outcome=resolution_unavailable" in messages[2]
+    assert "error_code=UNKNOWN_TIMEZONE" in messages[2]
+    assert "direction=out" in messages[3]
+    assert "message_type=ResolutionUnavailable" in messages[3]
 
 
 async def test_logs_without_run_keep_run_id_placeholder(
@@ -164,7 +174,7 @@ async def test_logs_without_run_keep_run_id_placeholder(
     assert all("run_id=-" in message for message in messages)
 
 
-async def test_birth_resolution_logs_do_not_expose_birth_or_place_values(
+async def test_birth_resolution_boundary_messages_include_complete_payloads(
     resolver: BirthDataResolver,
     caplog: pytest.LogCaptureFixture,
 ) -> None:
@@ -178,8 +188,14 @@ async def test_birth_resolution_logs_do_not_expose_birth_or_place_values(
             run=RunContext.new(),
         )
 
-    joined = "\n".join(_resolver_messages(caplog))
-    for sensitive_value in (
+    messages = _resolver_messages(caplog)
+    boundary = "\n".join(
+        message for message in messages if message.startswith("component_message ")
+    )
+    technical = "\n".join(
+        message for message in messages if message.startswith("birth_resolution ")
+    )
+    for value in (
         "55.75222",
         "37.61556",
         "1990-09-02",
@@ -187,7 +203,8 @@ async def test_birth_resolution_logs_do_not_expose_birth_or_place_values(
         "Москва",
         MOSCOW_ID,
     ):
-        assert sensitive_value not in joined
+        assert value in boundary
+        assert value not in technical
 
 
 async def test_distinct_run_ids_do_not_change_resolved_birth_data(
@@ -229,7 +246,11 @@ async def test_terminal_records_carry_duration(
             run=RunContext.new(),
         )
 
-    messages = _resolver_messages(caplog)
+    messages = [
+        message
+        for message in _resolver_messages(caplog)
+        if message.startswith("birth_resolution ")
+    ]
     assert "duration_ms=" not in messages[0]
     assert "duration_ms=" in messages[-1]
 

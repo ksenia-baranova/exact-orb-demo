@@ -2,7 +2,7 @@
 
 ## О проекте
 
-**exact-orb — R&D-проект об управляемой разработке с AI-агентами.** Он исследует, насколько далеко специалист с сильными навыками управления, системного анализа и тестирования может продвинуть разработку программного продукта, делегируя агентам написание кода и часть технической проработки.
+**exact-orb — R&D-проект об управляемой разработке с AI-агентами.** Он исследует, насколько далеко специалист с опытом в управлении, системном анализе и тестировании может продвинуть разработку программного продукта, делегируя агентам написание кода и часть технической проработки.
 
 Цель проекта — показать не только результат такой разработки, но и инженерные механизмы, необходимые для сохранения контроля над ней: формализацию требований, архитектурные решения, явные контракты и границы ответственности компонентов, проектирование сценариев, автоматизированные тесты и последовательную проверку результатов работы агентов.
 
@@ -603,24 +603,28 @@ component=application.handlers.build_natal logger=exact_orb.application.handlers
 выполнения сценариев.
 
 На реализованном пути Build Natal каждая публичная граница дополнительно пишет
-на `DEBUG` полные входящие и исходящие сообщения:
+на `DEBUG` входящее и исходящее сообщение. Envelope явно показывает полный
+payload, summary или ошибку:
 
 ```text
-component_message direction=in operation=ensure_chart run_id=... status=ok message_type=EnsureChartRequest message={...}
-component_message direction=out operation=ensure_chart run_id=... status=ok message_type=ChartArtifact message={...}
+component_message direction=in operation=ensure_chart run_id=... calculation_key=- status=ok payload_mode=full message_type=EnsureChartRequest message={...}
+component_message direction=out operation=ensure_chart run_id=... calculation_key=eo:calc:v1:... status=ok payload_mode=summary message_type=ChartArtifactSummary message={...}
 ```
 
-Поле `message` — однострочный JSON без усечения. На выходе
-`BuildNatalHandler` оно содержит полный `BuildNatalSuccess`, включая
-`ChartArtifact` и натальную карту. Для просмотра этих записей используйте
+Поле `message` — однострочный JSON. Полные входы сохраняются, но внутренние
+выходы `NatalChart`, `CalculationResult` и `ChartArtifact` представлены
+счётчиками и метаданными без повторной сериализации карты. Полный
+`BuildNatalSuccess`, включая `ChartArtifact` и натальную карту, записывается
+ровно один раз на выходе handler. `run_id` связывает конкретный запуск, полный
+`calculation_key` — артефакт и cache-события. Для просмотра используйте
 `logs/debug/*.log` или `pytest --log-cli-level=DEBUG`.
 
 LLM gateway маскирует типовые secrets в error messages, включая значения переменных с `KEY`, `TOKEN`, `SECRET` и `PASSWORD` в имени.
 
-Полные DEBUG-сообщения содержат birth-data, координаты, timezone-данные и
-результаты расчёта. Это намеренный режим локальной диагностики по ADR-0025;
-текущий проект не следует рассматривать как готовый production-сервис для
-обработки персональных данных.
+Финальный полный DEBUG-ответ содержит birth-data, координаты, timezone-данные
+и результат расчёта. Это намеренный режим локальной диагностики по ADR-0025
+и ADR-0026; текущий проект не следует рассматривать как готовый
+production-сервис для обработки персональных данных.
 
 ---
 

@@ -31,6 +31,10 @@ DEFAULT_LOG_MAX_BYTES = 10 * 1024 * 1024
 DEFAULT_LOG_RETENTION_BYTES = 200 * 1024 * 1024
 LOG_FILE_NAME_FORMAT = "%Y%m%dT%H%M%SZ.log"
 LOG_LINE_DATE_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
+LOG_LINE_FORMAT = (
+    "%(asctime)s %(levelname)s component=%(component)s session=%(session)s "
+    "logger=%(name)s %(message)s"
+)
 LOGGER_NAME = "exact_orb"
 
 _SESSION_ID = uuid.uuid4().hex[:8]
@@ -59,10 +63,11 @@ class LoggingState:
 
 
 class SessionFilter(logging.Filter):
-    """Attach the process session id to every handled record."""
+    """Attach process and component context to every handled record."""
 
     def filter(self, record: logging.LogRecord) -> bool:
         record.session = get_session_id()
+        record.component = _component_name(record.name)
         return True
 
 
@@ -169,6 +174,7 @@ class UTCSizeRotatingFileHandler(BaseRotatingHandler):
             sinfo=None,
         )
         record.session = get_session_id()
+        record.component = _component_name(record.name)
         self.stream.write("%s%s" % (self.format(record), self.terminator))
         self.flush()
 
@@ -345,7 +351,7 @@ def _file_handlers(
     header_context: Callable[[str], str],
 ) -> list[UTCSizeRotatingFileHandler]:
     formatter = UTCFormatter(
-        "%(asctime)s %(levelname)s session=%(session)s logger=%(name)s %(message)s",
+        LOG_LINE_FORMAT,
         datefmt=LOG_LINE_DATE_FORMAT,
     )
     session_filter = SessionFilter()
@@ -383,9 +389,23 @@ def _file_handlers(
 def _stderr_handler() -> logging.StreamHandler:
     handler = logging.StreamHandler(sys.stderr)
     handler.setLevel(logging.WARNING)
-    handler.setFormatter(CompactStderrFormatter("%(levelname)s %(name)s: %(message)s"))
+    handler.setFormatter(
+        CompactStderrFormatter(
+            "%(levelname)s component=%(component)s logger=%(name)s: %(message)s"
+        )
+    )
+    handler.addFilter(SessionFilter())
     handler._exact_orb_managed = True
     return handler
+
+
+def _component_name(logger_name: str) -> str:
+    """Return a concise component path while preserving the logger separately."""
+
+    prefix = f"{LOGGER_NAME}."
+    if logger_name.startswith(prefix):
+        return logger_name[len(prefix) :]
+    return logger_name
 
 
 def _remove_managed_handlers(logger: logging.Logger) -> None:

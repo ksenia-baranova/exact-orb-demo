@@ -39,6 +39,10 @@ handler заканчивается на `BuildNatalOutcome`.
   корректный, но устаревший для сессии артефакт остаётся в кэше (ADR-0017).
 - **Движок возвращает `CalculationResult`, а кэш хранит `bytes`:**
   `ChartArtifact` собирает только `ChartArtifactResolver`.
+- **Boundary-журнал не размножает карту:** по ADR-0026 внутренние выходы
+  содержат summary, а полный `BuildNatalSuccess` записывается один раз на
+  выходе handler. Конкретный запуск ищется по `run_id`, артефакт и cache hit —
+  по полному `calculation_key`.
 
 ## Рендер
 

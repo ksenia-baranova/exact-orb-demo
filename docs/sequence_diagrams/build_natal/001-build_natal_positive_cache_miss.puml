@@ -243,6 +243,14 @@ end note
 Handler --> Orch : BuildNatalSuccess(artifact, delta)
 deactivate Handler
 
+note over Handler, Swiss
+DEBUG boundary outputs (ADR-0026):
+calculate_natal, EngineService и ArtifactResolver
+пишут summary без полного chart.
+Handler один раз пишет полный BuildNatalSuccess
+с run_id и полным calculation_key.
+end note
+
 
 == Commit состояния ==
 

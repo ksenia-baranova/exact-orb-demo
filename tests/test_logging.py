@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from datetime import UTC, datetime, timedelta
+import json
 import logging
 from pathlib import Path
 import re
@@ -11,12 +12,16 @@ import uuid
 import pytest
 
 from exact_orb import cli
+from exact_orb import component_logging
+from exact_orb.component_logging import log_component_message
 from exact_orb.logging_setup import (
     LOG_FILE_NAME_FORMAT,
+    LOG_LINE_FORMAT,
     LOG_LINE_DATE_FORMAT,
     SessionFilter,
     UTCFormatter,
     UTCSizeRotatingFileHandler,
+    get_session_id,
 )
 
 
@@ -33,6 +38,94 @@ class IncrementingClock:
         return value
 
 
+def test_session_filter_attaches_session_and_component_context() -> None:
+    record = logging.LogRecord(
+        name="exact_orb.application.handlers.build_natal",
+        level=logging.INFO,
+        pathname=__file__,
+        lineno=1,
+        msg="probe",
+        args=(),
+        exc_info=None,
+    )
+
+    assert SessionFilter().filter(record) is True
+    assert record.session == get_session_id()
+    assert record.component == "application.handlers.build_natal"
+
+
+def test_component_message_is_complete_single_line_json(
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    logger = logging.getLogger("exact_orb.tests.component_boundary")
+    caplog.set_level(logging.DEBUG, logger=logger.name)
+
+    log_component_message(
+        logger,
+        direction="in",
+        operation="probe",
+        run_id="run-1",
+        message={
+            "text": "первая строка\nвторая строка",
+            "when": datetime(2026, 9, 9, 13, 10, 18, tzinfo=UTC),
+        },
+        message_type="ProbeRequest",
+    )
+
+    assert len(caplog.records) == 1
+    logged = caplog.records[0].getMessage()
+    assert (
+        "direction=in operation=probe run_id=run-1 calculation_key=- "
+        "status=ok payload_mode=full"
+    ) in logged
+    assert "message_type=ProbeRequest" in logged
+    assert "\n" not in logged
+    payload = json.loads(logged.partition(" message=")[2])
+    assert payload == {
+        "text": "первая строка\nвторая строка",
+        "when": "2026-09-09T13:10:18+00:00",
+    }
+
+
+async def test_async_boundary_summary_does_not_serialize_full_result(
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    logger = logging.getLogger("exact_orb.tests.component_boundary_summary")
+    caplog.set_level(logging.DEBUG, logger=logger.name)
+
+    class LargeResult:
+        count = 3
+
+        def model_dump(self, *args: object, **kwargs: object) -> object:
+            raise AssertionError("full result must not be serialized")
+
+    result = LargeResult()
+
+    async def call() -> LargeResult:
+        return result
+
+    returned = await component_logging.log_async_component_call(
+        logger,
+        operation="probe_summary",
+        request_type="ProbeRequest",
+        run_id="run-2",
+        request={"input": "small"},
+        call=call,
+        result_projector=lambda value: {"count": value.count},
+        result_message_type="LargeResultSummary",
+        result_payload_mode="summary",
+        result_calculation_key=lambda value: "eo:calc:v1:full-key",
+    )
+
+    assert returned is result
+    assert len(caplog.records) == 2
+    outgoing = caplog.records[1].getMessage()
+    assert "calculation_key=eo:calc:v1:full-key" in outgoing
+    assert "payload_mode=summary" in outgoing
+    assert "message_type=LargeResultSummary" in outgoing
+    assert json.loads(outgoing.partition(" message=")[2]) == {"count": 3}
+
+
 def test_utc_size_rotating_handler_uses_utc_file_names_without_suffixes() -> None:
     log_dir = _workspace_log_dir("rotation")
     handler = UTCSizeRotatingFileHandler(
@@ -45,7 +138,7 @@ def test_utc_size_rotating_handler_uses_utc_file_names_without_suffixes() -> Non
     )
     handler.setFormatter(
         UTCFormatter(
-            "%(asctime)s %(levelname)s session=%(session)s logger=%(name)s %(message)s",
+            LOG_LINE_FORMAT,
             datefmt=LOG_LINE_DATE_FORMAT,
         )
     )
@@ -87,9 +180,12 @@ def test_cli_writes_general_and_debug_logs(monkeypatch: pytest.MonkeyPatch, caps
     first_general_line = sorted((log_dir / "general").glob("*.log"))[0].read_text(encoding="utf-8").splitlines()[0]
 
     assert "session_start" in first_general_line
+    assert "component=logging_setup" in first_general_line
+    assert "logger=exact_orb.logging_setup" in first_general_line
     assert "ephemeris_mode=" in first_general_line
     assert "house_system_default=P" in first_general_line
     assert "cli_call status=ok" in general
+    assert "component=cli" in general
     assert "input='2.09.1985 00.45 gmt+4'" in general
     assert "duration_ms=" in general
     assert "output_summary=bodies=" in general
@@ -128,6 +224,7 @@ def test_cli_degrades_to_stderr_when_file_log_is_unavailable(
 
     assert "НАТАЛЬНАЯ КАРТА" in captured.out
     assert captured.err.count("file logging unavailable") == 1
+    assert "component=logging_setup" in captured.err
 
 
 def _header_context(stream_name: str) -> str:

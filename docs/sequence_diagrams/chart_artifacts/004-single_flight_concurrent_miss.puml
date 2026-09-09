@@ -106,7 +106,7 @@ activate Artifacts
 
 Artifacts -> Artifacts : key тот же\n→ inflight[key] найден
 
-Artifacts -> Artifacts : журнал: singleflight_join(\nrun_id = run_B,\nleader_run_id = inflight[key].leader_run_id)
+Artifacts -> Artifacts : журнал: singleflight_join(\nrun_id = run_B,\nleader_run_id = inflight[key].leader_run_id,\ncalculation_key = key, short key)
 
 note right of Artifacts
 Оба идентификатора обязательны.
@@ -184,6 +184,13 @@ Artifacts --> A : изолированный ChartArtifact A
 deactivate Artifacts
 Artifacts --> B : равный, но изолированный ChartArtifact B
 deactivate Artifacts
+
+note over A, B
+Каждый выход resolver пишет собственный run_id
+и общий полный calculation_key в
+ChartArtifactSummary(cache_outcome = miss).
+Полный chart не сериализуется ни для A, ни для B.
+end note
 
 
 == Ветки, которые легко потерять ==

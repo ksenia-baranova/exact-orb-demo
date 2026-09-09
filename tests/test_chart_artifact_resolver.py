@@ -96,7 +96,10 @@ async def test_cache_hit_returns_decoded_artifact_without_engine_or_put(
     assert resolver.hits == 1
     assert resolver.misses == 0
     assert resolver.hit_ratio == 1.0
-    assert any("cache_hit" in record.getMessage() for record in caplog.records)
+    cache_hit = next(
+        record.getMessage() for record in caplog.records if "cache_hit" in record.getMessage()
+    )
+    assert f"calculation_key={key}" in cache_hit
 
 
 async def test_miss_calculates_stores_and_next_call_hits_equal_artifact() -> None:
@@ -377,12 +380,16 @@ async def test_engine_error_is_not_cached_and_next_call_retries() -> None:
     assert len(cache.put_calls) == 1
 
 
-async def test_concurrent_miss_singleflight_calls_engine_once() -> None:
+async def test_concurrent_miss_singleflight_calls_engine_once(
+    caplog: pytest.LogCaptureFixture,
+) -> None:
     cache = FakeCache()
     engine = BlockingEngine()
     resolver = _resolver(cache, engine)
     spec = _spec()
     resolved = _resolved()
+    key = _key(spec, resolved)
+    caplog.set_level(logging.DEBUG, logger="exact_orb.calculation.artifacts")
 
     tasks = [
         asyncio.create_task(resolver.ensure_chart(spec, resolved, run=_run(run_id)))
@@ -399,10 +406,24 @@ async def test_concurrent_miss_singleflight_calls_engine_once() -> None:
     assert len({id(artifact) for artifact in artifacts}) == 3
     assert len({id(artifact.chart) for artifact in artifacts}) == 3
     assert len({id(artifact.chart.bodies) for artifact in artifacts}) == 3
-    assert cache.get_calls == [_key(spec, resolved)]
+    assert cache.get_calls == [key]
     assert len(cache.put_calls) == 1
     assert resolver.misses == 3
     assert resolver._inflight == {}
+    join_messages = [
+        record.getMessage()
+        for record in caplog.records
+        if record.getMessage().startswith("singleflight_join ")
+    ]
+    assert len(join_messages) == 2
+    assert all(f"calculation_key={key}" in message for message in join_messages)
+    boundary_outputs = [
+        record.getMessage()
+        for record in caplog.records
+        if record.getMessage().startswith("component_message direction=out")
+    ]
+    assert len(boundary_outputs) == 3
+    assert all(f"calculation_key={key}" in message for message in boundary_outputs)
 
 
 async def test_concurrent_callers_receive_deeply_isolated_artifacts() -> None:
@@ -693,7 +714,7 @@ async def test_stats_count_hits_misses_stale_corrupt_and_puts() -> None:
     assert resolver.hit_ratio == 0.5
 
 
-async def test_privacy_logs_omit_sensitive_values(
+async def test_boundary_outputs_are_summaries_and_technical_events_have_full_key(
     caplog: pytest.LogCaptureFixture,
 ) -> None:
     spec = _spec()
@@ -739,20 +760,54 @@ async def test_privacy_logs_omit_sensitive_values(
         run=_run(),
     )
 
-    logs = "\n".join(record.getMessage() for record in caplog.records)
+    messages = [record.getMessage() for record in caplog.records]
+    boundary = "\n".join(
+        message for message in messages if message.startswith("component_message ")
+    )
+    technical = "\n".join(
+        message for message in messages if not message.startswith("component_message ")
+    )
+    outgoing = [
+        message
+        for message in messages
+        if message.startswith("component_message direction=out")
+    ]
 
-    assert str(RUN_ID) in logs
-    assert full_key not in logs
-    for sensitive in (
+    assert str(RUN_ID) in boundary
+    assert full_key in boundary
+    assert full_key in technical
+    assert outgoing
+    assert all("payload_mode=summary" in message for message in outgoing)
+    assert all("message_type=ChartArtifactSummary" in message for message in outgoing)
+    assert all('"chart":' not in message for message in outgoing)
+    assert all('"bodies":' not in message for message in outgoing)
+    assert {json.loads(message.partition(" message=")[2])["cache_outcome"] for message in outgoing} == {
+        "hit",
+        "miss",
+    }
+    for value in (
         "1990-09-02",
         "55.7558",
         "37.6173",
         "Moscow",
-        SENSITIVE_WARNING,
-        "ValidationError",
-        "Traceback",
     ):
-        assert sensitive not in logs
+        assert value in boundary
+        assert value not in technical
+    assert SENSITIVE_WARNING not in boundary
+    assert SENSITIVE_WARNING not in technical
+    assert "ValidationError" not in technical
+    assert "Traceback" not in technical
+    for event in (
+        "cache_hit",
+        "cache_miss",
+        "cache_stale",
+        "cache_corrupt",
+        "cache_degraded",
+        "cache_put_ok",
+    ):
+        event_messages = [message for message in messages if message.startswith(f"{event} ")]
+        assert event_messages
+        assert all(f"calculation_key={full_key}" in message for message in event_messages)
 
 
 def _resolver(

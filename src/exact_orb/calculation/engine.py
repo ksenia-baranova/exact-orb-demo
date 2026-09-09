@@ -153,6 +153,27 @@ class EngineService:
         *,
         run: RunContext,
     ) -> CalculationResult:
+        from exact_orb.component_logging import log_async_component_call
+
+        return await log_async_component_call(
+            LOGGER,
+            operation="calculate_chart",
+            request_type="CalculationRequest",
+            run_id=run.run_id,
+            request={"spec": spec, "resolved": resolved, "run": run},
+            call=lambda: self._calculate(spec, resolved, run=run),
+            result_projector=_calculation_result_summary,
+            result_message_type="CalculationResultSummary",
+            result_payload_mode="summary",
+        )
+
+    async def _calculate(
+        self,
+        spec: ChartSpec,
+        resolved: ResolvedBirthData,
+        *,
+        run: RunContext,
+    ) -> CalculationResult:
         run_id = str(run.run_id)
         started_at = perf_counter()
         exception_type = "None"
@@ -298,6 +319,19 @@ def _is_degenerate_houses_error(exc: ValueError) -> bool:
 
 def _elapsed_ms(started_at: float) -> float:
     return (perf_counter() - started_at) * 1000.0
+
+
+def _calculation_result_summary(result: CalculationResult) -> dict[str, object]:
+    chart = result.chart
+    return {
+        "chart_kind": result.chart_kind,
+        "warning_count": len(result.warnings),
+        "body_count": len(chart.bodies or ()),
+        "aspect_count": len(chart.aspects or ()),
+        "configuration_count": len(chart.configurations or ()),
+        "has_houses": chart.cusps is not None,
+        "has_strength": chart.strength is not None,
+    }
 
 
 __all__ = [

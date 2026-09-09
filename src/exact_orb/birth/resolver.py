@@ -55,6 +55,23 @@ class BirthDataResolver:
         *,
         run: RunContext | None = None,
     ) -> ResolvedBirthData | InputRequired | ResolutionUnavailable:
+        from exact_orb.component_logging import log_async_component_call
+
+        return await log_async_component_call(
+            LOGGER,
+            operation="resolve_birth_data",
+            request_type="BirthResolutionRequest",
+            run_id=run.run_id if run is not None else None,
+            request={"birth_input": birth_input, "run": run},
+            call=lambda: self._resolve(birth_input, run=run),
+        )
+
+    async def _resolve(
+        self,
+        birth_input: BirthInput,
+        *,
+        run: RunContext | None = None,
+    ) -> ResolvedBirthData | InputRequired | ResolutionUnavailable:
         started_at = perf_counter()
         _log_start(run)
         issues: list[Issue] = []
