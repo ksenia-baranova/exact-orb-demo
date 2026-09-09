@@ -49,6 +49,12 @@ class _ResolutionState:
 
 
 @dataclass(frozen=True)
+class _EnsuredChart:
+    artifact: ChartArtifact
+    cache_outcome: CacheOutcome
+
+
+@dataclass(frozen=True)
 class _InFlight:
     task: asyncio.Task[ChartArtifact]
     leader_run_id: str
@@ -120,6 +126,29 @@ class ChartArtifactResolver:
         *,
         run: RunContext,
     ) -> ChartArtifact:
+        from exact_orb.component_logging import log_async_component_call
+
+        result = await log_async_component_call(
+            LOGGER,
+            operation="ensure_chart",
+            request_type="EnsureChartRequest",
+            run_id=run.run_id,
+            request={"spec": spec, "resolved": resolved, "run": run},
+            call=lambda: self._ensure_chart(spec, resolved, run=run),
+            result_projector=_chart_artifact_summary,
+            result_message_type="ChartArtifactSummary",
+            result_payload_mode="summary",
+            result_calculation_key=lambda ensured: ensured.artifact.calculation_key,
+        )
+        return result.artifact
+
+    async def _ensure_chart(
+        self,
+        spec: ChartSpec,
+        resolved: ResolvedBirthData,
+        *,
+        run: RunContext,
+    ) -> _EnsuredChart:
         run_id = str(run.run_id)
         try:
             validate_geography(resolved.latitude, resolved.longitude)
@@ -141,14 +170,15 @@ class ChartArtifactResolver:
             payload = await self.cache.get(key)
         except Exception as exc:
             self.cache_errors_total += 1
-            self._record_cache_degraded("get", _reason(exc), run_id)
+            self._record_cache_degraded("get", _reason(exc), run_id, key)
             return None
 
-        self._record_cache_recovered("get", run_id)
+        self._record_cache_recovered("get", run_id, key)
         if payload is None:
             LOGGER.debug(
-                "cache_miss run_id=%s key=%s chart_kind=%s",
+                "cache_miss run_id=%s calculation_key=%s key=%s chart_kind=%s",
                 run_id,
+                key,
                 key_prefix,
                 spec.chart_kind,
             )
@@ -159,8 +189,9 @@ class ChartArtifactResolver:
         except ChartArtifactDecodeError as exc:
             self.corrupt += 1
             LOGGER.warning(
-                "cache_corrupt run_id=%s key=%s reason=%s",
+                "cache_corrupt run_id=%s calculation_key=%s key=%s reason=%s",
                 run_id,
+                key,
                 key_prefix,
                 exc.reason,
             )
@@ -173,16 +204,18 @@ class ChartArtifactResolver:
         ):
             self.stale += 1
             LOGGER.warning(
-                "cache_stale run_id=%s key=%s cached_version=%s",
+                "cache_stale run_id=%s calculation_key=%s key=%s cached_version=%s",
                 run_id,
+                key,
                 key_prefix,
                 artifact.calculation_version,
             )
             return None
 
         LOGGER.debug(
-            "cache_hit run_id=%s key=%s chart_kind=%s",
+            "cache_hit run_id=%s calculation_key=%s key=%s chart_kind=%s",
             run_id,
+            key,
             key_prefix,
             artifact.chart_kind,
         )
@@ -194,7 +227,7 @@ class ChartArtifactResolver:
         spec: ChartSpec,
         resolved: ResolvedBirthData,
         run: RunContext,
-    ) -> ChartArtifact:
+    ) -> _EnsuredChart:
         # No await between lookup and task insertion: this is the process-local
         # single-flight critical section in one event loop.
         entry = self._inflight.get(key)
@@ -213,9 +246,11 @@ class ChartArtifactResolver:
             task.add_done_callback(_drain_task)
         else:
             LOGGER.debug(
-                "singleflight_join run_id=%s leader_run_id=%s key=%s waited_ms=%.3f",
+                "singleflight_join run_id=%s leader_run_id=%s calculation_key=%s "
+                "key=%s waited_ms=%.3f",
                 str(run.run_id),
                 entry.leader_run_id,
+                key,
                 _short_key(key),
                 (self._clock() - entry.started_at) * 1000,
             )
@@ -223,7 +258,13 @@ class ChartArtifactResolver:
         waiter = asyncio.shield(entry.task)
         try:
             artifact = await waiter
-            return artifact.model_copy(deep=True)
+            cache_outcome = entry.state.cache_outcome
+            if cache_outcome is None:
+                raise RuntimeError("successful chart resolution requires cache outcome")
+            return _EnsuredChart(
+                artifact=artifact.model_copy(deep=True),
+                cache_outcome=cache_outcome,
+            )
         except asyncio.CancelledError:
             _remove_shield_exception_logger(entry.task)
             raise
@@ -284,8 +325,9 @@ class ChartArtifactResolver:
         except Exception as exc:
             self.put_failed += 1
             LOGGER.warning(
-                "cache_put_failed run_id=%s key=%s op=put reason=%s",
+                "cache_put_failed run_id=%s calculation_key=%s key=%s op=put reason=%s",
                 run_id,
+                key,
                 key_prefix,
                 _reason(exc),
             )
@@ -298,23 +340,30 @@ class ChartArtifactResolver:
             self.put_failed += 1
             self.cache_errors_total += 1
             LOGGER.warning(
-                "cache_put_failed run_id=%s key=%s op=put reason=%s",
+                "cache_put_failed run_id=%s calculation_key=%s key=%s op=put reason=%s",
                 run_id,
+                key,
                 key_prefix,
                 reason,
             )
-            self._record_cache_degraded("put", reason, run_id)
+            self._record_cache_degraded("put", reason, run_id, key)
             return
 
         self.put_ok += 1
-        self._record_cache_recovered("put", run_id)
-        LOGGER.debug("cache_put_ok run_id=%s key=%s", run_id, key_prefix)
+        self._record_cache_recovered("put", run_id, key)
+        LOGGER.debug(
+            "cache_put_ok run_id=%s calculation_key=%s key=%s",
+            run_id,
+            key,
+            key_prefix,
+        )
 
     def _record_cache_degraded(
         self,
         op: CacheOperation,
         reason: str,
         run_id: str,
+        calculation_key: str,
     ) -> None:
         state = self._degraded[op]
         now = self._clock()
@@ -325,14 +374,22 @@ class ChartArtifactResolver:
             state.started_at = now
             state.last_logged_at = now
             state.suppressed = 0
-            LOGGER.warning("cache_degraded run_id=%s op=%s reason=%s", run_id, op, reason)
+            LOGGER.warning(
+                "cache_degraded run_id=%s calculation_key=%s op=%s reason=%s",
+                run_id,
+                calculation_key,
+                op,
+                reason,
+            )
             return
 
         state.suppressed += 1
         if now - state.last_logged_at >= self.degraded_log_interval_s:
             LOGGER.warning(
-                "cache_degraded run_id=%s op=%s reason=%s suppressed=%d",
+                "cache_degraded run_id=%s calculation_key=%s op=%s reason=%s "
+                "suppressed=%d",
                 run_id,
+                calculation_key,
                 op,
                 reason,
                 state.suppressed,
@@ -340,15 +397,22 @@ class ChartArtifactResolver:
             state.last_logged_at = now
             state.suppressed = 0
 
-    def _record_cache_recovered(self, op: CacheOperation, run_id: str) -> None:
+    def _record_cache_recovered(
+        self,
+        op: CacheOperation,
+        run_id: str,
+        calculation_key: str,
+    ) -> None:
         state = self._degraded[op]
         if not state.degraded:
             return
 
         now = self._clock()
         LOGGER.info(
-            "cache_recovered run_id=%s op=%s degraded_ms=%.3f suppressed=%d",
+            "cache_recovered run_id=%s calculation_key=%s op=%s "
+            "degraded_ms=%.3f suppressed=%d",
             run_id,
+            calculation_key,
             op,
             (now - state.started_at) * 1000,
             state.suppressed,
@@ -366,6 +430,23 @@ def _short_key(key: str) -> str:
     if key.startswith(KEY_PREFIX):
         return key[len(KEY_PREFIX) : len(KEY_PREFIX) + 12]
     return key[:12]
+
+
+def _chart_artifact_summary(ensured: _EnsuredChart) -> dict[str, object]:
+    artifact = ensured.artifact
+    chart = artifact.chart
+    return {
+        "calculation_key": artifact.calculation_key,
+        "calculation_version": artifact.calculation_version,
+        "cache_outcome": ensured.cache_outcome,
+        "chart_kind": artifact.chart_kind,
+        "warning_count": len(artifact.warnings),
+        "body_count": len(chart.bodies or ()),
+        "aspect_count": len(chart.aspects or ()),
+        "configuration_count": len(chart.configurations or ()),
+        "has_houses": chart.cusps is not None,
+        "has_strength": chart.strength is not None,
+    }
 
 
 def _reason(exc: Exception) -> str:

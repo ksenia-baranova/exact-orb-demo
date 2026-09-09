@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 import asyncio
-from datetime import UTC, date, datetime, time
+from datetime import UTC, date, datetime, time, timedelta
+import json
 import logging
 import re
 
@@ -25,6 +26,7 @@ from tests.fixtures.calculation import (
     SENSITIVE_WARNING,
     artifact,
     calculation_key_for,
+    raw_chart,
     resolved_birth_data,
     run_context,
 )
@@ -272,12 +274,25 @@ async def test_started_is_debug_and_precedes_exactly_one_terminal_event(
 
     records = _handler_records(caplog)
     event_names = [record.getMessage().partition(" ")[0] for record in records]
-    assert event_names == ["build_natal_started", terminal_event]
+    assert event_names == [
+        "component_message",
+        "build_natal_started",
+        terminal_event,
+        "component_message",
+    ]
     assert records[0].levelno == logging.DEBUG
+    assert "direction=in" in records[0].getMessage()
+    assert "message_type=BuildNatalRequest" in records[0].getMessage()
+    assert records[-1].levelno == logging.DEBUG
+    assert "direction=out" in records[-1].getMessage()
+    expected_status = "error" if terminal_event == "build_natal_failed" else "ok"
+    assert f"status={expected_status}" in records[-1].getMessage()
+    expected_payload_mode = "error" if terminal_event == "build_natal_failed" else "full"
+    assert f"payload_mode={expected_payload_mode}" in records[-1].getMessage()
     assert all(f"run_id={run.run_id}" in record.getMessage() for record in records)
 
 
-async def test_handler_logs_omit_birth_resolution_and_artifact_values(
+async def test_handler_logs_complete_input_and_output_component_messages(
     caplog: pytest.LogCaptureFixture,
 ) -> None:
     caplog.set_level(logging.DEBUG, logger=HANDLER_LOGGER)
@@ -291,42 +306,83 @@ async def test_handler_logs_omit_birth_resolution_and_artifact_values(
         latitude=12.3456789,
         longitude=-98.7654321,
         tz_id="Secret/Timezone",
-        utc_offset_seconds=14321,
+        utc_offset_seconds=14400,
         canonical_place="Private-City-Alpha",
         time_unknown=False,
         warnings=(),
     )
     spec = NatalChartSpec(chart_kind="natal")
     calculation_key = calculation_key_for(spec, resolved)
+    expected_chart = raw_chart(
+        latitude=resolved.latitude,
+        longitude=resolved.longitude,
+    ).model_copy(
+        update={
+            "datetime_utc": resolved.utc_datetime,
+            "julian_day_ut": 2446952.324305556,
+        }
+    )
+    expected_artifact = artifact(
+        spec=spec,
+        resolved=resolved,
+        chart=expected_chart,
+    )
     run = run_context()
     handler = BuildNatalHandler(
         resolver=StubBirthDataResolver(resolved),
-        artifacts=StubChartArtifactPort(),
+        artifacts=StubChartArtifactPort(expected_artifact),
     )
+    command = BuildNatalCommand(birth_input=birth_input)
 
-    await handler.handle(
-        BuildNatalCommand(birth_input=birth_input),
+    result = await handler.handle(
+        command,
         new_session("session-1", now=BASE_UTC),
         run,
     )
 
     completed = _single_event(caplog, "build_natal_completed")
-    logs = "\n".join(record.getMessage() for record in _handler_records(caplog))
+    records = _handler_records(caplog)
+    component_messages = [
+        record.getMessage()
+        for record in records
+        if record.getMessage().startswith("component_message ")
+    ]
     assert f"run_id={run.run_id}" in completed.getMessage()
-    for sensitive in (
-        birth_input.birth_date.isoformat(),
-        birth_input.birth_time.isoformat(),
-        birth_input.place_id,
-        resolved.canonical_place,
-        str(resolved.latitude),
-        str(resolved.longitude),
-        resolved.tz_id,
-        str(resolved.utc_offset_seconds),
-        resolved.utc_datetime.isoformat(),
-        str(resolved.utc_datetime),
-        calculation_key,
-    ):
-        assert sensitive not in logs
+    assert f"calculation_key={calculation_key}" in completed.getMessage()
+    assert len(component_messages) == 2
+    incoming, outgoing = component_messages
+    assert "direction=in" in incoming
+    assert "calculation_key=-" in incoming
+    assert "payload_mode=full" in incoming
+    assert "message_type=BuildNatalRequest" in incoming
+    assert "direction=out" in outgoing
+    assert f"calculation_key={calculation_key}" in outgoing
+    assert "payload_mode=full" in outgoing
+    assert "message_type=BuildNatalSuccess" in outgoing
+
+    expected_input = {
+        "command": command.model_dump(mode="json"),
+        "run": run.model_dump(mode="json"),
+    }
+    expected_output = {
+        "artifact": expected_artifact.model_dump(mode="json"),
+        "delta": {
+            "base_chart_spec": spec.model_dump(mode="json"),
+            "birth_input": birth_input.model_dump(mode="json"),
+            "birth_resolved": resolved.model_dump(mode="json"),
+        },
+    }
+    assert json.loads(incoming.partition(" message=")[2]) == expected_input
+    assert json.loads(outgoing.partition(" message=")[2]) == expected_output
+    assert result.model_dump(mode="json") == expected_output
+
+    local_datetime = (
+        resolved.utc_datetime + timedelta(seconds=resolved.utc_offset_seconds)
+    ).replace(tzinfo=None)
+    assert local_datetime == datetime.combine(birth_input.birth_date, birth_input.birth_time)
+    assert expected_chart.datetime_utc == resolved.utc_datetime
+    assert expected_chart.latitude == resolved.latitude
+    assert expected_chart.longitude == resolved.longitude
 
 
 async def test_failed_event_omits_exception_message_and_traceback(

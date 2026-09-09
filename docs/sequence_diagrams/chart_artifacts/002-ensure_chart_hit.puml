@@ -95,10 +95,18 @@ note over Artifacts, Cache
 end note
 
 alt оба равенства выполнены — нормальный путь
-    Artifacts -> Artifacts : журнал: cache_hit(run_id, key)
+    Artifacts -> Artifacts : журнал: cache_hit(\nrun_id, calculation_key = key, short key)
     Artifacts -> Artifacts : finally: inflight.pop(key)\nmodel_copy(deep=True)
     Artifacts --> Handler : изолированный ChartArtifact
     deactivate Artifacts
+
+    note over Handler, Artifacts
+    DEBUG output resolver — ChartArtifactSummary:
+    run_id, полный calculation_key,
+    cache_outcome = hit; полного chart нет.
+    Engine boundary отсутствует вместе
+    с вызовом движка (ADR-0026).
+    end note
 
     note right of Artifacts
     Движок не вызывается ни разу.
@@ -112,7 +120,7 @@ alt оба равенства выполнены — нормальный пут
     end note
 
 else не совпало — в исправной системе невозможно
-    Artifacts -> Artifacts : журнал: cache_stale(run_id, key,\nверсия записи) + АЛЕРТ
+    Artifacts -> Artifacts : журнал: cache_stale(run_id,\ncalculation_key = key, short key, версия записи) + АЛЕРТ
 
     Artifacts -> Artifacts : запись отбрасывается,\nдальше — как при промахе
 
@@ -148,7 +156,7 @@ else не совпало — в исправной системе невозмо
     end note
 
 else payload не читается
-    Artifacts -> Artifacts : журнал: cache_corrupt(run_id, key,\nreason) + АЛЕРТ
+    Artifacts -> Artifacts : журнал: cache_corrupt(run_id,\ncalculation_key = key, short key, reason) + АЛЕРТ
 
     Artifacts -> Engine : calculate(spec, resolved, run)
     Engine --> Artifacts : CalculationResult

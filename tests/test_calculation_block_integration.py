@@ -180,7 +180,7 @@ async def test_calculation_block_logs_share_run_id_across_resolver_and_engine(
     assert all(str(RUN_ID) in message for message in resolver_logs + engine_logs)
 
 
-async def test_calculation_block_privacy_logs_have_short_key_but_no_sensitive_values(
+async def test_calculation_boundary_summaries_and_events_share_full_key(
     caplog: pytest.LogCaptureFixture,
 ) -> None:
     spec = chart_spec()
@@ -195,20 +195,33 @@ async def test_calculation_block_privacy_logs_have_short_key_but_no_sensitive_va
     ) as resolver:
         await resolver.ensure_chart(spec, resolved, run=run_context())
 
-    logs = _logs(caplog)
+    messages = [record.getMessage() for record in caplog.records]
+    boundary = "\n".join(
+        message for message in messages if message.startswith("component_message ")
+    )
+    technical = "\n".join(
+        message for message in messages if not message.startswith("component_message ")
+    )
 
-    assert str(RUN_ID) in logs
-    assert short_key in logs
-    assert key not in logs
-    for sensitive in (
+    assert str(RUN_ID) in boundary
+    assert key in boundary
+    assert short_key in technical
+    assert key in technical
+    assert "message_type=CalculationResultSummary" in boundary
+    assert "message_type=ChartArtifactSummary" in boundary
+    assert '"chart":' not in boundary
+    assert '"bodies":' not in boundary
+    for value in (
         "1990-09-02",
         "55.7558",
         "37.6173",
         "Moscow",
-        SENSITIVE_WARNING,
-        "Traceback",
     ):
-        assert sensitive not in logs
+        assert value in boundary
+        assert value not in technical
+    assert SENSITIVE_WARNING not in boundary
+    assert SENSITIVE_WARNING not in technical
+    assert "Traceback" not in technical
 
 
 @contextmanager

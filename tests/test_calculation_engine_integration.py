@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
+import json
 import logging
 from uuid import UUID
 
@@ -75,7 +76,7 @@ async def test_engine_service_maps_real_high_latitude_placidus_to_houses_degener
     assert "78.0" not in str(exc_info.value)
 
 
-def test_calculation_runtime_logs_omit_sensitive_input_and_position_fields(
+def test_natal_boundary_messages_are_complete_and_step_events_stay_compact(
     caplog: pytest.LogCaptureFixture,
 ) -> None:
     caplog.set_level(logging.DEBUG, logger="exact_orb.engine")
@@ -93,6 +94,30 @@ def test_calculation_runtime_logs_omit_sensitive_input_and_position_fields(
     body_logs = _messages(caplog, "body_calculated")
     derived_logs = _messages(caplog, "derived_point")
     lunar_logs = _messages(caplog, "calculate_lunar_phase")
+    boundary_logs = _messages(caplog, "component_message")
+
+    assert len(boundary_logs) == 2
+    assert "direction=in" in boundary_logs[0]
+    assert "message_type=NatalCalculationRequest" in boundary_logs[0]
+    assert "1985-09-01" in boundary_logs[0]
+    assert "55.7522" in boundary_logs[0]
+    assert "37.6155" in boundary_logs[0]
+    assert "direction=out" in boundary_logs[1]
+    assert "calculation_key=-" in boundary_logs[1]
+    assert "payload_mode=summary" in boundary_logs[1]
+    assert "message_type=NatalChartSummary" in boundary_logs[1]
+    assert '"bodies":' not in boundary_logs[1]
+    assert '"sun":' not in boundary_logs[1]
+    summary = json.loads(boundary_logs[1].partition(" message=")[2])
+    assert summary == {
+        "aspect_count": len(chart.aspects or ()),
+        "body_count": len(chart.bodies or ()),
+        "chart_kind": chart.chart_kind,
+        "configuration_count": len(chart.configurations or ()),
+        "has_houses": chart.cusps is not None,
+        "has_strength": chart.strength is not None,
+        "warning_count": len(chart.warnings),
+    }
 
     assert start_logs
     assert "1985-09-01" not in "\n".join(start_logs)

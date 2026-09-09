@@ -12,6 +12,7 @@ from pathlib import Path
 
 import pytest
 
+from exact_orb import component_logging
 from exact_orb.application.commands import BuildNatalCommand
 from exact_orb.application.handlers.build_natal import BuildNatalHandler
 from exact_orb.application.results import BuildNatalSuccess
@@ -32,6 +33,7 @@ HANDLER_LOGGER = "exact_orb.application.handlers.build_natal"
 BIRTH_LOGGER = "exact_orb.birth.resolver"
 ARTIFACT_LOGGER = "exact_orb.calculation.artifacts"
 ENGINE_LOGGER = "exact_orb.calculation.engine"
+NATAL_LOGGER = "exact_orb.engine.charts.natal"
 
 
 @dataclass(frozen=True)
@@ -107,8 +109,17 @@ def _event_records(
 
 async def test_real_natal_path_caches_and_correlates_run_id(
     caplog: pytest.LogCaptureFixture,
+    monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     caplog.set_level(logging.DEBUG, logger="exact_orb")
+    serialized_types: list[str] = []
+    original_serialize = component_logging.serialize_component_message
+
+    def serialize_spy(message: object) -> str:
+        serialized_types.append(type(message).__name__)
+        return original_serialize(message)
+
+    monkeypatch.setattr(component_logging, "serialize_component_message", serialize_spy)
     command = _command()
     first_run = run_context()
     second_run = run_context(RUN_ID_B)
@@ -170,6 +181,78 @@ async def test_real_natal_path_caches_and_correlates_run_id(
             f"run_id={first_run.run_id}" in record.getMessage()
             for record in records
         )
+
+    correlated_boundaries = (
+        HANDLER_LOGGER,
+        BIRTH_LOGGER,
+        ARTIFACT_LOGGER,
+        ENGINE_LOGGER,
+    )
+    for logger in correlated_boundaries:
+        records = [
+            record
+            for record in _event_records(
+                caplog,
+                logger=logger,
+                event="component_message",
+            )
+            if f"run_id={first_run.run_id}" in record.getMessage()
+        ]
+        assert len(records) == 2
+        assert "direction=in" in records[0].getMessage()
+        assert "direction=out" in records[1].getMessage()
+
+    natal_boundaries = _event_records(
+        caplog,
+        logger=NATAL_LOGGER,
+        event="component_message",
+    )
+    assert len(natal_boundaries) == 2
+    assert "direction=in" in natal_boundaries[0].getMessage()
+    assert "direction=out" in natal_boundaries[1].getMessage()
+    assert "payload_mode=summary" in natal_boundaries[1].getMessage()
+    assert "message_type=NatalChartSummary" in natal_boundaries[1].getMessage()
+    assert '"bodies":' not in natal_boundaries[1].getMessage()
+    assert '"sun":' not in natal_boundaries[1].getMessage()
+
+    artifact_outputs = [
+        record.getMessage()
+        for record in _event_records(
+            caplog,
+            logger=ARTIFACT_LOGGER,
+            event="component_message",
+        )
+        if "direction=out" in record.getMessage()
+    ]
+    assert len(artifact_outputs) == 2
+    assert all("payload_mode=summary" in message for message in artifact_outputs)
+    assert all("message_type=ChartArtifactSummary" in message for message in artifact_outputs)
+    assert all('"chart":' not in message for message in artifact_outputs)
+    assert all(
+        f"calculation_key={first.artifact.calculation_key}" in message
+        for message in artifact_outputs
+    )
+
+    handler_output = next(
+        record.getMessage()
+        for record in _event_records(
+            caplog,
+            logger=HANDLER_LOGGER,
+            event="component_message",
+        )
+        if f"run_id={first_run.run_id}" in record.getMessage()
+        and "direction=out" in record.getMessage()
+    )
+    assert "message_type=BuildNatalSuccess" in handler_output
+    assert "payload_mode=full" in handler_output
+    assert f"calculation_key={first.artifact.calculation_key}" in handler_output
+    assert '"artifact":' in handler_output
+    assert '"chart":' in handler_output
+
+    assert serialized_types.count("BuildNatalSuccess") == 2
+    assert "NatalChart" not in serialized_types
+    assert "CalculationResult" not in serialized_types
+    assert "ChartArtifact" not in serialized_types
 
 
 async def test_real_unknown_time_path_builds_cosmogram() -> None:

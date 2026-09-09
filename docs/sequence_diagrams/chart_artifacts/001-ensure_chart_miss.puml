@@ -120,7 +120,7 @@ end note
 Artifacts -> Cache : get(key)
 Cache --> Artifacts : None — промах
 
-Artifacts -> Artifacts : журнал: cache_miss(run_id, key)
+Artifacts -> Artifacts : журнал: cache_miss(\nrun_id, calculation_key = key, short key)
 
 
 == 4. Расчёт ==
@@ -214,6 +214,17 @@ Artifacts -> Artifacts : finally внутри task:\ninflight.pop(key)
 Artifacts -> Artifacts : model_copy(deep=True)
 Artifacts --> Handler : изолированный ChartArtifact
 deactivate Artifacts
+
+note over Handler, Swiss
+DEBUG boundary output (ADR-0026):
+  calculate_natal → NatalChartSummary
+  EngineService → CalculationResultSummary
+  ArtifactResolver → ChartArtifactSummary
+    (run_id, полный calculation_key, cache_outcome = miss)
+
+Полный chart эти границы повторно
+не сериализуют.
+end note
 
 note over Handler
 Внутренний экземпляр task сериализован

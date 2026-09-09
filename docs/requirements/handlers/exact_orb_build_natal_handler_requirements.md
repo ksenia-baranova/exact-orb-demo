@@ -773,6 +773,7 @@ except BaseException as exc:
 - `outcome` — обязательно;
 - `duration_ms` — обязательно;
 - `chart_kind` — только после успешного резолва;
+- `calculation_key` — только для `BuildNatalSuccess`, полный ключ;
 - `error_code` — только для технического отказа.
 
 Поля `build_natal_failed`:
@@ -785,27 +786,29 @@ except BaseException as exc:
 
 Компактный terminal event `build_natal_failed` не включает `str(exception)`;
 текст исключения доступен только в полном DEBUG-событии `component_message`
-согласно ADR-0025. Traceback допускается только в защищённом техническом
+согласно ADR-0025/0026. Traceback допускается только в защищённом техническом
 журнале согласно общей политике observability.
 
-Дополнительно, согласно ADR-0025, публичная граница `handle` пишет на `DEBUG`
-ровно два полных события `component_message`:
+Дополнительно, согласно ADR-0025/0026, публичная граница `handle` пишет на
+`DEBUG` ровно два события `component_message`:
 
 - перед началом операции — `direction=in`, `operation=build_natal`,
   `message_type=BuildNatalRequest`; JSON `message` содержит `command` и `run`;
   переданный `SessionState` намеренно не читается и не передаётся даже в
   журнал согласно lifecycle-инварианту handler;
-- непосредственно перед возвратом наружу — `direction=out`, тот же `operation`
-  и фактический `message_type`; для успеха JSON содержит полный
+- непосредственно перед возвратом наружу — `direction=out`, тот же `operation`,
+  фактический `message_type`, `payload_mode=full` и полный
+  `calculation_key`; для успеха JSON содержит полный
   `BuildNatalSuccess`, включая `ChartArtifact`, натальную карту и `StateDelta`;
-- при исключении или отмене выходное событие имеет `status=error` и содержит
-  тип и строковое сообщение исключения.
+- при исключении или отмене выходное событие имеет `status=error`,
+  `payload_mode=error` и содержит тип и строковое сообщение исключения.
 
 `component_message` намеренно содержит дату и время рождения, `place_id`,
 координаты, timezone-данные и полный расчётный результат. Этот payload не
 дублируется в terminal event уровня INFO/WARNING. Полный диагностический поток
 делает текущий стенд непригодным для публичного развёртывания до отдельного
-privacy-hardening решения ADR-0025.
+privacy-hardening решения ADR-0025/0026. Внутренние расчётные границы полную
+карту повторно не сериализуют: они возвращают summary.
 
 Cache hit/miss должен журналироваться самим `ChartArtifactResolver`, а не handler.
 
@@ -858,7 +861,9 @@ Cache hit/miss должен журналироваться самим `ChartArti
 18. Каждый вызов handler даёт парные `component_message direction=in|out` с
     одинаковым `run_id`. В success-ветке вход содержит полный
     `BuildNatalRequest`, выход — полный `BuildNatalSuccess` с артефактом и
-    натальной картой. При исключении выход имеет `status=error`.
+    натальной картой; выходной envelope также содержит полный
+    `calculation_key`. При исключении выход имеет `status=error` и
+    `payload_mode=error`.
     Компактный `build_natal_failed` по-прежнему не содержит `str(exception)`.
 
 ### 12.5. Границы ответственности

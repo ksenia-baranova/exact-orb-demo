@@ -139,24 +139,57 @@ def calculate_natal(
     creating the UT decimal hour for ``swe.julday``.
     """
 
-    with ephemeris_session():
-        return _calculate_natal(
-            birth_datetime,
-            latitude,
-            longitude,
-            chart_kind=chart_kind,
-            house_system=house_system,
-            body_ids=body_ids,
-            ephemeris_flags=ephemeris_flags,
-            rulership=rulership,
-            near_interception_threshold=near_interception_threshold,
-            ephemeris_path=ephemeris_path,
-            selena_method=selena_method,
-            include=include,
-            aspect_config=aspect_config,
-            configuration_config=configuration_config,
-            strength_config=strength_config,
-        )
+    from exact_orb.component_logging import log_sync_component_call
+
+    request = {
+        "birth_datetime": birth_datetime,
+        "latitude": latitude,
+        "longitude": longitude,
+        "chart_kind": chart_kind,
+        "house_system": house_system,
+        "body_ids": body_ids,
+        "ephemeris_flags": ephemeris_flags,
+        "rulership": rulership,
+        "near_interception_threshold": near_interception_threshold,
+        "ephemeris_path": ephemeris_path,
+        "selena_method": selena_method,
+        "include": include,
+        "aspect_config": aspect_config,
+        "configuration_config": configuration_config,
+        "strength_config": strength_config,
+    }
+
+    def calculate() -> NatalChart:
+        with ephemeris_session():
+            return _calculate_natal(
+                birth_datetime,
+                latitude,
+                longitude,
+                chart_kind=chart_kind,
+                house_system=house_system,
+                body_ids=body_ids,
+                ephemeris_flags=ephemeris_flags,
+                rulership=rulership,
+                near_interception_threshold=near_interception_threshold,
+                ephemeris_path=ephemeris_path,
+                selena_method=selena_method,
+                include=include,
+                aspect_config=aspect_config,
+                configuration_config=configuration_config,
+                strength_config=strength_config,
+            )
+
+    return log_sync_component_call(
+        LOGGER,
+        operation="calculate_natal",
+        request_type="NatalCalculationRequest",
+        run_id=None,
+        request=request,
+        call=calculate,
+        result_projector=_natal_chart_summary,
+        result_message_type="NatalChartSummary",
+        result_payload_mode="summary",
+    )
 
 
 def _calculate_natal(
@@ -379,6 +412,18 @@ def _validate_chart_kind_include(chart_kind: ChartKind, include_blocks: frozense
 
 def _elapsed_ms(started_at: float) -> float:
     return (perf_counter() - started_at) * 1000.0
+
+
+def _natal_chart_summary(chart: NatalChart) -> dict[str, object]:
+    return {
+        "chart_kind": chart.chart_kind,
+        "warning_count": len(chart.warnings),
+        "body_count": len(chart.bodies or ()),
+        "aspect_count": len(chart.aspects or ()),
+        "configuration_count": len(chart.configurations or ()),
+        "has_houses": chart.cusps is not None,
+        "has_strength": chart.strength is not None,
+    }
 
 
 def _calculate_natal_aspects(

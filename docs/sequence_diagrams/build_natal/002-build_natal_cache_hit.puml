@@ -115,6 +115,14 @@ Handler -> Handler : StateDelta(\nbirth_input, birth_resolved,\nbase_chart_spec 
 Handler --> Orch : BuildNatalSuccess(artifact, delta)
 deactivate Handler
 
+note over Handler, Engine
+На cache hit EngineService не вызывается.
+ArtifactResolver пишет ChartArtifactSummary,
+handler один раз пишет полный BuildNatalSuccess;
+оба выхода связывают новый run_id с тем же
+полным calculation_key (ADR-0026).
+end note
+
 Orch -> Context : save(session_id,\nexpected_state_version = 1, delta)
 Context -> Store : sessions.compare_and_set(\nsession_id, 1, StateDelta, now)
 Store --> Context : 2

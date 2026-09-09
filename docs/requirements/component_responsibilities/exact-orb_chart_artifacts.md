@@ -952,18 +952,18 @@ NatalTool         → ToolResult
 
 | Событие | Поля |
 |---|---|
-| `cache_hit` | `run_id`, `key`, `chart_kind` |
-| `cache_miss` | `run_id`, `key`, `chart_kind` |
-| `cache_stale` | `run_id`, `key`, версия записи — **алерт**, §3.2.3 |
-| `cache_corrupt` | `run_id`, `key`, `reason` — **алерт**, §3.2.4 |
-| `singleflight_join` | `run_id`, `leader_run_id`, `key` |
-| `calculation_started` | `run_id`, `key`, `technique` |
+| `cache_hit` | `run_id`, полный `calculation_key`, short `key`, `chart_kind` |
+| `cache_miss` | `run_id`, полный `calculation_key`, short `key`, `chart_kind` |
+| `cache_stale` | `run_id`, полный `calculation_key`, short `key`, версия записи — **алерт**, §3.2.3 |
+| `cache_corrupt` | `run_id`, полный `calculation_key`, short `key`, `reason` — **алерт**, §3.2.4 |
+| `singleflight_join` | `run_id`, `leader_run_id`, полный `calculation_key`, short `key` |
+| `calculation_started` | `run_id`, `technique`, `chart_kind` |
 | `calculation_finished` | `run_id`, `duration_ms`, `slow` |
 | `calculation_failed` | `run_id`, `code`, `duration_ms` |
-| `cache_put_ok` | `run_id`, `key` |
-| `cache_put_failed` | `run_id`, `key`, `reason` |
-| `cache_degraded` | `run_id`, `op`, `reason`, `suppressed?`, дросселируется |
-| `cache_recovered` | `run_id`, `op`, `degraded_ms`, `suppressed` |
+| `cache_put_ok` | `run_id`, полный `calculation_key`, short `key` |
+| `cache_put_failed` | `run_id`, полный `calculation_key`, short `key`, `reason` |
+| `cache_degraded` | `run_id`, полный `calculation_key`, `op`, `reason`, `suppressed?`, дросселируется |
+| `cache_recovered` | `run_id`, полный `calculation_key`, `op`, `degraded_ms`, `suppressed` |
 
 Startup-события `CalculationVersion` принадлежат отдельному вызову
 `log_calculation_version(record)`, а не request-path резолвера, поэтому
@@ -978,26 +978,35 @@ Startup-события `CalculationVersion` принадлежат отдель�
 
 1. `run_id` передаётся в расчётный поток явным аргументом (§2.4).
 
-2. Согласно ADR-0025 публичные границы `ChartArtifactResolver.ensure_chart`,
-   `EngineService.calculate` и `calculate_natal` пишут на `DEBUG` полные
-   парные сообщения `component_message direction=in|out`.
+2. Согласно ADR-0025/0026 публичные границы
+   `ChartArtifactResolver.ensure_chart`, `EngineService.calculate` и
+   `calculate_natal` пишут на `DEBUG` парные сообщения
+   `component_message direction=in|out`.
 
 ```text
-component_message:
-  полный ResolvedBirthData, ChartSpec, CalculationResult, NatalChart,
-  ChartArtifact, calculation_key и дословные warnings
+вход component_message:
+  полный ResolvedBirthData и ChartSpec
+
+выход component_message:
+  NatalChartSummary / CalculationResultSummary / ChartArtifactSummary
+
+ChartArtifactSummary:
+  полный calculation_key, calculation_version, cache_outcome,
+  chart_kind и счётчики блоков без полного chart
 
 технические события этапов:
-  run_id, усечённый key, chart_kind, technique, duration_ms,
+  run_id, полный calculation_key там, где его знает artifact resolver,
+  short key, chart_kind, technique, duration_ms,
   коды исходов, счётчики, source и code предупреждений
 ```
 
-   Полный JSON не усекается и остаётся одной строкой. Обычные cache/calculation
-   events сохраняют прежнюю компактную форму: ключ в них усекается, а
-   `warning.message` не дублируется. Полный payload существует только в
-   `component_message` уровня DEBUG. Он содержит персональные данные и поэтому
+   Summary строится непосредственно из типизированного результата и не
+   сериализует полный `chart`. Полный результат остаётся один раз на выходе
+   `BuildNatalHandler`; cache codec сериализует artifact отдельно для хранения.
+   Engine не получает `calculation_key`: его события связываются с artifact
+   resolver по `run_id`. Payload содержит персональные данные и поэтому
    разрешён только для текущего локального стенда; публичное развёртывание
-   блокируется до privacy-hardening, описанного ADR-0025.
+   блокируется до privacy-hardening, описанного ADR-0025/0026.
 3. `slow = duration_ms > slow_threshold_ms`, **`slow_threshold_ms = 3000`**.
    Порог живёт в конфигурации и берётся заведомо большим сознательно: он
    отмечает не «медленно», а «ненормально». Это замена таймауту (§3.4.3);
@@ -1367,7 +1376,8 @@ startup wiring C3.
 Зависший `get` дольше `cache_timeout_ms` даёт промах, зависший `put` —
 возврат артефакта без записи.
 **Boundary-логи:** `calculate_natal`, engine и artifact resolver содержат
-полный вход и выход в парных DEBUG-событиях `component_message`. Технические
+полный вход и summary-выход в парных DEBUG-событиях `component_message`.
+Полный результат карты сохраняется только на прикладной границе. Технические
 события этапов не дублируют дату рождения, координаты, название места,
 полный ключ и дословные тексты предупреждений.
 Отказ `get` не проваливает операцию. Отказ `put` не проваливает операцию
@@ -1426,7 +1436,7 @@ N параллельных вызовов по одному ключу вызы�
 | Нечитаемое значение | отдельное событие `cache_corrupt` + алерт | §3.2.4 |
 | Таймаут операций кэша | `cache_timeout_ms = 50`, внутри адаптера | §3.2.1 |
 | Отпечаток расчёта | 9 компонент; zero provider → `<unresolved>`, multiple providers → fail-fast | §3.1.5–3.1.6 |
-| Boundary-логи | полный JSON входа/выхода на DEBUG; технические events компактны | §7.2, ADR-0025 |
+| Boundary-логи | полный вход, summary внутренних больших выходов и один полный application output на DEBUG | §7.2, ADR-0025/0026 |
 | Предпроверка | все дешёвые проверки до executor | §2.3 |
 | Система домов первой версии | только `P` (Плацидус); другие коды → `SPEC_INVALID` | §2.3 |
 | Отображение ошибок | на прикладной границе, без общего handler'а | §6.2 |

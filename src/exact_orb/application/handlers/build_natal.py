@@ -40,6 +40,23 @@ class BuildNatalHandler:
         state: SessionState,
         run: RunContext,
     ) -> BuildNatalOutcome:
+        from exact_orb.component_logging import log_async_component_call
+
+        return await log_async_component_call(
+            LOGGER,
+            operation="build_natal",
+            request_type="BuildNatalRequest",
+            run_id=run.run_id,
+            request={"command": command, "run": run},
+            call=lambda: self._handle(command, run),
+            result_calculation_key=_outcome_calculation_key,
+        )
+
+    async def _handle(
+        self,
+        command: BuildNatalCommand,
+        run: RunContext,
+    ) -> BuildNatalOutcome:
         started_at = perf_counter()
         stage = "resolve"
         _log_started(run)
@@ -97,9 +114,10 @@ def _log_completed(
     if isinstance(outcome, BuildNatalSuccess):
         LOGGER.info(
             "build_natal_completed run_id=%s outcome=success chart_kind=%s "
-            "duration_ms=%.3f",
+            "calculation_key=%s duration_ms=%.3f",
             run_id,
             chart_kind,
+            outcome.artifact.calculation_key,
             duration_ms,
         )
         return
@@ -164,6 +182,12 @@ def _log_failed(
 
 def _elapsed_ms(started_at: float) -> float:
     return (perf_counter() - started_at) * 1000.0
+
+
+def _outcome_calculation_key(outcome: BuildNatalOutcome) -> str | None:
+    if isinstance(outcome, BuildNatalSuccess):
+        return outcome.artifact.calculation_key
+    return None
 
 
 __all__ = ["BuildNatalHandler"]

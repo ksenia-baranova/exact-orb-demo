@@ -408,7 +408,7 @@ async def test_result_invariant_mismatch_is_engine_unexpected() -> None:
     assert exc_info.value.code == "ENGINE_UNEXPECTED"
 
 
-async def test_engine_logs_failure_metadata_without_sensitive_values_or_traceback(
+async def test_engine_logs_complete_request_and_mapped_failure_without_traceback(
     caplog: pytest.LogCaptureFixture,
 ) -> None:
     caplog.set_level(logging.DEBUG, logger="exact_orb.calculation.engine")
@@ -422,17 +422,60 @@ async def test_engine_logs_failure_metadata_without_sensitive_values_or_tracebac
         with pytest.raises(ChartCalculationError):
             await service.calculate(_spec(), _resolved(), run=_run())
 
-    logs = "\n".join(record.getMessage() for record in caplog.records)
+    messages = [record.getMessage() for record in caplog.records]
+    logs = "\n".join(messages)
+    incoming = next(
+        message
+        for message in messages
+        if message.startswith("component_message direction=in")
+    )
+    outgoing = next(
+        message
+        for message in messages
+        if message.startswith("component_message direction=out")
+    )
     assert f"run_id={RUN_ID}" in logs
     assert "code=ENGINE_UNEXPECTED" in logs
     assert "failure_class=ChartCalculationError" in logs
     assert "exception_type=ValueError" in logs
     assert "Traceback" not in logs
-    assert "1990-09-02" not in logs
-    assert "55.7558" not in logs
-    assert "37.6173" not in logs
-    assert "Moscow" not in logs
-    assert "warning text" not in logs
+    assert "message_type=CalculationRequest" in incoming
+    assert "1990-09-02" in incoming
+    assert "55.7558" in incoming
+    assert "37.6173" in incoming
+    assert "Moscow" in incoming
+    assert "status=error" in outgoing
+    assert "payload_mode=error" in outgoing
+    assert "message_type=ChartCalculationError" in outgoing
+    assert SENSITIVE_MESSAGE not in outgoing
+
+
+async def test_engine_success_logs_summary_without_full_chart(
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    caplog.set_level(logging.DEBUG, logger="exact_orb.calculation.engine")
+    result = _result()
+
+    with ThreadPoolExecutor(max_workers=1) as executor:
+        service = EngineService(
+            executor=executor,
+            techniques={"natal": FakeAdapter(result)},
+            slow_threshold_ms=3000.0,
+        )
+        returned = await service.calculate(_spec(), _resolved(), run=_run())
+
+    assert returned is result
+    outgoing = next(
+        record.getMessage()
+        for record in caplog.records
+        if record.getMessage().startswith("component_message direction=out")
+    )
+    assert "calculation_key=-" in outgoing
+    assert "payload_mode=summary" in outgoing
+    assert "message_type=CalculationResultSummary" in outgoing
+    assert '"chart":' not in outgoing
+    assert '"bodies":' not in outgoing
+    assert '"body_count":0' in outgoing
 
 
 def test_low_level_ephemeris_warning_log_omits_message_but_preserves_warning(
