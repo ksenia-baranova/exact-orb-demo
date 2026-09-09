@@ -20,7 +20,7 @@ ADR-0012 в ревизии 2026-08-26 отложил durable execution protocol:
 | 002 позитивная космограмма | заменён `build_natal/003` |
 | 003 disconnect и reopen | **отложен** — требует `BuildAttempt` |
 | 004 application unavailable | актуален, транспортный уровень |
-| 005 resolver outcomes | заменён `build_natal/004` и `005`; ветка `AMBIGUOUS` на build-пути не возникает (ADR-0005) |
+| 005 resolver outcomes | заменён `build_natal/004` и `005`; `AMBIGUOUS` не возникает для выбранного места, но возможен для удвоенного локального времени (ADR-0005) |
 | 006 calculation failure | заменён `build_natal/005` |
 | 007 failure и reopen | **отложен** — требует `BuildAttempt` |
 | 008 concurrent latest wins | заменён `build_natal/006`: одного CAS достаточно |

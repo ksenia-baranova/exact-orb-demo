@@ -102,11 +102,11 @@ else Отказ расчётного ядра
     Handler -> Resolver : resolve(birth_input)
     Resolver --> Handler : ResolvedBirthData
 
-    Handler -> Artifacts : ensure_chart(spec, resolved, run)
+    Handler -> Artifacts : ensure_chart(spec, resolved, run=run)
     Artifacts -> Cache : get(key)
     Cache --> Artifacts : None — промах
 
-    Artifacts -> Engine : calculate(spec, resolved, run)
+    Artifacts -> Engine : calculate(spec, resolved, run=run)
     Engine -> Swiss : calculate_natal(...)
     Swiss -[#C62828]-> Engine : ValueError
 
@@ -120,8 +120,9 @@ else Отказ расчётного ядра
     широту своего рождения.
     end note
 
-    Engine --> Artifacts : CalculationFailed(error_code)
-    Artifacts --> Handler : CalculationFailed
+    Engine -[#C62828]-> Artifacts : raises ChartCalculationError(\n"HOUSES_DEGENERATE", run_id=run_id)
+    Artifacts -[#C62828]-> Handler : propagates ChartCalculationError
+    Handler -> Handler : CalculationFailed(\nerror_code = error.code)
 
     note over Artifacts, Cache
     В кэш ничего не кладётся:

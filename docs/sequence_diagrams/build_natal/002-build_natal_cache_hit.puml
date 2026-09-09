@@ -88,7 +88,7 @@ Resolver --> Handler : ResolvedBirthData\n(идентичен предыдуще
 
 Handler -> Handler : ChartSpec(...)\nидентична предыдущей
 
-Handler -> Artifacts : ensure_chart(spec, resolved, run)
+Handler -> Artifacts : ensure_chart(spec, resolved, run=run)
 activate Artifacts
 
 Artifacts -> Keys : calculation_key(\ncalculation_input_from(resolved),\nspec, calculation_version)

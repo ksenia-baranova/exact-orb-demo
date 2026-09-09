@@ -118,7 +118,7 @@ ADR-0017, ADR-0019, ADR-0020.
 ушёл в модель, какой рецепт и какая его версия. Это превращает невидимую
 архитектуру в наблюдаемую и отличает работу от очередной обёртки над LLM.
 
-**`docs/spec-driven-development.md` (+0.5 дня).** Метод: требование → ТЗ в
+**`docs/development_approach/spec-driven-development.md` (+0.5 дня).** Метод: требование → ТЗ в
 `prompts/` → реализация → ревью против нумерованных пунктов → коммит. С цифрами
 и с разбором одного ТЗ как примера.
 
@@ -146,7 +146,7 @@ ADR-0017, ADR-0019, ADR-0020.
 | D | CLI round-trip и короткая приёмка | 2 |
 | G′ | контракты, agent runtime (два сценария — И-3 проверен), `DataSelector`, `PromptRegistry` и **два** рецепта, `InterpretationService` без кэша и резервации | 6 |
 | F′ | FastAPI на два эндпоинта, одностраничный клиент, две кнопки, показ `PromptBundle` | 4 |
-| P | `docs/spec-driven-development.md`, английский README, GIF | 2 |
+| P | `docs/development_approach/spec-driven-development.md`, английский README, GIF | 2 |
 | | **Итого** | **22** |
 
 При темпе из §1.1 — около четырёх календарных недель.
@@ -159,7 +159,7 @@ ADR-0017, ADR-0019, ADR-0020.
    и версией рецепта.
 3. Английский README: что это, GIF работающих кнопок, четыре тезиса П-1…П-4,
    ссылки вглубь.
-4. `docs/spec-driven-development.md` описывает метод и ссылается на `prompts/`
+4. `docs/development_approach/spec-driven-development.md` описывает метод и ссылается на `prompts/`
    и `AGENTS.md`.
 5. `pytest` зелёный, число тестов указано в README.
 

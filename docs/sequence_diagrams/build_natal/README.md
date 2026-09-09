@@ -1,8 +1,11 @@
 # Sequence diagrams — построение натальной карты
 
-Диаграммы описывают **действующую модель реализации**, зафиксированную
-в `docs/requirements/component_responsibilities/exact-orb_build_natal_components.md`
-и ADR-0006, 0012, 0014, 0017, 0020.
+Диаграммы совмещают реализованный путь `BuildNatalHandler` с целевым внешним
+application-flow, зафиксированным в
+`docs/requirements/component_responsibilities/exact-orb_build_natal_components.md`
+и ADR-0006, 0012, 0014, 0017, 0020. `ApplicationOrchestrator`, commit-flow и
+внешний `ApplicationResult` на сверенном commit ещё не реализованы; на
+диаграммах это проектируемый внешний контур, а не доступный API.
 
 Ключевое отличие от прежнего набора в `build_charts/`: `BuildAttempt`,
 `build_revision` и статусы попытки не используются. Актуальность результата
@@ -11,7 +14,7 @@
 
 | № | Файл | Сценарий | Исход |
 |---|---|---|---|
-| 000 | `000-build_natal_end_to_end.puml` | Сквозной путь одной операции | `BuildNatalResult` |
+| 000 | `000-build_natal_end_to_end.puml` | Сквозной путь одной операции | `BuildNatalOutcome`; после целевого commit — `ApplicationResult` |
 | 001 | `001-build_natal_positive_cache_miss.puml` | Первое построение, промах кэша | `Success` |
 | 002 | `002-build_natal_cache_hit.puml` | Повтор с теми же данными | `Success`, движок не вызван |
 | 003 | `003-build_cosmogram_time_unknown.puml` | Пустое поле времени | `Success`, `chart_kind = cosmogram` |
@@ -20,8 +23,10 @@
 | 006 | `006-build_natal_superseded_cas.puml` | Два конкурентных построения в одной сессии | `Superseded` |
 | 007 | `007-build_natal_commit_failure_and_session_expired.puml` | Store недоступен при commit; истёк TTL сессии | `StateCommitFailed`, `SessionAbsent(reason = expired)` |
 
-Набор покрывает все члены `ApplicationResult`; `000` показывает сквозной
-путь, остальные диаграммы разбирают отдельные сценарии.
+Набор показывает все запроектированные ветви будущего `ApplicationResult`;
+этот union ещё не реализован. `000` показывает сквозной целевой путь,
+остальные диаграммы разбирают отдельные сценарии. Реализованный контракт
+handler заканчивается на `BuildNatalOutcome`.
 
 ## Что видно на всех диаграммах
 

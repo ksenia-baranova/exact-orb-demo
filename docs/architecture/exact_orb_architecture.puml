@@ -1,0 +1,339 @@
+@startuml
+title exact-orb — архитектура и состояние реализации
+scale max 3200 width
+
+top to bottom direction
+
+skinparam componentStyle rectangle
+skinparam packageStyle rectangle
+skinparam shadowing false
+skinparam linetype ortho
+skinparam DefaultFontSize 12
+skinparam ArrowFontSize 10
+skinparam nodesep 34
+skinparam ranksep 44
+
+skinparam package {
+  BackgroundColor #F8FAFC
+  BorderColor #94A3B8
+  FontColor #1E293B
+}
+skinparam component {
+  BorderColor #64748B
+  FontColor #0F172A
+}
+skinparam database {
+  BorderColor #15803D
+  FontColor #0F172A
+}
+skinparam note {
+  BackgroundColor #FFFBEB
+  BorderColor #D97706
+  FontColor #451A03
+}
+
+actor "Пользователь" as User
+
+
+package "1. ТОЧКИ ВХОДА" as Entry {
+  component "<b>CLI</b>\nТекущий standalone-вызов\nnatal / transit" as CLI #DCFCE7
+
+  component "<b>Frontend</b>\nФорма рождения, controls,\nотрисовка карты" as Frontend #E5E7EB
+
+  component "<b>HTTP API</b>\nTransport DTO, session cookie,\nJSON / SSE" as API #E5E7EB
+}
+
+
+package "2. APPLICATION COORDINATION" as Application {
+  component "<b>ApplicationOrchestrator</b>\nLoad context → route handler →\nfreshness check → commit → response" as AppOrch #FFEDD5
+
+  component "<b>BuildNatalHandler</b>\nResolve → choose natal/cosmogram →\nensure artifact → produce StateDelta" as BuildHandler #DCFCE7
+
+  component "<b>InterpretSelectionHandler</b>\nPreset topic + focus;\nSessionState read-only" as SelectionHandler #E5E7EB
+
+  component "<b>InterpretMessageHandler</b>\nFree-form request;\nSessionState read-only" as MessageHandler #E5E7EB
+}
+
+
+package "3. SESSION STATE" as Session {
+  component "<b>ContextService</b>\nTyped load / save / reset / dialog" as Context #DCFCE7
+
+  component "<b>Session contracts</b>\nSessionState + StateDelta\nCAS outcomes and typed errors" as SessionContracts #DCFCE7
+
+  component "<b>SessionPersistence</b>\nAggregate of SessionStore\nand DialogStore facets" as Persistence #DCFCE7
+
+  database "<b>In-memory adapter</b>\nState + dialog + TTL" as MemorySession #DCFCE7
+  database "<b>SQLite adapter</b>\nState + dialog + TTL" as SQLiteSession #DCFCE7
+
+  Context -[#2563EB]-> Persistence : typed operations
+  Context -[#94A3B8]-> SessionContracts : contracts
+  Persistence -[#2E7D32]-> MemorySession : adapter
+  Persistence -[#2E7D32]-> SQLiteSession : adapter
+}
+
+
+package "4. BIRTH DATA RESOLUTION" as Birth {
+  component "<b>BirthDataResolver</b>\nBirthInput → ResolvedBirthData\n/ InputRequired / unavailable" as BirthResolver #DCFCE7
+
+  component "<b>LocalPlaceCatalog</b>\nplace_id / text → canonical place,\ncoordinates and tz_id" as PlaceCatalog #DCFCE7
+
+  component "<b>Historical timezone resolver</b>\nlocal datetime + tz_id →\noffset and UTC datetime" as TimezoneResolver #DCFCE7
+
+  BirthResolver -[#2563EB]-> PlaceCatalog : resolve place
+  BirthResolver -[#2563EB]-> TimezoneResolver : resolve time
+}
+
+
+package "5. CHART ARTIFACTS" as Artifacts {
+  component "<b>ChartArtifactResolver</b>\nValidate → key → cache →\nsingle-flight → calculate on miss" as ArtifactResolver #DCFCE7
+
+  component "<b>Calculation key</b>\nCalculationInput + ChartSpec\n+ CalculationVersion" as KeyFactory #DCFCE7
+
+  component "<b>CalculationVersion provider</b>\nEngine + swisseph +\nephemeris-data fingerprint" as VersionProvider #DCFCE7
+
+  component "<b>Artifact codec</b>\nEncode / decode + validation" as Codec #DCFCE7
+
+  database "<b>CalculationCache</b>\nOpaque bytes; reproducible\nand safely disposable" as CalcCache #DCFCE7
+
+  component "<b>CalculationEnginePort</b>\nAsync typed calculation boundary" as EnginePort #DCFCE7
+
+  ArtifactResolver -[#2563EB]-> KeyFactory : build key
+  VersionProvider -[#D97706,dashed]-> ArtifactResolver : startup wiring
+  ArtifactResolver -[#2563EB]-> Codec : encode / decode
+  ArtifactResolver -[#2E7D32]-> CalcCache : get / put bytes
+  ArtifactResolver -[#2563EB]-> EnginePort : cache miss
+}
+
+
+package "6. DETERMINISTIC ENGINE" as Calculation {
+  component "<b>EngineService</b>\nAsync boundary + typed errors" as EngineService #DCFCE7
+
+  component "<b>NatalTechniqueAdapter</b>\nNatalChartSpec → calculate_natal()" as NatalAdapter #DCFCE7
+
+  component "<b>engine/charts</b>\nNatal, cosmogram and transit" as Charts #DCFCE7
+
+  component "<b>engine/ephemeris</b>\nBodies, houses, angles,\nUTC → Julian Day" as Ephemeris #DCFCE7
+
+  component "<b>Domain calculations</b>\nAspects, configurations,\nstrength and derived points" as DomainCalculations #DCFCE7
+
+  component "<b>swiss_backend</b>\nЕдинственная точка импорта\nswisseph" as SwissBackend #DCFCE7
+
+  component "<b>Swiss Ephemeris</b>" as Swiss #F1F5F9
+
+  EnginePort -[#94A3B8]-> EngineService : local implementation
+  EngineService -[#2563EB]-> NatalAdapter : technique=natal
+  NatalAdapter -[#2563EB]-> Charts
+  Charts -[#2563EB]-> Ephemeris
+  Charts -[#2563EB]-> DomainCalculations
+  Ephemeris -[#EF6C00]-> SwissBackend
+  SwissBackend -[#EF6C00]-> Swiss
+}
+
+
+package "7. REQUEST UNDERSTANDING" as Understanding {
+  component "<b>ActionContractBuilder</b>\ntopic + focus + active view\n→ ContractDraft" as ActionBuilder #E5E7EB
+
+  component "<b>InputGuard</b>\nNormalization, size limits,\ncontrol characters and risk signals" as InputGuard #E5E7EB
+
+  component "<b>IntentService</b>\nFree text → contract fields\n+ separate InterpretationQuery" as Intent #E5E7EB
+
+  component "<b>ContractValidator</b>\nTyped fields → ResolvedContract\n/ InputRequired" as ContractValidator #E5E7EB
+
+  component "<b>Capability / Policy / Admission</b>\nPermissions, allowed operation,\nquota and budget" as Policy #E5E7EB
+}
+
+
+package "8. AGENT RUNTIME" as Agent {
+  component "<b>Agent Runtime</b>\nИсполнение конечного\ninterpretation-сценария" as AgentRuntime #FEF3C7
+
+  component "<b>Planner</b>\nResolvedContract\n→ InterpretationPlan" as Planner #FEF3C7
+
+  component "<b>ScenarioRegistry</b>\nImmutable required fields,\ntools[] and topics[]" as ScenarioRegistry #FEF3C7
+
+  component "<b>ToolExecutor + ToolRegistry</b>\nDeterministic ordered execution" as ToolRuntime #FEF3C7
+
+  component "<b>NatalTool</b>\nAgent-facing adapter" as NatalTool #FEF3C7
+
+  AgentRuntime -[#7E57C2,dashed]-> Planner
+  Planner -[#7E57C2,dashed]-> AgentRuntime : InterpretationPlan
+  Planner -[#7E57C2,dashed]-> ScenarioRegistry : lookup
+  AgentRuntime -[#7E57C2,dashed]-> Policy : plan + capabilities
+  Policy -[#7E57C2,dashed]-> AgentRuntime : AuthorizedPlan / denied
+  AgentRuntime -[#7E57C2,dashed]-> ToolRuntime : AuthorizedPlan
+  ToolRuntime -[#7E57C2,dashed]-> NatalTool
+  ToolRuntime -[#7E57C2,dashed]-> AgentRuntime : ToolResults
+}
+
+
+package "9. INTERPRETATION" as Interpretation {
+  component "<b>InterpretationService</b>\nOwns evidence → prompt → cache →\nbudget → LLM → output pipeline" as InterpretationService #E5E7EB
+
+  component "<b>DataSelector</b>\nPlan + ToolResults → Evidence" as Selector #FEF3C7
+
+  component "<b>PromptBuilder + PromptRegistry</b>\nEvidence + recipe + optional\nAuthorizedInterpretationQuery" as PromptBuilder #FEF3C7
+
+  database "<b>Interpretation cache</b>\nPreset shared; free-form\nsession-scoped" as InterpretationCache #E5E7EB
+
+  component "<b>LLM Gateway</b>\nTransport, streaming, timeout\nand token limit" as Gateway #DCFCE7
+
+  component "<b>OutputGuard</b>\nValidate untrusted output" as OutputGuard #E5E7EB
+
+  component "<b>LLM Provider</b>" as LLM #F1F5F9
+
+  InterpretationService -[#7E57C2,dashed]-> Selector
+  InterpretationService -[#7E57C2,dashed]-> PromptBuilder
+  InterpretationService -[#2E7D32,dashed]-> InterpretationCache : get / put
+  InterpretationService -[#7E57C2,dashed]-> Policy : reserve / commit budget\n[cache miss]
+  InterpretationService -[#7E57C2,dashed]-> Gateway : on cache miss
+  Gateway -[#EF6C00]-> LLM
+  Gateway -[#7E57C2,dashed]-> OutputGuard : generated stream
+  OutputGuard -[#7E57C2,dashed]-> InterpretationService : safe stream
+}
+
+
+package "10. RESEARCH CORPUS" as Research {
+  component "<b>Whitelist projection</b>\nChartArtifact → anonymous\ncanonical ChartFeatures" as ResearchProjection #DCFCE7
+
+  component "<b>ResearchCorpus</b>\nAppend-only write port" as ResearchCorpus #DCFCE7
+
+  database "<b>In-memory corpus</b>" as ResearchMemory #DCFCE7
+
+  component "<b>Application producer wiring</b>\nWrite policy and lifecycle" as ResearchWiring #E5E7EB
+
+  ResearchWiring -[#7E57C2,dashed]-> ResearchProjection : ChartArtifact
+  ResearchProjection -[#2563EB]-> ResearchCorpus : sanitized record
+  ResearchCorpus -[#2E7D32]-> ResearchMemory : adapter
+}
+
+
+component "<b>Observability</b>\nStructured logs are present;\nmetrics and tracing are planned" as Observability #FEF3C7
+
+
+' Current entry points
+User -[#2563EB]-> CLI
+User -[#7E57C2,dashed]-> Frontend
+Frontend -[#7E57C2,dashed]-> API
+API -[#D97706,dashed]-> AppOrch : typed command + session_id
+
+' Current standalone CLI path remains separate from future application wiring
+CLI -[#2563EB]-> Charts : current standalone flow
+
+' Application lifecycle
+AppOrch -[#D97706,dashed]-> Context : load / commit StateDelta
+AppOrch -[#D97706,dashed]-> BuildHandler : BuildNatalCommand
+BuildHandler -[#00838F,dashed]-> AppOrch : BuildNatalOutcome\n{ artifact, delta }
+
+AppOrch -[#7E57C2,dashed]-> SelectionHandler : SelectionCommand
+AppOrch -[#7E57C2,dashed]-> MessageHandler : MessageCommand [future]
+
+' Build natal path: implemented components, application wiring is the next step
+BuildHandler -[#2563EB]-> BirthResolver : BirthInput
+BirthResolver -[#00838F]-> BuildHandler : ResolvedBirthData\n/ typed outcome
+BuildHandler -[#2563EB]-> ArtifactResolver : NatalChartSpec\n+ ResolvedBirthData
+ArtifactResolver -[#00838F]-> BuildHandler : ChartArtifact
+BuildHandler -[#2563EB]-> SessionContracts : create StateDelta
+
+' Preset and future free-form paths
+SelectionHandler -[#7E57C2,dashed]-> ActionBuilder
+ActionBuilder -[#7E57C2,dashed]-> SelectionHandler : ContractDraft
+SelectionHandler -[#7E57C2,dashed]-> ContractValidator : ContractDraft
+ContractValidator -[#7E57C2,dashed]-> SelectionHandler : ResolvedContract
+SelectionHandler -[#7E57C2,dashed]-> AgentRuntime
+
+MessageHandler -[#7E57C2,dashed]-> InputGuard : raw text [future]
+InputGuard -[#7E57C2,dashed]-> MessageHandler : GuardResult
+MessageHandler -[#7E57C2,dashed]-> Intent : normalized text + context
+Intent -[#7E57C2,dashed]-> MessageHandler : UnderstandingResult
+MessageHandler -[#7E57C2,dashed]-> ContractValidator : contract_fields
+ContractValidator -[#7E57C2,dashed]-> MessageHandler : ResolvedContract
+MessageHandler -[#7E57C2,dashed]-> Policy : GuardVerdict +\nInterpretationQuery
+Policy -[#7E57C2,dashed]-> MessageHandler : AuthorizedInterpretationQuery\n/ denied
+MessageHandler -[#7E57C2,dashed]-> AgentRuntime
+
+NatalTool -[#7E57C2,dashed]-> ArtifactResolver : shared deterministic path
+AgentRuntime -[#7E57C2,dashed]-> InterpretationService : plan + ToolResults\n+ optional authorized query
+InterpretationService -[#7E57C2,dashed]-> AgentRuntime : safe response
+
+' Cross-cutting observability
+AppOrch -[#64748B,dashed]-> Observability
+BuildHandler -[#64748B,dashed]-> Observability
+ArtifactResolver -[#64748B,dashed]-> Observability
+EngineService -[#64748B,dashed]-> Observability
+Gateway -[#64748B,dashed]-> Observability
+
+
+note right of BuildHandler
+<b>Ответственность handler</b>
+
+Handler возвращает StateDelta,
+но не применяет её.
+
+Окончательный success возможен
+только после commit в
+ApplicationOrchestrator.
+end note
+
+
+note right of ArtifactResolver
+CalculationCache хранит только
+opaque bytes.
+
+Кодирование и проверка payload
+принадлежат artifact layer.
+
+Cache hit и miss не меняют
+контракт вызывающего компонента.
+end note
+
+
+note right of AgentRuntime
+Это не ApplicationOrchestrator.
+
+Agent Runtime вызывается только
+из interpretation handlers,
+не управляет session lifecycle
+и не выбирает application handler.
+end note
+
+
+note right of Intent
+Raw text не входит в
+ResolvedContract и не попадает
+в planning / tools / calculation.
+
+После policy он может попасть
+только в interpretation pipeline
+как AuthorizedInterpretationQuery.
+end note
+
+
+note right of ResearchWiring
+Модели, whitelist projection
+и in-memory adapter реализованы.
+
+Application write policy,
+persistent adapter и producer
+wiring ещё не определены.
+end note
+
+
+legend bottom
+<b>СТАТУС КОМПОНЕНТА</b>
+|<#DCFCE7>| Реализован |
+|<#FEF3C7>| Частично реализован / каркас |
+|<#FFEDD5>| Ближайший этап wiring |
+|<#E5E7EB>| Запланирован или post-MVP |
+|<#F1F5F9>| Внешняя система |
+
+<b>ТИП СВЯЗИ</b>
+|<color:#2563EB><b>━━━━▶</b></color>| Реализованный вызов / data flow |
+|<color:#00838F><b>━━━━▶</b></color>| Реализованный typed result |
+|<color:#2E7D32><b>━━━━▶</b></color>| State / cache persistence |
+|<color:#D97706><b>┄┄┄┄▶</b></color>| Ближайший application wiring |
+|<color:#7E57C2><b>┄┄┄┄▶</b></color>| Целевой / post-MVP flow |
+|<color:#EF6C00><b>━━━━▶</b></color>| External provider call |
+|<color:#64748B><b>┄┄┄┄▶</b></color>| Observability |
+|<color:#94A3B8><b>━━━━▶</b></color>| Структурная зависимость / binding |
+endlegend
+
+@enduml

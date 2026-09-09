@@ -92,8 +92,9 @@ alt place_id неизвестен каталогу
     он мог устареть после обновления
     каталога или быть подделан.
 
-    Кандидатов здесь нет: форма выбирающая,
-    AMBIGUOUS порождает эндпоинт подсказок.
+    Для места кандидатов здесь нет: форма
+    выбирающая, AMBIGUOUS порождает
+    эндпоинт подсказок.
     end note
 
 else локальное время не существует или удвоено
@@ -104,13 +105,18 @@ else локальное время не существует или удвоен
     Resolver -> TZ : resolve_historical_tz(\nbirth_date, birth_time, tz_id)
     TZ --> Resolver : TzNonexistent | TzAmbiguous
 
-    Resolver --> Handler : InputRequired {\n issues: [{ field: "birth.time",\n code: INVALID }] }
+    alt TzNonexistent
+        Resolver --> Handler : InputRequired {\n issues: [{ field: "birth.time",\n code: INVALID }] }
+    else TzAmbiguous
+        Resolver --> Handler : InputRequired {\n issues: [{ field: "birth.time",\n code: AMBIGUOUS,\n candidates: [14400, 10800] }] }
+    end
 
     note right of TZ
-    Несуществующее и удвоенное локальное
-    время не исправляется молча (ADR-0005)
-    и не поднимает исключение: это три
-    явных исхода функции.
+    Несуществующее локальное время даёт
+    INVALID, удвоенное — AMBIGUOUS с двумя
+    кандидатами UTC-offset (ADR-0005).
+    Оба исхода типизированы и не поднимают
+    исключение.
     end note
 
 end
