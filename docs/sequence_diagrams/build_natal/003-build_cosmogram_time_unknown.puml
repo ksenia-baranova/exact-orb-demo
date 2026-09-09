@@ -103,13 +103,14 @@ note over Resolver, TZ
 end note
 
 
-Handler -> Handler : chart_kind = "cosmogram"\ninclude = {positions,\naspects, configurations}
+Handler -> Handler : chart_kind = "cosmogram"\nspec = NatalChartSpec(chart_kind=chart_kind)
 
 note right of Handler
+Канонический include устанавливает модель:
 houses, rulers и strength исключены.
-strength в коде требует houses, поэтому
-движок отвергнет несогласованный
-include (_validate_chart_kind_include).
+Движок дополнительно отвергнет
+несогласованный include
+(_validate_chart_kind_include).
 
 Вопрос о времени пользователю
 не задаётся: пустое поле — явное
@@ -117,13 +118,13 @@ time_unknown, а не пробел,
 требующий уточнения.
 end note
 
-Handler -> Artifacts : ensure_chart(spec, resolved, run)
+Handler -> Artifacts : ensure_chart(spec, resolved, run=run)
 activate Artifacts
 
 Artifacts -> Cache : get(key)
 Cache --> Artifacts : None — промах
 
-Artifacts -> Engine : calculate(spec, resolved, run)
+Artifacts -> Engine : calculate(spec, resolved, run=run)
 Engine -> Swiss : calculate_natal(\nchart_kind = "cosmogram", ...)
 
 Swiss -> Swiss : проверка суточной\nнеоднозначности

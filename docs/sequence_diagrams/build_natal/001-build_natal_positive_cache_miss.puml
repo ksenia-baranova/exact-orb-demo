@@ -73,7 +73,7 @@ end box
 
 User -> FE : дата, время, город\n(город выбран из подсказок)
 FE -> API : POST /charts/natal\nBirthInput(birth_date, birth_time, place_id)
-API -> Orch : BuildNatalCommand(session_id, birth_input)\n+ RunContext(run_id)
+API -> Orch : BuildNatalCommand(birth_input)\n+ session_id + RunContext(run_id)
 
 note over API, Orch
 run_id создаётся транспортом до оркестратора:
@@ -86,8 +86,9 @@ correlation scope по ADR-0006 начинается
 
 Build API принимает только place_id.
 Свободный текст места не принимается
-(ADR-0005), поэтому AMBIGUOUS
-на этом пути не возникает.
+(ADR-0005), поэтому AMBIGUOUS не
+возникает при разрешении места. Для
+удвоенного времени этот исход допустим.
 end note
 
 
@@ -154,7 +155,7 @@ end note
 
 == Построение спецификации ==
 
-Handler -> Handler : chart_kind = "natal"\ninclude = DEFAULT_INCLUDE\nChartSpec(...)
+Handler -> Handler : chart_kind = "natal"\nspec = NatalChartSpec(chart_kind=chart_kind)
 
 note right of Handler
 Единственное предметное решение
@@ -162,12 +163,15 @@ note right of Handler
 
   дата + место + время → natal
   дата + место         → cosmogram
+
+Канонический include устанавливает
+модель NatalChartSpec.
 end note
 
 
 == Получение артефакта ==
 
-Handler -> Artifacts : ensure_chart(spec, resolved, run)
+Handler -> Artifacts : ensure_chart(spec, resolved, run=run)
 activate Artifacts
 
 Artifacts -> Keys : calculation_key(\ncalculation_input_from(resolved),\nspec, calculation_version)
@@ -194,7 +198,7 @@ end note
 Artifacts -> Cache : get(key)
 Cache --> Artifacts : None — промах
 
-Artifacts -> Engine : calculate(spec, resolved, run)
+Artifacts -> Engine : calculate(spec, resolved, run=run)
 activate Engine
 
 Engine -> Engine : run_in_executor(executor, ...)

@@ -73,8 +73,8 @@ Context --> Orch : SessionSnapshot
 Orch -> Handler : handle(command, snapshot.state, run)
 activate Handler
 
-Handler -> Artifacts : ensure_chart(spec, resolved, run)
-Artifacts -> Engine : calculate(spec, resolved, run)
+Handler -> Artifacts : ensure_chart(spec, resolved, run=run)
+Artifacts -> Engine : calculate(spec, resolved, run=run)
 Engine --> Artifacts : CalculationResult
 Artifacts -> Artifacts : ChartArtifact(key, version, result)
 Artifacts -> Cache : put(key, bytes)
