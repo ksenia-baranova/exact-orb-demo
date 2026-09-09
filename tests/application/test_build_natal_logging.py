@@ -108,7 +108,6 @@ def _handler_for_typed_outcome(
     raise ValueError(f"unknown scenario: {scenario}")
 
 
-@pytest.mark.asyncio
 @pytest.mark.parametrize(
     (
         "scenario",
@@ -170,7 +169,6 @@ async def test_completed_event_fields_and_levels_for_typed_outcomes(
         assert f"error_code={expected_error_code}" in message
 
 
-@pytest.mark.asyncio
 async def test_engine_unexpected_is_error_with_isolated_warning_control(
     caplog: pytest.LogCaptureFixture,
 ) -> None:
@@ -215,7 +213,6 @@ async def test_engine_unexpected_is_error_with_isolated_warning_control(
     assert "error_code=HOUSES_DEGENERATE" in warning_record.getMessage()
 
 
-@pytest.mark.asyncio
 @pytest.mark.parametrize(
     ("scenario", "terminal_event"),
     [
@@ -280,7 +277,6 @@ async def test_started_is_debug_and_precedes_exactly_one_terminal_event(
     assert all(f"run_id={run.run_id}" in record.getMessage() for record in records)
 
 
-@pytest.mark.asyncio
 async def test_handler_logs_omit_birth_resolution_and_artifact_values(
     caplog: pytest.LogCaptureFixture,
 ) -> None:
@@ -333,7 +329,6 @@ async def test_handler_logs_omit_birth_resolution_and_artifact_values(
         assert sensitive not in logs
 
 
-@pytest.mark.asyncio
 async def test_failed_event_omits_exception_message_and_traceback(
     caplog: pytest.LogCaptureFixture,
 ) -> None:
@@ -362,7 +357,6 @@ async def test_failed_event_omits_exception_message_and_traceback(
     assert failed.exc_text is None
 
 
-@pytest.mark.asyncio
 async def test_input_required_event_omits_issue_details_with_positive_control(
     caplog: pytest.LogCaptureFixture,
 ) -> None:
@@ -389,7 +383,6 @@ async def test_input_required_event_omits_issue_details_with_positive_control(
     assert "INVALID" not in message
 
 
-@pytest.mark.asyncio
 @pytest.mark.parametrize(
     ("failure_source", "expected_stage"),
     [("resolver", "resolve"), ("artifacts", "ensure_chart")],
@@ -429,7 +422,6 @@ async def test_unexpected_exception_logs_failed_stage_and_propagates(
     assert _event_records(caplog, "build_natal_completed") == []
 
 
-@pytest.mark.asyncio
 async def test_inconsistent_artifact_logs_build_result_stage(
     caplog: pytest.LogCaptureFixture,
 ) -> None:
@@ -461,7 +453,6 @@ async def test_inconsistent_artifact_logs_build_result_stage(
     assert foreign_artifact.spec == foreign_spec
 
 
-@pytest.mark.asyncio
 @pytest.mark.parametrize(
     ("cancel_source", "expected_stage"),
     [("resolver", "resolve"), ("artifacts", "ensure_chart")],

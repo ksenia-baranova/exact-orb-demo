@@ -105,7 +105,6 @@ def _event_records(
     ]
 
 
-@pytest.mark.asyncio
 async def test_real_natal_path_caches_and_correlates_run_id(
     caplog: pytest.LogCaptureFixture,
 ) -> None:
@@ -173,7 +172,6 @@ async def test_real_natal_path_caches_and_correlates_run_id(
         )
 
 
-@pytest.mark.asyncio
 async def test_real_unknown_time_path_builds_cosmogram() -> None:
     command = _command(birth_time=None)
 
@@ -203,7 +201,6 @@ async def test_real_unknown_time_path_builds_cosmogram() -> None:
         assert stand.artifacts.put_ok == 1
 
 
-@pytest.mark.asyncio
 async def test_real_polar_calculation_fails_and_is_not_cached(
     caplog: pytest.LogCaptureFixture,
 ) -> None:
@@ -253,7 +250,6 @@ async def test_real_polar_calculation_fails_and_is_not_cached(
     ) == 2
 
 
-@pytest.mark.asyncio
 @pytest.mark.no_ephemeris_autoinit
 async def test_real_unconfigured_ephemeris_becomes_calculation_unavailable(
     caplog: pytest.LogCaptureFixture,
