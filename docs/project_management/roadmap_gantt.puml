@@ -1,0 +1,204 @@
+@startgantt
+' =============================================================================
+' exact-orb — диаграмма Ганта
+' Источник плана: docs/requirements/roadmap.md (актуализация 2026-09-06)
+' Статус кода сверен с рабочим деревом и .git/logs/HEAD на 2026-09-07.
+'
+' Факт (14.08–07.09) проставлен по датам коммитов и каталогам prompts/.
+' Прогноз (с 08.09) — оценки блоков A3, C, D, G', F', P из §2.5 и §5 roadmap.
+' Календарь непрерывный: темп §1.1 — 8 активных дней из 9, выходные не закрыты.
+' Оценки 0.5 дня округлены вверх до 1 дня — PlantUML не умеет доли дня.
+' =============================================================================
+
+title exact-orb — дорожная карта, факт на 07.09.2026 и публикационный срез
+
+printscale daily zoom 1
+project starts 2026-08-14
+
+Project starts 2026-08-14
+
+' --- палитра -----------------------------------------------------------------
+' зелёный  — сделано
+' оранжевый — в работе / в ревью
+' синий    — публикационный срез (§2.5)
+' серый    — вне первого среза (§2.2), после публикации
+
+-- Фундамент: движок и инфраструктура (сделано) --
+
+[engine: эфемериды, натал, транзит] as [ENG] starts 2026-08-14 and ends 2026-08-16
+[ENG] is 100% complete
+[ENG] is colored in LightGreen
+
+[engine: аспекты, конфигурации, сила] as [ENG2] starts 2026-08-16 and ends 2026-08-17
+[ENG2] is 100% complete
+[ENG2] is colored in LightGreen
+
+[cli.py, config, logging_setup] as [INFRA] starts 2026-08-15 and ends 2026-08-18
+[INFRA] is 100% complete
+[INFRA] is colored in LightGreen
+
+[llm/gateway.py (транспорт)] as [LLM] starts 2026-08-17 and ends 2026-08-19
+[LLM] is 100% complete
+[LLM] is colored in LightGreen
+
+[Скелеты tools/ intent/ interpretation/ orchestration/] as [SKEL] starts 2026-08-19 and ends 2026-08-22
+[SKEL] is 100% complete
+[SKEL] is colored in LightGreen
+
+[git init, ADR-0001…0016, декомпозиция] as [DOCS1] starts 2026-08-22 and ends 2026-08-25
+[DOCS1] is 100% complete
+[DOCS1] is colored in LightGreen
+
+-- Э1–Э3: расчёт, резолв, сессия (сделано) --
+
+[Э-фикс: заморозка Swiss Ephemeris runtime] as [EPH] starts 2026-08-26 and ends 2026-08-26
+[EPH] is 100% complete
+[EPH] is colored in LightGreen
+
+[Э2 feat/build-natal-application-path — birth resolution] as [E2] starts 2026-08-26 and ends 2026-08-28
+[E2] is 100% complete
+[E2] is colored in LightGreen
+
+[Э1 feat/build-chart-artifact-path — key, cache, codec, engine, artifacts] as [E1ART] starts 2026-08-29 and ends 2026-08-31
+[E1ART] is 100% complete
+[E1ART] is colored in LightGreen
+
+[fix: single-flight, валидации, transit root search] as [FIX1] starts 2026-09-01 and ends 2026-09-02
+[FIX1] is 100% complete
+[FIX1] is colored in LightGreen
+
+[chore: AGPL-3.0 (ADR-0022), эфемериды в репозиторий] as [LIC] starts 2026-09-03 and ends 2026-09-03
+[LIC] is 100% complete
+[LIC] is colored in LightGreen
+
+[Блок B / Э3 feat/session-context — контракты, ContextService, in-memory] as [B1] starts 2026-09-04 and ends 2026-09-05
+[B1] is 100% complete
+[B1] is colored in LightGreen
+
+[Блок B / P4–P4.1 — SQLite adapter, CAS, conformance, bench] as [B2] starts 2026-09-05 and ends 2026-09-06
+[B2] is 100% complete
+[B2] is colored in LightGreen
+
+[P5a research corpus — контракты, проекция, in-memory] as [P5A] starts 2026-09-06 and ends 2026-09-06
+[P5A] is 100% complete
+[P5A] is colored in LightGreen
+
+[docs/align-current-adrs] as [DOCS2] starts 2026-09-06 and ends 2026-09-06
+[DOCS2] is 100% complete
+[DOCS2] is colored in LightGreen
+
+-- Блок A′: расчётный фундамент, закрыть Э1 --
+
+[A1a docs/adr-chart-spec-completeness — ГРН-7: заморозка] as [A1A] starts 2026-09-06 and ends 2026-09-07
+[A1A] is 100% complete
+[A1A] is colored in LightGreen
+
+[chore/normalize-line-endings] as [EOL] starts 2026-09-07 and ends 2026-09-07
+[EOL] is 100% complete
+[EOL] is colored in LightGreen
+
+[A2 feat/calculation-version — отпечаток, B-7, Т-ГРН-7] as [A2] starts 2026-09-07 and ends 2026-09-07
+[A2] is 100% complete
+[A2] is colored in LightGreen
+
+[A3 refactor/engine-debt — calculate_transit, exact_window, BodyPosition.chart] as [A3] starts 2026-09-08 and lasts 1 day
+[A3] is 100% complete
+[A3] is colored in LightGreen
+[A3] links to [[https://github.com/unemployedITshnik/exect-orb-demo]]
+
+
+-- Блок C: первый сквозной путь (4 дн.) --
+
+[C1 feat/build-natal-handler — commands, results, handlers] as [C1] starts at [A3]'s end and lasts 1 days
+[C1] is colored in LightGreen
+[СЕГОДНЯ 09.09.2026] as [NOW] happens 2026-09-09
+
+[NOW] is colored in Red
+[C2 feat/application-orchestrator — типизированные исходы, B-2, B-3] as [C2] starts at [C1]'s end and lasts 1 day
+[C2] is colored in LightBlue
+
+[C3 chore/bootstrap-composition — реестры на старте (И-9)] as [C3] starts at [C2]'s end and lasts 1 day
+[C3] is colored in LightBlue
+
+[C4 refactor/agent-package-and-tool-path — Э5, B-5, B-8 (широкая)] as [C4] starts at [C3]'s end and lasts 1 day
+[C4] is colored in Gold
+
+-- Блок D: CLI round-trip и приёмка (2 дн. в срезе) --
+
+[D1 feat/cli-application-mode] as [D1] starts at [C4]'s end and lasts 1 day
+[D1] is colored in LightBlue
+
+[D2 test/scenario-acceptance — негативные сценарии + контрольный кейс] as [D2] starts at [D1]'s end and lasts 1 day
+[D2] is colored in LightBlue
+
+[КОНТРОЛЬНАЯ ТОЧКА: детерминированный путь работает end-to-end] as [CP] happens at [D2]'s end
+[CP] is colored in Red
+
+-- Блок G′: каркас preset-интерпретации (6 дн. в срезе) --
+
+[G1 feat/interpretation-contracts — Evidence, PromptBundle, StreamEvent] as [G1] starts at [D2]'s end and lasts 1 day
+[G1] is colored in LightBlue
+
+[G2 feat/action-contract-builder — topic + focus → ContractDraft] as [G2] starts at [G1]'s end and lasts 1 day
+[G2] is colored in LightBlue
+
+[G3 feat/agent-runtime — ScenarioRegistry ≥2, async Tool port (широкая)] as [G3] starts at [G2]'s end and lasts 2 days
+[G3] is colored in Gold
+
+[G4 feat/data-selector — Evidence, фокусы, перенос warnings (И-7)] as [G4] starts at [G3]'s end and lasts 1 day
+[G4] is colored in LightBlue
+
+[G5 feat/prompt-registry — композиционные рецепты, версия = хэш] as [G5] starts at [G4]'s end and lasts 1 day
+[G5] is colored in LightBlue
+
+[G6 feat/interpretation-service — complete_stream, OutputGuard] as [G6] starts at [G5]'s end and lasts 2 days
+[G6] is colored in LightBlue
+
+[H′ два рецепта topic × focus — доказательство И-3] as [H2] starts at [G6]'s end and lasts 1 day
+[H2] is colored in LightBlue
+
+-- Блок F′: локальный стенд без деплоя (4 дн.) --
+
+[F1 feat/http-api-and-session-middleware — FastAPI, cookie → session_id] as [F1] starts at [H2]'s end and lasts 2 days
+[F1] is colored in LightBlue
+
+[F1b одностраничный клиент: две кнопки + показ PromptBundle] as [F1B] starts at [F1]'s end and lasts 2 days
+[F1B] is colored in LightBlue
+
+-- Блок P: публикационная упаковка (2 дн.) --
+
+[P1 docs/spec-driven-development.md — метод с цифрами] as [P1] starts at [F1B]'s end and lasts 1 day
+[P1] is colored in LightBlue
+
+[P2 английский README, GIF работающих кнопок] as [P2] starts at [P1]'s end and lasts 1 day
+[P2] is colored in LightBlue
+
+[ПУБЛИКАЦИЯ портфолио] as [PUB] happens at [P2]'s end
+[PUB] is colored in Red
+
+-- Вне первого среза (§2.2), после публикации --
+
+[Блок E chore/bench-concurrency — p50/p95/p99, Э6] as [BENCH] starts at [PUB]'s end and lasts 1 day
+[BENCH] is colored in Silver
+
+[Блок F: deploy-environment, deploy-server, access-control] as [FDEP] starts at [BENCH]'s end and lasts 4 days
+[FDEP] is colored in Silver
+
+[G7 admission-and-policy + G8 selection-api-sse] as [G78] starts at [FDEP]'s end and lasts 3 days
+[G78] is colored in Silver
+
+[Блок I: маскирование логов, лимиты, наблюдаемость] as [I] starts at [G78]'s end and lasts 4 days
+[I] is colored in Silver
+
+[Блок H: содержание интерпретации, 8 наложений topic × focus (15–25 дн.)] as [H] starts at [I]'s end and lasts 20 days
+[H] is colored in Silver
+
+[Блок J: клиент — Birth Form, Chart Renderer (не оценён)] as [J] starts at [H]'s end and lasts 5 days
+[J] is colored in Silver
+
+[ПУБЛИЧНЫЙ DEMO С СОДЕРЖАНИЕМ] as [DEMO] happens at [H]'s end
+[DEMO] is colored in Red
+
+caption Публикационный срез — 22 дня по §2.5 roadmap.md (округления долей дня дают 24 календарных). Полный объём — 48.5–58.5 рабочих дней. Исполнитель один, параллельного исполнения нет.
+
+@endgantt
