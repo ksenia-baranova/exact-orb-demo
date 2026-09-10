@@ -308,9 +308,9 @@ class ChartArtifactResolver:
                 calculation_key=key,
                 calculation_version=self.version,
                 spec=spec,
-                chart_kind=result.chart_kind,
+                chart_kind=result.chart.chart_kind,
                 chart=result.chart,
-                warnings=result.warnings,
+                warnings=result.chart.warnings,
             )
         except ValidationError:
             raise ChartCalculationError("ENGINE_UNEXPECTED", run_id=run_id) from None

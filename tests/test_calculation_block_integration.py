@@ -18,6 +18,8 @@ from exact_orb.calculation.errors import (
     CalculationUnavailableError,
     ChartCalculationError,
 )
+from exact_orb.calculation.spec import NatalChartSpec
+from exact_orb.engine.charts.natal import NatalChart
 from exact_orb.errors import EphemerisNotInitializedError
 from exact_orb.engine.ephemeris.types import CalculationWarning
 from tests.fixtures.calculation import (
@@ -39,7 +41,7 @@ pytestmark = pytest.mark.no_ephemeris_autoinit
 
 
 async def test_calculation_block_miss_stores_bytes_and_second_call_hits() -> None:
-    spec = chart_spec()
+    spec = _spec()
     resolved = resolved_birth_data()
     cache = InMemoryCalculationCache(max_entries=10, ttl_seconds=None)
     calculator = FakeCalculator()
@@ -58,7 +60,7 @@ async def test_calculation_block_miss_stores_bytes_and_second_call_hits() -> Non
 
 
 async def test_calculation_block_prepared_hit_skips_fake_calculator() -> None:
-    spec = chart_spec()
+    spec = _spec()
     resolved = resolved_birth_data()
     prepared = fixture_artifact(spec=spec, resolved=resolved)
     cache = InMemoryCalculationCache(max_entries=10, ttl_seconds=None)
@@ -75,7 +77,7 @@ async def test_calculation_block_prepared_hit_skips_fake_calculator() -> None:
 async def test_calculation_block_stale_payload_recalculates_and_replaces_bytes(
     caplog: pytest.LogCaptureFixture,
 ) -> None:
-    spec = chart_spec()
+    spec = _spec()
     resolved = resolved_birth_data()
     current_key = calculation_key_for(spec, resolved)
     stale = fixture_artifact(spec=spec, resolved=resolved, version=OTHER_VERSION)
@@ -99,7 +101,7 @@ async def test_calculation_block_stale_payload_recalculates_and_replaces_bytes(
 async def test_calculation_block_corrupt_payload_recalculates_and_replaces_bytes(
     caplog: pytest.LogCaptureFixture,
 ) -> None:
-    spec = chart_spec()
+    spec = _spec()
     resolved = resolved_birth_data()
     current_key = calculation_key_for(spec, resolved)
     cache = InMemoryCalculationCache(max_entries=10, ttl_seconds=None)
@@ -119,13 +121,13 @@ async def test_calculation_block_corrupt_payload_recalculates_and_replaces_bytes
 
 
 async def test_calculation_block_generic_value_error_is_not_cached_and_retries() -> None:
-    spec = chart_spec()
+    spec = _spec()
     resolved = resolved_birth_data()
     cache = InMemoryCalculationCache(max_entries=10, ttl_seconds=None)
     calculator = FakeCalculator(
         outcomes=[
             ValueError("generic fake calculator failure"),
-            raw_chart(),
+            _calculated_chart(),
         ]
     )
 
@@ -144,7 +146,7 @@ async def test_calculation_block_generic_value_error_is_not_cached_and_retries()
 
 
 async def test_calculation_block_ephemeris_unavailable_is_not_cached() -> None:
-    spec = chart_spec()
+    spec = _spec()
     resolved = resolved_birth_data()
     cache = InMemoryCalculationCache(max_entries=10, ttl_seconds=None)
     calculator = FakeCalculator(outcomes=[EphemerisNotInitializedError("missing runtime")])
@@ -161,7 +163,7 @@ async def test_calculation_block_ephemeris_unavailable_is_not_cached() -> None:
 async def test_calculation_block_logs_share_run_id_across_resolver_and_engine(
     caplog: pytest.LogCaptureFixture,
 ) -> None:
-    spec = chart_spec()
+    spec = _spec()
     resolved = resolved_birth_data()
     caplog.set_level(logging.DEBUG, logger="exact_orb.calculation")
 
@@ -183,7 +185,7 @@ async def test_calculation_block_logs_share_run_id_across_resolver_and_engine(
 async def test_calculation_boundary_summaries_and_events_share_full_key(
     caplog: pytest.LogCaptureFixture,
 ) -> None:
-    spec = chart_spec()
+    spec = _spec()
     resolved = resolved_birth_data()
     key = calculation_key_for(spec, resolved)
     short_key = key.removeprefix("eo:calc:v1:")[:12]
@@ -251,6 +253,14 @@ def _logs(caplog: pytest.LogCaptureFixture) -> str:
     )
 
 
+def _spec() -> NatalChartSpec:
+    return chart_spec().model_copy(update={"include": ("houses", "positions")})
+
+
+def _calculated_chart(**kwargs: Any) -> NatalChart:
+    return raw_chart(**kwargs).model_copy(update={"cusps": (), "angles": {}})
+
+
 class FakeCalculator:
     def __init__(
         self,
@@ -271,7 +281,7 @@ class FakeCalculator:
             if isinstance(outcome, Exception):
                 raise outcome
             return outcome
-        return raw_chart(
+        return _calculated_chart(
             chart_kind=kwargs["chart_kind"],
             latitude=args[1],
             longitude=args[2],

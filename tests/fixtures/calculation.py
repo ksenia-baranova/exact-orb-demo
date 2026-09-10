@@ -64,7 +64,7 @@ def calculation_result(
     warnings: tuple[CalculationWarning, ...] = (),
 ) -> CalculationResult:
     chart = raw_chart(chart_kind=chart_kind, warnings=warnings)
-    return CalculationResult(chart_kind=chart_kind, chart=chart, warnings=chart.warnings)
+    return CalculationResult(chart=chart)
 
 
 def raw_chart(

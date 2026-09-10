@@ -31,7 +31,6 @@ async def test_engine_service_natal_matches_direct_calculate_natal() -> None:
         service = _service(executor)
         result = await service.calculate(spec, resolved, run=_run())
 
-    assert result.chart_kind == "natal"
     assert result.chart.chart_kind == "natal"
     assert result.chart.house_system == "P"
     assert direct.house_system == "P"
@@ -39,7 +38,7 @@ async def test_engine_service_natal_matches_direct_calculate_natal() -> None:
     assert direct.bodies is not None
     assert result.chart.bodies["sun"].longitude == pytest.approx(direct.bodies["sun"].longitude)
     assert result.chart.cusps is not None
-    assert result.warnings == result.chart.warnings
+    assert isinstance(result.chart.warnings, tuple)
 
 
 async def test_engine_service_cosmogram_matches_direct_calculate_natal() -> None:
@@ -51,7 +50,6 @@ async def test_engine_service_cosmogram_matches_direct_calculate_natal() -> None
         service = _service(executor)
         result = await service.calculate(spec, resolved, run=_run())
 
-    assert result.chart_kind == "cosmogram"
     assert result.chart.chart_kind == "cosmogram"
     assert result.chart.bodies is not None
     assert direct.bodies is not None
@@ -59,7 +57,7 @@ async def test_engine_service_cosmogram_matches_direct_calculate_natal() -> None
     assert result.chart.cusps is None
     assert result.chart.house_rulers is None
     assert result.chart.strength is None
-    assert result.warnings == result.chart.warnings
+    assert isinstance(result.chart.warnings, tuple)
 
 
 async def test_engine_service_maps_real_high_latitude_placidus_to_houses_degenerate() -> None:

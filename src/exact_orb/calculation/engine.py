@@ -26,14 +26,14 @@ from exact_orb.calculation.errors import (
 )
 from exact_orb.calculation.spec import ChartSpec
 from exact_orb.domain import (
-    ChartKind,
     RulershipScheme,
     normalize_include,
+    normalize_latitude,
+    normalize_longitude,
     normalize_natal_house_system_code,
     validate_geography,
 )
 from exact_orb.engine.charts.natal import NatalChart, calculate_natal
-from exact_orb.engine.ephemeris.types import CalculationWarning
 from exact_orb.errors import (
     EphemerisConfigurationError,
     EphemerisSessionRequiredError,
@@ -48,11 +48,9 @@ SUPPORTED_TECHNIQUES = frozenset({"natal"})
 class CalculationResult(BaseModel):
     """Raw engine result returned before artifact construction."""
 
-    model_config = ConfigDict(frozen=True)
+    model_config = ConfigDict(frozen=True, extra="forbid")
 
-    chart_kind: ChartKind
     chart: NatalChart
-    warnings: tuple[CalculationWarning, ...]
 
 
 class CalculationEnginePort(Protocol):
@@ -103,11 +101,7 @@ class NatalTechniqueAdapter:
             include=frozenset(spec.include),
             near_interception_threshold=spec.near_interception_threshold,
         )
-        return CalculationResult(
-            chart_kind=chart.chart_kind,
-            chart=chart,
-            warnings=chart.warnings,
-        )
+        return CalculationResult(chart=chart)
 
 
 class EngineService:
@@ -199,7 +193,7 @@ class EngineService:
                 resolved,
                 run_id,
             )
-            _validate_result(result, spec, run_id)
+            _validate_result(result, spec, resolved, run_id)
         except (ChartCalculationError, CalculationUnavailableError) as exc:
             exception_type = type(exc).__name__
             self._log_failure(exc, started_at, exception_type)
@@ -294,12 +288,48 @@ def _prevalidate(spec: ChartSpec, resolved: ResolvedBirthData, run_id: str) -> N
         raise ChartCalculationError("GEOGRAPHY_INVALID", run_id=run_id) from None
 
 
-def _validate_result(result: CalculationResult, spec: ChartSpec, run_id: str) -> None:
+def _validate_result(
+    result: CalculationResult,
+    spec: ChartSpec,
+    resolved: ResolvedBirthData,
+    run_id: str,
+) -> None:
     try:
-        if result.chart_kind != spec.chart_kind or result.chart.chart_kind != spec.chart_kind:
+        if not isinstance(result, CalculationResult):
+            raise TypeError("adapter result must be CalculationResult")
+
+        chart = result.chart
+        if (
+            chart.chart_kind != spec.chart_kind
+            or chart.datetime_utc.utcoffset() is None
+            or chart.datetime_utc.utcoffset().total_seconds() != 0
+            or chart.datetime_utc != resolved.utc_datetime
+            or normalize_latitude(chart.latitude) != normalize_latitude(resolved.latitude)
+            or normalize_longitude(chart.longitude) != normalize_longitude(resolved.longitude)
+            or normalize_natal_house_system_code(chart.house_system)
+            != normalize_natal_house_system_code(spec.house_system)
+        ):
             raise ChartCalculationError("ENGINE_UNEXPECTED", run_id=run_id)
-    except AttributeError:
+
+        _validate_result_blocks(chart, spec)
+    except (AttributeError, TypeError, ValueError):
         raise ChartCalculationError("ENGINE_UNEXPECTED", run_id=run_id) from None
+
+
+def _validate_result_blocks(chart: NatalChart, spec: ChartSpec) -> None:
+    expected = frozenset(spec.include)
+    block_fields = {
+        "positions": ("bodies",),
+        "houses": ("cusps", "angles"),
+        "rulers": ("house_rulers", "interceptions"),
+        "aspects": ("aspects",),
+        "configurations": ("configurations",),
+        "strength": ("strength",),
+    }
+    for block, fields in block_fields.items():
+        present = tuple(getattr(chart, field) is not None for field in fields)
+        if (block in expected and not all(present)) or (block not in expected and any(present)):
+            raise ValueError(f"chart block {block!r} does not match spec.include")
 
 
 def _map_engine_error(exc: Exception, run_id: str) -> ChartCalculationError | CalculationUnavailableError:
@@ -324,8 +354,8 @@ def _elapsed_ms(started_at: float) -> float:
 def _calculation_result_summary(result: CalculationResult) -> dict[str, object]:
     chart = result.chart
     return {
-        "chart_kind": result.chart_kind,
-        "warning_count": len(result.warnings),
+        "chart_kind": chart.chart_kind,
+        "warning_count": len(chart.warnings),
         "body_count": len(chart.bodies or ()),
         "aspect_count": len(chart.aspects or ()),
         "configuration_count": len(chart.configurations or ()),

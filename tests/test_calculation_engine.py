@@ -6,7 +6,7 @@ import asyncio
 from collections.abc import Callable
 from concurrent.futures import ThreadPoolExecutor
 from contextlib import contextmanager
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 import inspect
 import logging
 from threading import Event, get_ident
@@ -53,16 +53,25 @@ RUN_ID = UUID("11111111-1111-4111-8111-111111111111")
 SENSITIVE_MESSAGE = "source failure at 1990-09-02 55.7558 37.6173 Moscow warning text"
 
 
-def test_calculation_result_is_frozen_and_normalizes_warnings_to_tuple() -> None:
-    result = CalculationResult(
-        chart_kind="natal",
-        chart=_raw_chart(),
-        warnings=[_warning("test warning")],
-    )
+def test_calculation_result_is_a_frozen_chart_only_envelope() -> None:
+    chart = _raw_chart(warnings=(_warning("test warning"),))
+    result = CalculationResult(chart=chart)
 
-    assert isinstance(result.warnings, tuple)
+    assert set(CalculationResult.model_fields) == {"chart"}
+    assert result.model_dump(mode="json") == {"chart": chart.model_dump(mode="json")}
     with pytest.raises(ValidationError):
-        result.chart_kind = "cosmogram"
+        result.chart = _raw_chart(chart_kind="cosmogram")
+
+
+def test_calculation_result_rejects_removed_duplicate_fields() -> None:
+    chart = _raw_chart()
+
+    with pytest.raises(ValidationError, match="Extra inputs are not permitted"):
+        CalculationResult(
+            chart=chart,
+            chart_kind=chart.chart_kind,
+            warnings=chart.warnings,
+        )
 
 
 def test_technique_adapter_is_runtime_checkable_but_engine_port_is_not() -> None:
@@ -163,7 +172,7 @@ def test_natal_technique_adapter_maps_current_spec_fields_without_run_or_artifac
     assert "run" not in received["kwargs"]
     assert result.chart is chart
     assert type(result.chart) is NatalChart
-    assert result.warnings == chart.warnings
+    assert result.chart.warnings == chart.warnings
 
 
 def test_natal_adapter_passes_cosmogram_default_include() -> None:
@@ -176,7 +185,7 @@ def test_natal_adapter_passes_cosmogram_default_include() -> None:
     spec = NatalChartSpec(chart_kind="cosmogram")
     result = NatalTechniqueAdapter(calculator=fake_calculator).calculate(spec, _resolved())
 
-    assert result.chart_kind == "cosmogram"
+    assert result.chart.chart_kind == "cosmogram"
     assert received["kwargs"]["include"] == frozenset(DEFAULT_INCLUDE_BY_CHART_KIND["cosmogram"])
 
 
@@ -212,7 +221,7 @@ async def test_engine_service_runs_adapter_in_executor_and_keeps_event_loop_aliv
         result = await task
 
     messages = [record.getMessage() for record in caplog.records]
-    assert result.chart_kind == "natal"
+    assert result.chart.chart_kind == "natal"
     assert any(f"calculation_thread_started run_id={RUN_ID}" in message for message in messages)
     assert any("calculation_finished" in message and f"run_id={RUN_ID}" in message for message in messages)
 
@@ -392,20 +401,83 @@ async def test_engine_error_mapping_does_not_expose_source_messages(
     assert SENSITIVE_MESSAGE not in str(mapped)
 
 
-async def test_result_invariant_mismatch_is_engine_unexpected() -> None:
-    chart = _raw_chart(chart_kind="cosmogram")
-    bad_result = CalculationResult(chart_kind="natal", chart=chart, warnings=chart.warnings)
+@pytest.mark.parametrize(
+    ("field", "value"),
+    (
+        ("chart_kind", "cosmogram"),
+        ("datetime_utc", BASE_UTC + timedelta(minutes=1)),
+        ("latitude", 51.5074),
+        ("longitude", -0.1278),
+        ("house_system", "K"),
+        ("bodies", None),
+        ("cusps", None),
+        ("angles", None),
+        ("house_rulers", ()),
+        ("interceptions", ()),
+        ("aspects", ()),
+        ("configurations", ()),
+        ("strength", object()),
+    ),
+)
+async def test_result_invariant_mismatch_is_engine_unexpected(
+    field: str,
+    value: object,
+) -> None:
+    good_adapter = FakeAdapter(_result())
+    bad_chart = _raw_chart().model_copy(update={field: value})
+    bad_adapter = FakeAdapter(CalculationResult(chart=bad_chart))
 
     with ThreadPoolExecutor(max_workers=1) as executor:
-        service = EngineService(
+        good_service = EngineService(
             executor=executor,
-            techniques={"natal": FakeAdapter(bad_result)},
+            techniques={"natal": good_adapter},
+            slow_threshold_ms=3000.0,
+        )
+        assert await good_service.calculate(_spec(), _resolved(), run=_run()) == _result()
+
+        bad_service = EngineService(
+            executor=executor,
+            techniques={"natal": bad_adapter},
             slow_threshold_ms=3000.0,
         )
         with pytest.raises(ChartCalculationError) as exc_info:
-            await service.calculate(_spec(), _resolved(), run=_run())
+            await bad_service.calculate(_spec(), _resolved(), run=_run())
 
     assert exc_info.value.code == "ENGINE_UNEXPECTED"
+    assert exc_info.value.run_id == str(RUN_ID)
+    assert good_adapter.calls == 1
+    assert bad_adapter.calls == 1
+
+
+async def test_cosmogram_result_rejects_forbidden_house_blocks() -> None:
+    spec = NatalChartSpec(chart_kind="cosmogram", include=("positions",))
+    good_chart = _raw_chart(chart_kind="cosmogram")
+    good_adapter = FakeAdapter(CalculationResult(chart=good_chart))
+    bad_chart = good_chart.model_copy(update={"cusps": (), "angles": {}})
+    bad_adapter = FakeAdapter(CalculationResult(chart=bad_chart))
+
+    with ThreadPoolExecutor(max_workers=1) as executor:
+        good_service = EngineService(
+            executor=executor,
+            techniques={"natal": good_adapter},
+            slow_threshold_ms=3000.0,
+        )
+        assert await good_service.calculate(spec, _resolved(), run=_run()) == CalculationResult(
+            chart=good_chart
+        )
+
+        bad_service = EngineService(
+            executor=executor,
+            techniques={"natal": bad_adapter},
+            slow_threshold_ms=3000.0,
+        )
+        with pytest.raises(ChartCalculationError) as exc_info:
+            await bad_service.calculate(spec, _resolved(), run=_run())
+
+    assert exc_info.value.code == "ENGINE_UNEXPECTED"
+    assert exc_info.value.run_id == str(RUN_ID)
+    assert good_adapter.calls == 1
+    assert bad_adapter.calls == 1
 
 
 async def test_engine_logs_complete_request_and_mapped_failure_without_traceback(
@@ -558,7 +630,7 @@ async def _assert_bad_geography(resolved: ResolvedBirthData) -> None:
 
 def _result(chart_kind: str = "natal") -> CalculationResult:
     chart = _raw_chart(chart_kind=chart_kind)
-    return CalculationResult(chart_kind=chart_kind, chart=chart, warnings=chart.warnings)
+    return CalculationResult(chart=chart)
 
 
 def _raw_chart(
@@ -584,8 +656,8 @@ def _raw_chart(
         ),
         selena_method="true_perigee",
         bodies={},
-        cusps=None,
-        angles=None,
+        cusps=() if chart_kind == "natal" else None,
+        angles={} if chart_kind == "natal" else None,
         house_rulers=None,
         interceptions=None,
         aspects=None,
@@ -617,7 +689,7 @@ def _resolved(
 
 
 def _spec() -> NatalChartSpec:
-    return NatalChartSpec(chart_kind="natal")
+    return NatalChartSpec(chart_kind="natal", include=("houses", "positions"))
 
 
 def _run() -> RunContext:

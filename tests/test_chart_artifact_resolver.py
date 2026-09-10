@@ -337,12 +337,8 @@ async def test_encode_failure_returns_artifact_without_put(
 
 
 async def test_artifact_construction_failure_maps_to_engine_unexpected() -> None:
-    chart = _raw_chart(warnings=())
-    result = CalculationResult(
-        chart_kind="natal",
-        chart=chart,
-        warnings=(_warning(SENSITIVE_WARNING),),
-    )
+    chart = _raw_chart(chart_kind="cosmogram", warnings=())
+    result = CalculationResult(chart=chart)
     cache = FakeCache()
     engine = FakeEngine(result)
     resolver = _resolver(cache, engine)
@@ -865,7 +861,7 @@ def _result(
     warnings: tuple[CalculationWarning, ...] = (),
 ) -> CalculationResult:
     chart = _raw_chart(chart_kind=chart_kind, warnings=warnings)
-    return CalculationResult(chart_kind=chart_kind, chart=chart, warnings=chart.warnings)
+    return CalculationResult(chart=chart)
 
 
 def _raw_chart(
