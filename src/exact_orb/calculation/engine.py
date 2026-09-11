@@ -156,9 +156,7 @@ class EngineService:
             run_id=run.run_id,
             request={"spec": spec, "resolved": resolved, "run": run},
             call=lambda: self._calculate(spec, resolved, run=run),
-            result_projector=_calculation_result_summary,
-            result_message_type="CalculationResultSummary",
-            result_payload_mode="summary",
+            result_message_type="CalculationResult",
         )
 
     async def _calculate(
@@ -322,19 +320,6 @@ def _is_degenerate_houses_error(exc: ValueError) -> bool:
 
 def _elapsed_ms(started_at: float) -> float:
     return (perf_counter() - started_at) * 1000.0
-
-
-def _calculation_result_summary(result: CalculationResult) -> dict[str, object]:
-    chart = result.chart
-    return {
-        "chart_kind": chart.chart_kind,
-        "warning_count": len(chart.warnings),
-        "body_count": len(chart.bodies or ()),
-        "aspect_count": len(chart.aspects or ()),
-        "configuration_count": len(chart.configurations or ()),
-        "has_houses": chart.cusps is not None,
-        "has_strength": chart.strength is not None,
-    }
 
 
 __all__ = [

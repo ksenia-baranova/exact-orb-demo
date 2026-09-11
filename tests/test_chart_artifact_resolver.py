@@ -850,14 +850,21 @@ async def test_boundary_outputs_are_summaries_and_technical_events_have_full_key
     assert full_key in boundary
     assert full_key in technical
     assert outgoing
-    assert all("payload_mode=summary" in message for message in outgoing)
-    assert all("message_type=ChartArtifactSummary" in message for message in outgoing)
-    assert all('"chart":' not in message for message in outgoing)
-    assert all('"bodies":' not in message for message in outgoing)
-    assert {json.loads(message.partition(" message=")[2])["cache_outcome"] for message in outgoing} == {
-        "hit",
-        "miss",
-    }
+    assert all("payload_mode=full" in message for message in outgoing)
+    assert all("message_type=ChartArtifact" in message for message in outgoing)
+    payloads = [json.loads(message.partition(" message=")[2]) for message in outgoing]
+    assert all(payload["calculation_key"] == full_key for payload in payloads)
+    assert all(payload["calculation_version"] == VERSION for payload in payloads)
+    assert all(payload["spec"] == spec.model_dump(mode="json") for payload in payloads)
+    assert all(payload["chart"]["chart_kind"] == "natal" for payload in payloads)
+    assert all("bodies" in payload["chart"] for payload in payloads)
+    assert all("aspects" in payload["chart"] for payload in payloads)
+    assert all("configurations" in payload["chart"] for payload in payloads)
+    assert all("strength" in payload["chart"] for payload in payloads)
+    assert all(
+        payload["chart"]["warnings"][0]["message"] == SENSITIVE_WARNING
+        for payload in payloads
+    )
     for value in (
         "1990-09-02",
         "55.7558",
@@ -866,7 +873,7 @@ async def test_boundary_outputs_are_summaries_and_technical_events_have_full_key
     ):
         assert value in boundary
         assert value not in technical
-    assert SENSITIVE_WARNING not in boundary
+    assert SENSITIVE_WARNING in boundary
     assert SENSITIVE_WARNING not in technical
     assert "ValidationError" not in technical
     assert "Traceback" not in technical

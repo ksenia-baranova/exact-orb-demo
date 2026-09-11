@@ -136,9 +136,8 @@ class ChartArtifactResolver:
             run_id=run.run_id,
             request={"spec": spec, "resolved": resolved, "run": run},
             call=lambda: self._ensure_chart(spec, resolved, run=run),
-            result_projector=_chart_artifact_summary,
-            result_message_type="ChartArtifactSummary",
-            result_payload_mode="summary",
+            result_projector=lambda ensured: ensured.artifact,
+            result_message_type="ChartArtifact",
             result_calculation_key=lambda ensured: ensured.artifact.calculation_key,
         )
         return result.artifact
@@ -433,23 +432,6 @@ def _short_key(key: str) -> str:
     if key.startswith(KEY_PREFIX):
         return key[len(KEY_PREFIX) : len(KEY_PREFIX) + 12]
     return key[:12]
-
-
-def _chart_artifact_summary(ensured: _EnsuredChart) -> dict[str, object]:
-    artifact = ensured.artifact
-    chart = artifact.chart
-    return {
-        "calculation_key": artifact.calculation_key,
-        "calculation_version": artifact.calculation_version,
-        "cache_outcome": ensured.cache_outcome,
-        "chart_kind": chart.chart_kind,
-        "warning_count": len(chart.warnings),
-        "body_count": len(chart.bodies or ()),
-        "aspect_count": len(chart.aspects or ()),
-        "configuration_count": len(chart.configurations or ()),
-        "has_houses": chart.cusps is not None,
-        "has_strength": chart.strength is not None,
-    }
 
 
 def _reason(exc: Exception) -> str:

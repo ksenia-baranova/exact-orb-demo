@@ -102,20 +102,19 @@ def test_natal_boundary_messages_are_complete_and_step_events_stay_compact(
     assert "37.6155" in boundary_logs[0]
     assert "direction=out" in boundary_logs[1]
     assert "calculation_key=-" in boundary_logs[1]
-    assert "payload_mode=summary" in boundary_logs[1]
-    assert "message_type=NatalChartSummary" in boundary_logs[1]
-    assert '"bodies":' not in boundary_logs[1]
-    assert '"sun":' not in boundary_logs[1]
-    summary = json.loads(boundary_logs[1].partition(" message=")[2])
-    assert summary == {
-        "aspect_count": len(chart.aspects or ()),
-        "body_count": len(chart.bodies or ()),
-        "chart_kind": chart.chart_kind,
-        "configuration_count": len(chart.configurations or ()),
-        "has_houses": chart.cusps is not None,
-        "has_strength": chart.strength is not None,
-        "warning_count": len(chart.warnings),
-    }
+    assert "payload_mode=full" in boundary_logs[1]
+    assert "message_type=NatalChart" in boundary_logs[1]
+    payload = json.loads(boundary_logs[1].partition(" message=")[2])
+    assert payload == chart.model_dump(mode="json")
+    assert payload["chart_kind"] == "natal"
+    assert payload["datetime_utc"] == "1985-09-01T20:45:00Z"
+    assert payload["latitude"] == REFERENCE["latitude"]
+    assert payload["longitude"] == REFERENCE["longitude"]
+    assert "sun" in payload["bodies"]
+    assert "aspects" in payload
+    assert "configurations" in payload
+    assert "strength" in payload
+    assert "warnings" in payload
 
     assert start_logs
     assert "1985-09-01" not in "\n".join(start_logs)

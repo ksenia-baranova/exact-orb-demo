@@ -8,6 +8,7 @@ from concurrent.futures import ThreadPoolExecutor
 from contextlib import contextmanager
 from datetime import datetime, timedelta, timezone
 import inspect
+import json
 import logging
 from threading import Event, get_ident
 from typing import Any
@@ -522,7 +523,7 @@ async def test_engine_logs_complete_request_and_mapped_failure_without_traceback
     assert SENSITIVE_MESSAGE not in outgoing
 
 
-async def test_engine_success_logs_summary_without_full_chart(
+async def test_engine_success_logs_full_calculation_result(
     caplog: pytest.LogCaptureFixture,
 ) -> None:
     caplog.set_level(logging.DEBUG, logger="exact_orb.calculation.engine")
@@ -543,11 +544,17 @@ async def test_engine_success_logs_summary_without_full_chart(
         if record.getMessage().startswith("component_message direction=out")
     )
     assert "calculation_key=-" in outgoing
-    assert "payload_mode=summary" in outgoing
-    assert "message_type=CalculationResultSummary" in outgoing
-    assert '"chart":' not in outgoing
-    assert '"bodies":' not in outgoing
-    assert '"body_count":0' in outgoing
+    assert "payload_mode=full" in outgoing
+    assert "message_type=CalculationResult" in outgoing
+    payload = json.loads(outgoing.partition(" message=")[2])
+    assert payload == result.model_dump(mode="json")
+    assert payload["chart"]["chart_kind"] == result.chart.chart_kind
+    assert payload["chart"]["datetime_utc"] == "1990-09-02T10:30:45Z"
+    assert payload["chart"]["bodies"] == {}
+    assert payload["chart"]["aspects"] is None
+    assert "configurations" in payload["chart"]
+    assert "strength" in payload["chart"]
+    assert payload["chart"]["warnings"] == []
 
 
 def test_low_level_ephemeris_warning_log_omits_message_but_preserves_warning(
