@@ -28,8 +28,6 @@ from exact_orb.calculation.spec import ChartSpec
 from exact_orb.domain import (
     RulershipScheme,
     normalize_include,
-    normalize_latitude,
-    normalize_longitude,
     normalize_natal_house_system_code,
     validate_geography,
 )
@@ -39,6 +37,8 @@ from exact_orb.errors import (
     EphemerisSessionRequiredError,
 )
 from exact_orb.run_context import RunContext
+
+from .chart_contract import validate_chart_against_resolved, validate_chart_against_spec
 
 
 LOGGER = logging.getLogger(__name__)
@@ -299,37 +299,10 @@ def _validate_result(
             raise TypeError("adapter result must be CalculationResult")
 
         chart = result.chart
-        if (
-            chart.chart_kind != spec.chart_kind
-            or chart.datetime_utc.utcoffset() is None
-            or chart.datetime_utc.utcoffset().total_seconds() != 0
-            or chart.datetime_utc != resolved.utc_datetime
-            or normalize_latitude(chart.latitude) != normalize_latitude(resolved.latitude)
-            or normalize_longitude(chart.longitude) != normalize_longitude(resolved.longitude)
-            or normalize_natal_house_system_code(chart.house_system)
-            != normalize_natal_house_system_code(spec.house_system)
-        ):
-            raise ChartCalculationError("ENGINE_UNEXPECTED", run_id=run_id)
-
-        _validate_result_blocks(chart, spec)
+        validate_chart_against_resolved(chart, resolved)
+        validate_chart_against_spec(chart, spec)
     except (AttributeError, TypeError, ValueError):
         raise ChartCalculationError("ENGINE_UNEXPECTED", run_id=run_id) from None
-
-
-def _validate_result_blocks(chart: NatalChart, spec: ChartSpec) -> None:
-    expected = frozenset(spec.include)
-    block_fields = {
-        "positions": ("bodies",),
-        "houses": ("cusps", "angles"),
-        "rulers": ("house_rulers", "interceptions"),
-        "aspects": ("aspects",),
-        "configurations": ("configurations",),
-        "strength": ("strength",),
-    }
-    for block, fields in block_fields.items():
-        present = tuple(getattr(chart, field) is not None for field in fields)
-        if (block in expected and not all(present)) or (block not in expected and any(present)):
-            raise ValueError(f"chart block {block!r} does not match spec.include")
 
 
 def _map_engine_error(exc: Exception, run_id: str) -> ChartCalculationError | CalculationUnavailableError:

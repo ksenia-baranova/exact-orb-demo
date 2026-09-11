@@ -378,18 +378,22 @@ def test_only_asc_and_mc_get_angle_features_while_vertex_remains_relational() ->
 
 
 def test_none_and_computed_empty_families_remain_distinct() -> None:
-    absent = artifact(chart=raw_chart().model_copy(update={"bodies": None, "angles": None}))
+    absent_spec = chart_spec(chart_kind="cosmogram").model_copy(update={"include": ()})
+    empty_spec = chart_spec(chart_kind="cosmogram").model_copy(
+        update={"include": ("aspects", "configurations", "positions")}
+    )
+    absent = artifact(
+        spec=absent_spec,
+        chart=raw_chart(chart_kind="cosmogram", include=absent_spec.include),
+    )
     empty = artifact(
-        chart=raw_chart().model_copy(
-            update={
-                "bodies": {}, "angles": {}, "aspects": (), "configurations": (), "strength": None,
-            }
-        )
+        spec=empty_spec,
+        chart=raw_chart(chart_kind="cosmogram", include=empty_spec.include),
     )
     absent_features = project_chart_features(absent)
     empty_features = project_chart_features(empty)
-    assert absent_features.bodies is None and absent_features.angles is None
-    assert empty_features.bodies == () and empty_features.angles == ()
+    assert absent_features.bodies is None
+    assert empty_features.bodies == ()
     assert empty_features.aspects == () and empty_features.configurations == ()
 
 
@@ -740,7 +744,9 @@ def test_allowed_categorical_changes_change_projection() -> None:
     phase_variant = source.model_copy(
         update={"chart": chart.model_copy(update={"strength": chart.strength.model_copy(update={"lunar_phase": chart.strength.lunar_phase.model_copy(update={"phase_number": 6})})})}
     )
-    chart_kind_variant = source.model_copy(update={"chart_kind": "cosmogram"})
+    chart_kind_variant = source.model_copy(
+        update={"chart": chart.model_copy(update={"chart_kind": "cosmogram"})}
+    )
 
     for variant in (
         body_variant, angle_variant, aspect_variant, config_variant, dignity_variant,

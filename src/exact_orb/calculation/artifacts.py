@@ -29,10 +29,11 @@ from exact_orb.domain import validate_geography
 from exact_orb.run_context import RunContext
 
 from .cache import CalculationCache
+from .chart_contract import calculation_input_from_chart
 from .codec import ChartArtifactDecodeError, decode_chart_artifact, encode_chart_artifact
 from .engine import CalculationEnginePort
 from .errors import ChartCalculationError
-from .keys import KEY_PREFIX, calculation_input_from, calculation_key
+from .keys import KEY_PREFIX, CalculationInput, calculation_input_from, calculation_key
 from .spec import ChartSpec
 from .types import ChartArtifact
 
@@ -157,12 +158,13 @@ class ChartArtifactResolver:
 
         calc_input = calculation_input_from(resolved)
         key = calculation_key(calc_input, spec, self.version)
-        return await self._ensure_singleflight(key, spec, resolved, run)
+        return await self._ensure_singleflight(key, spec, resolved, calc_input, run)
 
     async def _get_valid_hit(
         self,
         key: str,
         spec: ChartSpec,
+        calc_input: CalculationInput,
         run_id: str,
     ) -> ChartArtifact | None:
         key_prefix = _short_key(key)
@@ -201,6 +203,7 @@ class ChartArtifactResolver:
             artifact.calculation_key != key
             or artifact.calculation_version != self.version
             or artifact.spec != spec
+            or calculation_input_from_chart(artifact.chart) != calc_input
         ):
             self.stale += 1
             LOGGER.warning(
@@ -217,7 +220,7 @@ class ChartArtifactResolver:
             run_id,
             key,
             key_prefix,
-            artifact.chart_kind,
+            artifact.chart.chart_kind,
         )
         return artifact
 
@@ -226,6 +229,7 @@ class ChartArtifactResolver:
         key: str,
         spec: ChartSpec,
         resolved: ResolvedBirthData,
+        calc_input: CalculationInput,
         run: RunContext,
     ) -> _EnsuredChart:
         # No await between lookup and task insertion: this is the process-local
@@ -234,7 +238,7 @@ class ChartArtifactResolver:
         if entry is None:
             state = _ResolutionState()
             task = asyncio.create_task(
-                self._resolve_and_store(key, spec, resolved, run, state)
+                self._resolve_and_store(key, spec, resolved, calc_input, run, state)
             )
             entry = _InFlight(
                 task=task,
@@ -277,11 +281,12 @@ class ChartArtifactResolver:
         key: str,
         spec: ChartSpec,
         resolved: ResolvedBirthData,
+        calc_input: CalculationInput,
         run: RunContext,
         state: _ResolutionState,
     ) -> ChartArtifact:
         try:
-            artifact = await self._get_valid_hit(key, spec, str(run.run_id))
+            artifact = await self._get_valid_hit(key, spec, calc_input, str(run.run_id))
             if artifact is not None:
                 state.cache_outcome = "hit"
                 return artifact
@@ -308,11 +313,9 @@ class ChartArtifactResolver:
                 calculation_key=key,
                 calculation_version=self.version,
                 spec=spec,
-                chart_kind=result.chart.chart_kind,
                 chart=result.chart,
-                warnings=result.chart.warnings,
             )
-        except ValidationError:
+        except (ValidationError, TypeError, ValueError):
             raise ChartCalculationError("ENGINE_UNEXPECTED", run_id=run_id) from None
 
         await self._try_store(key, artifact, run_id)
@@ -439,8 +442,8 @@ def _chart_artifact_summary(ensured: _EnsuredChart) -> dict[str, object]:
         "calculation_key": artifact.calculation_key,
         "calculation_version": artifact.calculation_version,
         "cache_outcome": ensured.cache_outcome,
-        "chart_kind": artifact.chart_kind,
-        "warning_count": len(artifact.warnings),
+        "chart_kind": chart.chart_kind,
+        "warning_count": len(chart.warnings),
         "body_count": len(chart.bodies or ()),
         "aspect_count": len(chart.aspects or ()),
         "configuration_count": len(chart.configurations or ()),

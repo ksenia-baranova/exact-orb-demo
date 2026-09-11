@@ -12,11 +12,10 @@ from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
-from exact_orb.domain import ChartKind
 from exact_orb.engine.charts.natal import NatalChart
-from exact_orb.engine.ephemeris.types import CalculationWarning
 
-from .keys import KEY_PREFIX
+from .chart_contract import calculation_input_from_chart, validate_chart_against_spec
+from .keys import calculation_key
 from .spec import ChartSpec
 
 
@@ -36,6 +35,8 @@ class ArtifactEphemerisStatus(BaseModel):
 class ArtifactNatalChart(NatalChart):
     """Natal chart payload with artifact-safe ephemeris status."""
 
+    model_config = ConfigDict(frozen=True)
+
     ephemeris: ArtifactEphemerisStatus
 
     @field_validator("ephemeris", mode="before")
@@ -49,14 +50,12 @@ class ArtifactNatalChart(NatalChart):
 class ChartArtifact(BaseModel):
     """Serialized chart artifact identity plus deterministic chart payload."""
 
-    model_config = ConfigDict(frozen=True)
+    model_config = ConfigDict(frozen=True, extra="forbid")
 
     calculation_key: str
     spec: ChartSpec
     calculation_version: str = Field(..., min_length=1)
-    chart_kind: ChartKind
     chart: ArtifactNatalChart
-    warnings: tuple[CalculationWarning, ...]
 
     @model_validator(mode="before")
     @classmethod
@@ -70,21 +69,16 @@ class ChartArtifact(BaseModel):
             values["chart"] = ArtifactNatalChart.model_validate(chart.model_dump(mode="python"))
         return values
 
-    @field_validator("calculation_key")
-    @classmethod
-    def _calculation_key_must_have_prefix(cls, value: str) -> str:
-        if not value.startswith(KEY_PREFIX):
-            raise ValueError(f"calculation_key must start with {KEY_PREFIX!r}")
-        return value
-
     @model_validator(mode="after")
     def _validate_identity(self) -> "ChartArtifact":
-        if self.chart_kind != self.spec.chart_kind:
-            raise ValueError("chart_kind must match spec.chart_kind")
-        if self.chart_kind != self.chart.chart_kind:
-            raise ValueError("chart_kind must match chart.chart_kind")
-        if self.warnings != self.chart.warnings:
-            raise ValueError("warnings must match chart.warnings for natal artifacts")
+        validate_chart_against_spec(self.chart, self.spec)
+        expected_key = calculation_key(
+            calculation_input_from_chart(self.chart),
+            self.spec,
+            self.calculation_version,
+        )
+        if self.calculation_key != expected_key:
+            raise ValueError("calculation_key must match chart, spec, and calculation_version")
         return self
 
 

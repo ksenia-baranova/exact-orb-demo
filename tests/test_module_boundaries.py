@@ -1447,6 +1447,7 @@ def test_research_projection_explicitly_loads_engine_but_not_edges() -> None:
         | frozenset(
             {
                 "exact_orb.research.projection",
+                "exact_orb.calculation.chart_contract",
                 "exact_orb.calculation.types",
                 "exact_orb.engine",
                 "exact_orb.swiss_backend",

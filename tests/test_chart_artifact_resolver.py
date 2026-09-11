@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import asyncio
 from collections.abc import Callable
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 import gzip
 import json
 import logging
@@ -16,6 +16,7 @@ import pytest
 from exact_orb.birth.types import ResolvedBirthData
 from exact_orb.calculation import artifacts as artifacts_module
 from exact_orb.calculation.artifacts import ChartArtifactResolver
+from exact_orb.calculation.chart_contract import calculation_input_from_chart
 from exact_orb.calculation.codec import encode_chart_artifact
 from exact_orb.calculation.engine import CalculationResult
 from exact_orb.calculation.errors import ChartCalculationError
@@ -35,7 +36,6 @@ RUN_ID = UUID("11111111-1111-4111-8111-111111111111")
 RUN_ID_B = UUID("22222222-2222-4222-8222-222222222222")
 VERSION = "test-version-1"
 OTHER_VERSION = "test-version-2"
-FULL_KEY_PLACEHOLDER = "eo:calc:v1:" + ("0" * 64)
 SENSITIVE_WARNING = "sensitive warning for 1990-09-02 55.7558 37.6173 Moscow"
 
 
@@ -100,6 +100,31 @@ async def test_cache_hit_returns_decoded_artifact_without_engine_or_put(
         record.getMessage() for record in caplog.records if "cache_hit" in record.getMessage()
     )
     assert f"calculation_key={key}" in cache_hit
+
+
+async def test_cache_hit_rejects_foreign_chart_even_if_decoder_reports_current_key(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    spec = _spec()
+    resolved = _resolved()
+    key = _key(spec, resolved)
+    foreign = _artifact(
+        spec=spec,
+        resolved=_resolved(longitude=37.6174),
+    ).model_copy(update={"calculation_key": key})
+    cache = FakeCache({key: b"opaque-test-payload"})
+    engine = EchoEngine()
+    resolver = _resolver(cache, engine)
+    monkeypatch.setattr(artifacts_module, "decode_chart_artifact", lambda _payload: foreign)
+
+    fresh = await resolver.ensure_chart(spec, resolved, run=_run())
+
+    assert fresh.chart.longitude == resolved.longitude
+    assert engine.calls == 1
+    assert resolver.stale == 1
+    assert resolver.hits == 0
+    assert resolver.misses == 1
+    assert len(cache.put_calls) == 1
 
 
 async def test_miss_calculates_stores_and_next_call_hits_equal_artifact() -> None:
@@ -169,7 +194,6 @@ async def test_mutating_miss_result_does_not_change_later_cache_hit() -> None:
     resolver = _resolver(cache, engine)
 
     first = await resolver.ensure_chart(_spec(), _resolved(), run=_run())
-    first.chart.latitude = 0.0
     first.chart.warnings[0].message = "mutated warning"
 
     second = await resolver.ensure_chart(_spec(), _resolved(), run=_run(RUN_ID_B))
@@ -202,8 +226,11 @@ async def test_version_change_misses_on_same_inputs() -> None:
     (
         lambda spec, resolved, key: _artifact(
             spec=spec,
-            resolved=resolved,
-            key=FULL_KEY_PLACEHOLDER,
+            resolved=_resolved(longitude=37.6174),
+        ),
+        lambda spec, resolved, key: _artifact(
+            spec=spec,
+            resolved=_resolved(utc_datetime=BASE_UTC + timedelta(minutes=1)),
         ),
         lambda spec, resolved, key: _artifact(
             spec=spec,
@@ -211,9 +238,11 @@ async def test_version_change_misses_on_same_inputs() -> None:
             version=OTHER_VERSION,
         ),
         lambda spec, resolved, key: _artifact(
-            spec=NatalChartSpec(chart_kind="natal", include=("houses", "positions")),
+            spec=NatalChartSpec(
+                chart_kind="natal",
+                include=("aspects", "houses", "positions"),
+            ),
             resolved=resolved,
-            key=key,
         ),
     ),
 )
@@ -269,6 +298,37 @@ async def test_corrupt_hit_recalculates_with_reason(
     record = next(record for record in caplog.records if "cache_corrupt" in record.getMessage())
     assert record.levelno == logging.WARNING
     assert f"reason={reason}" in record.getMessage()
+
+
+async def test_legacy_duplicate_payload_is_fail_open_and_replaced() -> None:
+    spec = _spec()
+    resolved = _resolved()
+    key = _key(spec, resolved)
+    legacy = _artifact(spec=spec, resolved=resolved)
+    legacy_json = json.loads(gzip.decompress(encode_chart_artifact(legacy)).decode("utf-8"))
+    legacy_json["chart_kind"] = legacy.chart.chart_kind
+    legacy_json["warnings"] = [
+        warning.model_dump(mode="json") for warning in legacy.chart.warnings
+    ]
+    payload = gzip.compress(
+        json.dumps(legacy_json, separators=(",", ":")).encode("utf-8"),
+        compresslevel=6,
+        mtime=0,
+    )
+    cache = FakeCache({key: payload})
+    engine = FakeEngine(_result())
+    resolver = _resolver(cache, engine)
+
+    fresh = await resolver.ensure_chart(spec, resolved, run=_run())
+
+    assert fresh.calculation_key == key
+    assert engine.calls == 1
+    assert resolver.corrupt == 1
+    assert resolver.misses == 1
+    assert len(cache.put_calls) == 1
+    stored_json = json.loads(gzip.decompress(cache.put_calls[0][1]).decode("utf-8"))
+    assert "chart_kind" not in stored_json
+    assert "warnings" not in stored_json
 
 
 async def test_cache_get_failure_is_fail_open_miss_and_degraded(
@@ -336,8 +396,22 @@ async def test_encode_failure_returns_artifact_without_put(
     assert "contains 37.6173" not in logs
 
 
-async def test_artifact_construction_failure_maps_to_engine_unexpected() -> None:
-    chart = _raw_chart(chart_kind="cosmogram", warnings=())
+@pytest.mark.parametrize(
+    ("field", "value"),
+    (
+        ("chart_kind", "cosmogram"),
+        ("datetime_utc", BASE_UTC + timedelta(minutes=1)),
+        ("latitude", 51.5074),
+        ("longitude", -0.1278),
+        ("house_system", "K"),
+        ("bodies", None),
+    ),
+)
+async def test_artifact_construction_failure_maps_to_engine_unexpected_without_put(
+    field: str,
+    value: object,
+) -> None:
+    chart = _raw_chart().model_copy(update={field: value})
     result = CalculationResult(chart=chart)
     cache = FakeCache()
     engine = FakeEngine(result)
@@ -444,7 +518,6 @@ async def test_concurrent_callers_receive_deeply_isolated_artifacts() -> None:
     assert first.chart.bodies is not second.chart.bodies
     assert first.chart.warnings[0] is not second.chart.warnings[0]
 
-    first.chart.latitude = 0.0
     first.chart.warnings[0].message = "mutated warning"
 
     assert second.chart.latitude == 55.7558
@@ -577,7 +650,11 @@ async def test_different_keys_are_not_serialized_by_resolver() -> None:
     task_a = asyncio.create_task(resolver.ensure_chart(_spec(), _resolved(), run=_run(RUN_ID)))
     task_b = asyncio.create_task(
         resolver.ensure_chart(
-            NatalChartSpec(chart_kind="natal", near_interception_threshold=2.0),
+            NatalChartSpec(
+                chart_kind="natal",
+                include=("houses", "positions"),
+                near_interception_threshold=2.0,
+            ),
             _resolved(),
             run=_run(RUN_ID_B),
         )
@@ -652,7 +729,7 @@ async def test_degraded_logs_are_throttled_and_recovered_per_operation(
         ],
         put_errors=[ConnectionError("put failed"), None],
     )
-    engine = FakeEngine(_result())
+    engine = EchoEngine()
     resolver = _resolver(cache, engine, clock=clock)
     caplog.set_level(logging.DEBUG, logger="exact_orb.calculation.artifacts")
 
@@ -842,16 +919,21 @@ def _artifact(
 ) -> ChartArtifact:
     spec = spec or _spec()
     resolved = resolved or _resolved()
-    chart = chart or _raw_chart(chart_kind=spec.chart_kind, warnings=warnings or ())
-    warnings = warnings if warnings is not None else chart.warnings
-    key = key or _key(spec, resolved, version=version)
+    chart = chart or _raw_chart(
+        chart_kind=spec.chart_kind,
+        datetime_utc=resolved.utc_datetime,
+        latitude=resolved.latitude,
+        longitude=resolved.longitude,
+        house_system=spec.house_system,
+        include=spec.include,
+        warnings=warnings or (),
+    )
+    key = key or calculation_key(calculation_input_from_chart(chart), spec, version)
     return ChartArtifact(
         calculation_key=key,
         calculation_version=version,
         spec=spec,
-        chart_kind=spec.chart_kind,
         chart=chart,
-        warnings=warnings,
     )
 
 
@@ -867,15 +949,25 @@ def _result(
 def _raw_chart(
     *,
     chart_kind: str = "natal",
+    datetime_utc: datetime = BASE_UTC,
+    latitude: float = 55.7558,
+    longitude: float = 37.6173,
+    house_system: str = "P",
+    include: tuple[str, ...] | None = None,
     warnings: tuple[CalculationWarning, ...] = (),
 ) -> NatalChart:
+    included = frozenset(
+        include
+        if include is not None
+        else (("houses", "positions") if chart_kind == "natal" else ("positions",))
+    )
     return NatalChart(
         chart_kind=chart_kind,
-        datetime_utc=BASE_UTC,
+        datetime_utc=datetime_utc,
         julian_day_ut=2448136.0,
-        latitude=55.7558,
-        longitude=37.6173,
-        house_system="P",
+        latitude=latitude,
+        longitude=longitude,
+        house_system=house_system,
         ephemeris_flags=0,
         ephemeris=EphemerisStatus(
             path=r"C:\Users\KateUser\secret\ephe",
@@ -886,13 +978,13 @@ def _raw_chart(
             missing_files=(),
         ),
         selena_method="true_perigee",
-        bodies={},
-        cusps=None,
-        angles=None,
-        house_rulers=None,
-        interceptions=None,
-        aspects=None,
-        configurations=None,
+        bodies={} if "positions" in included else None,
+        cusps=() if "houses" in included else None,
+        angles={} if "houses" in included else None,
+        house_rulers=() if "rulers" in included else None,
+        interceptions=() if "rulers" in included else None,
+        aspects=() if "aspects" in included else None,
+        configurations=() if "configurations" in included else None,
         strength=None,
         warnings=warnings,
     )
@@ -900,11 +992,12 @@ def _raw_chart(
 
 def _resolved(
     *,
+    utc_datetime: datetime = BASE_UTC,
     latitude: float = 55.7558,
     longitude: float = 37.6173,
 ) -> ResolvedBirthData:
     return ResolvedBirthData.model_construct(
-        utc_datetime=BASE_UTC,
+        utc_datetime=utc_datetime,
         latitude=latitude,
         longitude=longitude,
         tz_id="Europe/Moscow",
@@ -916,7 +1009,7 @@ def _resolved(
 
 
 def _spec() -> NatalChartSpec:
-    return NatalChartSpec(chart_kind="natal")
+    return NatalChartSpec(chart_kind="natal", include=("houses", "positions"))
 
 
 def _run(run_id: UUID = RUN_ID) -> RunContext:
@@ -1017,6 +1110,30 @@ class FakeEngine:
         return self.result
 
 
+class EchoEngine:
+    def __init__(self) -> None:
+        self.calls = 0
+
+    async def calculate(
+        self,
+        spec: NatalChartSpec,
+        resolved: ResolvedBirthData,
+        *,
+        run: RunContext,
+    ) -> CalculationResult:
+        self.calls += 1
+        return CalculationResult(
+            chart=_raw_chart(
+                chart_kind=spec.chart_kind,
+                datetime_utc=resolved.utc_datetime,
+                latitude=resolved.latitude,
+                longitude=resolved.longitude,
+                house_system=spec.house_system,
+                include=spec.include,
+            )
+        )
+
+
 class SequenceEngine:
     def __init__(self, outcomes: list[CalculationResult | Exception]) -> None:
         self.outcomes = list(outcomes)
@@ -1071,6 +1188,17 @@ class BlockingEngine:
             await self.release.wait()
             if self.error is not None:
                 raise self.error
-            return self.result or _result(chart_kind=spec.chart_kind)
+            if self.result is not None:
+                return self.result
+            return CalculationResult(
+                chart=_raw_chart(
+                    chart_kind=spec.chart_kind,
+                    datetime_utc=resolved.utc_datetime,
+                    latitude=resolved.latitude,
+                    longitude=resolved.longitude,
+                    house_system=spec.house_system,
+                    include=spec.include,
+                )
+            )
         finally:
             self.active -= 1

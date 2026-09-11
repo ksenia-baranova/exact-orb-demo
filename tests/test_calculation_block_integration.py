@@ -258,7 +258,7 @@ def _spec() -> NatalChartSpec:
 
 
 def _calculated_chart(**kwargs: Any) -> NatalChart:
-    return raw_chart(**kwargs).model_copy(update={"cusps": (), "angles": {}})
+    return raw_chart(include=("houses", "positions"), **kwargs)
 
 
 class FakeCalculator:

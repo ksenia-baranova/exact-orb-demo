@@ -133,7 +133,6 @@ async def test_real_natal_path_caches_and_correlates_run_id(
 
         assert isinstance(first, BuildNatalSuccess)
         assert first.artifact.spec == first.delta.base_chart_spec
-        assert first.artifact.chart_kind == "natal"
         assert first.artifact.chart.chart_kind == "natal"
         assert first.artifact.calculation_key.startswith("eo:calc:v1:")
         assert first.delta.birth_input is command.birth_input
@@ -270,7 +269,6 @@ async def test_real_unknown_time_path_builds_cosmogram() -> None:
         assert result.delta.base_chart_spec is not None
         assert result.delta.base_chart_spec.chart_kind == "cosmogram"
         assert result.artifact.spec.chart_kind == "cosmogram"
-        assert result.artifact.chart_kind == "cosmogram"
         assert result.artifact.chart.chart_kind == "cosmogram"
         assert result.artifact.chart.cusps is None
         assert result.artifact.chart.angles is None
