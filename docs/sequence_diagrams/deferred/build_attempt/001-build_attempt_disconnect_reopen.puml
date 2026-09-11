@@ -1,5 +1,8 @@
 @startuml
-title exact-orb — N1: закрытие вкладки и восстановление незавершённого build
+title exact-orb — DEFERRED N1: закрытие вкладки и восстановление незавершённого build
+
+' Отложенная модель, не действующий контракт MVP.
+' Требует durable BuildAttempt/job protocol и отдельного ADR (ADR-0012).
 
 autonumber
 hide footbox

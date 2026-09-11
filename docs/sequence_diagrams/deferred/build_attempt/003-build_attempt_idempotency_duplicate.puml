@@ -1,5 +1,8 @@
 @startuml
-title exact-orb — N7: double click, retry и idempotency key
+title exact-orb — DEFERRED N7: double click, retry и idempotency key
+
+' Отложенная модель, не действующий контракт MVP.
+' Клиентский idempotency_key сейчас не вводится; см. README этого раздела.
 
 autonumber
 hide footbox

@@ -7,10 +7,11 @@ application-flow, зафиксированным в
 внешний `ApplicationResult` на сверенном commit ещё не реализованы; на
 диаграммах это проектируемый внешний контур, а не доступный API.
 
-Ключевое отличие от прежнего набора в `build_charts/`: `BuildAttempt`,
-`build_revision` и статусы попытки не используются. Актуальность результата
-обеспечивается compare-and-set по `state_version` внутри `SessionStore`
-(ADR-0014), durable recovery незавершённого build отложена (ADR-0012).
+Ключевое отличие от [отложенной модели](../deferred/build_attempt/README.md):
+`BuildAttempt`, `build_revision` и статусы попытки не используются.
+Актуальность результата обеспечивается compare-and-set по `state_version`
+внутри `SessionStore` (ADR-0014), durable recovery незавершённого build
+отложена (ADR-0012).
 
 | № | Файл | Сценарий | Исход |
 |---|---|---|---|
@@ -22,13 +23,16 @@ application-flow, зафиксированным в
 | 005 | `005-build_natal_technical_failures.puml` | Отказ зависимости резолва; отказ движка | `ResolutionUnavailable`, `CalculationFailed` |
 | 006 | `006-build_natal_superseded_cas.puml` | Два конкурентных построения в одной сессии | `Superseded` |
 | 007 | `007-build_natal_commit_failure_and_session_expired.puml` | Store недоступен при commit; истёк TTL сессии | `StateCommitFailed`, `SessionAbsent(reason = expired)` |
+| 008 | `008-build_natal_application_unavailable.puml` | Application-контур отказал до запуска handler | Транспортный `500` или `503`; `BuildNatalOutcome` не получен |
 
-Набор показывает все запроектированные ветви будущего `ApplicationResult`;
-этот union ещё не реализован. `000` показывает сквозной целевой путь,
-остальные диаграммы разбирают отдельные сценарии. Реализованный контракт
-handler заканчивается на `BuildNatalOutcome`.
+Диаграммы `000`–`007` показывают запроектированные ветви будущего
+`ApplicationResult`; этот union ещё не реализован. `000` показывает сквозной
+целевой путь, а `001`–`007` разбирают отдельные прикладные сценарии.
+Транспортная диаграмма `008` заканчивается отказом до запуска handler и поэтому
+не получает `BuildNatalOutcome`. Реализованный контракт handler заканчивается
+на `BuildNatalOutcome`.
 
-## Что видно на всех диаграммах
+## Общие инварианты действующего BuildNatal-flow
 
 - **Agent Runtime не запускается.** `Planner`, `ScenarioRegistry`,
   `ToolExecutor` и LLM на build-пути отсутствуют (ADR-0012, ADR-0020).

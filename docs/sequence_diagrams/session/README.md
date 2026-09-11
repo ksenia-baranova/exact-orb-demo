@@ -58,9 +58,8 @@ Sequence намеренно сворачивают внутренности ра
 | 005 | `005-compare-and-set.puml` | Механизм CAS и три исхода записи | `Committed`, `Superseded`, `AlreadyApplied` |
 
 Диаграмма 005 объясняет механизм, а не пользовательский сценарий:
-прикладные ветки конкурентного построения нарисованы в
-`../build_natal/006-build_natal_superseded_cas.puml` и
-`../build_charts/008-exact_orb_build_chart_concurrent_latest_wins.puml`.
+прикладная ветка конкурентного построения нарисована в
+`../build_natal/006-build_natal_superseded_cas.puml`.
 
 `derived_chart`, `active_view` и команда `SetActiveView` в MVP отсутствуют:
 транзиты не входят в первый срез, поэтому активный вид всегда `base`.

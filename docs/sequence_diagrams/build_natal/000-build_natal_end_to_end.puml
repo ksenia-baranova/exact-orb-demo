@@ -6,7 +6,7 @@ title exact-orb — BuildNatal: сквозной путь от запроса д
 ' Детальный прикладной путь и разбор промаха кэша — в 001.
 '
 ' Модель актуальна на дату правки: BuildAttempt отсутствует, актуальность
-' результата держит CAS по state_version (ADR-0014, README build_charts).
+' результата держит CAS по state_version (ADR-0014, README build_natal).
 
 autonumber
 hide footbox
