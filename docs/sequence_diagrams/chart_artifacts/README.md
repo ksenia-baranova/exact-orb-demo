@@ -26,8 +26,9 @@
 - **001** — где строится ключ и почему из проекции; где выбирается техника;
   кто собирает `ChartArtifact`; почему предпроверка спеки стоит до захвата
   `ephemeris_session()`.
-- **002** — две аварийные ветки, обе с алертом: `cache_stale` (payload
-  валиден, но не тот — дефект ключа) и `cache_corrupt` (payload не читается).
+- **002** — две аварийные ветки, обе с алертом: `cache_stale` (внутренне
+  валидный payload не соответствует текущим key/spec/version/input) и
+  `cache_corrupt` (payload не читается или нарушает собственную identity).
   В исправной системе ни одна сработать не может.
 - **003** — разделение отказов по признаку «кто это чинит» и отображение
   класса исключения в класс исхода.
@@ -40,11 +41,17 @@
 - **006** — отложенная после MVP модель: ключ композита из ключей частей;
   отсутствие рекурсии внутри `ensure_*`.
 
-По ADR-0026 все публичные границы сохраняют `component_message in/out`, но
-полная карта на внутренних выходах не повторяется. `calculate_natal`,
-`EngineService` и `ChartArtifactResolver` пишут типизированные summary;
-artifact-события и cache-события содержат полный `calculation_key`, а engine
-связывается с ними по `run_id`.
+По ADR-0025/0028 все публичные границы сохраняют полные
+`component_message in/out` только на DEBUG. `calculate_natal`,
+`EngineService` и `ChartArtifactResolver` больше не заменяют результаты
+summary; artifact-события и cache-события содержат полный `calculation_key`,
+а engine связывается с ними по `run_id`. Ниже DEBUG payload не
+сериализуется.
+
+По ADR-0027 `CalculationResult` содержит только chart, а `ChartArtifact` —
+key, spec, calculation version и chart. Артефакт проверяет spec и
+пересчитывает key из расчётного входа карты; cache hit дополнительно обязан
+соответствовать текущему запросу.
 
 ## Рендер
 

@@ -96,7 +96,7 @@ Keys --> Artifacts : тот же key
 
 Artifacts -> Cache : get(key)
 Cache --> Artifacts : bytes — попадание
-Artifacts -> Artifacts : decode + validate\n→ ChartArtifact
+Artifacts -> Artifacts : strict decode + artifact identity\ncurrent key/spec/version/chart input\n→ ChartArtifact
 
 Artifacts --> Handler : ChartArtifact
 deactivate Artifacts
@@ -111,16 +111,17 @@ EngineService не вызывается вовсе.
 end note
 
 Handler -> Handler : StateDelta(\nbirth_input, birth_resolved,\nbase_chart_spec = spec)
+Handler -> Handler : BuildNatalSuccess(artifact, delta)\nvalidate delta ↔ spec ↔ chart ↔ key
 
 Handler --> Orch : BuildNatalSuccess(artifact, delta)
 deactivate Handler
 
 note over Handler, Engine
 На cache hit EngineService не вызывается.
-ArtifactResolver пишет ChartArtifactSummary,
-handler один раз пишет полный BuildNatalSuccess;
+ArtifactResolver пишет полный ChartArtifact,
+handler — полный BuildNatalSuccess;
 оба выхода связывают новый run_id с тем же
-полным calculation_key (ADR-0026).
+полным calculation_key (ADR-0028).
 end note
 
 Orch -> Context : save(session_id,\nexpected_state_version = 1, delta)

@@ -86,7 +86,7 @@ end note
 
 == Проверка пригодности записи ==
 
-Artifacts -> Artifacts : hit.calculation_version == self.version?\nhit.calculation_key == key?
+Artifacts -> Artifacts : hit.calculation_version == self.version?\nhit.calculation_key == key?\nhit.spec == spec?\nchart input == requested input?
 
 note over Artifacts, Cache
 Ветви ниже взаимоисключающие:
@@ -94,18 +94,18 @@ note over Artifacts, Cache
 ровно одна. Вторая — аварийная.
 end note
 
-alt оба равенства выполнены — нормальный путь
+alt все равенства выполнены — нормальный путь
     Artifacts -> Artifacts : журнал: cache_hit(\nrun_id, calculation_key = key, short key)
     Artifacts -> Artifacts : finally: inflight.pop(key)\nmodel_copy(deep=True)
     Artifacts --> Handler : изолированный ChartArtifact
     deactivate Artifacts
 
     note over Handler, Artifacts
-    DEBUG output resolver — ChartArtifactSummary:
-    run_id, полный calculation_key,
-    cache_outcome = hit; полного chart нет.
+    DEBUG output resolver — полный ChartArtifact:
+    run_id и полный calculation_key в envelope,
+    полный chart находится в message.
     Engine boundary отсутствует вместе
-    с вызовом движка (ADR-0026).
+    с вызовом движка (ADR-0028).
     end note
 
     note right of Artifacts
@@ -140,8 +140,10 @@ else не совпало — в исправной системе невозмо
     недостижимы. Они занимают память до TTL
     (§8.5), но подсунуться на попадании не могут.
 
-    Несовпадение возможно только если ключ перестал
-    честно кодировать входы:
+    Сам ChartArtifact уже проверил свой key
+    против собственных chart/spec/version.
+    Здесь остаётся несовпадение валидного артефакта
+    с текущим запросом:
       • дефект в calculation_key — выпала version,
         изменился состав или порядок сериализации;
       • коллизия namespace — stage и prod на одном
@@ -174,9 +176,10 @@ else payload не читается
 
     Отдельное событие, а не cache_stale:
     это разные диагнозы и разные действия.
-      stale   — payload валиден, но не тот:
-                дефект ключа или коллизия namespace
-      corrupt — payload не читается: повреждение
+      stale   — payload валиден, но не соответствует
+                текущим key/spec/version/input
+      corrupt — payload не читается или нарушает
+                собственную identity: повреждение
                 хранилища, рассогласование кодека,
                 чужой формат в том же namespace
 

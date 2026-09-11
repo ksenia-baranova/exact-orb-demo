@@ -141,14 +141,16 @@ note right of Swiss
 end note
 
 Swiss --> Engine : NatalChart\n(chart_kind = "cosmogram",\ncusps = None, angles = None,\nwarnings = [moon_sign_change])
+Engine -> Engine : validate chart ↔ spec/resolved
 Engine --> Artifacts : CalculationResult
 
-Artifacts -> Artifacts : ChartArtifact(key, version, result)
+Artifacts -> Artifacts : ChartArtifact(key, spec, version, chart)\nvalidate chart ↔ spec; recalculate key
 Artifacts -> Cache : put(key, bytes)
-Artifacts --> Handler : ChartArtifact\n(chart_kind поднят наверх)
+Artifacts --> Handler : ChartArtifact\n(kind и warnings находятся в chart)
 deactivate Artifacts
 
 Handler -> Handler : StateDelta(\nbirth_input, birth_resolved,\nbase_chart_spec = spec)
+Handler -> Handler : BuildNatalSuccess(artifact, delta)\nvalidate time_unknown ↔ kind/time\nand resolved ↔ chart ↔ key
 Handler --> Orch : BuildNatalSuccess(artifact, delta)
 deactivate Handler
 
@@ -157,7 +159,7 @@ Context -> Store : sessions.compare_and_set(\nsession_id, expected_state_version
 Store --> Context : new state_version
 Context --> Orch : Committed(state_version)
 
-Orch --> API : Success(chart,\nchart_kind = cosmogram, warnings)
+Orch --> API : Success(chart, state_version)\nkind и warnings читаются из chart
 API --> FE : 200 JSON
 FE -> FE : render cosmogram\n(визуально отличен от натала)
 FE --> User : космограмма
@@ -167,8 +169,9 @@ note over FE, Orch
 а не отсутствием домов (И-8).
 
 warnings обязаны дойти до промпта (И-7),
-поэтому подняты на уровень ChartArtifact,
-а не спрятаны внутри NatalChart.
+поэтому потребитель читает их из
+ChartArtifact.chart.warnings; отдельной
+верхнеуровневой копии нет (ADR-0027).
 end note
 
 @enduml

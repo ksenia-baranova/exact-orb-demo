@@ -213,11 +213,12 @@ end note
 
 Engine -> Swiss : with ephemeris_session():\ncalculate_natal(...)
 Swiss --> Engine : NatalChart\n(chart_kind = "natal", warnings)
+Engine -> Engine : validate chart ↔ spec/resolved
 
 Engine --> Artifacts : CalculationResult
 deactivate Engine
 
-Artifacts -> Artifacts : ChartArtifact(key, version, result)
+Artifacts -> Artifacts : ChartArtifact(key, spec, version, chart)\nvalidate chart ↔ spec; recalculate key
 Artifacts -> Cache : put(key, bytes)
 Artifacts --> Handler : ChartArtifact
 deactivate Artifacts
@@ -232,6 +233,7 @@ end note
 == Формирование дельты ==
 
 Handler -> Handler : StateDelta(\nbirth_input, birth_resolved,\nbase_chart_spec = spec)
+Handler -> Handler : BuildNatalSuccess(artifact, delta)\nvalidate delta ↔ spec ↔ chart ↔ key
 
 note right of Handler
 Handler формирует только StateDelta.
@@ -244,11 +246,12 @@ Handler --> Orch : BuildNatalSuccess(artifact, delta)
 deactivate Handler
 
 note over Handler, Swiss
-DEBUG boundary outputs (ADR-0026):
+DEBUG boundary outputs (ADR-0025/0028):
 calculate_natal, EngineService и ArtifactResolver
-пишут summary без полного chart.
-Handler один раз пишет полный BuildNatalSuccess
-с run_id и полным calculation_key.
+пишут полные фактические результаты.
+Handler пишет полный BuildNatalSuccess;
+run_id связывает границы, calculation_key — артефакт.
+Ниже DEBUG сериализация не выполняется.
 end note
 
 

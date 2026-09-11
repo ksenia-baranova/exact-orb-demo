@@ -39,10 +39,13 @@ handler заканчивается на `BuildNatalOutcome`.
   корректный, но устаревший для сессии артефакт остаётся в кэше (ADR-0017).
 - **Движок возвращает `CalculationResult`, а кэш хранит `bytes`:**
   `ChartArtifact` собирает только `ChartArtifactResolver`.
-- **Boundary-журнал не размножает карту:** по ADR-0026 внутренние выходы
-  содержат summary, а полный `BuildNatalSuccess` записывается один раз на
-  выходе handler. Конкретный запуск ищется по `run_id`, артефакт и cache hit —
-  по полному `calculation_key`.
+- **Boundary-журнал показывает полный сквозной объектный поток:** по
+  ADR-0025/0028 все пять границ пишут полные входы и фактические выходы только
+  на DEBUG. Конкретный запуск ищется по `run_id`, артефакт и cache hit — по
+  полному `calculation_key`; ниже DEBUG payload не сериализуется.
+- **Результат нормализован:** `CalculationResult` содержит только chart, а
+  `ChartArtifact` — key, spec, calculation version и chart. Сквозной validator
+  связывает resolved birth data, spec, chart, key и итоговый delta (ADR-0027).
 
 ## Рендер
 

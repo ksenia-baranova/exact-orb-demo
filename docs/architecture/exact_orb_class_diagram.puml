@@ -280,15 +280,11 @@ package "exact_orb.calculation" as calculation {
     +calculation_key: str
     +spec: ChartSpec
     +calculation_version: str
-    +chart_kind: ChartKind
     +chart: ArtifactNatalChart
-    +warnings: tuple[CalculationWarning]
   }
 
   class CalculationResult <<Pydantic>> {
-    +chart_kind: ChartKind
     +chart: NatalChart
-    +warnings: tuple[CalculationWarning]
   }
 
   interface CalculationEnginePort <<Protocol>> {
@@ -369,9 +365,7 @@ ArtifactNatalChart --|> NatalChart
 ArtifactNatalChart *-- ArtifactEphemerisStatus
 ChartArtifact *-- ChartSpec
 ChartArtifact *-- ArtifactNatalChart
-ChartArtifact *-- CalculationWarning
 CalculationResult *-- NatalChart
-CalculationResult *-- CalculationWarning
 NatalTechniqueAdapter ..|> TechniqueAdapter
 NatalTechniqueAdapter --> CalculationResult
 EngineService ..|> CalculationEnginePort
@@ -391,6 +385,46 @@ ArtifactError <|-- CalculationUnavailableError
 ChartCalculationError --> ChartCalculationErrorCode
 CalculationUnavailableError --> CalculationUnavailableErrorCode
 ChartArtifactDecodeError --> ChartArtifactDecodeReason
+
+note right of ChartArtifact
+  identity invariant:
+  chart matches spec;
+  calculation_key = key(chart input,
+  spec, calculation_version)
+end note
+
+' =========================
+' SESSION AND APPLICATION RESULT
+' =========================
+
+package "exact_orb.session" as session {
+  class StateDelta <<Pydantic>> {
+    +birth_input: BirthInput or None
+    +birth_resolved: ResolvedBirthData or None
+    +base_chart_spec: ChartSpec or None
+  }
+}
+
+package "exact_orb.application" as application {
+  class BuildNatalSuccess <<Pydantic>> {
+    +artifact: ChartArtifact
+    +delta: StateDelta
+  }
+}
+
+StateDelta *-- BirthInput
+StateDelta *-- ResolvedBirthData
+StateDelta *-- ChartSpec
+BuildNatalSuccess *-- ChartArtifact
+BuildNatalSuccess *-- StateDelta
+
+note right of BuildNatalSuccess
+  cross-boundary invariant:
+  all-set delta; artifact.spec = delta.spec;
+  kind/time presence agree with time_unknown;
+  chart input = resolved input;
+  key = key(delta input, spec, version)
+end note
 
 ' =========================
 ' ENGINE: EPHEMERIS
