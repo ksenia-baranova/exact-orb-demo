@@ -3,6 +3,8 @@
 Дата: 2026-08-30. Статус: действующая рамка.
 Ревизия: 2026-09-07 — `CalculationVersion` исключён из известного долга после
 реализации A2; обязательное application wiring остаётся за C3.
+Ревизия: 2026-09-11 — добавлены многоуровневая identity validation
+результата карты (ADR-0027) и полный локальный DEBUG-след границ (ADR-0028).
 Решение зафиксировано в ADR-0021; здесь — правила, которые из него следуют.
 
 ## Что это за документ
@@ -124,6 +126,13 @@ Calculation Cache остаётся opaque binary KV; decode и валидаци�
 
 **Проверка.** Порт кэша типизирован на `bytes`; оба адаптера проверяются одним
 набором тестов протокола.
+
+Artifact payload нормализован: `CalculationResult` содержит только chart, а
+`ChartArtifact` — key, spec, calculation version и artifact-safe chart.
+Строгий codec проверяет локальную identity артефакта, resolver — соответствие
+cache hit текущему запросу, `BuildNatalSuccess` — связь артефакта с resolved
+data и delta. Отдельная `artifact_schema_version` не вводится: несовместимый
+payload безопасно становится `cache_corrupt` и пересчитывается (ADR-0027).
 
 ### I4. Всё, что влияет на числовой результат, входит в `ChartSpec` или `CalculationVersion`
 
@@ -253,12 +262,13 @@ outcomes. Вложенные Research-коллекции также immutable и
    в этом пакете разделены только на бумаге.
 
 4. **DEBUG-журнал границ намеренно содержит персональные данные.**
-   По ADR-0025/0026 путь Build Natal сохраняет вход и выход каждого
-   компонента. Большие внутренние результаты представлены summary, а полная
-   натальная карта записывается один раз на выходе handler. В журнале всё ещё
-   остаются дата рождения, координаты, warnings и технические пути, поэтому
-   `component_message` делает privacy-hardening блокером публичного
-   развёртывания. `cli_call` также пишет исходный пользовательский ввод и
+   По ADR-0025/0028 путь Build Natal сохраняет полный вход и полный фактический
+   выход каждой из пяти реализованных границ; summary-режима нет. Это позволяет
+   сравнивать resolved data, spec, chart, artifact и итоговый delta в одной
+   коррелируемой трассе, но повторяет дату рождения, координаты, warnings и
+   технические пути. Поэтому `component_message` делает privacy-hardening
+   блокером публичного развёртывания. Ниже DEBUG полная сериализация не
+   выполняется. `cli_call` также пишет исходный пользовательский ввод и
    traceback, а `exact_orb.config` — абсолютный путь каталога эфемерид.
 
 ## Порядок изменения документа
@@ -274,7 +284,8 @@ outcomes. Вложенные Research-коллекции также immutable и
 ADR-0021 (решение), ADR-0002 (порт `Tool`), ADR-0009 и заменивший ADR-0010
 ADR-0023 (session/Research privacy-границы), ADR-0014 (явные мутации
 состояния), ADR-0017 (воспроизводимость кэша и `ChartSpec`), ADR-0018
-(недоверенный ввод). Research contract —
+(недоверенный ввод), ADR-0027 (identity результата), ADR-0028 (полный DEBUG-
+след). Research contract —
 `docs/requirements/component_responsibilities/exact-orb_research_corpus.md`.
 Диаграммы компонентов — `docs/architecture/exact_orb_overview_components.puml`
 и `docs/architecture/exact_orb_research_component.puml`.

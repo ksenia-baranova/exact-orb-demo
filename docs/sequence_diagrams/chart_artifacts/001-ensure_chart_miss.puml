@@ -166,8 +166,10 @@ Adapter -> Adapter : маппинг спеки в аргументы:\nhouse_sys
 Adapter -> Swiss : with ephemeris_session():\ncalculate_natal(...)
 Swiss --> Adapter : NatalChart(warnings)
 
-Adapter --> Engine : CalculationResult(\nchart_kind, chart, warnings)
+Adapter --> Engine : CalculationResult(chart)
 deactivate Adapter
+
+Engine -> Engine : validate chart ↔ spec/resolved\n(kind, house system, include,\nUTC time, normalized coordinates)
 
 Engine --> Artifacts : CalculationResult
 deactivate Engine
@@ -183,11 +185,18 @@ end note
 
 == 5. Сборка артефакта ==
 
-Artifacts -> Artifacts : ChartArtifact(\ncalculation_key = key,\ncalculation_version = self.version,\nspec, chart_kind, chart, warnings)
+Artifacts -> Artifacts : ChartArtifact(\ncalculation_key = key,\ncalculation_version = self.version,\nspec, chart)
 
 note right of Artifacts
 Поля идентичности добавляет резолвер:
 движок ключа и версии не знает.
+
+ChartArtifact проверяет chart ↔ spec
+и пересчитывает key из chart input,
+spec и calculation_version.
+
+chart_kind и warnings не дублируются:
+они читаются из chart (ADR-0027).
 
 Поэтому движок возвращает
 CalculationResult, а не ChartArtifact
@@ -216,21 +225,21 @@ Artifacts --> Handler : изолированный ChartArtifact
 deactivate Artifacts
 
 note over Handler, Swiss
-DEBUG boundary output (ADR-0026):
-  calculate_natal → NatalChartSummary
-  EngineService → CalculationResultSummary
-  ArtifactResolver → ChartArtifactSummary
-    (run_id, полный calculation_key, cache_outcome = miss)
+DEBUG boundary output (ADR-0025/0028):
+  calculate_natal → полный NatalChart
+  EngineService → полный CalculationResult
+  ArtifactResolver → полный ChartArtifact
+    (run_id и полный calculation_key в envelope)
 
-Полный chart эти границы повторно
-не сериализуют.
+Summary-режима нет. Ниже DEBUG payload
+и logging-проекции не вычисляются.
 end note
 
 note over Handler
 Внутренний экземпляр task сериализован
 в кэш и не передаётся вызывающему коду.
 Каждый caller получает собственный
-mutable-граф chart и вложенных моделей.
+изолированный граф chart и вложенных моделей.
 
 Резолвер в сессию не пишет, state_version
 не знает и не решает, становится ли артефакт

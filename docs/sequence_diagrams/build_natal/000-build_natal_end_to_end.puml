@@ -6,7 +6,7 @@ title exact-orb — BuildNatal: сквозной путь от запроса д
 ' Детальный прикладной путь и разбор промаха кэша — в 001.
 '
 ' Модель актуальна на дату правки: BuildAttempt отсутствует, актуальность
-' результата держит CAS по state_version (ADR-0014, README build_charts).
+' результата держит CAS по state_version (ADR-0014, README build_natal).
 
 autonumber
 hide footbox
@@ -238,11 +238,12 @@ end note
 
 Engine -> Swiss : with ephemeris_session():\ncalculate_natal(...)
 Swiss --> Engine : NatalChart\n(chart_kind = "natal", warnings)
+Engine -> Engine : validate chart ↔ spec/resolved
 
 Engine --> Artifacts : CalculationResult
 deactivate Engine
 
-Artifacts -> Artifacts : ChartArtifact(key, version, result)
+Artifacts -> Artifacts : ChartArtifact(key, spec, version, chart)\nvalidate chart ↔ spec; recalculate key
 Artifacts -> Cache : put(key, bytes)
 Artifacts --> Handler : ChartArtifact
 deactivate Artifacts
@@ -263,6 +264,7 @@ end note
 == Формирование дельты ==
 
 Handler -> Handler : StateDelta(\nbirth_input, birth_resolved,\nbase_chart_spec = spec)
+Handler -> Handler : BuildNatalSuccess(artifact, delta)\nvalidate delta ↔ spec ↔ chart ↔ key
 
 note right of Handler
 Handler формирует только all-set StateDelta.

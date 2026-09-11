@@ -309,18 +309,51 @@ def _result_must_be_consistent(self) -> Self:
             "artifact.spec must equal delta.base_chart_spec"
         )
 
-    if self.artifact.chart_kind != delta.base_chart_spec.chart_kind:
+    expected_chart_kind = (
+        "cosmogram" if delta.birth_resolved.time_unknown else "natal"
+    )
+    if delta.base_chart_spec.chart_kind != expected_chart_kind:
         raise ValueError(
-            "artifact.chart_kind must equal "
-            "delta.base_chart_spec.chart_kind"
+            "delta.base_chart_spec.chart_kind must match "
+            "delta.birth_resolved.time_unknown"
+        )
+
+    if ((delta.birth_input.birth_time is None)
+            != delta.birth_resolved.time_unknown):
+        raise ValueError(
+            "delta.birth_input.birth_time must match "
+            "delta.birth_resolved.time_unknown"
+        )
+
+    resolved_input = calculation_input_from(delta.birth_resolved)
+    if calculation_input_from_chart(self.artifact.chart) != resolved_input:
+        raise ValueError(
+            "artifact.chart calculation input must equal "
+            "delta.birth_resolved calculation input"
+        )
+
+    expected_key = calculation_key(
+        resolved_input,
+        delta.base_chart_spec,
+        self.artifact.calculation_version,
+    )
+    if self.artifact.calculation_key != expected_key:
+        raise ValueError(
+            "artifact.calculation_key must match delta birth data, spec, "
+            "and calculation version"
         )
 
     return self
 ```
 
-Все нарушения поднимаются как `ValueError`, который Pydantic преобразует в `ValidationError`. Проверка заполненности выполняется до обращения к `base_chart_spec.chart_kind`, поэтому пустая дельта не может породить сырой `TypeError`.
+Все нарушения поднимаются как `ValueError`, который Pydantic преобразует в
+`ValidationError`. Проверка заполненности выполняется до обращения к полям
+delta, поэтому пустая дельта не может породить сырой `TypeError`.
 
-Третья проверка производна: `ChartArtifact` уже гарантирует `artifact.chart_kind == artifact.spec.chart_kind`, поэтому вместе со второй проверкой равенство `chart_kind` следует автоматически. Она сохранена как defense-in-depth на случай будущего ослабления инвариантов артефакта.
+Локальные validators `ChartArtifact` уже доказывают соответствие chart/spec и
+собственного ключа артефакта. Проверки выше имеют другую ответственность: они
+не позволяют соединить локально валидный артефакт с чужими resolved data или
+delta (ADR-0027).
 
 Handler не выполняет эти проверки отдельными `if`: валидность обеспечивается выходной моделью. Внутренняя согласованность `ChartArtifact` уже обеспечивается расчётным слоем.
 
@@ -440,7 +473,7 @@ delta = StateDelta(
 Предупреждения не преобразуются и не объединяются:
 
 - `ResolvedBirthData.warnings` сохраняются внутри `delta.birth_resolved`;
-- `ChartArtifact.warnings` сохраняются внутри `artifact`;
+- `NatalChart.warnings` сохраняются внутри `artifact.chart`;
 - отдельное поле `BuildNatalSuccess.warnings` не создаётся;
 - handler не удаляет, не переводит и не интерпретирует предупреждения.
 
@@ -590,8 +623,8 @@ Handler не должен подавлять `asyncio.CancelledError`.
 | BH-4 | Неизвестное время всегда формирует `chart_kind="cosmogram"` |
 | BH-5 | Неизвестное время не вызывает запрос уточнения |
 | BH-6 | Вид карты определяется явным `chart_kind`, а не наличием домов в результате |
-| BH-7 | `BuildNatalSuccess` не допускает расхождения `artifact.spec` и `delta.base_chart_spec` |
-| BH-8 | `BuildNatalSuccess` не допускает расхождения `artifact.chart_kind` и `delta.base_chart_spec.chart_kind`. **Производный инвариант:** следует из BH-7 и `ChartArtifact._validate_identity`; проверяется как defense-in-depth |
+| BH-7 | `BuildNatalSuccess` требует all-set delta и не допускает расхождения `artifact.spec` и `delta.base_chart_spec` |
+| BH-8 | `BuildNatalSuccess` связывает kind/time_unknown, наличие исходного времени, нормализованные время и координаты карты с `birth_resolved`, а `calculation_key` — с delta/spec/version |
 | BH-9 | `StateDelta` формируется только после получения артефакта |
 | BH-10 | Handler не вызывает `apply_delta`/`touched`, не создаёт производный `SessionState`/`ChartRef` и не передаёт state зависимостям |
 | BH-11 | Handler не вычисляет и не увеличивает `state_version` |
@@ -599,16 +632,17 @@ Handler не должен подавлять `asyncio.CancelledError`.
 | BH-13 | Handler не обращается напрямую к cache или engine |
 | BH-14 | Handler не вызывает Agent Runtime или LLM |
 | BH-15 | Один и тот же `RunContext` передаётся в resolver и artifact resolver |
-| BH-16 | Персональные и квазигеографические данные, включая `tz_id`, не попадают в журнал handler |
+| BH-16 | Полные входы и выходы handler, включая персональные и расчётные данные, разрешены только в `component_message` уровня DEBUG; INFO/WARNING terminal events остаются компактными |
 | BH-17 | Cache hit и cache miss дают одинаковый тип успешного результата |
 | BH-18 | Handler не реализует собственную дедупликацию или идемпотентность; повторный вызов выполняет тот же use case через воспроизводимый artifact resolver |
 | BH-19 | Каждый начатый прогон завершается ровно одним terminal event: `build_natal_completed` либо `build_natal_failed` |
 
 Распределение ответственности за BH-7/BH-8:
 
-- `ChartArtifact` уже гарантирует согласованность `artifact.chart_kind`, `artifact.spec.chart_kind` и `artifact.chart.chart_kind`;
-- `ChartArtifactResolver` не возвращает cache hit с чужой спецификацией;
-- `BuildNatalSuccess` дополнительно гарантирует согласованность полученного артефакта с подготовленной handler дельтой;
+- `EngineService` проверяет карту против spec и resolved;
+- `ChartArtifact` гарантирует соответствие chart/spec и пересчитывает свой ключ из chart/spec/version;
+- `ChartArtifactResolver` не возвращает cache hit с чужими key/spec/version или расчётным входом;
+- `BuildNatalSuccess` дополнительно связывает артефакт со всеми расчётно значимыми полями подготовленной handler дельты;
 - handler не дублирует эти проверки процедурным кодом.
 
 ## 10. Что не входит в ответственность handler
@@ -786,10 +820,10 @@ except BaseException as exc:
 
 Компактный terminal event `build_natal_failed` не включает `str(exception)`;
 текст исключения доступен только в полном DEBUG-событии `component_message`
-согласно ADR-0025/0026. Traceback допускается только в защищённом техническом
+согласно ADR-0025/0028. Traceback допускается только в защищённом техническом
 журнале согласно общей политике observability.
 
-Дополнительно, согласно ADR-0025/0026, публичная граница `handle` пишет на
+Дополнительно, согласно ADR-0025/0028, публичная граница `handle` пишет на
 `DEBUG` ровно два события `component_message`:
 
 - перед началом операции — `direction=in`, `operation=build_natal`,
@@ -807,8 +841,9 @@ except BaseException as exc:
 координаты, timezone-данные и полный расчётный результат. Этот payload не
 дублируется в terminal event уровня INFO/WARNING. Полный диагностический поток
 делает текущий стенд непригодным для публичного развёртывания до отдельного
-privacy-hardening решения ADR-0025/0026. Внутренние расчётные границы полную
-карту повторно не сериализуют: они возвращают summary.
+privacy-hardening решения ADR-0025/0028. Внутренние birth, artifact, engine и
+natal-границы также пишут полные входы и фактические выходы на DEBUG: summary-
+режима нет. Ниже DEBUG полный payload и logging-проекции не вычисляются.
 
 Cache hit/miss должен журналироваться самим `ChartArtifactResolver`, а не handler.
 
@@ -871,11 +906,11 @@ Cache hit/miss должен журналироваться самим `ChartArti
 19. Именно модуль `exact_orb.application.handlers.build_natal` не объявляет прямые импорты из списка §10.1. Проверка анализирует объявления импортов в одном модуле, а не весь runtime-граф. Используется `APPLICATION_BUILD_NATAL_FORBIDDEN_DIRECT_IMPORTS`.
 20. Handler не вызывает `apply_delta`/`touched`, не создаёт новый `SessionState`/`ChartRef` и не передаёт state зависимостям.
 21. Handler не назначает новую версию состояния.
-22. Валидатор `BuildNatalSuccess` отклоняет `RESET_DELTA` и несогласованные
-    `artifact.spec != delta.base_chart_spec`; оба сценария закреплены прямыми тестами и дают
-    `ValidationError`. Дополнительная defense-in-depth проверка
-    `artifact.chart_kind == delta.base_chart_spec.chart_kind` следует из инвариантов
-    `ChartArtifact` и отдельно не тестируется через обход валидации модели.
+22. Валидатор `BuildNatalSuccess` отклоняет `RESET_DELTA`, несовпадающую spec,
+    несогласованные kind/time_unknown и наличие исходного времени, чужие
+    время/координаты карты и ключ, не соответствующий delta/spec/version.
+    Каждый сценарий даёт `ValidationError`; при сборке handler журналирует
+    его как `build_natal_failed stage=build_result` и не возвращает success.
 23. В успешном сценарии resolver и artifact port получают тот же объект `RunContext`: `resolver.received_run is run` и `artifacts.received_run is run`.
 24. В short-circuit-сценарии resolver получает тот же объект `RunContext`, а artifact port не вызывается.
 25. `Command` и `BuildNatalCommand` frozen; попытка изменить поле команды отклоняется `ValidationError` с `type="frozen_instance"`.
@@ -891,7 +926,11 @@ Cache hit/miss должен журналироваться самим `ChartArti
 - существующие birth/calculation/session-модули не требуют изменения контрактов;
 - handler возвращает полную `StateDelta`, но не сохраняет её;
 - ошибки расчётного слоя корректно переводятся из существующих исключений в `CalculationFailed`;
+- `BuildNatalSuccess` отклоняет связь артефакта с чужими resolved data, spec
+  или ключом до возврата результата;
 - каждый начатый прогон имеет terminal event: `build_natal_completed` либо `build_natal_failed`;
+- полный input/output handler пишется только в DEBUG `component_message`, а
+  ниже DEBUG не сериализуется;
 - отмена перехватывается через `except BaseException` и повторно поднимается;
 - прямые импорты `build_natal.py` соответствуют отдельной application-границе;
 - модуль не зависит от transport, persistence, agent и LLM-слоёв.
@@ -1206,17 +1245,25 @@ Handler возвращает `InputRequired` без изменения даже 
 | `calculation_key` | `str` | Детерминированный ключ расчёта | Строка с префиксом `eo:calc:v1:` | `"eo:calc:v1:89f…"` |
 | `spec` | `ChartSpec` | Спецификация карты | В MVP — `NatalChartSpec` | См. полный natal-пример в разделе `NatalChartSpec` |
 | `calculation_version` | `str` | Отпечаток версии расчётного окружения | Непустая строка | `"sha256:c74a…"` |
-| `chart_kind` | `Literal["natal", "cosmogram"]` | Явный вид рассчитанной карты | `"natal"`, `"cosmogram"` | `"natal"` |
 | `chart` | `ArtifactNatalChart` | Рассчитанные позиции, дома, аспекты и другие блоки | Валидный результат ядра | `{"chart_kind":"natal","positions":[...],"houses":[...]}` |
-| `warnings` | `tuple[CalculationWarning, ...]` | Предупреждения расчётного ядра | Пустой tuple или набор предупреждений | `[]` |
 
 Инварианты:
 
 ```text
-artifact.chart_kind == artifact.spec.chart_kind
-artifact.chart_kind == artifact.chart.chart_kind
-artifact.warnings == artifact.chart.warnings
+artifact.chart.chart_kind == artifact.spec.chart_kind
+artifact.calculation_key == calculation_key(
+    calculation_input_from_chart(artifact.chart),
+    artifact.spec,
+    artifact.calculation_version,
+)
 ```
+
+House system и присутствие всех вычисленных блоков `artifact.chart` также
+обязаны соответствовать spec. Верхнеуровневых `chart_kind` и `warnings` у
+артефакта нет; предупреждения читаются из `artifact.chart.warnings`.
+Неизвестные поля запрещены. Отдельная `artifact_schema_version` не вводится:
+несовместимый storage payload отклоняется кодеком и пересчитывается
+(ADR-0027).
 
 ## Сообщение: `ArtifactNatalChart`
 
@@ -1245,7 +1292,8 @@ Handler не читает и не изменяет внутренние поля
 |---|---|---|---|---|
 | Состав определяется реализованной моделью `CalculationWarning` | `CalculationWarning` | Предупреждение о свойствах или ограничениях расчёта | Машиночитаемый код и описание согласно контракту engine | Предупреждение об ограничениях космограммы |
 
-`BuildNatalHandler` не создаёт и не редактирует эти предупреждения. Они передаются внутри `ChartArtifact`.
+`BuildNatalHandler` не создаёт и не редактирует эти предупреждения. Они
+передаются в `ChartArtifact.chart.warnings`.
 
 ## Сообщение: `StateDelta`
 
@@ -1265,16 +1313,26 @@ Handler не читает и не изменяет внутренние поля
 
 | Атрибут | Тип атрибута | Описание | Возможные значения | Пример |
 |---|---|---|---|---|
-| `artifact` | `ChartArtifact` | Полученная из кэша или рассчитанная карта | Валидный `ChartArtifact` | Ключ `eo:calc:v1:89f…`, полный natal `spec`, `chart_kind="natal"` |
+| `artifact` | `ChartArtifact` | Полученная из кэша или рассчитанная карта | Валидный `ChartArtifact` | Ключ `eo:calc:v1:89f…`, полный natal `spec`, `chart.chart_kind="natal"` |
 | `delta` | `StateDelta` | Полная дельта для последующего commit | Полностью заполненный `StateDelta` | `BirthInput` + `ResolvedBirthData` + полный natal `NatalChartSpec` |
 
 `BuildNatalSuccess` ещё не означает, что состояние сессии сохранено. Модель frozen. Валидатор выполняет проверки строго в следующем порядке:
 
 1. `delta.birth_input`, `delta.birth_resolved` и `delta.base_chart_spec` не равны `None`;
 2. `artifact.spec == delta.base_chart_spec`;
-3. `artifact.chart_kind == delta.base_chart_spec.chart_kind` — производная проверка, defense-in-depth.
+3. `delta.base_chart_spec.chart_kind == "cosmogram"` тогда и только тогда,
+   когда `delta.birth_resolved.time_unknown == true`;
+4. `delta.birth_input.birth_time is None` тогда и только тогда, когда
+   `delta.birth_resolved.time_unknown == true`;
+5. `calculation_input_from_chart(artifact.chart) ==
+   calculation_input_from(delta.birth_resolved)`;
+6. `artifact.calculation_key` равен ключу, заново вычисленному из
+   `delta.birth_resolved`, `delta.base_chart_spec` и
+   `artifact.calculation_version`.
 
-Каждое нарушение поднимает `ValueError` и становится `pydantic.ValidationError`. Проверка заполненности выполняется первой, чтобы `RESET_DELTA` не приводила к обращению `None.chart_kind` и сырому `TypeError`.
+Каждое нарушение поднимает `ValueError` и становится
+`pydantic.ValidationError`. Проверка заполненности выполняется первой, чтобы
+`RESET_DELTA` не приводила к обращению `None.chart_kind` и сырому `TypeError`.
 
 ## Сообщение: `CalculationFailed`
 

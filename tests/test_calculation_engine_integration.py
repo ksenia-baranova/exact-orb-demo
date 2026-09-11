@@ -31,7 +31,6 @@ async def test_engine_service_natal_matches_direct_calculate_natal() -> None:
         service = _service(executor)
         result = await service.calculate(spec, resolved, run=_run())
 
-    assert result.chart_kind == "natal"
     assert result.chart.chart_kind == "natal"
     assert result.chart.house_system == "P"
     assert direct.house_system == "P"
@@ -39,7 +38,7 @@ async def test_engine_service_natal_matches_direct_calculate_natal() -> None:
     assert direct.bodies is not None
     assert result.chart.bodies["sun"].longitude == pytest.approx(direct.bodies["sun"].longitude)
     assert result.chart.cusps is not None
-    assert result.warnings == result.chart.warnings
+    assert isinstance(result.chart.warnings, tuple)
 
 
 async def test_engine_service_cosmogram_matches_direct_calculate_natal() -> None:
@@ -51,7 +50,6 @@ async def test_engine_service_cosmogram_matches_direct_calculate_natal() -> None
         service = _service(executor)
         result = await service.calculate(spec, resolved, run=_run())
 
-    assert result.chart_kind == "cosmogram"
     assert result.chart.chart_kind == "cosmogram"
     assert result.chart.bodies is not None
     assert direct.bodies is not None
@@ -59,7 +57,7 @@ async def test_engine_service_cosmogram_matches_direct_calculate_natal() -> None
     assert result.chart.cusps is None
     assert result.chart.house_rulers is None
     assert result.chart.strength is None
-    assert result.warnings == result.chart.warnings
+    assert isinstance(result.chart.warnings, tuple)
 
 
 async def test_engine_service_maps_real_high_latitude_placidus_to_houses_degenerate() -> None:
@@ -104,20 +102,19 @@ def test_natal_boundary_messages_are_complete_and_step_events_stay_compact(
     assert "37.6155" in boundary_logs[0]
     assert "direction=out" in boundary_logs[1]
     assert "calculation_key=-" in boundary_logs[1]
-    assert "payload_mode=summary" in boundary_logs[1]
-    assert "message_type=NatalChartSummary" in boundary_logs[1]
-    assert '"bodies":' not in boundary_logs[1]
-    assert '"sun":' not in boundary_logs[1]
-    summary = json.loads(boundary_logs[1].partition(" message=")[2])
-    assert summary == {
-        "aspect_count": len(chart.aspects or ()),
-        "body_count": len(chart.bodies or ()),
-        "chart_kind": chart.chart_kind,
-        "configuration_count": len(chart.configurations or ()),
-        "has_houses": chart.cusps is not None,
-        "has_strength": chart.strength is not None,
-        "warning_count": len(chart.warnings),
-    }
+    assert "payload_mode=full" in boundary_logs[1]
+    assert "message_type=NatalChart" in boundary_logs[1]
+    payload = json.loads(boundary_logs[1].partition(" message=")[2])
+    assert payload == chart.model_dump(mode="json")
+    assert payload["chart_kind"] == "natal"
+    assert payload["datetime_utc"] == "1985-09-01T20:45:00Z"
+    assert payload["latitude"] == REFERENCE["latitude"]
+    assert payload["longitude"] == REFERENCE["longitude"]
+    assert "sun" in payload["bodies"]
+    assert "aspects" in payload
+    assert "configurations" in payload
+    assert "strength" in payload
+    assert "warnings" in payload
 
     assert start_logs
     assert "1985-09-01" not in "\n".join(start_logs)

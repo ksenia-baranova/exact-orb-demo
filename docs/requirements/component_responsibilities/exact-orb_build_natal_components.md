@@ -378,9 +378,7 @@ ChartArtifact {
     calculation_key:      str
     spec:                 ChartSpec
     calculation_version:  str
-    chart_kind:           Literal["natal", "cosmogram"]
-    chart:                NatalChart
-    warnings:             tuple[CalculationWarning, ...]
+    chart:                ArtifactNatalChart
 }
 ```
 
@@ -388,13 +386,12 @@ ChartArtifact {
 (Плацидус). Поле остаётся частью спеки, сериализации и ключа как точка
 расширения, но неподдерживаемый код отклоняется, а не молча заменяется на `P`.
 
-`chart_kind` дублируется на верхнем уровне артефакта сознательно: И-8
-запрещает выводить вид карты по отсутствию домов, и потребителю артефакта
-не должно требоваться заглядывать внутрь `NatalChart`, чтобы узнать вид.
-
-`warnings` поднимаются на уровень артефакта, потому что по И-7 они обязаны
-дойти до промпта, а `InterpretationService` работает с артефактом, не
-с внутренностями движка.
+`ChartSpec.chart_kind` — каноническое намерение, а `chart.chart_kind` —
+проверенный материализованный результат. Вид карты не выводится по отсутствию
+домов (И-8), но отдельная верхнеуровневая копия для этого не нужна.
+Предупреждения принадлежат `chart.warnings`; потребитель артефакта получает их
+через карту. Артефакт при создании и декодировании проверяет chart против spec
+и пересчитывает ключ из chart/spec/calculation version (ADR-0027).
 
 ---
 
@@ -708,9 +705,7 @@ gzip-6 от UTF-8 JSON и выполняет обратную валидацию
 
 ```text
 CalculationResult {
-    chart_kind: Literal["natal", "cosmogram"]
-    chart:      NatalChart
-    warnings:   tuple[CalculationWarning, ...]
+    chart: NatalChart
 }
 
 class CalculationEnginePort(Protocol):
@@ -779,11 +774,11 @@ def _calculate_sync(...):
    `calculation_key` и `calculation_version`; эти поля добавляет
    `ChartArtifactResolver`.
 
-4. Проверка инварианта результата:
-   `result.chart_kind == spec.chart_kind` и
-   `result.chart.chart_kind == spec.chart_kind`. Несовпадение — дефект
-   адаптера, оно приводится к `ChartCalculationError(ENGINE_UNEXPECTED)`
-   и не попадает в кэш.
+4. Проверка инварианта результата: kind, нормализованный house system и состав
+   блоков `result.chart` соответствуют spec; точное UTC-время и
+   нормализованные координаты соответствуют resolved. Несовпадение — дефект
+   адаптера, оно приводится к `ChartCalculationError(ENGINE_UNEXPECTED)` и не
+   попадает в кэш.
 
 5. Приведение `ValueError` движка к `ChartCalculationError` с кодом. Пример
    из кода: Placidus вырождается на высоких широтах и `calculate_houses`
@@ -839,9 +834,7 @@ artifact = ChartArtifact(
     calculation_key=key,
     calculation_version=self.version,
     spec=spec,
-    chart_kind=result.chart_kind,
     chart=result.chart,
-    warnings=result.warnings,
 )
 await self.cache.put(key, encode_chart_artifact(artifact))
 return artifact
@@ -850,10 +843,16 @@ return artifact
 **Чего не делает.** Не пишет в сессию; не знает `state_version`; не решает,
 становится ли карта активной.
 
+При попадании resolver принимает только строгий `ChartArtifact` с текущими
+key/spec/version и с `CalculationInput` карты, равным входу запроса.
+Несовместимая форма — `cache_corrupt`, внутренне валидный, но чужой текущему
+запросу артефакт — `cache_stale`; оба случая fail-open ведут к пересчёту.
+Отдельная `artifact_schema_version` не вводится (ADR-0027).
+
 **Тесты.** Промах вызывает движок ровно один раз; попадание не вызывает его
 вовсе; смена переданного `version` даёт промах на тех же данных; два вызова
-с одинаковыми аргументами возвращают равные артефакты; нечитаемые байты
-отбрасываются как corrupt cache и ведут к новому расчёту.
+с одинаковыми аргументами возвращают равные артефакты; нечитаемые байты и
+артефакты с нарушенной внутренней identity ведут к новому расчёту.
 
 ---
 
@@ -1454,6 +1453,23 @@ spec = NatalChartSpec(chart_kind=chart_kind)
 
 4. Сформировать all-set `StateDelta`; новую версию handler не вычисляет.
 
+5. Собрать `BuildNatalSuccess`. Его модель требует полностью заполненный
+   delta, точное равенство artifact spec и `base_chart_spec`, согласованность
+   kind с `time_unknown`, согласованность наличия исходного времени,
+   совпадение расчётной проекции chart с `birth_resolved` и ключ, заново
+   вычисленный из delta/spec/version. Нарушение даёт
+   `pydantic.ValidationError`; handler пишет `build_natal_failed` с этапом
+   `build_result` и не возвращает противоречивый success.
+
+**Компонентный DEBUG-журнал.** По ADR-0025/0028 все пять реализованных границ
+(`BuildNatalHandler`, `BirthDataResolver`, `ChartArtifactResolver`,
+`EngineService`, `calculate_natal`) пишут полный вход и полный фактический
+выход в `component_message`. Успех имеет `payload_mode=full`, ошибка —
+`payload_mode=error`; summary-режима нет. `run_id` связывает проход, а полный
+`calculation_key` появляется там, где уже вычислен. Ниже effective DEBUG
+payload, projector и JSON не вычисляются. Это намеренный режим локального
+стенда и блокер публичного развёртывания до отдельного privacy-hardening.
+
 **Чего не делает.** Не сохраняет состояние сам — возвращает дельту,
 сохраняет оркестратор (ADR-0006). Не знает про `run_id` больше, чем нужно
 для лога. Не вызывает `Agent Runtime`, `Planner`, `ToolExecutor` и LLM
@@ -1669,14 +1685,15 @@ ADR-0012 требует до перехода к background execution измер
 | B-1 | Техническая ошибка никогда не становится `InputRequired` | resolver, engine, store |
 | B-2 | Успех возвращается только после подтверждённого commit | orchestrator |
 | B-3 | Устаревший результат не меняет состояние; равное намерение даёт `AlreadyApplied`, иное — `Superseded` | store CAS + ContextService |
-| B-4 | `chart_kind` — явное поле, не выводится по отсутствию домов (И-8) | spec, artifact, DTO |
+| B-4 | `chart_kind` — явное поле, не выводится по отсутствию домов (И-8); spec задаёт намерение, chart хранит проверенный результат | spec, chart |
 | B-5 | Один `calculation_key` для UI-пути и agent-пути (ADR-0002) | тест на два пути |
 | B-6 | Ключ восстановим из `ChartSpec` и `ResolvedBirthData` (И-12) | keys |
 | B-7 | Обновление эфемерид инвалидирует кэш | механизм: version + artifacts; application wiring: C3 |
 | B-8 | Build-путь не импортирует `agent/`, `tools/`, `intent/` | тест на импорты |
-| B-9 | Предупреждения расчёта доходят до артефакта (И-7) | engine, artifact |
-| B-10 | Персональные данные не попадают в журнал (И-14) | logging |
+| B-9 | Предупреждения расчёта доходят до `artifact.chart.warnings` без wrapper-дубликатов (И-7) | engine, artifact |
+| B-10 | Полные персональные и расчётные данные пишутся только в DEBUG `component_message`; технические INFO/WARNING остаются компактными | logging |
 | B-11 | N7 и N8 повторяют CAS с original expected; скрытого rebase нет | ContextService + application |
+| B-12 | Успех связывает resolved birth data, spec, chart и `calculation_key`; локально валидные части нельзя собрать в противоречивый результат | engine, artifact, `BuildNatalSuccess` |
 
 B-8 в виде теста на импорты стоит дёшево и ловит самое вероятное нарушение
 разделения двух уровней оркестрации.

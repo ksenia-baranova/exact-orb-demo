@@ -187,9 +187,10 @@ deactivate Artifacts
 
 note over A, B
 Каждый выход resolver пишет собственный run_id
-и общий полный calculation_key в
-ChartArtifactSummary(cache_outcome = miss).
-Полный chart не сериализуется ни для A, ни для B.
+и общий полный calculation_key в envelope.
+Каждый DEBUG-выход содержит полный ChartArtifact;
+cache_outcome остаётся в технических событиях
+(ADR-0028).
 end note
 
 

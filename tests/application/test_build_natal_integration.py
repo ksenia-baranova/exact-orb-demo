@@ -7,6 +7,7 @@ from concurrent.futures import ThreadPoolExecutor
 from contextlib import contextmanager
 from dataclasses import dataclass
 from datetime import date, time
+import json
 import logging
 from pathlib import Path
 
@@ -133,7 +134,6 @@ async def test_real_natal_path_caches_and_correlates_run_id(
 
         assert isinstance(first, BuildNatalSuccess)
         assert first.artifact.spec == first.delta.base_chart_spec
-        assert first.artifact.chart_kind == "natal"
         assert first.artifact.chart.chart_kind == "natal"
         assert first.artifact.calculation_key.startswith("eo:calc:v1:")
         assert first.delta.birth_input is command.birth_input
@@ -210,10 +210,16 @@ async def test_real_natal_path_caches_and_correlates_run_id(
     assert len(natal_boundaries) == 2
     assert "direction=in" in natal_boundaries[0].getMessage()
     assert "direction=out" in natal_boundaries[1].getMessage()
-    assert "payload_mode=summary" in natal_boundaries[1].getMessage()
-    assert "message_type=NatalChartSummary" in natal_boundaries[1].getMessage()
-    assert '"bodies":' not in natal_boundaries[1].getMessage()
-    assert '"sun":' not in natal_boundaries[1].getMessage()
+    assert "payload_mode=full" in natal_boundaries[1].getMessage()
+    assert "message_type=NatalChart" in natal_boundaries[1].getMessage()
+    natal_payload = json.loads(
+        natal_boundaries[1].getMessage().partition(" message=")[2]
+    )
+    assert "sun" in natal_payload["bodies"]
+    assert "aspects" in natal_payload
+    assert "configurations" in natal_payload
+    assert "strength" in natal_payload
+    assert "warnings" in natal_payload
 
     artifact_outputs = [
         record.getMessage()
@@ -225,12 +231,18 @@ async def test_real_natal_path_caches_and_correlates_run_id(
         if "direction=out" in record.getMessage()
     ]
     assert len(artifact_outputs) == 2
-    assert all("payload_mode=summary" in message for message in artifact_outputs)
-    assert all("message_type=ChartArtifactSummary" in message for message in artifact_outputs)
-    assert all('"chart":' not in message for message in artifact_outputs)
+    assert all("payload_mode=full" in message for message in artifact_outputs)
+    assert all("message_type=ChartArtifact" in message for message in artifact_outputs)
     assert all(
         f"calculation_key={first.artifact.calculation_key}" in message
         for message in artifact_outputs
+    )
+    artifact_payloads = [
+        json.loads(message.partition(" message=")[2]) for message in artifact_outputs
+    ]
+    assert all(
+        payload == first.artifact.model_dump(mode="json")
+        for payload in artifact_payloads
     )
 
     handler_output = next(
@@ -249,10 +261,65 @@ async def test_real_natal_path_caches_and_correlates_run_id(
     assert '"artifact":' in handler_output
     assert '"chart":' in handler_output
 
+    birth_output = next(
+        record.getMessage()
+        for record in _event_records(
+            caplog,
+            logger=BIRTH_LOGGER,
+            event="component_message",
+        )
+        if f"run_id={first_run.run_id}" in record.getMessage()
+        and "direction=out" in record.getMessage()
+    )
+    engine_output = next(
+        record.getMessage()
+        for record in _event_records(
+            caplog,
+            logger=ENGINE_LOGGER,
+            event="component_message",
+        )
+        if f"run_id={first_run.run_id}" in record.getMessage()
+        and "direction=out" in record.getMessage()
+    )
+    first_artifact_output = next(
+        message
+        for message in artifact_outputs
+        if f"run_id={first_run.run_id}" in message
+    )
+    birth_payload = json.loads(birth_output.partition(" message=")[2])
+    calculation_payload = json.loads(engine_output.partition(" message=")[2])
+    artifact_payload = json.loads(first_artifact_output.partition(" message=")[2])
+    handler_payload = json.loads(handler_output.partition(" message=")[2])
+
+    assert "message_type=ResolvedBirthData" in birth_output
+    assert "payload_mode=full" in birth_output
+    assert "message_type=CalculationResult" in engine_output
+    assert "payload_mode=full" in engine_output
+    assert birth_payload == first.delta.birth_resolved.model_dump(mode="json")
+    assert calculation_payload["chart"] == natal_payload
+    for field in (
+        "chart_kind",
+        "datetime_utc",
+        "latitude",
+        "longitude",
+        "house_system",
+        "bodies",
+        "aspects",
+        "configurations",
+        "strength",
+        "warnings",
+    ):
+        assert artifact_payload["chart"][field] == calculation_payload["chart"][field]
+    assert handler_payload["artifact"] == artifact_payload
+    assert handler_payload["delta"]["birth_resolved"] == birth_payload
+    assert artifact_payload["chart"]["datetime_utc"] == birth_payload["utc_datetime"]
+    assert artifact_payload["chart"]["latitude"] == birth_payload["latitude"]
+    assert artifact_payload["chart"]["longitude"] == birth_payload["longitude"]
+
     assert serialized_types.count("BuildNatalSuccess") == 2
-    assert "NatalChart" not in serialized_types
-    assert "CalculationResult" not in serialized_types
-    assert "ChartArtifact" not in serialized_types
+    assert serialized_types.count("NatalChart") == 1
+    assert serialized_types.count("CalculationResult") == 1
+    assert serialized_types.count("ChartArtifact") == 2
 
 
 async def test_real_unknown_time_path_builds_cosmogram() -> None:
@@ -270,7 +337,6 @@ async def test_real_unknown_time_path_builds_cosmogram() -> None:
         assert result.delta.base_chart_spec is not None
         assert result.delta.base_chart_spec.chart_kind == "cosmogram"
         assert result.artifact.spec.chart_kind == "cosmogram"
-        assert result.artifact.chart_kind == "cosmogram"
         assert result.artifact.chart.chart_kind == "cosmogram"
         assert result.artifact.chart.cusps is None
         assert result.artifact.chart.angles is None

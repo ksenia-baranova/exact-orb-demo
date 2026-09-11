@@ -76,11 +76,12 @@ activate Handler
 Handler -> Artifacts : ensure_chart(spec, resolved, run=run)
 Artifacts -> Engine : calculate(spec, resolved, run=run)
 Engine --> Artifacts : CalculationResult
-Artifacts -> Artifacts : ChartArtifact(key, version, result)
+Artifacts -> Artifacts : ChartArtifact(key, spec, version, chart)\nvalidate chart ↔ spec; recalculate key
 Artifacts -> Cache : put(key, bytes)
 Artifacts --> Handler : ChartArtifact
 
 Handler -> Handler : StateDelta(\nbirth_input, birth_resolved,\nbase_chart_spec = spec)
+Handler -> Handler : BuildNatalSuccess(artifact, delta)\nvalidate delta ↔ spec ↔ chart ↔ key
 
 Handler --> Orch : BuildNatalSuccess(artifact, delta)
 deactivate Handler

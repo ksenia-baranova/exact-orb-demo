@@ -14,7 +14,7 @@ from typing import Literal, TypeVar
 
 MessageDirection = Literal["in", "out"]
 MessageStatus = Literal["ok", "error"]
-PayloadMode = Literal["full", "summary", "error"]
+PayloadMode = Literal["full", "error"]
 R = TypeVar("R")
 
 
@@ -28,10 +28,9 @@ async def log_async_component_call(
     call: Callable[[], Awaitable[R]],
     result_projector: Callable[[R], object] | None = None,
     result_message_type: str | None = None,
-    result_payload_mode: Literal["full", "summary"] = "full",
     result_calculation_key: Callable[[R], object | None] | None = None,
 ) -> R:
-    """Run an async boundary with an explicit full or summary result payload."""
+    """Run an async boundary with complete request and result payloads."""
 
     log_component_message(
         logger,
@@ -70,7 +69,6 @@ async def log_async_component_call(
         calculation_key=calculation_key,
         message=logged_result,
         message_type=result_message_type,
-        payload_mode=result_payload_mode,
     )
     return result
 
@@ -85,10 +83,9 @@ def log_sync_component_call(
     call: Callable[[], R],
     result_projector: Callable[[R], object] | None = None,
     result_message_type: str | None = None,
-    result_payload_mode: Literal["full", "summary"] = "full",
     result_calculation_key: Callable[[R], object | None] | None = None,
 ) -> R:
-    """Run a sync boundary with an explicit full or summary result payload."""
+    """Run a sync boundary with complete request and result payloads."""
 
     log_component_message(
         logger,
@@ -127,7 +124,6 @@ def log_sync_component_call(
         calculation_key=calculation_key,
         message=logged_result,
         message_type=result_message_type,
-        payload_mode=result_payload_mode,
     )
     return result
 
@@ -144,7 +140,7 @@ def log_component_message(
     status: MessageStatus = "ok",
     payload_mode: PayloadMode = "full",
 ) -> None:
-    """Log one full, summary, or error boundary payload as single-line JSON."""
+    """Log one complete success or error boundary payload as single-line JSON."""
 
     if not logger.isEnabledFor(logging.DEBUG):
         return

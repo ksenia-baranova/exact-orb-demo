@@ -146,7 +146,7 @@ def project_chart_features(artifact: ChartArtifact, /) -> ChartFeatures:
             )
 
         return ChartFeatures(
-            chart_kind=artifact.chart_kind,
+            chart_kind=chart.chart_kind,
             bodies=bodies,
             angles=angles,
             aspects=aspects,

@@ -43,7 +43,7 @@ def decode_chart_artifact(payload: bytes) -> ChartArtifact:
 
     try:
         return ChartArtifact.model_validate_json(json_payload)
-    except ValidationError:
+    except (ValidationError, TypeError, ValueError):
         raise ChartArtifactDecodeError("validation") from None
 
 

@@ -37,9 +37,9 @@ BASE_UTC = datetime(1990, 9, 2, 10, 30, 45, tzinfo=timezone.utc)
 EPHE_FILES = ("sepl_18.se1", "semo_18.se1", "seas_18.se1")
 SENSITIVE_WARNING = "sensitive warning for 55.7558 37.6173 at 1990-09-02"
 
-# baseline: 55f0f03 + vendored ephe/*.se1; recalculate only for an intentional
-# ephemeris or serialized-schema update, never for this refactor's new result.
-NATAL_ARTIFACT_JSON_BASELINE_SHA256 = "439c597cfd65e9de809b8222c827c3f5721fedc0945d80415de960852e25d2af"
+# baseline: normalized ChartArtifact schema + vendored ephe/*.se1; recalculate
+# only for an intentional ephemeris or serialized-schema update.
+NATAL_ARTIFACT_JSON_BASELINE_SHA256 = "06eb12e35a3863f8b0cbeb733f5ca601ff526b5caf0b92cf40152b166a91bb49"
 
 
 def test_chart_artifact_normalizes_raw_chart_to_artifact_safe_chart() -> None:
@@ -76,27 +76,78 @@ def test_chart_artifact_top_level_model_is_frozen() -> None:
     artifact = _artifact()
 
     with pytest.raises(ValidationError):
-        artifact.chart_kind = "cosmogram"  # type: ignore[misc]
+        artifact.calculation_version = "other-version"  # type: ignore[misc]
+
+
+def test_chart_artifact_has_only_canonical_top_level_fields() -> None:
+    artifact = _artifact()
+
+    assert set(ChartArtifact.model_fields) == {
+        "calculation_key",
+        "spec",
+        "calculation_version",
+        "chart",
+    }
+    assert not hasattr(artifact, "chart_kind")
+    assert not hasattr(artifact, "warnings")
+    assert artifact.chart.chart_kind == "natal"
+    assert artifact.chart.warnings == (_warning(SENSITIVE_WARNING),)
+
+
+def test_chart_artifact_rejects_unknown_top_level_fields() -> None:
+    payload = _artifact().model_dump(mode="python")
+    payload["unexpected"] = "value"
+
+    with pytest.raises(ValidationError, match="unexpected"):
+        ChartArtifact.model_validate(payload)
+
+
+def test_artifact_chart_identity_is_frozen() -> None:
+    artifact = _artifact()
+
+    with pytest.raises(ValidationError):
+        artifact.chart.longitude = 0.0  # type: ignore[misc]
 
 
 def test_chart_artifact_validates_identity_fields() -> None:
     chart = _raw_chart()
-    warnings = chart.warnings
 
     with pytest.raises(ValidationError, match="calculation_key"):
         _artifact(chart=chart, key="bad-prefix")
 
+    with pytest.raises(ValidationError, match="calculation_key"):
+        _artifact(chart=chart, key=KEY_PREFIX + "f" * 64)
+
     with pytest.raises(ValidationError, match="calculation_version"):
         _artifact(chart=chart, version="")
 
-    with pytest.raises(ValidationError, match="spec.chart_kind"):
-        _artifact(chart=chart, spec=NatalChartSpec(chart_kind="cosmogram"), chart_kind="natal")
-
     with pytest.raises(ValidationError, match="chart.chart_kind"):
-        _artifact(chart=_raw_chart(chart_kind="cosmogram"), spec=NatalChartSpec(chart_kind="natal"), chart_kind="natal")
+        _artifact(
+            chart=chart,
+            spec=NatalChartSpec(chart_kind="cosmogram", include=("positions",)),
+        )
 
-    with pytest.raises(ValidationError, match="warnings"):
-        _artifact(chart=chart, warnings=warnings + (_warning("extra"),))
+    with pytest.raises(ValidationError, match="chart block 'positions'"):
+        _artifact(chart=chart.model_copy(update={"bodies": None}))
+
+    with pytest.raises(ValidationError, match="house_system"):
+        _artifact(chart=chart.model_copy(update={"house_system": "K"}))
+
+
+def test_chart_artifact_accepts_key_derived_from_chart_spec_and_version() -> None:
+    artifact = _artifact()
+
+    expected = calculation_key(
+        CalculationInput(
+            utc_datetime=artifact.chart.datetime_utc,
+            latitude=artifact.chart.latitude,
+            longitude=artifact.chart.longitude,
+        ),
+        artifact.spec,
+        artifact.calculation_version,
+    )
+
+    assert artifact.calculation_key == expected
 
 
 def test_encode_returns_deterministic_gzip_bytes_with_utf8_json_payload() -> None:
@@ -110,12 +161,14 @@ def test_encode_returns_deterministic_gzip_bytes_with_utf8_json_payload() -> Non
     assert isinstance(first, bytes)
     assert first == second
     assert payload["calculation_key"] == artifact.calculation_key
+    assert "chart_kind" not in payload
+    assert "warnings" not in payload
     assert payload["chart"]["ephemeris"]["mode"] == "files"
     assert "path" not in payload["chart"]["ephemeris"]
     assert "source" not in payload["chart"]["ephemeris"]
 
 
-def test_reference_natal_artifact_json_matches_pre_refactor_baseline() -> None:
+def test_reference_natal_artifact_json_matches_normalized_schema_baseline() -> None:
     configure_ephemeris(REPO_ROOT / "ephe", selena_method="true_perigee")
     chart = calculate_natal(
         REFERENCE["datetime_utc"],
@@ -124,13 +177,21 @@ def test_reference_natal_artifact_json_matches_pre_refactor_baseline() -> None:
         chart_kind="natal",
         house_system=REFERENCE["house_system"],
     )
+    spec = NatalChartSpec(chart_kind="natal")
+    version = "baseline-version"
     artifact = ChartArtifact(
-        calculation_key=KEY_PREFIX + "0" * 64,
-        spec=NatalChartSpec(chart_kind="natal"),
-        calculation_version="baseline-version",
-        chart_kind="natal",
+        calculation_key=calculation_key(
+            CalculationInput(
+                utc_datetime=chart.datetime_utc,
+                latitude=chart.latitude,
+                longitude=chart.longitude,
+            ),
+            spec,
+            version,
+        ),
+        spec=spec,
+        calculation_version=version,
         chart=chart,
-        warnings=chart.warnings,
     )
 
     digest = sha256(artifact.model_dump_json().encode("utf-8")).hexdigest()
@@ -154,10 +215,10 @@ def test_mutating_decoded_nested_chart_does_not_affect_next_decode() -> None:
     encoded = encode_chart_artifact(artifact)
     first = decode_chart_artifact(encoded)
 
-    first.chart.longitude = 0.0
+    first.chart.warnings[0].message = "changed"
     second = decode_chart_artifact(encoded)
 
-    assert second.chart.longitude == artifact.chart.longitude
+    assert second.chart.warnings[0].message == SENSITIVE_WARNING
 
 
 @pytest.mark.parametrize(
@@ -247,6 +308,23 @@ def test_decode_validation_error_text_does_not_expose_payload_or_pydantic_detail
     assert "ValidationError" not in text
 
 
+def test_decode_rejects_legacy_duplicate_top_level_fields() -> None:
+    artifact = _artifact()
+    payload = _decoded_json_payload(artifact)
+    payload["chart_kind"] = artifact.chart.chart_kind
+    payload["warnings"] = [warning.model_dump(mode="json") for warning in artifact.chart.warnings]
+    legacy = gzip.compress(
+        json.dumps(payload, separators=(",", ":")).encode("utf-8"),
+        compresslevel=6,
+        mtime=0,
+    )
+
+    with pytest.raises(ChartArtifactDecodeError) as exc_info:
+        decode_chart_artifact(legacy)
+
+    assert exc_info.value.reason == "validation"
+
+
 def _raw_chart(
     *,
     chart_kind: str = "natal",
@@ -272,8 +350,8 @@ def _raw_chart(
         ),
         selena_method="true_perigee",
         bodies={},
-        cusps=None,
-        angles=None,
+        cusps=(),
+        angles={},
         house_rulers=None,
         interceptions=None,
         aspects=None,
@@ -287,15 +365,14 @@ def _artifact(
     *,
     chart: NatalChart | ArtifactNatalChart | None = None,
     spec: NatalChartSpec | None = None,
-    chart_kind: str | None = None,
-    warnings: tuple[CalculationWarning, ...] | None = None,
     key: str | None = None,
     version: str = "test-version-1",
 ) -> ChartArtifact:
     chart = chart or _raw_chart()
-    spec = spec or NatalChartSpec(chart_kind=chart.chart_kind)
-    chart_kind = chart_kind or chart.chart_kind
-    warnings = warnings if warnings is not None else chart.warnings
+    spec = spec or NatalChartSpec(
+        chart_kind=chart.chart_kind,
+        include=("houses", "positions") if chart.chart_kind == "natal" else ("positions",),
+    )
     key = key or calculation_key(
         CalculationInput(
             utc_datetime=chart.datetime_utc,
@@ -309,9 +386,7 @@ def _artifact(
         calculation_key=key,
         spec=spec,
         calculation_version=version,
-        chart_kind=chart_kind,
         chart=chart,
-        warnings=warnings,
     )
 
 

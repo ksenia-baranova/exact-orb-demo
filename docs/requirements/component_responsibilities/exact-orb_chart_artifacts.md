@@ -309,11 +309,13 @@ if payload is not None:
    in-memory он no-op, и оборачивать каждый вызов в `wait_for` там незачем.
    Резолвер видит только исключение и обрабатывает его fail-open.
 2. **Defensive-проверка на попадании — и она в норме сработать не может.**
-   Проверяются два равенства:
+   После строгого декодирования проверяются четыре равенства:
 
 ```text
 hit.calculation_version == self.version
 hit.calculation_key     == key
+hit.spec                == spec
+calculation_input_from_chart(hit.chart) == requested_calculation_input
 ```
 
    Переданный `calculation_version` входит в хэш ключа (§3.1). Значит после выкатки
@@ -322,8 +324,10 @@ hit.calculation_key     == key
    а не вернёт чужую запись. Пережившие деплой записи в общем Redis — это
    вопрос занимаемой памяти (§8.5, п. 2), а не корректности выдачи.
 
-   Поэтому несовпадение возможно **только там, где ключ перестал честно
-   кодировать входы**:
+   Сам `ChartArtifact` при декодировании дополнительно пересчитывает свой ключ
+   из вложенных chart/spec/version. Поэтому stale означает валидный сам по
+   себе артефакт, который не соответствует текущему запросу. Несовпадение
+   возможно **только там, где нарушено хранение или адресация**:
 
    - дефект в `calculation_key` — из ключа выпала `version`, изменился
      состав или порядок сериализации;
@@ -429,10 +433,9 @@ process-wide RLock'ом: пять параллельных промахов по
 
 ```text
 result   = await self.engine.calculate(spec, resolved, run=run)
-assert_result_matches_spec(result, spec)
 artifact = ChartArtifact(
     calculation_key=key, calculation_version=self.version, spec=spec,
-    chart_kind=result.chart_kind, chart=result.chart, warnings=result.warnings,
+    chart=result.chart,
 )
 ```
 
@@ -442,11 +445,12 @@ artifact = ChartArtifact(
    движка — см. §4. Но именно он собирает `ChartArtifact`: поля идентичности
    (`calculation_key`, `calculation_version`) принадлежат ему, движок о них
    не знает.
-2. После возврата движка проверяется инвариант результата:
-   `result.chart_kind == spec.chart_kind` и
-   `result.chart.chart_kind == spec.chart_kind`. Нарушение трактуется как
-   `ChartCalculationError(ENGINE_UNEXPECTED)`, не пишется в кэш и выходит
-   тем же путём, что прочие ошибки расчёта.
+2. `EngineService` до возврата проверяет `result.chart` против `spec` и
+   `resolved`: kind, house system, состав `include`, точное UTC-время и
+   нормализованные координаты. Конструктор `ChartArtifact` повторно проверяет
+   chart против spec и пересчитывает ключ из карты. Нарушение трактуется как
+   `ChartCalculationError(ENGINE_UNEXPECTED)`, не пишется в кэш и выходит тем
+   же путём, что прочие ошибки расчёта.
 3. Расчёт выполняется вне event loop (`run_in_executor`).
 4. **Таймаута нет.** Обоснование: `asyncio.wait_for` вокруг `run_in_executor`
    не прерывает выполняющийся поток — Python не умеет отменять
@@ -568,11 +572,12 @@ class NatalTechniqueAdapter(TechniqueAdapter):
 
 ```text
 CalculationResult {
-    chart_kind: Literal["natal", "cosmogram"]
-    chart:      NatalChart
-    warnings:   tuple[CalculationWarning, ...]
+    chart: NatalChart
 }
 ```
+
+`chart_kind`, `warnings` и все вычисленные блоки принадлежат `NatalChart` и не
+дублируются в транспортном результате (ADR-0027).
 
 `ChartArtifact` собирает **`ChartArtifactResolver`**, добавляя поля
 идентичности, которых у движка нет:
@@ -582,9 +587,7 @@ ChartArtifact(
     calculation_key     = key,           ← знает только резолвер
     calculation_version = self.version,  ← знает только резолвер
     spec                = spec,
-    chart_kind          = result.chart_kind,
     chart               = result.chart,
-    warnings            = result.warnings,
 )
 ```
 
@@ -872,9 +875,7 @@ ChartArtifact {
     calculation_key:      str
     spec:                 ChartSpec
     calculation_version:  str
-    chart_kind:           Literal["natal", "cosmogram"]
-    chart:                NatalChart
-    warnings:             tuple[CalculationWarning, ...]
+    chart:                ArtifactNatalChart
 }
 ```
 
@@ -882,15 +883,20 @@ ChartArtifact {
 
 1. `calculation_key` соответствует переданной паре `(spec, resolved)`
    и текущей `version`.
-2. `warnings` подняты на верхний уровень: `InterpretationService` работает
-   с артефактом, а не с внутренностями движка (И-7).
-3. `chart_kind` доступен без заглядывания внутрь `NatalChart` (И-8).
-4. Поля идентичности артефакта заморожены через
-   `model_config = ConfigDict(frozen=True)`, но вложенный `chart` остаётся
-   mutable для совместимости с моделями движка. Поэтому один объектный граф
-   не возвращается нескольким вызывающим: на выходе resolver делает глубокую
-   копию результата общей task. Мутация результата одним вызывающим не меняет
-   результат другого и не меняет экземпляр, сериализованный в кэш.
+2. `artifact.chart.chart_kind == artifact.spec.chart_kind`; house system и
+   состав вычисленных блоков карты соответствуют spec.
+3. Ключ равен `calculation_key(calculation_input_from_chart(chart), spec,
+   calculation_version)`.
+4. `chart_kind` и `warnings` читаются из `artifact.chart`; верхнеуровневых
+   копий нет.
+5. Артефакт и artifact-модель карты frozen и запрещают расширение storage
+   envelope неизвестными полями. Resolver возвращает глубокую копию результата
+   общей task, чтобы вложенные mutable-значения не разделялись вызывающими.
+
+Отдельная `artifact_schema_version` отсутствует. Несовместимая старая запись
+отклоняется строгим кодеком как `cache_corrupt` и пересчитывается. `v1` в
+`eo:calc:v1:` относится к формату канонического входа ключа, а
+`calculation_version` — к численно значимой реализации расчёта (ADR-0027).
 
 ### 6.2. Отказ
 
@@ -978,7 +984,7 @@ Startup-события `CalculationVersion` принадлежат отдель�
 
 1. `run_id` передаётся в расчётный поток явным аргументом (§2.4).
 
-2. Согласно ADR-0025/0026 публичные границы
+2. Согласно ADR-0025/0028 публичные границы
    `ChartArtifactResolver.ensure_chart`, `EngineService.calculate` и
    `calculate_natal` пишут на `DEBUG` парные сообщения
    `component_message direction=in|out`.
@@ -988,11 +994,7 @@ Startup-события `CalculationVersion` принадлежат отдель�
   полный ResolvedBirthData и ChartSpec
 
 выход component_message:
-  NatalChartSummary / CalculationResultSummary / ChartArtifactSummary
-
-ChartArtifactSummary:
-  полный calculation_key, calculation_version, cache_outcome,
-  chart_kind и счётчики блоков без полного chart
+  полный NatalChart / CalculationResult / ChartArtifact
 
 технические события этапов:
   run_id, полный calculation_key там, где его знает artifact resolver,
@@ -1000,13 +1002,14 @@ ChartArtifactSummary:
   коды исходов, счётчики, source и code предупреждений
 ```
 
-   Summary строится непосредственно из типизированного результата и не
-   сериализует полный `chart`. Полный результат остаётся один раз на выходе
-   `BuildNatalHandler`; cache codec сериализует artifact отдельно для хранения.
-   Engine не получает `calculation_key`: его события связываются с artifact
-   resolver по `run_id`. Payload содержит персональные данные и поэтому
-   разрешён только для текущего локального стенда; публичное развёртывание
-   блокируется до privacy-hardening, описанного ADR-0025/0026.
+   Успешный payload имеет `payload_mode=full`, не усекается и не заменяется
+   summary. На выходе artifact boundary внутренний `_EnsuredChart`
+   проектируется в полный публичный `ChartArtifact`; `cache_outcome` остаётся
+   в технических cache-событиях. Engine не получает `calculation_key`: его
+   события связываются с artifact resolver по `run_id`. Полный payload
+   содержит персональные данные и разрешён только для текущего локального
+   стенда; публичное развёртывание блокируется до privacy-hardening из
+   ADR-0025/0028. Ниже DEBUG проекторы и JSON-сериализация не выполняются.
 3. `slow = duration_ms > slow_threshold_ms`, **`slow_threshold_ms = 3000`**.
    Порог живёт в конфигурации и берётся заведомо большим сознательно: он
    отмечает не «медленно», а «ненормально». Это замена таймауту (§3.4.3);
@@ -1367,19 +1370,21 @@ startup wiring C3.
 `run_id` до ключа, кэша, движка и single-flight. Невалидный интервал
 дросселирования отклоняется конструктором.
 Два вызова с одинаковыми аргументами дают равные артефакты.
-Попадание с чужой `calculation_version` или чужим `calculation_key`
-трактуется как промах **и порождает `cache_stale`**, а не `cache_miss`:
-запись подкладывается в кэш искусственно, потому что честным путём
-она там появиться не может.
+Внутренне валидное попадание с чужими `calculation_version`,
+`calculation_key`, `spec` или расчётной проекцией карты трактуется как промах
+**и порождает `cache_stale`**, а не `cache_miss`: запись подкладывается по
+ключу запроса искусственно, потому что честным путём она там появиться не
+может. Артефакт, чей ключ не соответствует его собственным chart/spec/version,
+не проходит строгий decode и относится к `cache_corrupt`.
 Нечитаемые байты (обрезанные, не gzip, не JSON, не проходящие валидацию)
 дают `cache_corrupt`, а не `cache_stale` и не `cache_miss`.
 Зависший `get` дольше `cache_timeout_ms` даёт промах, зависший `put` —
 возврат артефакта без записи.
 **Boundary-логи:** `calculate_natal`, engine и artifact resolver содержат
-полный вход и summary-выход в парных DEBUG-событиях `component_message`.
-Полный результат карты сохраняется только на прикладной границе. Технические
-события этапов не дублируют дату рождения, координаты, название места,
-полный ключ и дословные тексты предупреждений.
+полные входы и выходы в парных DEBUG-событиях `component_message`. Технические
+события этапов остаются компактными; полный ключ присутствует только там, где
+его уже знает artifact resolver, а дословные тексты предупреждений остаются в
+полном boundary payload.
 Отказ `get` не проваливает операцию. Отказ `put` не проваливает операцию
 и возвращает корректный артефакт. Отказ расчёта не пишется в кэш;
 следующий вызов снова идёт в движок. `run_id` присутствует во всех
@@ -1404,10 +1409,10 @@ N параллельных вызовов по одному ключу вызы�
 `HOUSES_DEGENERATE`.
 Перечисление членов union `ChartSpec` совпадает с ключами реестра
 `techniques`; `adapter.technique` совпадает с литералом своего члена.
-Адаптер возвращает `CalculationResult` и **не** знает про ключ и версию;
-`calculation_key` и `calculation_version` в артефакте проставлены
-резолвером. Несовпадение `result.chart_kind`, `result.chart.chart_kind`
-и `spec.chart_kind` даёт `ENGINE_UNEXPECTED` и не попадает в кэш.
+Адаптер возвращает `CalculationResult` только с `chart` и **не** знает про
+ключ и версию; `calculation_key` и `calculation_version` в артефакте
+проставлены резолвером. Несовпадение полей `result.chart` со spec или resolved
+даёт `ENGINE_UNEXPECTED` и не попадает в кэш.
 
 **Производные.**
 `ensure_derived` не вызывает `ensure_chart` внутри себя.
@@ -1436,7 +1441,7 @@ N параллельных вызовов по одному ключу вызы�
 | Нечитаемое значение | отдельное событие `cache_corrupt` + алерт | §3.2.4 |
 | Таймаут операций кэша | `cache_timeout_ms = 50`, внутри адаптера | §3.2.1 |
 | Отпечаток расчёта | 9 компонент; zero provider → `<unresolved>`, multiple providers → fail-fast | §3.1.5–3.1.6 |
-| Boundary-логи | полный вход, summary внутренних больших выходов и один полный application output на DEBUG | §7.2, ADR-0025/0026 |
+| Boundary-логи | полные входы и выходы всех реализованных границ только на DEBUG | §7.2, ADR-0025/0028 |
 | Предпроверка | все дешёвые проверки до executor | §2.3 |
 | Система домов первой версии | только `P` (Плацидус); другие коды → `SPEC_INVALID` | §2.3 |
 | Отображение ошибок | на прикладной границе, без общего handler'а | §6.2 |

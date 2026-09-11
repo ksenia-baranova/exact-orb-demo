@@ -26,19 +26,19 @@ from exact_orb.calculation.errors import (
 )
 from exact_orb.calculation.spec import ChartSpec
 from exact_orb.domain import (
-    ChartKind,
     RulershipScheme,
     normalize_include,
     normalize_natal_house_system_code,
     validate_geography,
 )
 from exact_orb.engine.charts.natal import NatalChart, calculate_natal
-from exact_orb.engine.ephemeris.types import CalculationWarning
 from exact_orb.errors import (
     EphemerisConfigurationError,
     EphemerisSessionRequiredError,
 )
 from exact_orb.run_context import RunContext
+
+from .chart_contract import validate_chart_against_resolved, validate_chart_against_spec
 
 
 LOGGER = logging.getLogger(__name__)
@@ -48,11 +48,9 @@ SUPPORTED_TECHNIQUES = frozenset({"natal"})
 class CalculationResult(BaseModel):
     """Raw engine result returned before artifact construction."""
 
-    model_config = ConfigDict(frozen=True)
+    model_config = ConfigDict(frozen=True, extra="forbid")
 
-    chart_kind: ChartKind
     chart: NatalChart
-    warnings: tuple[CalculationWarning, ...]
 
 
 class CalculationEnginePort(Protocol):
@@ -103,11 +101,7 @@ class NatalTechniqueAdapter:
             include=frozenset(spec.include),
             near_interception_threshold=spec.near_interception_threshold,
         )
-        return CalculationResult(
-            chart_kind=chart.chart_kind,
-            chart=chart,
-            warnings=chart.warnings,
-        )
+        return CalculationResult(chart=chart)
 
 
 class EngineService:
@@ -162,9 +156,7 @@ class EngineService:
             run_id=run.run_id,
             request={"spec": spec, "resolved": resolved, "run": run},
             call=lambda: self._calculate(spec, resolved, run=run),
-            result_projector=_calculation_result_summary,
-            result_message_type="CalculationResultSummary",
-            result_payload_mode="summary",
+            result_message_type="CalculationResult",
         )
 
     async def _calculate(
@@ -199,7 +191,7 @@ class EngineService:
                 resolved,
                 run_id,
             )
-            _validate_result(result, spec, run_id)
+            _validate_result(result, spec, resolved, run_id)
         except (ChartCalculationError, CalculationUnavailableError) as exc:
             exception_type = type(exc).__name__
             self._log_failure(exc, started_at, exception_type)
@@ -294,11 +286,20 @@ def _prevalidate(spec: ChartSpec, resolved: ResolvedBirthData, run_id: str) -> N
         raise ChartCalculationError("GEOGRAPHY_INVALID", run_id=run_id) from None
 
 
-def _validate_result(result: CalculationResult, spec: ChartSpec, run_id: str) -> None:
+def _validate_result(
+    result: CalculationResult,
+    spec: ChartSpec,
+    resolved: ResolvedBirthData,
+    run_id: str,
+) -> None:
     try:
-        if result.chart_kind != spec.chart_kind or result.chart.chart_kind != spec.chart_kind:
-            raise ChartCalculationError("ENGINE_UNEXPECTED", run_id=run_id)
-    except AttributeError:
+        if not isinstance(result, CalculationResult):
+            raise TypeError("adapter result must be CalculationResult")
+
+        chart = result.chart
+        validate_chart_against_resolved(chart, resolved)
+        validate_chart_against_spec(chart, spec)
+    except (AttributeError, TypeError, ValueError):
         raise ChartCalculationError("ENGINE_UNEXPECTED", run_id=run_id) from None
 
 
@@ -319,19 +320,6 @@ def _is_degenerate_houses_error(exc: ValueError) -> bool:
 
 def _elapsed_ms(started_at: float) -> float:
     return (perf_counter() - started_at) * 1000.0
-
-
-def _calculation_result_summary(result: CalculationResult) -> dict[str, object]:
-    chart = result.chart
-    return {
-        "chart_kind": result.chart_kind,
-        "warning_count": len(result.warnings),
-        "body_count": len(chart.bodies or ()),
-        "aspect_count": len(chart.aspects or ()),
-        "configuration_count": len(chart.configurations or ()),
-        "has_houses": chart.cusps is not None,
-        "has_strength": chart.strength is not None,
-    }
 
 
 __all__ = [

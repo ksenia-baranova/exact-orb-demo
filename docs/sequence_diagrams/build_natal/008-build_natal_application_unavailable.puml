@@ -1,5 +1,9 @@
 @startuml
-title exact-orb — N2: application / Orchestrator недоступен
+title exact-orb — BuildNatal: application-контур недоступен до handler
+
+' Актуальный транспортный сценарий N2.
+' ApplicationOrchestrator и внешний ApplicationResult — целевой контур,
+' ещё не реализованный как доступный API.
 
 autonumber
 hide footbox
@@ -38,7 +42,7 @@ box "API / TRANSPORT" #EDE9FE
 end box
 
 box "APPLICATION" #FFEDD5
-    control "Orchestrator" as Orch
+    control "ApplicationOrchestrator\n(целевой)" as Orch
     control "BuildNatalHandler" as Handler
 end box
 
@@ -55,15 +59,19 @@ Session --> API : session_id
 API -> Rate : check(IP, session_id, endpoint)
 Rate --> API : RequestPermit
 
-API -> Orch : BuildNatalCommand
-Orch -[#C62828]-> API : ApplicationUnavailable\n/ unexpected internal failure
+API -> Orch : BuildNatalCommand\n+ session_id + RunContext(run_id)
+Orch -[#C62828]-> API : internal application failure\nдо BuildNatalOutcome
 API --> FE : 503 SERVICE_UNAVAILABLE\nили 500 INTERNAL_ERROR
 FE --> User : «Не удалось выполнить запрос.\nПопробуйте ещё раз»
 
 note over Orch, Handler
 BuildNatalHandler не запускается.
-Сессионная мутация не регистрируется.
+Сессионная мутация не начинается.
 BuildAttempt и build_revision в MVP отсутствуют.
+
+Показанный вызов ApplicationOrchestrator —
+целевой внешний application-flow,
+а не уже доступный API.
 end note
 
 note over Context, Engine

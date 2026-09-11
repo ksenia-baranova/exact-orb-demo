@@ -484,15 +484,24 @@ async def test_inconsistent_artifact_logs_build_result_stage(
     caplog.set_level(logging.DEBUG, logger=HANDLER_LOGGER)
     resolved = resolved_birth_data()
     requested_spec = NatalChartSpec(chart_kind="natal")
-    foreign_spec = NatalChartSpec(chart_kind="cosmogram")
-    foreign_artifact = artifact(spec=foreign_spec, resolved=resolved)
+    foreign_resolved = resolved.model_copy(
+        update={
+            "utc_datetime": resolved.utc_datetime + timedelta(minutes=1),
+            "latitude": resolved.latitude + 1.0,
+            "longitude": resolved.longitude + 1.0,
+        }
+    )
+    foreign_artifact = artifact(spec=requested_spec, resolved=foreign_resolved)
     artifacts = StubChartArtifactPort(foreign_artifact)
     handler = BuildNatalHandler(
         resolver=StubBirthDataResolver(resolved),
         artifacts=artifacts,
     )
 
-    assert requested_spec != foreign_spec
+    assert foreign_artifact.spec == requested_spec
+    assert foreign_artifact.chart.datetime_utc == foreign_resolved.utc_datetime
+    assert foreign_artifact.chart.latitude == foreign_resolved.latitude
+    assert foreign_artifact.chart.longitude == foreign_resolved.longitude
     with pytest.raises(ValidationError):
         await handler.handle(
             BuildNatalCommand(birth_input=_birth_input()),
@@ -506,7 +515,7 @@ async def test_inconsistent_artifact_logs_build_result_stage(
     assert "exception_type=ValidationError" in failed.getMessage()
     assert "cancelled=false" in failed.getMessage()
     assert artifacts.received_spec == requested_spec
-    assert foreign_artifact.spec == foreign_spec
+    assert _event_records(caplog, "build_natal_completed") == []
 
 
 @pytest.mark.parametrize(

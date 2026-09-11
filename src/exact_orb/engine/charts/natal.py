@@ -186,9 +186,7 @@ def calculate_natal(
         run_id=None,
         request=request,
         call=calculate,
-        result_projector=_natal_chart_summary,
-        result_message_type="NatalChartSummary",
-        result_payload_mode="summary",
+        result_message_type="NatalChart",
     )
 
 
@@ -412,18 +410,6 @@ def _validate_chart_kind_include(chart_kind: ChartKind, include_blocks: frozense
 
 def _elapsed_ms(started_at: float) -> float:
     return (perf_counter() - started_at) * 1000.0
-
-
-def _natal_chart_summary(chart: NatalChart) -> dict[str, object]:
-    return {
-        "chart_kind": chart.chart_kind,
-        "warning_count": len(chart.warnings),
-        "body_count": len(chart.bodies or ()),
-        "aspect_count": len(chart.aspects or ()),
-        "configuration_count": len(chart.configurations or ()),
-        "has_houses": chart.cusps is not None,
-        "has_strength": chart.strength is not None,
-    }
 
 
 def _calculate_natal_aspects(

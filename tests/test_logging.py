@@ -87,17 +87,17 @@ def test_component_message_is_complete_single_line_json(
     }
 
 
-async def test_async_boundary_summary_does_not_serialize_full_result(
+async def test_async_boundary_logs_full_result(
     caplog: pytest.LogCaptureFixture,
 ) -> None:
-    logger = logging.getLogger("exact_orb.tests.component_boundary_summary")
+    logger = logging.getLogger("exact_orb.tests.component_boundary_full")
     caplog.set_level(logging.DEBUG, logger=logger.name)
 
     class LargeResult:
         count = 3
 
         def model_dump(self, *args: object, **kwargs: object) -> object:
-            raise AssertionError("full result must not be serialized")
+            return {"count": self.count, "nested": {"value": "complete"}}
 
     result = LargeResult()
 
@@ -106,14 +106,12 @@ async def test_async_boundary_summary_does_not_serialize_full_result(
 
     returned = await component_logging.log_async_component_call(
         logger,
-        operation="probe_summary",
+        operation="probe_full",
         request_type="ProbeRequest",
         run_id="run-2",
         request={"input": "small"},
         call=call,
-        result_projector=lambda value: {"count": value.count},
-        result_message_type="LargeResultSummary",
-        result_payload_mode="summary",
+        result_message_type="LargeResult",
         result_calculation_key=lambda value: "eo:calc:v1:full-key",
     )
 
@@ -121,9 +119,94 @@ async def test_async_boundary_summary_does_not_serialize_full_result(
     assert len(caplog.records) == 2
     outgoing = caplog.records[1].getMessage()
     assert "calculation_key=eo:calc:v1:full-key" in outgoing
-    assert "payload_mode=summary" in outgoing
-    assert "message_type=LargeResultSummary" in outgoing
-    assert json.loads(outgoing.partition(" message=")[2]) == {"count": 3}
+    assert "payload_mode=full" in outgoing
+    assert "message_type=LargeResult" in outgoing
+    assert json.loads(outgoing.partition(" message=")[2]) == {
+        "count": 3,
+        "nested": {"value": "complete"},
+    }
+
+
+async def test_async_boundary_does_no_logging_work_below_debug(
+    monkeypatch: pytest.MonkeyPatch,
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    logger = logging.getLogger("exact_orb.tests.component_boundary_disabled")
+    caplog.set_level(logging.INFO, logger=logger.name)
+    projector_calls = 0
+    key_calls = 0
+
+    def forbidden_serialize(message: object) -> str:
+        raise AssertionError("component payload must not be serialized below DEBUG")
+
+    def project_result(value: object) -> object:
+        nonlocal projector_calls
+        projector_calls += 1
+        return value
+
+    def result_key(value: object) -> str:
+        nonlocal key_calls
+        key_calls += 1
+        return "unexpected"
+
+    monkeypatch.setattr(
+        component_logging,
+        "serialize_component_message",
+        forbidden_serialize,
+    )
+    result = object()
+
+    returned = await component_logging.log_async_component_call(
+        logger,
+        operation="probe_disabled",
+        request_type="ProbeRequest",
+        run_id="run-3",
+        request={"input": "complete"},
+        call=lambda: _return_async(result),
+        result_projector=project_result,
+        result_calculation_key=result_key,
+    )
+
+    assert returned is result
+    assert projector_calls == 0
+    assert key_calls == 0
+    assert caplog.records == []
+
+
+async def test_async_boundary_logs_structured_error_and_reraises(
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    logger = logging.getLogger("exact_orb.tests.component_boundary_error")
+    caplog.set_level(logging.DEBUG, logger=logger.name)
+    error = RuntimeError("complete failure details")
+
+    async def fail() -> object:
+        raise error
+
+    with pytest.raises(RuntimeError) as exc_info:
+        await component_logging.log_async_component_call(
+            logger,
+            operation="probe_error",
+            request_type="ProbeRequest",
+            run_id="run-4",
+            request={"input": "complete"},
+            call=fail,
+        )
+
+    assert exc_info.value is error
+    assert len(caplog.records) == 2
+    outgoing = caplog.records[1].getMessage()
+    assert "status=error" in outgoing
+    assert "payload_mode=error" in outgoing
+    assert "message_type=RuntimeError" in outgoing
+    assert json.loads(outgoing.partition(" message=")[2]) == {
+        "exception_type": "RuntimeError",
+        "message": "complete failure details",
+    }
+
+
+async def _return_async(value: object) -> object:
+    return value
 
 
 def test_utc_size_rotating_handler_uses_utc_file_names_without_suffixes() -> None:
