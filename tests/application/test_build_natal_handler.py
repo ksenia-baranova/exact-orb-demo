@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import ast
 import asyncio
-from datetime import date, time
+from datetime import date, time, timedelta
 from pathlib import Path
 
 import pytest
@@ -305,6 +305,52 @@ async def test_foreign_artifact_spec_is_rejected_by_success_validation() -> None
 
     assert artifacts.received_spec == requested_spec
     assert foreign_artifact.spec == foreign_spec
+
+
+@pytest.mark.parametrize(
+    ("resolved_field", "chart_field", "different_value"),
+    [
+        ("utc_datetime", "datetime_utc", BASE_UTC + timedelta(minutes=1)),
+        ("latitude", "latitude", 56.7558),
+        ("longitude", "longitude", 38.6173),
+    ],
+)
+async def test_foreign_artifact_input_is_rejected_by_success_validation(
+    resolved_field: str,
+    chart_field: str,
+    different_value: object,
+) -> None:
+    resolved = _resolved()
+    foreign_resolved = resolved.model_copy(update={resolved_field: different_value})
+    requested_spec = NatalChartSpec(chart_kind="natal")
+    foreign_artifact = artifact(spec=requested_spec, resolved=foreign_resolved)
+    artifacts = StubChartArtifactPort(foreign_artifact)
+    handler = BuildNatalHandler(
+        resolver=StubBirthDataResolver(resolved),
+        artifacts=artifacts,
+    )
+
+    assert foreign_artifact.spec == requested_spec
+    assert getattr(foreign_artifact.chart, chart_field) != getattr(
+        resolved, resolved_field
+    )
+    with pytest.raises(
+        ValidationError,
+        match=(
+            r"artifact\.chart calculation input must equal "
+            r"delta\.birth_resolved calculation input"
+        ),
+    ):
+        await handler.handle(
+            BuildNatalCommand(birth_input=_birth_input()),
+            new_session("session-1", now=BASE_UTC),
+            run_context(),
+        )
+
+    assert artifacts.received_spec == requested_spec
+    assert foreign_artifact.chart.datetime_utc == foreign_resolved.utc_datetime
+    assert foreign_artifact.chart.latitude == foreign_resolved.latitude
+    assert foreign_artifact.chart.longitude == foreign_resolved.longitude
 
 
 async def test_artifact_cancellation_propagates_unchanged() -> None:
