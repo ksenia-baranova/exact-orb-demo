@@ -6,6 +6,8 @@ from datetime import datetime, timezone
 
 from hypothesis import HealthCheck, given, settings
 from hypothesis import strategies as st
+import pytest
+from pydantic import ValidationError
 
 from exact_orb.engine.aspects import (
     Aspect,
@@ -31,8 +33,6 @@ def _config_key(config_type: str, participants: set[str]) -> tuple[str, frozense
 
 EXPECTED_CONFIGURATIONS: dict[tuple[str, frozenset[str]], float] = {
     _config_key("t_square", {"sun", "uranus", "chiron"}): 5.10,
-    _config_key("t_square", {"jupiter", "mean_apog", "south_node"}): 2.23,
-    _config_key("t_square", {"jupiter", "true_node", "south_node"}): 2.23,
     _config_key("yod", {"sun", "moon", "jupiter"}): 1.68,
     _config_key("yod", {"moon", "sun", "pluto"}): 6.68,
     _config_key("bisextile", {"moon", "jupiter", "chiron"}): 6.78,
@@ -42,8 +42,6 @@ EXPECTED_CONFIGURATIONS: dict[tuple[str, frozenset[str]], float] = {
 
 EXPECTED_CONFIGURATION_CATEGORIES = {
     _config_key("t_square", {"sun", "uranus", "chiron"}): ConfigurationCategory.LOOSE,
-    _config_key("t_square", {"jupiter", "mean_apog", "south_node"}): ConfigurationCategory.TIGHT,
-    _config_key("t_square", {"jupiter", "true_node", "south_node"}): ConfigurationCategory.TIGHT,
     _config_key("yod", {"sun", "moon", "jupiter"}): ConfigurationCategory.TIGHT,
     _config_key("yod", {"moon", "sun", "pluto"}): ConfigurationCategory.LOOSE,
     _config_key("bisextile", {"moon", "jupiter", "chiron"}): ConfigurationCategory.LOOSE,
@@ -108,7 +106,7 @@ def test_configuration_categories_match_reference_distribution() -> None:
     chart = _reference_chart()
     categories = [configuration.category for configuration in chart.configurations or ()]
 
-    assert categories.count(ConfigurationCategory.TIGHT) == 3
+    assert categories.count(ConfigurationCategory.TIGHT) == 1
     assert categories.count(ConfigurationCategory.MODERATE) == 0
     assert categories.count(ConfigurationCategory.LOOSE) == 5
 
@@ -127,8 +125,6 @@ def test_configuration_roles_match_reference() -> None:
 
     assert by_key[_config_key("yod", {"sun", "moon", "jupiter"})].points["apex"].body == "sun"
     assert by_key[_config_key("yod", {"moon", "sun", "pluto"})].points["apex"].body == "moon"
-    assert by_key[_config_key("t_square", {"jupiter", "mean_apog", "south_node"})].points["apex"].body == "jupiter"
-    assert by_key[_config_key("t_square", {"jupiter", "true_node", "south_node"})].points["apex"].body == "jupiter"
 
 
 def test_configuration_deduplication_is_independent_of_input_order() -> None:
@@ -147,16 +143,13 @@ def test_configuration_threshold_is_strict_max_orb() -> None:
     chart = _reference_chart()
     aspects = list(chart.aspects or ())
 
-    strict = find_configurations(aspects, ConfigurationConfig(configuration_max_orb=2.0))
-    relaxed = find_configurations(aspects, ConfigurationConfig(configuration_max_orb=2.3))
+    strict = find_configurations(aspects, ConfigurationConfig(configuration_max_orb=5.0))
+    relaxed = find_configurations(aspects, ConfigurationConfig(configuration_max_orb=5.2))
 
     assert {_configuration_key(item) for item in strict} == {
         _config_key("yod", {"sun", "moon", "jupiter"})
     }
-    assert _config_key("t_square", {"jupiter", "mean_apog", "south_node"}) in {
-        _configuration_key(item) for item in relaxed
-    }
-    assert _config_key("t_square", {"jupiter", "true_node", "south_node"}) in {
+    assert _config_key("t_square", {"sun", "uranus", "chiron"}) in {
         _configuration_key(item) for item in relaxed
     }
     assert _config_key("yod", {"moon", "sun", "pluto"}) not in {
@@ -166,6 +159,45 @@ def test_configuration_threshold_is_strict_max_orb() -> None:
 
 def test_empty_configuration_input_returns_empty_list() -> None:
     assert find_configurations([], ConfigurationConfig()) == []
+
+
+def test_default_configuration_points_use_one_lunar_node_axis_representative() -> None:
+    points = ConfigurationConfig().points
+
+    assert points is not None
+    assert len(points) == 13
+    assert "true_node" in points
+    assert "south_node" not in points
+
+
+def test_configuration_config_rejects_south_node_as_independent_point() -> None:
+    points = ConfigurationConfig().points + ("south_node",)
+
+    with pytest.raises(ValidationError, match="derived lunar-node position"):
+        ConfigurationConfig(points=points)
+
+
+def test_points_none_does_not_reenable_south_node_configurations() -> None:
+    aspects = [
+        _named_aspect("true_node", "south_node", AspectType.OPPOSITION),
+        _named_aspect("jupiter", "true_node", AspectType.SQUARE),
+        _named_aspect("jupiter", "south_node", AspectType.SQUARE),
+        _named_aspect("base_1", "base_2", AspectType.OPPOSITION),
+        _named_aspect("apex", "base_1", AspectType.SQUARE),
+        _named_aspect("apex", "base_2", AspectType.SQUARE),
+    ]
+
+    configurations = find_configurations(
+        aspects,
+        ConfigurationConfig(points=None, enabled_types=(ConfigurationType.T_SQUARE,)),
+    )
+
+    assert len(configurations) == 1
+    assert {point.body for point in configurations[0].points.values()} == {
+        "apex",
+        "base_1",
+        "base_2",
+    }
 
 
 def test_include_without_configurations_sets_block_to_none() -> None:
@@ -232,6 +264,24 @@ def _reference_chart():
         house_system=REFERENCE["house_system"],
         aspect_config=AspectConfig.natal(max_orb=7.0),
         configuration_config=ConfigurationConfig(configuration_max_orb=7.0),
+    )
+
+
+def _named_aspect(
+    left: str,
+    right: str,
+    aspect_type: AspectType,
+    *,
+    orb: float = 1.0,
+) -> Aspect:
+    return Aspect(
+        from_point=AspectPointRef(chart="natal", body=left),
+        to_point=AspectPointRef(chart="natal", body=right),
+        aspect_type=aspect_type,
+        exact_angle=ASPECT_ANGLES[aspect_type],
+        orb=orb,
+        category=AspectCategory.EXACT,
+        applying=None,
     )
 
 

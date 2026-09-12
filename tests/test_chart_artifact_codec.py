@@ -37,9 +37,9 @@ BASE_UTC = datetime(1990, 9, 2, 10, 30, 45, tzinfo=timezone.utc)
 EPHE_FILES = ("sepl_18.se1", "semo_18.se1", "seas_18.se1")
 SENSITIVE_WARNING = "sensitive warning for 55.7558 37.6173 at 1990-09-02"
 
-# baseline: normalized ChartArtifact schema with ADR-0029 point identifiers +
+# baseline: normalized ChartArtifact with ADR-0030 lunar-node-axis semantics +
 # vendored ephe/*.se1; recalculate only for an intentional contract update.
-NATAL_ARTIFACT_JSON_BASELINE_SHA256 = "21152ec836367d75eb41dc8dd7d423282dc5b8f275478eb1ce789c3a4bab9c7b"
+NATAL_ARTIFACT_JSON_BASELINE_SHA256 = "d1251af6f8a9cb0e673f9f5e7cdb1e0d0f5fc9cdb1828fd01c182b49fc5768ed"
 
 
 def test_chart_artifact_normalizes_raw_chart_to_artifact_safe_chart() -> None:
@@ -185,13 +185,28 @@ def test_reference_artifact_serializes_only_canonical_point_references() -> None
     ]
     identifiers = {point["body"] for point in references}
 
-    assert {"true_node", "south_node", "mean_apog", "pars_fortune"} <= identifiers
-    assert {"north_node", "lilith", "pars"}.isdisjoint(identifiers)
+    assert "south_node" in payload["chart"]["bodies"]
+    assert {"true_node", "mean_apog", "pars_fortune"} <= identifiers
+    assert {"south_node", "north_node", "lilith", "pars"}.isdisjoint(identifiers)
 
 
 def test_decode_rejects_unresolved_chart_point_reference() -> None:
     payload = _reference_artifact().model_dump(mode="json")
     payload["chart"]["aspects"][0]["from_point"]["body"] = "missing_point"
+    encoded = gzip.compress(
+        json.dumps(payload, separators=(",", ":"), ensure_ascii=False).encode("utf-8"),
+        mtime=0,
+    )
+
+    with pytest.raises(ChartArtifactDecodeError) as exc_info:
+        decode_chart_artifact(encoded)
+
+    assert exc_info.value.reason == "validation"
+
+
+def test_decode_rejects_south_node_as_relational_endpoint() -> None:
+    payload = _reference_artifact().model_dump(mode="json")
+    payload["chart"]["aspects"][0]["from_point"]["body"] = "south_node"
     encoded = gzip.compress(
         json.dumps(payload, separators=(",", ":"), ensure_ascii=False).encode("utf-8"),
         mtime=0,

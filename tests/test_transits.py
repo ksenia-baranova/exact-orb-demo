@@ -7,7 +7,7 @@ transit-to-natal aspect grid must reduce to the already-verified natal
 aspect grid in ``tests/test_aspects.py`` (see ``EXPECTED_ASPECTS`` there),
 restricted to the ten bodies exact-orb treats as "transiting"
 (``TRANSIT_BODY_IDS``: Sun through Pluto, no Chiron/nodes/Lilith/Selena/
-Vertex/angles as *sources*, though all of those remain valid *targets*).
+Vertex/angles as *sources*; ``true_node`` is the sole lunar-node-axis target).
 
 This gives us an externally-verified oracle for ``calculate_transit`` without
 needing a second geocult.ru date: every orb below was cross-checked against
@@ -94,7 +94,6 @@ EXPECTED_TRANSIT_ASPECTS: dict[tuple[str, str, str], float] = {
     _key("sun", "square", "chiron"): 5.10,
     _key("sun", "trine", "mean_apog"): 0.86,
     _key("sun", "trine", "true_node"): 1.57,
-    _key("sun", "sextile", "south_node"): 1.57,
     _key("sun", "square", "pars_fortune"): 0.44,
     _key("sun", "sextile", "asc"): 1.24,
 
@@ -125,7 +124,6 @@ EXPECTED_TRANSIT_ASPECTS: dict[tuple[str, str, str], float] = {
     _key("jupiter", "trine", "chiron"): 5.76,
     _key("jupiter", "square", "mean_apog"): 1.52,
     _key("jupiter", "square", "true_node"): 2.23,
-    _key("jupiter", "square", "south_node"): 2.23,
     _key("jupiter", "sextile", "pars_fortune"): 1.10,
     _key("jupiter", "quincunx", "asc"): 0.58,
 
@@ -257,6 +255,72 @@ def test_transiting_body_is_conjunct_its_own_natal_position(
             and aspect.to.body == body
         )
         assert self_conjunction.exact_dates == (REFERENCE["datetime_utc"],)
+
+
+def test_transits_use_true_node_as_the_only_lunar_node_axis_target(
+    self_transit: TransitChart,
+) -> None:
+    targets = {aspect.to.body for aspect in self_transit.aspects}
+
+    assert "true_node" in targets
+    assert "south_node" not in targets
+
+
+def test_station_aspects_use_the_same_filtered_natal_points(
+    natal_chart: NatalChart,
+) -> None:
+    natal_points = transit_calc._natal_points(natal_chart)
+    station_aspects = transit_calc._station_aspects(
+        natal_chart.bodies["sun"].longitude,
+        natal_points,
+        1.0,
+    )
+
+    assert "south_node" not in natal_points
+    assert any(
+        aspect.to.body == "sun" and aspect.aspect.value == "conjunction"
+        for aspect in station_aspects
+    )
+    assert all(aspect.to.body != "south_node" for aspect in station_aspects)
+
+
+def test_transit_chart_rejects_south_node_aspect_target(
+    self_transit: TransitChart,
+) -> None:
+    payload = self_transit.model_dump(mode="python")
+    payload["aspects"][0]["to"]["body"] = "south_node"
+
+    with pytest.raises(ValidationError, match=r"aspects\[0\]\.to"):
+        TransitChart.model_validate(payload)
+
+
+def test_transit_chart_rejects_south_node_station_target(
+    self_transit: TransitChart,
+) -> None:
+    payload = self_transit.model_dump(mode="python")
+    position = next(iter(payload["positions"].values()))
+    payload["stations"] = [
+        {
+            "chart": "transit",
+            "body": "jupiter",
+            "type": "retrograde",
+            "datetime_utc": payload["moment_utc"],
+            "longitude": position["longitude"],
+            "longitude_speed": -0.1,
+            "zodiac": position["zodiac"],
+            "natal_aspects": [
+                {
+                    "to": {"chart": "natal", "body": "south_node"},
+                    "aspect": "conjunction",
+                    "aspect_angle": 0.0,
+                    "orb": 0.0,
+                }
+            ],
+        }
+    ]
+
+    with pytest.raises(ValidationError, match=r"stations\[0\]\.natal_aspects\[0\]\.to"):
+        TransitChart.model_validate(payload)
 
 
 def test_calculate_transit_requires_natal_houses() -> None:

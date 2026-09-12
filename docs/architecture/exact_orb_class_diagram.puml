@@ -575,6 +575,14 @@ AspectConfig *-- CategoryThresholds
 AspectConfig *-- AspectOrbSet
 AspectOrbSet --> AspectType
 
+note right of AspectConfig
+  lunar-node axis relations:
+  true_node is the sole graph point;
+  south_node remains a derived
+  BodyPosition and is forbidden
+  in relation result aggregates
+end note
+
 ' =========================
 ' ENGINE: CONFIGURATIONS
 ' =========================

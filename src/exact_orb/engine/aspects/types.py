@@ -86,6 +86,8 @@ class AspectConfig(BaseModel):
 
     ``mode`` selects which independent orb set is active. Natal aspects use a
     broader default set, while transit aspects are capped more tightly.
+    ``true_node`` is the sole relational representative of the lunar-node
+    axis; the derived ``south_node`` position cannot be added to the grid.
     """
 
     mode: Literal["natal", "transit"] = "natal"
@@ -105,7 +107,6 @@ class AspectConfig(BaseModel):
         "pluto",
         "chiron",
         "true_node",
-        "south_node",
         "mean_apog",
         "selena",
         "pars_fortune",
@@ -120,6 +121,14 @@ class AspectConfig(BaseModel):
         if isinstance(data, Mapping) and "point_aliases" in data:
             raise ValueError("point_aliases is not part of the calculation contract")
         return data
+
+    @model_validator(mode="after")
+    def _reject_dependent_lunar_node(self) -> "AspectConfig":
+        if "south_node" in self.natal_points:
+            raise ValueError(
+                "south_node is a derived lunar-node position, not an independent aspect point"
+            )
+        return self
 
     @property
     def active_orbs(self) -> AspectOrbSet:
@@ -169,7 +178,6 @@ def _default_natal_orbs() -> AspectOrbSet:
     }
     points = {
         "true_node": 3.0,
-        "south_node": 3.0,
         "mean_apog": 3.0,
         "selena": 3.0,
         "pars_fortune": 3.0,

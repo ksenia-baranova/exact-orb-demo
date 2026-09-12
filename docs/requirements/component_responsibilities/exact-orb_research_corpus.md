@@ -154,13 +154,18 @@ STRENGTH_POINTS = {
 RELATIONAL_POINTS = BODY_FEATURE_POINTS ∪ {asc, mc, vertex}
 ```
 
-`RELATIONAL_POINTS` в точности совпадает с `AspectConfig.natal_points` и
-содержит ровно те точки, которые могут стать концом аспекта.
+`RELATIONAL_POINTS` — закрытый vocabulary persisted schema v1. Активный набор
+новых отношений равен `RELATIONAL_POINTS − {south_node}` и в точности
+совпадает с `AspectConfig.natal_points`. `south_node` остаётся допустимым enum
+value только для чтения исторических v1-записей прежней
+`CalculationVersion`.
 
-**У точки ровно одно каноническое написание.** По ADR-0029 `bodies`, аспекты,
-конфигурации и натальные цели транзитов используют единые `true_node`,
-`south_node`, `mean_apog`, `pars_fortune`. `_natal_aspect_points` выпускает
-имя точки без преобразования, а `AspectConfig.point_aliases` отсутствует.
+**У точки ровно одно каноническое написание.** По ADR-0029 машинные ссылки
+используют имена `true_node`, `south_node`, `mean_apog`, `pars_fortune` без
+alias-преобразования. По ADR-0030 `true_node` является единственным
+представителем оси в новых отношениях, а `south_node` переносится только как
+`BodyFeature`. `_natal_aspect_points` выпускает имя без преобразования, а
+`AspectConfig.point_aliases` отсутствует.
 
 Research projection получает уже канонический `ChartArtifact` и переносит
 идентификаторы напрямую. `north_node`, `lilith`, `pars` являются ошибкой
@@ -237,6 +242,12 @@ ResearchRecord {
 P5b вправе денормализовать его в индексируемую колонку, но не добавляет второй
 независимый field модели.
 
+ADR-0030 не меняет `feature_schema_version=1`: поля, закрытые enum и digest
+format сохранены, а разная методика состава отношений различается
+`ResearchRecord.calculation_version`. Исторический relational `south_node`
+остаётся валидным v1 value, хотя новая проекция выпускает его только как
+`BodyFeature`.
+
 Bounded identifiers имеют длину `1..128` и соответствуют
 `^[A-Za-z0-9][A-Za-z0-9._:/+@~\-]{0,127}$`. `@` и `~` входят в класс потому,
 что gateway построен на litellm, а часть провайдерских идентификаторов
@@ -311,14 +322,16 @@ artifact и не читает часы.
 сообщение валидатора и содержимое artifact в диагностические поля не входят.
 
 Перед построением моделей проекция переносит канонические имена точек без
-alias-преобразования. Разрешимость всех `AspectPointRef` уже проверена
-контрактом `NatalChart`; закрытые Research enums независимо отклоняют значение
-вне Research v1.
+alias-преобразования. `south_node` сохраняется в семействе `BodyFeature`, но
+новый `NatalChart` не допускает его в аспектах и конфигурациях. Разрешимость и
+семантика оси всех `AspectPointRef` уже проверены контрактом `NatalChart`;
+закрытые Research enums независимо отклоняют значение вне Research v1.
 
 Poisoned-artifact тест проверяет отсутствие запрещённых sentinels в модели и
 сериализации. Отдельный drift suite напрямую сравнивает Research vocabulary с
-engine enums, derived points, `AspectConfig.natal_points`,
-`ConfigurationConfig.points`, разбиением `ANGLE_INDICES` на включённые
+engine enums, derived points, активным `AspectConfig.natal_points` без
+исторически допустимого relational `south_node`, `ConfigurationConfig.points`,
+разбиением `ANGLE_INDICES` на включённые
 (`asc`, `mc`) и исключённые углы, восьмифазностью `PHASE_NAMES` и
 configuration roles; одного rich artifact недостаточно для доказательства
 полноты.

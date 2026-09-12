@@ -273,6 +273,7 @@ def rich_artifact() -> ChartArtifact:
         update={
             "bodies": {
                 "true_node": _body("true_node", "Aries", house=3, retrograde=True, longitude=15),
+                "south_node": _body("south_node", "Libra", house=9, retrograde=True, longitude=195),
                 "sun": _body("sun", "Leo", house=1, longitude=125),
                 "moon": _body("moon", "Cancer", house=4, longitude=95),
                 "mean_apog": _body("mean_apog", "Scorpio", house=8, longitude=225),
@@ -296,6 +297,7 @@ def expected_features() -> ChartFeatures:
         chart_kind="natal",
         bodies=(
             BodyFeature(point="true_node", sign="Aries", house=3, retrograde=True),
+            BodyFeature(point="south_node", sign="Libra", house=9, retrograde=True),
             BodyFeature(point="sun", sign="Leo", house=1, retrograde=False),
             BodyFeature(point="moon", sign="Cancer", house=4, retrograde=False),
             BodyFeature(point="mean_apog", sign="Scorpio", house=8, retrograde=False),
@@ -364,6 +366,23 @@ def test_only_asc_and_mc_get_angle_features_while_vertex_remains_relational() ->
         for endpoint in (aspect.from_point, aspect.to_point)
     }
     assert {"asc", "mc", "vertex"} <= endpoints
+
+
+def test_south_node_projects_only_as_a_body_feature() -> None:
+    projected = project_chart_features(rich_artifact())
+    relational_points = {
+        endpoint.value
+        for aspect in projected.aspects
+        for endpoint in (aspect.from_point, aspect.to_point)
+    }
+    relational_points.update(
+        point.point.value
+        for configuration in projected.configurations
+        for point in configuration.points
+    )
+
+    assert any(body.point.value == "south_node" for body in projected.bodies)
+    assert "south_node" not in relational_points
 
 
 def test_none_and_computed_empty_families_remain_distinct() -> None:
@@ -769,8 +788,9 @@ def test_engine_and_research_point_vocabularies_have_not_drifted() -> None:
     assert {"south_node", "pars_fortune", "selena"} <= body_points
     natal_source = inspect.getsource(natal_module._add_derived_points)
     assert all(f'"{name}"' in natal_source for name in ("south_node", "pars_fortune", "selena"))
-    assert set(AspectConfig().natal_points) == relational
-    assert set(ConfigurationConfig().points) <= relational
+    active_relational = set(AspectConfig().natal_points)
+    assert active_relational == relational - {"south_node"}
+    assert set(ConfigurationConfig().points) <= active_relational
     assert {"north_node", "lilith", "pars"}.isdisjoint(body_points | relational)
     assert _enum_values(type(next(iter(STRENGTH_POINTS)))) == set(StrengthConfig().planets)
 

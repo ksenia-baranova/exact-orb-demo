@@ -187,6 +187,10 @@ def _require_resolved_point(
     available: set[tuple[str, str]],
     path: str,
 ) -> None:
+    if point.body == "south_node":
+        raise ValueError(
+            f"{path} must not reference derived lunar-node position south_node"
+        )
     reference = (point.chart, point.body)
     if reference not in available:
         raise ValueError(
