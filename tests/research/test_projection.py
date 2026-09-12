@@ -20,7 +20,6 @@ from exact_orb.engine.aspects import (
     AspectPointRef,
     AspectType as EngineAspectType,
 )
-from exact_orb.engine.aspects.types import DEFAULT_POINT_ALIASES
 from exact_orb.engine.charts import natal as natal_module
 from exact_orb.engine.configurations.patterns import common as configuration_common
 from exact_orb.engine.configurations.types import (
@@ -251,17 +250,18 @@ def _strength() -> NatalStrength:
     )
 
 
-def rich_artifact(*, aliases: bool = True) -> ChartArtifact:
-    node = "north_node" if aliases else "true_node"
-    lilith = "lilith" if aliases else "mean_apog"
-    pars = "pars" if aliases else "pars_fortune"
+def rich_artifact() -> ChartArtifact:
     aspects = (
-        _aspect(node, "asc", aspect_type=EngineAspectType.TRINE, category=EngineAspectCategory.EXACT),
+        _aspect("true_node", "asc", aspect_type=EngineAspectType.TRINE, category=EngineAspectCategory.EXACT),
         _aspect("mc", "vertex", aspect_type=EngineAspectType.SQUARE, category=EngineAspectCategory.WORKING),
     )
     configuration = Configuration(
         type=EngineConfigurationType.T_SQUARE,
-        points={"base_2": _ref(pars), "apex": _ref(node), "base_1": _ref(lilith)},
+        points={
+            "base_2": _ref("pars_fortune"),
+            "apex": _ref("true_node"),
+            "base_1": _ref("mean_apog"),
+        },
         aspects=aspects,
         max_orb=2.5,
         category=EngineConfigurationCategory.TIGHT,
@@ -353,17 +353,6 @@ def test_rich_artifact_projects_to_exact_literal_features_without_mutation() -> 
             "strengths", "balance", "lunar_phase",
         )
     )
-
-
-def test_alias_and_raw_engine_points_project_identically() -> None:
-    aliased = project_chart_features(rich_artifact(aliases=True))
-    raw = project_chart_features(rich_artifact(aliases=False))
-    assert aliased.aspects == raw.aspects
-    assert aliased.configurations == raw.configurations
-    serialized = aliased.model_dump(mode="json")
-    assert "north_node" not in str(serialized)
-    assert "lilith" not in str(serialized)
-    assert "'pars'" not in str(serialized)
 
 
 def test_only_asc_and_mc_get_angle_features_while_vertex_remains_relational() -> None:
@@ -759,10 +748,6 @@ def _enum_values(enum_type: type) -> set[str]:
     return {item.value for item in enum_type}
 
 
-def _raw_point(name: str) -> str:
-    return {value: key for key, value in DEFAULT_POINT_ALIASES.items()}.get(name, name)
-
-
 def test_engine_closed_vocabularies_have_not_drifted() -> None:
     assert set(get_args(ChartKind)) == {"natal", "cosmogram"}
     assert _enum_values(EngineAspectType) == _enum_values(AspectType)
@@ -777,22 +762,16 @@ def test_engine_closed_vocabularies_have_not_drifted() -> None:
     assert set(ZODIAC_SIGNS) == _enum_values(ZodiacSign)
 
 
-def test_engine_points_and_alias_direction_have_not_drifted() -> None:
+def test_engine_and_research_point_vocabularies_have_not_drifted() -> None:
     body_points = _enum_values(type(next(iter(BODY_FEATURE_POINTS))))
     relational = _enum_values(type(next(iter(RELATIONAL_POINTS))))
     assert set(DEFAULT_BODY_IDS) <= body_points
     assert {"south_node", "pars_fortune", "selena"} <= body_points
     natal_source = inspect.getsource(natal_module._add_derived_points)
     assert all(f'"{name}"' in natal_source for name in ("south_node", "pars_fortune", "selena"))
-    assert {_raw_point(name) for name in AspectConfig().natal_points} == relational
-    assert {_raw_point(name) for name in ConfigurationConfig().points} <= relational
-    assert set(DEFAULT_POINT_ALIASES) <= body_points
-    assert set(DEFAULT_POINT_ALIASES.values()).isdisjoint(body_points | relational)
-    assert {value: key for key, value in DEFAULT_POINT_ALIASES.items()} == {
-        "north_node": "true_node",
-        "lilith": "mean_apog",
-        "pars": "pars_fortune",
-    }
+    assert set(AspectConfig().natal_points) == relational
+    assert set(ConfigurationConfig().points) <= relational
+    assert {"north_node", "lilith", "pars"}.isdisjoint(body_points | relational)
     assert _enum_values(type(next(iter(STRENGTH_POINTS)))) == set(StrengthConfig().planets)
 
 

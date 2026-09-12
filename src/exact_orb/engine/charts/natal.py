@@ -7,7 +7,7 @@ import logging
 from time import perf_counter
 from typing import AbstractSet, Literal, Mapping
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 from exact_orb import swiss_backend
 from exact_orb.config import EphemerisStatus, get_selena_method_name, validate_ephemeris_path
@@ -19,7 +19,13 @@ from exact_orb.domain import (
     normalize_include as normalize_domain_include,
     normalize_natal_house_system_code,
 )
-from exact_orb.engine.aspects import Aspect, AspectConfig, PositionedPoint, find_aspects
+from exact_orb.engine.aspects import (
+    Aspect,
+    AspectConfig,
+    AspectPointRef,
+    PositionedPoint,
+    find_aspects,
+)
 from exact_orb.engine.configurations import Configuration, ConfigurationConfig, find_configurations
 from exact_orb.engine.ephemeris.calc import (
     calculate_bodies,
@@ -113,6 +119,80 @@ class NatalChart(BaseModel):
     configurations: tuple[Configuration, ...] | None = None
     strength: NatalStrength | None = None
     warnings: tuple[CalculationWarning, ...] = ()
+
+    @model_validator(mode="after")
+    def _validate_point_references(self) -> "NatalChart":
+        available = _chart_point_references(self.bodies, self.angles)
+
+        for index, aspect in enumerate(self.aspects or ()):
+            _require_resolved_aspect(aspect, available, f"aspects[{index}]")
+        for index, configuration in enumerate(self.configurations or ()):
+            _require_resolved_configuration(
+                configuration,
+                available,
+                f"configurations[{index}]",
+            )
+        return self
+
+
+def _chart_point_references(
+    bodies: Mapping[str, BodyPosition] | None,
+    angles: Mapping[str, AnglePosition] | None,
+) -> set[tuple[str, str]]:
+    references: set[tuple[str, str]] = set()
+
+    for name, body in (bodies or {}).items():
+        if name != body.name:
+            raise ValueError(f"bodies key {name!r} must match BodyPosition.name")
+        reference = (body.chart, name)
+        if reference in references:
+            raise ValueError(f"duplicate chart point reference {body.chart}:{name}")
+        references.add(reference)
+
+    for name, angle in (angles or {}).items():
+        if name != angle.name:
+            raise ValueError(f"angles key {name!r} must match AnglePosition.name")
+        reference = ("natal", name)
+        if reference in references:
+            raise ValueError(f"duplicate chart point reference natal:{name}")
+        references.add(reference)
+
+    return references
+
+
+def _require_resolved_aspect(
+    aspect: Aspect,
+    available: set[tuple[str, str]],
+    path: str,
+) -> None:
+    _require_resolved_point(aspect.from_point, available, f"{path}.from_point")
+    _require_resolved_point(aspect.to_point, available, f"{path}.to_point")
+
+
+def _require_resolved_configuration(
+    configuration: Configuration,
+    available: set[tuple[str, str]],
+    path: str,
+) -> None:
+    for role, point in configuration.points.items():
+        _require_resolved_point(point, available, f"{path}.points[{role!r}]")
+    for index, aspect in enumerate(configuration.aspects):
+        _require_resolved_aspect(aspect, available, f"{path}.aspects[{index}]")
+    for index, nested in enumerate(configuration.contains):
+        _require_resolved_configuration(nested, available, f"{path}.contains[{index}]")
+
+
+def _require_resolved_point(
+    point: AspectPointRef,
+    available: set[tuple[str, str]],
+    path: str,
+) -> None:
+    reference = (point.chart, point.body)
+    if reference not in available:
+        raise ValueError(
+            f"{path} must resolve to NatalChart.bodies or NatalChart.angles: "
+            f"{point.chart}:{point.body}"
+        )
 
 
 def calculate_natal(
@@ -466,9 +546,8 @@ def _configuration_config_with_signs(
         else:
             continue
 
-        body_name = aspect_config.point_aliases.get(name, name)
-        point_signs[body_name] = sign_index
-        point_signs[f"natal:{body_name}"] = sign_index
+        point_signs[name] = sign_index
+        point_signs[f"natal:{name}"] = sign_index
 
     point_signs.update(configuration_config.point_signs)
     return configuration_config.model_copy(update={"point_signs": point_signs})
@@ -491,7 +570,7 @@ def _natal_aspect_points(
         points.append(
             PositionedPoint(
                 chart="natal",
-                body=config.point_aliases.get(name, name),
+                body=name,
                 longitude=longitude,
             )
         )

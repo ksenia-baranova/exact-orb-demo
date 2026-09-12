@@ -154,28 +154,19 @@ STRENGTH_POINTS = {
 RELATIONAL_POINTS = BODY_FEATURE_POINTS ∪ {asc, mc, vertex}
 ```
 
-`RELATIONAL_POINTS` совпадает с `AspectConfig.natal_points` после канонизации
-и содержит ровно те точки, которые могут стать концом аспекта.
+`RELATIONAL_POINTS` в точности совпадает с `AspectConfig.natal_points` и
+содержит ровно те точки, которые могут стать концом аспекта.
 
-**У точки ровно одно каноническое написание.** `_natal_aspect_points` берёт
-долготу по raw-имени, но выпускает `point_aliases.get(name, name)`, поэтому
-при значении по умолчанию аспекты и конфигурации несут `north_node`, `lilith`
-и `pars`, а `bodies` — `true_node`, `mean_apog` и `pars_fortune`. Поскольку
-`point_aliases` — поле конфигурации, при `point_aliases={}` те же аспекты
-придут с raw-именами. Хранение обеих форм означало бы, что одна точка лежит в
-бессрочном корпусе под двумя именами и `GROUP BY` по концу аспекта делит её
-надвое.
+**У точки ровно одно каноническое написание.** По ADR-0029 `bodies`, аспекты,
+конфигурации и натальные цели транзитов используют единые `true_node`,
+`south_node`, `mean_apog`, `pars_fortune`. `_natal_aspect_points` выпускает
+имя точки без преобразования, а `AspectConfig.point_aliases` отсутствует.
 
-Поэтому проекция канонизирует к raw-имени тела:
-
-```text
-north_node -> true_node
-lilith     -> mean_apog
-pars       -> pars_fortune
-```
-
-Alias существует только как входное отображение проекции; в поле модели он
-является ошибкой валидации, а не альтернативным написанием.
+Research projection получает уже канонический `ChartArtifact` и переносит
+идентификаторы напрямую. `north_node`, `lilith`, `pars` являются ошибкой
+машинного vocabulary, а не альтернативным входным написанием. Поэтому одна
+точка не может попасть в бессрочный корпус под двумя именами, и `GROUP BY` по
+концу аспекта не разделяет один объект на два значения.
 
 ### 3.4. Остальные vocabulary
 
@@ -319,15 +310,15 @@ artifact и не читает часы.
 оставляет одну warning-запись с безопасными `loc` и `type`; входное значение,
 сообщение валидатора и содержимое artifact в диагностические поля не входят.
 
-Перед построением моделей проекция канонизирует имена точек: alias из
-`AspectConfig.point_aliases` заменяется raw-именем тела. Два artifact,
-отличающиеся только настройкой `point_aliases`, дают одинаковые
-`AspectFeature` и `ConfigurationFeature`.
+Перед построением моделей проекция переносит канонические имена точек без
+alias-преобразования. Разрешимость всех `AspectPointRef` уже проверена
+контрактом `NatalChart`; закрытые Research enums независимо отклоняют значение
+вне Research v1.
 
 Poisoned-artifact тест проверяет отсутствие запрещённых sentinels в модели и
-сериализации. Отдельный drift suite сравнивает Research vocabulary с engine
-enums и константами, направлением канонизации aliases, derived points,
-`AspectConfig.natal_points`, разбиением `ANGLE_INDICES` на включённые
+сериализации. Отдельный drift suite напрямую сравнивает Research vocabulary с
+engine enums, derived points, `AspectConfig.natal_points`,
+`ConfigurationConfig.points`, разбиением `ANGLE_INDICES` на включённые
 (`asc`, `mc`) и исключённые углы, восьмифазностью `PHASE_NAMES` и
 configuration roles; одного rich artifact недостаточно для доказательства
 полноты.

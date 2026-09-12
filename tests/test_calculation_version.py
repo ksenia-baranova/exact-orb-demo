@@ -144,11 +144,15 @@ def test_collector_reads_engine_version_at_call_time(
     _stable_runtime(monkeypatch, tmp_path)
     before = _record_for(ephe)
 
-    monkeypatch.setattr(version_module.engine_module, "ENGINE_VERSION", "2")
+    changed_engine_version = f"{before.engine_version}-changed"
+    monkeypatch.setattr(
+        version_module.engine_module,
+        "ENGINE_VERSION",
+        changed_engine_version,
+    )
     after = _record_for(ephe)
 
-    assert before.engine_version == "1"
-    assert after.engine_version == "2"
+    assert after.engine_version == changed_engine_version
     assert calculation_version_of(after) != calculation_version_of(before)
 
 

@@ -10,7 +10,7 @@ from exact_orb.engine.charts.natal import calculate_natal
 from tests.fixtures.natal_1985 import EXPECTED_BODY_LONGITUDES, REFERENCE
 
 
-ANGLE_DERIVED_POINTS = {"asc", "mc", "dsc", "ic", "vertex", "pars", "pars_fortune"}
+ANGLE_DERIVED_POINTS = {"asc", "mc", "dsc", "ic", "vertex", "pars_fortune"}
 
 
 def _reference_natal():

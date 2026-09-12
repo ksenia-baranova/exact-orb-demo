@@ -37,9 +37,9 @@ BASE_UTC = datetime(1990, 9, 2, 10, 30, 45, tzinfo=timezone.utc)
 EPHE_FILES = ("sepl_18.se1", "semo_18.se1", "seas_18.se1")
 SENSITIVE_WARNING = "sensitive warning for 55.7558 37.6173 at 1990-09-02"
 
-# baseline: normalized ChartArtifact schema + vendored ephe/*.se1; recalculate
-# only for an intentional ephemeris or serialized-schema update.
-NATAL_ARTIFACT_JSON_BASELINE_SHA256 = "06eb12e35a3863f8b0cbeb733f5ca601ff526b5caf0b92cf40152b166a91bb49"
+# baseline: normalized ChartArtifact schema with ADR-0029 point identifiers +
+# vendored ephe/*.se1; recalculate only for an intentional contract update.
+NATAL_ARTIFACT_JSON_BASELINE_SHA256 = "21152ec836367d75eb41dc8dd7d423282dc5b8f275478eb1ce789c3a4bab9c7b"
 
 
 def test_chart_artifact_normalizes_raw_chart_to_artifact_safe_chart() -> None:
@@ -169,34 +169,38 @@ def test_encode_returns_deterministic_gzip_bytes_with_utf8_json_payload() -> Non
 
 
 def test_reference_natal_artifact_json_matches_normalized_schema_baseline() -> None:
-    configure_ephemeris(REPO_ROOT / "ephe", selena_method="true_perigee")
-    chart = calculate_natal(
-        REFERENCE["datetime_utc"],
-        REFERENCE["latitude"],
-        REFERENCE["longitude"],
-        chart_kind="natal",
-        house_system=REFERENCE["house_system"],
-    )
-    spec = NatalChartSpec(chart_kind="natal")
-    version = "baseline-version"
-    artifact = ChartArtifact(
-        calculation_key=calculation_key(
-            CalculationInput(
-                utc_datetime=chart.datetime_utc,
-                latitude=chart.latitude,
-                longitude=chart.longitude,
-            ),
-            spec,
-            version,
-        ),
-        spec=spec,
-        calculation_version=version,
-        chart=chart,
-    )
+    artifact = _reference_artifact()
 
     digest = sha256(artifact.model_dump_json().encode("utf-8")).hexdigest()
 
     assert digest == NATAL_ARTIFACT_JSON_BASELINE_SHA256
+
+
+def test_reference_artifact_serializes_only_canonical_point_references() -> None:
+    payload = _reference_artifact().model_dump(mode="json")
+    references = [
+        point
+        for aspect in payload["chart"]["aspects"]
+        for point in (aspect["from_point"], aspect["to_point"])
+    ]
+    identifiers = {point["body"] for point in references}
+
+    assert {"true_node", "south_node", "mean_apog", "pars_fortune"} <= identifiers
+    assert {"north_node", "lilith", "pars"}.isdisjoint(identifiers)
+
+
+def test_decode_rejects_unresolved_chart_point_reference() -> None:
+    payload = _reference_artifact().model_dump(mode="json")
+    payload["chart"]["aspects"][0]["from_point"]["body"] = "missing_point"
+    encoded = gzip.compress(
+        json.dumps(payload, separators=(",", ":"), ensure_ascii=False).encode("utf-8"),
+        mtime=0,
+    )
+
+    with pytest.raises(ChartArtifactDecodeError) as exc_info:
+        decode_chart_artifact(encoded)
+
+    assert exc_info.value.reason == "validation"
 
 
 def test_codec_round_trip_returns_equal_new_instance() -> None:
@@ -384,6 +388,33 @@ def _artifact(
     )
     return ChartArtifact(
         calculation_key=key,
+        spec=spec,
+        calculation_version=version,
+        chart=chart,
+    )
+
+
+def _reference_artifact() -> ChartArtifact:
+    configure_ephemeris(REPO_ROOT / "ephe", selena_method="true_perigee")
+    chart = calculate_natal(
+        REFERENCE["datetime_utc"],
+        REFERENCE["latitude"],
+        REFERENCE["longitude"],
+        chart_kind="natal",
+        house_system=REFERENCE["house_system"],
+    )
+    spec = NatalChartSpec(chart_kind="natal")
+    version = "baseline-version"
+    return ChartArtifact(
+        calculation_key=calculation_key(
+            CalculationInput(
+                utc_datetime=chart.datetime_utc,
+                latitude=chart.latitude,
+                longitude=chart.longitude,
+            ),
+            spec,
+            version,
+        ),
         spec=spec,
         calculation_version=version,
         chart=chart,

@@ -560,7 +560,6 @@ package "exact_orb.engine.aspects" as aspects {
     +categories: CategoryThresholds
     +natal_orbs: AspectOrbSet
     +transit_orbs: AspectOrbSet
-    +point_aliases: dict[str, str]
     +natal_points: tuple[str]
     +active_orbs: AspectOrbSet
     +natal(max_orb: float): AspectConfig
@@ -872,6 +871,14 @@ package "exact_orb.engine.charts" as charts {
     +strength: NatalStrength
     +warnings: tuple[CalculationWarning]
   }
+
+  note right of NatalChart
+    one point namespace:
+    mapping key = point.name;
+    every AspectPointRef resolves
+    in bodies or angles, including
+    configurations and contains
+  end note
 
   class TransitLocation <<Pydantic>> {
     +latitude: float

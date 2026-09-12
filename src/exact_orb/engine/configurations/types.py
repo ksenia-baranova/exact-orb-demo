@@ -83,8 +83,8 @@ class ConfigurationConfig(BaseModel):
         "neptune",
         "pluto",
         "chiron",
-        "north_node",
+        "true_node",
         "south_node",
-        "lilith",
+        "mean_apog",
     )
     point_signs: dict[str, int] = Field(default_factory=dict)

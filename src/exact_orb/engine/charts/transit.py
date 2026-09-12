@@ -381,7 +381,7 @@ def _calculate_transit_aspects(
         for natal_name, natal_longitude in natal_points.items():
             natal_point = PositionedPoint(
                 chart="natal",
-                body=_configured_body_name(natal_name, config),
+                body=natal_name,
                 longitude=natal_longitude,
             )
             current = find_aspects([transit_point], [natal_point], config)
@@ -485,7 +485,7 @@ def _station_aspects(
     for natal_name, natal_longitude in natal_points.items():
         natal_point = PositionedPoint(
             chart="natal",
-            body=_configured_body_name(natal_name, config),
+            body=natal_name,
             longitude=natal_longitude,
         )
         current = find_aspects([station_point], [natal_point], config)
@@ -501,10 +501,6 @@ def _station_aspects(
             )
         )
     return tuple(sorted(aspects, key=lambda item: (item.orb, item.to.body)))
-
-
-def _configured_body_name(name: str, config: AspectConfig) -> str:
-    return config.point_aliases.get(name, name)
 
 
 def _station_dates(

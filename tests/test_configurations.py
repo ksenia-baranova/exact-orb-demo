@@ -31,8 +31,8 @@ def _config_key(config_type: str, participants: set[str]) -> tuple[str, frozense
 
 EXPECTED_CONFIGURATIONS: dict[tuple[str, frozenset[str]], float] = {
     _config_key("t_square", {"sun", "uranus", "chiron"}): 5.10,
-    _config_key("t_square", {"jupiter", "lilith", "south_node"}): 2.23,
-    _config_key("t_square", {"jupiter", "north_node", "south_node"}): 2.23,
+    _config_key("t_square", {"jupiter", "mean_apog", "south_node"}): 2.23,
+    _config_key("t_square", {"jupiter", "true_node", "south_node"}): 2.23,
     _config_key("yod", {"sun", "moon", "jupiter"}): 1.68,
     _config_key("yod", {"moon", "sun", "pluto"}): 6.68,
     _config_key("bisextile", {"moon", "jupiter", "chiron"}): 6.78,
@@ -42,8 +42,8 @@ EXPECTED_CONFIGURATIONS: dict[tuple[str, frozenset[str]], float] = {
 
 EXPECTED_CONFIGURATION_CATEGORIES = {
     _config_key("t_square", {"sun", "uranus", "chiron"}): ConfigurationCategory.LOOSE,
-    _config_key("t_square", {"jupiter", "lilith", "south_node"}): ConfigurationCategory.TIGHT,
-    _config_key("t_square", {"jupiter", "north_node", "south_node"}): ConfigurationCategory.TIGHT,
+    _config_key("t_square", {"jupiter", "mean_apog", "south_node"}): ConfigurationCategory.TIGHT,
+    _config_key("t_square", {"jupiter", "true_node", "south_node"}): ConfigurationCategory.TIGHT,
     _config_key("yod", {"sun", "moon", "jupiter"}): ConfigurationCategory.TIGHT,
     _config_key("yod", {"moon", "sun", "pluto"}): ConfigurationCategory.LOOSE,
     _config_key("bisextile", {"moon", "jupiter", "chiron"}): ConfigurationCategory.LOOSE,
@@ -127,8 +127,8 @@ def test_configuration_roles_match_reference() -> None:
 
     assert by_key[_config_key("yod", {"sun", "moon", "jupiter"})].points["apex"].body == "sun"
     assert by_key[_config_key("yod", {"moon", "sun", "pluto"})].points["apex"].body == "moon"
-    assert by_key[_config_key("t_square", {"jupiter", "lilith", "south_node"})].points["apex"].body == "jupiter"
-    assert by_key[_config_key("t_square", {"jupiter", "north_node", "south_node"})].points["apex"].body == "jupiter"
+    assert by_key[_config_key("t_square", {"jupiter", "mean_apog", "south_node"})].points["apex"].body == "jupiter"
+    assert by_key[_config_key("t_square", {"jupiter", "true_node", "south_node"})].points["apex"].body == "jupiter"
 
 
 def test_configuration_deduplication_is_independent_of_input_order() -> None:
@@ -153,10 +153,10 @@ def test_configuration_threshold_is_strict_max_orb() -> None:
     assert {_configuration_key(item) for item in strict} == {
         _config_key("yod", {"sun", "moon", "jupiter"})
     }
-    assert _config_key("t_square", {"jupiter", "lilith", "south_node"}) in {
+    assert _config_key("t_square", {"jupiter", "mean_apog", "south_node"}) in {
         _configuration_key(item) for item in relaxed
     }
-    assert _config_key("t_square", {"jupiter", "north_node", "south_node"}) in {
+    assert _config_key("t_square", {"jupiter", "true_node", "south_node"}) in {
         _configuration_key(item) for item in relaxed
     }
     assert _config_key("yod", {"moon", "sun", "pluto"}) not in {

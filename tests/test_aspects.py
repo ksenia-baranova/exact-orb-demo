@@ -10,7 +10,7 @@ import pytest
 from pydantic import ValidationError
 
 from exact_orb.engine.aspects import AspectCategory, AspectConfig, PositionedPoint, find_aspects
-from exact_orb.engine.charts.natal import calculate_natal
+from exact_orb.engine.charts.natal import NatalChart, calculate_natal
 from tests.fixtures.natal_1985 import REFERENCE
 
 
@@ -20,35 +20,35 @@ def _key(left: str, aspect_type: str, right: str) -> tuple[str, str, str]:
 
 
 EXPECTED_ASPECTS: dict[tuple[str, str, str], tuple[float, AspectCategory]] = {
-    _key("north_node", "opposition", "south_node"): (0.00, AspectCategory.EXACT),
-    _key("lilith", "quincunx", "pars"): (0.42, AspectCategory.EXACT),
+    _key("true_node", "opposition", "south_node"): (0.00, AspectCategory.EXACT),
+    _key("mean_apog", "quincunx", "pars_fortune"): (0.42, AspectCategory.EXACT),
     _key("moon", "square", "asc"): (0.44, AspectCategory.EXACT),
-    _key("sun", "square", "pars"): (0.44, AspectCategory.EXACT),
+    _key("sun", "square", "pars_fortune"): (0.44, AspectCategory.EXACT),
     _key("uranus", "opposition", "chiron"): (0.44, AspectCategory.EXACT),
     _key("mercury", "square", "saturn"): (0.52, AspectCategory.EXACT),
     _key("jupiter", "quincunx", "asc"): (0.58, AspectCategory.EXACT),
     _key("sun", "quincunx", "jupiter"): (0.66, AspectCategory.EXACT),
-    _key("north_node", "conjunction", "lilith"): (0.71, AspectCategory.EXACT),
-    _key("lilith", "opposition", "south_node"): (0.71, AspectCategory.EXACT),
-    _key("sun", "trine", "lilith"): (0.86, AspectCategory.EXACT),
+    _key("true_node", "conjunction", "mean_apog"): (0.71, AspectCategory.EXACT),
+    _key("mean_apog", "opposition", "south_node"): (0.71, AspectCategory.EXACT),
+    _key("sun", "trine", "mean_apog"): (0.86, AspectCategory.EXACT),
     _key("moon", "sextile", "jupiter"): (1.02, AspectCategory.WORKING),
-    _key("jupiter", "sextile", "pars"): (1.10, AspectCategory.WORKING),
-    _key("north_node", "quincunx", "pars"): (1.13, AspectCategory.WORKING),
+    _key("jupiter", "sextile", "pars_fortune"): (1.10, AspectCategory.WORKING),
+    _key("true_node", "quincunx", "pars_fortune"): (1.13, AspectCategory.WORKING),
     _key("sun", "sextile", "asc"): (1.24, AspectCategory.WORKING),
-    _key("jupiter", "square", "lilith"): (1.52, AspectCategory.WORKING),
-    _key("sun", "trine", "north_node"): (1.57, AspectCategory.WORKING),
+    _key("jupiter", "square", "mean_apog"): (1.52, AspectCategory.WORKING),
+    _key("sun", "trine", "true_node"): (1.57, AspectCategory.WORKING),
     _key("sun", "sextile", "south_node"): (1.57, AspectCategory.WORKING),
     _key("sun", "quincunx", "moon"): (1.68, AspectCategory.WORKING),
-    _key("pars", "quincunx", "asc"): (1.68, AspectCategory.WORKING),
+    _key("pars_fortune", "quincunx", "asc"): (1.68, AspectCategory.WORKING),
     _key("neptune", "sextile", "pluto"): (1.78, AspectCategory.WORKING),
     _key("venus", "trine", "moon"): (2.07, AspectCategory.WORKING),
-    _key("lilith", "sextile", "asc"): (2.10, AspectCategory.WORKING),
+    _key("mean_apog", "sextile", "asc"): (2.10, AspectCategory.WORKING),
     _key("mars", "square", "saturn"): (2.18, AspectCategory.WORKING),
-    _key("jupiter", "square", "north_node"): (2.23, AspectCategory.WORKING),
+    _key("jupiter", "square", "true_node"): (2.23, AspectCategory.WORKING),
     _key("jupiter", "square", "south_node"): (2.23, AspectCategory.WORKING),
     _key("mercury", "square", "vertex"): (2.36, AspectCategory.WORKING),
     _key("mercury", "conjunction", "mars"): (2.70, AspectCategory.WORKING),
-    _key("north_node", "sextile", "asc"): (2.81, AspectCategory.WORKING),
+    _key("true_node", "sextile", "asc"): (2.81, AspectCategory.WORKING),
     _key("south_node", "trine", "asc"): (2.81, AspectCategory.WORKING),
     _key("mars", "opposition", "mc"): (2.84, AspectCategory.WORKING),
     _key("saturn", "conjunction", "vertex"): (2.88, AspectCategory.WORKING),
@@ -114,6 +114,24 @@ def test_aspect_config_factory_defaults_remain_context_specific() -> None:
     assert AspectConfig.transit().active_orbs.max_orb == 6.0
 
 
+def test_aspect_config_rejects_removed_point_aliases() -> None:
+    with pytest.raises(ValidationError, match="point_aliases"):
+        AspectConfig(point_aliases={"true_node": "north_node"})
+
+
+@pytest.mark.parametrize("factory", [AspectConfig.natal, AspectConfig.transit])
+def test_default_orb_profiles_use_canonical_point_identifiers(factory) -> None:
+    orbs = factory().active_orbs
+
+    assert {"north_node", "lilith", "pars"}.isdisjoint(orbs.body_orbs)
+    assert orbs.body_orbs["true_node"] == 3.0
+    assert orbs.body_orbs["south_node"] == 3.0
+    assert orbs.body_orbs["mean_apog"] == 3.0
+    assert orbs.body_orbs["pars_fortune"] == 3.0
+    assert orbs.aspect_body_overrides["trine"]["pars_fortune"] == 2.0
+    assert orbs.aspect_body_overrides["opposition"]["pars_fortune"] == 2.0
+
+
 def test_natal_aspects_match_reference_without_selena() -> None:
     chart = _reference_chart()
     actual = {
@@ -161,6 +179,75 @@ def test_natal_aspect_json_contains_category_and_null_applying() -> None:
         and item["aspect_type"] == "square"
     )
     assert mercury_saturn["category"] == "exact"
+
+
+def test_natal_chart_uses_one_resolvable_point_namespace() -> None:
+    chart = _reference_chart()
+    available = {(body.chart, name) for name, body in (chart.bodies or {}).items()}
+    available.update(("natal", name) for name in (chart.angles or {}))
+    references = []
+
+    for name, body in (chart.bodies or {}).items():
+        assert body.name == name
+    for name, angle in (chart.angles or {}).items():
+        assert angle.name == name
+    for aspect in chart.aspects or ():
+        references.extend((aspect.from_point, aspect.to_point))
+    pending = list(chart.configurations or ())
+    while pending:
+        configuration = pending.pop()
+        references.extend(configuration.points.values())
+        for aspect in configuration.aspects:
+            references.extend((aspect.from_point, aspect.to_point))
+        pending.extend(configuration.contains)
+
+    assert references
+    assert all((point.chart, point.body) in available for point in references)
+    identifiers = {point.body for point in references}
+    assert {"true_node", "south_node", "mean_apog", "pars_fortune"} <= identifiers
+    assert {"north_node", "lilith", "pars"}.isdisjoint(identifiers)
+
+
+@pytest.mark.parametrize(
+    "location",
+    ("aspect", "configuration_point", "configuration_aspect", "nested_configuration"),
+)
+def test_natal_chart_rejects_unresolved_point_references(location: str) -> None:
+    payload = _reference_chart().model_dump(mode="python")
+    missing = {"chart": "natal", "body": "missing_point"}
+
+    if location == "aspect":
+        payload["aspects"][0]["from_point"] = missing
+    elif location == "configuration_point":
+        role = next(iter(payload["configurations"][0]["points"]))
+        payload["configurations"][0]["points"][role] = missing
+    elif location == "configuration_aspect":
+        payload["configurations"][0]["aspects"][0]["to_point"] = missing
+    else:
+        nested = payload["configurations"][0].copy()
+        nested["points"] = dict(nested["points"])
+        role = next(iter(nested["points"]))
+        nested["points"][role] = missing
+        nested["contains"] = []
+        payload["configurations"][0]["contains"] = [nested]
+
+    with pytest.raises(ValidationError, match="must resolve"):
+        NatalChart.model_validate(payload)
+
+
+@pytest.mark.parametrize(
+    ("collection", "name"),
+    (("bodies", "sun"), ("angles", "asc")),
+)
+def test_natal_chart_rejects_point_name_that_differs_from_mapping_key(
+    collection: str,
+    name: str,
+) -> None:
+    payload = _reference_chart().model_dump(mode="python")
+    payload[collection][name]["name"] = "different_name"
+
+    with pytest.raises(ValidationError, match="must match"):
+        NatalChart.model_validate(payload)
 
 
 def test_single_set_aspects_are_symmetric_records_not_duplicates() -> None:
@@ -298,7 +385,7 @@ def test_property_no_self_aspects(longitudes: list[float]) -> None:
 def test_property_zero_max_orb_returns_no_aspects() -> None:
     aspects = find_aspects(
         [
-            PositionedPoint(chart="natal", body="north_node", longitude=0.0),
+            PositionedPoint(chart="natal", body="true_node", longitude=0.0),
             PositionedPoint(chart="natal", body="south_node", longitude=180.0),
         ],
         None,

@@ -63,9 +63,9 @@ TRANSIT_BODIES = (
     "pluto",
 )
 
-# baseline: 55f0f03 + vendored ephe/*.se1; recalculate only for an intentional
-# ephemeris or serialized-schema update, never for this refactor's new result.
-TRANSIT_RANGE_BASELINE_SHA256 = "d60a69defbb2e4a9850e018c28c9ede1fd1c07bee0f8ea59b22bd8abb26e72e0"
+# baseline: canonical point identifiers from ADR-0029 + vendored ephe/*.se1;
+# recalculate only for an intentional transit-result contract or ephemeris update.
+TRANSIT_RANGE_BASELINE_SHA256 = "b6a5ab95f915ca46abd24b7896b4d7fa007091b790deb87900a4e8ced6543df0"
 
 
 def _key(transit_body: str, aspect_type: str, natal_target: str) -> tuple[str, str, str]:
@@ -92,10 +92,10 @@ EXPECTED_TRANSIT_ASPECTS: dict[tuple[str, str, str], float] = {
     _key("sun", "quincunx", "jupiter"): 0.66,
     _key("sun", "square", "uranus"): 4.66,
     _key("sun", "square", "chiron"): 5.10,
-    _key("sun", "trine", "lilith"): 0.86,
-    _key("sun", "trine", "north_node"): 1.57,
+    _key("sun", "trine", "mean_apog"): 0.86,
+    _key("sun", "trine", "true_node"): 1.57,
     _key("sun", "sextile", "south_node"): 1.57,
-    _key("sun", "square", "pars"): 0.44,
+    _key("sun", "square", "pars_fortune"): 0.44,
     _key("sun", "sextile", "asc"): 1.24,
 
     _key("moon", "quincunx", "sun"): 1.68,
@@ -123,10 +123,10 @@ EXPECTED_TRANSIT_ASPECTS: dict[tuple[str, str, str], float] = {
     _key("jupiter", "opposition", "venus"): 3.08,
     _key("jupiter", "sextile", "uranus"): 5.32,
     _key("jupiter", "trine", "chiron"): 5.76,
-    _key("jupiter", "square", "lilith"): 1.52,
-    _key("jupiter", "square", "north_node"): 2.23,
+    _key("jupiter", "square", "mean_apog"): 1.52,
+    _key("jupiter", "square", "true_node"): 2.23,
     _key("jupiter", "square", "south_node"): 2.23,
-    _key("jupiter", "sextile", "pars"): 1.10,
+    _key("jupiter", "sextile", "pars_fortune"): 1.10,
     _key("jupiter", "quincunx", "asc"): 0.58,
 
     _key("saturn", "square", "mercury"): 0.52,
@@ -340,7 +340,7 @@ def test_exact_dates_and_closest_approach_are_self_consistent(natal_chart: Natal
     sun_pars = next(
         aspect
         for aspect in chart.aspects
-        if aspect.from_point.body == "sun" and aspect.to.body == "pars"
+        if aspect.from_point.body == "sun" and aspect.to.body == "pars_fortune"
     )
 
     assert sun_pars.aspect.value == "square"
