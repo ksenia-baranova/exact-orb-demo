@@ -300,6 +300,42 @@ async def test_corrupt_hit_recalculates_with_reason(
     assert f"reason={reason}" in record.getMessage()
 
 
+async def test_configuration_without_canonical_aspects_is_corrupt_and_recalculated(
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    spec = NatalChartSpec(
+        chart_kind="natal",
+        include=("aspects", "configurations", "houses", "positions"),
+    )
+    resolved = _resolved()
+    key = _key(spec, resolved)
+    cached = _artifact(spec=spec, resolved=resolved)
+    payload = json.loads(gzip.decompress(encode_chart_artifact(cached)).decode("utf-8"))
+    payload["chart"]["aspects"] = None
+    corrupt = gzip.compress(
+        json.dumps(payload, separators=(",", ":")).encode("utf-8"),
+        compresslevel=6,
+        mtime=0,
+    )
+    cache = FakeCache({key: corrupt})
+    engine = FakeEngine(
+        CalculationResult(chart=_raw_chart(include=spec.include))
+    )
+    resolver = _resolver(cache, engine)
+    caplog.set_level(logging.DEBUG, logger="exact_orb.calculation.artifacts")
+
+    fresh = await resolver.ensure_chart(spec, resolved, run=_run())
+
+    assert fresh.calculation_key == key
+    assert engine.calls == 1
+    assert resolver.corrupt == 1
+    assert resolver.misses == 1
+    assert len(cache.put_calls) == 1
+    record = next(record for record in caplog.records if "cache_corrupt" in record.getMessage())
+    assert record.levelno == logging.WARNING
+    assert "reason=validation" in record.getMessage()
+
+
 async def test_legacy_duplicate_payload_is_fail_open_and_replaced() -> None:
     spec = _spec()
     resolved = _resolved()

@@ -297,6 +297,17 @@ async def test_unsupported_house_system_does_not_call_executor_or_ephemeris_sess
             NatalChartSpec.model_construct(
                 technique="natal",
                 chart_kind="natal",
+                include=("configurations", "houses", "positions"),
+                house_system="P",
+                rulership=RulershipScheme.COMBINED,
+                near_interception_threshold=1.0,
+            ),
+            "SPEC_INVALID",
+        ),
+        (
+            NatalChartSpec.model_construct(
+                technique="natal",
+                chart_kind="natal",
                 include=("aspects", "configurations", "houses", "positions", "rulers", "strength"),
                 house_system="PP",
                 rulership=RulershipScheme.COMBINED,
@@ -426,7 +437,7 @@ async def test_result_invariant_mismatch_is_engine_unexpected(
 ) -> None:
     good_adapter = FakeAdapter(_result())
     bad_chart = _raw_chart().model_copy(update={field: value})
-    bad_adapter = FakeAdapter(CalculationResult(chart=bad_chart))
+    bad_adapter = FakeAdapter(CalculationResult.model_construct(chart=bad_chart))
 
     with ThreadPoolExecutor(max_workers=1) as executor:
         good_service = EngineService(

@@ -305,6 +305,13 @@ def test_include_validation_and_chart_kind_gating() -> None:
     with pytest.raises(ValidationError, match=r"strength.*houses"):
         NatalChartSpec(chart_kind="natal", include=("positions", "strength"))
 
+    for chart_kind, include in (
+        ("natal", ("positions", "houses", "configurations")),
+        ("cosmogram", ("positions", "configurations")),
+    ):
+        with pytest.raises(ValidationError, match=r"configurations.*aspects"):
+            NatalChartSpec(chart_kind=chart_kind, include=include)
+
 
 def test_models_are_frozen() -> None:
     calc_input = _base_input()

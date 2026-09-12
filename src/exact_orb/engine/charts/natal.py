@@ -27,6 +27,7 @@ from exact_orb.engine.aspects import (
     find_aspects,
 )
 from exact_orb.engine.configurations import Configuration, ConfigurationConfig, find_configurations
+from exact_orb.engine.configurations.integrity import validate_configuration_tree
 from exact_orb.engine.ephemeris.calc import (
     calculate_bodies,
     calculate_houses,
@@ -124,14 +125,21 @@ class NatalChart(BaseModel):
     def _validate_point_references(self) -> "NatalChart":
         available = _chart_point_references(self.bodies, self.angles)
 
+        if self.configurations is not None and self.aspects is None:
+            raise ValueError(
+                "configurations must be None when NatalChart.aspects is None"
+            )
+
         for index, aspect in enumerate(self.aspects or ()):
             _require_resolved_aspect(aspect, available, f"aspects[{index}]")
         for index, configuration in enumerate(self.configurations or ()):
+            path = f"configurations[{index}]"
             _require_resolved_configuration(
                 configuration,
                 available,
-                f"configurations[{index}]",
+                path,
             )
+            validate_configuration_tree(configuration, self.aspects or (), path)
         return self
 
 
@@ -397,12 +405,12 @@ def _calculate_natal(
     step_started_at = perf_counter()
     calculated_aspects = (
         _calculate_natal_aspects(bodies, angles, configured_aspects)
-        if {"aspects", "configurations"} & include_blocks
+        if "aspects" in include_blocks
         else None
     )
     LOGGER.debug(
         "natal_aspects block included=%s aspects=%s duration_ms=%.3f",
-        bool({"aspects", "configurations"} & include_blocks),
+        "aspects" in include_blocks,
         len(calculated_aspects) if calculated_aspects is not None else None,
         _elapsed_ms(step_started_at),
     )

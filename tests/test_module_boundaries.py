@@ -104,6 +104,7 @@ RESEARCH_PROJECTION_RUNTIME_KNOWN_TRANSITIVE_DEBT: frozenset[str] = frozenset(
         "exact_orb.engine.charts.natal",
         "exact_orb.engine.configurations",
         "exact_orb.engine.configurations.finder",
+        "exact_orb.engine.configurations.integrity",
         "exact_orb.engine.configurations.patterns",
         "exact_orb.engine.configurations.patterns.bisextile",
         "exact_orb.engine.configurations.patterns.common",

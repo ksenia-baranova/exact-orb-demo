@@ -251,19 +251,40 @@ def _strength() -> NatalStrength:
 
 
 def rich_artifact() -> ChartArtifact:
+    configuration_aspects = (
+        _aspect(
+            "mean_apog",
+            "pars_fortune",
+            aspect_type=EngineAspectType.SEXTILE,
+            category=EngineAspectCategory.EXACT,
+        ),
+        _aspect(
+            "true_node",
+            "mean_apog",
+            aspect_type=EngineAspectType.QUINCUNX,
+            category=EngineAspectCategory.WORKING,
+        ),
+        _aspect(
+            "true_node",
+            "pars_fortune",
+            aspect_type=EngineAspectType.QUINCUNX,
+            category=EngineAspectCategory.EXACT,
+        ),
+    )
     aspects = (
         _aspect("true_node", "asc", aspect_type=EngineAspectType.TRINE, category=EngineAspectCategory.EXACT),
         _aspect("mc", "vertex", aspect_type=EngineAspectType.SQUARE, category=EngineAspectCategory.WORKING),
+        *configuration_aspects,
     )
     configuration = Configuration(
-        type=EngineConfigurationType.T_SQUARE,
+        type=EngineConfigurationType.YOD,
         points={
             "base_2": _ref("pars_fortune"),
             "apex": _ref("true_node"),
             "base_1": _ref("mean_apog"),
         },
-        aspects=aspects,
-        max_orb=2.5,
+        aspects=configuration_aspects,
+        max_orb=1.25,
         category=EngineConfigurationCategory.TIGHT,
         chart="natal",
         element="fire",
@@ -310,10 +331,28 @@ def expected_features() -> ChartFeatures:
         aspects=(
             AspectFeature(from_point="true_node", to_point="asc", aspect_type="trine", category="exact"),
             AspectFeature(from_point="mc", to_point="vertex", aspect_type="square", category="working"),
+            AspectFeature(
+                from_point="mean_apog",
+                to_point="pars_fortune",
+                aspect_type="sextile",
+                category="exact",
+            ),
+            AspectFeature(
+                from_point="true_node",
+                to_point="mean_apog",
+                aspect_type="quincunx",
+                category="working",
+            ),
+            AspectFeature(
+                from_point="true_node",
+                to_point="pars_fortune",
+                aspect_type="quincunx",
+                category="exact",
+            ),
         ),
         configurations=(
             ConfigurationFeature(
-                configuration_type="t_square",
+                configuration_type="yod",
                 category="tight",
                 points=(
                     ConfigurationPointFeature(role="base_2", point="pars_fortune"),
@@ -722,7 +761,7 @@ def test_allowed_categorical_changes_change_projection() -> None:
         update={"chart": chart.model_copy(update={"aspects": (chart.aspects[0].model_copy(update={"category": EngineAspectCategory.BACKGROUND}), chart.aspects[1])})}
     )
     config_variant = source.model_copy(
-        update={"chart": chart.model_copy(update={"configurations": (chart.configurations[0].model_copy(update={"type": EngineConfigurationType.YOD}),)})}
+        update={"chart": chart.model_copy(update={"configurations": (chart.configurations[0].model_copy(update={"type": EngineConfigurationType.T_SQUARE}),)})}
     )
     planets = {
         key: planet.model_copy(

@@ -218,6 +218,32 @@ def test_decode_rejects_south_node_as_relational_endpoint() -> None:
     assert exc_info.value.reason == "validation"
 
 
+@pytest.mark.parametrize("mutation", ("edge", "point", "max_orb"))
+def test_decode_rejects_inconsistent_materialized_configuration(
+    mutation: str,
+) -> None:
+    payload = _reference_artifact().model_dump(mode="json")
+    configuration = payload["chart"]["configurations"][0]
+
+    if mutation == "edge":
+        configuration["aspects"][0]["orb"] += 0.01
+    elif mutation == "point":
+        role = next(iter(configuration["points"]))
+        configuration["points"][role] = {"chart": "natal", "body": "venus"}
+    else:
+        configuration["max_orb"] += 0.01
+
+    encoded = gzip.compress(
+        json.dumps(payload, separators=(",", ":"), ensure_ascii=False).encode("utf-8"),
+        mtime=0,
+    )
+
+    with pytest.raises(ChartArtifactDecodeError) as exc_info:
+        decode_chart_artifact(encoded)
+
+    assert exc_info.value.reason == "validation"
+
+
 def test_codec_round_trip_returns_equal_new_instance() -> None:
     artifact = _artifact()
     encoded = encode_chart_artifact(artifact)

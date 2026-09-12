@@ -652,6 +652,13 @@ AspectGraph *-- Aspect
 AspectGraph *-- AspectPointRef
 AspectGraph --> AspectType
 
+note right of Configuration
+  aspects materializes complete Aspect values
+  from NatalChart.aspects; roles, endpoints,
+  topology, max_orb, chart and recursive
+  contains are aggregate invariants
+end note
+
 ' =========================
 ' ENGINE: STRENGTH
 ' =========================
@@ -885,7 +892,10 @@ package "exact_orb.engine.charts" as charts {
     mapping key = point.name;
     every AspectPointRef resolves
     in bodies or angles, including
-    configurations and contains
+    configurations and contains;
+    configurations requires aspects,
+    whose list is canonical for all
+    materialized configuration edges
   end note
 
   class TransitLocation <<Pydantic>> {

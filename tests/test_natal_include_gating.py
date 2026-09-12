@@ -155,6 +155,34 @@ def test_strength_without_houses_raises() -> None:
         )
 
 
+@pytest.mark.parametrize(
+    ("chart_kind", "include"),
+    (
+        ("natal", {"positions", "houses", "configurations"}),
+        ("cosmogram", {"positions", "configurations"}),
+    ),
+)
+def test_configurations_without_aspects_raises_before_ephemeris(
+    chart_kind: str,
+    include: set[str],
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    def fail_if_called(*_args, **_kwargs):
+        raise AssertionError("ephemeris must not be touched for invalid include")
+
+    monkeypatch.setattr("exact_orb.engine.charts.natal.validate_ephemeris_path", fail_if_called)
+
+    with pytest.raises(ValueError, match=r"configurations.*aspects"):
+        calculate_natal(
+            REFERENCE["datetime_utc"],
+            REFERENCE["latitude"],
+            REFERENCE["longitude"],
+            chart_kind=chart_kind,
+            house_system=REFERENCE["house_system"],
+            include=include,
+        )
+
+
 def test_natal_chart_kind_requires_houses() -> None:
     with pytest.raises(ValueError, match=r"(?=.*chart_kind)(?=.*houses)"):
         calculate_natal(
