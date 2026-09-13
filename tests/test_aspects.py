@@ -9,7 +9,15 @@ from hypothesis import strategies as st
 import pytest
 from pydantic import ValidationError
 
-from exact_orb.engine.aspects import AspectCategory, AspectConfig, PositionedPoint, find_aspects
+from exact_orb.engine.aspects import (
+    AspectCategory,
+    AspectConfig,
+    AspectOrbSet,
+    AspectType,
+    PositionedPoint,
+    find_aspects,
+)
+from exact_orb.engine.aspects.orbs import resolve_orb
 from exact_orb.engine.charts.natal import NatalChart, calculate_natal
 from exact_orb.engine.charts.uncertainty import (
     UnstableAspectReason,
@@ -346,6 +354,190 @@ def test_max_orb_boundary_filters_moon_jupiter_sextile() -> None:
     assert moon_jupiter in {_aspect_key(aspect) for aspect in loose_chart.aspects or ()}
 
 
+def test_epsilon_accepted_orb_is_published_at_effective_limit() -> None:
+    left = PositionedPoint(chart="natal", body="p0", longitude=7.0)
+    right = PositionedPoint(
+        chart="natal",
+        body="p1",
+        longitude=89.99999999999994,
+    )
+    config = AspectConfig.natal(max_orb=7.0)
+
+    aspects = find_aspects([left, right], None, config)
+
+    assert len(aspects) == 1
+    aspect = aspects[0]
+    allowed_orb = resolve_orb(
+        aspect.aspect_type,
+        left,
+        right,
+        config.active_orbs,
+    )
+    assert aspect.aspect_type is AspectType.SQUARE
+    assert aspect.orb == allowed_orb == 7.0
+    assert aspect.category is AspectCategory.BACKGROUND
+
+
+@pytest.mark.parametrize(
+    (
+        "left_body",
+        "left_longitude",
+        "right_body",
+        "right_longitude",
+        "config",
+        "expected_type",
+        "expected_limit",
+        "expected_category",
+    ),
+    [
+        (
+            "p0",
+            0.0,
+            "p1",
+            31.000000000000057,
+            AspectConfig.natal(max_orb=7.0),
+            AspectType.SEMISEXTILE,
+            1.0,
+            AspectCategory.WORKING,
+        ),
+        (
+            "mars",
+            0.0,
+            "p1",
+            86.99999999999994,
+            AspectConfig.natal(max_orb=7.0),
+            AspectType.SQUARE,
+            3.0,
+            AspectCategory.WORKING,
+        ),
+        (
+            "pluto",
+            0.0,
+            "p1",
+            86.99999999999994,
+            AspectConfig.natal(max_orb=7.0),
+            AspectType.SQUARE,
+            3.0,
+            AspectCategory.WORKING,
+        ),
+        (
+            "p0",
+            6.0,
+            "p1",
+            89.99999999999994,
+            AspectConfig.transit(max_orb=6.0),
+            AspectType.SQUARE,
+            6.0,
+            AspectCategory.BACKGROUND,
+        ),
+    ],
+)
+def test_epsilon_normalization_uses_effective_orb_limit(
+    left_body: str,
+    left_longitude: float,
+    right_body: str,
+    right_longitude: float,
+    config: AspectConfig,
+    expected_type: AspectType,
+    expected_limit: float,
+    expected_category: AspectCategory,
+) -> None:
+    left = PositionedPoint(chart="test", body=left_body, longitude=left_longitude)
+    right = PositionedPoint(chart="test", body=right_body, longitude=right_longitude)
+
+    aspects = find_aspects([left, right], None, config)
+
+    assert len(aspects) == 1
+    aspect = aspects[0]
+    assert aspect.aspect_type is expected_type
+    assert resolve_orb(expected_type, left, right, config.active_orbs) == expected_limit
+    assert aspect.orb == expected_limit
+    assert aspect.category is expected_category
+
+
+@pytest.mark.parametrize(
+    ("right_longitude", "expected_orb"),
+    [(83.0, 7.0), (83.5, 6.5)],
+)
+def test_orb_at_or_inside_limit_is_not_changed(
+    right_longitude: float,
+    expected_orb: float,
+) -> None:
+    aspects = find_aspects(
+        [
+            PositionedPoint(chart="test", body="p0", longitude=0.0),
+            PositionedPoint(
+                chart="test",
+                body="p1",
+                longitude=right_longitude,
+            ),
+        ],
+        None,
+        AspectConfig.natal(max_orb=7.0),
+    )
+
+    assert len(aspects) == 1
+    assert aspects[0].aspect_type is AspectType.SQUARE
+    assert aspects[0].orb == expected_orb
+
+
+def test_orb_beyond_absolute_epsilon_is_rejected() -> None:
+    aspects = find_aspects(
+        [
+            PositionedPoint(chart="test", body="p0", longitude=0.0),
+            PositionedPoint(chart="test", body="p1", longitude=82.999999998),
+        ],
+        None,
+        AspectConfig.natal(max_orb=7.0),
+    )
+
+    assert aspects == []
+
+
+def test_category_threshold_is_not_an_orb_normalization_boundary() -> None:
+    aspects = find_aspects(
+        [
+            PositionedPoint(chart="test", body="p0", longitude=0.0),
+            PositionedPoint(
+                chart="test",
+                body="p1",
+                longitude=86.99999999999994,
+            ),
+        ],
+        None,
+        AspectConfig.natal(max_orb=7.0),
+    )
+
+    assert len(aspects) == 1
+    assert aspects[0].orb == 3.000000000000057
+    assert aspects[0].category is AspectCategory.BACKGROUND
+
+
+def test_equal_raw_orbs_still_use_declared_aspect_priority() -> None:
+    config = AspectConfig(
+        natal_orbs=AspectOrbSet(
+            max_orb=15.0,
+            aspect_orbs={
+                AspectType.CONJUNCTION: 15.0,
+                AspectType.SEMISEXTILE: 15.0,
+            },
+        )
+    )
+
+    aspects = find_aspects(
+        [
+            PositionedPoint(chart="test", body="p0", longitude=0.0),
+            PositionedPoint(chart="test", body="p1", longitude=15.0),
+        ],
+        None,
+        config,
+    )
+
+    assert len(aspects) == 1
+    assert aspects[0].aspect_type is AspectType.CONJUNCTION
+    assert aspects[0].orb == 15.0
+
+
 def test_zero_aries_wrap_uses_shortest_arc() -> None:
     aspects = find_aspects(
         [
@@ -400,9 +592,20 @@ def test_include_without_aspects_sets_block_to_none() -> None:
 )
 def test_property_orbs_are_nonnegative_and_within_max(longitudes: list[float]) -> None:
     config = AspectConfig.natal(max_orb=7.0)
-    aspects = find_aspects(_points(longitudes), None, config)
+    points = _points(longitudes)
+    aspects = find_aspects(points, None, config)
+    points_by_ref = {(point.chart, point.body): point for point in points}
 
-    assert all(0.0 <= aspect.orb <= config.active_orbs.max_orb for aspect in aspects)
+    for aspect in aspects:
+        left = points_by_ref[(aspect.from_point.chart, aspect.from_point.body)]
+        right = points_by_ref[(aspect.to_point.chart, aspect.to_point.body)]
+        allowed_orb = resolve_orb(
+            aspect.aspect_type,
+            left,
+            right,
+            config.active_orbs,
+        )
+        assert 0.0 <= aspect.orb <= allowed_orb
 
 
 @settings(max_examples=30, deadline=None, suppress_health_check=[HealthCheck.too_slow])
