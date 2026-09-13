@@ -98,21 +98,32 @@ def _closest_allowed_aspect(
     config: AspectConfig,
 ) -> tuple[AspectType, float, float] | None:
     distance = angular_distance(from_point.longitude, to_point.longitude)
-    candidates: list[tuple[float, int, AspectType, float]] = []
+    candidates: list[tuple[float, int, AspectType, float, float]] = []
 
     for aspect_type, exact_angle in ASPECT_ANGLES.items():
-        orb = abs(distance - exact_angle)
+        raw_orb = abs(distance - exact_angle)
         allowed_orb = resolve_orb(aspect_type, from_point, to_point, config.active_orbs)
         if allowed_orb <= 0.0:
             continue
-        if orb <= allowed_orb + ORB_EPSILON:
-            candidates.append((orb, ASPECT_PRIORITY[aspect_type], aspect_type, exact_angle))
+        if raw_orb <= allowed_orb + ORB_EPSILON:
+            candidates.append(
+                (
+                    raw_orb,
+                    ASPECT_PRIORITY[aspect_type],
+                    aspect_type,
+                    exact_angle,
+                    allowed_orb,
+                )
+            )
 
     if not candidates:
         return None
 
-    orb, _, aspect_type, exact_angle = min(candidates, key=lambda item: (item[0], item[1]))
-    return aspect_type, exact_angle, orb
+    raw_orb, _, aspect_type, exact_angle, allowed_orb = min(
+        candidates,
+        key=lambda item: (item[0], item[1]),
+    )
+    return aspect_type, exact_angle, min(raw_orb, allowed_orb)
 
 
 def angular_distance(left_longitude: float, right_longitude: float) -> float:
