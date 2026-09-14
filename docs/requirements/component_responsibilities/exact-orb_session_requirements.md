@@ -974,6 +974,23 @@ ADR-0013 называл кэш интерпретаций вторым уров�
 
 ## 12. Реализация хранилищ
 
+### 12.0. Статус выполнения на 2026-09-14
+
+| Часть плана | Статус |
+|---|---|
+| P1 — contracts | Реализованы state/dialog/persistence ports, outcomes, ошибки и публичная UTC-валидация |
+| P2 — InMemory | Реализованы aggregate lifecycle, TTL, CAS и общие conformance-проверки |
+| P3 — ContextService | Реализованы load/save, `AlreadyApplied`, original-expected retry, операции диалога, reset/delete и типизированные отказы |
+| P4–P4.1 — SQLite | Реализованы транзакционные операции, payload codec, retry policy и lifecycle; выполнен benchmark полного adapter path |
+| Следствия ADR-0032 | Реализованы state payload v2 и чтение frozen v1; покрытие в `tests/session/` |
+| Research P5a | Реализованы contracts, projection и InMemory corpus в отдельном `research/` |
+| Research P5b | Не реализован: SQLite и producer wiring остаются в плане |
+| Transport/application wiring | Не реализован: cookie/middleware, команды HTTP, внешний orchestrator и полная пользовательская операция |
+
+Это сверка реализации и имеющегося покрытия; нового прогона conformance
+при обновлении документации не было. Выполненный session-слой используется
+в M1 [roadmap](../../project_management/roadmap.md), а не реализуется заново.
+
 ### 12.1. Требования различаются
 
 | Хранилище | Что нужно | Профиль нагрузки |
@@ -1012,7 +1029,11 @@ ADR-0013 называл кэш интерпретаций вторым уров�
 `session/adapters/_time.py`; импорт приватных имён контрактных модулей для
 adapter-слоя запрещён.
 
-### 12.3. SQLite закрывает все хранилища
+### 12.3. SQLite: реализованный session adapter и целевые хранилища
+
+Описание CAS и lifecycle ниже относится к реализованному session adapter.
+Наличие этого adapter не означает готовности Research SQLite или
+interpretation cache.
 
 **CAS.** Запись выполняется внутри `BEGIN IMMEDIATE`. Precheck читает
 актуальный snapshot и до UPDATE возвращает `SessionAbsent` для
@@ -1117,11 +1138,15 @@ PRAGMA не получает retry. Sleep, retry loop и process-global lock н�
 Redis не нужен ни на одной ступени: он выигрывает микросекунды доступа там,
 где экономятся миллисекунды расчёта (§13.2).
 
-### 12.5. Что нельзя откладывать
+### 12.5. Подключение Research в новом порядке работ
 
-`ResearchCorpus` должен писаться **с первого дня работы стенда**. Данные, не
-записанные тогда, не восстанавливаются никогда, а именно они определяют
-качество рецептов интерпретации.
+Contracts, projection и InMemory corpus уже готовы. Первоначальный план
+предполагал запись Research с первого дня стенда; ревизия
+[roadmap от 2026-09-14](../../project_management/roadmap.md) переносит
+producer wiring и SQLite в M3-7, после UI на сервере и первой интерпретации.
+До подключения producer новые Research-записи автоматически не создаются;
+пропущенные события позже не восстанавливаются. Этот перенос меняет порядок
+работ, но не состав разрешённых данных Research v1.
 
 ---
 
@@ -1180,19 +1205,19 @@ CAS-запись (UPDATE ... WHERE version + commit), WAL, synchronous=NORMAL:
   чтение по первичному ключу: 0.002 мс → 520 000 чтений/с
 ```
 
-Это микрозамер SQL-примитива на машине автора, а не benchmark будущего
-`SqliteSessionPersistence`. В него не входили сериализация моделей,
+Это исторический микрозамер SQL-примитива на машине автора, а не benchmark
+реализованного `SqliteSessionPersistence`. В него не входили сериализация моделей,
 `BEGIN IMMEDIATE`, возврат `VersionConflict(actual)`, агрегатные
 touch/reset/delete, передача работы в executor, реальный профиль диска и
 конкуренция писателей. Поэтому числа `61 000` и `520 000` нельзя выдавать за
 пропускную способность адаптера или доказательство production-capacity.
 
-P4 повторяет замер через публичный порт на file-backed базе с фактическими
-`journal_mode`/`synchronous`, сериализацией, commit и тем же executor, что
-используется приложением. Отдельно измеряются p50/p95 для CAS success,
-VersionConflict, aggregate touch/reset/delete и конкурирующих писателей.
-До этого допустим только вывод, что голый SQL-примитив не выглядит очевидным
-узким местом при ожидаемых десятках записей в секунду.
+P4 уже выполнил отдельный замер через публичный порт на file-backed базе:
+`journal_mode`/`synchronous`, сериализация, commit и caller-owned executor
+входили в измерение. Отдельно измерены CAS success, VersionConflict,
+aggregate touch/reset/delete и конкурирующие писатели. Отчёт фиксирует
+окружение и результаты на дату прогона; он не доказывает текущую
+пропускную способность ещё не развёрнутого сервера.
 
 Фактические machine-specific показатели полного adapter path публикуются в
 датированном [benchmark report P4](../../benchmarks/2026-09-06-session-sqlite.md),

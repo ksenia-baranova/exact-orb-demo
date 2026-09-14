@@ -947,6 +947,22 @@ N8 описывает отказ при **записи**. Этот случай 
 
 # 3. Приоритет реализации и тестирования
 
+**Сверка выполнения на 2026-09-14.** Это план сквозной приёмки;
+готовые компоненты не означают, что browser/application-flow уже реализован.
+
+| Группа | Выполненная часть | Остаток |
+|---|---|---|
+| N3/N4 — ввод, резолв, расчёт | Типизированные исходы и real-component integration до `BuildNatalOutcome` | Отображение через ApplicationResult, HTTP и UI |
+| N6/N7/N8/N9/N10/N11 — состояние и отказы | `ContextService`, CAS, TTL, `AlreadyApplied`, original-expected retry, failure outcomes; InMemory/SQLite conformance | Координация handler + commit, middleware и полная удалённая приёмка |
+| N1/N5 — возврат в UI и старая карта | Persistence и расчётный путь сохраняют необходимые границы | Браузерный lifecycle, получение состояния и отображение |
+| N12 — интерпретация | Session/dialog contracts и хранение версии ответа | Interpretation handler/service, генерация и transport/UI |
+
+Следующие проверки привязываются к этапам
+[roadmap](../../project_management/roadmap.md): сначала UI и сервер для build,
+затем первый interpretation-путь, затем полный runtime/pipeline.
+Существующее компонентное покрытие переиспользуется; сквозные сценарии
+ниже не отмечаются пройденными до фактического запуска соответствующего пути.
+
 ## Критические для корректности состояния
 
 1. `N6` — конкурирующие запросы и latest accepted build wins.
