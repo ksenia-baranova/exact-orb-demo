@@ -1,86 +1,80 @@
 @startgantt
-' Оценки из roadmap v3.1. Ось начинается условно; это не обещанные даты релиза.
-' PlantUML не показывает половину дня: 0.5 и 1.5 округлены вверх только в полосах.
+' Подробный календарный baseline из roadmap v3.2 от текущей точки 14.09.2026.
+' Оценки остаются рабочими днями. AM/PM в подписях сохраняют половины дня,
+' которые дневная шкала PlantUML не может показать отдельной шириной полосы.
 
-title exact-orb — M1 и M2, оценка оставшейся работы
-Project starts 2026-09-15
+title exact-orb — подробный план M1 и M2 до конца ноября 2026
+Project starts 2026-09-14
 printscale weekly zoom 2
 Label on first column
 saturday are closed
 sunday are closed
 
--- M1. Карта с UI на удалённом сервере — 22 рабочих дня --
+-- Текущая точка — решение M1-1 принято --
 
-[M1-1 ADR: данные рождения и соглашение — 0.5 дн.] as [M11] lasts 1 day
-[M1-2 Application Orchestrator — 1.5 дн.] as [M12] lasts 2 days
-[M12] starts at [M11]'s end
-[M1-3 Bootstrap composition — 0.5 дн.] as [M13] lasts 1 day
-[M13] starts at [M12]'s end
-[M1-4 Import boundary handler — 0.5 дн.] as [M14] lasts 1 day
-[M14] starts at [M13]'s end
-[M1-5 Каталог place_id и поиск — 2 дн.] as [M15] lasts 2 days
-[M15] starts at [M14]'s end
-[M1-6 FastAPI и Session Middleware — 2 дн.] as [M16] lasts 2 days
-[M16] starts at [M15]'s end
-[M1-7 UI: форма и таблицы фактов — 2 дн.] as [M17] lasts 2 days
-[M17] starts at [M16]'s end
-[M1-8 SVG-колесо карты — 5 дн.] as [M18] lasts 5 days
-[M18] starts at [M17]'s end
-[M1-9 Условия использования — 1 дн.] as [M19] lasts 1 day
-[M19] starts at [M18]'s end
-[M1-10 Benchmark natal/cosmogram — 1 дн.] as [M110] lasts 1 day
-[M110] starts at [M19]'s end
-[M1-11 CI на Linux — 0.5 дн.] as [M111] lasts 1 day
-[M111] starts at [M110]'s end
-[M1-12 Окружение сервера — 1 дн.] as [M112] lasts 1 day
-[M112] starts at [M111]'s end
-[M1-13 Деплой, TLS и автозапуск — 2 дн.] as [M113] lasts 2 days
-[M113] starts at [M112]'s end
-[M1-14 Сквозная приёмка — 1.5 дн.] as [M114] lasts 2 days
-[M114] starts at [M113]'s end
-[M1-15 Фиксы первого релиза — 1 дн.] as [M115] lasts 1 day
-[M115] starts at [M114]'s end
-[M1 готов: карта работает в UI на сервере] as [M1DONE] happens at [M115]'s end
+[M1-1 ADR-0034 принят — 0.5 дн.] as [M11] happens 2026-09-14
+[M11] is 100% complete
+[M11] is colored in Green
+
+-- M1. Карта с UI на контролируемом удалённом стенде — осталось 21.5 дн. --
+
+[M1-2 Application Orchestrator — 15.09–16.09 AM — 1.5 дн.] as [M12] starts 2026-09-15 and ends 2026-09-16
+[M1-3 Bootstrap composition — 16.09 PM — 0.5 дн.] as [M13] starts 2026-09-16 and ends 2026-09-16
+[M1-4 Import boundary handler — 17.09 AM — 0.5 дн.] as [M14] starts 2026-09-17 and ends 2026-09-17
+[M1-5 Каталог place_id и поиск — 17.09 PM–21.09 AM — 2 дн.] as [M15] starts 2026-09-17 and ends 2026-09-21
+[M1-6 FastAPI и Session Middleware — 21.09 PM–23.09 AM — 2 дн.] as [M16] starts 2026-09-21 and ends 2026-09-23
+[M1-7 UI: форма и таблицы фактов — 23.09 PM–25.09 AM — 2 дн.] as [M17] starts 2026-09-23 and ends 2026-09-25
+[M1-8 SVG-колесо карты — 25.09 PM–02.10 AM — 5 дн.] as [M18] starts 2026-09-25 and ends 2026-10-02
+[M1-9 Условия использования — 02.10 PM–05.10 AM — 1 дн.] as [M19] starts 2026-10-02 and ends 2026-10-05
+[M1-10 Benchmark natal/cosmogram — 05.10 PM–06.10 AM — 1 дн.] as [M110] starts 2026-10-05 and ends 2026-10-06
+[M1-11 CI на Linux — 06.10 PM — 0.5 дн.] as [M111] starts 2026-10-06 and ends 2026-10-06
+[M1-12 Окружение сервера и INFO guard — 07.10 — 1 дн.] as [M112] starts 2026-10-07 and ends 2026-10-07
+[M1-13 Деплой, TLS и автозапуск — 08.10–09.10 — 2 дн.] as [M113] starts 2026-10-08 and ends 2026-10-09
+[M1-14 Сквозная приёмка — 12.10–13.10 AM — 1.5 дн.] as [M114] starts 2026-10-12 and ends 2026-10-13
+[M1-15 Фиксы первого релиза — 13.10 PM–14.10 AM — 1 дн.] as [M115] starts 2026-10-13 and ends 2026-10-14
+
+[M1 готов: карта работает в UI на контролируемом стенде] as [M1DONE] happens 2026-10-14
 [M1DONE] is colored in Green
 
--- M2. Первая интерпретация коротким путём — 12.5 рабочего дня + содержание --
+-- M2. Каркас первой интерпретации — 12.5 рабочего дня --
 
-[M2-1 ADR прямого interpretation path — 0.5 дн.] as [M21] lasts 1 day
-[M21] starts at [M115]'s end
-[M2-2 DataSelector — 3 дн.] as [M22] lasts 3 days
-[M22] starts at [M21]'s end
-[M2-3 PromptBuilder и Registry — 2 дн.] as [M23] lasts 2 days
-[M23] starts at [M22]'s end
-[M2-4 Interpretation handler — 1.5 дн.] as [M24] lasts 2 days
-[M24] starts at [M23]'s end
-[M2-5 OutputGuard — 1 дн.] as [M25] lasts 1 day
-[M25] starts at [M24]'s end
-[M2-6 Admission и budget — 2 дн.] as [M26] lasts 2 days
-[M26] starts at [M25]'s end
-[M2-7 UI интерпретации — 1 дн.] as [M27] lasts 1 day
-[M27] starts at [M26]'s end
-[M2-8 Eval и приёмка — 1.5 дн.] as [M28] lasts 2 days
-[M28] starts at [M27]'s end
-[M2 содержание: обязательный минимум — 10 дн.] as [M2C10] lasts 10 days
-[M2C10] starts at [M28]'s end
+[M2-1 ADR прямого interpretation path — 14.10 PM — 0.5 дн.] as [M21] starts 2026-10-14 and ends 2026-10-14
+[M2-2 DataSelector — 15.10–19.10 — 3 дн.] as [M22] starts 2026-10-15 and ends 2026-10-19
+[M2-3 PromptBuilder и Registry — 20.10–21.10 — 2 дн.] as [M23] starts 2026-10-20 and ends 2026-10-21
+[M2-4 Interpretation handler — 22.10–23.10 AM — 1.5 дн.] as [M24] starts 2026-10-22 and ends 2026-10-23
+[M2-5 OutputGuard — 23.10 PM–26.10 AM — 1 дн.] as [M25] starts 2026-10-23 and ends 2026-10-26
+[M2-6 Admission и budget — 26.10 PM–28.10 AM — 2 дн.] as [M26] starts 2026-10-26 and ends 2026-10-28
+[M2-7 UI интерпретации — 28.10 PM–29.10 AM — 1 дн.] as [M27] starts 2026-10-28 and ends 2026-10-29
+[M2-8 Eval и приёмка — 29.10 PM–30.10 — 1.5 дн.] as [M28] starts 2026-10-29 and ends 2026-10-30
+
+[M2 каркас готов: первый замкнутый interpretation flow] as [M2CORE] happens 2026-10-30
+[M2CORE] is colored in Green
+
+-- M2. Содержание и проверка человеком — коридор 10–20 рабочих дней --
+
+[Первый рецепт и human feedback — обязательные 10 дн.] as [M2C10] starts 2026-11-02 and ends 2026-11-13
 [M2C10] is colored in LightBlue
-[M2 готов по нижней оценке — 10 дн. содержания] as [M2EARLY] happens at [M2C10]'s end
+[M2 готов по нижней оценке содержания] as [M2EARLY] happens 2026-11-13
 [M2EARLY] is colored in Green
-[M2 содержание: резерв до верхней оценки — +10 дн.] as [M2C20] lasts 10 days
-[M2C20] starts at [M2C10]'s end
+
+[Расширение рецептов — резерв верхней оценки +10 дн.] as [M2C20] starts 2026-11-16 and ends 2026-11-27
 [M2C20] is colored in Wheat
-[M2 готов по верхней оценке — 20 дн. содержания] as [M2DONE] happens at [M2C20]'s end
+[M2 готов по верхней оценке содержания] as [M2DONE] happens 2026-11-27
 [M2DONE] is colored in Green
 
-[M3 подробно на третьей диаграмме — предварительно 36 дн.] as [M3OPEN] happens at [M2C20]'s end
-[M3OPEN] is colored in Gray
+-- Конец календарного горизонта --
+
+[Контрольная точка: результат M2 и решение о старте M3] as [NOVREVIEW] happens 2026-11-30
+[NOVREVIEW] is colored in Orange
 
 legend bottom
-  Ось начинается 15.09 только для последовательного отображения; это не дата старта или релиза.
-  Точные оценки: M1 = 22 рабочих дня; M2 каркас = 12.5; содержание M2 = 10–20.
-  Первые 10 дней содержания обязательны; вторая полоса показывает резерв до верхней оценки.
-  Полосы 0.5/1.5 дня округлены вверх до целого рабочего дня из-за ограничения PlantUML.
-  Выходные на условной оси закрыты. Исполнитель один; задачи идут последовательно.
-  M3 начинается после M2 и подробно показан на третьей диаграмме файла.
+  Календарный baseline начинается с принятого ADR-0034 14.09 и заканчивается 30.11.
+  В периоде 15.09–30.11 есть 55 рабочих дней; плановая загрузка занимает 54.
+  M1-1 уже выполнен. Остаток M1 = 21.5 дня; M2 каркас = 12.5; содержание = 10–20.
+  AM/PM обозначают передачу задачи внутри дня; полосы PlantUML занимают весь календарный день.
+  Выходные закрыты. Исполнитель один; работы идут последовательно.
+  Даты являются baseline по текущим оценкам, а не обещанием релиза.
+  Публичный трафик не входит в M1: показан контролируемый стенд по ADR-0034.
+  M3 начинается после этой контрольной точки и остаётся на третьей диаграмме.
 endlegend
 @endgantt
