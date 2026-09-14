@@ -1,0 +1,176 @@
+@startgantt
+' Источник интервалов и метод подсчёта: roadmap.md, раздел 1.3.
+' Начало: датированный prompt. Конец: содержательный commit, не более поздний merge.
+' До initial commit 22.08 интервалы приблизительны и показаны оранжевым.
+
+title exact-orb — календарная история выполненных этапов
+Project starts 2026-08-15
+printscale daily
+Label on first column
+
+-- Первичная реализация до подробной Git-истории --
+
+' prompts/2026-08-15/01-natal-module.md -> fb8cafe (окно промптов; код подтверждён initial commit)
+[Натал и CLI — ~2 дн.] as [H_CORE] starts 2026-08-15 and ends 2026-08-16
+[H_CORE] is 100% complete
+[H_CORE] is colored in Wheat
+
+' prompts/2026-08-16/02-aspects-module.md -> fb8cafe (окно промптов; код подтверждён initial commit)
+[Аспекты, конфигурации и сила — ~1 дн.] as [H_ASPECTS] starts 2026-08-16 and ends 2026-08-16
+[H_ASPECTS] is 100% complete
+[H_ASPECTS] is colored in Wheat
+
+' prompts/2026-08-17/01-logging.md -> fb8cafe (окно промптов; код подтверждён initial commit)
+[Первичное логирование — ~1 дн.] as [H_LOG0] starts 2026-08-17 and ends 2026-08-17
+[H_LOG0] is 100% complete
+[H_LOG0] is colored in Wheat
+
+' prompts/2026-08-17/02-llm-gateway.md -> fb8cafe (окно промптов; код подтверждён initial commit)
+[LLM Gateway transport — ~3 дн.] as [H_LLM] starts 2026-08-17 and ends 2026-08-19
+[H_LLM] is 100% complete
+[H_LLM] is colored in Wheat
+
+' prompts/2026-08-19/01-agent-skeleton.md -> fb8cafe (окно промптов; код подтверждён initial commit)
+[Пакет engine и каркас agent-слоёв — ~4 дн.] as [H_PACKAGE] starts 2026-08-19 and ends 2026-08-22
+[H_PACKAGE] is 100% complete
+[H_PACKAGE] is colored in Wheat
+
+[Транзитное ядро есть; срок неизвестен] as [TRANSIT_EXISTS] happens 2026-08-22
+[TRANSIT_EXISTS] is colored in DarkOrange
+
+-- Резолв и расчётные артефакты --
+
+' prompts/2026-08-22/12-explicit-chart-kind-and-honest-cosmogram.md -> 2726eab
+[Явный chart_kind и космограмма — 2 дн.] as [H_KIND] starts 2026-08-22 and ends 2026-08-23
+[H_KIND] is 100% complete
+[H_KIND] is colored in LightGreen
+
+' prompts/2026-08-25/01-rename-chart-calculation-functions.md -> a3dddfd
+[Имена функций расчёта — 1 дн.] as [H_RENAME] starts 2026-08-25 and ends 2026-08-25
+[H_RENAME] is 100% complete
+[H_RENAME] is colored in LightGreen
+
+' prompts/2026-08-26/01-freeze-swiss-ephemeris-runtime.md -> eeb6c77
+[Безопасный startup Swiss Ephemeris — 1 дн.] as [H_SWISS] starts 2026-08-26 and ends 2026-08-26
+[H_SWISS] is 100% complete
+[H_SWISS] is colored in LightGreen
+
+' prompts/2026-08-27/01-birth-data-resolution.md -> dd21500
+[Резолв рождения и каталог lookup — 2 дн.] as [H_BIRTH] starts 2026-08-27 and ends 2026-08-28
+[H_BIRTH] is 100% complete
+[H_BIRTH] is colored in LightGreen
+
+' prompts/2026-08-30/01-chart-artifacts-input-and-key.md -> b5c1beb
+[Артефакты, cache/codec и single-flight — 3 дн.] as [H_CALC] starts 2026-08-30 and ends 2026-09-01
+[H_CALC] is 100% complete
+[H_CALC] is colored in LightGreen
+
+' prompts/2026-09-01/03-fix-house-system-validation.md -> 8bb60b4
+[Исправления домов, транзита и config — 2 дн.] as [H_FIX] starts 2026-09-01 and ends 2026-09-02
+[H_FIX] is 100% complete
+[H_FIX] is colored in LightGreen
+
+' prompts/2026-09-03/01-project-license-agpl.md -> 381610a
+[AGPL и файлы эфемерид — 1 дн.] as [H_VENDOR] starts 2026-09-03 and ends 2026-09-03
+[H_VENDOR] is 100% complete
+[H_VENDOR] is colored in LightGreen
+
+-- Сессии, Research и версия расчёта --
+
+' prompts/2026-09-04/01-session-contracts.md -> f771aa0
+[Сессии P1–P4.1 и benchmark SQLite — 3 дн.] as [H_SESSION] starts 2026-09-04 and ends 2026-09-06
+[H_SESSION] is 100% complete
+[H_SESSION] is colored in LightGreen
+
+' prompts/2026-09-06/02-research-corpus-contracts.md -> 11c8c9e
+[Research Corpus P5a — 1 дн.] as [H_RESEARCH] starts 2026-09-06 and ends 2026-09-06
+[H_RESEARCH] is 100% complete
+[H_RESEARCH] is colored in LightGreen
+
+' prompts/2026-09-06/06-adr-chart-spec-completeness-freeze.md -> 7f05723
+[Решение о заморозке ChartSpec — 2 дн.] as [H_FREEZE] starts 2026-09-06 and ends 2026-09-07
+[H_FREEZE] is 100% complete
+[H_FREEZE] is colored in LightGreen
+
+' prompts/2026-09-07/02-calculation-version.md -> f94d8c6
+[CalculationVersion — 1 дн.] as [H_VERSION] starts 2026-09-07 and ends 2026-09-07
+[H_VERSION] is 100% complete
+[H_VERSION] is colored in LightGreen
+
+' prompts/2026-09-07/03-engine-debt.md -> 604d411
+[Долг API движка — 1 дн.] as [H_ENGINE_DEBT] starts 2026-09-07 and ends 2026-09-07
+[H_ENGINE_DEBT] is 100% complete
+[H_ENGINE_DEBT] is colored in LightGreen
+
+-- Handler, identity и диагностика --
+
+' prompts/2026-09-08/01-application-contracts.md -> d48f303
+[BuildNatalHandler, интеграция и ревью — 2 дн.] as [H_HANDLER] starts 2026-09-08 and ends 2026-09-09
+[H_HANDLER] is 100% complete
+[H_HANDLER] is colored in LightGreen
+
+' prompts/2026-09-09/03-optimize-chart-boundary-logging.md -> 3c9fa6e
+[Correlation и component logging — 1 дн.] as [H_BOUNDARY] starts 2026-09-09 and ends 2026-09-09
+[H_BOUNDARY] is 100% complete
+[H_BOUNDARY] is colored in LightGreen
+
+' prompts/2026-09-10/01-research-build-natal-sources-of-truth.md -> d6c0c89
+[Нормализация результата ADR-0027 — 2 дн.] as [H_IDENTITY] starts 2026-09-10 and ends 2026-09-11
+[H_IDENTITY] is 100% complete
+[H_IDENTITY] is colored in LightGreen
+
+' prompts/2026-09-10/05-full-debug-component-boundary-logging.md -> d6c0c89
+[Полный DEBUG payload ADR-0028 — 2 дн.] as [H_FULLLOG] starts 2026-09-10 and ends 2026-09-11
+[H_FULLLOG] is 100% complete
+[H_FULLLOG] is colored in LightGreen
+
+' prompts/2026-09-11/01-reorganize-build-chart-sequence-diagrams.md -> ded9895
+[Разделение active/deferred диаграмм — 1 дн.] as [H_DIAGRAMS] starts 2026-09-11 and ends 2026-09-11
+[H_DIAGRAMS] is 100% complete
+[H_DIAGRAMS] is colored in LightGreen
+
+-- Семантика карты и аспектов --
+
+' prompts/2026-09-11/02-canonical-chart-point-identifiers.md -> 229be82
+[Канонические point ID: ADR-0029 — 2 дн.] as [H_CANON] starts 2026-09-11 and ends 2026-09-12
+[H_CANON] is 100% complete
+[H_CANON] is colored in LightGreen
+
+' prompts/2026-09-12/01-lunar-node-axis-semantics.md -> 3cca8eb
+[Ось лунных узлов: ADR-0030 — 1 дн.] as [H_NODE] starts 2026-09-12 and ends 2026-09-12
+[H_NODE] is 100% complete
+[H_NODE] is colored in LightGreen
+
+' prompts/2026-09-12/02-configuration-materialization-integrity.md -> 71df64c
+[Целостность конфигураций: ADR-0031 — 1 дн.] as [H_CONFIG] starts 2026-09-12 and ends 2026-09-12
+[H_CONFIG] is 100% complete
+[H_CONFIG] is colored in LightGreen
+
+' prompts/2026-09-12/03-unknown-time-aspect-semantics-decision.md -> 3945677
+[Неизвестное время: ADR-0032 — 1 дн.] as [H_UNKNOWN] starts 2026-09-12 and ends 2026-09-12
+[H_UNKNOWN] is 100% complete
+[H_UNKNOWN] is colored in LightGreen
+
+' prompts/2026-09-13/01-align-dignities-and-dispositors.md -> ba825af
+[Достоинства и диспозиторы: ADR-0033 — 1 дн.] as [H_STRENGTH] starts 2026-09-13 and ends 2026-09-13
+[H_STRENGTH] is 100% complete
+[H_STRENGTH] is colored in LightGreen
+
+' prompts/2026-09-13/02-aspect-orb-boundary-normalization.md -> 4b86238
+[Нормализация epsilon-орбиса — 1 дн.] as [H_ORB] starts 2026-09-13 and ends 2026-09-13
+[H_ORB] is 100% complete
+[H_ORB] is colored in LightGreen
+
+[Сверка истории: 14.09.2026] as [AUDIT] happens 2026-09-14
+[AUDIT] is colored in DarkGreen
+
+legend bottom
+  Дни = дата конца - дата начала + 1; календарь Europe/Moscow, выходные включены.
+  Зелёное: окно от постановки до содержательного коммита. Это не трудозатраты.
+  Оранжевое и ~: приблизительное окно ранних промптов; отдельных коммитов нет.
+  Пересечения строк не доказывают параллельную работу; длительности не суммируются.
+  Session начат по локальному промпту 04.09; tracked-редакция и первый код — 05.09.
+  Handler: код 08.09, документы 09.09; тест импортных границ ещё не закрыт.
+  Будущие задачи показаны на второй диаграмме этого файла, без календарного прогноза.
+endlegend
+@endgantt

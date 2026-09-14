@@ -12,7 +12,10 @@
 
 **Исходная база проектирования:** ветка `main`, commit `c1e407581d51ab71de6ce57d2aebdb2f7098ca3a`
 
-**Сверено с реализацией:** commit `9b7a4179fa10ebda066ff998294b05aaa8930fd2`
+**Исходная сверка реализации R5:** commit `9b7a4179fa10ebda066ff998294b05aaa8930fd2`.
+**Сверка выполнения 2026-09-14:** HEAD `086e691`; функциональный handler,
+реальная интеграция, identity ADR-0027 и DEBUG-границы ADR-0028 реализованы.
+Отдельный import-boundary тест §10.1 по-прежнему отсутствует.
 
 **Ограничение:** документ не требует изменения уже реализованных модулей `birth`, `calculation` и `session`.
 
@@ -937,9 +940,21 @@ Cache hit/miss должен журналироваться самим `ChartArti
 
 Главная предметная ответственность `BuildNatalHandler` — выбрать между натальной картой и космограммой и собрать согласованный результат `{artifact, StateDelta}`. Все вычислительные, кэшовые и сессионные механизмы остаются за границей handler.
 
-На сверенном commit функциональные критерии handler покрыты, но обязательный
-import-boundary regression-тест из §10.1 отсутствует. Поэтому формальная готовность всего
-перечня выше остаётся неполной до интеграции этого теста.
+Состояние выполнения на 2026-09-14:
+
+| Выполнено | Подтверждение |
+|---|---|
+| Command, ports, `BuildNatalOutcome`, выбор natal/cosmogram и `StateDelta` | `application/`, `tests/application/test_contracts.py`, `test_build_natal_handler.py` |
+| Реальный путь резолв → артефакты → расчёт/кэш | `tests/application/test_build_natal_integration.py` |
+| Сквозная согласованность результата | ADR-0027; validator `BuildNatalSuccess` и негативные contract-тесты |
+| Полные DEBUG input/output, correlation и terminal events | ADR-0028; `tests/application/test_build_natal_logging.py` |
+
+Остаётся обязательный import-boundary regression-тест §10.1. Он включён
+в M1-4 [roadmap](../../project_management/roadmap.md); до его интеграции
+формальная готовность всего перечня неполна. Внешние orchestrator,
+`ApplicationResult` и commit-flow также не реализованы, но находятся
+за границей предметной ответственности handler. Новый прогон тестов
+при обновлении этого статуса не выполнялся.
 
 ## 14. Открытые вопросы вне handler
 

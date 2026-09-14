@@ -391,7 +391,18 @@ Session не импортирует Research. `ContextService` остаётся 
 
 ## 11. Реализации и conformance
 
-P5a реализует InMemory adapter и общий behavioral conformance. P5b обязан
+Сверено на 2026-09-14: **P5a завершён** — модели, whitelist-проекция,
+канонические digest, append-only contracts, InMemory adapter и общий
+behavioral conformance реализованы в `research/` и `tests/research/`.
+Согласование проекции с актуальной картой ADR-0029–0032 также присутствует
+в реализации. Новый прогон тестов при сверке плана не выполнялся.
+
+**Остаются P5b и producer wiring:** SQLite, durable schema, restart и
+конкуренция реальных workers, а также подключение записи из application.
+Они относятся к M3-7 [roadmap](../../project_management/roadmap.md).
+Готовый P5a не означает автоматическую запись данных при первом запуске UI.
+
+P5b обязан
 подключить к тому же набору SQLite adapter. Factory возвращает две разные
 фасеты `primary is not peer`, разделяющие один backend; иначе cross-handle
 race вырождается.

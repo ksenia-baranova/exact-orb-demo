@@ -1,0 +1,63 @@
+@startgantt
+' Предварительная оценка известного M3 из roadmap v3.2.
+' Дата начала условна. Для 0.5 и 1.5 дня полосы округлены вверх.
+
+title exact-orb — M3, предварительная оценка незавершённой работы
+Project starts 2026-12-01
+printscale weekly zoom 2
+Label on first column
+saturday are closed
+sunday are closed
+
+-- M3-A. Runtime, интерпретация, Research и эксплуатация — 14 рабочих дней --
+
+[M3-1 Agent package и общий Tool path — 0.5 дн.] as [M31] lasts 1 day
+[M3-2 Agent Runtime core — 2 дн.] as [M32] lasts 2 days
+[M32] starts at [M31]'s end
+[M3-3 Перевод интерпретации на Runtime — 1.5 дн.] as [M33] lasts 2 days
+[M33] starts at [M32]'s end
+[M3-4 CapabilityService и PolicyService — 1 дн.] as [M34] lasts 1 day
+[M34] starts at [M33]'s end
+[M3-5 Interpretation cache — 1 дн.] as [M35] lasts 1 day
+[M35] starts at [M34]'s end
+[M3-6 Streaming: Gateway, SSE и UI — 2 дн.] as [M36] lasts 2 days
+[M36] starts at [M35]'s end
+[M3-7 Research Corpus P5b и producer — 2 дн.] as [M37] lasts 2 days
+[M37] starts at [M36]'s end
+[M3-8 Маскирование логов — 2 дн.] as [M38] lasts 2 days
+[M38] starts at [M37]'s end
+[M3-9 Observability — 1 дн.] as [M39] lasts 1 day
+[M39] starts at [M38]'s end
+[M3-10 Изоляция engine от process config — 1 дн.] as [M310] lasts 1 day
+[M310] starts at [M39]'s end
+[M3-A готов: инфраструктура Runtime — 14 дн.] as [M3ADONE] happens at [M310]'s end
+[M3ADONE] is colored in Green
+
+-- M3-B. Транзиты и новые расчётные техники — 22 рабочих дня --
+
+[M3-11 Transit application flow и background — 5 дн.] as [M311] lasts 5 days
+[M311] starts at [M310]'s end
+[M3-12 Несколько систем домов — 4 дн.] as [M312] lasts 4 days
+[M312] starts at [M311]'s end
+[M3-13 ADR и требования соляра — 1 дн.] as [M313] lasts 1 day
+[M313] starts at [M312]'s end
+[M3-14 Соляр: engine, application и UI — 4 дн.] as [M314] lasts 4 days
+[M314] starts at [M313]'s end
+[M3-15 Архитектура и требования синастрии — 2 дн.] as [M315] lasts 2 days
+[M315] starts at [M314]'s end
+[M3-16 Синастрия: расчёт, application и UI — 6 дн.] as [M316] lasts 6 days
+[M316] starts at [M315]'s end
+[Известный M3 завершён — предварительно 36 дн.] as [M3DONE] happens at [M316]'s end
+[M3DONE] is colored in Green
+
+[Free-form, RemoteTool, RemoteGeocoder, PostgreSQL — вне оценки] as [M3DEFERRED] happens at [M316]'s end
+[M3DEFERRED] is colored in Gray
+
+legend bottom
+  Ось начинается 01.12 только для последовательного отображения; это не дата старта или релиза.
+  Точная сумма строк: M3-A = 14 рабочих дней; M3-B = 22; известный M3 = 36.
+  Полосы 0.5/1.5 дня округлены вверх до целого рабочего дня из-за ограничения PlantUML.
+  Оценки M3-11–M3-16 предварительны: требования транзитов, систем домов, соляра и синастрии уточняются.
+  Серым отмечены функции без продуктового триггера; они не входят в сумму 36 дней.
+endlegend
+@endgantt
