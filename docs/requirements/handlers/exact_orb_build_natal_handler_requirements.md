@@ -16,6 +16,10 @@
 **Сверка выполнения 2026-09-14:** HEAD `086e691`; функциональный handler,
 реальная интеграция, identity ADR-0027 и DEBUG-границы ADR-0028 реализованы.
 Отдельный import-boundary тест §10.1 по-прежнему отсутствует.
+**Ревизия 2026-09-15:** ownership `RunContext` согласован с ADR-0006;
+целевой контракт получает optional `deadline` по требованиям
+`ApplicationOrchestrator`. Поле ещё не реализовано и не меняет предметное
+поведение Handler: он только передаёт тот же контекст вниз.
 
 **Ограничение:** документ не требует изменения уже реализованных модулей `birth`, `calculation` и `session`.
 
@@ -1073,6 +1077,12 @@ Frozen Pydantic base type для всех application-команд. Собств
 |---|---|---|---|---|
 | `run_id` | `UUID` | Correlation identifier операции | Валидный UUID | `"b3f17834-f7ee-4a88-980c-c184c91555c0"` |
 | `started_at` | `datetime` | Момент начала операции | `datetime`, обязательно timezone-aware UTC | `"2026-09-08T18:20:31.125Z"` |
+| `deadline` | `datetime \| None` | Целевой бюджет операции; Handler не создаёт и не заменяет его | `None` либо timezone-aware UTC | `"2026-09-08T18:20:51.125Z"` |
+
+В текущем `exact_orb.run_context` реализованы только `run_id` и `started_at`.
+`deadline` является целевым расширением R3.1 и должен быть добавлен отдельным
+implementation change вместе с Orchestrator. Для существующих вызовов его
+значение по умолчанию — `None`.
 
 ## Сообщение: `SessionState`
 

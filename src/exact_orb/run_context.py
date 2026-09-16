@@ -13,6 +13,7 @@ class RunContext(BaseModel):
 
     run_id: UUID
     started_at: datetime
+    deadline: datetime | None = None
 
     @classmethod
     def new(cls) -> "RunContext":
@@ -23,6 +24,15 @@ class RunContext(BaseModel):
     def _started_at_must_be_utc(cls, value: datetime) -> datetime:
         if value.tzinfo is None or value.utcoffset() != timedelta(0):
             raise ValueError("started_at must be timezone-aware UTC")
+        return value
+
+    @field_validator("deadline")
+    @classmethod
+    def _deadline_must_be_utc(cls, value: datetime | None) -> datetime | None:
+        if value is None:
+            return None
+        if value.tzinfo is None or value.utcoffset() != timedelta(0):
+            raise ValueError("deadline must be timezone-aware UTC")
         return value
 
 

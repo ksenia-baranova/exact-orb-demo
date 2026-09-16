@@ -1,8 +1,18 @@
 # exact-orb — ответственности оркестраторов
 
-**Статус:** рабочий документ  
+**Статус:** заменён ревизией ADR-0006 от 2026-09-15 и требованиями
+`exact-orb_application_orchestrator_requirements.md`
 **Область:** application coordination и agent runtime  
 **Цель:** зафиксировать границы двух уровней оркестрации и не допустить смешения application-flow с agent execution.
+
+> Этот файл сохранён как история раннего проектирования. Разделы ниже про
+> `BuildAttempt`, `build_revision`, `idempotency_key`, `SessionProfile` и
+> operation registration не являются текущим контрактом. Актуальные источники:
+> [ADR-0006](../decisions/0006-application-orchestrator.md),
+> [требования ApplicationOrchestrator](exact-orb_application_orchestrator_requirements.md)
+> и [актуальные Build Natal components](exact-orb_build_natal_components.md).
+> Два уровня оркестрации сохранены; Build Natal использует CAS по
+> `state_version`, а durable `BuildAttempt` отложен.
 
 ---
 

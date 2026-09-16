@@ -64,14 +64,16 @@ end box
 == Оба прогона стартуют при state_version = 5 ==
 
 User -> FE : правит дату рождения
-FE -> OrchA : BuildNatalCommand\n+ RunContext(run_id = A)
+FE -> OrchA : BuildNatalCommand\n+ session_id + RunContext(run_id = A)
+OrchA -> OrchA : handler = handlers.get(\ntype(command))
 OrchA -> Context : load(session_id)
 Context -> Store : touch(session_id, now_A)
 Store --> Context : SessionSnapshot(\nstate.state_version = 5)
 Context --> OrchA : SessionSnapshot
 
 User -> FE : сразу правит ещё раз
-FE -> OrchB : BuildNatalCommand\n+ RunContext(run_id = B)
+FE -> OrchB : BuildNatalCommand\n+ session_id + RunContext(run_id = B)
+OrchB -> OrchB : handler = handlers.get(\ntype(command))
 OrchB -> Context : load(session_id)
 Context -> Store : touch(session_id, now_B)
 Store --> Context : SessionSnapshot(\nstate.state_version = 5)
@@ -94,7 +96,7 @@ OrchB -> Context : save(session_id, 5, delta_B)
 Context -> Store : sessions.compare_and_set(\nsession_id, 5, delta_B, now_B)
 Store --> Context : 6
 Context --> OrchB : Committed(state_version = 6)
-OrchB --> FE : Success(chart_B, state_version = 6)
+OrchB --> FE : ApplicationCommitted(artifact_B, state_version = 6)
 
 
 == A заканчивается позже ==
@@ -119,7 +121,7 @@ Context -> Store : sessions.compare_and_set(\nsession_id, 5, delta_A, now_A)
 Store -[#C62828]-> Context : VersionConflict\n(actual.state_version = 6)
 Context --> OrchA : Superseded(actual)
 
-OrchA --> FE : Superseded
+OrchA --> FE : ApplicationSuperseded(state_version = 6)
 FE --> User : карта не меняется;\nактивной остаётся chart_B
 
 note over Store

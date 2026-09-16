@@ -69,8 +69,10 @@ end box
 
 User -> FE : отправляет форму
 FE -> API : POST /charts/natal
-API -> Orch : BuildNatalCommand
+API -> API : run = RunContext.new()
+API -> Orch : BuildNatalCommand\n+ session_id + run
 
+Orch -> Orch : handler = handlers.get(\ntype(command))
 Orch -> Context : load(session_id)
 Context -> Store : touch(session_id, now)
 Store --> Context : SessionSnapshot(state = SessionState)
@@ -89,7 +91,7 @@ alt Зависимость резолва недоступна
     Resolver --> Handler : ResolutionUnavailable\n(error_code, retryable = true)
     Handler --> Orch : ResolutionUnavailable
 
-    Orch --> API : 503 RESOLUTION_UNAVAILABLE
+    Orch --> API : ApplicationResolutionFailure\nRESOLUTION_UNAVAILABLE
     API --> FE : retryable system error
     FE --> User : «не удалось определить место\nили время, повторите позже»
 
@@ -131,7 +133,7 @@ else Отказ расчётного ядра
     end note
 
     Handler --> Orch : CalculationFailed
-    Orch --> API : 500 CALCULATION_FAILED
+    Orch --> API : ApplicationCalculationFailure\nCALCULATION_FAILED
     API --> FE : system error
     FE --> User : «не удалось рассчитать карту»
 

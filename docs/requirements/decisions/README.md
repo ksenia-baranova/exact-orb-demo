@@ -217,3 +217,24 @@ lifecycle-решений:
   payload ADR-0025/0028 не формируется; их локальный DEBUG-контракт сохранён.
   `DEBUG` на сервере возвращает M3-8 в ближайший обязательный объём, а
   публичный реальный трафик остаётся stop condition до legal/privacy review.
+
+## Ревизии 2026-09-15
+
+* **0006** — уточнены границы координатора application-команд: обязательный
+  `RunContext` создаётся на входной границе, fallback внутри Orchestrator
+  исключён; routing выполняется до load. Транспорт вызывает `ContextService`
+  напрямую только для session bootstrap/create/restore; reset/delete и другие
+  application-команды остаются за Orchestrator. Разделение application и agent
+  orchestration сохранено. Подробный контракт на эту дату имел редакцию R3.1;
+  ссылка на его текущую редакцию приведена ниже.
+
+## Ревизии 2026-09-16
+
+* **0006** — уточнён observability-контракт Application Orchestrator. Он пишет
+  компактные lifecycle-события начала операции, завершения load/Handler,
+  каждой начатой попытки commit и ровно одно terminal event. События являются
+  источником метрик; Orchestrator не хранит registry активных `run_id`, общие
+  counters и не получает отдельный telemetry port. Максимум конкурентности и
+  очередь измеряет transport/composition admission controller. Подробности
+  закреплены в рабочей
+  [редакции R3.2](../component_responsibilities/exact-orb_application_orchestrator_requirements.md).

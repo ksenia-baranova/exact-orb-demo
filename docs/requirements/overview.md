@@ -1,12 +1,16 @@
 # Архитектура exact-orb
 
-Статус документа: рабочий, версия 2.3 (2026-09-14).
+Статус документа: рабочий, версия 2.4 (2026-09-15).
 Заменяет версию 1.0, описывавшую систему как чистый веб-чат.
 Область: прикладной и агентский слои, их расчётные контракты и хранение данных.
 
 Ревизия 2026-09-14: разделены текущая реализация и целевые потоки; уточнены
 координация, восстановление карты, контракты резолва, Research Corpus и
 решения ADR-0027–0033. Startup wiring остаётся отдельным этапом C3.
+
+Ревизия 2026-09-15: целевой application-flow согласован с ADR-0006 и
+требованиями `ApplicationOrchestrator`; routing выполняется до session load,
+а готовый `RunContext` принадлежит входной границе.
 
 Документ описывает принятую архитектуру; наличие требования не означает
 наличия реализации. Текущая готовность приведена в §2.1. Подробные контракты
@@ -124,7 +128,7 @@ BuildNatalHandler
 Handler формирует `StateDelta`, но не сохраняет её. Целевой внешний контур:
 
 ```text
-HTTP → ApplicationOrchestrator → ContextService.load
+HTTP → ApplicationOrchestrator → route by type(command) → ContextService.load
   → handler → ContextService.save(original expected_state_version, delta)
   → ApplicationResult → JSON
 ```
@@ -133,6 +137,8 @@ HTTP → ApplicationOrchestrator → ContextService.load
 `AlreadyApplied`. Успешный расчёт сам по себе этого не доказывает.
 Внешний контур ещё не реализован; [Build Natal sequence diagrams](../sequence_diagrams/build_natal/README.md)
 явно отделяют его от работающего handler.
+Точный контракт первого use case зафиксирован в
+[требованиях ApplicationOrchestrator](component_responsibilities/exact-orb_application_orchestrator_requirements.md).
 
 Целевой поток интерпретации использует второй уровень координации:
 

@@ -1,6 +1,6 @@
 # Сквозные сценарии exact-orb
 
-Статус документа: рабочий, версия 2.3 (2026-09-14).
+Статус документа: рабочий, версия 2.4 (2026-09-15).
 Заменяет версию 1.0, где все сценарии начинались со свободного текста в чате.
 
 Ревизия 2026-09-06: session-flow приведён к `SessionState`, `StateDelta` и
@@ -13,6 +13,9 @@ DEBUG-след всех компонентных границ закреплён
 Ревизия 2026-09-14: сценарии сверены с текущими контрактами резолва,
 артефактов и сессии; добавлены семантика неизвестного времени ADR-0032,
 ветви повторного сохранения, отказов, возврата в сессию и Research v1.
+
+Ревизия 2026-09-15: routing application-команд перенесён до session load;
+`RunContext` создаётся входной границей по уточнённому ADR-0006.
 
 Контекст: вход через форму, карта сразу, затем preset-действия и — в подписке —
 свободный вопрос. События потока: `status`, `input_required`, `token`, `done`, `error`.
@@ -56,6 +59,7 @@ HTTP API, интерфейс и общий startup wiring пока не реал
    interpretation quota не расходуется. Действуют отдельные ограничения
    построений на сессию, IP и одновременной расчётной нагрузки (ADR-0013).
 3. **Build Chart API** → **ApplicationOrchestrator**: один `RunContext`,
+   точный routing по `type(command)`, затем
    `ContextService.load(session_id)` → `SessionSnapshot`. Оркестратор сохраняет
    исходную версию `0` и передаёт `BuildNatalCommand(birth_input)`, state и run
    в **BuildNatalHandler**. Agent Runtime на этом пути не вызывается.
@@ -219,7 +223,8 @@ ADR-0007 (пустое время само по себе не создаёт `in
 
 1. **AdmissionControl**: access/rate checks для класса `preset_interpretation`.
    Новый расход LLM возникает только при промахе interpretation cache.
-2. API → **ApplicationOrchestrator** → `ContextService.load` →
+2. API → **ApplicationOrchestrator** → routing по типу команды →
+   `ContextService.load` →
    **InterpretSelectionHandler**. **CapabilityService** разрешает demo preset.
 3. **ActionContractBuilder**: `topic + focus` и ссылка на базовую карту текущего
    состояния → `ContractDraft`.

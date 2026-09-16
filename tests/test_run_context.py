@@ -1,11 +1,11 @@
-"""Tests for RunContext correlation logging in birth resolution."""
+"""RunContext model contracts and correlation logging in birth resolution."""
 
 from __future__ import annotations
 
 import logging
 from collections.abc import Iterator
 from contextlib import contextmanager
-from datetime import date, datetime, time, timezone
+from datetime import date, datetime, time, timedelta, timezone
 from pathlib import Path
 from uuid import UUID
 
@@ -20,6 +20,7 @@ from exact_orb.birth import (
 )
 from exact_orb.outcomes import InputRequired, ResolutionUnavailable
 from exact_orb.run_context import RunContext
+from tests.fixtures.telemetry import RUN_ID, STARTED_AT
 
 
 MOSCOW_ID = "524901"
@@ -59,6 +60,110 @@ def test_run_context_new_generates_distinct_run_ids() -> None:
 def test_run_context_rejects_naive_started_at() -> None:
     with pytest.raises(ValidationError, match="timezone-aware UTC"):
         RunContext(run_id=RunContext.new().run_id, started_at=datetime(2026, 8, 28))
+
+
+@pytest.mark.parametrize(
+    "started_at_tz",
+    [
+        pytest.param(timezone.utc, id="utc"),
+        pytest.param(timezone(timedelta(0), "UTC_ALIAS"), id="named-zero-offset"),
+    ],
+)
+def test_run_context_preserves_utc_started_at(started_at_tz: timezone) -> None:
+    started_at = STARTED_AT.replace(tzinfo=started_at_tz)
+
+    run = RunContext(run_id=RUN_ID, started_at=started_at)
+
+    assert run.started_at == started_at
+    assert run.started_at.utcoffset() == timedelta(0)
+    assert run.run_id == RUN_ID
+
+
+@pytest.mark.parametrize(
+    "started_at_tz",
+    [
+        pytest.param(timezone(timedelta(hours=3)), id="positive-offset"),
+        pytest.param(timezone(timedelta(hours=-4)), id="negative-offset"),
+    ],
+)
+def test_run_context_rejects_non_zero_offset_started_at(started_at_tz: timezone) -> None:
+    started_at = STARTED_AT.replace(tzinfo=started_at_tz)
+
+    with pytest.raises(ValidationError) as caught:
+        RunContext(run_id=RUN_ID, started_at=started_at)
+
+    assert {error["loc"] for error in caught.value.errors()} == {("started_at",)}
+
+
+@pytest.mark.parametrize(
+    "deadline_kwargs",
+    [
+        pytest.param({}, id="omitted"),
+        pytest.param({"deadline": None}, id="explicit-none"),
+    ],
+)
+def test_run_context_deadline_defaults_to_none(
+    deadline_kwargs: dict[str, None],
+) -> None:
+    run = RunContext(run_id=RUN_ID, started_at=STARTED_AT, **deadline_kwargs)
+
+    assert run.deadline is None
+
+
+@pytest.mark.parametrize(
+    "deadline_tz",
+    [
+        pytest.param(timezone.utc, id="utc"),
+        pytest.param(timezone(timedelta(0), "UTC_ALIAS"), id="named-zero-offset"),
+    ],
+)
+def test_run_context_preserves_utc_deadline(deadline_tz: timezone) -> None:
+    deadline = (STARTED_AT + timedelta(minutes=20)).replace(tzinfo=deadline_tz)
+
+    run = RunContext(run_id=RUN_ID, started_at=STARTED_AT, deadline=deadline)
+
+    assert run.deadline == deadline
+    assert run.deadline.utcoffset() == timedelta(0)
+    assert run.run_id == RUN_ID
+    assert run.started_at == STARTED_AT
+
+
+@pytest.mark.parametrize(
+    "deadline_tz",
+    [
+        pytest.param(None, id="naive"),
+        pytest.param(timezone(timedelta(hours=3)), id="positive-offset"),
+        pytest.param(timezone(timedelta(hours=-4)), id="negative-offset"),
+    ],
+)
+def test_run_context_rejects_non_utc_deadline(deadline_tz: timezone | None) -> None:
+    deadline = STARTED_AT.replace(tzinfo=deadline_tz)
+
+    with pytest.raises(ValidationError) as caught:
+        RunContext(run_id=RUN_ID, started_at=STARTED_AT, deadline=deadline)
+
+    assert {error["loc"] for error in caught.value.errors()} == {("deadline",)}
+
+
+@pytest.mark.parametrize(
+    "offset",
+    [
+        pytest.param(timedelta(minutes=-1), id="before-started-at"),
+        pytest.param(timedelta(0), id="equal-to-started-at"),
+    ],
+)
+def test_run_context_accepts_deadline_not_after_started_at(offset: timedelta) -> None:
+    deadline = STARTED_AT + offset
+
+    run = RunContext(run_id=RUN_ID, started_at=STARTED_AT, deadline=deadline)
+
+    assert run.deadline == deadline
+    assert run.run_id == RUN_ID
+    assert run.started_at == STARTED_AT
+
+
+def test_run_context_new_keeps_deadline_none() -> None:
+    assert RunContext.new().deadline is None
 
 
 async def test_resolve_without_run_matches_resolve_with_run(
