@@ -1,0 +1,90 @@
+@startuml
+title exact-orb — BuildNatal: lifecycle-события ApplicationOrchestrator
+
+' Целевой observability contract ApplicationOrchestrator R3.2.
+' Orchestrator хранит operation state только в локальных переменных execute().
+
+autonumber
+hide footbox
+
+skinparam shadowing false
+skinparam responseMessageBelowArrow true
+skinparam sequence {
+    ArrowColor #2563EB
+    LifeLineBorderColor #64748B
+    LifeLineBackgroundColor #FFFFFF
+    ParticipantBorderColor #64748B
+    ParticipantFontColor #0F172A
+    ParticipantBackgroundColor #F8FAFC
+    NoteBorderColor #94A3B8
+    NoteBackgroundColor #FFFBEA
+    NoteFontColor #334155
+}
+
+box "INPUT BOUNDARY" #DBEAFE
+    boundary "Request task" as Request
+end box
+
+box "APPLICATION" #FFEDD5
+    control "ApplicationOrchestrator" as Orch
+    control "BuildNatalHandler" as Handler
+    collections "Structured Log" as Log
+end box
+
+box "SESSION" #D1FAE5
+    control "ContextService" as Context
+end box
+
+Request -> Orch : execute(command, session_id, run)
+activate Orch
+Orch -> Log : INFO application_operation_started\nrun_id, command_type
+
+Orch -> Orch : exact routing by type(command)
+Orch -> Context : load(session_id)
+Context --> Orch : SessionSnapshot(state_version=N)
+Orch -> Log : DEBUG application_stage_finished\nstage=load, outcome=loaded, duration_ms
+
+Orch -> Handler : handle(command, snapshot.state, same run)
+Handler --> Orch : BuildNatalSuccess(artifact, delta)
+Orch -> Log : DEBUG application_stage_finished\nstage=handler, outcome=success, duration_ms
+
+Orch -> Context : save(session_id, N, delta)
+Context --> Orch : StateCommitFailed(error_code_1)
+Orch -> Log : WARNING application_commit_attempt_finished\nattempt=1, outcome=state_commit_failed, detail_code
+
+alt retry разрешён
+    Orch -> Context : save(session_id, N, same delta)
+    Context --> Orch : Committed(state_version=N+1)
+    Orch -> Log : WARNING application_commit_attempt_finished\nattempt=2, outcome=committed
+    Orch -> Orch : ApplicationCommitted
+else retry запрещён отменой или deadline
+    Orch -> Orch : ApplicationStateCommitFailure
+end
+
+Orch -> Log : INFO/WARNING application_operation_finished\nterminal_kind=result, statuses, code, state_version,\nstage durations, commit_attempts
+Orch --> Request : ApplicationResult
+deactivate Orch
+
+note over Orch, Log
+На каждый execute приходится ровно один started
+и ровно один terminal event. Stage event появляется
+только после завершения стадии; commit-attempt event —
+только для фактически начатого save.
+
+Payload команды, StateDelta, ChartArtifact и полный
+session_id в lifecycle events не записываются.
+end note
+
+note over Request, Log
+При отмене до commit ApplicationResult отсутствует,
+но terminal_kind=cancelled записывается до CancelledError.
+При отмене после старта commit см. диаграмму 009.
+end note
+
+note over Orch
+Длительности, commit attempts, error codes и признак
+отменённой доставки живут только в frame execute().
+Registry активных run_id и общих counters нет.
+end note
+
+@enduml

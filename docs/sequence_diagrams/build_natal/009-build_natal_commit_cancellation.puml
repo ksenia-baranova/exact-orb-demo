@@ -1,0 +1,81 @@
+@startuml
+title exact-orb — BuildNatal: отмена после начала commit
+
+' Целевой cancellation contract ApplicationOrchestrator R3.2.
+' Проверяемый порядок важнее конкретной asyncio-реализации.
+
+autonumber
+hide footbox
+
+skinparam shadowing false
+skinparam responseMessageBelowArrow true
+skinparam sequence {
+    ArrowColor #2563EB
+    LifeLineBorderColor #64748B
+    LifeLineBackgroundColor #FFFFFF
+    ParticipantBorderColor #64748B
+    ParticipantFontColor #0F172A
+    ParticipantBackgroundColor #F8FAFC
+    NoteBorderColor #94A3B8
+    NoteBackgroundColor #FFFBEA
+    NoteFontColor #334155
+}
+
+box "TRANSPORT" #DBEAFE
+    boundary "Request task" as Request
+end box
+
+box "APPLICATION" #FFEDD5
+    control "ApplicationOrchestrator" as Orch
+    control "Commit task\n(strong reference)" as CommitTask
+    collections "Structured Log" as Log
+end box
+
+box "SESSION" #D1FAE5
+    control "ContextService" as Context
+    database "SessionPersistence" as Store
+end box
+
+Request -> Orch : execute(command, session_id, run)
+Orch -> Log : INFO application_operation_started
+Orch -> Orch : routing → load → BuildNatalSuccess
+Orch -> Log : DEBUG application_stage_finished\nstage=load
+Orch -> Log : DEBUG application_stage_finished\nstage=handler
+
+Orch -> CommitTask : create protected commit stage
+activate CommitTask
+CommitTask -> Context : save(session_id, original expected, delta)
+Context -> Store : compare_and_set(...)
+
+Request -[#C62828]-> Orch : cancel request task
+Orch -> Orch : remember cancellation;\ncontinue waiting for CommitTask
+
+alt commit подтверждён
+    Store --> Context : committed state_version
+    Context --> CommitTask : Committed(state_version)
+    CommitTask --> Orch : ApplicationCommitted
+    Orch -> Log : DEBUG application_commit_attempt_finished\nattempt=1, outcome=committed
+else commit не подтверждён
+    Store -[#C62828]-> Context : unavailable
+    Context --> CommitTask : StateCommitFailed(error_code)
+    note over Orch, CommitTask
+    Отмена уже наблюдалась, поэтому
+    вторая попытка commit не начинается.
+    end note
+    CommitTask --> Orch : ApplicationStateCommitFailure
+    Orch -> Log : WARNING application_commit_attempt_finished\nattempt=1, outcome=state_commit_failed
+end
+deactivate CommitTask
+
+Orch -> Log : INFO/WARNING application_operation_finished\nterminal_kind=result\ndelivery_cancelled=true
+Orch -[#C62828]-> Request : raise original CancelledError
+
+note over Orch, CommitTask
+asyncio.shield защищает inner task от отмены,
+но внешний await всё равно получает CancelledError.
+Поэтому Orchestrator сохраняет task и явно
+дожидается её результата до terminal event.
+Повторная отмена не оставляет task без ожидания.
+end note
+
+@enduml

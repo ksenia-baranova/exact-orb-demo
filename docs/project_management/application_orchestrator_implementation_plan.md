@@ -99,9 +99,24 @@ R3.2/диаграммы 009–010. HEAD сам по себе не содержи
 | 0.1 | Выполнен | Исходная сверка и план; тесты в этом этапе не запускались |
 | 1.1 | Тесты deadline написаны; проверены после 1.2 | До реализации было содержательное падение, после реализации новые и прежние случаи прошли |
 | 1.2 | Выполнен | Поле/default/UTC-валидация deadline; application retry и AC-14 этим не закрыты |
-| 1.3 | Тесты logging написаны; исполняемая проверка отложена | AST проверен, но L останавливается на импорте отсутствующего operation_logging.py; assertions не исполнялись |
+| 1.3 | Тесты logging проверены после 1.4 | Все 106 случаев исполнились; два намеренных нарушения обнаружены. В тесты добавлены только docstring, AST без них и node IDs сохранены |
+| 1.4 | Функции записи событий реализованы и проверены | Целевой набор: 106 passed; R: 1233 passed; F: 2152 passed. Проверен формат функций, не порядок событий execute; журнал §1.3.11 |
 | 1.R1 | Выполнен | Независимые тестовые константы, четыре новых UTC-случая started_at, docstring и журнал; production-код не менялся |
-| Остальные основные карточки, включая 1.4 | Запланированы, не выполнялись | Формулировка «закрывает» в карточке означает будущую обязанность |
+| 2.1 | Тесты написаны и проверены после 2.2 | Все 27 случаев исполнились и прошли; историческая ошибка импорта сохранена в §1.3.5 |
+| 2.2 | Реализован; целевые и последующие общие проверки прошли | Чистая политика отказов: 27 passed; историческая блокировка R/F снята в 1.4, новая контрольная точка — §1.3.11 |
+| 2.3 | Тесты трёх моделей написаны и проверены после 2.4 | Все 125 случаев исполнились и прошли без изменения тестового файла; историческая ошибка импорта сохранена в §1.3.7 |
+| 2.4 | Три модели реализованы; целевые и последующие общие проверки прошли | 125 passed; историческая блокировка R/F снята в 1.4, новая контрольная точка — §1.3.11 |
+| 2.5 | Тесты семи моделей и полного union проверены после 2.6 | Весь файл дал 417 passed; прежние и новые assertions исполнились. Требования указаны внутри всех 39 тестовых функций; историческая ошибка импорта сохранена в §1.3.9 |
+| 2.6 | Полный ApplicationResult реализован; целевые и последующие общие проверки прошли | 417 passed без изменения тестов; результаты карточки — §1.3.10. Последующие R/F прошли в 1.4, §1.3.11 |
+| Остальные основные карточки | Запланированы, не выполнялись | Формулировка «закрывает» в карточке означает будущую обязанность |
+
+По запросу пользователя 2026-09-16 подготовлен
+[промт 2.1](../../prompts/2026-09-16/02-application-results/02.1-application-failure-policy-tests.md)
+до реализации 1.4. Это допустимый независимый срез с зависимостью только от 0.1.
+Тестовая карточка выполнена отдельно; фактические результаты и граница
+свидетельства записаны в §1.3.5. Отсутствие operation_logging.py тогда блокировало
+общий набор application; блокировка снята выполнением 1.4, §1.3.11.
+Номера карточек и зависимости не изменены.
 
 [Промт 1.R1](../../prompts/2026-09-16/01-application-foundations/01.R1-test-isolation-and-execution-record.md)
 выполнен между 1.3 и 1.4 как дополнительная корректирующая карточка.
@@ -186,6 +201,435 @@ BirthDataResolver и общий conftest; весь файл не объявля�
 файлах импорт calculation fixtures заменён на telemetry. R/F в 1.R1 не
 запускались: они отложены до 1.4 из-за известной ошибки сборки L. Тесты не
 исключались через ignore/skip/xfail и не заменялись заглушками.
+
+#### 1.3.5. Фактические результаты 2.1
+
+**Дата:** 2026-09-16. **Ветка:** `feat/application-orchestrator`.
+Источник: непосредственные запуски при выполнении сохранённого промта 2.1.
+Создан [test_application_failure_policy.py](../../tests/application/test_application_failure_policy.py).
+Production-модуль failure_policy.py не добавлялся: это отдельная карточка 2.2.
+
+| Требование / граница | Тест | Описано случаев |
+|---|---|---:|
+| FR-23, §9–10: четыре поля каждой реакции, точный текст, обе причины absence при commit | `test_failure_reactions_match_requirement_rows` | 18 |
+| Открытые calculation/resolution/persistence-коды сохраняются в detail_code и не подставляются в user_message | `test_open_error_codes_keep_details_and_safe_messages` | 5 |
+| Синхронный keyword-only API с указанными аргументами/defaults | `test_describe_failure_has_a_synchronous_keyword_only_api` | 1 |
+| Чередование кодов не изменяет ранее полученные описания | `test_interleaved_calls_preserve_previous_descriptions` | 1 |
+| Чистая политика не пишет события для известного и неизвестного calculation-кода; захват имеет положительный контроль | `test_describe_failure_does_not_log` | 2 |
+
+Число **27** получено статическим чтением параметризаций, а не успешной
+сборкой или выполнением pytest. Ожидаемые сообщения заданы в тестах независимо
+от production; статическая сверка 18 основных примеров с 17 строками §10
+подтвердила совпадение code/message/retryable. Строка absence при commit
+развёрнута в два случая. Это не проверка фактического поведения функции.
+
+Команды из корня репозитория:
+
+```powershell
+# P2.1 — целевой набор
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/application/test_application_failure_policy.py -q
+
+# S2.1 — синтаксис при заблокированном импорте
+.\.venv\Scripts\python.exe -B -c "import ast,pathlib; p=pathlib.Path('tests/application/test_application_failure_policy.py'); ast.parse(p.read_text(encoding='utf-8'), filename=str(p)); print('AST OK')"
+```
+
+| Дата | Проверка | Команда | Результат | Exit code | Ограничение |
+|---|---|---|---|---|---|
+| 2026-09-16 | Целевые тесты после написания | P2.1 | 1 error during collection | 1 | ModuleNotFoundError: exact_orb.application.failure_policy; assertions не исполнялись |
+| 2026-09-16 | Синтаксис нового файла | S2.1 | AST OK | 0 | Статическая проверка не заменяет pytest |
+| 2026-09-16 | Связанный и полный наборы | R/F (§4.2) | Не запускались | — | Отложены до реализации 2.2 и успешного целевого прогона; общий набор также зависит от незавершённой 1.4 |
+
+Проверки не пропускались через skip/xfail/importorskip; подмена отсутствующего
+модуля не использовалась. Маркер no_ephemeris_autoinit отключает только
+инициализацию эфемерид общей fixture, не исполнение тестов. Расчётные fixtures
+и компоненты не импортируются новым тестовым файлом.
+
+На момент завершения 2.1 AC-21/25/33 целиком не закрыты: не проверены исполняемые реакции политики,
+фактический WARN Orchestrator, нормализация реальных исключений и весь
+application-flow. Следующим шагом было выполнение
+[сохранённого промта 2.2](../../prompts/2026-09-16/02-application-results/02.2-application-failure-policy.md).
+Промт подготовлен 2026-09-16; при подготовке реализация не выполнялась.
+Последующее выполнение 2.2 зафиксировано отдельно ниже; результаты запусков
+самого тестового этапа 2.1 остаются историческими.
+
+#### 1.3.6. Фактические результаты 2.2
+
+**Дата:** 2026-09-16. **Ветка:** `feat/application-orchestrator`.
+Источник: непосредственные запуски при выполнении сохранённого промта 2.2.
+Добавлен [failure_policy.py](../../src/exact_orb/application/failure_policy.py):
+синхронная keyword-only функция describe_failure, локальный Literal FailureKind
+и frozen dataclass FailureDescription с четырьмя полями реакции.
+
+Тексты и retryable соответствуют §10 R3.2. Открытые технические коды сохраняются
+в detail_code; неизвестные calculation-коды получают общий fallback. Различены
+load/commit и обе причины SessionAbsent. Статические таблицы защищены
+MappingProxyType, сообщения не формируются из payload. Модуль использует
+только стандартную библиотеку; logging, I/O и обработка operation-flow отсутствуют.
+
+Целевая команда до и после реализации — P2.1 из §1.3.5. Связанный набор R
+запущен без исключения logging-тестов:
+
+```powershell
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/application/test_application_failure_policy.py -q
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/test_run_context.py tests/application tests/session tests/test_module_boundaries.py -q
+```
+
+| Дата | Проверка | Команда | Результат | Exit code | Ограничение |
+|---|---|---|---|---|---|
+| 2026-09-16 | До добавления модуля | P2.1 | 1 error during collection | 1 | Повторно подтверждён ModuleNotFoundError: exact_orb.application.failure_policy |
+| 2026-09-16 | После реализации | P2.1 | 27 passed | 0 | Assertions реально исполнились; тестовый файл 2.1 не изменён |
+| 2026-09-16 | Связанный набор | R | 1 error during collection | 1 | ModuleNotFoundError: exact_orb.application.operation_logging из незавершённой 1.4; выполнение связанного набора не состоялось |
+| 2026-09-16 | Полный pytest | F (§4.2) | Не запускался | — | Отложен до устранения ошибки сборки R |
+
+Проверены поля и точные тексты реакций, оба resolution retryable, все сочетания
+стадии/reason отсутствия сессии, fallback, keyword-only API, сохранность
+предыдущих результатов и отсутствие логирования в двух calculation-сценариях
+с положительным контролем захвата. Тесты, fixtures и соседние production-модули
+не менялись. Ошибка сборки R не скрывалась через ignore/skip/xfail.
+
+Простые проверки необходимых аргументов функции не объявляются отдельным
+проверенным контрактом для всех невалидных сочетаний: это вне набора 2.1.
+AC-21/25/33 целиком не закрыты. Остались фактический WARN Orchestrator,
+нормализация реальных исключений, безопасность всего application-flow и
+прохождение общего набора. Следующая карточка раздела 2 — подготовка 2.3.
+
+#### 1.3.7. Фактические результаты 2.3
+
+**Дата:** 2026-09-16. **Ветка:** `feat/application-orchestrator`.
+Сохранён и выполнен [промт 2.3](../../prompts/2026-09-16/02-application-results/02.3-application-results-tests.md).
+Добавлен [test_application_results.py](../../tests/application/test_application_results.py):
+тесты ApplicationCommitted, ApplicationAlreadyApplied и ApplicationSuperseded
+по FR-22, §8–10 и §12 R3.2. Production-модуль application_results.py не добавлялся.
+
+Подготовленное покрытие (assertions пока не исполнялись):
+
+| Требование | Тесты в test_application_results.py |
+|---|---|
+| Полная корректная запись, оба UUID | test_valid_results_preserve_the_complete_contract |
+| Чужие статусы, code, detail_code и retryable | test_results_reject_each_alternative_status; test_results_reject_contradictory_reaction_fields |
+| Границы версии и обязательный run_id | test_results_preserve_versions_including_the_lower_bound; test_results_require_a_version_within_the_model_bound; test_results_require_a_valid_run_id |
+| Обязательный artifact успеха, запрет artifact у Superseded | test_success_results_require_a_valid_artifact; test_superseded_rejects_an_artifact_argument |
+| Сообщения успеха и Superseded | test_success_results_reject_a_user_message; test_superseded_requires_a_user_message; корректный текст в test_valid_results_preserve_the_complete_contract |
+| Frozen при допустимом новом значении | test_results_are_frozen_even_for_valid_field_assignments; test_success_results_reject_replacing_a_valid_artifact |
+| Публичные поля и сохранение None в model_dump | test_result_dump_contains_only_the_public_fields |
+
+В негативных проверках исходный набор аргументов сначала конструирует валидную
+модель, затем меняется одно поле. Для заморозки допустимость нового значения
+проверяется на отдельном экземпляре. Используются существующие artifact helper
+и telemetry UUID; нет расчёта, session-flow, заглушек или подмены предмета теста.
+
+**P2.3 — целевой набор:**
+
+```powershell
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/application/test_application_results.py -q
+```
+
+**S2.3 — синтаксис без импорта отсутствующего модуля:**
+
+```powershell
+.\.venv\Scripts\python.exe -B -c "import ast; from pathlib import Path; ast.parse(Path('tests/application/test_application_results.py').read_text(encoding='utf-8-sig'))"
+```
+
+| Дата | Проверка | Команда | Результат | Exit code | Ограничение |
+|---|---|---|---|---|---|
+| 2026-09-16 | Целевой набор | P2.3 | 1 error during collection, 0.29 s | 1 | ModuleNotFoundError: exact_orb.application.application_results; реализация относится к 2.4 |
+| 2026-09-16 | Синтаксис | S2.3 | ast.parse завершился без ошибок | 0 | Не проверяет импорт, параметризацию pytest или assertions |
+| 2026-09-16 | Связанный и полный наборы | R и F (§4.2) | Не запускались | — | Отложены до успешного целевого набора после 2.4; также остаётся известное ограничение незавершённой 1.4 |
+
+Источник свидетельства — непосредственные запуски этих команд, не прежние
+результаты соседних тестов. Ошибка импорта не скрыта через skip/xfail или
+fallback. Тесты написаны, но их чувствительность и поведение моделей ещё
+не доказаны. AC-19/23/24/26/27 целиком не закрыты; полный union, runtime
+нормализация, CAS и execute остаются вне этого этапа.
+
+Предшествующие production-файлы, тесты и fixtures сохранены. Следующая
+карточка — подготовка 2.4, реализация трёх моделей; автоматически не выполнялась.
+
+#### 1.3.8. Фактические результаты 2.4
+
+**Дата:** 2026-09-16. **Ветка:** `feat/application-orchestrator`.
+Сохранён и выполнен [промт 2.4](../../prompts/2026-09-16/02-application-results/02.4-application-result-models.md).
+По запросу пользователя в начало промта добавлен раздел «Что реализует этот
+этап»: назначение трёх ответов, польза для интерфейса и граница текущей работы.
+
+Добавлен [application_results.py](../../src/exact_orb/application/application_results.py)
+с ApplicationCommitted, ApplicationAlreadyApplied и ApplicationSuperseded.
+Три явные модели используют ConfigDict(frozen=True, extra="forbid"), Literal
+для статусов/code/retryable, обязательный UUID и Field с нижней границей версии.
+У двух успешных вариантов обязателен ChartArtifact; Superseded его не принимает.
+Сообщение Superseded передаёт вызывающий, таблица failure_policy не дублируется.
+В модуле нет I/O, классификации commit outcomes или полного ApplicationResult
+union; application/results.py и экспорты соседних __init__.py сохранены.
+
+**P2.4 — целевой набор до и после реализации:**
+
+```powershell
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/application/test_application_results.py -q
+```
+
+**R — связанный набор после успешного P2.4:**
+
+```powershell
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/test_run_context.py tests/application tests/session tests/test_module_boundaries.py -q
+```
+
+| Дата | Проверка | Команда | Результат | Exit code | Ограничение |
+|---|---|---|---|---|---|
+| 2026-09-16 | До добавления модуля | P2.4 | 1 error during collection, 0.36 s | 1 | Повторно подтверждён ModuleNotFoundError: exact_orb.application.application_results |
+| 2026-09-16 | После реализации | P2.4 | 125 passed, 0.38 s | 0 | Все assertions тестов 2.3 исполнились; тестовый файл не изменён |
+| 2026-09-16 | Связанный набор | R | 1 error during collection, 0.78 s | 1 | ModuleNotFoundError: exact_orb.application.operation_logging; незавершённый этап 1.4 |
+| 2026-09-16 | Полный pytest | F (§4.2) | Не запускался | — | Отложен до успешного R; logging-тесты не исключались |
+
+Проверены полные корректные записи, альтернативные статусы и противоречивые
+поля реакции, обязательные UUID/версии/artifact, границы версии, отсутствие
+artifact у Superseded, frozen и публичный model_dump. Связь требования с
+именем теста сохранена в таблице §1.3.7; исторический запуск 2.3 не переписан.
+
+Это подтверждение трёх моделей, а не полного application-flow. AC-19/26/27
+ещё требуют преобразования runtime outcomes в execute; AC-23/24 относятся
+также к оставшимся моделям. Полный union, session semantics, сквозной run_id
+и прохождение общего набора не доказаны. Политика strict/coercion и глубокая
+неизменяемость вложенного артефакта этим набором не устанавливаются.
+
+Тесты и fixtures, failure_policy.py, прежние production-модули и Git index
+сохранены. Следующая карточка — подготовка 2.5, тесты остальных моделей и
+полного union; автоматически не выполнялась.
+
+#### 1.3.9. Фактические результаты 2.5
+
+**Дата:** 2026-09-16. **Ветка:** `feat/application-orchestrator`.
+Сохранён и выполнен [промт 2.5](../../prompts/2026-09-16/02-application-results/02.5-application-results-union-tests.md).
+В начале промта объяснены семь ситуаций для пользователя, польза согласованных
+ответов для интерфейса и граница этапа: сначала проверки, реализация — в 2.6.
+
+Расширен [test_application_results.py](../../tests/application/test_application_results.py):
+добавлены 26 тестовых функций с отдельными таблицами и helpers. Подготовлены
+20 корректных failure-записей, включая четыре варианта SessionAbsent, четыре
+варианта InternalFailure и два неизвестных calculation-кода. Вместе с тремя
+прежними моделями они используются для проверки выбора конкретного типа
+через TypeAdapter(ApplicationResult). Проверка множества статусов перебирает
+240 сочетаний для каждой из 23 исходных записей и требует ровно 12 допустимых
+троек; её assertions ещё не исполнились.
+
+| Требование | Добавленные проверки в целевом файле |
+|---|---|
+| Полная корректная запись, два UUID и сохранение реакции | `test_failure_models_preserve_complete_records` |
+| Непустые структурированные issues, порядок и содержимое | `test_input_required_preserves_ordered_structured_issues`, `test_input_required_rejects_missing_empty_or_invalid_issues` |
+| Связь calculation-кода и retryable; фиксированные значения остальных моделей | `test_calculation_failure_rejects_retryability_inconsistent_with_code`, `test_failure_models_reject_contradictory_fixed_retryability` |
+| Обязательный технический код и запрет лишней причины | `test_technical_failure_models_require_a_detail_code`, `test_failure_models_without_technical_reason_reject_detail_code` |
+| Противоречивые коды и статусы отдельных моделей | `test_failure_models_reject_success_code`, `test_failure_models_reject_incompatible_and_unknown_statuses` |
+| Прочитанная версия обязательна; неизвестная версия не подменяется числом | `test_loaded_failures_preserve_known_nonnegative_version`, `test_loaded_failures_require_known_nonnegative_version`, `test_failures_without_known_state_reject_numeric_version` |
+| UUID и переданный текст сообщения | `test_failure_models_require_a_valid_run_id`, `test_failure_models_preserve_supplied_message_and_reject_none` |
+| Причина и стадия отсутствия сессии | `test_session_absent_rejects_code_for_other_reason_or_stage`, `test_session_absent_requires_a_known_reason` |
+| Полная разрешённая запись внутренней ошибки | `test_handler_not_registered_code_is_rejected_after_load`, `test_internal_failure_rejects_incompatible_status_pairs` |
+| Artifact запрещён, frozen и точный публичный набор полей | `test_failure_models_reject_artifact_even_when_none`, `test_failure_models_are_frozen_for_valid_field_assignments`, `test_failure_specific_fields_cannot_be_replaced_with_valid_values`, `test_failure_dump_contains_exact_public_fields_including_none` |
+| Состав union, конкретные типы, ровно 12 троек и неизвестные статусы | `test_application_result_union_contains_exactly_ten_models`, `test_application_result_union_selects_concrete_models_and_preserves_records`, `test_application_result_union_accepts_exactly_the_required_status_triples`, `test_application_result_union_rejects_unknown_status_values` |
+
+**P2.5 — целевой набор до и после изменения:**
+
+```powershell
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/application/test_application_results.py -q
+```
+
+**S2.5 — синтаксис при остановке pytest на импорте:**
+
+```powershell
+.\.venv\Scripts\python.exe -B -c 'import ast; from pathlib import Path; ast.parse(Path(''tests/application/test_application_results.py'').read_text(encoding=''utf-8-sig''))'
+```
+
+| Дата | Проверка | Команда | Результат | Exit code | Ограничение |
+|---|---|---|---|---|---|
+| 2026-09-16 | До изменения тестов | P2.5 | 125 passed, 0.37 s | 0 | Повторно проверены исходные три модели |
+| 2026-09-16 | После добавления тестов | P2.5 | 1 error during collection, 0.38 s | 1 | ImportError: cannot import name 'ApplicationCalculationFailure' from 'exact_orb.application.application_results' |
+| 2026-09-16 | Синтаксис | S2.5 | ast.parse завершился без ошибки | 0 | Не заменяет исполнение тестов |
+| 2026-09-16 | Связанный и полный наборы | R/F (§4.2) | Не запускались | — | Отложены до реализации 2.6 и успешного целевого набора; отсутствие operation_logging.py из 1.4 также остаётся ограничением R |
+
+После добавления прямых импортов pytest не исполнил ни новые assertions,
+ни прежние тесты этого файла. Исходный успешный запуск записан отдельно;
+ошибка импорта не доказывает чувствительность новых проверок. Реализация
+семи моделей и union не добавлялась, обходов импорта и skip/xfail нет.
+
+Дополнительное AST-сопоставление с исходным текстом подтвердило сохранность
+всех 16 прежних функций (13 тестовых и три fixture/helper) и восьми присваиваний,
+включая параметризации, MODELS, SUCCESS_MODELS и STATUS_VALUES. Импорты и
+docstring расширены для 2.5. Production-модули, остальные тесты, fixtures,
+исторические промты и Git index сохранены; вне §1.3 план не изменялся.
+
+K3 остаётся открытым: внешний ApplicationInputRequired обязан отклонять пустой
+issues, но преобразование допустимого пустого outcome Handler здесь не выбрано.
+AC-19–27 целиком не закрыты. Runtime-flow, WARN, реальные исключения, повторы
+commit и session persistence не проверялись; глубокая неизменяемость Issue
+не устанавливается. Следующий этап — подготовка 2.6, автоматически не выполнялся.
+
+#### 1.3.10. Фактические результаты 2.6
+
+**Дата:** 2026-09-16. **Ветка:** `feat/application-orchestrator`.
+Сохранён и выполнен [промт 2.6](../../prompts/2026-09-16/02-application-results/02.6-application-results-union.md).
+В начале промта дано объяснение для менеджмента: какие семь ответов добавляются,
+зачем интерфейсу согласованные поля и что структура ответа ещё не выполняет
+пользовательскую операцию. Используется формулировка «проверка согласованности полей».
+
+В [application_results.py](../../src/exact_orb/application/application_results.py)
+добавлены ApplicationInputRequired, ApplicationResolutionFailure,
+ApplicationCalculationFailure, ApplicationSessionAbsent, ApplicationStateReadFailure,
+ApplicationStateCommitFailure и ApplicationInternalFailure. Реализован обычный union
+ApplicationResult из десяти моделей; обновлены docstring модуля и __all__.
+
+Все новые модели frozen и отклоняют неизвестные поля. InputRequired требует
+непустой tuple существующих Issue. CalculationFailure проверяет retryable через
+публичную describe_failure; открытые технические коды и переданные сообщения
+сохраняются. SessionAbsent проверяет четыре сочетания стадии, причины и кода;
+InternalFailure — четыре полные записи, включая правило версии. Противоречия
+отклоняются, автоматическое исправление значений не выполняется.
+
+Три прежние модели сохранены без изменения. Нет нового I/O, logging, обработки
+исключений, вызовов Handler/session или реализации retry. K3 о пустом issues
+Handler остаётся открытым; внешний ответ сейчас требует непустой список.
+
+Перед 2.6 по отдельному запросу пользователя внутри всех 39 тестовых функций
+добавлены docstrings со ссылками на FR, разделы R3.2, AC и границы проверки.
+При выполнении 2.6 весь [test_application_results.py](../../tests/application/test_application_results.py)
+сохранён без изменений, включая эти описания, assertions, helpers и параметризации.
+
+**P2.6 — целевой набор до и после реализации:**
+
+```powershell
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/application/test_application_results.py -q
+```
+
+**R — связанный набор после успешного P2.6:**
+
+```powershell
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/test_run_context.py tests/application tests/session tests/test_module_boundaries.py -q
+```
+
+| Дата | Проверка | Команда | Результат | Exit code | Ограничение |
+|---|---|---|---|---|---|
+| 2026-09-16 | До реализации | P2.6 | 1 error during collection, 0.37 s | 1 | ImportError: cannot import name 'ApplicationCalculationFailure' from 'exact_orb.application.application_results'; assertions не исполнились |
+| 2026-09-16 | После реализации | P2.6 | 417 passed, 0.86 s | 0 | Все случаи целевого файла, включая проверки 2.5, исполнились; тесты не изменены |
+| 2026-09-16 | Связанный набор | R | 1 error during collection, 0.84 s | 1 | ModuleNotFoundError: No module named 'exact_orb.application.operation_logging'; незавершённый этап 1.4 |
+| 2026-09-16 | Полный pytest | F (§4.2) | Не запускался | — | Отложен до успешного R; logging-тесты не исключались |
+
+**Связь требований с реализацией и тестами.** Во всех строках ниже результат
+«прошли» относится только к P2.6. Точные ссылки на требования каждой из 39 функций
+также находятся непосредственно в её docstring; таблица группирует основные проверки.
+
+| Требование | Реализация / что проверено | Тесты в test_application_results.py | Результат | Что остаётся проверить |
+|---|---|---|---|---|
+| FR-22, §8–9, AC-19 | Десять согласованных моделей и выбор конкретного типа через union | `test_valid_results_preserve_the_complete_contract`, `test_failure_models_preserve_complete_records`, `test_application_result_union_selects_concrete_models_and_preserves_records` | Прошли | Выбор ответа из runtime outcomes в execute |
+| §9, AC-20, AC-23 | Четыре записи SessionAbsent; код соответствует стадии и reason | `test_failure_models_preserve_complete_records`, `test_session_absent_rejects_code_for_other_reason_or_stage`, `test_session_absent_requires_a_known_reason` | Прошли | Исчезновение реальной сессии между load и commit |
+| FR-22, §8–9, AC-22 | Ровно десять членов union и точное множество 12 допустимых троек | `test_application_result_union_contains_exactly_ten_models`, `test_application_result_union_accepts_exactly_the_required_status_triples`, `test_application_result_union_rejects_unknown_status_values` | Прошли | Требование о модельном множестве подтверждено; runtime-flow не проверялся |
+| FR-22, §9, AC-23 | Противоречивые code/detail_code/retryable отклоняются; обязательные технические причины сохранены | `test_results_reject_contradictory_reaction_fields`, `test_failure_models_reject_success_code`, `test_technical_failure_models_require_a_detail_code`, `test_failure_models_without_technical_reason_reject_detail_code`, `test_failure_models_reject_contradictory_fixed_retryability` | Прошли | Нормализация реальных отказов нижележащих компонентов |
+| FR-22, §9, §12, AC-23 | Непустые структурированные issues; artifact есть только в успешных ответах; публичные поля соответствуют модели | `test_input_required_preserves_ordered_structured_issues`, `test_input_required_rejects_missing_empty_or_invalid_issues`, `test_success_results_require_a_valid_artifact`, `test_superseded_rejects_an_artifact_argument`, `test_failure_models_reject_artifact_even_when_none`, `test_failure_dump_contains_exact_public_fields_including_none` | Прошли | K3: решение о преобразовании пустого issues Handler |
+| FR-22–23, §9–10, AC-23 | Calculation retryability проверяется существующей политикой, включая неизвестные коды | `test_calculation_failure_rejects_retryability_inconsistent_with_code`, `test_failure_models_preserve_complete_records` | Прошли | Фактический повтор операции; WARN неизвестного кода |
+| FR-22, §9, AC-23 | InternalFailure связывает code, статусы и допустимую версию | `test_handler_not_registered_code_is_rejected_after_load`, `test_internal_failure_rejects_incompatible_status_pairs`, `test_loaded_failures_require_known_nonnegative_version`, `test_failures_without_known_state_reject_numeric_version` | Прошли | Перехват реального исключения и выбор стадии в execute |
+| FR-22, §9, AC-24 | Присваивание допустимых значений полям созданных моделей запрещено | `test_results_are_frozen_even_for_valid_field_assignments`, `test_success_results_reject_replacing_a_valid_artifact`, `test_failure_models_are_frozen_for_valid_field_assignments`, `test_failure_specific_fields_cannot_be_replaced_with_valid_values` | Прошли | Глубокая неизменяемость вложенных Issue/ChartArtifact здесь не устанавливается |
+| FR-23, §10, AC-25 — поля ответа | Поля готовой реакции, точные тексты и fallback сохраняются в модели | `test_failure_models_preserve_complete_records`, `test_valid_results_preserve_the_complete_contract` | Прошли | Запись WARN; нормализация исключений и AC-21 |
+| §12, AC-26 — модельная часть | Два переданных UUID сохраняются; отсутствие или невалидный UUID отклоняются | `test_valid_results_preserve_the_complete_contract`, `test_failure_models_preserve_complete_records`, `test_results_require_a_valid_run_id`, `test_failure_models_require_a_valid_run_id` | Прошли | Сквозной run_id в execute и событиях |
+| §9, §12, AC-27 — модельная часть | Версия обязательна после наблюдения состояния; для остальных ответов только None | `test_results_preserve_versions_including_the_lower_bound`, `test_results_require_a_version_within_the_model_bound`, `test_loaded_failures_preserve_known_nonnegative_version`, `test_loaded_failures_require_known_nonnegative_version`, `test_failures_without_known_state_reject_numeric_version` | Прошли | Получение версии из реальных snapshot/commit outcomes |
+
+417 случаев — результат реального pytest, а не число функций или статическая
+оценка параметризаций. Набор включает прежние 125 случаев и новые 292 случая.
+Проверка union перебрала по 240 сочетаний статусов для 23 корректных исходных
+записей; все принятые тройки совпали с §8.
+
+Сравнение исходного состояния подтвердило сохранность тестов, fixtures,
+failure_policy.py, остальных production-файлов, исторических промтов и Git index.
+AST трёх прежних классов не изменён. План изменён только в §1.3. Следующий шаг —
+подготовка 1.4; до раздела 3 также остаётся предусмотренный планом срез
+неизменяемости RunContext. Эти этапы автоматически не выполнялись.
+
+#### 1.3.11. Фактические результаты 1.4
+
+**Дата:** 2026-09-16. **Ветка:** `feat/application-orchestrator`.
+Исправлен по согласованным замечаниям, сохранён и выполнен
+[промт 1.4](../../prompts/2026-09-16/01-application-foundations/01.4-lifecycle-logging-functions.md).
+Уточнены формат getMessage(), коллекции кодов и типы значений, общий запрет
+traceback, различие уровней Handler/Orchestrator и два независимых эксперимента
+для проверки чувствительности тестов. Понятное описание результата находится
+в начале промта.
+
+Добавлен [operation_logging.py](../../src/exact_orb/application/operation_logging.py):
+пять синхронных keyword-only функций штатного logger, четыре вида событий,
+отдельные формы terminal result/cancelled, WARNING для второй попытки,
+опциональная известная версия у stage/attempt и полный набор nullable-полей
+у результата. История ошибок передаётся литералом tuple, сохраняя порядок
+и повторы. Длительности и другие факты готовит вызывающий код.
+
+Сначала реализация прошла неизменённый тестовый файл. После экспериментов
+в десять функций [test_orchestrator_logging.py](../../tests/application/test_orchestrator_logging.py)
+добавлены только русские docstring с требованиями и границами проверки.
+Assertions, параметризации, fixtures и helpers не изменены.
+
+**Команды этого этапа** (из корня репозитория):
+
+```powershell
+# L1.4 — целевой набор
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/application/test_orchestrator_logging.py -q
+# A1.4 — запрет аргумента payload
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/application/test_orchestrator_logging.py::test_payload_keywords_are_rejected_after_valid_call_positive_control -q
+# B1.4 — точный набор полей started
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/application/test_orchestrator_logging.py::test_started_records_command_type_and_run_id_at_info -q
+# C1.4 — список собранных тестов до и после docstring
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/application/test_orchestrator_logging.py --collect-only -q
+# R — связанные проверки
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/test_run_context.py tests/application tests/session tests/test_module_boundaries.py -q
+# F — полный pytest
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider -q
+```
+
+| Проверка 2026-09-16 | Команда | Фактический результат | Exit code |
+|---|---|---|---|
+| До реализации | L1.4 | 1 error during collection, 0.42 s; ModuleNotFoundError: exact_orb.application.operation_logging | 1 |
+| Реализация на неизменённых тестах | L1.4 | 106 passed, 0.32 s | 0 |
+| Временно разрешён payload у log_operation_started | A1.4 | 1 failed, 29 passed, 0.27 s; DID NOT RAISE TypeError | 1 |
+| После точного восстановления модуля | A1.4 | 30 passed, 0.21 s | 0 |
+| Лишнее поле payload в started, сигнатура сохранена | B1.4 | 4 failed, 0.55 s; actual.keys() != expected.keys() | 1 |
+| После точного восстановления модуля | B1.4 | 4 passed, 0.18 s | 0 |
+| Весь набор после обоих экспериментов | L1.4 | 106 passed, 0.29 s | 0 |
+| До / после добавления docstring | C1.4 | 106 tests collected, 0.17 / 0.18 s; списки всех node IDs совпали | 0 / 0 |
+| После docstring | L1.4 | 106 passed, 0.27 s | 0 |
+| Связанный набор | R | 1233 passed, 12.65 s | 0 |
+| Полный pytest | F | 2152 passed, 39.52 s | 0 |
+
+Оба эксперимента выполнялись отдельно с восстановлением исходных байтов
+production-файла в finally. После каждого сравнение байтов и SHA-256 подтвердило
+восстановление; намеренных ошибок и резервных файлов в репозитории не осталось.
+Эксперимент A упал в случае `[log_operation_started-arguments0-payload]`,
+эксперимент B — во всех четырёх сочетаниях command_type/run_id на сравнении
+наборов полей. Ошибок импорта или синтаксиса вместо этих assertions не было.
+Это свидетельства чувствительности двух конкретных проверок, не общий аудит PII.
+
+До docstring SHA-256 тестового файла совпал с исходным. После добавления
+docstring AST без строк документации совпал с исходным; diff содержит только
+десять вставок docstring. Все 106 node IDs сохранены.
+
+| Требование | Тесты в test_orchestrator_logging.py | Результат и граница |
+|---|---|---|
+| Карточки 1.3–1.4; FR-27, §11.5 | `test_logging_api_accepts_only_explicit_keyword_arguments` | Прошёл; форма API, не весь application-flow |
+| FR-26–27, §11.5; AC-26/29/33 частично | `test_started_records_command_type_and_run_id_at_info` | Прошёл; поля, run_id и INFO одного вызова. Лишнее поле обнаружено экспериментом B |
+| FR-26, §11.5; AC-26/30 частично | `test_stage_records_typed_and_unexpected_outcomes` | Прошёл; уровни, версия 0 и отсутствие неизвестной версии. Реальный load/Handler не вызывался |
+| FR-26, §11.5; AC-26/31 частично | `test_commit_attempt_fields_and_warning_for_every_second_attempt` | Прошёл; номер, nullable detail_code, версия и WARNING попытки 2. Retry не выполнялся |
+| FR-26, §11.5 | `test_duration_values_and_default_omission_of_unknown_version` | Прошёл; передача готовых допустимых длительностей, не измерение времени |
+| FR-26, §11.5; AC-26/29 частично | `test_result_terminal_fields_and_levels_for_consistent_statuses` | Прошёл; поля результата и уровни, не валидация ApplicationResult |
+| FR-26, §11.5 | `test_result_preserves_retry_history_and_supplied_total_duration` | Прошёл; порядок/дубли кодов и переданная сумма, не накопление в execute |
+| FR-26, §11.5 | `test_delivery_cancellation_keeps_successful_result_terminal` | Прошёл; delivery_cancelled сохраняет успешный результат, shield не проверялся |
+| FR-26, §11.5; AC-26/29 частично | `test_cancelled_terminal_omits_result_fields_with_result_positive_control` | Прошёл; форма отмены с позитивным контролем результата, не настоящий CancelledError |
+| FR-27, §11.5; AC-33 частично | `test_payload_keywords_are_rejected_after_valid_call_positive_control` | Прошёл; запрещённый аргумент не создаёт запись. Расширение API обнаружено экспериментом A |
+
+**Новая контрольная точка:** R = 1233 passed, F = 2152 passed для текущего
+состава проекта. Прежние 1598 passed из §1.3.3 и ошибки импорта в §1.3.3–1.3.10
+сохраняются как исторические результаты. Текущие общие прогоны включили
+ранее проверявшиеся отдельно 27 случаев политики и 417 случаев моделей.
+
+План вне §1.3, прежние production-файлы, остальные тесты/fixtures, исторические
+промты, несвязанные пользовательские файлы и Git index сохранены.
+Проверены новый модуль и новый промт, git diff --check и Markdown-ссылки.
+
+AC-26 и AC-29–33 целиком не закрыты. Подключение событий к execute, их порядок,
+соответствие фактическим save, retry, shield, реальные отмены и отсутствие PII
+во всём flow этим этапом не проверялись. Следующие корректирующие срезы моделей
+и RunContext до группы 3 автоматически не выполнялись; K3/X1/X2 сохраняются.
 
 ## 2. Принятые границы
 
