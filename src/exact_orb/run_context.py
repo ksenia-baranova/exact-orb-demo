@@ -5,11 +5,13 @@ from __future__ import annotations
 from datetime import datetime, timedelta, timezone
 from uuid import UUID, uuid4
 
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, ConfigDict, field_validator
 
 
 class RunContext(BaseModel):
     """Correlation scope of one user operation. Telemetry, not domain data."""
+
+    model_config = ConfigDict(frozen=True)
 
     run_id: UUID
     started_at: datetime

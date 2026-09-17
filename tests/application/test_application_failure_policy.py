@@ -266,6 +266,35 @@ def test_describe_failure_has_a_synchronous_keyword_only_api() -> None:
         assert parameters[name].default is None
 
 
+@pytest.mark.parametrize(("valid", "irrelevant"), [
+    ({"kind": "input_required"}, {"stage": "commit"}),
+    ({"kind": "superseded"}, {"error_code": "UNUSED"}),
+    ({"kind": "handler_not_registered"}, {"retryable": False}),
+    ({"kind": "internal_failure"}, {"reason": "expired"}),
+    ({"kind": "calculation_failed", "error_code": "SPEC_INVALID"}, {"reason": "expired"}),
+    ({"kind": "calculation_failed", "error_code": "SPEC_INVALID"}, {"retryable": False}),
+    ({"kind": "resolution_unavailable", "error_code": "TZ_UNAVAILABLE", "retryable": True},
+     {"stage": "load"}),
+    ({"kind": "state_read_failed", "error_code": "SQLITE_BUSY"}, {"retryable": True}),
+    ({"kind": "state_commit_failed", "error_code": "SQLITE_BUSY"}, {"reason": "expired"}),
+    ({"kind": "session_absent", "stage": "load", "reason": "expired"}, {"error_code": "UNUSED"}),
+])
+def test_irrelevant_policy_arguments_are_rejected(valid: dict, irrelevant: dict) -> None:
+    """3.R2: ошибку выбора аргументов нельзя скрывать молчаливым игнорированием."""
+    assert describe_failure(**valid).code
+    with pytest.raises(ValueError, match="does not accept"):
+        describe_failure(**valid, **irrelevant)
+    assert describe_failure(**valid) == describe_failure(**valid, **dict.fromkeys(irrelevant))
+
+
+@pytest.mark.parametrize("kind", ["state_read_failed", "state_commit_failed"])
+def test_persistence_policy_requires_nonempty_code(kind: str) -> None:
+    """3.R2: внешний persistence detail сохраняет min_length=1 исходного outcome."""
+    assert describe_failure(kind=kind, error_code="SQLITE_BUSY").detail_code == "SQLITE_BUSY"
+    with pytest.raises(ValueError, match="nonempty"):
+        describe_failure(kind=kind, error_code="")
+
+
 def test_interleaved_calls_preserve_previous_descriptions() -> None:
     first = describe_failure(
         kind="calculation_failed", error_code="SYNTHETIC_CALC_FAILURE",

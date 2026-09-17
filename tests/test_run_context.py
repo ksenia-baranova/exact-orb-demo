@@ -20,7 +20,7 @@ from exact_orb.birth import (
 )
 from exact_orb.outcomes import InputRequired, ResolutionUnavailable
 from exact_orb.run_context import RunContext
-from tests.fixtures.telemetry import RUN_ID, STARTED_AT
+from tests.fixtures.telemetry import RUN_ID, RUN_ID_B, STARTED_AT
 
 
 MOSCOW_ID = "524901"
@@ -55,6 +55,28 @@ def test_run_context_new_generates_distinct_run_ids() -> None:
     second = RunContext.new()
 
     assert first.run_id != second.run_id
+
+
+@pytest.mark.parametrize(("field", "value"), [
+    ("run_id", RUN_ID_B),
+    ("started_at", STARTED_AT + timedelta(seconds=1)),
+    ("deadline", STARTED_AT + timedelta(seconds=2)),
+    ("deadline", datetime(2000, 1, 1)),
+])
+def test_run_context_rejects_assignment_without_changing_original(field: str, value: object) -> None:
+    """3.R2; FR-02: correlation и UTC-срок нельзя переписать после создания."""
+    original = RunContext(run_id=RUN_ID, started_at=STARTED_AT, deadline=STARTED_AT)
+    before = original.model_dump()
+    with pytest.raises(ValidationError) as exc_info:
+        setattr(original, field, value)
+    assert {error["type"] for error in exc_info.value.errors()} == {"frozen_instance"}
+    assert original.model_dump() == before
+    assert RunContext.model_validate_json(original.model_dump_json()) == original
+    replacement = RunContext(
+        run_id=RUN_ID_B, started_at=STARTED_AT, deadline=STARTED_AT + timedelta(seconds=2),
+    )
+    assert replacement.run_id == RUN_ID_B
+    assert replacement.deadline > original.deadline
 
 
 def test_run_context_rejects_naive_started_at() -> None:

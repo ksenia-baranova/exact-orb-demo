@@ -1,7 +1,7 @@
 # ApplicationOrchestrator — план реализации и карта приёмки
 
-**Дата исходной сверки:** 2026-09-16, этап 0.1. **Журнал выполнения:** §1.3, обновлён 2026-09-16.
-**Контракт:** R3.2. **Рабочие этапы:** 36 основных промтов в 10 группах и дополнительная карточка 1.R1; номера основных карточек сохранены.
+**Дата исходной сверки:** 2026-09-16, этап 0.1. **Журнал выполнения:** §1.3, обновлён 2026-09-17.
+**Контракт:** R3.2 с уточнением 2026-09-17. **Рабочие этапы:** 36 основных промтов в 10 группах и дополнительные карточки 1.R1, 2.R2, 3.R1 и 3.R2; номера основных карточек сохранены.
 **Ветка исходной сверки:** `docs/adr-birth-data-and-terms-of-use`.
 **HEAD исходной сверки:** `dc069fc6e3f41e97b27fcbeb066516e5e913f491`.
 
@@ -92,7 +92,7 @@ R3.2/диаграммы 009–010. HEAD сам по себе не содержи
 
 ### 1.3. Текущие статусы и журнал выполнения
 
-#### 1.3.1. Статусы на 2026-09-16
+#### 1.3.1. Статусы на 2026-09-17
 
 | Этап | Статус | Граница подтверждения |
 |---|---|---|
@@ -108,6 +108,11 @@ R3.2/диаграммы 009–010. HEAD сам по себе не содержи
 | 2.4 | Три модели реализованы; целевые и последующие общие проверки прошли | 125 passed; историческая блокировка R/F снята в 1.4, новая контрольная точка — §1.3.11 |
 | 2.5 | Тесты семи моделей и полного union проверены после 2.6 | Весь файл дал 417 passed; прежние и новые assertions исполнились. Требования указаны внутри всех 39 тестовых функций; историческая ошибка импорта сохранена в §1.3.9 |
 | 2.6 | Полный ApplicationResult реализован; целевые и последующие общие проверки прошли | 417 passed без изменения тестов; результаты карточки — §1.3.10. Последующие R/F прошли в 1.4, §1.3.11 |
+| 3.1 | Ранняя выборка прошла после 3.R1 и 3.R2 | 6 passed, 7 deselected; семь положительных случаев в R/F падают на незавершённом пути. Текущие результаты — §1.3.18; история импорта и фикстуры сохранена в §1.3.13/15 |
+| 3.2 | Конструктор и unknown-command ветка прошли раннюю приёмку | После 3.R2: 6 passed, 7 deselected. R: 1392 passed, 7 failed; F: 2311 passed, 7 failed. Положительный путь ожидает группы 4–6, §1.3.18 |
+| 3.R1 | Выполнен | Четыре замены в тесте; две logging-проверки прошли без изменения assertions и production-кода. R содержит только семь подтверждённых отложенных failures; F не запускался. Журнал §1.3.17 |
+| 3.R2 | Согласованные поправки реализованы; результаты в §1.3.18 | Frozen RunContext, строгая версия и точный текст результата, проверка аргументов политики, terminal из ApplicationResult и JSON events |
+| 2.R2 | Отдельная карточка подготовлена, не выполнена | Граница глубокой неизменяемости Issue/ChartArtifact требует согласования с artifact-контрактом; AC-24 целиком не закрыт |
 | Остальные основные карточки | Запланированы, не выполнялись | Формулировка «закрывает» в карточке означает будущую обязанность |
 
 По запросу пользователя 2026-09-16 подготовлен
@@ -132,10 +137,11 @@ R3.2/диаграммы 009–010. HEAD сам по себе не содержи
 BirthDataResolver и общий conftest; весь файл не объявляется изолированным
 тестом одной модели. Новых application AC эта корректировка не закрывает.
 
-После завершения 1.3–1.4, до группы 3, требуется подготовить отдельный срез
-неизменяемости RunContext: явно закрепить требование и проверить присваивание
-полям. Это follow-up, не уже принятое/реализованное требование frozen.
-Политика неизвестных полей (`extra`) остаётся отдельным решением.
+Предусмотренный после 1.3–1.4 срез неизменяемости RunContext выполнен в 3.R2:
+требование закреплено, присваивание полям запрещено и проверено.
+Политика неизвестных полей (`extra`) сохранена и остаётся отдельным решением.
+По явному поручению пользователя 2026-09-17 карточка 3.1 выполнена независимо
+от предварительных корректировок; они не закрыты этим действием (§1.3.13).
 
 #### 1.3.2. Команды журнала
 
@@ -541,6 +547,12 @@ AST трёх прежних классов не изменён. План изм�
 
 #### 1.3.11. Фактические результаты 1.4
 
+Окружение этой исторической записи — локальный Windows checkout. Результат
+F: 2152 passed не является свидетельством переносимости на Linux. В ревью
+2026-09-17 сообщён Linux/Python 3.12: 2151 passed, 1 failed в artifact baseline;
+это внешний отчёт, здесь такой прогон не воспроизведён. ОС как единственная
+причина различия не установлена; baseline и вычисления в 3.R2 не менялись.
+
 **Дата:** 2026-09-16. **Ветка:** `feat/application-orchestrator`.
 Исправлен по согласованным замечаниям, сохранён и выполнен
 [промт 1.4](../../prompts/2026-09-16/01-application-foundations/01.4-lifecycle-logging-functions.md).
@@ -630,6 +642,433 @@ AC-26 и AC-29–33 целиком не закрыты. Подключение �
 соответствие фактическим save, retry, shield, реальные отмены и отсутствие PII
 во всём flow этим этапом не проверялись. Следующие корректирующие срезы моделей
 и RunContext до группы 3 автоматически не выполнялись; K3/X1/X2 сохраняются.
+
+#### 1.3.12. Подготовка промта 3.1 — 2026-09-17
+
+По запросу пользователя сохранён
+[промт 3.1 — тесты входа и выбора обработчика команды](../../prompts/2026-09-16/03-entry-and-routing/03.1-orchestrator-entry-and-routing-tests.md).
+В начале объяснено, что проверяем и зачем: обязательный контекст операции,
+точное назначение Handler, отказ неизвестной команды до чтения сессии,
+защитная копия реестра и связь отказа с журналом по исходному run_id.
+
+Промт сверён с карточками 3.1–3.2, R3.2, ADR-0006, связанными диаграммами,
+текущими моделями, logging-функциями и существующими тестовыми helpers.
+Разделены проверки отказа, доступные после 3.2, положительные контроли
+после 4.2/5.2 и полный успешный unit-сценарий после 6.4.
+В тестах предусмотрены docstrings со связью требований и проверяемого поведения.
+
+Это подготовка задания, а не выполнение 3.1: production-код и тесты не менялись,
+pytest не запускался, новые AC не закрыты. Отдельные корректирующие срезы
+политики/моделей и RunContext перед группой 3 не выполнены этим действием;
+их статус требуется сверить перед исполнением промта. Вопрос K3 сохранён.
+Обновлён общий README серии; номера карточек, зависимости и матрица AC сохранены.
+
+Проверки подготовки: `git diff --check` — exit code 0; отдельная структурная
+проверка трёх документов через `.\.venv\Scripts\python.exe -B -` — exit code 0,
+92 локальные ссылки существуют, блоки кода парные, whitespace нового промта
+и разделение имён ранних/поздних тестов проверены. Git сообщил только о
+будущем преобразовании LF в CRLF; ошибок whitespace не обнаружено.
+
+#### 1.3.13. Фактические результаты 3.1 — 2026-09-17
+
+**Основание запуска:** после подготовки промта пользователь явно поручил
+«Сохрани и выполни промт». Это разрешение выполнить тестовую карточку 3.1
+независимо от предварительных корректировок 2.R1 и RunContext. Их область,
+frozen/extra и вопрос K3 не решались и остаются открытыми.
+
+**Ветка:** `feat/application-orchestrator`.
+**HEAD:** `4c289a673efb0fb21eaed83f58ea205564f6d2e6`.
+Сохранённый промт 3.1 не изменялся. Созданы:
+
+- [test_orchestrator_routing.py](../../tests/application/test_orchestrator_routing.py):
+  11 тестовых функций; по исходным параметризациям предусмотрено 13 случаев.
+  Это статический подсчёт, не результат pytest collection;
+- [orchestrator_fakes.py](../../tests/application/orchestrator_fakes.py):
+  context и Handler с явно заданными typed outcomes и общим журналом обращений
+  одного теста. Аргументы записываются по identity; CAS и расчёт не имитируются.
+
+У каждой тестовой функции есть русский docstring с назначением проверки,
+ссылкой на R3.2 и границей подтверждения. Отрицательные routing-сценарии
+дополнены положительными вызовами зарегистрированных Handler; добавление,
+удаление и замена внешнего назначения проверяются через публичный execute.
+Один положительный unit-сценарий проходит до Committed. Lifecycle-проверка
+отказа использует настоящие logging-записи и два разных входных UUID.
+
+Команды выполнены из корня репозитория:
+
+```powershell
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/application/test_orchestrator_routing.py -q
+.\.venv\Scripts\python.exe -B -c "import ast,pathlib; paths=['tests/application/test_orchestrator_routing.py','tests/application/orchestrator_fakes.py']; [ast.parse(pathlib.Path(p).read_text(encoding='utf-8-sig'), filename=p) for p in paths]; print('syntax OK')"
+git diff --check
+```
+
+| Проверка | Фактический результат | Exit code |
+|---|---|---:|
+| Целевой pytest | `ModuleNotFoundError: No module named 'exact_orb.application.orchestrator'`; `1 error in 0.41s`, остановка при collection | 1 |
+| AST двух новых файлов | `syntax OK` | 0 |
+| Дополнительная статическая проверка через `.\.venv\Scripts\python.exe -B -` | 11 функций с requirement-docstrings; 5 ранних и 6 поздних функций; прямой импорт API, без skip/xfail/подмен; синтаксис и whitespace проверены | 0 |
+| `git diff --check` | Ошибок whitespace нет; предупреждение о будущем преобразовании LF → CRLF в документах | 0 |
+
+**Исполнено 0 тестовых функций и 0 assertions routing.** Ошибка ожидаема:
+production-модуль вводится в 3.2. Она не доказывает чувствительность тестов,
+валидность runtime-подготовки данных или выполнение проверяемых AC.
+Связанный R и полный F не запускались по §4.2: целевой набор пока не может
+исполниться. Исторические результаты 1.4 и группы 2 остаются прежними.
+
+| Требование | Что проверяется | Точные имена тестов | Фактический результат | Что остаётся проверить и когда |
+|---|---|---|---|---|
+| §1.3, FR-01, AC-1 | Обязательный keyword-only run и TypeError до вызовов зависимостей | `test_execute_requires_run` | Не исполнился: импорт API | После 3.2; позитивный вызов — после 5.2 |
+| UC-11, FR-03–04, AC-4, части AC-5/26 | Полный ответ HANDLER_NOT_REGISTERED до load, без чужого Handler | `test_unknown_command_returns_failure_before_load` | Не исполнился: импорт API | После 3.2 |
+| FR-04, AC-3 | Подкласс не получает Handler базового типа без отдельного назначения | `test_subclass_without_exact_registration_is_rejected` | Не исполнился: импорт API | Отказ — 3.2; положительные пары — 5.2 |
+| FR-02, FR-04, FR-06–08, AC-2/3, часть AC-5 | Точный выбор базового/дочернего Handler, порядок load → handle, identity аргументов | `test_exact_type_reaches_handler`, `test_explicit_child_registration_selects_own_handler` | Не исполнились: импорт API | После 4.2/5.2 |
+| FR-05 | Внешнее добавление не влияет на старый экземпляр; новый принимает назначение | `test_registry_addition_does_not_change_existing_instance`, `test_new_instance_accepts_added_type` | Не исполнились: импорт API | Отрицательная часть — 3.2; положительная — 5.2 |
+| FR-05 | Внешние удаление и замена сохраняют исходный Handler | `test_external_mapping_removal_keeps_original_handler`, `test_external_mapping_replacement_keeps_original_handler` | Не исполнились: импорт API | После 5.2; полнота production registry остаётся 10.1–10.2 |
+| §1.4, FR-11, AC-3/5, части AC-10/26 | Полный положительный unit-путь, original version и delta в одном save | `test_known_command_completes_with_commit` | Не исполнился: импорт API | После 6.4; реальный CAS и persistence — последующие integration-этапы |
+| FR-26, §11.5, §12, части AC-26/29 | Один started/terminal до возврата, исходный UUID, отсутствие незапущенных стадий | `test_unknown_command_logs_one_start_and_terminal_before_return` | Не исполнился: импорт API | Routing-ветка — 3.2; остальные ветки и сквозные AC — позже |
+
+Ранняя выборка 3.2 содержит 5 функций (6 предусмотренных параметризованных
+случаев); поздние имена и ids не попадают в её `-k`. Остальные 6 функций
+предусматривают 7 случаев. Весь routing-файл требуется повторить в 6.4.
+Критерии приёмки по этой записи не объявляются закрытыми.
+
+Production-код, прежние тесты/fixtures и исторические промты не менялись.
+Изменения плана ограничены §1.3; README обновлён по фактическому статусу.
+Контроль SHA-256 подтвердил сохранность 420 предшествующих файлов вне
+allowlist, Git index и текста плана вне §1.3. Проверены 94 локальные ссылки
+README/плана и парность блоков кода; статически подтверждено разделение
+13 предусмотренных случаев на 6 ранних и 7 поздних, exit code 0.
+Следующий основной этап — 3.2; его реализация автоматически не выполнялась.
+
+#### 1.3.14. Подготовка промта 3.2 — 2026-09-17
+
+По запросу пользователя сохранён
+[промт 3.2 — конструктор координатора и отказ для неизвестной команды](../../prompts/2026-09-16/03-entry-and-routing/03.2-orchestrator-constructor-and-routing-failure.md).
+В начале объяснены назначение координатора, обязательный контекст операции,
+фиксация назначений Handler и отказ до чтения сессии. Техническая часть сверена
+с R3.2, ADR-0006, карточкой 3.2, существующими тестами 3.1 и logging helpers.
+
+Область исполнения — новый application/orchestrator.py, журнал §1.3 и README.
+Тесты и fakes должны сохраниться без изменений. Промт требует исполнить
+раннюю выборку, затем весь routing-файл и связанный R с классификацией
+отложенных положительных случаев; F запускается только после успешного R.
+
+Для неполного flow групп 3–6 в промте явно предложена временная остановка
+зарегистрированной команды через NotImplementedError непосредственно в execute.
+Это техническая граница промежуточного модуля, не целевой application-ответ:
+модуль не подключается к транспорту, lifecycle-контракт известной ветки ещё
+не выполнен, точку продолжения заменяет настоящий load в 4.2. Фиктивные
+результаты и скрытое закрытие положительных проверок запрещены.
+
+Это только подготовка задания. Production-код, тесты, исходный промт 3.1,
+номера карточек и матрица AC не менялись; pytest и реализация 3.2 не запускались.
+Статус корректировок 2.R1, RunContext и вопроса K3 сохранён. README дополнен
+ссылкой на промт и его текущим статусом.
+
+Проверки подготовки: `git diff --check` — exit code 0; структурная проверка
+через `.\.venv\Scripts\python.exe -B -` — exit code 0, 98 локальных ссылок,
+парные блоки кода, whitespace нового промта и соответствие пяти названных
+тестов исходному файлу. Статически подтверждены 6 ранних и 7 поздних случаев.
+SHA-256 подтвердил сохранность 422 файлов вне области подготовки, Git index
+и текста плана вне §1.3. Эти проверки не являются запуском тестов координатора.
+
+#### 1.3.15. Выполнение 3.2 — 2026-09-17
+
+**Основание:** пользователь поручил сохранить и выполнить подготовленный промт 3.2.
+**Ветка:** `feat/application-orchestrator`.
+**HEAD:** `4c289a673efb0fb21eaed83f58ea205564f6d2e6`.
+
+Создан [application/orchestrator.py](../../src/exact_orb/application/orchestrator.py):
+обязательные зависимости конструктора, shallow copy назначений Handler,
+обязательный RunContext, lookup по точному type(command). Неизвестная команда
+получает ApplicationInternalFailure/HANDLER_NOT_REGISTERED до любого обращения
+к сессии. Реакция берётся из failure_policy; started и terminal записываются
+существующими logging-функциями с исходным run_id.
+
+В соответствии с §5 исполняемого промта найденный Handler приводит к явно
+обозначенному временному NotImplementedError. Load/handle/save не реализованы,
+положительный lifecycle ещё не завершён; модуль не подключён к транспорту.
+Это ограничение промежуточной сборки, не новый публичный application outcome.
+
+Ранняя команда выполнена до и после создания модуля:
+
+```powershell
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/application/test_orchestrator_routing.py -k "requires_run or unknown_command or subclass or registry" -q
+```
+
+| Момент | Результат | Exit code |
+|---|---|---:|
+| До реализации | `ModuleNotFoundError: No module named 'exact_orb.application.orchestrator'`; `1 error in 0.50s` | 1 |
+| После реализации, исходные тесты сохранены | `2 failed, 4 passed, 7 deselected in 0.41s` | 1 |
+
+Прошли `test_execute_requires_run`,
+`test_unknown_command_returns_failure_before_load`,
+`test_subclass_without_exact_registration_is_rejected` и
+`test_registry_addition_does_not_change_existing_instance`.
+
+Два сбоя:
+
+```text
+tests/application/test_orchestrator_routing.py::test_unknown_command_logs_one_start_and_terminal_before_return[first-run]
+tests/application/test_orchestrator_routing.py::test_unknown_command_logs_one_start_and_terminal_before_return[second-run]
+```
+
+**Корневая причина:** созданная в 3.1 фикстура `operation_records` возвращает
+`caplog.records` во время setup. Pytest перед call вызывает
+`LogCaptureHandler.reset()` и заменяет список через `self.records = []`.
+Тест продолжает читать прежний пустой список. В отчёте `Captured log call`
+присутствуют настоящий INFO started и WARNING terminal с корректным run_id;
+ошибка не вызвана отсутствием production logging.
+
+Причина подтверждена чтением установленного `.venv/Lib/site-packages/_pytest/logging.py`:
+`LogCaptureHandler.reset` (строка 401), `LogCaptureFixture.records` (472),
+`LoggingPlugin._runtest_for` (828). Точная диагностическая команда:
+
+```powershell
+.\.venv\Scripts\python.exe -B -c "import inspect,_pytest.logging as log; print(log.__file__); print(inspect.getsource(log.LogCaptureHandler.reset)); print(inspect.getsource(log.LogCaptureFixture.records.fget)); print(inspect.getsource(log.LoggingPlugin._runtest_for))"
+```
+
+Команда завершилась с exit code 0. Минимальная подготовленная корректировка:
+передавать из фикстуры сам `caplog`, читать его актуальное `.records` в тесте
+и уточнить две аннотации — четыре строки, без изменения assertions и сценариев.
+Промт 3.2 запрещает менять тесты, поэтому отдельно запрошено разрешение на эту
+правку; до ответа исходный тестовый файл сохранён.
+
+Весь routing-файл, R и F пока не запускались: ранняя выборка не прошла,
+а эти запуски по промту выполняются после неё. Семь положительных случаев
+ещё не проверены этим запуском. Результаты 1.4 и группы 2 не переименованы
+в текущие результаты. AC-26/29 не закрыты по визуальному наличию записей.
+
+Проверка синтаксиса нового модуля и `git diff --check` дали exit code 0.
+SHA-256 подтвердил сохранность 423 предшествующих файлов вне allowlist,
+Git index и текста плана вне §1.3. Предварительные вопросы 2.R1, RunContext
+и K3 не решались. Следующая основная карточка 4.1 не выполнялась.
+
+#### 1.3.16. Подготовка корректирующего промта 3.R1 — 2026-09-17
+
+По запросу «Напиши следующий промт» подготовлен отдельный
+[промт 3.R1 — исправить захват логов и завершить проверку 3.2](../../prompts/2026-09-16/03-entry-and-routing/03.R1-caplog-fixture-and-routing-verification.md).
+Корректировка поставлена перед основной карточкой 4.1, поскольку ранняя
+приёмка 3.2 блокируется установленным дефектом фикстуры 3.1.
+
+В начале промта человеческим языком объяснён ложный отказ: тест сохраняет
+список setup, а реальные события попадают в новый список call. Техническая
+часть задаёт четыре точные замены для передачи caplog и чтения его актуального
+records, сохранность assertions/параметризаций и команды повторной проверки.
+Причина сверена с текущим тестом и исходниками установленного pytest.
+
+Будущее исполнение 3.R1 имеет собственный узкий allowlist тестового файла,
+§1.3 плана и README; production-код и исторический промт 3.2 сохраняются.
+Приёмка различает исправление двух logging-проверок, раннюю выборку 3.2,
+семь ещё не реализованных положительных случаев и результаты R/F.
+
+Сейчас промт только сохранён: тестовая фикстура не исправлялась, pytest не
+запускался, результаты §1.3.15 остаются текущими. Обновлены индекс README,
+запись в журнале и перечисление дополнительных карточек в шапке плана.
+Нумерация 36 основных карточек, их зависимости и матрица AC не изменены.
+
+Проверки подготовки: `git diff --check` — exit code 0; структурная проверка
+через `.\.venv\Scripts\python.exe -B -` — exit code 0, 101 локальная ссылка,
+парные блоки кода и корректный whitespace нового промта. Четыре замены
+применены только к строке в памяти: синтаксис корректен, узлы assert совпадают,
+тестовый файл не записывался. SHA-256 подтвердил сохранность 424 файлов вне
+области подготовки, Git index и плана вне §1.3 и строки перечня карточек.
+
+#### 1.3.17. Выполнение 3.R1 — 2026-09-17
+
+**Основание:** пользователь поручил сохранить и выполнить подготовленный
+[промт 3.R1](../../prompts/2026-09-16/03-entry-and-routing/03.R1-caplog-fixture-and-routing-verification.md).
+**Ветка:** `feat/application-orchestrator`.
+**HEAD:** `4c289a673efb0fb21eaed83f58ea205564f6d2e6`.
+
+**Результат:** тест читает журнал текущего выполнения. Два ложных отказа
+устранены, ранняя приёмка 3.2 прошла. Координатор уже записывал нужные события;
+ошибка была в сохранении тестовой фикстурой списка записей фазы setup.
+Pytest заменяет этот список перед call, поэтому тест видел пустой старый список.
+Причина повторно подтверждена диагностической командой inspect из §1.3.15,
+exit code 0: `reset()` заменяет `self.records`, а свойство `caplog.records`
+возвращает текущий список обработчика.
+
+В [test_orchestrator_routing.py](../../tests/application/test_orchestrator_routing.py)
+изменены ровно четыре строки: фикстура передаёт `caplog`, тест читает
+`operation_records.records` непосредственно после `await execute(...)`,
+две аннотации уточнены до `pytest.LogCaptureFixture`. Настройка и восстановление
+logger, assertions, сценарии и production-код сохранены.
+
+Точные команды запускались из корня репозитория последовательно:
+
+```powershell
+# Два проблемных случая: одна и та же команда до и после исправления
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/application/test_orchestrator_routing.py -k "unknown_command_logs_one_start_and_terminal_before_return" -q
+
+# Ранняя выборка 3.2 после исправления
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/application/test_orchestrator_routing.py -k "requires_run or unknown_command or subclass or registry" -q
+
+# Весь routing-файл
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/application/test_orchestrator_routing.py -q
+
+# Связанный набор R
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/test_run_context.py tests/application tests/session tests/test_module_boundaries.py -q
+```
+
+| Запуск | Фактический результат | Exit code |
+|---|---|---:|
+| Два случая до исправления | `2 failed, 11 deselected in 0.35s` | 1 |
+| Те же случаи после исправления | `2 passed, 11 deselected in 0.27s` | 0 |
+| Ранняя выборка 3.2 | `6 passed, 7 deselected in 0.30s` | 0 |
+| Весь routing-файл | `7 failed, 6 passed in 0.45s` | 1 |
+| R | `7 failed, 1239 passed in 13.89s` | 1 |
+
+До исправления падали оба точных node ID:
+
+```text
+tests/application/test_orchestrator_routing.py::test_unknown_command_logs_one_start_and_terminal_before_return[first-run]
+tests/application/test_orchestrator_routing.py::test_unknown_command_logs_one_start_and_terminal_before_return[second-run]
+```
+
+Оба падали на сравнении пустого списка с ожидаемыми started/terminal, при
+наличии настоящих INFO/WARNING событий в `Captured log call`. После правки
+оба случая прошли со всеми прежними assertions.
+
+В полном routing-файле и R совпали все семь failures:
+
+```text
+tests/application/test_orchestrator_routing.py::test_exact_type_reaches_handler
+tests/application/test_orchestrator_routing.py::test_explicit_child_registration_selects_own_handler[base]
+tests/application/test_orchestrator_routing.py::test_explicit_child_registration_selects_own_handler[child]
+tests/application/test_orchestrator_routing.py::test_external_mapping_removal_keeps_original_handler
+tests/application/test_orchestrator_routing.py::test_external_mapping_replacement_keeps_original_handler
+tests/application/test_orchestrator_routing.py::test_new_instance_accepts_added_type
+tests/application/test_orchestrator_routing.py::test_known_command_completes_with_commit
+```
+
+Причина каждого — `NotImplementedError` в `application/orchestrator.py:86`:
+`Registered command execution will be implemented in steps 4–6`.
+Все семь тестов дошли до `execute`; создание `BuildNatalSuccess` в последнем
+случае прошло. Ошибок импорта, невалидных данных и новых сбоев фикстуры нет.
+Первые шесть случаев ожидают load/Handler в 4.2/5.2, последний — полный
+unit-путь с commit в 6.4. Это реальные падения, а не skip/xfail или успешный R.
+
+**F не запускался:** R не прошёл; по условию карточки полный набор выполняется
+только после успешного R. Исторические результаты F из §1.3.11 не являются
+проверкой текущего состава проекта. Сетевые и платные smoke-тесты не запускались.
+
+| Проверяемое правило | Тесты | До исправления | После исправления | Граница подтверждения |
+|---|---|---|---|---|
+| Актуальные события доступны после execute | Два случая `test_unknown_command_logs_one_start_and_terminal_before_return` | 2 failed, 11 deselected | 2 passed, 11 deselected | Регрессионное покрытие ошибки фикстуры |
+| Исходный run_id и один started/terminal | Те же два случая | Наблюдение блокировалось старым списком | Все assertions порядка, уровней, UUID и terminal-полей исполнились и прошли | Только routing-часть AC-26/29 |
+| Прежние правила входа и отказа сохранены | Остальные четыре ранних теста 3.1 | 4 passed в запуске 3.2, §1.3.15 | Все четыре снова прошли в выборке из 6 passed | Полнота позитивного routing ещё не доказана |
+| Положительный flow | Семь перечисленных поздних случаев | Не исполнялись в первом раннем прогоне 3.2 | Каждый падает на явно незавершённой зарегистрированной ветке, NotImplementedError | Ожидают 4.2/5.2 и 6.4 |
+
+Проверка сохранности через `.\.venv\Scripts\python.exe -B -` сопоставила
+исходные байты untracked-теста с результатом четырёх замен: совпадение точное,
+без нормализации остального файла. По AST совпали все 46 узлов assert,
+имена, декораторы, параметризации, ids и docstrings 11 тестовых функций;
+состав 13 случаев сохранён. Полный AST изменился только в разрешённых местах.
+SHA-256 подтвердил сохранность 424 файлов вне allowlist, включая production,
+fakes, другие тесты и прежние промты, а также Git index и текста плана вне §1.3.
+
+`git diff --check` — exit code 0. Scoped diff и `git status --short` просмотрены;
+untracked-тест дополнительно сопоставлен с исходным снимком. Веток, коммитов,
+push и PR не создавалось. Исторические записи §1.3.13/15/16 сохранены.
+
+Исправление фикстуры не закрывает целиком AC-3, FR-05, AC-5, AC-26/29,
+конкурентность и сохранение сессии. Вопросы 2.R1, неизменяемости/extra
+RunContext и K3 остаются открытыми. Следующий основной шаг — **4.1, тесты
+load и исходной версии**; он автоматически не выполнялся.
+
+#### 1.3.18. Выполнение 3.R2 — 2026-09-17
+
+**Основание:** пользователь поручил написать промт и исправить согласованные
+замечания ревью. Сохранён и выполнен
+[промт 3.R2](../../prompts/2026-09-16/03-entry-and-routing/03.R2-orchestrator-contract-hardening.md).
+**Ветка:** `feat/application-orchestrator`.
+**HEAD:** `4c289a673efb0fb21eaed83f58ea205564f6d2e6`.
+**Окружение:** Windows 11, Python 3.14.0, Pydantic 2.13.5, pytest 9.1.1.
+
+**Причина:** прежние тесты подтверждали корректные входы и frozen верхнего
+уровня. Присваивание обходило UTC-валидацию RunContext; модели принимали
+приводимые версии и произвольные сообщения; logging повторно принимал поля
+ответа и кодировал открытые строки неоднозначным key=value.
+
+Теперь RunContext запрещает присваивание трём полям. ApplicationResult
+отклоняет bool/string/float вместо версии, пустой persistence detail_code и
+сообщение, не совпадающее с политикой. Политика отклоняет нерелевантные для
+kind аргументы не None. Предопределённые тексты, retryable и fallback сохранены.
+
+Result-terminal получает ApplicationResult, проецирует только разрешённые
+поля и не может получить отдельные противоречащие им аргументы. Lifecycle
+message имеет вид `<event> <JSON object>` в одной строке; строки сохраняются
+при JSON round-trip без инъекции полей и новых записей. Проверяются конечные
+неотрицательные длительности, диапазоны попыток и версии commit outcomes;
+ошибки контракта отклоняются через LifecycleEventError до записи.
+Время, порядок событий, история реальных save и обработка ошибки logging
+после состоявшегося commit остаются обязанностями будущего execute, не
+доказанными свойствами ещё отсутствующей commit-ветки.
+
+Изменены RunContext, policy/results/logging, один вызов terminal в координаторе
+и пять соответствующих тестовых файлов. Ранее допускавший произвольный текст
+тест изменён намеренно вместе с контрактом; независимые эталонные тексты
+сохранены. Первые 106 logging-случаев прошли после адаптации API, затем
+добавлено 70 регрессионных случаев. Routing проверяет тот же набор полей,
+порядок и уровни через JSON; семь будущих сценариев не ослаблялись.
+Требования R3.2, ревизия ADR-0006 и diagram 010 синхронизированы.
+
+| Правило | Покрытие | Фактическое подтверждение |
+|---|---|---|
+| RunContext нельзя переприсвоить | `test_run_context_rejects_assignment_without_changing_original` | 4 случая: корректные новые значения и naive deadline отклонены; исходный объект сохранён |
+| Версия строго int | Дополнены существующие version-bound tests | bool, string и float отклонены при сохранённых положительных границах |
+| Persistence code непустой, сообщение точно по политике | `test_persistence_failure_rejects_empty_detail_code`, `test_failure_models_require_the_policy_message`, `test_superseded_requires_exact_policy_message` | Корректные записи проходят, пустой код и произвольные сообщения отклонены |
+| Аргументы политики соответствуют kind | `test_irrelevant_policy_arguments_are_rejected`, `test_persistence_policy_requires_nonempty_code` | Положительные вызовы и None сохранены; нерелевантные содержательные значения и пустой persistence code отклонены |
+| Terminal соответствует ответу | Прежние terminal cases и `test_terminal_cannot_override_the_returned_result` | Поля извлечены из настоящей модели; отдельные override keywords запрещены |
+| Строки не меняют структуру события | `test_strings_cannot_inject_fields_or_physical_records` | 4 вида записи: кавычки, слеши, key=value, CR/LF/tab/U+2028 сохраняются внутри одного JSON-значения |
+| Недопустимые числовые метаданные не пишутся | `test_invalid_durations_are_rejected_before_logging`, `test_attempt_numbers_are_checked_at_runtime`, `test_attempt_version_matches_its_outcome` | Отрицательные/NaN/Infinity, неверные попытки и версии отклонены после положительных контролей |
+
+Точные команды и результаты:
+
+```powershell
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/test_run_context.py tests/application/test_application_failure_policy.py tests/application/test_application_results.py -q
+# 552 passed in 1.01s; exit code 0
+
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/application/test_orchestrator_logging.py -q
+# После адаптации: 106 passed in 0.52s; после регрессий: 176 passed in 0.57s; exit code 0
+
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/application/test_orchestrator_routing.py -k "requires_run or unknown_command or subclass or registry" -q
+# 6 passed, 7 deselected in 0.29s; exit code 0
+
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/test_run_context.py tests/application tests/session tests/test_module_boundaries.py -q
+# 7 failed, 1392 passed in 16.39s; exit code 1
+
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider -q
+# 7 failed, 2311 passed in 42.32s; exit code 1
+
+git diff --check
+# exit code 0
+```
+
+В R и F совпадают ровно семь node IDs из §1.3.17: exact type, два случая
+explicit child registration, removal/replacement mapping, new instance и
+known command with commit. Каждый падает только на явном NotImplementedError
+в `application/orchestrator.py:80`. Новых failures нет. R/F остаются
+непройденными. Полный набор выполнен по явной проверке этой корректировки
+после классификации R: изменение RunContext затрагивает потребителей вне R.
+Локальный artifact baseline прошёл в составе F; его эталон не изменялся.
+Linux-прогон не выполнялся, причинность ОС не доказана.
+
+**Отдельно подготовлена, не выполнена**
+[карточка 2.R2](../../prompts/2026-09-16/02-application-results/02.R2-nested-result-immutability-decision.md).
+Глубокая неизменяемость Issue/ChartArtifact требует выбора границы с учётом
+действующего artifact-контракта §6.1.4. В 3.R2 эти общие модели не менялись;
+глубокая часть AC-24 не закрыта. Политика extra RunContext, K3 и семантика
+retryable чтения сессии сохранены. Discriminator и расчётный baseline не менялись.
+
+Структурная проверка через `.\.venv\Scripts\python.exe -B -` дала exit code 0:
+6 Markdown-файлов, 107 локальных ссылок, парные code fences, start/end,
+note/end note и box/end box диаграммы. SHA-256 подтвердил сохранность
+412 файлов вне allowlist и Git index; новых файлов вне области нет.
+Scoped diff и статус просмотрены. Java/PlantUML в текущем окружении не найдены; диаграмма
+не рендерилась. Сетевые и платные smoke не запускались. Коммитов, веток,
+push и PR не создавалось. Следующая основная карточка — 4.1, автоматически
+не выполнялась.
 
 ## 2. Принятые границы
 

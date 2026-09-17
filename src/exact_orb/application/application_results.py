@@ -11,9 +11,14 @@ from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
-from exact_orb.application.failure_policy import describe_failure
+from exact_orb.application.failure_policy import FailureDescription, describe_failure
 from exact_orb.calculation.types import ChartArtifact
 from exact_orb.outcomes import Issue
+
+
+def _require_policy_message(message: str, reaction: FailureDescription) -> None:
+    if message != reaction.user_message:
+        raise ValueError("user_message must match the failure policy")
 
 
 class ApplicationCommitted(BaseModel):
@@ -30,7 +35,7 @@ class ApplicationCommitted(BaseModel):
     retryable: Literal[False] = False
 
     run_id: UUID
-    state_version: int = Field(ge=1)
+    state_version: int = Field(ge=1, strict=True)
     artifact: ChartArtifact
 
 
@@ -48,7 +53,7 @@ class ApplicationAlreadyApplied(BaseModel):
     retryable: Literal[False] = False
 
     run_id: UUID
-    state_version: int = Field(ge=0)
+    state_version: int = Field(ge=0, strict=True)
     artifact: ChartArtifact
 
 
@@ -66,7 +71,12 @@ class ApplicationSuperseded(BaseModel):
     retryable: Literal[False] = False
 
     run_id: UUID
-    state_version: int = Field(ge=0)
+    state_version: int = Field(ge=0, strict=True)
+
+    @model_validator(mode="after")
+    def _message_must_match_policy(self) -> Self:
+        _require_policy_message(self.user_message, describe_failure(kind="superseded"))
+        return self
 
 
 class ApplicationInputRequired(BaseModel):
@@ -83,8 +93,13 @@ class ApplicationInputRequired(BaseModel):
     retryable: Literal[False] = False
 
     run_id: UUID
-    state_version: int = Field(ge=0)
+    state_version: int = Field(ge=0, strict=True)
     issues: tuple[Issue, ...] = Field(min_length=1)
+
+    @model_validator(mode="after")
+    def _message_must_match_policy(self) -> Self:
+        _require_policy_message(self.user_message, describe_failure(kind="input_required"))
+        return self
 
 
 class ApplicationResolutionFailure(BaseModel):
@@ -101,7 +116,15 @@ class ApplicationResolutionFailure(BaseModel):
     retryable: bool
 
     run_id: UUID
-    state_version: int = Field(ge=0)
+    state_version: int = Field(ge=0, strict=True)
+
+    @model_validator(mode="after")
+    def _message_must_match_policy(self) -> Self:
+        _require_policy_message(self.user_message, describe_failure(
+            kind="resolution_unavailable", error_code=self.detail_code,
+            retryable=self.retryable,
+        ))
+        return self
 
 
 class ApplicationCalculationFailure(BaseModel):
@@ -118,7 +141,7 @@ class ApplicationCalculationFailure(BaseModel):
     retryable: bool
 
     run_id: UUID
-    state_version: int = Field(ge=0)
+    state_version: int = Field(ge=0, strict=True)
 
     @model_validator(mode="after")
     def _retryability_must_match_policy(self) -> Self:
@@ -127,6 +150,7 @@ class ApplicationCalculationFailure(BaseModel):
         )
         if self.retryable != reaction.retryable:
             raise ValueError("retryable must match the calculation failure policy")
+        _require_policy_message(self.user_message, reaction)
         return self
 
 
@@ -157,6 +181,10 @@ class ApplicationSessionAbsent(BaseModel):
         }
         if (self.handler_status, self.reason, self.code) not in allowed:
             raise ValueError("session absence code must match the stage and reason")
+        _require_policy_message(self.user_message, describe_failure(
+            kind="session_absent", reason=self.reason,
+            stage="load" if self.handler_status == "NOT_STARTED" else "commit",
+        ))
         return self
 
 
@@ -169,12 +197,19 @@ class ApplicationStateReadFailure(BaseModel):
     handler_status: Literal["NOT_STARTED"] = "NOT_STARTED"
     context_status: Literal["READ_FAILED"] = "READ_FAILED"
     code: Literal["STATE_READ_FAILED"] = "STATE_READ_FAILED"
-    detail_code: str
+    detail_code: str = Field(min_length=1)
     user_message: str
     retryable: Literal[True] = True
 
     run_id: UUID
     state_version: None = None
+
+    @model_validator(mode="after")
+    def _message_must_match_policy(self) -> Self:
+        _require_policy_message(self.user_message, describe_failure(
+            kind="state_read_failed", error_code=self.detail_code,
+        ))
+        return self
 
 
 class ApplicationStateCommitFailure(BaseModel):
@@ -186,12 +221,19 @@ class ApplicationStateCommitFailure(BaseModel):
     handler_status: Literal["SUCCESS"] = "SUCCESS"
     context_status: Literal["COMMIT_FAILED"] = "COMMIT_FAILED"
     code: Literal["STATE_COMMIT_FAILED"] = "STATE_COMMIT_FAILED"
-    detail_code: str
+    detail_code: str = Field(min_length=1)
     user_message: str
     retryable: Literal[True] = True
 
     run_id: UUID
     state_version: None = None
+
+    @model_validator(mode="after")
+    def _message_must_match_policy(self) -> Self:
+        _require_policy_message(self.user_message, describe_failure(
+            kind="state_commit_failed", error_code=self.detail_code,
+        ))
+        return self
 
 
 class ApplicationInternalFailure(BaseModel):
@@ -208,7 +250,7 @@ class ApplicationInternalFailure(BaseModel):
     retryable: Literal[False] = False
 
     run_id: UUID
-    state_version: int | None = Field(default=None, ge=0)
+    state_version: int | None = Field(default=None, ge=0, strict=True)
 
     @model_validator(mode="after")
     def _fields_must_match_stage(self) -> Self:
@@ -225,6 +267,10 @@ class ApplicationInternalFailure(BaseModel):
                 raise ValueError("loaded internal failure requires state_version")
         elif self.state_version is not None:
             raise ValueError("internal failure without confirmed state requires no version")
+        _require_policy_message(self.user_message, describe_failure(
+            kind=("handler_not_registered"
+                  if self.code == "HANDLER_NOT_REGISTERED" else "internal_failure"),
+        ))
         return self
 
 

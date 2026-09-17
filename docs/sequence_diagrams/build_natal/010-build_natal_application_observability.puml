@@ -37,6 +37,10 @@ end box
 
 Request -> Orch : execute(command, session_id, run)
 activate Orch
+note right of Orch
+RunContext frozen; Handler получает тот же объект.
+run_id, started_at и deadline не переприсваиваются.
+end note
 Orch -> Log : INFO application_operation_started\nrun_id, command_type
 
 Orch -> Orch : exact routing by type(command)
@@ -61,7 +65,7 @@ else retry запрещён отменой или deadline
     Orch -> Orch : ApplicationStateCommitFailure
 end
 
-Orch -> Log : INFO/WARNING application_operation_finished\nterminal_kind=result, statuses, code, state_version,\nstage durations, commit_attempts
+Orch -> Log : log_operation_finished(result=ApplicationResult, ...)\nINFO/WARNING application_operation_finished\nterminal_kind=result, statuses, code, state_version,\nstage durations, commit_attempts
 Orch --> Request : ApplicationResult
 deactivate Orch
 
@@ -73,6 +77,10 @@ note over Orch, Log
 
 Payload команды, StateDelta, ChartArtifact и полный
 session_id в lifecycle events не записываются.
+Имя события + один JSON object: значения экранируются.
+Поля terminal берутся из возвращаемого результата.
+Невалидные длительности/попытки отклоняются до записи.
+Ошибка logging не меняет подтверждённый commit outcome.
 end note
 
 note over Request, Log

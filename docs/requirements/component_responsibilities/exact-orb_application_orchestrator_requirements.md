@@ -2,6 +2,7 @@
 
 **Статус:** R3.2, рабочая версия требований
 **Дата:** 2026-09-16
+**Уточнение:** 2026-09-17 — неизменяемый RunContext, строгие поля ответа и однозначное кодирование lifecycle-событий (3.R2).
 **Область:** application coordination
 **Целевой модуль:** `src/exact_orb/application/orchestrator.py`
 **Внешний контракт:** `ApplicationResult` в
@@ -13,9 +14,10 @@ ADR-0025, ADR-0026, ADR-0028, ADR-0034; требования к
 `BuildNatalHandler`, `session_requirements` §7–8 и P3-acceptance, актуальные
 sequence diagrams Build Natal.
 
-Документ описывает целевой контракт. `ApplicationOrchestrator`, внешний
-`ApplicationResult`, transport wiring и нагрузочная приёмка на дату документа
-ещё не реализованы.
+Документ описывает целевой контракт. На 2026-09-17 реализованы модели
+`ApplicationResult`, политика отказов, logging-функции и ранняя ветка отказа
+`ApplicationOrchestrator`. Load/Handler/commit, transport wiring и нагрузочная
+приёмка остаются последующим этапам; фактические проверки указаны в журнале плана.
 
 ## 0. Решения редакции R3.2
 
@@ -123,6 +125,11 @@ class ApplicationOrchestrator:
 Все входы обязательны. `session_id` разрешён доверенной входной границей.
 `run` уже создан; Orchestrator не создаёт fallback, не заменяет объект и
 передаёт его Handler по identity.
+
+`RunContext` использует `ConfigDict(frozen=True)`: после создания нельзя
+переприсвоить `run_id`, `started_at` или `deadline`, даже корректным значением.
+UTC-валидация выполняется при создании; новая операция получает новый объект.
+Это не меняет default deadline=None, new() и действующую политику extra.
 
 `clock` возвращает timezone-aware UTC и нужен только для детерминированной
 проверки `run.deadline` перед возможным commit retry. Он не подменяет clock
@@ -661,6 +668,20 @@ ApplicationResult = (
 несколько строк таблицы, validator проверяет полную разрешённую запись, а не
 только пару статусов.
 
+Ненулевая либо нулевая допустимая `state_version` — строгий int: bool, float
+и числовые строки отклоняются без приведения. Нижние границы и допустимость
+None сохраняются по таблице. Persistence `detail_code` имеет min_length=1,
+как error_code исходных session outcomes; открытое множество кодов сохраняется.
+`user_message` failure-модели сверяется с точным текстом §10 через единую
+политику для её code, reason, стадии и retryable. Произвольная строка,
+в том числе иной безопасный текст, не является допустимой заменой.
+
+Глубокая неизменяемость вложенных Issue/ChartArtifact пока не установлена.
+Её граница требует отдельного согласования с artifact-контрактом §6.1.4,
+который допускает mutable-вложения при глубокой копии на выходе resolver.
+До выполнения корректировки 2.R2 AC-24 подтверждён только для присваивания
+полям верхнего уровня; его целевая глубокая гарантия не объявляется выполненной.
+
 Пример полного правила для `ApplicationInternalFailure`:
 
 ```text
@@ -689,6 +710,12 @@ SUCCESS     → SESSION_LOST_DURING_OPERATION при любом reason
 ```
 
 ## 10. Человекочитаемые ошибки
+
+`describe_failure` принимает только относящиеся к kind содержательные аргументы:
+resolution — error_code/retryable, calculation и persistence — error_code,
+session_absent — stage/reason, статические реакции — без дополнительных данных.
+Нерелевантное значение не None отклоняется, а не игнорируется. Это не меняет
+тексты, retryable чтения/сохранения или fallback неизвестного calculation-кода.
 
 | Условие | `code` | `retryable` | `user_message` |
 |---|---|---:|---|
@@ -768,6 +795,19 @@ ContextService.save(session_id, original_expected_state_version, delta)
 
 ### 11.5. Lifecycle events Orchestrator
 
+Сообщение штатного logger имеет формат `<event> <JSON object>` в одной
+физической строке. Имена событий и полей сохраняются; UUID — JSON-строка,
+commit_error_codes — массив строк, None — null. Строковые значения, включая
+открытые error_code, экранируются стандартным JSON-кодированием; пробелы,
+кавычки и управляющие символы не создают новых полей либо записей. Потребитель
+разбирает JSON object после имени события, а не ищет key=value регулярным выражением.
+
+`log_operation_finished` получает сам `ApplicationResult` и извлекает только
+разрешённые ниже поля. Отдельные status/code/version/run_id для этой функции
+не передаются; payload результата и user_message не сериализуются в событие.
+Длительности, commit_attempts, commit_error_codes и delivery_cancelled
+передаются отдельно; их связь с реально выполненными действиями обеспечивает execute.
+
 Общие поля всех событий:
 
 ```text
@@ -819,6 +859,18 @@ commit_attempts=0
 длительностей фактически завершённых commit attempts; отдельные attempt events
 сохраняют их индивидуальные значения. `commit_error_codes` сохраняет порядок
 фактически завершённых попыток и не содержит фиктивных элементов.
+
+Logging-функции проверяют конечность/неотрицательность переданных длительностей,
+целочисленные номера attempt=1/2 и commit_attempts=0/1/2 без bool-приведения.
+В attempt event committed требует state_version>=1, already_applied/superseded
+требуют >=0, остальные commit outcomes не публикуют версию. Некорректные
+метаданные вызывают `LifecycleEventError` до записи; значения не обрезаются
+и не заменяются фиктивными. Проверка не доказывает соответствия журналу реальных save.
+
+Ошибка подготовки события не является persistence outcome. В будущей
+commit-ветке она не должна отменять подтверждённый исход или превращать
+Committed/AlreadyApplied в ложный StateCommitFailure. Проверка этого поведения
+при сборке commit остаётся отдельной обязанностью этапов 6/8.
 
 Lifecycle events не содержат command payload, `StateDelta`, `ChartArtifact`,
 полный `session_id` или персональные данные. Полные boundary payload остаются

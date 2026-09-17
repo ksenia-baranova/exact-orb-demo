@@ -92,6 +92,18 @@ _SESSION_LOST = FailureDescription(
     "Сессия была потеряна до сохранения карты. Введите данные рождения заново.", False,
 )
 
+_ARGUMENTS_BY_KIND = MappingProxyType({
+    "input_required": (),
+    "superseded": (),
+    "handler_not_registered": (),
+    "internal_failure": (),
+    "resolution_unavailable": ("error_code", "retryable"),
+    "calculation_failed": ("error_code",),
+    "state_read_failed": ("error_code",),
+    "state_commit_failed": ("error_code",),
+    "session_absent": ("stage", "reason"),
+})
+
 
 def describe_failure(
     *,
@@ -106,6 +118,16 @@ def describe_failure(
     The caller classifies the outcome and supplies its relevant arguments.
     Error codes remain open strings; unknown calculation codes use a fallback.
     """
+    allowed = _ARGUMENTS_BY_KIND.get(kind)
+    if allowed is None:
+        raise ValueError("Unsupported failure kind")
+    for name, value in (
+        ("error_code", error_code), ("retryable", retryable),
+        ("stage", stage), ("reason", reason),
+    ):
+        if value is not None and name not in allowed:
+            raise ValueError(f"{kind} does not accept {name}")
+
     if kind in _STATIC_REACTIONS:
         return _STATIC_REACTIONS[kind]
 
@@ -131,6 +153,8 @@ def describe_failure(
 
     if kind in _PERSISTENCE_REACTIONS:
         detail_code = _require_error_code(error_code)
+        if not detail_code:
+            raise ValueError("Persistence failures require a nonempty error_code")
         code, message = _PERSISTENCE_REACTIONS[kind]
         return FailureDescription(code, detail_code, message, True)
 

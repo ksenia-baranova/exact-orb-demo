@@ -280,7 +280,10 @@ def test_results_preserve_versions_including_the_lower_bound(
     [
         pytest.param(model, value, id=f"{model.__name__}-{label}")
         for model in MODELS
-        for value, label in ((-1, "negative"), (None, "none"), (MISSING, "missing"))
+        for value, label in (
+            (-1, "negative"), (None, "none"), (MISSING, "missing"),
+            (True, "bool"), ("3", "string"), (3.0, "float"),
+        )
     ] + [pytest.param(ApplicationCommitted, 0, id="committed-zero")],
 )
 def test_results_require_a_version_within_the_model_bound(
@@ -362,6 +365,16 @@ def test_superseded_requires_a_user_message(chart_artifact: ChartArtifact) -> No
         ApplicationSuperseded,
         _valid_arguments(ApplicationSuperseded, chart_artifact),
         "user_message", None,
+    )
+
+
+@pytest.mark.parametrize("message", ["", "Безопасное сообщение приложения."])
+def test_superseded_requires_exact_policy_message(chart_artifact: ChartArtifact, message: str) -> None:
+    """3.R2; §10: Superseded также не принимает произвольный текст."""
+    arguments = _valid_arguments(ApplicationSuperseded, chart_artifact)
+    assert ApplicationSuperseded(**arguments).user_message == SUPERSEDED_MESSAGE
+    _assert_field_rejected(
+        ApplicationSuperseded, arguments, "user_message", message, allow_model_error=True,
     )
 
 
@@ -617,7 +630,8 @@ def _failure_arguments(case: _FailureCase, *, run_id: UUID = RUN_ID) -> dict[str
     if case.model is ApplicationSessionAbsent:
         stage = "load" if case.statuses[1] == "NOT_STARTED" else "commit"
     reaction = describe_failure(
-        kind=case.kind, error_code=case.reaction[1], retryable=case.reaction[3],
+        kind=case.kind, error_code=case.reaction[1],
+        retryable=case.reaction[3] if case.kind == "resolution_unavailable" else None,
         stage=stage, reason=case.reason,
     )
     arguments = {
@@ -733,6 +747,17 @@ def test_failure_models_reject_contradictory_fixed_retryability(case: _FailureCa
     )
 
 
+@pytest.mark.parametrize("case", [
+    case for case in _FAILURE_CASES
+    if case.model in (ApplicationStateReadFailure, ApplicationStateCommitFailure)
+], ids=lambda case: case.name)
+def test_persistence_failure_rejects_empty_detail_code(case: _FailureCase) -> None:
+    """3.R2: min_length=1 исходных persistence outcomes сохраняется во внешнем ответе."""
+    arguments = _failure_arguments(case)
+    assert case.model(**arguments).detail_code == case.reaction[1]
+    _assert_field_rejected(case.model, arguments, "detail_code", "")
+
+
 @pytest.mark.parametrize("detail_code", [MISSING, None], ids=["missing", "none"])
 @pytest.mark.parametrize("case", _TECHNICAL_CASES, ids=lambda case: case.name)
 def test_technical_failure_models_require_a_detail_code(
@@ -811,7 +836,10 @@ def test_loaded_failures_preserve_known_nonnegative_version(
     assert case.model(**arguments).state_version == version
 
 
-@pytest.mark.parametrize("version", [MISSING, None, -1], ids=["missing", "none", "negative"])
+@pytest.mark.parametrize(
+    "version", [MISSING, None, -1, True, "3", 3.0],
+    ids=["missing", "none", "negative", "bool", "string", "float"],
+)
 @pytest.mark.parametrize("case", _LOADED_CASES, ids=lambda case: case.name)
 def test_loaded_failures_require_known_nonnegative_version(
     case: _FailureCase, version: Any,
@@ -854,16 +882,21 @@ def test_failure_models_require_a_valid_run_id(case: _FailureCase, run_id: Any) 
 
 
 @pytest.mark.parametrize("case", _REPRESENTATIVE_FAILURE_CASES, ids=lambda case: case.name)
-def test_failure_models_preserve_supplied_message_and_reject_none(case: _FailureCase) -> None:
-    """Модели сохраняют переданную строку сообщения и отклоняют None.
+@pytest.mark.parametrize("message", [
+    None, "Безопасное сообщение приложения.",
+    "Traceback: sqlite3.OperationalError /synthetic/db", "",
+])
+def test_failure_models_require_the_policy_message(case: _FailureCase, message: Any) -> None:
+    """3.R2; FR-23, §10: сообщение определяется реакцией, а не произвольным вводом.
 
-    Требования: R3.2, FR-23, §12; AC-19 (поле user_message).
-    Семантика произвольного текста и отсутствие raw exception по AC-21 не проверяются.
+    Положительный контроль использует независимый текст таблицы сценариев.
+    Выбор правильной реакции в execute остаётся отдельным контрактом.
     """
     arguments = _failure_arguments(case)
-    arguments["user_message"] = "Безопасное сообщение приложения."
-    assert case.model(**arguments).user_message == arguments["user_message"]
-    _assert_field_rejected(case.model, arguments, "user_message", None)
+    assert case.model(**arguments).user_message == case.reaction[2]
+    _assert_field_rejected(
+        case.model, arguments, "user_message", message, allow_model_error=True,
+    )
 
 
 @pytest.mark.parametrize("case", _ABSENCE_CASES, ids=lambda case: case.name)
