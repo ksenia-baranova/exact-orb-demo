@@ -113,6 +113,8 @@ R3.2/диаграммы 009–010. HEAD сам по себе не содержи
 | 3.R1 | Выполнен | Четыре замены в тесте; две logging-проверки прошли без изменения assertions и production-кода. R содержит только семь подтверждённых отложенных failures; F не запускался. Журнал §1.3.17 |
 | 3.R2 | Согласованные поправки реализованы; результаты в §1.3.18 | Frozen RunContext, строгая версия и точный текст результата, проверка аргументов политики, terminal из ApplicationResult и JSON events |
 | 2.R2 | Отдельная карточка подготовлена, не выполнена | Граница глубокой неизменяемости Issue/ChartArtifact требует согласования с artifact-контрактом; AC-24 целиком не закрыт |
+| 4.1 | Тестовая карточка выполнена; §1.3.20 | 6 функций, 11 случаев; все failed на NotImplementedError до load. Семь отказов ожидают 4.2, два snapshot-контроля — 5.2, два expected на save — 6.4; поведение ещё не подтверждено |
+| 4.2 | Выполнена ограниченная ветка load; §1.3.22 | Семь случаев отказов прошли; snapshot/version фиксируются и останавливаются перед Handler; R: 1399 passed, 11 ожидаемых deferred failures |
 | Остальные основные карточки | Запланированы, не выполнялись | Формулировка «закрывает» в карточке означает будущую обязанность |
 
 По запросу пользователя 2026-09-16 подготовлен
@@ -1069,6 +1071,210 @@ Scoped diff и статус просмотрены. Java/PlantUML в текущ�
 не рендерилась. Сетевые и платные smoke не запускались. Коммитов, веток,
 push и PR не создавалось. Следующая основная карточка — 4.1, автоматически
 не выполнялась.
+
+#### 1.3.19. Подготовка промта 4.1 — 2026-09-17
+
+По запросу «Напиши следующий промт» сохранён
+[промт 4.1 — тесты загрузки сессии и исходной версии](../../prompts/2026-09-16/04-session-load/04.1-orchestrator-session-load-tests.md).
+Он продолжает основной план после 3.2 и выполненной корректировки 3.R2.
+Во вводной части для менеджеров объяснены различия между отсутствующей
+сессией и ошибкой чтения, запрет запуска Handler при этих отказах и роль
+исходной версии в защите более свежих данных от устаревшего результата.
+
+Область будущего выполнения — новый `test_orchestrator_load.py`, необходимые
+дополнения существующих recording fakes и обновление журнала/индекса.
+Зафиксированы typed отказы, unexpected/invalid load, реальные JSON-события,
+положительный snapshot-контроль и наблюдаемый аргумент original expected
+на save без повторного load и изменения frozen state.
+
+Границы готовности разделены: отказы и их события — после 4.2; передача
+snapshot.state и возврат non-success — после 5.2; исходная версия на save —
+после 6.4. Отмена незавершённого load остаётся 5.3–5.4. Подготовка промта
+не закрывает AC, 2.R2, K3 или вопрос extra RunContext.
+
+Карточка **не выполнялась**: тестовый файл не создавался, production и
+существующие тесты не менялись. Pytest не запускался. Последние фактические
+результаты остаются в §1.3.18. Обновлены только этот журнал, README серии
+и новый промт. Следующий шаг — отдельное выполнение 4.1, затем 4.2.
+
+Проверки подготовки: `git diff --check` — exit code 0; структурная проверка
+через `.\.venv\Scripts\python.exe -B -` — exit code 0: 3 Markdown-файла,
+116 локальных ссылок, парные code fences, тестовый файл не создан.
+SHA-256 подтвердил сохранность 427 файлов вне области подготовки, Git index
+и текста плана вне §1.3. Коммитов, веток, push и PR не создавалось.
+
+#### 1.3.20. Выполнение промта 4.1 — 2026-09-17
+
+**Основание:** явное поручение «Выполни промт 4.1».
+**Ветка:** `feat/application-orchestrator`.
+**HEAD:** `a2dbc5fc441f0d8b1ba93966cd06faf014181c42`.
+Создан [test_orchestrator_load.py](../../tests/application/test_orchestrator_load.py):
+6 тестовых функций, 11 случаев, фактически собранных и запущенных pytest.
+Сохранённый промт 4.1 и общие `orchestrator_fakes.py` не изменены.
+
+Тесты используют настоящий execute, имеющиеся RecordingContext/RecordingHandler
+и общие telemetry/calculation fixtures. Специальные варианты load с исключением,
+невалидным outcome и Handler с заменой доступного snapshot локальны новому файлу.
+Ни CAS, ни расчётный движок не имитируются внутри координатора.
+
+Для original expected готовится валидный BuildNatalSuccess. Handler заменяет
+ссылку fake-контекста на snapshot версии N+2, не меняя исходный frozen state.
+Проверяется наблюдаемый аргумент N на единственном save и identity delta;
+fake возвращает Superseded с более свежим несовместимым состоянием.
+Это будущая проверка передачи версии, не свидетельство реального CAS.
+
+Lifecycle-проверки читают реальные JSON-сообщения и текущие caplog.records,
+разделяют техническую exception-запись и единственный terminal. Проверяются
+точные поля, уровни, порядок, исходный run_id, допустимые длительности и
+согласованность terminal с возвращённой моделью. Тексты отказов заданы
+независимо от production-политики. Положительные контроли предназначены
+для проверки отсутствия Handler/save при отказах, но сами ещё не прошли.
+
+Фактический окончательный прогон:
+
+```powershell
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/application/test_orchestrator_load.py -q
+# 11 failed in 0.49s; exit code 1
+git diff --check
+# exit code 0
+```
+
+Все 11 случаев завершились одним и тем же `NotImplementedError` в
+`src/exact_orb/application/orchestrator.py:80`, до вызова load. Импорт,
+fixtures и подготовка данных до execute не дали ошибок. Assertions результата,
+вызовов зависимостей и событий после execute **не исполнились**. Их
+чувствительность и соответствующие AC пока не подтверждены.
+
+Ниже указаны имена node IDs внутри `tests/application/test_orchestrator_load.py`:
+
+| Требование | Тест и фактические cases | Результат / оставшаяся зависимость |
+|---|---|---|
+| FR-06/26; части AC-5/6/19/20/26/27/29/30 | `test_absent_load_returns_reason_without_handler_or_save[expired]`, `[not_found]` | 2 failed до load; после 4.2 |
+| FR-06/26; части AC-5/6/19/26/27/29/30 | `test_read_failed_preserves_code_without_handler_or_retry[SQLITE_BUSY]`, `[SYNTHETIC_READ_FAILURE]` | 2 failed до load; после 4.2 |
+| FR-25/26; части AC-19/21/26/27/29/30 | `test_unexpected_load_exception_is_logged_and_normalized` | 1 failed до load; после 4.2 |
+| FR-25/26, §7–12; части AC-19/21/26/27/29/30 | `test_unexpected_invalid_outcome_from_load_is_internal_failure[none]`, `[foreign_outcome]` | 2 failed до load; после 4.2 |
+| FR-06–08/26; части AC-5/7/26/27/29/30 | `test_snapshot_reaches_handler_with_loaded_version[0]`, `[7]` | 2 failed до load; завершение после 5.2 |
+| FR-07/11/13/16/26; части AC-5/7/19/26/27/29/30 | `test_save_uses_original_version_when_available_snapshot_changes[0]`, `[7]` | 2 failed до load; завершение после 6.4 |
+
+Имена первых семи случаев соответствуют выборке 4.2
+`-k "absent or read_failed or unexpected"`; она отдельно не запускалась.
+Общий routing-файл не запускался: shared fakes не менялись. R/F не запускались,
+поскольку целевой набор не прошёл, согласно §4.2 плана и промту 4.1.
+Прежние общие результаты не пересчитываются по числу новых тестов.
+
+Production, существующие тесты, требования, ADR, диаграммы и исторические
+промты сохранены. Отмена load остаётся 5.3–5.4, глубокая неизменяемость — 2.R2;
+K3 и политика extra RunContext этим этапом не решены. Следующий шаг — 4.2;
+реализация следующих карточек, ветки, коммиты, push/PR и сетевые smoke
+в рамках 4.1 не выполнялись.
+
+Структурная проверка через `.\.venv\Scripts\python.exe -B -` прошла:
+AST нового файла, docstrings всех 6 тестовых функций, отсутствие лишних
+пробелов в новом файле, 3 Markdown-документа, 117 локальных ссылок и парные
+code fences. SHA-256 подтвердил сохранность 428 файлов вне allowlist,
+общих fakes, Git index, HEAD и текста плана вне §1.3. Изменения выполнения
+ограничены новым тестовым файлом, журналом и README серии.
+
+#### 1.3.21. Подготовка промта 4.2 — 2026-09-17
+
+По запросу «Напиши промт 4.2» сохранён
+[промт 4.2 — загрузка сессии и понятные отказы](../../prompts/2026-09-16/04-session-load/04.2-orchestrator-session-load-and-failures.md).
+Вводная часть для менеджеров объясняет различие истёкшей/отсутствующей сессии,
+технического отказа чтения и непредвиденной ошибки, а также назначение
+исходной версии для защиты более свежих данных при будущем сохранении.
+
+Промт сверён с карточкой плана, текущими R3.2/ADR-0006, session API,
+диаграммами 000/008/010, реализацией и тестами 4.1. Область будущего выполнения:
+`application/orchestrator.py`, журнал §1.3 и README; тесты и shared fakes
+сохраняются. Зафиксированы единственный load после routing, typed отказы,
+unexpected/invalid outcome, политика сообщений, монотонные длительности,
+реальные JSON-события и terminal из возвращаемого ApplicationResult.
+
+Успешный snapshot сохраняется с исходной версией локально. Существующий
+NotImplementedError переносится на ещё не готовое продолжение после load
+и остаётся вне обработки исключений чтения. Handler/commit не реализуются,
+фиктивный результат или terminal для незавершённой ветки не создаётся.
+CancelledError не превращается в failure; полный cancelled lifecycle
+остаётся 5.3–5.4. K3, 2.R2 и extra RunContext не решаются этой карточкой.
+
+Ожидаемая ранняя приёмка в нынешнем составе — семь случаев отказов load;
+четыре положительных случая 4.1 и семь routing-случаев остаются зависимыми
+от следующих этапов. Это ожидание, а не результат нового прогона.
+**Промт не выполнялся:** production, тесты и fixtures не менялись, pytest
+не запускался. Последние результаты 4.1 сохранены в §1.3.20.
+Обновлены только новый промт, README и этот журнал; следующий шаг —
+отдельное выполнение 4.2. Коммитов, веток, push и PR не создавалось.
+
+Проверки подготовки: `git diff --check` — exit code 0; структурная проверка
+через `.\.venv\Scripts\python.exe -B -` — exit code 0: 3 Markdown-файла,
+123 локальные ссылки, парные code fences и whitespace нового промта.
+SHA-256 подтвердил сохранность 430 файлов вне области подготовки,
+Git index, HEAD и текста плана вне §1.3.
+
+#### 1.3.22. Выполнение промта 4.2 — 2026-09-18
+
+**Основание:** явное поручение «реализуй промт» после подготовки 4.2.
+**Ветка:** `feat/application-orchestrator`.
+**HEAD:** `a2dbc5fc441f0d8b1ba93966cd06faf014181c42`.
+Реализация ограничена `application/orchestrator.py`; тесты 4.1, shared fakes,
+модели, политика отказов и функции журналирования не менялись.
+
+После точного выбора Handler координатор один раз вызывает `context.load` с
+исходным `session_id` и измеряет длительность монотонными часами. Typed
+`SessionAbsent` возвращает исходную причину и соответствующий код; отказ чтения
+сохраняет `error_code`, не объявляя сессию потерянной. Исключение загрузки и
+неверный тип outcome дают общий `InternalFailure`, отдельную техническую запись
+с traceback и безопасное пользовательское сообщение. Для каждого завершённого
+load пишется один stage event; для отказа после него пишется terminal из того же
+`ApplicationResult`. Handler и save при отказе не вызываются.
+
+При `SessionSnapshot` локально сохраняются исходный объект и
+`original_expected_state_version`, включая версию 0; событие `load/loaded`
+содержит версию. Затем сохраняется явный `NotImplementedError` перед Handler
+без фиктивного ответа или terminal. Обработка `Exception` охватывает только
+вызов load; отмена незавершённого load не нормализуется в application failure.
+
+Фактические проверки из корня репозитория:
+
+```powershell
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/application/test_orchestrator_load.py -k "absent or read_failed or unexpected" -q
+# 7 passed, 4 deselected in 0.44s; exit code 0
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/application/test_orchestrator_routing.py -k "requires_run or unknown_command or subclass or registry" -q
+# 6 passed, 7 deselected in 0.44s; exit code 0
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/test_run_context.py tests/application tests/session tests/test_module_boundaries.py -q
+# 1399 passed, 11 failed in 28.07s; exit code 1
+```
+
+| Требование | Тестовые node IDs | Подтверждение / зависимость |
+|---|---|---|
+| FR-06/26, части AC-5/6/19/20/26/27/29/30 | `test_orchestrator_load.py::test_absent_load_returns_reason_without_handler_or_save[expired]`, `test_orchestrator_load.py::test_absent_load_returns_reason_without_handler_or_save[not_found]` | 2 passed: причина, код, отсутствие Handler/save и связка started → stage → terminal |
+| FR-06/26, части AC-5/6/19/26/27/29/30 | `test_orchestrator_load.py::test_read_failed_preserves_code_without_handler_or_retry[SQLITE_BUSY]`, `test_orchestrator_load.py::test_read_failed_preserves_code_without_handler_or_retry[SYNTHETIC_READ_FAILURE]` | 2 passed: исходный detail_code, отсутствие потери сессии и повтора load |
+| FR-25/26, части AC-19/21/26/27/29/30 | `test_orchestrator_load.py::test_unexpected_load_exception_is_logged_and_normalized` | 1 passed: traceback технической записи, фиксированный внешний текст и lifecycle |
+| FR-25/26, части AC-19/21/26/27/29/30 | `test_orchestrator_load.py::test_unexpected_invalid_outcome_from_load_is_internal_failure[none]`, `test_orchestrator_load.py::test_unexpected_invalid_outcome_from_load_is_internal_failure[foreign_outcome]` | 2 passed: нарушение контракта отделено от typed отказа |
+| FR-03/04, часть AC-3 | `test_orchestrator_routing.py` с выборкой `requires_run or unknown_command or subclass or registry` | 6 passed: ранний routing сохранён; семь положительных случаев требуют Handler/commit |
+| FR-06–08/26, части AC-5/7/26/27/29/30 | `test_orchestrator_load.py::test_snapshot_reaches_handler_with_loaded_version[0]`, `test_orchestrator_load.py::test_snapshot_reaches_handler_with_loaded_version[7]` | 2 failed на явной границе после `load/loaded`; передача state ожидает 5.2 |
+| FR-07/11/13/16/26, части AC-5/7/19/26/27/29/30 | `test_orchestrator_load.py::test_save_uses_original_version_when_available_snapshot_changes[0]`, `test_orchestrator_load.py::test_save_uses_original_version_when_available_snapshot_changes[7]` | 2 failed на той же границе; реальный аргумент save ожидает 6.4 |
+
+Остальные семь failures R —
+`test_orchestrator_routing.py::test_exact_type_reaches_handler`,
+`test_orchestrator_routing.py::test_explicit_child_registration_selects_own_handler[base]`,
+`test_orchestrator_routing.py::test_explicit_child_registration_selects_own_handler[child]`,
+`test_orchestrator_routing.py::test_external_mapping_removal_keeps_original_handler`,
+`test_orchestrator_routing.py::test_external_mapping_replacement_keeps_original_handler`,
+`test_orchestrator_routing.py::test_new_instance_accepts_added_type`,
+`test_orchestrator_routing.py::test_known_command_completes_with_commit`.
+Все 11 случаев остановились на `NotImplementedError` после единственного load и
+`load/loaded`, с корректной версией 0 или 7 в двух snapshot-контролях; других
+failures в R нет. Это незакрытые сценарии, а не успешная приёмка сквозного AC.
+F не запускался из-за непройденного R согласно §4.2 плана. Отмена остаётся
+5.3–5.4; K3, 2.R2 и политика extra RunContext не решались. Следующая основная
+карточка — 5.1. Коммит, ветка, push и PR не создавались.
+
+`git diff --check` завершился с exit code 0. Структурная проверка двух
+изменённых Markdown-файлов подтвердила 111 локальных ссылок и парность code
+fences. SHA-256 до/после подтвердил неизменность 426 файлов вне allowlist,
+Git index, HEAD и текста плана вне §1.3. Полный F, сетевые и платные smoke
+не выполнялись.
 
 ## 2. Принятые границы
 
