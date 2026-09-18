@@ -123,7 +123,9 @@ R3.2/диаграммы 009–010. HEAD сам по себе не содержи
 | 6.2 | Реализован путь первой защищённой попытки с `Committed` | Целевой набор: 3 passed; R: 1426 passed, 2 отложенных Superseded failed; текущий результат — §1.3.33 |
 | 6.3 | Все десять случаев commit-файла прошли после 6.4 | Текущий результат §1.3.36; исходный red — §1.3.35, подготовка — §1.3.34 |
 | 6.4 | Выполнены все исходы первой защищённой попытки без retry | Целевой набор: 226 passed; R: 1436 passed; F: 2355 passed. Retry и полная R3.2-приёмка остаются группе 7 и далее; §1.3.36 |
-| Остальные основные карточки | Запланированы, не выполнялись | Формулировка «закрывает» в карточке означает будущую обязанность |
+| 7.1 | Тестовая матрица создана внутри выполнения 7.2; отдельный промт сохранён позднее | Исходный red: 11 failed, 1 passed (§1.3.37). Текущий прогон: 12 passed, R: 1448 passed, F: 2367 passed; §1.3.38 |
+| 7.2 | Один точный retry реализован и проверен | Целевой набор: 23 passed; R: 1448 passed; F: 2367 passed. Реальный lost-CAS и повторная отмена остаются отдельными этапами; §1.3.37 |
+| Остальные основные карточки | Запланированы, не выполнялись | Начиная с 8.1; формулировка «закрывает» в карточке означает будущую обязанность |
 
 По запросу пользователя 2026-09-16 подготовлен
 [промт 2.1](../../prompts/2026-09-16/02-application-results/02.1-application-failure-policy-tests.md)
@@ -1908,6 +1910,99 @@ exit code 0. У нового untracked-промта, README и плана раз
 локальная ссылка, code fences парные, trailing whitespace нет. Staged index
 пуст; посторонние файлы рабочего дерева сохранены. Коммит, ветка, push и PR
 не создавались.
+
+#### 1.3.37. Промт и выполнение 7.2 вместе с тестовой матрицей 7.1 — 2026-09-18
+
+По запросу сохранён [промт 7.2](../../prompts/2026-09-16/07-commit-retry/07.2-orchestrator-exact-retry.md).
+Предпосылка 7.1 к началу работы отсутствовала: `test_orchestrator_retry.py` не
+существовал. Поэтому в границы 7.2 явно включено создание этой матрицы перед
+production-правкой; отдельный файл промта 7.1 не создавался. В тесте реальный
+`ApplicationOrchestrator` вызывается с локальным управляемым fake `ContextService`:
+два ответа `save`, исходный expected и delta по identity, один load/Handler,
+fake UTC clock и `asyncio.Event` для отмены. Двух заданных ответов fake
+недостаточно, чтобы подтвердить применённый CAS с потерянным ответом — это 10.4.
+
+В `src/exact_orb/application/orchestrator.py` только первый typed
+`StateCommitFailed` может вызвать ровно второй защищённый `save`. Если отмена
+уже наблюдалась или непустой deadline `<=` injected clock после первого отказа,
+возвращается первый failure без второй записи. Повтор получает те же
+`session_id`, original expected и объект delta; повторного load/Handler нет.
+Исход второй попытки классифицируется по той же typed-таблице; при двух
+отказах `detail_code` относится ко второму. Каждая завершённая попытка даёт
+attempt event, terminal содержит фактическое число попыток, упорядоченные
+error codes и сумму длительностей. После наблюдённой отмены уже начатая
+задача дожидается завершения, затем пишется terminal и пробрасывается
+исходный `CancelledError`.
+
+Фактические команды из корня репозитория:
+
+```powershell
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/application/test_orchestrator_retry.py -q --tb=line
+# До production-правки: 11 failed, 1 passed in 0.39s; exit code 1.
+# Девять случаев требовали второго save (первое падение — test_orchestrator_retry.py:152),
+# два случая deadline equal/past ожидали чтение clock (строка 430).
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/application/test_orchestrator_retry.py tests/application/test_orchestrator_commit.py tests/application/test_orchestrator_cancellation.py -q
+# 23 passed in 0.40s; exit code 0
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/test_run_context.py tests/application tests/session tests/test_module_boundaries.py -q
+# R: 1448 passed in 13.40s; exit code 0
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider -q
+# F: 2367 passed in 39.35s; exit code 0
+```
+
+| Контракт | Node IDs новой матрицы | Фактическое свидетельство |
+|---|---|---|
+| FR-19/26, AC-11–13/19/26/27/31/32 | `test_retry_success_uses_original_delta_and_typed_version[committed]`, `[already_applied]`; `test_retry_superseded_stops_without_artifact`; `test_retry_session_absent_preserves_reason[expired]`, `[not_found]` | Пять вторых typed outcomes, ровно два save с исходными аргументами, корректные результаты/версии/artifact и события |
+| FR-18/19/25/26, AC-11/13/19/21/26/27/31/32 | `test_retry_second_commit_failure_uses_last_error_code`; `test_retry_unexpected_exception_is_internal_failure_without_third_save` | Окончательный код второго failure, упорядоченный список двух кодов либо безопасный internal failure и отдельный traceback |
+| FR-19/21/26, AC-11/14/26/31/32 | `test_deadline_controls_only_second_save[none]`, `[future]`, `[equal]`, `[past]` | Граница `deadline <= now`, один вызов fake clock при deadline, просроченный deadline допускает первый save |
+| FR-19/20/26, AC-15–17/26/31/32 | `test_cancellation_after_first_save_entry_forbids_retry` | Event/checkpoint доказывают наблюдённую отмену при выполняющемся первом save; один attempt и terminal предшествуют пробросу отмены, второго save нет |
+
+Это unit-свидетельство точного orchestration retry, а не полная приёмка R3.2.
+Повторная отмена и гонки после старта второго save относятся к 9.1,
+реально применённый CAS с потерянным подтверждением — к 10.4, K3 и 2.R2
+остаются открытыми; внешние AC не проверялись. Следующая отдельная карточка —
+8.1. Контракты, ADR, диаграммы, другие production-файлы и прежние тесты
+не изменялись. Staged index оставлен пустым, посторонние untracked-файлы
+сохранены; коммит, ветка, push и PR не создавались. `git diff --check` —
+exit code 0 (только предупреждения LF/CRLF). AST для двух Python-файлов,
+концевые переводы строк/trailing whitespace пяти затронутых файлов, парность
+Markdown fences и локальные ссылки проверены: exit code 0.
+
+#### 1.3.38. Отдельный промт и повторная проверка 7.1 — 2026-09-18
+
+По отдельному запросу сохранён
+[промт 7.1](../../prompts/2026-09-16/07-commit-retry/07.1-orchestrator-retry-tests.md).
+Тестовая матрица `tests/application/test_orchestrator_retry.py` уже была создана
+при выполнении 7.2 (§1.3.37), поэтому промт не выдаётся за документ,
+предшествовавший реализации. Сверка карточки 7.1 с текущим файлом подтвердила
+12 тестовых случаев: все вторые typed outcomes и `Exception`,
+исходные аргументы и identity delta, четыре границы deadline, отмена до
+повтора, реальные lifecycle-события и отсутствие третьего save. Новых тестов
+ради повторного исполнения не добавлено; production-файл и прежние тесты
+в этом действии не менялись. Исходное содержательное падение до реализации
+7.2 — 11 failed, 1 passed — остаётся в §1.3.37 и не воспроизводилось
+откатом рабочего кода.
+
+Текущие фактические команды из корня репозитория:
+
+```powershell
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/application/test_orchestrator_retry.py -q
+# 12 passed in 0.32s; exit code 0
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/test_run_context.py tests/application tests/session tests/test_module_boundaries.py -q
+# R: 1448 passed in 35.90s; exit code 0
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider -q
+# F: 2367 passed in 87.69s; exit code 0
+```
+
+Это повторная проверка unit-контракта 7.1 в уже реализованном 7.2 checkout,
+а не отдельное новое integration-доказательство. Реально применённый CAS
+с потерянным подтверждением остаётся 10.4, гонки повторной отмены — 9.1;
+K3, 2.R2 и внешние AC также не закрывались. Следующий этап по плану — 8.1.
+В этом действии изменены только новый промт 7.1, этот журнал и индекс
+промтов; прочие пользовательские и незакоммиченные изменения сохранены.
+`git diff --check` — exit code 0 (только предупреждения LF/CRLF);
+UTF-8, концевые переводы строк, trailing whitespace, парность Markdown fences
+и локальные ссылки трёх документов проверены с exit code 0. Staged index
+пуст. Коммит, ветка, push и PR не создавались.
 
 ## 2. Принятые границы
 
