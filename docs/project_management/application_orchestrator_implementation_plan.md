@@ -125,7 +125,9 @@ R3.2/диаграммы 009–010. HEAD сам по себе не содержи
 | 6.4 | Выполнены все исходы первой защищённой попытки без retry | Целевой набор: 226 passed; R: 1436 passed; F: 2355 passed. Retry и полная R3.2-приёмка остаются группе 7 и далее; §1.3.36 |
 | 7.1 | Тестовая матрица создана внутри выполнения 7.2; отдельный промт сохранён позднее | Исходный red: 11 failed, 1 passed (§1.3.37). Текущий прогон: 12 passed, R: 1448 passed, F: 2367 passed; §1.3.38 |
 | 7.2 | Один точный retry реализован и проверен | Целевой набор: 23 passed; R: 1448 passed; F: 2367 passed. Реальный lost-CAS и повторная отмена остаются отдельными этапами; §1.3.37 |
-| Остальные основные карточки | Запланированы, не выполнялись | Начиная с 8.1; формулировка «закрывает» в карточке означает будущую обязанность |
+| 8.1 | Сквозная последовательность lifecycle проверена через `execute()` | 13 новых случаев; целевой файл: 189 passed, R: 1461 passed, F: 2380 passed. Состав полей и длительности остаются 8.2; §1.3.39 |
+| 8.2 | Состав lifecycle-событий и длительности проверены через `execute()` | 10 новых случаев; целевой файл: 199 passed, R: 1471 passed, F: 2390 passed. Гонки повторной отмены и интеграция остаются поздним карточкам; §1.3.40 |
+| Остальные основные карточки | Запланированы, не выполнялись | Начиная с 9.1; формулировка «закрывает» в карточке означает будущую обязанность |
 
 По запросу пользователя 2026-09-16 подготовлен
 [промт 2.1](../../prompts/2026-09-16/02-application-results/02.1-application-failure-policy-tests.md)
@@ -2003,6 +2005,117 @@ K3, 2.R2 и внешние AC также не закрывались. Следу
 UTF-8, концевые переводы строк, trailing whitespace, парность Markdown fences
 и локальные ссылки трёх документов проверены с exit code 0. Staged index
 пуст. Коммит, ветка, push и PR не создавались.
+
+#### 1.3.39. Промт и выполнение 8.1 — 2026-09-18
+
+Сохранён [промт 8.1](../../prompts/2026-09-16/08-lifecycle-events/08.1-orchestrator-lifecycle-sequence-tests.md).
+Прежние тесты routing/load/Handler/commit/retry/cancellation уже проверяли
+события отдельных веток, но `test_orchestrator_logging.py` проверял функции
+записи, не границы последовательных вызовов `execute()`. Добавлено 13
+сквозных случаев с настоящим `ApplicationOrchestrator` и локальными fake
+зависимостями. Шесть DEBUG-сценариев выполняются по два раза с одним `run_id`,
+но проверяют отдельные диапазоны реальных `LogRecord` и по одному started/
+terminal на каждый вызов. Журнал вызовов и общий timeline связывают
+завершённые load/Handler/save с последующими stage/attempt events и фиксируют
+terminal до выхода caller. Отмена при незавершённом load/Handler управляется
+`asyncio.Event` и проверена при DEBUG и INFO; незавершённая стадия и save
+не получают вымышленного события. При effective INFO видны started/terminal,
+а WARNING-попытки повтора остаются видимыми при скрытых DEBUG-событиях.
+
+Новые node IDs в `tests/application/test_orchestrator_logging.py`:
+
+| Срез | Node IDs | Свидетельство |
+|---|---|---|
+| Шесть последовательностей DEBUG | `test_execute_debug_lifecycle_is_bounded_per_invocation[routing]`, `[load_absent]`, `[handler_input]`, `[commit]`, `[commit_denied]`, `[retry]` | Раздельные границы двух execute с тем же `run_id`; 0/1/2 save, точные stage/attempt и terminal до caller |
+| Отмена незавершённой стадии | `test_execute_cancelled_stage_has_no_completion_event[load-debug]`, `[load-info]`, `[handler-debug]`, `[handler-info]` | Event-gate подтверждает вход, отсутствует событие незавершённой стадии, `terminal_kind=cancelled` предшествует `CancelledError` |
+| Effective INFO | `test_execute_effective_info_keeps_invocation_boundaries[routing]`, `[commit]`, `[retry]` | Ровно started/terminal при INFO; DEBUG stage/успешный первый save скрыты, WARNING attempts повтора видны |
+
+Фактические команды из корня репозитория:
+
+```powershell
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/application/test_orchestrator_logging.py -q -k test_execute_
+# 13 passed, 176 deselected in 0.39s; exit code 0
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/application/test_orchestrator_logging.py -q
+# 189 passed in 0.79s; exit code 0
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/application/test_orchestrator_logging.py --collect-only -q -k test_execute_
+# 13/189 collected; exit code 0; точные IDs выше
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/test_run_context.py tests/application tests/session tests/test_module_boundaries.py -q
+# R: 1461 passed in 33.29s; exit code 0
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider -q
+# F: 2380 passed in 103.00s; exit code 0
+```
+
+Это доказательство порядка и границ lifecycle в локальном `execute()`, а не
+проверка всех разрешённых полей, числовых длительностей и payload — они
+остаются 8.2. Гонки повторной отмены остаются 9.1, реальная потеря
+подтверждения CAS — 10.4; K3, 2.R2 и внешние AC не закрывались. Изменены
+только новый промт, `test_orchestrator_logging.py`, этот журнал и README;
+production/ADR/requirements/диаграммы не менялись. Следующий этап — 8.2.
+`git diff --check` — exit code 0 (только предупреждения LF/CRLF). AST
+тестового файла, UTF-8, концевые переводы строк, trailing whitespace,
+парность Markdown fences и локальные ссылки четырёх затронутых файлов
+проверены с exit code 0. Staged index пуст. Коммит, ветка, push и PR не
+создавались; посторонние untracked-файлы сохранены.
+
+#### 1.3.40. Промт и выполнение 8.2 — 2026-09-18
+
+Сохранён [промт 8.2](../../prompts/2026-09-16/08-lifecycle-events/08.2-orchestrator-lifecycle-fields-and-durations.md).
+Существующие тесты проверяли отдельные функции записи и последовательность
+событий `execute()`; недоставало сквозной проверки, что фактические исходы и
+измеренные длительности переходят в точные поля настоящих `LogRecord`.
+Добавлено 10 случаев в `test_orchestrator_logging.py`. Пять веток сверяют
+точные наборы полей и уровни started/stage/attempt/terminal, включая
+отсутствующие длительности, достоверную версию и соответствие terminal
+возвращённому `ApplicationResult`. Управляемый `perf_counter` подменяется
+только в модуле Orchestrator и не затрагивает deadline-clock либо глобальные
+часы pytest.
+
+При двух фактических save с разными `StateCommitFailed` журнал сохраняет
+порядок обоих кодов: 11 и 13 мс в attempt events дают 24 мс в terminal.
+Два случая отмены проверяют `null` для незавершённой стадии без ложных полей
+результата. На успешном пути положительный контроль подтверждает доставку
+команды с birth data и уникальным маркером в Handler и вызов save; все
+компактные сообщения исключают birth date/time/place, маркер и полный
+`session_id`. Неизвестный calculation code возвращает fallback-текст и
+отдельный диагностический `WARNING`; terminal тоже имеет `WARNING`, а
+payload в нём отсутствует. Ранее существовавшие проверки прямого API
+логирования и Handler не копировались целиком.
+
+Новые node IDs в `tests/application/test_orchestrator_logging.py`:
+
+| Срез | Node IDs | Свидетельство |
+|---|---|---|
+| Точные поля и управляемые длительности | `test_execute_projects_exact_fields_levels_and_measured_durations[routing]`, `[load_absent]`, `[handler_input]`, `[commit]`, `[commit_denied]` | Пять исходов, exact levels, версии и `None` для отсутствующих шагов |
+| Две разные ошибки сохранения | `test_execute_preserves_distinct_commit_errors_and_sums_attempt_durations` | Два save, порядок кодов и сумма измеренных attempt durations |
+| Отмена | `test_execute_cancelled_terminal_has_only_completed_durations[load]`, `[handler]` | Отсутствие длительности прерванной стадии и полей результата |
+| Payload и неизвестный код | `test_execute_compact_messages_exclude_real_input_and_session_payload`, `test_execute_unknown_calculation_code_warns_without_payload` | Входные маркеры подтверждены положительно; compact сообщения их исключают, неизвестный код даёт fallback/WARN |
+
+Фактические команды из корня репозитория после исправления двух неверных
+ожиданий новых тестов (уровня terminal для отсутствующей сессии и двойного
+захвата диагностического logger):
+
+```powershell
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/application/test_orchestrator_logging.py -q
+# 199 passed in 0.59s; exit code 0
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/application/test_orchestrator_logging.py --collect-only -q -k "test_execute_projects_exact_fields_levels_and_measured_durations or test_execute_preserves_distinct_commit_errors_and_sums_attempt_durations or test_execute_cancelled_terminal_has_only_completed_durations or test_execute_compact_messages_exclude_real_input_and_session_payload or test_execute_unknown_calculation_code_warns_without_payload"
+# 10/199 tests collected (189 deselected) in 0.34s; exit code 0; IDs выше
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/test_run_context.py tests/application tests/session tests/test_module_boundaries.py -q
+# R: 1471 passed in 29.35s; exit code 0
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider -q
+# F: 2390 passed in 84.75s; exit code 0
+```
+
+Первый целевой прогон дал 2 failed, 197 passed из-за неверных ожиданий новых
+тестов: `SESSION_ABSENT` завершается на INFO, а ручной обработчик дублировал
+диагностическую запись, уже захваченную `caplog`. Исправлены только тесты;
+итоговые T/R/F выше повторены после присвоения читаемых IDs. Production,
+ADR, requirements и диаграммы не менялись. Полная приёмка R3.2 этим срезом
+не объявляется: повторная отмена остаётся 9.1, реальное потерянное
+подтверждение CAS — 10.4; K3, 2.R2 и внешние AC остаются открытыми.
+`git diff --check` — exit code 0 (только предупреждения о LF/CRLF);
+локальные Markdown-ссылки и парность code fences трёх затронутых документов
+проверены с exit code 0. Staged index пуст. Посторонние modified/untracked
+файлы сохранены; коммит, ветка, push и PR не создавались.
 
 ## 2. Принятые границы
 

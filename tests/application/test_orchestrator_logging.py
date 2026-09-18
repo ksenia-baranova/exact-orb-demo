@@ -1,12 +1,11 @@
-"""R3.2 FR-26 / section 11.5: compact lifecycle logging function contracts.
-
-These tests cover emitted records, not execute() ordering or cancellation.
-The production module is introduced by implementation-plan step 1.4.
-"""
+"""R3.2 FR-26 / section 11.5: lifecycle records and execute ordering."""
 
 from __future__ import annotations
 
+import asyncio
 from collections.abc import Iterator
+from contextlib import contextmanager, suppress
+from dataclasses import dataclass
 import inspect
 import json
 import logging
@@ -17,11 +16,27 @@ import pytest
 from pydantic import TypeAdapter
 
 import exact_orb.application.operation_logging as operation_logging
+import exact_orb.application.orchestrator as orchestrator_module
 from exact_orb.application.application_results import ApplicationResult
+from exact_orb.application.commands import BuildNatalCommand, Command
 from exact_orb.application.failure_policy import describe_failure
-from exact_orb.outcomes import Issue
+from exact_orb.application.orchestrator import ApplicationOrchestrator
+from exact_orb.application.results import BuildNatalOutcome
+from exact_orb.outcomes import CalculationFailed, InputRequired, Issue
+from exact_orb.run_context import RunContext
+from exact_orb.session.outcomes import Committed, SessionAbsent, StateCommitFailed
+from exact_orb.session.persistence import SessionSnapshot
+from exact_orb.session.state import SessionState, StateDelta
+from tests.application.orchestrator_fakes import (
+    Call,
+    LoadOutcome,
+    RecordingContext,
+    RecordingHandler,
+    SaveOutcome,
+)
+from tests.application.test_orchestrator_commit import SESSION_ID, make_case
 from tests.fixtures.calculation import artifact
-from tests.fixtures.telemetry import FORBIDDEN_PAYLOAD, RUN_ID, RUN_ID_B
+from tests.fixtures.telemetry import FORBIDDEN_PAYLOAD, RUN_ID, RUN_ID_B, STARTED_AT
 
 
 pytestmark = pytest.mark.no_ephemeris_autoinit
@@ -597,3 +612,604 @@ def test_terminal_cannot_override_the_returned_result(
     with pytest.raises(TypeError):
         operation_logging.log_operation_finished(**arguments, **{field: "forged"})
     assert _records(caplog) == []
+
+
+_START = "application_operation_started"
+_STAGE = "application_stage_finished"
+_ATTEMPT = "application_commit_attempt_finished"
+_FINISH = "application_operation_finished"
+
+
+@contextmanager
+def _observe_execute(timeline: list[object]) -> Iterator[None]:
+    """Put real lifecycle records beside dependency and caller markers."""
+    logger = logging.getLogger(LOGGER_NAME)
+
+    class Observer(logging.Handler):
+        def emit(self, record: logging.LogRecord) -> None:
+            timeline.append(record)
+
+    observer = Observer()
+    logger.addHandler(observer)
+    try:
+        yield
+    finally:
+        logger.removeHandler(observer)
+        observer.close()
+
+
+class _TraceContext(RecordingContext):
+    def __init__(
+        self, journal: list[Call], timeline: list[object], *,
+        load_result: LoadOutcome, save_outcomes: tuple[SaveOutcome, ...],
+        block_load: bool = False,
+    ) -> None:
+        super().__init__(journal, load_result=load_result)
+        self.timeline = timeline
+        self.save_outcomes = save_outcomes
+        self.load_entered = asyncio.Event()
+        self.release_load = asyncio.Event()
+        if not block_load:
+            self.release_load.set()
+
+    async def load(self, session_id: str) -> LoadOutcome:
+        self.journal.append(Call(self, "load", (session_id,)))
+        self.timeline.append("load_entered")
+        self.load_entered.set()
+        try:
+            await self.release_load.wait()
+        except asyncio.CancelledError:
+            self.timeline.append("load_cancelled")
+            raise
+        self.timeline.append("load_done")
+        return self.load_result
+
+    async def save(
+        self, session_id: str, expected_state_version: int, delta: StateDelta,
+    ) -> SaveOutcome:
+        attempt = sum(call.method == "save" for call in self.journal) + 1
+        self.journal.append(Call(self, "save", (session_id, expected_state_version, delta)))
+        self.timeline.append(f"save_{attempt}_entered")
+        outcome = self.save_outcomes[attempt - 1]
+        self.timeline.append(f"save_{attempt}_done")
+        return outcome
+
+
+class _TraceHandler(RecordingHandler):
+    def __init__(
+        self, journal: list[Call], timeline: list[object], *,
+        result: BuildNatalOutcome, block_handle: bool = False,
+    ) -> None:
+        super().__init__(journal, result=result)
+        self.timeline = timeline
+        self.handle_entered = asyncio.Event()
+        self.release_handle = asyncio.Event()
+        if not block_handle:
+            self.release_handle.set()
+
+    async def handle(
+        self, command: Command, state: SessionState, run: RunContext,
+    ) -> BuildNatalOutcome:
+        self.journal.append(Call(self, "handle", (command, state, run)))
+        self.timeline.append("handler_entered")
+        self.handle_entered.set()
+        try:
+            await self.release_handle.wait()
+        except asyncio.CancelledError:
+            self.timeline.append("handler_cancelled")
+            raise
+        self.timeline.append("handler_done")
+        return self.result
+
+
+@dataclass
+class _TraceFlow:
+    command: BuildNatalCommand
+    run: RunContext
+    context: _TraceContext
+    handler: _TraceHandler
+    orchestrator: ApplicationOrchestrator
+    journal: list[Call]
+
+
+def _make_execute_flow(scenario: str, timeline: list[object]) -> _TraceFlow:
+    prepared = make_case(loaded_version=7, committed_version=19)
+    journal: list[Call] = []
+    load_result: LoadOutcome = (
+        SessionAbsent(reason="expired") if scenario == "load_absent" else prepared.snapshot
+    )
+    handler_result: BuildNatalOutcome = (
+        InputRequired(issues=(Issue(field="date", code="MISSING"),))
+        if scenario == "handler_input" else prepared.outcome
+    )
+    if scenario == "unknown_calculation":
+        handler_result = CalculationFailed(error_code="SYNTHETIC_UNKNOWN_CALCULATION_CODE")
+    save_outcomes: tuple[SaveOutcome, ...] = {
+        "commit": (Committed(state_version=19),),
+        "commit_denied": (StateCommitFailed(error_code="UNCONFIRMED"),),
+        "retry": (StateCommitFailed(error_code="UNCONFIRMED"), Committed(state_version=23)),
+        "retry_double_failure": (
+            StateCommitFailed(error_code="FIRST_WRITE_UNCONFIRMED"),
+            StateCommitFailed(error_code="SECOND_WRITE_UNCONFIRMED"),
+        ),
+    }.get(scenario, ())
+    context = _TraceContext(
+        journal, timeline, load_result=load_result, save_outcomes=save_outcomes,
+        block_load=scenario == "cancel_load",
+    )
+    handler = _TraceHandler(
+        journal, timeline, result=handler_result,
+        block_handle=scenario == "cancel_handler",
+    )
+    run = (
+        RunContext(run_id=prepared.run.run_id, started_at=prepared.run.started_at,
+                   deadline=STARTED_AT)
+        if scenario == "commit_denied" else prepared.run
+    )
+    orchestrator = ApplicationOrchestrator(
+        context=context,
+        handlers={} if scenario == "routing" else {BuildNatalCommand: handler},
+        clock=lambda: STARTED_AT,
+    )
+    return _TraceFlow(prepared.command, run, context, handler, orchestrator, journal)
+
+
+async def _invoke_execute(flow: _TraceFlow, timeline: list[object]) -> ApplicationResult:
+    try:
+        result = await flow.orchestrator.execute(
+            flow.command, session_id=SESSION_ID, run=flow.run,
+        )
+    except asyncio.CancelledError:
+        timeline.append("caller_cancelled")
+        raise
+    timeline.append("caller_returned")
+    return result
+
+
+def _event(record: logging.LogRecord) -> tuple[str, dict[str, object]]:
+    name, payload = record.getMessage().split(" ", 1)
+    fields = json.loads(payload)
+    assert isinstance(fields, dict)
+    return name, fields
+
+
+@pytest.mark.parametrize(
+    ("scenario", "methods", "stages", "attempts", "code"),
+    [
+        ("routing", (), (), (), "HANDLER_NOT_REGISTERED"),
+        ("load_absent", ("load",), ("load",), (), "SESSION_EXPIRED"),
+        ("handler_input", ("load", "handle"), ("load", "handler"), (), "INPUT_REQUIRED"),
+        ("commit", ("load", "handle", "save"), ("load", "handler"), (1,), "OK"),
+        ("commit_denied", ("load", "handle", "save"),
+         ("load", "handler"), (1,), "STATE_COMMIT_FAILED"),
+        ("retry", ("load", "handle", "save", "save"),
+         ("load", "handler"), (1, 2), "OK"),
+    ],
+    ids=["routing", "load_absent", "handler_input", "commit", "commit_denied", "retry"],
+)
+async def test_execute_debug_lifecycle_is_bounded_per_invocation(
+    scenario: str, methods: tuple[str, ...], stages: tuple[str, ...],
+    attempts: tuple[int, ...], code: str,
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    """AC-26/29–32: two calls with the same run_id each own one full lifecycle."""
+    segments: list[list[logging.LogRecord]] = []
+    for _ in range(2):
+        timeline: list[object] = []
+        flow = _make_execute_flow(scenario, timeline)
+        before = len(_records(caplog))
+        with _observe_execute(timeline):
+            result = await _invoke_execute(flow, timeline)
+        segment = _records(caplog)[before:]
+        segments.append(segment)
+        events = [_event(record) for record in segment]
+        names = [name for name, _ in events]
+        assert names == [_START, *([_STAGE] * len(stages)),
+                         *([_ATTEMPT] * len(attempts)), _FINISH]
+        assert [call.method for call in flow.journal] == list(methods)
+        assert result.run_id == RUN_ID_B and result.code == code
+        assert all(fields["run_id"] == str(flow.run.run_id) for _, fields in events)
+        assert [fields["stage"] for name, fields in events if name == _STAGE] == list(stages)
+        assert [fields["attempt"] for name, fields in events if name == _ATTEMPT] == list(attempts)
+        assert events[-1][1]["terminal_kind"] == "result"
+        assert events[-1][1]["commit_attempts"] == len(attempts)
+        assert events[-1][1]["code"] == result.code
+        assert [item for item in timeline if isinstance(item, logging.LogRecord)] == segment
+        assert timeline[0] is segment[0] and timeline[-1] == "caller_returned"
+        assert timeline.index(segment[-1]) < timeline.index("caller_returned")
+        for stage, record in zip(stages, segment[1:]):
+            marker = "load_done" if stage == "load" else "handler_done"
+            assert timeline.index(marker) < timeline.index(record)
+        attempt_records = [record for record in segment if _event(record)[0] == _ATTEMPT]
+        for number, record in zip(attempts, attempt_records):
+            assert timeline.index(f"save_{number}_done") < timeline.index(record)
+        if len(attempts) == 2:
+            assert timeline.index(attempt_records[0]) < timeline.index("save_2_entered")
+    assert _records(caplog) == segments[0] + segments[1]
+
+
+@pytest.mark.parametrize("effective_level", [logging.DEBUG, logging.INFO], ids=["debug", "info"])
+@pytest.mark.parametrize("stage", ["load", "handler"])
+async def test_execute_cancelled_stage_has_no_completion_event(
+    stage: str, effective_level: int, caplog: pytest.LogCaptureFixture,
+) -> None:
+    """AC-29/30/32: only completed stages appear before caller sees cancellation."""
+    timeline: list[object] = []
+    flow = _make_execute_flow(f"cancel_{stage}", timeline)
+    entered = flow.context.load_entered if stage == "load" else flow.handler.handle_entered
+    before = len(_records(caplog))
+    logger = logging.getLogger(LOGGER_NAME)
+    original_level = logger.level
+    try:
+        logger.setLevel(effective_level)
+        with _observe_execute(timeline):
+            caller = asyncio.create_task(_invoke_execute(flow, timeline))
+            waiter = asyncio.create_task(entered.wait())
+            try:
+                done, _ = await asyncio.wait(
+                    {caller, waiter}, timeout=2, return_when=asyncio.FIRST_COMPLETED,
+                )
+                assert done, "execute did not enter the controlled stage"
+                if caller in done:
+                    await caller
+                    pytest.fail("caller completed before the controlled stage")
+                assert waiter in done and waiter.result() is True
+                assert not caller.done()
+                caller.cancel()
+                with pytest.raises(asyncio.CancelledError):
+                    await asyncio.wait_for(caller, timeout=2)
+            finally:
+                flow.context.release_load.set()
+                flow.handler.release_handle.set()
+                if not waiter.done():
+                    waiter.cancel()
+                    with suppress(asyncio.CancelledError):
+                        await waiter
+                if not caller.done():
+                    caller.cancel()
+                    with suppress(asyncio.CancelledError):
+                        await caller
+    finally:
+        logger.setLevel(original_level)
+    segment = _records(caplog)[before:]
+    events = [_event(record) for record in segment]
+    assert [name for name, _ in events] == (
+        [_START, _STAGE, _FINISH]
+        if stage == "handler" and effective_level == logging.DEBUG
+        else [_START, _FINISH]
+    )
+    assert [call.method for call in flow.journal] == (
+        ["load"] if stage == "load" else ["load", "handle"]
+    )
+    assert [item for item in timeline if isinstance(item, logging.LogRecord)] == segment
+    assert timeline[-1] == "caller_cancelled"
+    assert timeline.index(segment[-1]) < timeline.index("caller_cancelled")
+    assert events[-1][1]["terminal_kind"] == "cancelled"
+    assert events[-1][1]["cancelled_stage"] == stage
+    assert events[-1][1]["commit_attempts"] == 0
+    assert all(fields["run_id"] == str(flow.run.run_id) for _, fields in events)
+    if stage == "load":
+        assert "load_done" not in timeline
+        assert timeline.index("load_cancelled") < timeline.index(segment[-1])
+    else:
+        assert "load_done" in timeline and "handler_done" not in timeline
+        assert timeline.index("load_done") < timeline.index(
+            segment[1] if effective_level == logging.DEBUG else segment[-1]
+        )
+        assert timeline.index("handler_cancelled") < timeline.index(segment[-1])
+
+
+@pytest.mark.parametrize(
+    ("scenario", "names", "levels"),
+    [
+        ("routing", (_START, _FINISH), (logging.INFO, logging.WARNING)),
+        ("commit", (_START, _FINISH), (logging.INFO, logging.INFO)),
+        ("retry", (_START, _ATTEMPT, _ATTEMPT, _FINISH),
+         (logging.INFO, logging.WARNING, logging.WARNING, logging.INFO)),
+    ],
+    ids=["routing", "commit", "retry"],
+)
+async def test_execute_effective_info_keeps_invocation_boundaries(
+    scenario: str, names: tuple[str, ...], levels: tuple[int, ...],
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    """AC-29/31/32: INFO keeps start/terminal, and visible WARN retries."""
+    logger = logging.getLogger(LOGGER_NAME)
+    original_level = logger.level
+    timeline: list[object] = []
+    flow = _make_execute_flow(scenario, timeline)
+    before = len(_records(caplog))
+    try:
+        logger.setLevel(logging.INFO)
+        with _observe_execute(timeline):
+            result = await _invoke_execute(flow, timeline)
+    finally:
+        logger.setLevel(original_level)
+    segment = _records(caplog)[before:]
+    events = [_event(record) for record in segment]
+    assert tuple(name for name, _ in events) == names
+    assert tuple(record.levelno for record in segment) == levels
+    assert sum(name == _START for name, _ in events) == 1
+    assert sum(name == _FINISH for name, _ in events) == 1
+    assert all(fields["run_id"] == str(flow.run.run_id) for _, fields in events)
+    assert events[-1][1]["terminal_kind"] == "result"
+    assert events[-1][1]["code"] == result.code
+    assert [item for item in timeline if isinstance(item, logging.LogRecord)] == segment
+    assert timeline[-1] == "caller_returned"
+    assert timeline.index(segment[-1]) < timeline.index("caller_returned")
+    expected_methods = {
+        "routing": [],
+        "commit": ["load", "handle", "save"],
+        "retry": ["load", "handle", "save", "save"],
+    }
+    assert [call.method for call in flow.journal] == expected_methods[scenario]
+
+
+class _DurationTicks:
+    """Replace only the Orchestrator's duration source, never its deadline clock."""
+
+    def __init__(self, ticks: tuple[float, ...]) -> None:
+        self.ticks = ticks
+        self.calls = 0
+
+    def perf_counter(self) -> float:
+        assert self.calls < len(self.ticks), "unexpected duration measurement"
+        tick = self.ticks[self.calls]
+        self.calls += 1
+        return tick
+
+
+def _install_duration_ticks(
+    monkeypatch: pytest.MonkeyPatch, ticks: tuple[float, ...],
+) -> _DurationTicks:
+    counter = _DurationTicks(ticks)
+    monkeypatch.setattr(orchestrator_module, "time", counter)
+    return counter
+
+
+def _assert_event_fields(
+    record: logging.LogRecord, event: str, level: int,
+    fields: dict[str, object],
+) -> None:
+    assert record.levelno == level
+    assert record.exc_info is None and record.stack_info is None
+    assert len(record.getMessage().splitlines()) == 1
+    actual_event, actual_fields = _event(record)
+    assert actual_event == event
+    assert actual_fields.keys() == fields.keys()
+    for key, expected in fields.items():
+        actual = actual_fields[key]
+        if key.endswith("duration_ms") and expected is not None:
+            assert type(actual) in (int, float)
+            assert math.isfinite(actual) and actual >= 0
+            assert actual == pytest.approx(expected)
+        else:
+            assert actual == expected, key
+
+
+@pytest.mark.parametrize(
+    ("scenario", "ticks", "load_outcome", "handler_outcome", "attempt_outcome",
+     "attempt_level", "attempt_version", "terminal_level", "error_codes"),
+    [
+        ("routing", (), None, None, None, None, None, logging.WARNING, ()),
+        ("load_absent", (0.0, 0.004), "session_absent", None, None,
+         None, None, logging.INFO, ()),
+        ("handler_input", (0.0, 0.004, 0.010, 0.017), "loaded", "input_required",
+         None, None, None, logging.INFO, ()),
+        ("commit", (0.0, 0.004, 0.010, 0.017, 0.020, 0.031), "loaded", "success",
+         "committed", logging.DEBUG, 19, logging.INFO, ()),
+        ("commit_denied", (0.0, 0.004, 0.010, 0.017, 0.020, 0.031),
+         "loaded", "success", "state_commit_failed", logging.WARNING, None,
+         logging.WARNING, ("UNCONFIRMED",)),
+    ],
+    ids=["routing", "load_absent", "handler_input", "commit", "commit_denied"],
+)
+async def test_execute_projects_exact_fields_levels_and_measured_durations(
+    scenario: str, ticks: tuple[float, ...], load_outcome: str | None,
+    handler_outcome: str | None, attempt_outcome: str | None,
+    attempt_level: int | None, attempt_version: int | None,
+    terminal_level: int, error_codes: tuple[str, ...],
+    caplog: pytest.LogCaptureFixture, monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """FR-26/27: execute's real records reflect only completed work and result."""
+    timeline: list[object] = []
+    flow = _make_execute_flow(scenario, timeline)
+    counter = _install_duration_ticks(monkeypatch, ticks)
+    result = await _invoke_execute(flow, timeline)
+    assert counter.calls == len(ticks)
+    records = _records(caplog)
+    index = 0
+    _assert_event_fields(records[index], _START, logging.INFO, {
+        "run_id": str(flow.run.run_id), "command_type": "BuildNatalCommand",
+    })
+    index += 1
+    if load_outcome is not None:
+        load_fields: dict[str, object] = {
+            "run_id": str(flow.run.run_id), "stage": "load", "outcome": load_outcome,
+            "duration_ms": 4.0,
+        }
+        if load_outcome == "loaded":
+            load_fields["state_version"] = 7
+        _assert_event_fields(records[index], _STAGE, logging.DEBUG, load_fields)
+        index += 1
+    if handler_outcome is not None:
+        _assert_event_fields(records[index], _STAGE, logging.DEBUG, {
+            "run_id": str(flow.run.run_id), "stage": "handler",
+            "outcome": handler_outcome, "duration_ms": 7.0, "state_version": 7,
+        })
+        index += 1
+    if attempt_outcome is not None:
+        attempt_fields: dict[str, object] = {
+            "run_id": str(flow.run.run_id), "attempt": 1,
+            "outcome": attempt_outcome,
+            "detail_code": error_codes[0] if error_codes else None,
+            "duration_ms": 11.0,
+        }
+        if attempt_version is not None:
+            attempt_fields["state_version"] = attempt_version
+        assert attempt_level is not None
+        _assert_event_fields(records[index], _ATTEMPT, attempt_level, attempt_fields)
+        index += 1
+    _assert_event_fields(records[index], _FINISH, terminal_level, {
+        "run_id": str(flow.run.run_id), "terminal_kind": "result",
+        "orch_status": result.orch_status,
+        "handler_status": result.handler_status,
+        "context_status": result.context_status,
+        "code": result.code, "detail_code": result.detail_code,
+        "state_version": result.state_version,
+        "load_duration_ms": 4.0 if load_outcome is not None else None,
+        "handler_duration_ms": 7.0 if handler_outcome is not None else None,
+        "commit_duration_ms": 11.0 if attempt_outcome is not None else None,
+        "commit_attempts": 1 if attempt_outcome is not None else 0,
+        "commit_error_codes": list(error_codes), "delivery_cancelled": False,
+    })
+    assert len(records) == index + 1
+    assert sum(call.method == "save" for call in flow.journal) == int(
+        attempt_outcome is not None
+    )
+
+
+async def test_execute_preserves_distinct_commit_errors_and_sums_attempt_durations(
+    caplog: pytest.LogCaptureFixture, monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """AC-31/32: two real saves retain distinct codes and measured times."""
+    timeline: list[object] = []
+    flow = _make_execute_flow("retry_double_failure", timeline)
+    counter = _install_duration_ticks(
+        monkeypatch, (0.0, 0.004, 0.010, 0.017, 0.020, 0.031, 0.040, 0.053),
+    )
+    result = await _invoke_execute(flow, timeline)
+    assert counter.calls == 8
+    assert [call.method for call in flow.journal] == ["load", "handle", "save", "save"]
+    records = _records(caplog)
+    assert len(records) == 6
+    errors = ("FIRST_WRITE_UNCONFIRMED", "SECOND_WRITE_UNCONFIRMED")
+    for index, (error, duration) in enumerate(zip(errors, (11.0, 13.0)), start=1):
+        _assert_event_fields(records[index + 2], _ATTEMPT, logging.WARNING, {
+            "run_id": str(flow.run.run_id), "attempt": index,
+            "outcome": "state_commit_failed", "detail_code": error,
+            "duration_ms": duration,
+        })
+    assert result.detail_code == errors[1]
+    _assert_event_fields(records[-1], _FINISH, logging.WARNING, {
+        "run_id": str(flow.run.run_id), "terminal_kind": "result",
+        "orch_status": result.orch_status,
+        "handler_status": result.handler_status,
+        "context_status": result.context_status,
+        "code": "STATE_COMMIT_FAILED", "detail_code": errors[1],
+        "state_version": None, "load_duration_ms": 4.0,
+        "handler_duration_ms": 7.0, "commit_duration_ms": 24.0,
+        "commit_attempts": 2, "commit_error_codes": list(errors),
+        "delivery_cancelled": False,
+    })
+    attempt_durations = [_event(record)[1]["duration_ms"] for record in records[3:5]]
+    assert _event(records[-1])[1]["commit_duration_ms"] == pytest.approx(
+        sum(attempt_durations)
+    )
+
+
+@pytest.mark.parametrize("stage", ["load", "handler"])
+async def test_execute_cancelled_terminal_has_only_completed_durations(
+    stage: str, caplog: pytest.LogCaptureFixture, monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """FR-26: interrupted stage has no duration or result fields."""
+    timeline: list[object] = []
+    flow = _make_execute_flow(f"cancel_{stage}", timeline)
+    ticks = (0.0,) if stage == "load" else (0.0, 0.004, 0.010)
+    counter = _install_duration_ticks(monkeypatch, ticks)
+    caller = asyncio.create_task(_invoke_execute(flow, timeline))
+    try:
+        entered = flow.context.load_entered if stage == "load" else flow.handler.handle_entered
+        await asyncio.wait_for(entered.wait(), timeout=2)
+        caller.cancel()
+        with pytest.raises(asyncio.CancelledError):
+            await asyncio.wait_for(caller, timeout=2)
+    finally:
+        flow.context.release_load.set()
+        flow.handler.release_handle.set()
+    assert counter.calls == len(ticks)
+    records = _records(caplog)
+    assert len(records) == (2 if stage == "load" else 3)
+    if stage == "handler":
+        _assert_event_fields(records[1], _STAGE, logging.DEBUG, {
+            "run_id": str(flow.run.run_id), "stage": "load",
+            "outcome": "loaded", "duration_ms": 4.0, "state_version": 7,
+        })
+    _assert_event_fields(records[-1], _FINISH, logging.INFO, {
+        "run_id": str(flow.run.run_id), "terminal_kind": "cancelled",
+        "cancelled_stage": stage, "load_duration_ms": 4.0 if stage == "handler" else None,
+        "handler_duration_ms": None, "commit_attempts": 0,
+    })
+
+
+class _SensitiveBuildNatalCommand(BuildNatalCommand):
+    private_note: str
+
+
+async def test_execute_compact_messages_exclude_real_input_and_session_payload(
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    """AC-33: positive input/Handler/save controls guard the absence checks."""
+    prepared = make_case(loaded_version=7, committed_version=19)
+    command = _SensitiveBuildNatalCommand(
+        birth_input=prepared.command.birth_input, private_note=FORBIDDEN_PAYLOAD,
+    )
+    journal: list[Call] = []
+    timeline: list[object] = []
+    context = _TraceContext(
+        journal, timeline, load_result=prepared.snapshot,
+        save_outcomes=(Committed(state_version=19),),
+    )
+    handler = _TraceHandler(journal, timeline, result=prepared.outcome)
+    orchestrator = ApplicationOrchestrator(
+        context=context, handlers={_SensitiveBuildNatalCommand: handler},
+        clock=lambda: STARTED_AT,
+    )
+    result = await orchestrator.execute(command, session_id=SESSION_ID, run=prepared.run)
+    assert result.code == "OK"
+    assert [call.method for call in journal] == ["load", "handle", "save"]
+    assert journal[1].args[0] is command
+    assert journal[0].args[0] == journal[2].args[0] == SESSION_ID
+    assert command.private_note == FORBIDDEN_PAYLOAD
+    birth = command.birth_input
+    payload_markers = (
+        FORBIDDEN_PAYLOAD, SESSION_ID, birth.birth_date.isoformat(),
+        birth.birth_time.isoformat(), birth.place_id,
+    )
+    assert all(marker for marker in payload_markers)
+    assert all(marker in command.model_dump_json() for marker in payload_markers
+               if marker != SESSION_ID)
+    records = _records(caplog)
+    assert [_event(record)[0] for record in records] == [
+        _START, _STAGE, _STAGE, _ATTEMPT, _FINISH,
+    ]
+    for record in records:
+        message = record.getMessage()
+        fields = _event(record)[1]
+        assert fields["run_id"] == str(prepared.run.run_id)
+        assert all(marker not in message for marker in payload_markers)
+        assert all(marker not in json.dumps(fields) for marker in payload_markers)
+
+
+async def test_execute_unknown_calculation_code_warns_without_payload(
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    """AC-21/25: fallback result and separate diagnostic WARN survive execute."""
+    timeline: list[object] = []
+    flow = _make_execute_flow("unknown_calculation", timeline)
+    diagnostic_logger = logging.getLogger("exact_orb.application.orchestrator")
+    result = await _invoke_execute(flow, timeline)
+    records = _records(caplog)
+    assert [record.levelno for record in records] == [
+        logging.INFO, logging.DEBUG, logging.DEBUG, logging.WARNING,
+    ]
+    assert result.code == "CALCULATION_FAILED"
+    assert result.detail_code == "SYNTHETIC_UNKNOWN_CALCULATION_CODE"
+    assert result.user_message == "Не удалось рассчитать карту."
+    assert [call.method for call in flow.journal] == ["load", "handle"]
+    diagnostics = [record for record in caplog.records if record.name == diagnostic_logger.name]
+    assert len(diagnostics) == 1
+    assert diagnostics[0].levelno == logging.WARNING
+    assert result.detail_code in diagnostics[0].getMessage()
+    assert result.user_message not in diagnostics[0].getMessage()
+    assert all(SESSION_ID not in record.getMessage() for record in records + diagnostics)
