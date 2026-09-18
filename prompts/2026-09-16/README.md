@@ -45,17 +45,22 @@
 ├── 04-session-load/
 │   ├── 04.1-orchestrator-session-load-tests.md
 │   └── 04.2-orchestrator-session-load-and-failures.md
-└── 05-handler-execution/
-    ├── 05.1-orchestrator-handler-outcomes-tests.md
-    ├── 05.3-orchestrator-handler-failures-and-early-cancellation-tests.md
-    └── 05.4-orchestrator-handler-errors-and-precommit-cancellation.md
+├── 05-handler-execution/
+│   ├── 05.1-orchestrator-handler-outcomes-tests.md
+│   ├── 05.3-orchestrator-handler-failures-and-early-cancellation-tests.md
+│   └── 05.4-orchestrator-handler-errors-and-precommit-cancellation.md
+└── 06-protected-commit/
+    ├── 06.1-orchestrator-protected-commit-tests.md
+    ├── 06.2-orchestrator-protected-first-commit.md
+    ├── 06.3-orchestrator-commit-outcomes-tests.md
+    └── 06.4-orchestrator-commit-outcome-mapping.md
 ```
 
 Каталог раздела создаётся при сохранении его первого промта. Для раздела 3
 подготовлены промты 3.1–3.2 и корректировки 3.R1/3.R2; для раздела 4 сохранены
 промты 4.1–4.2, для раздела 5 — промты 5.1, 5.3 и 5.4. Карточка 5.2
-реализована по тексту плана без отдельного файла промта; разделы 6–10 пока
-описаны только в плане.
+реализована по тексту плана без отдельного файла промта. Для раздела 6
+подготовлены промты 6.1–6.4; разделы 7–10 пока описаны только в плане.
 
 | Раздел | Общий каталог | Содержание | Карточки |
 |---|---|---|---|
@@ -87,17 +92,21 @@
 | 2.4 | [Три модели результатов](02-application-results/02.4-application-result-models.md) | Реализованы: 125 passed; историческая блокировка R/F снята в 1.4, §1.3.11 плана |
 | 2.5 | [Тесты остальных моделей и полного набора ответов](02-application-results/02.5-application-results-union-tests.md) | После 2.6 весь файл дал 417 passed; новые assertions исполнились. Связь с требованиями сохранена внутри всех 39 тестовых функций; историческая ошибка импорта — в журнале |
 | 2.6 | [Полный набор ответов ApplicationResult](02-application-results/02.6-application-results-union.md) | Реализованы семь моделей и полный union: 417 passed без изменения тестов. Общие R/F впоследствии прошли в 1.4, §1.3.11 плана |
-| 3.1 | [Тесты входа и выбора обработчика команды](03-entry-and-routing/03.1-orchestrator-entry-and-routing-tests.md) | Текущий routing: 12 passed, 1 ожидает commit 6.4. Журнал §1.3.29; история §1.3.13/15/17 сохранена |
-| 3.2 | [Конструктор координатора и отказ для неизвестной команды](03-entry-and-routing/03.2-orchestrator-constructor-and-routing-failure.md) | Ранняя приёмка прошла; текущий R: 1422 passed, 3 ожидают commit 6.4. Журнал §1.3.29, история §1.3.18 |
+| 3.1 | [Тесты входа и выбора обработчика команды](03-entry-and-routing/03.1-orchestrator-entry-and-routing-tests.md) | Отложенный success/commit прошёл в 6.4; текущий общий результат §1.3.36, исторический red §1.3.29 |
+| 3.2 | [Конструктор координатора и отказ для неизвестной команды](03-entry-and-routing/03.2-orchestrator-constructor-and-routing-failure.md) | Ранние ветки и success/commit прошли; текущий общий результат §1.3.36, история §1.3.18/29 |
 | 3.R1 | [Исправление захвата логов и проверка 3.2](03-entry-and-routing/03.R1-caplog-fixture-and-routing-verification.md) | Выполнен: четыре строки теста, 2 passed вместо 2 failed, assertions и production сохранены. R содержит только семь отложенных failures; F не запускался. Журнал §1.3.17 |
 | 3.R2 | [Согласованные гарантии контрактов](03-entry-and-routing/03.R2-orchestrator-contract-hardening.md) | Реализованы frozen RunContext, строгие поля ответа, проверка политики, terminal из результата и JSON events; результаты §1.3.18 |
 | 2.R2 | [Глубина неизменяемости результатов](02-application-results/02.R2-nested-result-immutability-decision.md) | Подготовлена отдельно; общие Issue/ChartArtifact не менялись, глубокая часть AC-24 не закрыта |
-| 4.1 | [Тесты загрузки сессии и исходной версии](04-session-load/04.1-orchestrator-session-load-tests.md) | Тестовая карточка выполнена: текущий прогон 9 passed, 2 ожидают commit 6.4; исходный red — §1.3.20, текущий — §1.3.29 |
-| 4.2 | [Загрузка сессии и понятные отказы](04-session-load/04.2-orchestrator-session-load-and-failures.md) | Ветка load выполнена; текущий R — 1422 passed, 3 ожидают commit 6.4. История §1.3.22, текущий прогон §1.3.29 |
+| 4.1 | [Тесты загрузки сессии и исходной версии](04-session-load/04.1-orchestrator-session-load-tests.md) | Два отложенных Superseded прошли в 6.4; текущий общий результат §1.3.36, исходный red §1.3.20 |
+| 4.2 | [Загрузка сессии и понятные отказы](04-session-load/04.2-orchestrator-session-load-and-failures.md) | Ветка load и отложенные commit-зависимые проверки прошли; текущий общий результат §1.3.36 |
 | 5.1 | [Тесты вызова Handler и его штатных исходов](05-handler-execution/05.1-orchestrator-handler-outcomes-tests.md) | Десять случаев прошли после 5.2; K3 о пустых issues открыт. Текущий прогон §1.3.29, история §1.3.24 |
-| 5.2 | [Вызов и классификация Handler](../../docs/project_management/application_orchestrator_implementation_plan.md) | Реализована по карточке плана без отдельного файла; штатные non-success ветки прошли, success ждёт commit 6.4. Журнал §1.3.29 |
+| 5.2 | [Вызов и классификация Handler](../../docs/project_management/application_orchestrator_implementation_plan.md) | Реализована по карточке плана без отдельного файла; non-success и success→commit прошли, K3 открыт. Текущий результат §1.3.36 |
 | 5.3 | [Тесты нарушений Handler и отмены до сохранения](05-handler-execution/05.3-orchestrator-handler-failures-and-early-cancellation-tests.md) | Пять случаев прошли после 5.2/5.4; текущий прогон §1.3.29, история §1.3.26 |
 | 5.4 | [Ошибки Handler и отмена до commit](05-handler-execution/05.4-orchestrator-handler-errors-and-precommit-cancellation.md) | Ранние ошибки и отмена реализованы: 5 случаев 5.3 прошли; commit остаётся группе 6. Журнал §1.3.29 |
+| 6.1 | [Тесты одной защищённой попытки сохранения](06-protected-commit/06.1-orchestrator-protected-commit-tests.md) | Три случая прошли после 6.2; текущий результат §1.3.33, исходный red §1.3.31 |
+| 6.2 | [Защищённое сохранение с первой попытки](06-protected-commit/06.2-orchestrator-protected-first-commit.md) | Реализован `Committed` и одна отмена после входа в save: 3 passed; R — 1426 passed, 2 ожидают 6.4. Журнал §1.3.33 |
+| 6.3 | [Тесты остальных исходов сохранения](06-protected-commit/06.3-orchestrator-commit-outcomes-tests.md) | Все 10 случаев commit-файла прошли после 6.4; текущий результат §1.3.36, исходный red §1.3.35 |
+| 6.4 | [Классификация ответов первой попытки](06-protected-commit/06.4-orchestrator-commit-outcome-mapping.md) | Реализована: целевой набор 226 passed, R 1436 passed, F 2355 passed; retry остаётся группе 7. Журнал §1.3.36 |
 
 Заголовки внутри сохранённых промтов фиксируют состояние при их подготовке.
 Актуальные результаты выполнения берутся из журнала плана; само наличие
@@ -105,7 +114,30 @@
 
 ## Следующий шаг
 
-**5.2 реализована по карточке плана, ранние ветки 5.4 завершены.** Десять
+**6.4 реализована; следующий шаг — 7.1, тесты точного retry.** Все ответы
+первой попытки save теперь классифицируются и получают attempt/terminal до
+возврата либо отложенной отмены. Проверки: 11 passed для commit/отмены,
+226 passed в целевом наборе 6.4, R — 1436 passed, F — 2355 passed. Автоматический
+повтор после `StateCommitFailed` ещё не реализован; K3 и 2.R2 остаются открытыми.
+Точные команды и границы доказанного — §1.3.36 плана.
+
+**История 6.3 до реализации 6.4.** Добавлены
+восемь случаев: `AlreadyApplied` и `Superseded` с нулевой/ненулевой версией,
+оба reason `SessionAbsent`, окончательный `StateCommitFailed` при истёкшем
+deadline и unexpected Exception. Все дошли до одного save и ожидаемо упали:
+семь на незавершённом mapping, один на проброшенном исключении. Два прежних
+`Committed`-контроля прошли: **2 passed, 8 failed** в целевом файле. Проверки
+ответов и событий после save тогда ждали 6.4; R/F при красном наборе не запускались.
+Точные node IDs и команды — §1.3.35 плана.
+
+**История 6.2 — первая попытка с `Committed`.** Все три теста 6.1
+прошли: подтверждённый результат следует за save, а при отмене caller
+дожидается записи, attempt и terminal. В связанном R — **1426 passed,
+2 failed**: оба отложенных `Superseded` тогда ждали 6.4; F при красном R не запускался.
+Точные команды и границы выполненной 6.2 — §1.3.33 плана; история подготовки
+6.2 и исходного падения 6.1 — §1.3.31–32.
+
+**История 5.2 и ранних веток 5.4.** Десять
 случаев 5.1 и пять случаев 5.3 прошли; вместе с тестами формата логов целевой
 набор дал **191 passed**. Handler получает исходные command/state/run, а
 штатные отказы завершаются без save. Неверный outcome, исключение и отмена
@@ -113,7 +145,7 @@ Handler имеют проверенные результаты либо cancelle
 
 Связанный R дал **1422 passed, 3 failed**. Все три падения — положительные
 сценарии, которые дошли до handler/success и ждут commit группы 6; полный F
-при красном R не запускался. Следующий основной этап — группа 6. K3 о
+при красном R не запускался. Тогда следующим основным этапом была группа 6. K3 о
 `InputRequired(issues=())` по выбору пользователя оставлен открытым: внешняя
 модель требует непустые issues, и полный AC-8 пока не закрыт. Точные команды,
 node IDs и границы — §1.3.29; предыдущие состояния сохранены в §1.3.23–28.
@@ -130,13 +162,13 @@ node IDs и границы — §1.3.29; предыдущие состояния
 [test_orchestrator_load.py](../../tests/application/test_orchestrator_load.py),
 6 функций и 11 параметризованных случаев. В исходном запуске все 11 failed
 на тогдашней незавершённой ветке execute; ошибок подготовки данных не было.
-Теперь семь отказов прошли после 4.2, два snapshot-контроля — после 5.2,
-два контроля исходной версии на save ожидают 6.4. Production и общие fakes
+Семь отказов прошли после 4.2, два snapshot-контроля — после 5.2,
+два контроля исходной версии на save прошли после 6.4. Production и общие fakes
 в тестовой карточке 4.1 не менялись.
 R/F в 4.1 не запускались по §4.2 плана. Исторические результаты 4.1 —
-§1.3.20; подготовка промта — §1.3.19. Текущий результат — §1.3.29.
+§1.3.20; подготовка промта — §1.3.19. Текущий результат — §1.3.36.
 
-Последняя корректировка — **3.R2**, журнал §1.3.18. RunContext теперь frozen,
+Историческая корректировка — **3.R2**, журнал §1.3.18. RunContext frozen,
 сообщение результата сверяется с политикой, версия строго целочисленная.
 Terminal получает сам результат. Формат lifecycle-событий: имя и JSON object;
 прежний regex-разбор key=value для этих событий больше не применим.

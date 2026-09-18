@@ -108,17 +108,21 @@ R3.2/диаграммы 009–010. HEAD сам по себе не содержи
 | 2.4 | Три модели реализованы; целевые и последующие общие проверки прошли | 125 passed; историческая блокировка R/F снята в 1.4, новая контрольная точка — §1.3.11 |
 | 2.5 | Тесты семи моделей и полного union проверены после 2.6 | Весь файл дал 417 passed; прежние и новые assertions исполнились. Требования указаны внутри всех 39 тестовых функций; историческая ошибка импорта сохранена в §1.3.9 |
 | 2.6 | Полный ApplicationResult реализован; целевые и последующие общие проверки прошли | 417 passed без изменения тестов; результаты карточки — §1.3.10. Последующие R/F прошли в 1.4, §1.3.11 |
-| 3.1 | Ранняя выборка прошла; текущий routing-прогон §1.3.29 | 12 passed, 1 ожидает commit 6.4; история импорта и фикстуры — §1.3.13/15 |
-| 3.2 | Конструктор и unknown-command ветка прошли раннюю приёмку | Routing: 12 passed, 1 ожидает commit; R: 1422 passed, 3 ожидают commit 6.4. История 3.R2 — §1.3.18, текущий прогон — §1.3.29 |
+| 3.1 | Ранняя выборка пройдена; отложенный success/commit прошёл в 6.4 | Текущий общий результат §1.3.36; история импорта и фикстуры — §1.3.13/15, прежний red — §1.3.29 |
+| 3.2 | Конструктор и unknown-command ветка прошли; сквозной success/commit прошёл в 6.4 | Текущий общий результат §1.3.36; история 3.R2 — §1.3.18, прежний red — §1.3.29 |
 | 3.R1 | Выполнен | Четыре замены в тесте; две logging-проверки прошли без изменения assertions и production-кода. R содержит только семь подтверждённых отложенных failures; F не запускался. Журнал §1.3.17 |
 | 3.R2 | Согласованные поправки реализованы; результаты в §1.3.18 | Frozen RunContext, строгая версия и точный текст результата, проверка аргументов политики, terminal из ApplicationResult и JSON events |
 | 2.R2 | Отдельная карточка подготовлена, не выполнена | Граница глубокой неизменяемости Issue/ChartArtifact требует согласования с artifact-контрактом; AC-24 целиком не закрыт |
-| 4.1 | Тестовая карточка выполнена; текущий прогон §1.3.29 | 11 случаев: 9 passed, 2 ожидают commit 6.4; история исходного red — §1.3.20 |
-| 4.2 | Ветка load выполнена; текущий прогон §1.3.29 | Отказы load и передача snapshot прошли; R: 1422 passed, 3 ожидают commit 6.4; история — §1.3.22 |
-| 5.1 | Тесты написаны, десять non-success случаев прошли; §1.3.29 | Identity/result/events/no-save подтверждены для непустых issues; K3 оставлен открытым, positive save ждёт 6.4; история — §1.3.24 |
-| 5.2 | Штатные ветки Handler реализованы; §1.3.29 | 10 случаев 5.1 passed; success доходит до границы commit, K3 и 6.4 остаются открытыми |
+| 4.1 | Тестовая карточка выполнена; оба отложенных Superseded прошли в 6.4 | Текущий общий результат §1.3.36; история исходного red — §1.3.20 |
+| 4.2 | Ветка load выполнена; отложенные commit-зависимые проверки прошли в 6.4 | Текущий общий результат §1.3.36; история — §1.3.22/29 |
+| 5.1 | Десять non-success случаев и отложенный positive save прошли | Identity/result/events/no-save подтверждены для непустых issues; K3 оставлен открытым; текущий общий результат §1.3.36 |
+| 5.2 | Штатные ветки Handler и success→commit прошли | Текущий общий результат §1.3.36; K3 остаётся открытым; история — §1.3.29 |
 | 5.3 | Пять тестов ранних ошибок и отмены прошли; §1.3.29 | 5 passed после 5.2/5.4; история тестовой карточки — §1.3.26 |
 | 5.4 | Ошибки и отмена до commit реализованы; §1.3.29 | 5 случаев 5.3 passed; сквозной success/commit и общий AC-29 остаются группе 6; история частичного выполнения — §1.3.28 |
+| 6.1 | Три тестовых случая прошли после 6.2 | Обычный `Committed` при original expected 0/7 и отмена после входа в save; текущий результат — §1.3.33, исходное падение — §1.3.31 |
+| 6.2 | Реализован путь первой защищённой попытки с `Committed` | Целевой набор: 3 passed; R: 1426 passed, 2 отложенных Superseded failed; текущий результат — §1.3.33 |
+| 6.3 | Все десять случаев commit-файла прошли после 6.4 | Текущий результат §1.3.36; исходный red — §1.3.35, подготовка — §1.3.34 |
+| 6.4 | Выполнены все исходы первой защищённой попытки без retry | Целевой набор: 226 passed; R: 1436 passed; F: 2355 passed. Retry и полная R3.2-приёмка остаются группе 7 и далее; §1.3.36 |
 | Остальные основные карточки | Запланированы, не выполнялись | Формулировка «закрывает» в карточке означает будущую обязанность |
 
 По запросу пользователя 2026-09-16 подготовлен
@@ -1624,6 +1628,286 @@ smoke не выполнялись; коммит, ветка, push и PR не с�
 сохранённого промта 5.4 — exit code 0: 124 локальные ссылки разрешаются,
 code fences парные, trailing whitespace нет. Git index пуст по staged diff;
 посторонние файлы рабочего дерева сохранены.
+
+#### 1.3.30. Подготовка промта 6.1 — 2026-09-18
+
+По запросу написать промт 6.1 с понятным объяснением для менеджеров сохранён
+[промт 6.1 — тесты одной защищённой попытки сохранения](../../prompts/2026-09-16/06-protected-commit/06.1-orchestrator-protected-commit-tests.md).
+Вводная объясняет, почему готовый расчёт ещё не означает сохранение и почему
+после начала записи отмена доставки ответа должна ждать исхода записи и
+итогового события. Результат карточки — тесты, реализация остаётся 6.2.
+
+Промт сверен с R3.2 UC-01/15, FR-10–13/17/20/26, §11.4–11.5/12,
+ADR-0006, session-контрактом, диаграммами 009/010, текущим Orchestrator и
+существующими routing/load/Handler/logging-тестами. На момент подготовки
+ветка — `feat/application-orchestrator`, HEAD —
+`f3bbf4961f9a2f3831bb3d018878d42f91534884`. В коде подтверждены ранние
+ветки 5.2/5.4 и `NotImplementedError` перед commit; прежние числа прохождения
+из §1.3.29 не являются новым запуском.
+
+Для будущего исполнения разрешены два новых файла commit/cancellation-тестов,
+минимальное расширение `orchestrator_fakes.py`, §1.3 плана и README серии.
+Проверки используют настоящий execute, typed `Committed` и Event внутри
+save. Требуется наблюдать незавершённый caller после обработки отмены,
+затем commit-attempt и result-terminal до доставки `CancelledError`.
+События разбираются как JSON; существующие positive-контроли не копируются.
+Остальные outcomes, retry и повторная отмена остаются последующим карточкам.
+
+K3 и 2.R2 сохранены открытыми; независимый success/commit-срез их не решает.
+Подготовка промта не закрывает AC. Production и тесты не изменялись,
+pytest не запускался; ветка, коммит, push и PR не создавались.
+
+Проверки подготовки: `git diff --check` — exit code 0; структурная проверка
+через `.\.venv\Scripts\python.exe -B -` — exit code 0: у трёх Markdown-файлов
+разрешаются 126 локальных ссылок, code fences парные, trailing whitespace
+отсутствует, статус 6.1 согласован. Новый untracked-промт проверен напрямую.
+Git index пуст; посторонние файлы сохранены.
+
+#### 1.3.31. Выполнение тестовой карточки 6.1 — 2026-09-18
+
+По поручению выполнить подготовленный промт 6.1 созданы
+`tests/application/test_orchestrator_commit.py` и
+`tests/application/test_orchestrator_cancellation.py`.
+Общий управляемый fake ContextService находится в новом commit-тесте;
+`orchestrator_fakes.py` не изменялся. Два параметризованных обычных случая
+используют original expected 0/7 и typed `Committed` с версиями 4/19,
+которые намеренно не вычисляются как expected+1: это unit-проверка передачи
+ответа зависимости, не сценарий реального CAS. Третий случай задаёт одну
+отмену после входа в save. Во всех случаях настроены реальные вызовы execute,
+валидный `BuildNatalSuccess`, управляемые `asyncio.Event`, реальные JSON
+lifecycle-записи и уборка задач.
+
+Фактические команды из корня репозитория:
+
+```powershell
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/application/test_orchestrator_commit.py tests/application/test_orchestrator_cancellation.py -q
+# 3 failed in 0.41s; exit code 1; первый прогон показал NotImplementedError через cleanup
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/application/test_orchestrator_commit.py tests/application/test_orchestrator_cancellation.py -q --tb=short
+# 3 failed in 0.34s; exit code 1; первичное место падения видно напрямую
+```
+
+После первого прогона исправлен только helper уборки теста: он больше не
+заслоняет первичное исключение повторным ожиданием уже завершённого caller.
+Все три финальных node IDs собраны и исполнились:
+
+| Требование | Node ID | Фактический результат и граница |
+|---|---|---|
+| FR-10/11/13/17/26, AC-7/10/19/26/27/29–32 | `tests/application/test_orchestrator_commit.py::test_one_confirmed_save_waits_and_returns_committed[0-4]` | Failed: `orchestrator.py:237` выбрасывает `NotImplementedError` до входа в save; ожидание и assertions после save ждут 6.2 |
+| Те же FR/AC; ненулевая original expected | `tests/application/test_orchestrator_commit.py::test_one_confirmed_save_waits_and_returns_committed[7-19]` | Failed по той же причине; отдельная версия подтверждённого outcome пока не наблюдалась |
+| UC-15, FR-20/26, AC-16/17/26/29/31/32 | `tests/application/test_orchestrator_cancellation.py::test_cancel_after_save_entry_waits_for_commit_and_terminal` | Failed по той же причине; отмена внутри уже начатого save пока не исполнялась |
+
+Ошибка не относится к collection, fixture или синхронизации: traceback обоих
+файлов проходит настоящий `execute`, достигает успешной Handler-ветки и
+останавливается на ранее оставленной границе commit. Наличие тестов и этот
+ожидаемый red не закрывают перечисленные AC; downstream assertions ещё не
+исполнялись. Ранее отложенные три success/commit случая §1.3.29 остаются
+ожидающими 6.4. K3 и 2.R2 не решались. R и F не запускались при красном целевом
+наборе; production, требования, ADR и диаграммы не менялись.
+
+Проверки целостности: `git diff --check` — exit code 0; прямой запуск
+`.\.venv\Scripts\python.exe -B -` со stdin-проверкой двух новых файлов —
+exit code 0: UTF-8, Python syntax, завершающий newline и отсутствие trailing
+whitespace. Новые untracked-тесты проверены напрямую, так как обычный git diff
+их не показывает. Git index пуст; файлы вне allowlist сохранены. Коммит, ветка,
+push и PR не создавались. Следующий отдельный этап — 6.2.
+
+#### 1.3.32. Подготовка промта 6.2 — 2026-09-18
+
+По запросу «пиши следующий промт» сохранён
+[промт 6.2 — защищённое сохранение с первой попытки](../../prompts/2026-09-16/06-protected-commit/06.2-orchestrator-protected-first-commit.md).
+Вводная для менеджеров объясняет, почему завершённый расчёт ещё не означает
+сохранение и почему после отмены запроса уже начатую запись нужно дождаться
+и зафиксировать её итог до передачи отмены.
+
+Карточка опирается на три тестовых случая 6.1 и текущий `NotImplementedError`
+перед `save`; она разрешает только production-ветку `orchestrator.py` и
+фактический журнал/README. Первая попытка использует original expected и ту
+же delta, подтверждённая версия приходит из `Committed`; один отменённый
+caller ждёт inner task, attempt и result-terminal с `delivery_cancelled=true`.
+Иные commit outcomes, retry/deadline и повторная отмена оставлены 6.3–6.4,
+7.1–7.2 и 9.1. Промт отдельно требует не считать известные `Superseded`
+падения в связанном R завершённой приёмкой, даже если три случая 6.1 пройдут.
+
+На момент подготовки ветка `feat/application-orchestrator`, HEAD
+`f3bbf4961f9a2f3831bb3d018878d42f91534884`; статус 6.1 из §1.3.31
+исторический, новых запусков pytest для подготовки 6.2 не было. Production,
+тесты и сохранённый промт 6.1 не менялись; K3 и 2.R2 открыты. Коммит, ветка,
+push и PR не создавались.
+
+Проверки подготовки: `git diff --check` — exit code 0; структурная проверка
+через `.\.venv\Scripts\python.exe -B -` — exit code 0: в трёх Markdown-файлах
+132 локальные ссылки разрешаются, code fences парные, trailing whitespace
+отсутствует, статус 6.2 согласован. Новый untracked-промт проверен напрямую;
+Git index пуст, посторонние файлы рабочего дерева сохранены.
+
+#### 1.3.33. Реализация первой защищённой попытки 6.2 — 2026-09-18
+
+По поручению выполнить промт 6.2 в `src/exact_orb/application/orchestrator.py`
+заменена заглушка после `handler/success` для одного typed `Committed`.
+`execute` создаёт локальную задачу `ContextService.save` с исходными
+`session_id`, expected и той же delta, удерживает её через `asyncio.shield`,
+а после внешней отмены продолжает ожидание завершения. Повторная отмена
+ожидания не отрывает локальную ссылку; отдельная проверка этой гонки остаётся
+9.1. Версия успешного ответа берётся из `Committed`, не вычисляется по
+expected. После save пишутся attempt=1 и result-terminal, затем результат
+возвращается либо пробрасывается наблюдённый `CancelledError`.
+
+Фактические команды из корня репозитория:
+
+```powershell
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/application/test_orchestrator_commit.py tests/application/test_orchestrator_cancellation.py -q --tb=short
+# baseline до правки: 3 failed in 0.39s; exit code 1; NotImplementedError до save
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/application/test_orchestrator_commit.py tests/application/test_orchestrator_cancellation.py -q
+# после правки: 3 passed in 0.29s; exit code 0
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/test_run_context.py tests/application tests/session tests/test_module_boundaries.py -q --tb=short
+# R: 2 failed, 1426 passed in 13.20s; exit code 1
+```
+
+| Требование | Node ID | Фактическое свидетельство / остаток |
+|---|---|---|
+| FR-10/11/13/17/26, AC-7/10/19/26/27/29–32 | `tests/application/test_orchestrator_commit.py::test_one_confirmed_save_waits_and_returns_committed[0-4]`, `[7-19]` | 2 passed: один save после Handler, original expected 0/7, delta по identity, версия 4/19 из typed `Committed`, результат и пять событий до возврата |
+| UC-15, FR-20/26, AC-16/17/26/29/31/32 | `tests/application/test_orchestrator_cancellation.py::test_cancel_after_save_entry_waits_for_commit_and_terminal` | 1 passed: caller остаётся незавершённым после отмены при заблокированном save; запись не отменена, attempt и result-terminal с `delivery_cancelled=true` предшествуют наблюдаемому `CancelledError` |
+| Остальные commit outcomes, AC-19 полностью | `tests/application/test_orchestrator_load.py::test_save_uses_original_version_when_available_snapshot_changes[0]`, `[7]` | 2 failed в R после фактически начатого save: явный `NotImplementedError` для `Superseded`; mapping, attempt/terminal этого исхода остаются 6.3–6.4 |
+
+Положительный routing-контроль `test_known_command_completes_with_commit`
+прошёл в R. Других failures в связанном наборе нет. Полный F при красном R
+не запускался. 6.2 подтверждает только `Committed` и одну внешнюю отмену после
+входа в save; остальные typed/internal outcomes, retry/deadline, повторная
+отмена и полная приёмка AC-19/29/31/32 остаются последующим карточкам. K3 и
+2.R2 открыты. Тесты, shared fakes, Handler, session, модели, logging helpers,
+requirements, ADR и диаграммы не менялись; контракт их не пересматривался.
+
+Проверки целостности: `git diff --check` — exit code 0; структурная проверка
+плана и README через `.\.venv\Scripts\python.exe -B -` — exit code 0:
+122 локальные ссылки разрешаются, code fences парные, trailing whitespace
+отсутствует. Git index пуст; посторонние файлы сохранены. Коммит, ветка,
+push и PR не создавались. Следующая отдельная карточка — 6.3.
+
+#### 1.3.34. Подготовка промта 6.3 — 2026-09-18
+
+По запросу пользователя сохранён
+[промт 6.3](../../prompts/2026-09-16/06-protected-commit/06.3-orchestrator-commit-outcomes-tests.md)
+для тестов оставшихся исходов первой попытки `ContextService.save`. Основание:
+6.2 подтвердил `Committed` и одну отмену после входа в save, но два связанных
+`Superseded`-теста по-прежнему падают на явном `NotImplementedError` (§1.3.33).
+Новая карточка разделяет `AlreadyApplied`, `Superseded`, оба reason
+`SessionAbsent` на стадии commit, окончательный `StateCommitFailed` и
+unexpected Exception. Для каждого исхода требуется проверить полную связку
+результата, ровно один фактический save, attempt/terminal до возврата и
+отсутствие повторного load/Handler. Существующие тесты `Committed` остаются
+положительным контролем. Для отказа записи задан истёкший deadline, чтобы
+ожидание одной попытки сохраняло смысл после появления retry в 7.2.
+
+Это **подготовка инструкции**, а не выполнение 6.3: новые тесты и production
+не менялись, целевой pytest и R/F в этой записи не запускались. Границы
+6.3/6.4/7 сохранены: mapping остальных исходов относится к 6.4, retry — к
+группе 7. Изменены только новый файл промта, этот журнал и README;
+посторонние изменения рабочего дерева и Git index сохранены. Следующий
+отдельный этап — выполнение тестовой карточки 6.3.
+
+Проверки подготовки: `git diff --check` — exit code 0 (предупреждения
+LF/CRLF для ранее изменённых файлов); прямой структурный контроль промта,
+README и плана — 129 разрешающихся локальных ссылок, парные code fences и
+отсутствие trailing whitespace. `git diff --cached --name-only` не вывел
+файлов. Новый untracked-промт проверен напрямую; pytest не запускался.
+
+#### 1.3.35. Выполнение тестовой карточки 6.3 — 2026-09-18
+
+По поручению выполнить промт 6.3 дополнен только
+`tests/application/test_orchestrator_commit.py`: восемь новых случаев для
+`AlreadyApplied` с версиями 0/13, `Superseded` с actual версиями 0/21,
+`SessionAbsent` с reason `expired`/`not_found`, окончательного
+`StateCommitFailed` при уже истёкшем deadline и unexpected Exception из save.
+Локальный fake отмечает завершение save и записывает его вызов. Общий helper
+проверяет `load → handle → save`, original expected, delta по identity и
+отсутствие повторных вызовов даже при текущем исключении. После будущей 6.4
+тесты должны проверить полную модель ответа, stage/attempt/terminal,
+длительности, уровни, порядок до возврата, отсутствие payload в compact logs
+и отдельный traceback для unexpected Exception. Существующий положительный
+`Committed`-тест 6.1 не изменён.
+
+Фактические команды из корня репозитория:
+
+```powershell
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/application/test_orchestrator_commit.py -q
+# первый прогон: 8 failed, 2 passed in 0.51s; exit code 1
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/application/test_orchestrator_commit.py -q --tb=line
+# после локального уточнения typing/helper: 8 failed, 2 passed in 0.32s; exit code 1
+```
+
+| Требование | Node ID | Фактический результат / остаток |
+|---|---|---|
+| FR-10/11/13/17/26, AC-7/10/19/26/27/31/32 | `tests/application/test_orchestrator_commit.py::test_one_confirmed_save_waits_and_returns_committed[0-4]`, `[7-19]` | 2 passed; положительный `Committed`-контроль сохранён |
+| FR-14/15/26, AC-19/26/27/31/32 | `tests/application/test_orchestrator_commit.py::test_already_applied_returns_success_without_another_save[0]`, `[13]` | 2 failed: после одного save `orchestrator.py:258` выбрасывает `NotImplementedError`; mapping и события ждут 6.4 |
+| FR-14/16/26, AC-19/26/27/31/32 | `tests/application/test_orchestrator_commit.py::test_superseded_returns_actual_version_without_artifact_or_retry[0]`, `[21]` | 2 failed по той же границе; actual version/artifact и terminal ещё не проверены успешным выполнением |
+| FR-14/26, AC-19/20/26/27/31/32 | `tests/application/test_orchestrator_commit.py::test_absent_during_save_uses_commit_stage_code[expired]`, `[not_found]` | 2 failed по той же границе; commit-stage reason/code ждут 6.4 |
+| FR-14/18/26, AC-19/26/27/31/32 | `tests/application/test_orchestrator_commit.py::test_commit_failure_after_expired_deadline_has_one_attempt` | Failed по той же границе; первый save состоялся, deadline не делает его второй попыткой; окончательный ответ ждёт 6.4 |
+| FR-25/26, AC-19/21/26/27/31/32 | `tests/application/test_orchestrator_commit.py::test_unexpected_save_exception_is_logged_and_returns_internal_failure` | Failed: `RuntimeError` из save проброшен наружу; безопасный ответ и exception-запись ждут 6.4 |
+
+Восемь новых тестов собраны и дошли до одного фактического save: helper
+подтверждает это до проброса текущей ошибки. Проверки результата и событий
+после `await execute` пока не исполнились; наличие тестов и ожидаемый red не
+закрывают AC-19/20/21/26/27/31/32. R и F при красном целевом наборе не
+запускались. Production, shared fakes, тест отмены, contracts, ADR, диаграммы
+и сохранённые промты не менялись. Retry с открытым deadline остаётся группе 7;
+K3 и 2.R2 не решались. Следующая отдельная карточка — 6.4.
+
+Проверки целостности: `git diff --check` — exit code 0, только предупреждения
+LF/CRLF для ранее изменённых файлов; прямой AST/newline/trailing-whitespace
+контроль untracked-теста — exit code 0. У README и плана разрешаются 124
+локальные ссылки, code fences парные, trailing whitespace нет. Staged index
+пуст; посторонние файлы рабочего дерева сохранены. Коммит, ветка, push и PR
+не создавались.
+
+#### 1.3.36. Промт и реализация 6.4 — 2026-09-18
+
+По запросу сохранить и выполнить следующий промт создан
+[промт 6.4](../../prompts/2026-09-16/06-protected-commit/06.4-orchestrator-commit-outcome-mapping.md).
+В `src/exact_orb/application/orchestrator.py` после единственной защищённой
+попытки `save` теперь классифицируются `Committed`, `AlreadyApplied`,
+`Superseded`, оба reason `SessionAbsent`, `StateCommitFailed` и unexpected
+`Exception`. Версия берётся только из typed результата `save`; при
+`COMMIT_FAILED` не публикуется artifact или версия. Непредвиденное исключение
+получает отдельную exception-запись с traceback и безопасный
+`ApplicationInternalFailure`. Невалидный возвращённый тип также
+нормализуется в commit-stage internal failure. На завершённый save пишутся
+один attempt и один terminal до возврата либо проброса ранее полученного
+`CancelledError`; защищённая task остаётся локальной и ожидаемой.
+
+Фактические команды из корня репозитория:
+
+```powershell
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/application/test_orchestrator_commit.py tests/application/test_orchestrator_cancellation.py -q
+# 11 passed in 0.32s; exit code 0
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/application/test_orchestrator_routing.py tests/application/test_orchestrator_load.py tests/application/test_orchestrator_handler.py tests/application/test_orchestrator_commit.py tests/application/test_orchestrator_cancellation.py tests/application/test_orchestrator_logging.py -q
+# 226 passed in 0.80s; exit code 0
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/test_run_context.py tests/application tests/session tests/test_module_boundaries.py -q
+# R: 1436 passed in 13.21s; exit code 0
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider -q
+# F: 2355 passed in 39.90s; exit code 0
+```
+
+| Требование | Node IDs / набор | Фактическое свидетельство и остаток |
+|---|---|---|
+| FR-10–18/26, AC-10/19/20/26/27/31/32 | 2 `test_one_confirmed_save_waits_and_returns_committed`, 2 `test_already_applied_returns_success_without_another_save`, 2 `test_superseded_returns_actual_version_without_artifact_or_retry`, 2 `test_absent_during_save_uses_commit_stage_code` | 8 passed: typed версии 0/ненулевые, artifact только при success, причина потери сессии и code на commit, один save и связанные события |
+| FR-18/25/26, AC-19/21/26/27/31/32 | `test_commit_failure_after_expired_deadline_has_one_attempt`; `test_unexpected_save_exception_is_logged_and_returns_internal_failure` | 2 passed: окончательный однопопыточный failure и безопасный internal failure с отдельным traceback; retry с открытым бюджетом ждёт группу 7 |
+| UC-15, FR-20/26, AC-16/17/26/29/31/32 | `test_cancel_after_save_entry_waits_for_commit_and_terminal` | 1 passed: отмена после входа в save ждёт запись и terminal до проброса; повторная отмена остаётся 9.1 |
+| AC-5–10/19/29–32, ранее отложенные success/Superseded | Шесть целевых application-файлов, в том числе `test_save_uses_original_version_when_available_snapshot_changes[0]` и `[7]` | 226 passed; прежние два Superseded и положительный routing/save больше не падают |
+
+Это первый зелёный однопопыточный application-flow, а не полная приёмка R3.2.
+Вторая попытка после `StateCommitFailed`, её deadline/cancellation-правила и
+ошибки второй попытки относятся к 7.1–7.2. Проверка отдельной гонки повторной
+отмены остаётся 9.1. K3 о пустых issues, 2.R2 о вложенной неизменяемости и
+внешние AC-34/36 не закрывались. Новых тестов и изменений контрактов/ADR/
+диаграмм в 6.4 не было; существующие 6.1/6.3 прошли без правок. Следующая
+отдельная карточка — 7.1.
+
+Проверки целостности: `git diff --check` — exit code 0 (только прежние
+предупреждения LF/CRLF); AST/newline/trailing-whitespace для production —
+exit code 0. У нового untracked-промта, README и плана разрешаются 131
+локальная ссылка, code fences парные, trailing whitespace нет. Staged index
+пуст; посторонние файлы рабочего дерева сохранены. Коммит, ветка, push и PR
+не создавались.
 
 ## 2. Принятые границы
 

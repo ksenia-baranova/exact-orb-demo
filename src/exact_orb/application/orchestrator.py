@@ -1,7 +1,7 @@
-"""Application entry, routing, load and pre-commit Handler outcomes.
+"""Application entry, routing, load and one protected commit attempt.
 
 Unknown commands, load refusals and non-success Handler outcomes have results
-and lifecycle logs. Commit remains a later step; this is not transport-ready.
+and lifecycle logs. A retry after a failed commit is a later step.
 """
 
 from __future__ import annotations
@@ -14,17 +14,22 @@ from datetime import datetime
 from typing import get_args
 
 from exact_orb.application.application_results import (
+    ApplicationAlreadyApplied,
     ApplicationCalculationFailure,
+    ApplicationCommitted,
     ApplicationInputRequired,
     ApplicationInternalFailure,
     ApplicationResult,
     ApplicationResolutionFailure,
     ApplicationSessionAbsent,
+    ApplicationStateCommitFailure,
     ApplicationStateReadFailure,
+    ApplicationSuperseded,
 )
 from exact_orb.application.commands import Command
 from exact_orb.application.failure_policy import describe_failure
 from exact_orb.application.operation_logging import (
+    log_commit_attempt_finished,
     log_operation_cancelled,
     log_operation_finished,
     log_operation_started,
@@ -39,7 +44,14 @@ from exact_orb.calculation.errors import (
 from exact_orb.outcomes import CalculationFailed, InputRequired, ResolutionUnavailable
 from exact_orb.run_context import RunContext
 from exact_orb.session.context import ContextService
-from exact_orb.session.outcomes import SessionAbsent, StateReadFailed
+from exact_orb.session.outcomes import (
+    AlreadyApplied,
+    Committed,
+    SessionAbsent,
+    StateCommitFailed,
+    StateReadFailed,
+    Superseded,
+)
 from exact_orb.session.persistence import SessionSnapshot
 
 
@@ -70,7 +82,7 @@ class ApplicationOrchestrator:
         session_id: str,
         run: RunContext,
     ) -> ApplicationResult:
-        """Route, load and classify Handler outcomes before the commit step."""
+        """Route, load and classify Handler and first commit outcomes."""
         log_operation_started(
             run_id=run.run_id,
             command_type=type(command).__name__,
@@ -234,7 +246,140 @@ class ApplicationOrchestrator:
                         duration_ms=handler_duration_ms,
                         state_version=original_expected_state_version,
                     )
-                    raise NotImplementedError("Commit will be implemented in step 6")
+                    commit_started = time.perf_counter()
+                    commit_task = asyncio.create_task(self._context.save(
+                        session_id, original_expected_state_version, handled.delta,
+                    ))
+                    cancelled_error: asyncio.CancelledError | None = None
+                    save_error: Exception | None = None
+                    while True:
+                        try:
+                            saved = await asyncio.shield(commit_task)
+                        except asyncio.CancelledError as exc:
+                            if cancelled_error is None:
+                                cancelled_error = exc
+                            # Keep the task referenced and wait through cancellation;
+                            # another cancel request must not detach a running save.
+                            if commit_task.done():
+                                try:
+                                    saved = commit_task.result()
+                                except Exception as inner_exc:
+                                    save_error = inner_exc
+                                break
+                        except Exception as exc:
+                            save_error = exc
+                            break
+                        else:
+                            break
+                    commit_duration_ms = (time.perf_counter() - commit_started) * 1000
+                    if save_error is None:
+                        if isinstance(saved, Committed):
+                            result = ApplicationCommitted(
+                                run_id=run.run_id,
+                                state_version=saved.state_version,
+                                artifact=handled.artifact,
+                            )
+                            attempt_outcome = "committed"
+                            attempt_version = saved.state_version
+                        elif isinstance(saved, AlreadyApplied):
+                            result = ApplicationAlreadyApplied(
+                                run_id=run.run_id,
+                                state_version=saved.state_version,
+                                artifact=handled.artifact,
+                            )
+                            attempt_outcome = "already_applied"
+                            attempt_version = saved.state_version
+                        elif isinstance(saved, Superseded):
+                            reaction = describe_failure(kind="superseded")
+                            result = ApplicationSuperseded(
+                                code=reaction.code,
+                                detail_code=reaction.detail_code,
+                                user_message=reaction.user_message,
+                                retryable=reaction.retryable,
+                                run_id=run.run_id,
+                                state_version=saved.actual.state_version,
+                            )
+                            attempt_outcome = "superseded"
+                            attempt_version = saved.actual.state_version
+                        elif isinstance(saved, SessionAbsent):
+                            reaction = describe_failure(
+                                kind="session_absent", stage="commit", reason=saved.reason,
+                            )
+                            result = ApplicationSessionAbsent(
+                                handler_status="SUCCESS",
+                                code=reaction.code,
+                                detail_code=reaction.detail_code,
+                                user_message=reaction.user_message,
+                                retryable=reaction.retryable,
+                                run_id=run.run_id,
+                                state_version=None,
+                                reason=saved.reason,
+                            )
+                            attempt_outcome = "session_absent"
+                            attempt_version = None
+                        elif isinstance(saved, StateCommitFailed):
+                            reaction = describe_failure(
+                                kind="state_commit_failed", error_code=saved.error_code,
+                            )
+                            result = ApplicationStateCommitFailure(
+                                code=reaction.code,
+                                detail_code=reaction.detail_code,
+                                user_message=reaction.user_message,
+                                retryable=reaction.retryable,
+                                run_id=run.run_id,
+                                state_version=None,
+                            )
+                            attempt_outcome = "state_commit_failed"
+                            attempt_version = None
+                        else:
+                            try:
+                                raise TypeError(
+                                    "ContextService.save returned an unsupported outcome"
+                                )
+                            except TypeError as exc:
+                                save_error = exc
+                    if save_error is not None:
+                        _logger.error(
+                            "Commit save failed run_id=%s", run.run_id,
+                            exc_info=(type(save_error), save_error, save_error.__traceback__),
+                        )
+                        reaction = describe_failure(kind="internal_failure")
+                        result = ApplicationInternalFailure(
+                            handler_status="SUCCESS",
+                            context_status="COMMIT_FAILED",
+                            code=reaction.code,
+                            detail_code=reaction.detail_code,
+                            user_message=reaction.user_message,
+                            retryable=reaction.retryable,
+                            run_id=run.run_id,
+                            state_version=None,
+                        )
+                        attempt_outcome = "unexpected_failure"
+                        attempt_version = None
+                    detail_code = (
+                        saved.error_code if save_error is None
+                        and isinstance(saved, StateCommitFailed) else None
+                    )
+                    log_commit_attempt_finished(
+                        run_id=run.run_id,
+                        attempt=1,
+                        outcome=attempt_outcome,
+                        detail_code=detail_code,
+                        duration_ms=commit_duration_ms,
+                        state_version=attempt_version,
+                    )
+                    log_operation_finished(
+                        result=result,
+                        load_duration_ms=load_duration_ms,
+                        handler_duration_ms=handler_duration_ms,
+                        commit_duration_ms=commit_duration_ms,
+                        commit_attempts=1,
+                        commit_error_codes=(detail_code,) if detail_code is not None else (),
+                        delivery_cancelled=cancelled_error is not None,
+                    )
+                    if cancelled_error is not None:
+                        raise cancelled_error
+                    return result
                 else:
                     _logger.error("Invalid Handler outcome run_id=%s", run.run_id, stack_info=True)
                     handler_outcome = "invalid_outcome"
