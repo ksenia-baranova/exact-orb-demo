@@ -92,7 +92,7 @@ R3.2/диаграммы 009–010. HEAD сам по себе не содержи
 
 ### 1.3. Текущие статусы и журнал выполнения
 
-#### 1.3.1. Статусы на 2026-09-17
+#### 1.3.1. Статусы на 2026-09-18
 
 | Этап | Статус | Граница подтверждения |
 |---|---|---|
@@ -108,13 +108,17 @@ R3.2/диаграммы 009–010. HEAD сам по себе не содержи
 | 2.4 | Три модели реализованы; целевые и последующие общие проверки прошли | 125 passed; историческая блокировка R/F снята в 1.4, новая контрольная точка — §1.3.11 |
 | 2.5 | Тесты семи моделей и полного union проверены после 2.6 | Весь файл дал 417 passed; прежние и новые assertions исполнились. Требования указаны внутри всех 39 тестовых функций; историческая ошибка импорта сохранена в §1.3.9 |
 | 2.6 | Полный ApplicationResult реализован; целевые и последующие общие проверки прошли | 417 passed без изменения тестов; результаты карточки — §1.3.10. Последующие R/F прошли в 1.4, §1.3.11 |
-| 3.1 | Ранняя выборка прошла после 3.R1 и 3.R2 | 6 passed, 7 deselected; семь положительных случаев в R/F падают на незавершённом пути. Текущие результаты — §1.3.18; история импорта и фикстуры сохранена в §1.3.13/15 |
-| 3.2 | Конструктор и unknown-command ветка прошли раннюю приёмку | После 3.R2: 6 passed, 7 deselected. R: 1392 passed, 7 failed; F: 2311 passed, 7 failed. Положительный путь ожидает группы 4–6, §1.3.18 |
+| 3.1 | Ранняя выборка прошла; текущий routing-прогон §1.3.29 | 12 passed, 1 ожидает commit 6.4; история импорта и фикстуры — §1.3.13/15 |
+| 3.2 | Конструктор и unknown-command ветка прошли раннюю приёмку | Routing: 12 passed, 1 ожидает commit; R: 1422 passed, 3 ожидают commit 6.4. История 3.R2 — §1.3.18, текущий прогон — §1.3.29 |
 | 3.R1 | Выполнен | Четыре замены в тесте; две logging-проверки прошли без изменения assertions и production-кода. R содержит только семь подтверждённых отложенных failures; F не запускался. Журнал §1.3.17 |
 | 3.R2 | Согласованные поправки реализованы; результаты в §1.3.18 | Frozen RunContext, строгая версия и точный текст результата, проверка аргументов политики, terminal из ApplicationResult и JSON events |
 | 2.R2 | Отдельная карточка подготовлена, не выполнена | Граница глубокой неизменяемости Issue/ChartArtifact требует согласования с artifact-контрактом; AC-24 целиком не закрыт |
-| 4.1 | Тестовая карточка выполнена; §1.3.20 | 6 функций, 11 случаев; все failed на NotImplementedError до load. Семь отказов ожидают 4.2, два snapshot-контроля — 5.2, два expected на save — 6.4; поведение ещё не подтверждено |
-| 4.2 | Выполнена ограниченная ветка load; §1.3.22 | Семь случаев отказов прошли; snapshot/version фиксируются и останавливаются перед Handler; R: 1399 passed, 11 ожидаемых deferred failures |
+| 4.1 | Тестовая карточка выполнена; текущий прогон §1.3.29 | 11 случаев: 9 passed, 2 ожидают commit 6.4; история исходного red — §1.3.20 |
+| 4.2 | Ветка load выполнена; текущий прогон §1.3.29 | Отказы load и передача snapshot прошли; R: 1422 passed, 3 ожидают commit 6.4; история — §1.3.22 |
+| 5.1 | Тесты написаны, десять non-success случаев прошли; §1.3.29 | Identity/result/events/no-save подтверждены для непустых issues; K3 оставлен открытым, positive save ждёт 6.4; история — §1.3.24 |
+| 5.2 | Штатные ветки Handler реализованы; §1.3.29 | 10 случаев 5.1 passed; success доходит до границы commit, K3 и 6.4 остаются открытыми |
+| 5.3 | Пять тестов ранних ошибок и отмены прошли; §1.3.29 | 5 passed после 5.2/5.4; история тестовой карточки — §1.3.26 |
+| 5.4 | Ошибки и отмена до commit реализованы; §1.3.29 | 5 случаев 5.3 passed; сквозной success/commit и общий AC-29 остаются группе 6; история частичного выполнения — §1.3.28 |
 | Остальные основные карточки | Запланированы, не выполнялись | Формулировка «закрывает» в карточке означает будущую обязанность |
 
 По запросу пользователя 2026-09-16 подготовлен
@@ -1275,6 +1279,351 @@ F не запускался из-за непройденного R соглас�
 fences. SHA-256 до/после подтвердил неизменность 426 файлов вне allowlist,
 Git index, HEAD и текста плана вне §1.3. Полный F, сетевые и платные smoke
 не выполнялись.
+
+#### 1.3.23. Подготовка промта 5.1 — 2026-09-18
+
+По запросу «пиши промт 5.1» сохранён
+[промт 5.1 — тесты вызова Handler и его штатных исходов](../../prompts/2026-09-16/05-handler-execution/05.1-orchestrator-handler-outcomes-tests.md).
+Вводная часть для менеджеров объясняет, зачем Handler должен получать исходные
+command/state/run, почему потребность исправить ввод отличается от технической
+недоступности и ошибки расчёта, и почему ни один из этих трёх исходов не
+разрешает сохранять новое состояние сессии.
+
+Промт сверён с R3.2/ADR-0006, карточками 5.1–5.4/6.4, диаграммами
+004/005/010, действующими моделями, policy, recording fakes и тестами 4.1.
+При будущем выполнении разрешены новый `test_orchestrator_handler.py`, лишь
+необходимые дополнения общих fakes, этот журнал и README серии. Production,
+старые тесты, требования, ADR, диаграммы и исторические промты не входят в
+allowlist. Положительный контроль сохранения опирается прежде всего на уже
+имеющиеся routing/load-тесты, чтобы не дублировать их сценарии.
+
+**K3 остаётся открытым:** Handler принимает `InputRequired(issues=())`, а
+`ApplicationInputRequired` требует непустые `issues`. Промт разрешает
+подготовить независимые тесты с непустыми issues, но запрещает молча выбрать
+реакцию на пустой исход; без решения владельца контракта 5.1 может быть только
+частично выполнена, AC-8 целиком не закрывается. Это не изменение принятого
+плана или публичного контракта.
+
+В тестовом задании разделены identity и порядок `load → handle`, три
+non-success ветки и точные поля ответа, fallback/WARN неизвестного calculation
+code, события завершённого Handler и границы будущего success/commit. Отмена
+load и Handler остаётся 5.3–5.4; в будущей карточке 5.4 должна быть явно
+проверена обработка отмены именно вокруг load.
+
+**Карточка не выполнялась:** тестовый файл не создавался, production и
+существующие тесты не менялись, pytest не запускался. Результаты 4.2 остаются
+в §1.3.22; новый промт не делает их зелёными задним числом. Следующий шаг —
+отдельное выполнение 5.1 с явным учётом K3. Коммит, ветка, push и PR не
+создавались.
+
+Проверки подготовки: `git diff --check` — exit code 0; структурная проверка
+трёх Markdown-файлов подтвердила 121 локальную ссылку и парные code fences.
+SHA-256 до/после подтвердил неизменность 428 файлов вне allowlist, Git index,
+HEAD и текста плана вне §1.3. Новый тестовый файл ещё отсутствует.
+
+#### 1.3.24. Выполнение тестовой части промта 5.1 — 2026-09-18
+
+**Основание:** явное поручение «сохрани и выполни промт» после подготовки 5.1.
+**Ветка:** `feat/application-orchestrator`.
+**HEAD:** `24aa5e9a32d1a299399d9fdbdef373727ece7651`.
+Создан только `tests/application/test_orchestrator_handler.py` из тестовой
+области промта. Общие recording fakes оказались достаточны и не менялись;
+production, требования, ADR, диаграммы и сохранённый промт 5.1 не изменялись.
+
+Четыре тестовые функции дают десять случаев: `InputRequired` с двумя
+упорядоченными issues и версиями 0/7, `ResolutionUnavailable` с обоими
+значениями retryable, пять известных calculation-кодов и один неизвестный.
+После реализации 5.2 каждый случай должен проверить исходные объекты
+command/state/run по identity, единственную последовательность load → handle
+без save, точную модель результата и реальный JSON-журнал started → load →
+handler → terminal. Для неизвестного кода отдельно проверяется диагностический
+WARN, для известных — его отсутствие. Тексты и retryable заданы независимо
+от вызова policy в тесте.
+
+Фактические проверки из корня репозитория:
+
+```powershell
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/application/test_orchestrator_handler.py -q --tb=no
+# 10 failed in 0.38s; exit code 1
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/application/test_orchestrator_handler.py --collect-only -q
+# 10 tests collected in 0.26s; exit code 0
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/application/test_orchestrator_load.py -k "absent or read_failed or unexpected" -q
+# 7 passed, 4 deselected in 0.28s; exit code 0
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/application/test_orchestrator_routing.py -k "requires_run or unknown_command or subclass or registry" -q
+# 6 passed, 7 deselected in 0.26s; exit code 0
+```
+
+Первый запуск с `--tb=line` до сокращения имён параметров также дал 10 failed,
+все на `NotImplementedError` в `orchestrator.py:125` после `load/loaded`.
+Повторный запуск после изменения только test IDs подтвердил те же десять
+отложенных случаев. Ошибок импорта, fixtures и тестовых данных не было.
+
+| Требование | Node IDs `test_orchestrator_handler.py::…` | Подтверждение / зависимость |
+|---|---|---|
+| FR-02/05–08/26, AC-2/5/7/8/26/29/30/33 | `test_input_required_preserves_handler_identity_issues_and_events[0]`, `[7]` | 2 failed после load; identity, порядок issues, no-save и terminal пока не проверены; 5.2. Пустые issues — K3 |
+| FR-10/25–26, AC-8/21/26/27/29/30/33 | `test_resolution_failure_keeps_handler_retryability_without_save[retryable]`, `[non_retryable]` | 2 failed после load; обе реакции Handler → ApplicationResult ждут 5.2 |
+| FR-10/25–26, AC-8/21/25–27/29/30/33 | `test_known_calculation_failure_uses_exact_policy_without_save[EPHEMERIS_UNAVAILABLE]`, `[HOUSES_DEGENERATE]`, `[SPEC_INVALID]`, `[GEOGRAPHY_INVALID]`, `[ENGINE_UNEXPECTED]` | 5 failed после load; известные тексты, retryable и отсутствие диагностического WARN ждут 5.2 |
+| FR-10/25–26, AC-8/21/25–27/29/30/33 | `test_unknown_calculation_code_uses_fallback_and_diagnostic_warn` | 1 failed после load; fallback и отдельный WARN ждут 5.2 |
+| AC-8/10, AC-5/7 | `test_orchestrator_routing.py::test_known_command_completes_with_commit`, `test_orchestrator_load.py::test_save_uses_original_version_when_available_snapshot_changes[0]`, `[7]` | Существующие положительные контроли save не дублировались; завершатся в 6.4 |
+
+Таким образом, 5.1 **частично выполнена как подготовка тестов**, но ни одно
+новое утверждение после `execute` пока не подтверждено. K3 остаётся открытым:
+допустимый `InputRequired(issues=())` нельзя поместить в действующий внешний
+`ApplicationInputRequired`; реакция на него не назначалась, AC-8 полностью не
+закрыт. Основная следующая карточка — 5.2 после решения K3 для этой ветки.
+Отмена load/Handler остаётся 5.3–5.4. R и F не запускались, поскольку целевой
+набор ожидаемо красный до реализации 5.2 (§4.2); сетевые и платные smoke не
+выполнялись. Коммит, ветка, push и PR не создавались.
+
+`git diff --check` завершился с exit code 0. Структурная проверка плана,
+README и сохранённого промта подтвердила 121 локальную ссылку без потерь и
+парные code fences; новый Python-файл собрался в pytest без ошибок импорта.
+SHA-256 до/после подтвердил сохранность 428 файлов вне разрешённой области,
+общих fakes, Git index, HEAD и текста плана вне §1.3.
+
+#### 1.3.25. Подготовка промта 5.3 — 2026-09-18
+
+По запросу «напиши промт 5.3» сохранён
+[промт 5.3 — тесты нарушений Handler и отмены до сохранения](../../prompts/2026-09-16/05-handler-execution/05.3-orchestrator-handler-failures-and-early-cancellation-tests.md).
+Его вводная часть объясняет для менеджеров, почему неверный ответ или
+исключение Handler нельзя показывать как ошибку пользовательского ввода и
+почему отменённый load обязан оставить один terminal, но не ложный finished
+stage. Подготовлены отдельные сценарии `None`/чужого типа, настоящего
+исключения и управляемой отмены на load/Handler через `asyncio.Event`.
+
+Промт сверён с R3.2 UC-12/14, FR-25/26, §11.5, ADR-0006, диаграммой 010,
+карточками 5.1–5.4, действующими моделями, logging helpers и тестами. При
+будущем выполнении allowlist ограничен тестами `test_orchestrator_handler.py`,
+при отдельном доказанном пробеле — `test_orchestrator_logging.py`, журналом
+§1.3 и README. Production и общие fakes не разрешены этой тестовой карточкой.
+Тесты будут проверять результат, фактическое отсутствие save, отдельную
+диагностику, точный lifecycle, один cancelled terminal и проброс
+`CancelledError`; отмена после начала commit остаётся группе 6.
+
+**Зависимость пока не выполнена:** в текущем checkout 5.2 не реализована;
+после load остаётся `NotImplementedError`. Сохранение задания 5.3 не означает
+его исполнения и не закрывает AC-9/17/21/26/29/30/32/33. K3 остаётся
+открытым, но не изменяет смысл независимых сценариев 5.3. Следующий основной
+шаг в последовательности плана — 5.2, затем тестовая 5.3 и реализация 5.4.
+Тесты и production при подготовке не менялись, pytest не запускался; коммит,
+ветка, push и PR не создавались.
+
+Проверки подготовки: `git diff --check` — exit code 0; структурная проверка
+плана, README и нового промта подтвердила 120 локальных ссылок без потерь,
+парные code fences и отсутствие trailing whitespace в новом промте.
+SHA-256 подтвердил сохранность 428 файлов вне области подготовки, общих fakes,
+Git index, HEAD и текста плана вне §1.3.
+
+#### 1.3.26. Частичное выполнение тестовой части промта 5.3 — 2026-09-18
+
+**Основание:** явное поручение «Сохрани и реализуй промт 5.3» после его
+подготовки. **Ветка:** `feat/application-orchestrator`.
+**HEAD:** `24aa5e9a32d1a299399d9fdbdef373727ece7651`.
+Сохранённый промт 5.3 не редактировался. В пределах его тестового allowlist
+дополнен `tests/application/test_orchestrator_handler.py`: два случая неверного
+outcome (`None`/чужой typed объект), настоящее исключение с техническим
+маркером и два управляемых `asyncio.Event` сценария отмены во время load и
+Handler. Тесты используют настоящий `execute`, recording fakes и реальные
+JSON LogRecord; `sleep`, `skip` и `xfail` не применяются. Отдельный
+`test_orchestrator_logging.py` уже покрывает helpers и не менялся; production,
+shared fakes и остальные тесты не менялись.
+
+Фактические проверки из корня репозитория:
+
+```powershell
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/application/test_orchestrator_handler.py tests/application/test_orchestrator_logging.py -q --tb=no
+# 15 failed, 176 passed in 0.61s; exit code 1
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/application/test_orchestrator_handler.py -k "invalid_handler or handler_exception or cancel_during" -q --tb=line
+# 5 failed, 10 deselected in 0.33s; exit code 1
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/application/test_orchestrator_handler.py --collect-only -q
+# 15 tests collected in 0.26s; exit code 0
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/application/test_orchestrator_load.py -k "absent or read_failed or unexpected" -q
+# 7 passed, 4 deselected in 0.28s; exit code 0
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/application/test_orchestrator_routing.py -k "requires_run or unknown_command or subclass or registry" -q
+# 6 passed, 7 deselected in 0.26s; exit code 0
+```
+
+| Требование | Node IDs `test_orchestrator_handler.py::…` | Подтверждение / зависимость |
+|---|---|---|
+| UC-12, AC-9/21/26/29/30/32/33 | `test_invalid_handler_outcome_is_internal_failure_without_save[none-version-zero]`, `[foreign-type]` | 2 failed на `NotImplementedError` после load; Handler ещё не вызван, преобразование и отсутствие save ждут 5.2/5.4 |
+| UC-12, FR-25, AC-21/26/29/30/32/33 | `test_handler_exception_has_real_traceback_and_safe_result` | 1 failed на той же границе; реальный traceback, безопасный ответ и события ждут 5.2/5.4 |
+| UC-14, AC-17/26/29/30/32/33 | `test_cancel_during_load_writes_one_cancelled_terminal` | Event подтвердил вход в load; `CancelledError` дошёл вызывающему, Handler/save не вызваны, но после `started` нет terminal. Один конкретный дефект для 5.4 воспроизведён |
+| UC-14, AC-17/26/29/30/32/33 | `test_cancel_during_handler_writes_one_cancelled_terminal` | 1 failed на `NotImplementedError` до входа Handler; проверка отмены ждёт 5.2/5.4 |
+| FR-26, модели/формат событий | `test_orchestrator_logging.py` | 176 passed для функций записи, не подтверждают вызов cancelled terminal из `execute` |
+
+Прежние десять случаев 5.1 также failed на том же `NotImplementedError`, без
+новой регрессии в этих тестах. Новые тесты **написаны и собраны**, но 5.3 не
+может считаться выполненной или принятой: 5.2 отсутствует, четыре новых
+сценария не достигли своих assertions, а отменённый load выявил отсутствие
+terminal. Поэтому AC-9/17/21/26/29/30/32/33 целиком не закрыты; AC-17
+дополнительно требует Event-контроля защищённого commit в группе 6. K3 о пустых
+issues остаётся открытым. Следующий основной шаг по последовательности — 5.2,
+затем 5.4 после проверки 5.3. R и F не запускались при красном целевом наборе
+согласно §4.2; сетевые и платные smoke не выполнялись. Коммит, ветка, push и
+PR не создавались.
+
+`git diff --check` завершился с exit code 0. Структурная проверка плана,
+README и сохранённого промта подтвердила 121 локальную ссылку без потерь и
+парные code fences; в изменённом тестовом файле нет trailing whitespace.
+SHA-256 до/после подтвердил сохранность 428 файлов вне области выполнения,
+общих fakes, Git index, HEAD и текста плана вне §1.3.
+
+#### 1.3.27. Подготовка промта 5.4 — 2026-09-18
+
+По запросу «Пиши промт 5.4» сохранён
+[промт 5.4 — ошибки Handler и отмена до commit](../../prompts/2026-09-16/05-handler-execution/05.4-orchestrator-handler-errors-and-precommit-cancellation.md).
+Его вводная часть объясняет менеджерам, зачем превращать нарушение контракта
+Handler или его исключение в безопасный внутренний отказ и почему отмена во
+время load/Handler обязана оставить один terminal event до проброса отмены.
+
+Промт согласован с R3.2 UC-12/14, FR-25/26 и §11.5, ADR-0006, диаграммой 010,
+карточками 5.2–5.4 и уже написанными тестами 5.3. Для будущей реализации
+разрешён только `src/exact_orb/application/orchestrator.py`, а для записи
+фактического результата — §1.3 плана и README серии. Неверный outcome и
+исключение Handler требуют `ApplicationInternalFailure` с исходной loaded
+version, отдельной диагностики, законченного handler stage и result-terminal;
+отмена незавершённого load/Handler требует cancelled terminal без ложного
+stage-finished, результата и save. Защищённый commit остаётся группе 6.
+
+**Зависимость открыта:** 5.2 отсутствует в текущем checkout. Промт допускает
+отдельную реализацию и проверку отмены load до 5.2, но не позволяет считать
+5.4 принятой до выполнения Handler-веток и тестов 5.3. K3 о пустом `issues`
+остаётся открытым. При подготовке production и тесты не изменялись, pytest
+не запускался; AC не закрыты, коммит, ветка, push и PR не создавались.
+
+Проверки подготовки: `git diff --check` — exit code 0; структурная проверка
+трёх Markdown-файлов — exit code 0, 125 локальных ссылок разрешаются, code
+fences парные, trailing whitespace нет. Pytest при подготовке не запускался.
+
+#### 1.3.28. Частичное выполнение промта 5.4 — 2026-09-18
+
+**Основание:** поручение «выполни промт» после сохранения 5.4.
+**Ветка:** `feat/application-orchestrator`.
+**HEAD:** `24aa5e9a32d1a299399d9fdbdef373727ece7651`.
+На входе 5.2 отсутствовала: после успешного load `execute` по-прежнему
+останавливался на `NotImplementedError`. Согласно сохранённому промту
+выполнена только независимая часть 5.4 — отмена незавершённого load.
+
+В `src/exact_orb/application/orchestrator.py` добавлен отдельный перехват
+`asyncio.CancelledError` непосредственно вокруг `await context.load`.
+Перед повторным пробросом исходной отмены он вызывает существующий
+`log_operation_cancelled` с переданным `run_id`, `cancelled_stage="load"` и
+`None` для длительностей незавершённого load и не начатого Handler. Событие
+завершения load, `ApplicationResult`, Handler и save в этой ветке не создаются.
+Обработка typed отказов load и настоящего `Exception` сохранена; тесты,
+logging helper, модели, требования, ADR и диаграммы не менялись.
+
+Фактические проверки из корня репозитория:
+
+```powershell
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/application/test_orchestrator_handler.py::test_cancel_during_load_writes_one_cancelled_terminal -q --tb=short
+# до правки: 1 failed; после started отсутствовал terminal; exit code 1
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/application/test_orchestrator_handler.py::test_cancel_during_load_writes_one_cancelled_terminal -q
+# после правки: 1 passed; exit code 0
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/application/test_orchestrator_load.py -k "absent or read_failed or unexpected" -q
+# 7 passed, 4 deselected; exit code 0
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/application/test_orchestrator_routing.py -k "requires_run or unknown_command or subclass or registry" -q
+# 6 passed, 7 deselected; exit code 0
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/application/test_orchestrator_logging.py -q
+# 176 passed; exit code 0
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/application/test_orchestrator_handler.py -k "invalid_handler or handler_exception or cancel_during" -q --tb=line
+# 4 failed, 1 passed, 10 deselected; exit code 1
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/application/test_orchestrator_handler.py tests/application/test_orchestrator_logging.py -q --tb=no
+# 14 failed, 177 passed; exit code 1
+```
+
+| Требование | Node ID `test_orchestrator_handler.py::…` | Фактическая граница |
+|---|---|---|
+| UC-14, FR-26, AC-17/26/29/30/32/33 | `test_cancel_during_load_writes_one_cancelled_terminal` | Passed: один started и один cancelled terminal до наблюдения `CancelledError`; нет stage-finished и save. Доказана только отмена load, не полный AC |
+| UC-12, FR-25/26, AC-9/21/26/29/30/32/33 | `test_invalid_handler_outcome_is_internal_failure_without_save[none-version-zero]`, `[foreign-type]`; `test_handler_exception_has_real_traceback_and_safe_result` | 3 failed на `NotImplementedError` после load; Handler не вызывался, нормализация ждёт 5.2/оставшуюся часть 5.4 |
+| UC-14, FR-26, AC-17/26/29/30/32/33 | `test_cancel_during_handler_writes_one_cancelled_terminal` | Failed на том же `NotImplementedError` до входа Handler; ждёт 5.2/оставшуюся часть 5.4 |
+| Штатные исходы Handler, AC-8/21/25–30/33 | 10 прежних случаев 5.1 | Failed после load на `NotImplementedError`; ждут 5.2, K3 остаётся открытым |
+| Формат функций lifecycle logging | `test_orchestrator_logging.py` | 176 passed; не доказывают вызов Handler или terminal из его веток |
+
+Итог 5.4 — **частично выполнена**, полная приёмка не пройдена. После
+отдельного выполнения 5.2 нужно вернуться к неверному результату, исключению
+и отмене Handler по сохранённому промту 5.4. R и F при красном целевом
+Handler-наборе не запускались по §4.2. Сетевые и платные smoke не выполнялись;
+коммит, ветка, push и PR не создавались.
+
+`git diff --check` — exit code 0. Структурная проверка плана, README и
+сохранённого промта — exit code 0: 125 локальных ссылок разрешаются, code
+fences парные, trailing whitespace нет. Сравнение diff подтверждает, что
+production-правка ограничена перехватом отмены load, а план изменён только
+в §1.3; посторонние файлы рабочего дерева оставлены без изменений.
+
+#### 1.3.29. Реализация 5.2 и завершение ранних веток 5.4 — 2026-09-18
+
+**Основание:** поручение «реализуй 5.2 промт же был» после частичного
+выполнения 5.4. Карточка 5.2 действительно есть в §5 этого плана;
+отдельный файл 05.2 в каталоге промтов не создавался. Предыдущее утверждение
+об отсутствии задания было ошибочным: отсутствовал только отдельный файл и
+реализация. **Ветка:** `feat/application-orchestrator`.
+**HEAD:** `24aa5e9a32d1a299399d9fdbdef373727ece7651`.
+
+В `src/exact_orb/application/orchestrator.py` после успешного load Handler
+получает исходные `command`, `snapshot.state` и `run` по identity. Его
+`InputRequired` с непустыми issues, `ResolutionUnavailable` и
+`CalculationFailed` преобразуются в проверяемые `ApplicationResult` через
+`describe_failure`; перед возвратом пишутся завершение стадии Handler и один
+terminal из созданной модели. Save на этих путях не вызывается. Неизвестный
+calculation code сохраняется как `detail_code`, получает fallback policy и
+отдельный WARN; множество известных кодов берётся из действующих typed
+calculation errors. Успешный `BuildNatalSuccess` создаёт handler/success event
+и останавливается на явной границе commit без фиктивного save: commit — 6.4.
+
+После появления вызова Handler закончены ранее разрешённые ветки 5.4:
+неверный outcome и настоящее исключение дают безопасный
+`ApplicationInternalFailure` с загруженной версией, отдельную техническую
+диагностику, handler stage и result-terminal; отмена Handler даёт один
+cancelled terminal перед повторным пробросом `CancelledError`, без ложного
+stage-finished и save. Искусственное исключение для невалидного outcome не
+создаётся. Тесты, policy, модели, logging helpers, требования, ADR и диаграммы
+не менялись: код исполняет ранее принятый контракт, не пересматривая его.
+
+**K3 оставлен открытым по явному выбору пользователя в этом выполнении.**
+Handler contract разрешает `InputRequired(issues=())`, внешняя модель
+отклоняет его. Код не добавляет фиктивный issue, не ослабляет модель и не
+выбирает новый public outcome; этот случай не принят, полный AC-8 не закрыт.
+До решения K3 такой outcome нельзя считать поддержанным завершённым путём.
+
+Фактические проверки из корня репозитория:
+
+```powershell
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/application/test_orchestrator_handler.py -k "identity or non_success or unknown_calculation" -q
+# 3 passed, 12 deselected; exit code 0; точная выборка карточки 5.2
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/application/test_orchestrator_handler.py -k "input_required_preserves or resolution_failure or known_calculation or unknown_calculation" -q --tb=short
+# 10 passed, 5 deselected; exit code 0; все случаи 5.1
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/application/test_orchestrator_handler.py -k "invalid_handler or handler_exception or cancel_during" -q --tb=short
+# 5 passed, 10 deselected; exit code 0; все случаи 5.3
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/application/test_orchestrator_handler.py tests/application/test_orchestrator_logging.py -q
+# 191 passed; exit code 0
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/application/test_orchestrator_load.py -q --tb=no
+# 2 failed, 9 passed; exit code 1; оба failure — save после success, группа 6
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/application/test_orchestrator_routing.py -q --tb=no
+# 1 failed, 12 passed; exit code 1; failure — commit после success, группа 6
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/test_run_context.py tests/application tests/session tests/test_module_boundaries.py -q --tb=no
+# R: 3 failed, 1422 passed; exit code 1
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/application/test_orchestrator_load.py::test_save_uses_original_version_when_available_snapshot_changes tests/application/test_orchestrator_routing.py::test_known_command_completes_with_commit -q --tb=line
+# те же 3 failed на NotImplementedError после handler/success; exit code 1
+```
+
+| Требование | Node IDs | Свидетельство и остаток |
+|---|---|---|
+| AC-2/5/7/8/26/29/30/33 | `test_orchestrator_handler.py::test_input_required_preserves_handler_identity_issues_and_events[0]`, `[7]` | 2 passed: identity, loaded version, issues, no-save и четыре события; пустые issues — K3 |
+| AC-8/21/25–27/29/30/33 | `test_resolution_failure_keeps_handler_retryability_without_save[retryable]`, `[non_retryable]`; `test_known_calculation_failure_uses_exact_policy_without_save[EPHEMERIS_UNAVAILABLE]`, `[HOUSES_DEGENERATE]`, `[SPEC_INVALID]`, `[GEOGRAPHY_INVALID]`, `[ENGINE_UNEXPECTED]`; `test_unknown_calculation_code_uses_fallback_and_diagnostic_warn` | 8 passed: точные поля результата, тексты/retryability, fallback/WARN, отсутствие save |
+| UC-12/14, FR-25/26, AC-9/17/21/26/29/30/32/33 | `test_invalid_handler_outcome_is_internal_failure_without_save[none-version-zero]`, `[foreign-type]`; `test_handler_exception_has_real_traceback_and_safe_result`; `test_cancel_during_load_writes_one_cancelled_terminal`; `test_cancel_during_handler_writes_one_cancelled_terminal` | 5 passed: безопасный result или отмена, один terminal, нет save и ложного finished event; commit-cancellation остаётся группе 6 |
+| AC-7/10/19/26/27/29/30 | `test_orchestrator_load.py::test_save_uses_original_version_when_available_snapshot_changes[0]`, `[7]`; `test_orchestrator_routing.py::test_known_command_completes_with_commit` | 3 failed после handler/success на явном `NotImplementedError`; save/commit и terminal ждут 6.4 |
+
+R содержит только три заранее отложенных success/commit сценария; неожиданных
+падений нет. F не запускался при красном R согласно §4.2. Сетевые и платные
+smoke не выполнялись; коммит, ветка, push и PR не создавались. Следующий
+основной этап — группа 6, при открытом K3 и неполной сквозной приёмке AC.
+
+`git diff --check` — exit code 0. Структурная проверка плана, README и
+сохранённого промта 5.4 — exit code 0: 124 локальные ссылки разрешаются,
+code fences парные, trailing whitespace нет. Git index пуст по staged diff;
+посторонние файлы рабочего дерева сохранены.
 
 ## 2. Принятые границы
 

@@ -1,31 +1,42 @@
-"""Application entry, routing and session load (implementation step 4.2).
+"""Application entry, routing, load and pre-commit Handler outcomes.
 
-Unknown commands and load refusals have results and lifecycle logs. A loaded
-snapshot stops before handler execution and commit in later steps. This partial
-coordinator is not transport-ready.
+Unknown commands, load refusals and non-success Handler outcomes have results
+and lifecycle logs. Commit remains a later step; this is not transport-ready.
 """
 
 from __future__ import annotations
 
+import asyncio
 import logging
 import time
 from collections.abc import Callable, Mapping
 from datetime import datetime
+from typing import get_args
 
 from exact_orb.application.application_results import (
+    ApplicationCalculationFailure,
+    ApplicationInputRequired,
     ApplicationInternalFailure,
     ApplicationResult,
+    ApplicationResolutionFailure,
     ApplicationSessionAbsent,
     ApplicationStateReadFailure,
 )
 from exact_orb.application.commands import Command
 from exact_orb.application.failure_policy import describe_failure
 from exact_orb.application.operation_logging import (
+    log_operation_cancelled,
     log_operation_finished,
     log_operation_started,
     log_stage_finished,
 )
 from exact_orb.application.ports import Handler
+from exact_orb.application.results import BuildNatalSuccess
+from exact_orb.calculation.errors import (
+    CalculationUnavailableErrorCode,
+    ChartCalculationErrorCode,
+)
+from exact_orb.outcomes import CalculationFailed, InputRequired, ResolutionUnavailable
 from exact_orb.run_context import RunContext
 from exact_orb.session.context import ContextService
 from exact_orb.session.outcomes import SessionAbsent, StateReadFailed
@@ -33,6 +44,9 @@ from exact_orb.session.persistence import SessionSnapshot
 
 
 _logger = logging.getLogger(__name__)
+_KNOWN_CALCULATION_CODES = frozenset(
+    get_args(ChartCalculationErrorCode) + get_args(CalculationUnavailableErrorCode)
+)
 
 
 class ApplicationOrchestrator:
@@ -56,7 +70,7 @@ class ApplicationOrchestrator:
         session_id: str,
         run: RunContext,
     ) -> ApplicationResult:
-        """Route first, then finish load refusals before the unfinished handler."""
+        """Route, load and classify Handler outcomes before the commit step."""
         log_operation_started(
             run_id=run.run_id,
             command_type=type(command).__name__,
@@ -89,6 +103,14 @@ class ApplicationOrchestrator:
         load_started = time.perf_counter()
         try:
             loaded = await self._context.load(session_id)
+        except asyncio.CancelledError:
+            log_operation_cancelled(
+                run_id=run.run_id,
+                cancelled_stage="load",
+                load_duration_ms=None,
+                handler_duration_ms=None,
+            )
+            raise
         except Exception:
             load_duration_ms = (time.perf_counter() - load_started) * 1000
             _logger.exception("Session load failed run_id=%s", run.run_id)
@@ -121,10 +143,131 @@ class ApplicationOrchestrator:
         )
 
         if outcome == "loaded":
-            # The snapshot and original version remain local for steps 5–6.
-            raise NotImplementedError(
-                "Handler execution and commit will be implemented in steps 5–6"
+            handler_started = time.perf_counter()
+            try:
+                handled = await handler.handle(command, snapshot.state, run)
+            except asyncio.CancelledError:
+                log_operation_cancelled(
+                    run_id=run.run_id,
+                    cancelled_stage="handler",
+                    load_duration_ms=load_duration_ms,
+                    handler_duration_ms=None,
+                )
+                raise
+            except Exception:
+                handler_duration_ms = (time.perf_counter() - handler_started) * 1000
+                _logger.exception("Handler failed run_id=%s", run.run_id)
+                handler_outcome = "unexpected_failure"
+                reaction = describe_failure(kind="internal_failure")
+                result = ApplicationInternalFailure(
+                    orch_status="FAILURE",
+                    handler_status="UNEXPECTED_FAILURE",
+                    context_status="LOADED",
+                    code=reaction.code,
+                    detail_code=reaction.detail_code,
+                    user_message=reaction.user_message,
+                    retryable=reaction.retryable,
+                    run_id=run.run_id,
+                    state_version=original_expected_state_version,
+                )
+            else:
+                handler_duration_ms = (time.perf_counter() - handler_started) * 1000
+                if isinstance(handled, InputRequired):
+                    handler_outcome = "input_required"
+                    reaction = describe_failure(kind="input_required")
+                    result = ApplicationInputRequired(
+                        orch_status="INPUT_REQUIRED",
+                        handler_status="INPUT_REQUIRED",
+                        context_status="LOADED",
+                        code=reaction.code,
+                        detail_code=reaction.detail_code,
+                        user_message=reaction.user_message,
+                        retryable=reaction.retryable,
+                        run_id=run.run_id,
+                        state_version=original_expected_state_version,
+                        issues=handled.issues,
+                    )
+                elif isinstance(handled, ResolutionUnavailable):
+                    handler_outcome = "resolution_unavailable"
+                    reaction = describe_failure(
+                        kind="resolution_unavailable",
+                        error_code=handled.error_code,
+                        retryable=handled.retryable,
+                    )
+                    result = ApplicationResolutionFailure(
+                        orch_status="FAILURE",
+                        handler_status="RESOLUTION_UNAVAILABLE",
+                        context_status="LOADED",
+                        code=reaction.code,
+                        detail_code=reaction.detail_code,
+                        user_message=reaction.user_message,
+                        retryable=reaction.retryable,
+                        run_id=run.run_id,
+                        state_version=original_expected_state_version,
+                    )
+                elif isinstance(handled, CalculationFailed):
+                    handler_outcome = "calculation_failed"
+                    reaction = describe_failure(
+                        kind="calculation_failed", error_code=handled.error_code,
+                    )
+                    if handled.error_code not in _KNOWN_CALCULATION_CODES:
+                        _logger.warning(
+                            "Unknown calculation failure code=%r run_id=%s",
+                            handled.error_code, run.run_id,
+                        )
+                    result = ApplicationCalculationFailure(
+                        orch_status="FAILURE",
+                        handler_status="CALCULATION_FAILED",
+                        context_status="LOADED",
+                        code=reaction.code,
+                        detail_code=reaction.detail_code,
+                        user_message=reaction.user_message,
+                        retryable=reaction.retryable,
+                        run_id=run.run_id,
+                        state_version=original_expected_state_version,
+                    )
+                elif isinstance(handled, BuildNatalSuccess):
+                    log_stage_finished(
+                        run_id=run.run_id,
+                        stage="handler",
+                        outcome="success",
+                        duration_ms=handler_duration_ms,
+                        state_version=original_expected_state_version,
+                    )
+                    raise NotImplementedError("Commit will be implemented in step 6")
+                else:
+                    _logger.error("Invalid Handler outcome run_id=%s", run.run_id, stack_info=True)
+                    handler_outcome = "invalid_outcome"
+                    reaction = describe_failure(kind="internal_failure")
+                    result = ApplicationInternalFailure(
+                        orch_status="FAILURE",
+                        handler_status="UNEXPECTED_FAILURE",
+                        context_status="LOADED",
+                        code=reaction.code,
+                        detail_code=reaction.detail_code,
+                        user_message=reaction.user_message,
+                        retryable=reaction.retryable,
+                        run_id=run.run_id,
+                        state_version=original_expected_state_version,
+                    )
+
+            log_stage_finished(
+                run_id=run.run_id,
+                stage="handler",
+                outcome=handler_outcome,
+                duration_ms=handler_duration_ms,
+                state_version=original_expected_state_version,
             )
+            log_operation_finished(
+                result=result,
+                load_duration_ms=load_duration_ms,
+                handler_duration_ms=handler_duration_ms,
+                commit_duration_ms=None,
+                commit_attempts=0,
+                commit_error_codes=(),
+                delivery_cancelled=False,
+            )
+            return result
         if outcome == "session_absent":
             reaction = describe_failure(
                 kind="session_absent", stage="load", reason=loaded.reason
