@@ -127,7 +127,9 @@ R3.2/диаграммы 009–010. HEAD сам по себе не содержи
 | 7.2 | Один точный retry реализован и проверен | Целевой набор: 23 passed; R: 1448 passed; F: 2367 passed. Реальный lost-CAS и повторная отмена остаются отдельными этапами; §1.3.37 |
 | 8.1 | Сквозная последовательность lifecycle проверена через `execute()` | 13 новых случаев; целевой файл: 189 passed, R: 1461 passed, F: 2380 passed. Состав полей и длительности остаются 8.2; §1.3.39 |
 | 8.2 | Состав lifecycle-событий и длительности проверены через `execute()` | 10 новых случаев; целевой файл: 199 passed, R: 1471 passed, F: 2390 passed. Гонки повторной отмены и интеграция остаются поздним карточкам; §1.3.40 |
-| Остальные основные карточки | Запланированы, не выполнялись | Начиная с 9.1; формулировка «закрывает» в карточке означает будущую обязанность |
+| 9.1 | Повторная отмена и отмена начатой второй попытки проверены через `execute()` | 4 новых случая; целевой файл: 5 passed, R: 1475 passed, F: 2394 passed. Реальный CAS и межоперационная конкурентность остаются поздним карточкам; §1.3.41 |
+| 9.2 | Изоляция параллельных `execute()` проверена на одном экземпляре | 2 новых случая; целевой файл: 2 passed, R: 1477 passed, повторный F: 2396 passed. Первый F встретил `SESSION_SQLITE_BUSY` в существующем SQLite-тесте; §1.3.42. Реальный CAS остаётся 10.5 |
+| Остальные основные карточки | Запланированы, не выполнялись | Начиная с 10.1; формулировка «закрывает» в карточке означает будущую обязанность |
 
 По запросу пользователя 2026-09-16 подготовлен
 [промт 2.1](../../prompts/2026-09-16/02-application-results/02.1-application-failure-policy-tests.md)
@@ -2116,6 +2118,123 @@ ADR, requirements и диаграммы не менялись. Полная пр
 локальные Markdown-ссылки и парность code fences трёх затронутых документов
 проверены с exit code 0. Staged index пуст. Посторонние modified/untracked
 файлы сохранены; коммит, ветка, push и PR не создавались.
+
+#### 1.3.41. Промт и выполнение 9.1 — 2026-09-18
+
+Сохранён [промт 9.1](../../prompts/2026-09-16/09-cancellation-and-concurrency/09.1-orchestrator-repeat-cancellation-tests.md).
+До этого среза тесты покрывали один сигнал отмены после входа в первый save
+и запрещение retry при таком сигнале. Они не подавали повторную отмену во
+время ожидания inner task и не удерживали уже начавшуюся вторую попытку.
+В `test_orchestrator_cancellation.py` добавлены четыре параметризованных
+случая через настоящий `ApplicationOrchestrator.execute` и локальный fake
+`ContextService.save` с отдельными `asyncio.Event` для входа и release каждой
+попытки. Общие fake-компоненты и production не менялись.
+
+Два исхода первой попытки (`Committed`, `StateCommitFailed`) проверены при двух
+последовательных сигналах отмены. После каждого checkpoint вызывающая задача
+ещё ожидает незавершённый save; его task не отменён и terminal отсутствует.
+Отказ первой попытки не запускает вторую, хотя deadline не установлен.
+Ещё два случая дожидаются реального входа во второй save после первого
+`StateCommitFailed`, затем отменяют request дважды. До release второй save
+caller остаётся в ожидании. После release типизированные `Committed` и
+`StateCommitFailed` дают по одному событию каждой попытки и один terminal
+с `delivery_cancelled=true` до проброса первой отмены. Проверены исходные
+`session_id`, expected version и identity `StateDelta`, число save, порядок
+`save finished → attempt event → terminal → caller CancelledError` и
+завершение без отмены всех сохранённых inner tasks. Timeout служит только
+защитой от зависания; `sleep` и реальные задержки не используются.
+
+Новые node IDs в `tests/application/test_orchestrator_cancellation.py`:
+
+| Срез | Node IDs | Свидетельство |
+|---|---|---|
+| Повторная отмена первой попытки | `test_repeated_cancel_waits_for_first_save_and_forbids_retry[committed]`, `[commit_failed]` | Два сигнала до release, ожидание inner task, один save, исходная отмена после terminal |
+| Отмена начатого повтора | `test_cancel_after_second_save_entry_waits_for_its_outcome[committed]`, `[commit_failed]` | Два фактических save, ожидание второго, два attempt events и один terminal до отмены, третьего save нет |
+
+Базовый целевой прогон перед добавлением случаев: 1 passed. Фактические
+команды после изменения из корня репозитория:
+
+```powershell
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/application/test_orchestrator_cancellation.py -q
+# 5 passed in 0.33s; exit code 0
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/application/test_orchestrator_cancellation.py --collect-only -q -k "test_repeated_cancel_waits_for_first_save_and_forbids_retry or test_cancel_after_second_save_entry_waits_for_its_outcome"
+# 4/5 tests collected (1 deselected) in 0.30s; exit code 0; IDs выше
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/test_run_context.py tests/application tests/session tests/test_module_boundaries.py -q
+# R: 1475 passed in 25.83s; exit code 0
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider -q
+# F: 2394 passed in 87.93s; exit code 0
+```
+
+Срез проверяет lifecycle локального координатора с управляемым fake save.
+Реальный lost-CAS остаётся 10.4, изоляция параллельных execute — 9.2;
+K3, 2.R2 и внешние AC не закрывались. Полная приёмка R3.2 этим прогоном не
+объявляется. Коммит, ветка, push и PR не создавались; посторонние
+untracked-файлы сохранены.
+`git diff --check` — exit code 0 (только предупреждения LF/CRLF);
+локальные Markdown-ссылки, парность code fences и отсутствие trailing
+whitespace в трёх документах проверены с exit code 0. Staged index пуст.
+
+#### 1.3.42. Промт и выполнение 9.2 — 2026-09-19
+
+Сохранён [промт 9.2](../../prompts/2026-09-16/09-cancellation-and-concurrency/09.2-orchestrator-parallel-request-isolation-tests.md)
+с объяснением для менеджеров: при одновременных запросах общий координатор не
+должен смешивать команды, данные сессий, сохранение и результаты. Основание —
+FR-24, §6.1 и AC-28. На момент подготовки промта production `execute()` уже
+использовал локальное состояние; этот срез добавил воспроизводимое
+подтверждение его изоляции, не меняя production и общие fake-компоненты.
+
+Создан `tests/application/test_orchestrator_concurrency.py` с двумя тестами
+через один настоящий `ApplicationOrchestrator`. Входные `session_id`,
+команды/маркеры, `run_id`, версии snapshot, delta по identity и артефакты
+различимы. Управляемые `asyncio.Event` подтверждают вход обоих `load` до
+освобождения любого, а затем вход обоих `save` до освобождения первого.
+Между этими границами Handler также удерживается отдельно для каждого
+запроса. Проверены identity аргументов Handler, исходная версия и delta в
+каждом save, принадлежность результата и реальных lifecycle `LogRecord`
+своему `run_id`, порядок событий внутри операции и завершение одного запроса,
+пока другой ещё удержан. `sleep` и реальные задержки не используются;
+timeout защищает только от зависания.
+
+В отдельной гонке два разных намерения одной сессии загружают один snapshot
+с версией 7 и оба входят в save с expected=7. Управляемый ContextService
+возвращает первому `Committed(8)`, второму `Superseded(actual=8)`. Проверены
+разные delta, независимые исходы, отсутствие второго save/retry и отсутствие
+глобальной сериализации в координаторе. Это тест orchestration с fake CAS;
+реальная межоперационная CAS-гонка остаётся 10.5.
+
+Новые node IDs:
+
+| Тест | Свидетельство |
+|---|---|
+| `test_two_sessions_overlap_without_mixing_request_state` | Две разные сессии перекрываются в load/save; запрос B завершается до удержанного A без смешения аргументов, результатов и событий |
+| `test_same_session_race_keeps_distinct_intents_and_results` | Общий snapshot и expected, разные intent/delta, перекрытие двух save и собственные `Committed`/`Superseded` |
+
+Фактические команды из корня репозитория:
+
+```powershell
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/application/test_orchestrator_concurrency.py -q
+# 2 passed in 0.29s; exit code 0
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/test_run_context.py tests/application tests/session tests/test_module_boundaries.py -q
+# R: 1477 passed in 26.14s; exit code 0
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider -q
+# Первый F: 1 failed, 2395 passed in 86.13s; exit code 1
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/session/test_sqlite.py::test_concurrent_initialization_of_new_file_is_serializable -q
+# 1 passed in 0.30s; exit code 0
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider -q
+# Повторный F: 2396 passed in 84.83s; exit code 0
+```
+
+Единственный отказ первого F был в существующем
+`test_concurrent_initialization_of_new_file_is_serializable`:
+`StateWriteError: SESSION_SQLITE_BUSY` при конкурентном первом открытии SQLite.
+Отдельный прогон этого node ID и повторный F прошли без изменений кода; этот
+эпизод сохранён как ограничение стабильности полного прогона, а не исправлен
+вне границ 9.2. Полная приёмка R3.2 не объявляется: 10.4/10.5, K3, 2.R2 и
+внешние AC остаются открытыми. Коммит, ветка, push и PR не создавались;
+посторонние файлы рабочего дерева сохранены.
+`git diff --check` — exit code 0 (только предупреждения LF/CRLF);
+локальные Markdown-ссылки, парность code fences и отсутствие trailing
+whitespace в четырёх затронутых файлах проверены с exit code 0. Staged index пуст.
 
 ## 2. Принятые границы
 
