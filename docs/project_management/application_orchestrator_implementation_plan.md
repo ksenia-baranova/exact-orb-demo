@@ -129,6 +129,7 @@ R3.2/диаграммы 009–010. HEAD сам по себе не содержи
 | 8.2 | Состав lifecycle-событий и длительности проверены через `execute()` | 10 новых случаев; целевой файл: 199 passed, R: 1471 passed, F: 2390 passed. Гонки повторной отмены и интеграция остаются поздним карточкам; §1.3.40 |
 | 9.1 | Повторная отмена и отмена начатой второй попытки проверены через `execute()` | 4 новых случая; целевой файл: 5 passed, R: 1475 passed, F: 2394 passed. Реальный CAS и межоперационная конкурентность остаются поздним карточкам; §1.3.41 |
 | 9.2 | Изоляция параллельных `execute()` проверена на одном экземпляре | 2 новых случая; целевой файл: 2 passed, R: 1477 passed, повторный F: 2396 passed. Первый F встретил `SESSION_SQLITE_BUSY` в существующем SQLite-тесте; §1.3.42. Реальный CAS остаётся 10.5 |
+| 9.R1 | Внутренние ошибки запуска save и retry clock получают terminal | 5 новых случаев; целевой файл: 5 passed, связанные: 226 passed, R: 1482 passed, F: 2401 passed; §1.3.43. Post-commit observability и декомпозиция остаются отдельными задачами |
 | Остальные основные карточки | Запланированы, не выполнялись | Начиная с 10.1; формулировка «закрывает» в карточке означает будущую обязанность |
 
 По запросу пользователя 2026-09-16 подготовлен
@@ -2236,6 +2237,57 @@ timeout защищает только от зависания.
 локальные Markdown-ссылки, парность code fences и отсутствие trailing
 whitespace в четырёх затронутых файлах проверены с exit code 0. Staged index пуст.
 
+#### 1.3.43. Протокол дефектов и выполнение 9.R1 — 2026-09-19
+
+По результатам ручного ревью создана отдельная запись
+[004 — внутренние ошибки commit-flow теряют terminal-событие](../development_approach/problems_detected_by_human/004-application-orchestrator-internal-failures-lose-terminal-event.md).
+На `e53404a` read-only воспроизведение подтвердило два разрыва контракта:
+синхронная ошибка вызова `save` выходила с 0 attempt/0 terminal, а naive clock
+после первого `StateCommitFailed` — с 1 attempt/0 terminal. Это нарушало
+UC-13, FR-25/26 и AC-29/32.
+
+Сохранён и выполнен [промт 9.R1](../../prompts/2026-09-16/09-cancellation-and-concurrency/09.R1-orchestrator-internal-failure-terminal-guarantee.md).
+В новом `test_orchestrator_internal_failures.py` добавлено пять случаев:
+непосредственное исключение `save`, не-awaitable результат `save`, исключение
+clock, naive datetime и значение clock другого типа. До production-правки все
+пять тестов падали на сырых `RuntimeError`/`TypeError` без terminal.
+
+В `ApplicationOrchestrator` вызов `save` теперь защищён вместе с созданием
+commit task. Такой сбой классифицируется как одна начатая попытка с
+`unexpected_failure`, безопасным commit-stage `ApplicationInternalFailure` и
+одним terminal. Перед сравнением deadline результат clock проверяется как
+timezone-aware UTC datetime. Ошибка или неверное значение clock после первого
+`StateCommitFailed` не запускает второй save, сохраняет error code первой
+попытки и завершает операцию внутренним отказом. Общая фабрика commit-stage
+internal failure устранила дублирование этой модели. Cancellation, strong
+reference, исходные expected/delta и максимум двух попыток не менялись.
+
+Общий `except Exception` вокруг `execute()` не добавлялся. Подтверждённый
+`Committed`/`AlreadyApplied` нельзя переклассифицировать из-за последующей
+ошибки observability; сбой самого terminal writer требует отдельного решения.
+Декомпозиция 407-строчного `execute()`, calculation-code/outcome hardening,
+K3, 2.R2 и реальные CAS-сценарии 10.4–10.5 также не входят в 9.R1.
+
+Фактические команды:
+
+```powershell
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/application/test_orchestrator_internal_failures.py -q
+# До исправления: 5 failed in 0.56s; после исправления: 5 passed in 0.37s
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/application/test_orchestrator_commit.py tests/application/test_orchestrator_retry.py tests/application/test_orchestrator_cancellation.py tests/application/test_orchestrator_logging.py -q
+# 226 passed in 0.81s; exit code 0
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/test_run_context.py tests/application tests/session tests/test_module_boundaries.py -q
+# R: 1482 passed in 14.49s; exit code 0
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider -q
+# F: 2401 passed in 40.10s; exit code 0
+```
+
+Production, новый regression-файл, finding 004, промт 9.R1, план и README —
+единственная область изменения. Коммит, push и PR не создавались;
+посторонние untracked-файлы сохранены.
+`git diff --check` — exit code 0 (только предупреждения LF/CRLF). Python AST,
+локальные Markdown-ссылки, code fences и trailing whitespace шести файлов
+проверены с exit code 0. Staged index пуст.
+
 ## 2. Принятые границы
 
 1. RunContext принадлежит входной границе. execute требует готовый объект,
@@ -2837,6 +2889,24 @@ Event/barrier/fake clock, timeout только как защита от зави
 
 После зелёного целевого набора: R → F (§4.2); при ожидаемом red — парная реализация.
 
+### Промт 9.R1 — Terminal-гарантия при внутренних ошибках commit-flow
+
+- **Результат:** Ошибка вызова `save`/создания task и ошибка retry clock нормализуются как commit-stage internal failure. Каждая начатая операция получает один terminal; clock failure не создаёт фиктивный retry.
+- **Зависимости:** 7.2, 8.1, 9.1; finding 004.
+- **Закрывает:** подтверждённые пробелы UC-13, FR-25/26, AC-29/31/32 до integration/composition.
+- **Разрешено менять:**
+  - `tests/application/test_orchestrator_internal_failures.py`;
+  - `src/exact_orb/application/orchestrator.py`;
+  - finding 004, §1.3 плана и README серии.
+- **Запрещено менять/делать:** Общий catch с переклассификацией подтверждённого commit, полный рефакторинг `execute`, новые result-модели, изменение cancellation/retry/CAS, failure-policy/P3 hardening, composition/transport.
+- **Проверка готовности:** Пять управляемых нарушений контракта дают safe internal result, фактические attempt counts и один terminal. Старые commit/retry/cancellation/lifecycle тесты проходят без изменения.
+
+```powershell
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/application/test_orchestrator_internal_failures.py -q
+```
+
+После зелёного целевого набора: связанные commit/retry/cancellation/logging → R → F (§4.2).
+
 ### Промт 10.1 — Тест полноты registry в composition
 
 - **Результат:** Минимальная поддерживаемая команда — BuildNatalCommand. Проверить полный и неполный реестр, startup failure до пользовательского execute; отсутствие неявного fallback.
@@ -3015,10 +3085,10 @@ Event/barrier/fake clock, timeout только как защита от зави
 | AC-26 | `run_id` совпадает с входным во всех результатах/events. | 2.4/2.6, 1.4, 3.2–7.2 | По веткам; полный набор 8.1, интеграция 10.3 | test_orchestrator_logging.py: result/events с входным id; E8 только до Handler | Целевой |
 | AC-27 | `state_version` присутствует и отсутствует строго по §12. | 2.4/2.6, 4.2–7.2 | Модели 2.6; runtime 7.2; общий аудит 8.2 | test_application_results.py и test_orchestrator_commit.py; E5 session versions | Целевой |
 | AC-28 | Параллельные execute не разделяют request state. | 3.2–7.2: только locals | 9.2; интеграция 10.5 | test_orchestrator_concurrency.py: разные аргументы и marker; E6 только ContextService | Целевой |
-| AC-29 | На execute приходится ровно один `application_operation_started` и один `application_operation_finished`: result либо cancelled. | 1.4 и каждая ветка 3.2–7.2 | Частично по веткам; полнота 8.1 | test_orchestrator_logging.py: one started/terminal на invocation; E4 — другой logger | Целевой |
+| AC-29 | На execute приходится ровно один `application_operation_started` и один `application_operation_finished`: result либо cancelled. | 1.4 и каждая ветка 3.2–7.2; 9.R1 для внутренних commit-control ошибок | Частично по веткам; полнота 8.1; дефект task-start/clock закрыт 9.R1 | test_orchestrator_logging.py и test_orchestrator_internal_failures.py: one started/terminal на invocation; E4 — другой logger | Целевой; сбой самого terminal writer открыт |
 | AC-30 | Завершённые load и Handler создают соответствующий stage event; отменённая незавершённая стадия его не создаёт. | 1.4, 4.2, 5.2, 5.4 | 4.1/5.3 → 5.4; полный набор 8.1 | test_orchestrator_logging.py: finished vs interrupted stage | Целевой |
-| AC-31 | Каждая фактически начатая попытка save создаёт ровно один commit-attempt event с правильным номером; запрещённый retry не создаёт attempt 2. | 1.4, 6.2, 6.4, 7.2 | 6.1/6.3/7.1 → 7.2; аудит 8.1/9.1 | test_orchestrator_logging.py: attempt count = actual save count | Целевой |
-| AC-32 | Terminal event пишется после последнего stage/attempt event и до возврата результата либо проброса `CancelledError`. | 3.2–7.2: финализация каждой ветки | 6.1/7.1 → 7.2; полный 8.1/9.1 | test_orchestrator_logging.py: ordered recorder + caller marker | Целевой |
+| AC-31 | Каждая фактически начатая попытка save создаёт ровно один commit-attempt event с правильным номером; запрещённый retry не создаёт attempt 2. | 1.4, 6.2, 6.4, 7.2, 9.R1 | 6.1/6.3/7.1 → 7.2; аудит 8.1/9.1; task-start/clock failure — 9.R1 | test_orchestrator_logging.py и test_orchestrator_internal_failures.py: attempt count = actual save call | Целевой |
+| AC-32 | Terminal event пишется после последнего stage/attempt event и до возврата результата либо проброса `CancelledError`. | 3.2–7.2: финализация каждой ветки; 9.R1 | 6.1/7.1 → 7.2; полный 8.1/9.1; внутренние task-start/clock ошибки — 9.R1 | test_orchestrator_logging.py и test_orchestrator_internal_failures.py: ordered recorder + caller marker | Целевой; post-commit writer failure открыт |
 | AC-33 | Compact events и сообщения не содержат birth data и полный session ID. | 1.4, 2.2, 3.2–7.2 | 2.1; по веткам; полный 8.2 | test_orchestrator_logging.py: compact-only sentinel checks; E4 не доказывает новые events | Целевой |
 | AC-34 | Клиентский contract test не применяет ответ с версией ниже локальной. | Внешний клиентский срез | За пределами 36 карточек; учёт 10.8 | Планируемый внешний client test: newer response → older response, один lifecycle; файла клиента ещё нет | Внешний; X1 открыт |
 | AC-35 | Профиль 1 подтверждает не только приём, но завершение 300 операций и drain. | 3.2–7.2, 10.2; harness 10.6 | 10.6 после core integration | scripts/bench_application_orchestrator.py, профиль normal; existing session benchmark недостаточен | Целевой; admission не нужен |

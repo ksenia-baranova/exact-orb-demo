@@ -10,7 +10,7 @@ import asyncio
 import logging
 import time
 from collections.abc import Callable, Mapping
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import get_args
 
 from exact_orb.application.application_results import (
@@ -59,6 +59,32 @@ _logger = logging.getLogger(__name__)
 _KNOWN_CALCULATION_CODES = frozenset(
     get_args(ChartCalculationErrorCode) + get_args(CalculationUnavailableErrorCode)
 )
+
+
+def _commit_internal_failure(run: RunContext) -> ApplicationInternalFailure:
+    """Return the safe application result for an internal commit-stage error."""
+    reaction = describe_failure(kind="internal_failure")
+    return ApplicationInternalFailure(
+        handler_status="SUCCESS",
+        context_status="COMMIT_FAILED",
+        code=reaction.code,
+        detail_code=reaction.detail_code,
+        user_message=reaction.user_message,
+        retryable=reaction.retryable,
+        run_id=run.run_id,
+        state_version=None,
+    )
+
+
+def _require_utc_clock(value: object) -> datetime:
+    """Reject an invalid injected retry clock at its only point of use."""
+    if (
+        not isinstance(value, datetime)
+        or value.tzinfo is None
+        or value.utcoffset() != timedelta(0)
+    ):
+        raise ValueError("clock must return a timezone-aware UTC datetime")
+    return value
 
 
 class ApplicationOrchestrator:
@@ -251,29 +277,33 @@ class ApplicationOrchestrator:
                     commit_error_codes: list[str] = []
                     for attempt in (1, 2):
                         commit_started = time.perf_counter()
-                        commit_task = asyncio.create_task(self._context.save(
-                            session_id, original_expected_state_version, handled.delta,
-                        ))
                         save_error: Exception | None = None
-                        while True:
-                            try:
-                                saved = await asyncio.shield(commit_task)
-                            except asyncio.CancelledError as exc:
-                                if cancelled_error is None:
-                                    cancelled_error = exc
-                                # Keep the task referenced and wait through cancellation;
-                                # another cancel request must not detach a running save.
-                                if commit_task.done():
-                                    try:
-                                        saved = commit_task.result()
-                                    except Exception as inner_exc:
-                                        save_error = inner_exc
+                        try:
+                            commit_task = asyncio.create_task(self._context.save(
+                                session_id, original_expected_state_version, handled.delta,
+                            ))
+                        except Exception as exc:
+                            save_error = exc
+                        else:
+                            while True:
+                                try:
+                                    saved = await asyncio.shield(commit_task)
+                                except asyncio.CancelledError as exc:
+                                    if cancelled_error is None:
+                                        cancelled_error = exc
+                                    # Keep the task referenced and wait through cancellation;
+                                    # another cancel request must not detach a running save.
+                                    if commit_task.done():
+                                        try:
+                                            saved = commit_task.result()
+                                        except Exception as inner_exc:
+                                            save_error = inner_exc
+                                        break
+                                except Exception as exc:
+                                    save_error = exc
                                     break
-                            except Exception as exc:
-                                save_error = exc
-                                break
-                            else:
-                                break
+                                else:
+                                    break
                         commit_duration_ms = (time.perf_counter() - commit_started) * 1000
                         commit_durations.append(commit_duration_ms)
                         if save_error is None:
@@ -347,17 +377,7 @@ class ApplicationOrchestrator:
                                 "Commit save failed run_id=%s", run.run_id,
                                 exc_info=(type(save_error), save_error, save_error.__traceback__),
                             )
-                            reaction = describe_failure(kind="internal_failure")
-                            result = ApplicationInternalFailure(
-                                handler_status="SUCCESS",
-                                context_status="COMMIT_FAILED",
-                                code=reaction.code,
-                                detail_code=reaction.detail_code,
-                                user_message=reaction.user_message,
-                                retryable=reaction.retryable,
-                                run_id=run.run_id,
-                                state_version=None,
-                            )
+                            result = _commit_internal_failure(run)
                             attempt_outcome = "unexpected_failure"
                             attempt_version = None
                         detail_code = (
@@ -374,12 +394,21 @@ class ApplicationOrchestrator:
                             duration_ms=commit_duration_ms,
                             state_version=attempt_version,
                         )
-                        if (
+                        should_retry = (
                             attempt == 1
                             and detail_code is not None
                             and cancelled_error is None
-                            and (run.deadline is None or run.deadline > self._clock())
-                        ):
+                        )
+                        if should_retry and run.deadline is not None:
+                            try:
+                                should_retry = run.deadline > _require_utc_clock(self._clock())
+                            except Exception:
+                                _logger.exception(
+                                    "Commit retry decision failed run_id=%s", run.run_id
+                                )
+                                result = _commit_internal_failure(run)
+                                should_retry = False
+                        if should_retry:
                             continue
                         break
                     log_operation_finished(
