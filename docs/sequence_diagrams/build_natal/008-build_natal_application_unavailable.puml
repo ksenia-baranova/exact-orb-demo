@@ -2,8 +2,8 @@
 title exact-orb — BuildNatal: application-контур недоступен до handler
 
 ' Актуальный транспортный сценарий N2.
-' ApplicationOrchestrator и внешний ApplicationResult — целевой контур,
-' ещё не реализованный как доступный API.
+' ApplicationOrchestrator и внешний ApplicationResult реализованы;
+' HTTP transport и отображение отказа клиентом остаются целевыми.
 
 autonumber
 hide footbox
@@ -42,7 +42,7 @@ box "API / TRANSPORT" #EDE9FE
 end box
 
 box "APPLICATION" #FFEDD5
-    control "ApplicationOrchestrator\n(целевой)" as Orch
+    control "ApplicationOrchestrator" as Orch
     control "BuildNatalHandler" as Handler
 end box
 
@@ -83,8 +83,8 @@ BuildNatalHandler не запускается.
 Сессионная мутация не начинается.
 BuildAttempt и build_revision в MVP отсутствуют.
 
-Показанный ApplicationResult — целевой
-внешний contract, ещё не реализованный.
+Показанный ApplicationResult реализован.
+Transport mapping остаётся целевым.
 end note
 
 note over Resolver, Engine

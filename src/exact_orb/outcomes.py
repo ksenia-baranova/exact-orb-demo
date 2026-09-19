@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any, Literal
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 IssueCode = Literal["MISSING", "AMBIGUOUS", "INVALID", "UNSUPPORTED"]
@@ -13,7 +13,7 @@ IssueCode = Literal["MISSING", "AMBIGUOUS", "INVALID", "UNSUPPORTED"]
 class Issue(BaseModel):
     """One actionable problem in an input contract."""
 
-    field: str
+    field: str = Field(min_length=1)
     code: IssueCode
     candidates: tuple[Any, ...] | None = None
     constraints: dict[str, Any] | None = None
@@ -22,7 +22,7 @@ class Issue(BaseModel):
 class InputRequired(BaseModel):
     """User input must be corrected or completed before processing can continue."""
 
-    issues: tuple[Issue, ...]
+    issues: tuple[Issue, ...] = Field(min_length=1)
 
 
 class ResolutionUnavailable(BaseModel):

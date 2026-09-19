@@ -3,8 +3,12 @@
 **Статус:** R3.2, рабочая версия требований
 **Дата:** 2026-09-16
 **Уточнение:** 2026-09-17 — неизменяемый RunContext, строгие поля ответа и однозначное кодирование lifecycle-событий (3.R2).
+**Уточнение:** 2026-09-19 — K3 закрыт: пустой `InputRequired` запрещён общей моделью у источника.
+**Сверка реализации:** 2026-09-19 — application core, минимальная composition,
+реальные интеграционные CAS-сценарии и normal load profile 10.6 подтверждены;
+границы неполной приёмки перечислены ниже.
 **Область:** application coordination
-**Целевой модуль:** `src/exact_orb/application/orchestrator.py`
+**Модуль реализации:** `src/exact_orb/application/orchestrator.py`
 **Внешний контракт:** `ApplicationResult` в
 `src/exact_orb/application/application_results.py`
 **Первый поддерживаемый use case:** `BuildNatalCommand`
@@ -14,10 +18,15 @@ ADR-0025, ADR-0026, ADR-0028, ADR-0034; требования к
 `BuildNatalHandler`, `session_requirements` §7–8 и P3-acceptance, актуальные
 sequence diagrams Build Natal.
 
-Документ описывает целевой контракт. На 2026-09-17 реализованы модели
-`ApplicationResult`, политика отказов, logging-функции и ранняя ветка отказа
-`ApplicationOrchestrator`. Load/Handler/commit, transport wiring и нагрузочная
-приёмка остаются последующим этапам; фактические проверки указаны в журнале плана.
+Документ задаёт действующий контракт application core. На 2026-09-19
+реализованы `RunContext.deadline`, полный `ApplicationResult`, routing,
+load/Handler/commit, один точный retry, защищённая отмена, lifecycle logging,
+минимальная composition для `BuildNatalCommand` и real-component integration.
+Normal profile 10.6 прошёл 300/300 полезных операций при 5 RPS. Полный
+production startup, HTTP/session bootstrap, клиент и admission controller не
+входят в эту реализацию. AC-24 подтверждён только для top-level frozen-моделей;
+AC-34/X1 и AC-36/X2 остаются внешними открытыми требованиями. Фактическая
+матрица и команды приведены в журнале плана §1.3.51 и матрице §6.
 
 ## 0. Решения редакции R3.2
 
@@ -965,7 +974,10 @@ commit не создаёт `ApplicationResult`; это значение `termina
 5. Routing предшествует load; load предшествует Handler.
 6. `SessionAbsent`/`StateReadFailed` не запускают Handler.
 7. Handler получает `snapshot.state`; original version фиксируется до Handler.
-8. Три non-success Handler outcome не вызывают save.
+8. Три валидных non-success Handler outcome не вызывают save. Пустой
+   `InputRequired` не является outcome: попытка resolver создать его поднимает
+   `ValidationError`, который обрабатывается как исключение Handler с
+   `ApplicationInternalFailure` и без save.
 9. Невалидный тип outcome не вызывает save и даёт internal failure.
 10. Обычный успешный commit вызывает один save.
 11. Первый `StateCommitFailed` запускает не более одного повтора.
@@ -984,7 +996,10 @@ commit не создаёт `ApplicationResult`; это значение `termina
 21. Raw exception text отсутствует в `user_message`.
 22. Множество status triples union точно равно §8.
 23. Для каждой модели отклоняются противоречивые `code`, `retryable`,
-    `detail_code`, `state_version` и payload.
+    `detail_code`, `state_version` и payload. Общий `InputRequired` требует
+    непустой `issues`, а каждый общий `Issue` — непустой `field`;
+    `ApplicationInputRequired` сохраняет собственное требование непустого
+    `issues`.
 24. Модели immutable после создания.
 25. Все известные failure-коды возвращают точный текст; неизвестный
     calculation code даёт fallback и WARN.
@@ -1004,6 +1019,14 @@ commit не создаёт `ApplicationResult`; это значение `termina
 35. Профиль 1 подтверждает не только приём, но завершение 300 операций и drain.
 36. Профиль 2 выполняется с конечным admission limit и не превышает одного
     повтора commit на операцию.
+
+**Статус приёмки 2026-09-19.** AC-1–23, AC-25–33 и AC-35 реализованы и
+подтверждены тестами/normal load report. AC-24 частично подтверждён для
+top-level frozen-моделей; глубокая неизменяемость вложенных `Issue` и
+`ChartArtifact` остаётся корректировкой 2.R2. AC-34 требует внешнего клиента
+(X1). AC-36 и degraded profile 10.7 заблокированы отсутствующим production
+admission API (X2). Эти ограничения не отменяют готовность application core,
+но не позволяют объявить закрытой всю R3.2 вместе с внешним контуром.
 
 ## 16. Итоговый Build Natal flow
 

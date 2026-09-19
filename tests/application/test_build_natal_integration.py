@@ -2,81 +2,28 @@
 
 from __future__ import annotations
 
-from collections.abc import Iterator
-from concurrent.futures import ThreadPoolExecutor
-from contextlib import contextmanager
-from dataclasses import dataclass
 from datetime import date, time
 import json
 import logging
-from pathlib import Path
 
 import pytest
 
 from exact_orb import component_logging
 from exact_orb.application.commands import BuildNatalCommand
-from exact_orb.application.handlers.build_natal import BuildNatalHandler
 from exact_orb.application.results import BuildNatalSuccess
 from exact_orb.birth.places import LocalPlaceCatalog, ResolvedPlace
-from exact_orb.birth.resolver import BirthDataResolver
 from exact_orb.birth.types import BirthInput
-from exact_orb.calculation.artifacts import ChartArtifactResolver
-from exact_orb.calculation.cache import InMemoryCalculationCache
-from exact_orb.calculation.engine import EngineService, NatalTechniqueAdapter
 from exact_orb.outcomes import CalculationFailed, InputRequired
 from exact_orb.session.state import new_session
-from tests.fixtures.calculation import BASE_UTC, RUN_ID_B, VERSION, run_context
+from tests.fixtures.application import application_test_stand
+from tests.fixtures.calculation import BASE_UTC, RUN_ID_B, run_context
 
 
-PLACES_PATH = Path(__file__).resolve().parents[1] / "fixtures" / "places.jsonl"
-FIXED_TODAY = date(2026, 9, 8)
 HANDLER_LOGGER = "exact_orb.application.handlers.build_natal"
 BIRTH_LOGGER = "exact_orb.birth.resolver"
 ARTIFACT_LOGGER = "exact_orb.calculation.artifacts"
 ENGINE_LOGGER = "exact_orb.calculation.engine"
 NATAL_LOGGER = "exact_orb.engine.charts.natal"
-
-
-@dataclass(frozen=True)
-class IntegrationStand:
-    handler: BuildNatalHandler
-    artifacts: ChartArtifactResolver
-    cache: InMemoryCalculationCache
-
-
-@contextmanager
-def _stand(
-    *,
-    places: LocalPlaceCatalog | None = None,
-) -> Iterator[IntegrationStand]:
-    catalog = places or LocalPlaceCatalog.from_file(PLACES_PATH)
-    birth_resolver = BirthDataResolver(
-        places=catalog,
-        min_birth_date=date(1900, 1, 1),
-        max_birth_date=FIXED_TODAY,
-        today_provider=lambda: FIXED_TODAY,
-    )
-    cache = InMemoryCalculationCache(max_entries=10, ttl_seconds=None)
-    with ThreadPoolExecutor(max_workers=2) as executor:
-        engine = EngineService(
-            executor=executor,
-            techniques={"natal": NatalTechniqueAdapter()},
-            slow_threshold_ms=3000.0,
-        )
-        artifacts = ChartArtifactResolver(
-            cache=cache,
-            engine=engine,
-            version=VERSION,
-            degraded_log_interval_s=60.0,
-        )
-        yield IntegrationStand(
-            handler=BuildNatalHandler(
-                resolver=birth_resolver,
-                artifacts=artifacts,
-            ),
-            artifacts=artifacts,
-            cache=cache,
-        )
 
 
 def _command(
@@ -125,7 +72,7 @@ async def test_real_natal_path_caches_and_correlates_run_id(
     first_run = run_context()
     second_run = run_context(RUN_ID_B)
 
-    with _stand() as stand:
+    with application_test_stand() as stand:
         first = await stand.handler.handle(
             command,
             new_session("session-1", now=BASE_UTC),
@@ -325,7 +272,7 @@ async def test_real_natal_path_caches_and_correlates_run_id(
 async def test_real_unknown_time_path_builds_cosmogram() -> None:
     command = _command(birth_time=None)
 
-    with _stand() as stand:
+    with application_test_stand() as stand:
         result = await stand.handler.handle(
             command,
             new_session("session-1", now=BASE_UTC),
@@ -371,7 +318,7 @@ async def test_real_polar_calculation_fails_and_is_not_cached(
         place_id="polar",
     )
 
-    with _stand(places=polar_catalog) as stand:
+    with application_test_stand(places=polar_catalog) as stand:
         first = await stand.handler.handle(
             command,
             new_session("session-1", now=BASE_UTC),
@@ -405,7 +352,7 @@ async def test_real_unconfigured_ephemeris_becomes_calculation_unavailable(
 ) -> None:
     caplog.set_level(logging.DEBUG, logger=ENGINE_LOGGER)
 
-    with _stand() as stand:
+    with application_test_stand() as stand:
         result = await stand.handler.handle(
             _command(),
             new_session("session-1", now=BASE_UTC),

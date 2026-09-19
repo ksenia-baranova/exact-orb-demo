@@ -13,6 +13,11 @@
 > и [актуальные Build Natal components](exact-orb_build_natal_components.md).
 > Два уровня оркестрации сохранены; Build Natal использует CAS по
 > `state_version`, а durable `BuildAttempt` отложен.
+> На 2026-09-19 application-уровень реализован в
+> `exact_orb.application.orchestrator`; существующий
+> `exact_orb.orchestration.Orchestrator` остаётся отдельным agent-каркасом и
+> не является его заменой. HTTP/client composition и Agent Runtime этим
+> статусом не объявляются готовыми.
 
 ---
 

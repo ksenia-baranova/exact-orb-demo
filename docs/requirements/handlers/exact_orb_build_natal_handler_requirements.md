@@ -17,15 +17,20 @@
 реальная интеграция, identity ADR-0027 и DEBUG-границы ADR-0028 реализованы.
 Отдельный import-boundary тест §10.1 по-прежнему отсутствует.
 **Ревизия 2026-09-15:** ownership `RunContext` согласован с ADR-0006;
-целевой контракт получает optional `deadline` по требованиям
-`ApplicationOrchestrator`. Поле ещё не реализовано и не меняет предметное
-поведение Handler: он только передаёт тот же контекст вниз.
+контракт получает optional `deadline` по требованиям `ApplicationOrchestrator`.
+Поле реализовано и не меняет предметное поведение Handler: он только передаёт
+тот же контекст вниз.
+**Ревизия 2026-09-19:** K3 закрыт решением владельца: `InputRequired`
+содержит минимум один `Issue`, а `Issue.field` является непустой строкой.
+**Сверка 2026-09-19:** внешний `ApplicationResult`, `ApplicationOrchestrator`
+и commit/retry flow реализованы за границей Handler; его собственный контракт
+и ответственность за подготовку `StateDelta` не изменились.
 
 **Ограничение:** документ не требует изменения уже реализованных модулей `birth`, `calculation` и `session`.
 
-`ApplicationOrchestrator` и внешний `ApplicationResult` ниже описывают целевую
-границу, принятую ADR-0006, но на указанном commit ещё не реализованы. Текущий
-реализованный срез заканчивается на `BuildNatalOutcome`.
+`ApplicationOrchestrator` и внешний `ApplicationResult` реализуют принятую
+ADR-0006 границу после `BuildNatalOutcome`. Сам Handler по-прежнему заканчивает
+работу внутренним outcome и не выполняет session commit.
 
 ## 1. Назначение
 
@@ -40,7 +45,7 @@ Handler должен:
    - космограмма при неизвестном времени;
 4. получить воспроизводимый `ChartArtifact`;
 5. сформировать полную замену изменяемой части состояния в виде `StateDelta`;
-6. вернуть типизированный исход целевому вызывающему `ApplicationOrchestrator`.
+6. вернуть типизированный исход вызывающему `ApplicationOrchestrator`.
 
 Handler не завершает пользовательскую операцию самостоятельно. Успешный результат handler означает только, что карта рассчитана или восстановлена из кэша, а изменение состояния подготовлено к commit.
 
@@ -84,7 +89,7 @@ src/exact_orb/application/
 | `BuildNatalCommand` | `exact_orb.application.commands` |
 | `BuildNatalSuccess` | `exact_orb.application.results` |
 | `BuildNatalOutcome` | `exact_orb.application.results` |
-| `ApplicationResult` | `exact_orb.application.results` — целевое размещение; тип появится вместе с `ApplicationOrchestrator` и сейчас не реализован |
+| `ApplicationResult` | `exact_orb.application.application_results` — внешний результат всей application-операции |
 | `Handler` | `exact_orb.application.ports` |
 | `BirthDataResolverPort` | `exact_orb.application.ports` |
 | `ChartArtifactPort` | `exact_orb.application.ports` |
@@ -292,7 +297,9 @@ class BuildNatalSuccess(BaseModel):
     delta: StateDelta
 ```
 
-`BuildNatalSuccess` — внутренний application-результат handler. Он не равен целевому внешнему `Success` из ещё не реализованного `ApplicationResult`.
+`BuildNatalSuccess` — внутренний application-результат handler. Он не равен
+внешнему `ApplicationCommitted`/`ApplicationAlreadyApplied`: эти результаты
+появляются только после классифицированного commit в `ApplicationOrchestrator`.
 
 `BuildNatalSuccess` должен быть frozen Pydantic-моделью с проверкой согласованности application-границы:
 
@@ -506,6 +513,12 @@ Handler должен вернуть полученный от `BirthDataResolver
 - добавления пользовательских текстов;
 - попытки самостоятельно исправить ввод.
 
+`InputRequired` существует только с непустым `issues`, а каждый `Issue`
+содержит непустой `field`. Эти инварианты проверяются общей моделью при
+создании результата. Handler не подставляет фиктивный issue и не нормализует
+нарушение producer-контракта: `ValidationError` от ошибочного resolver
+остаётся исключением Handler.
+
 Возможные примеры:
 
 ```text
@@ -548,7 +561,7 @@ Handler обрабатывает только объявленные резул�
 этих типизированных исключений в `CalculationFailed` располагается в
 `BuildNatalHandler`; актуальные sequence-диаграммы отражают именно этот контракт.
 
-`BuildNatalCommand` содержит только `birth_input`. В целевом внешнем orchestration-потоке
+`BuildNatalCommand` содержит только `birth_input`. Во внешнем orchestration-потоке
 `session_id` передаётся `ApplicationOrchestrator` отдельным доверенным аргументом.
 `AMBIGUOUS` не возникает при разрешении уже выбранного `place_id`, но остаётся допустимым
 исходом для удвоенного локального времени.
@@ -884,7 +897,9 @@ Cache hit/miss должен журналироваться самим `ChartArti
 5. `ResolutionUnavailable` возвращается без преобразования.
 6. При обоих исходах `ensure_chart` не вызывается.
 7. Исключение из resolver не преобразуется в типизированный исход handler.
-8. `InputRequired` с пустым `issues` проходит наверх без изменений: handler не подставляет issue, не заменяет тип и не поднимает ошибку.
+8. `InputRequired(issues=())` и `Issue(field="", code="MISSING")` отклоняются
+   общей моделью с `ValidationError`; handler не подставляет issue и не
+   преобразует нарушение producer-контракта в штатный outcome.
 
 ### 12.3. Расчёт
 
@@ -944,7 +959,7 @@ Cache hit/miss должен журналироваться самим `ChartArti
 
 Главная предметная ответственность `BuildNatalHandler` — выбрать между натальной картой и космограммой и собрать согласованный результат `{artifact, StateDelta}`. Все вычислительные, кэшовые и сессионные механизмы остаются за границей handler.
 
-Состояние выполнения на 2026-09-14:
+Состояние выполнения повторно сверено 2026-09-19:
 
 | Выполнено | Подтверждение |
 |---|---|
@@ -955,10 +970,10 @@ Cache hit/miss должен журналироваться самим `ChartArti
 
 Остаётся обязательный import-boundary regression-тест §10.1. Он включён
 в M1-4 [roadmap](../../project_management/roadmap.md); до его интеграции
-формальная готовность всего перечня неполна. Внешние orchestrator,
-`ApplicationResult` и commit-flow также не реализованы, но находятся
-за границей предметной ответственности handler. Новый прогон тестов
-при обновлении этого статуса не выполнялся.
+формальная готовность всего перечня Handler неполна. Внешние
+`ApplicationOrchestrator`, `ApplicationResult` и commit-flow реализованы за
+границей предметной ответственности Handler. Их итоговая приёмка и новый
+прогон тестов зафиксированы в плане ApplicationOrchestrator §1.3.51.
 
 ## 14. Открытые вопросы вне handler
 
@@ -1077,17 +1092,16 @@ Frozen Pydantic base type для всех application-команд. Собств
 |---|---|---|---|---|
 | `run_id` | `UUID` | Correlation identifier операции | Валидный UUID | `"b3f17834-f7ee-4a88-980c-c184c91555c0"` |
 | `started_at` | `datetime` | Момент начала операции | `datetime`, обязательно timezone-aware UTC | `"2026-09-08T18:20:31.125Z"` |
-| `deadline` | `datetime \| None` | Целевой бюджет операции; Handler не создаёт и не заменяет его | `None` либо timezone-aware UTC | `"2026-09-08T18:20:51.125Z"` |
+| `deadline` | `datetime \| None` | Бюджет операции; Handler не создаёт и не заменяет его | `None` либо timezone-aware UTC | `"2026-09-08T18:20:51.125Z"` |
 
-В текущем `exact_orb.run_context` реализованы только `run_id` и `started_at`.
-`deadline` является целевым расширением R3.1 и должен быть добавлен отдельным
-implementation change вместе с Orchestrator. Для существующих вызовов его
-значение по умолчанию — `None`.
+В текущем `exact_orb.run_context` реализованы `run_id`, `started_at` и optional
+`deadline`. Оба времени принимают только timezone-aware UTC; для существующих
+вызовов `deadline` по умолчанию равен `None`.
 
 ## Сообщение: `SessionState`
 
-Неизменяемый снимок состояния сессии, который целевой `ApplicationOrchestrator` будет
-передавать handler. В сверенной реализации сам orchestrator ещё отсутствует.
+Неизменяемый снимок состояния сессии, который `ApplicationOrchestrator`
+передаёт Handler после `ContextService.load`.
 
 | Атрибут | Тип атрибута | Описание | Возможные значения | Пример |
 |---|---|---|---|---|
@@ -1174,9 +1188,11 @@ implementation change вместе с Orchestrator. Для существующ�
 
 | Атрибут | Тип атрибута | Описание | Возможные значения | Пример |
 |---|---|---|---|---|
-| `issues` | `tuple[Issue, ...]` | Проблемы входных данных | Tuple объектов `Issue`; текущий resolver возвращает минимум один, но модель допускает пустой tuple | `[{"field":"birth.place","code":"INVALID"}]` |
+| `issues` | `tuple[Issue, ...]` | Проблемы входных данных | Непустой tuple объектов `Issue` с непустым `field` | `[{"field":"birth.place","code":"INVALID"}]` |
 
-Handler возвращает `InputRequired` без изменения даже при пустом `issues`; обеспечение содержательного producer-контракта принадлежит resolver.
+Handler возвращает валидный `InputRequired` без изменения. Содержательный
+producer-контракт закреплён в общей модели: пустой `issues` и пустой
+`Issue.field` невозможно создать обычной валидацией Pydantic.
 
 Пример неизвестного места:
 
@@ -1429,4 +1445,7 @@ StateDelta
 BuildNatalSuccess
 ```
 
-За границей `BuildNatalHandler` остаются контракты commit: `Committed`, `AlreadyApplied`, `Superseded`, `SessionAbsent` и `StateCommitFailed`. Их будет обрабатывать целевой `ApplicationOrchestrator`, поэтому во входные и выходные контракты handler они не входят.
+За границей `BuildNatalHandler` остаются контракты commit: `Committed`,
+`AlreadyApplied`, `Superseded`, `SessionAbsent` и `StateCommitFailed`. Их
+обрабатывает `ApplicationOrchestrator`, поэтому во входные и выходные
+контракты Handler они не входят.

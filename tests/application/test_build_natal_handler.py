@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import ast
 import asyncio
+import json
+import logging
 from datetime import date, time, timedelta
 from pathlib import Path
 
@@ -11,8 +13,10 @@ import pytest
 from pydantic import ValidationError
 
 import exact_orb.application.handlers.build_natal as build_natal_module
+from exact_orb.application.application_results import ApplicationInternalFailure
 from exact_orb.application.commands import BuildNatalCommand
 from exact_orb.application.handlers.build_natal import BuildNatalHandler
+from exact_orb.application.orchestrator import ApplicationOrchestrator
 from exact_orb.application.results import BuildNatalSuccess
 from exact_orb.birth.places import LocalPlaceCatalog
 from exact_orb.birth.resolver import BirthDataResolver
@@ -33,7 +37,10 @@ from exact_orb.outcomes import (
     Issue,
     ResolutionUnavailable,
 )
+from exact_orb.run_context import RunContext
+from exact_orb.session.persistence import SessionSnapshot
 from exact_orb.session.state import new_session
+from tests.application.orchestrator_fakes import Call, RecordingContext
 from tests.application.stubs import StubBirthDataResolver, StubChartArtifactPort
 from tests.fixtures.calculation import (
     BASE_UTC,
@@ -194,21 +201,97 @@ async def test_resolution_outcomes_short_circuit_with_the_same_object(
     assert artifacts.calls == 0
 
 
-async def test_empty_input_required_passes_through_unchanged() -> None:
-    input_required = InputRequired(issues=())
-    resolver = StubBirthDataResolver(input_required)
+def test_input_required_rejects_empty_issues_and_issue_rejects_empty_field() -> None:
+    with pytest.raises(ValidationError):
+        InputRequired(issues=())
+
+    with pytest.raises(ValidationError):
+        Issue(field="", code="MISSING")
+
+
+async def test_empty_input_required_from_resolver_becomes_safe_application_failure(
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    class EmptyInputRequiredResolver:
+        async def resolve(
+            self,
+            birth_input: BirthInput,
+            *,
+            run: RunContext | None = None,
+        ) -> InputRequired:
+            return InputRequired(issues=())
+
+    session_id = "session-1"
+    state = new_session(session_id, now=BASE_UTC)
+    snapshot = SessionSnapshot(state=state, dialog=())
+    journal: list[Call] = []
+    context = RecordingContext(journal, load_result=snapshot)
     artifacts = StubChartArtifactPort()
-    handler = BuildNatalHandler(resolver=resolver, artifacts=artifacts)
-
-    result = await handler.handle(
-        BuildNatalCommand(birth_input=_birth_input()),
-        new_session("session-1", now=BASE_UTC),
-        run_context(),
+    handler = BuildNatalHandler(
+        resolver=EmptyInputRequiredResolver(),
+        artifacts=artifacts,
     )
+    orchestrator = ApplicationOrchestrator(
+        context=context,
+        handlers={BuildNatalCommand: handler},
+        clock=lambda: BASE_UTC,
+    )
+    command = BuildNatalCommand(birth_input=_birth_input())
+    run = run_context()
+    caplog.set_level(logging.DEBUG, logger="exact_orb.application")
 
-    assert result is input_required
-    assert result.issues == ()
+    result = await orchestrator.execute(command, session_id=session_id, run=run)
+
+    assert isinstance(result, ApplicationInternalFailure)
+    assert result.model_dump() == {
+        "orch_status": "FAILURE",
+        "handler_status": "UNEXPECTED_FAILURE",
+        "context_status": "LOADED",
+        "code": "INTERNAL_FAILURE",
+        "detail_code": None,
+        "user_message": "Произошла внутренняя ошибка.",
+        "retryable": False,
+        "run_id": run.run_id,
+        "state_version": state.state_version,
+    }
+    assert journal == [Call(context, "load", (session_id,))]
     assert artifacts.calls == 0
+
+    lifecycle = [
+        record for record in caplog.records
+        if record.getMessage().partition(" ")[0] in {
+            "application_operation_started",
+            "application_stage_finished",
+            "application_operation_finished",
+        }
+    ]
+    assert [record.getMessage().partition(" ")[0] for record in lifecycle] == [
+        "application_operation_started",
+        "application_stage_finished",
+        "application_stage_finished",
+        "application_operation_finished",
+    ]
+    assert sum(
+        record.getMessage().startswith("application_operation_finished ")
+        for record in lifecycle
+    ) == 1
+    handler_fields = json.loads(lifecycle[2].getMessage().partition(" ")[2])
+    assert handler_fields["stage"] == "handler"
+    assert handler_fields["outcome"] == "unexpected_failure"
+    terminal_fields = json.loads(lifecycle[3].getMessage().partition(" ")[2])
+    assert terminal_fields["terminal_kind"] == "result"
+    assert terminal_fields["code"] == "INTERNAL_FAILURE"
+    assert terminal_fields["commit_attempts"] == 0
+
+    diagnostics = [
+        record for record in caplog.records
+        if record.name == "exact_orb.application.orchestrator"
+        and record.exc_info is not None
+    ]
+    assert len(diagnostics) == 1
+    assert diagnostics[0].getMessage() == f"Handler failed run_id={run.run_id}"
+    assert isinstance(diagnostics[0].exc_info[1], ValidationError)
+    assert diagnostics[0].exc_info[2] is not None
 
 
 async def test_unexpected_resolver_exception_propagates_unchanged() -> None:

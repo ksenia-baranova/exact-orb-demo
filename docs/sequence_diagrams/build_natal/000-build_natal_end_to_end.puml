@@ -302,7 +302,7 @@ end note
 
 == Ответ клиенту ==
 
-Orch --> API : ApplicationCommitted(artifact, state_version = 1)\n(целевой: orchestrator/result ещё не реализованы)
+Orch --> API : ApplicationCommitted(artifact, state_version = 1)\n(application core реализован; HTTP mapping целевой)
 API --> Frontend : 200 JSON
 
 Frontend -> Frontend : render natal SVG

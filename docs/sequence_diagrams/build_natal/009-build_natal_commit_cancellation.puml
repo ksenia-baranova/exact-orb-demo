@@ -1,7 +1,7 @@
 @startuml
 title exact-orb — BuildNatal: отмена после начала commit
 
-' Целевой cancellation contract ApplicationOrchestrator R3.2.
+' Реализованный cancellation contract ApplicationOrchestrator R3.2.
 ' Проверяемый порядок важнее конкретной asyncio-реализации.
 
 autonumber

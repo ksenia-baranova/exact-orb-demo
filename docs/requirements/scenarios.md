@@ -1,6 +1,6 @@
 # Сквозные сценарии exact-orb
 
-Статус документа: рабочий, версия 2.4 (2026-09-15).
+Статус документа: рабочий, версия 2.5 (2026-09-19).
 Заменяет версию 1.0, где все сценарии начинались со свободного текста в чате.
 
 Ревизия 2026-09-06: session-flow приведён к `SessionState`, `StateDelta` и
@@ -17,6 +17,10 @@ DEBUG-след всех компонентных границ закреплён
 Ревизия 2026-09-15: routing application-команд перенесён до session load;
 `RunContext` создаётся входной границей по уточнённому ADR-0006.
 
+Ревизия 2026-09-19: application core для Build Natal, внешний
+`ApplicationResult`, commit/retry/cancellation, lifecycle logging и normal
+load profile сверены с реализацией; HTTP/UI и deployment остаются целевыми.
+
 Контекст: вход через форму, карта сразу, затем preset-действия и — в подписке —
 свободный вопрос. События потока: `status`, `input_required`, `token`, `done`, `error`.
 Компоненты и готовность — по [overview](overview.md). Подробные контракты —
@@ -24,12 +28,13 @@ DEBUG-след всех компонентных границ закреплён
 
 **Как читать статусы.** Это целевые пользовательские и приёмочные сценарии,
 а не отчёт о пройденных end-to-end тестах. Формулировка «Проверяет» указывает
-проверяемое требование. Внешний `ApplicationOrchestrator`, `ApplicationResult`,
-HTTP API, интерфейс и общий startup wiring пока не реализованы.
+проверяемое требование. `ApplicationOrchestrator` и `ApplicationResult`
+реализованы и проверены через прямую application-границу. HTTP API, интерфейс,
+session bootstrap и общий production startup wiring пока не реализованы.
 
 | Сценарии | Реализованная часть | Целевая часть |
 |---|---|---|
-| 1–3, 5, 10–12 | Birth resolution, BuildNatalHandler, расчётный и артефактный слои, session persistence / ContextService | HTTP/UI, application lifecycle и внешний результат; поиск подсказок |
+| 1–3, 5, 10–12 | Birth resolution, BuildNatalHandler, расчётный и артефактный слои, session persistence / ContextService, application lifecycle, внешний результат и CAS commit/retry | HTTP/UI, session bootstrap, client monotonicity X1, admission X2 и поиск подсказок |
 | 4, 9 | интерфейсы и каркас интерпретации, transport Gateway без streaming | preset handler, Agent Runtime, общий Tool-путь, recipes, cache, budget, SSE |
 | 6–8 | расчёт транзитов есть в ядре/CLI; free-form flow отсутствует | производные карты и free-form после MVP |
 | 13 | Research contracts, whitelist-проекция и InMemory adapter | SQLite, producer wiring и политика application-записи |

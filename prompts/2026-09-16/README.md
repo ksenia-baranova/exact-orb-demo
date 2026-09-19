@@ -1,6 +1,6 @@
 # ApplicationOrchestrator — промты от 2026-09-16
 
-**Актуализировано:** 2026-09-18.
+**Актуализировано:** 2026-09-19.
 **План и журнал выполнения:** [application_orchestrator_implementation_plan.md](../../docs/project_management/application_orchestrator_implementation_plan.md).
 **Требования:** [ApplicationOrchestrator R3.2](../../docs/requirements/component_responsibilities/exact-orb_application_orchestrator_requirements.md).
 
@@ -48,7 +48,8 @@
 ├── 05-handler-execution/
 │   ├── 05.1-orchestrator-handler-outcomes-tests.md
 │   ├── 05.3-orchestrator-handler-failures-and-early-cancellation-tests.md
-│   └── 05.4-orchestrator-handler-errors-and-precommit-cancellation.md
+│   ├── 05.4-orchestrator-handler-errors-and-precommit-cancellation.md
+│   └── 05.R1-input-required-source-invariant.md
 ├── 06-protected-commit/
 │   ├── 06.1-orchestrator-protected-commit-tests.md
 │   ├── 06.2-orchestrator-protected-first-commit.md
@@ -60,21 +61,29 @@
 ├── 08-lifecycle-events/
 │   ├── 08.1-orchestrator-lifecycle-sequence-tests.md
 │   └── 08.2-orchestrator-lifecycle-fields-and-durations.md
-└── 09-cancellation-and-concurrency/
-    ├── 09.1-orchestrator-repeat-cancellation-tests.md
-    ├── 09.2-orchestrator-parallel-request-isolation-tests.md
-    └── 09.R1-orchestrator-internal-failure-terminal-guarantee.md
+├── 09-cancellation-and-concurrency/
+│   ├── 09.1-orchestrator-repeat-cancellation-tests.md
+│   ├── 09.2-orchestrator-parallel-request-isolation-tests.md
+│   └── 09.R1-orchestrator-internal-failure-terminal-guarantee.md
+└── 10-integration-and-acceptance/
+    ├── 10.1-application-composition-registry-tests.md
+    ├── 10.2-minimal-application-composition.md
+    ├── 10.3-real-application-handler-session-integration.md
+    ├── 10.4-lost-applied-cas-acknowledgement.md
+    ├── 10.5-sqlite-application-cas-races.md
+    ├── 10.6-normal-application-load-profile.md
+    └── 10.8-final-acceptance-and-documentation-status.md
 ```
 
 Каталог раздела создаётся при сохранении его первого промта. Для раздела 3
 подготовлены промты 3.1–3.2 и корректировки 3.R1/3.R2; для раздела 4 сохранены
-промты 4.1–4.2, для раздела 5 — промты 5.1, 5.3 и 5.4. Карточка 5.2
-реализована по тексту плана без отдельного файла промта. Для раздела 6
+промты 4.1–4.2, для раздела 5 — промты 5.1, 5.3, 5.4 и корректировка 5.R1.
+Карточка 5.2 реализована по тексту плана без отдельного файла промта. Для раздела 6
 подготовлены промты 6.1–6.4. Для раздела 7 сохранены промты 7.1–7.2:
 тестовая матрица 7.1 была создана при исполнении 7.2, а отдельный промт 7.1
 зафиксирован после этого по запросу пользователя. Для раздела 8 сохранены и
-выполнены промты 8.1–8.2, 9.1–9.2 и корректировка 9.R1, а раздел 10 пока
-описан только в плане.
+выполнены промты 8.1–8.2, 9.1–9.2 и корректировка 9.R1. Для раздела 10
+сохранены и выполнены промты 10.1–10.6 и 10.8; 10.7 заблокирован X2.
 
 | Раздел | Общий каталог | Содержание | Карточки |
 |---|---|---|---|
@@ -83,7 +92,7 @@
 | 2 | `02-application-results/` | Политика отказов и модели ApplicationResult | 2.1–2.6; отдельная карточка 2.R2 |
 | 3 | `03-entry-and-routing/` | Входной контракт и выбор Handler | 3.1–3.2; корректировки 3.R1/3.R2 |
 | 4 | `04-session-load/` | Загрузка сессии и исходная версия | 4.1–4.2 |
-| 5 | `05-handler-execution/` | Вызов Handler, его исходы, ошибки и ранняя отмена | 5.1–5.4 |
+| 5 | `05-handler-execution/` | Вызов Handler, его исходы, ошибки и ранняя отмена | 5.1–5.4; корректировка 5.R1 |
 | 6 | `06-protected-commit/` | Защищённая стадия commit и её исходы | 6.1–6.4 |
 | 7 | `07-commit-retry/` | Один повтор, deadline и запрет повтора при отмене | 7.1–7.2 |
 | 8 | `08-lifecycle-events/` | Сквозная последовательность событий, их поля и длительности | 8.1–8.2 |
@@ -113,10 +122,11 @@
 | 2.R2 | [Глубина неизменяемости результатов](02-application-results/02.R2-nested-result-immutability-decision.md) | Подготовлена отдельно; общие Issue/ChartArtifact не менялись, глубокая часть AC-24 не закрыта |
 | 4.1 | [Тесты загрузки сессии и исходной версии](04-session-load/04.1-orchestrator-session-load-tests.md) | Два отложенных Superseded прошли в 6.4; текущий общий результат §1.3.36, исходный red §1.3.20 |
 | 4.2 | [Загрузка сессии и понятные отказы](04-session-load/04.2-orchestrator-session-load-and-failures.md) | Ветка load и отложенные commit-зависимые проверки прошли; текущий общий результат §1.3.36 |
-| 5.1 | [Тесты вызова Handler и его штатных исходов](05-handler-execution/05.1-orchestrator-handler-outcomes-tests.md) | Десять случаев прошли после 5.2; K3 о пустых issues открыт. Текущий прогон §1.3.29, история §1.3.24 |
-| 5.2 | [Вызов и классификация Handler](../../docs/project_management/application_orchestrator_implementation_plan.md) | Реализована по карточке плана без отдельного файла; non-success и success→commit прошли, K3 открыт. Текущий результат §1.3.36 |
+| 5.1 | [Тесты вызова Handler и его штатных исходов](05-handler-execution/05.1-orchestrator-handler-outcomes-tests.md) | Десять валидных случаев прошли после 5.2; K3 закрыт корректировкой 5.R1. История §1.3.24/29/46 |
+| 5.2 | [Вызов и классификация Handler](../../docs/project_management/application_orchestrator_implementation_plan.md) | Реализована по карточке плана; non-success и success→commit прошли, пустой InputRequired запрещён у источника в 5.R1 |
 | 5.3 | [Тесты нарушений Handler и отмены до сохранения](05-handler-execution/05.3-orchestrator-handler-failures-and-early-cancellation-tests.md) | Пять случаев прошли после 5.2/5.4; текущий прогон §1.3.29, история §1.3.26 |
 | 5.4 | [Ошибки Handler и отмена до commit](05-handler-execution/05.4-orchestrator-handler-errors-and-precommit-cancellation.md) | Ранние ошибки и отмена реализованы: 5 случаев 5.3 прошли; commit остаётся группе 6. Журнал §1.3.29 |
+| 5.R1 | [Непустой InputRequired у источника](05-handler-execution/05.R1-input-required-source-invariant.md) | Выполнен: K3 закрыт; целевой файл 27 passed, связанные 562 passed, R 1487 passed, F 2406 passed; журнал §1.3.46 |
 | 6.1 | [Тесты одной защищённой попытки сохранения](06-protected-commit/06.1-orchestrator-protected-commit-tests.md) | Три случая прошли после 6.2; текущий результат §1.3.33, исходный red §1.3.31 |
 | 6.2 | [Защищённое сохранение с первой попытки](06-protected-commit/06.2-orchestrator-protected-first-commit.md) | Реализован `Committed` и одна отмена после входа в save: 3 passed; R — 1426 passed, 2 ожидают 6.4. Журнал §1.3.33 |
 | 6.3 | [Тесты остальных исходов сохранения](06-protected-commit/06.3-orchestrator-commit-outcomes-tests.md) | Все 10 случаев commit-файла прошли после 6.4; текущий результат §1.3.36, исходный red §1.3.35 |
@@ -128,6 +138,13 @@
 | 9.1 | [Повторная отмена во время сохранения](09-cancellation-and-concurrency/09.1-orchestrator-repeat-cancellation-tests.md) | Реализован тестовый срез: 4 новых случая, целевой файл 5 passed, R 1475 passed, F 2394 passed; журнал §1.3.41 |
 | 9.2 | [Изоляция параллельных операций](09-cancellation-and-concurrency/09.2-orchestrator-parallel-request-isolation-tests.md) | Реализован тестовый срез: 2 новых случая, целевой файл 2 passed, R 1477 passed, повторный F 2396 passed; первый F дал SQLite busy в существующем тесте, подробности в §1.3.42 |
 | 9.R1 | [Terminal при внутренних ошибках commit-flow](09-cancellation-and-concurrency/09.R1-orchestrator-internal-failure-terminal-guarantee.md) | Реализовано: 5 новых regression-случаев, связанные 226 passed, R 1482 passed, F 2401 passed; finding 004, журнал §1.3.43 |
+| 10.1 | [Полнота реестра команд при сборке application](10-integration-and-acceptance/10.1-application-composition-registry-tests.md) | После 10.2 все 4 теста исполнились и прошли; исходная ожидаемая ошибка импорта сохранена в §1.3.44, текущий результат — §1.3.45 |
+| 10.2 | [Минимальная сборка application-flow](10-integration-and-acceptance/10.2-minimal-application-composition.md) | Реализована: реальный BuildNatalHandler, точный registry и startup-проверка; целевой файл 4 passed, R 1486 passed, F 2405 passed; журнал §1.3.45 |
+| 10.3 | [Реальная интеграция application, Handler и session](10-integration-and-acceptance/10.3-real-application-handler-session-integration.md) | Выполнен: 7 новых сквозных случаев, целевой набор 11 passed, R 1494 passed, F 2413 passed; журнал §1.3.47 |
+| 10.4 | [Потерянное подтверждение применённого CAS](10-integration-and-acceptance/10.4-lost-applied-cas-acknowledgement.md) | Выполнен: настоящий CAS применяет запись до fault, exact retry получает AlreadyApplied; target 1 passed, R 1495 passed, F 2414 passed; журнал §1.3.48 |
+| 10.5 | [SQLite-интеграция и реальные CAS-гонки](10-integration-and-acceptance/10.5-sqlite-application-cas-races.md) | Выполнен: два handles одного файла, Committed/AlreadyApplied и Committed/Superseded при единственном росте версии; target 240 passed, R 1497 passed, F 2416 passed; журнал §1.3.49 |
+| 10.6 | [Штатный application load profile](10-integration-and-acceptance/10.6-normal-application-load-profile.md) | Выполнен: PASS, 300/300 полезных исходов за 60.006 с при 5 RPS, peak active 12, lifecycle 300/300, state violations 0; R 1497 passed, F 2416 passed; журнал §1.3.50 |
+| 10.8 | [Итоговая приёмка и статус документации](10-integration-and-acceptance/10.8-final-acceptance-and-documentation-status.md) | Выполнен: application core принят в подтверждённых границах; target 1273 passed, R 1497 passed, F 2416 passed. AC-24 частичен, X1/X2 и transport/deployment открыты; журнал §1.3.51 |
 
 Заголовки внутри сохранённых промтов фиксируют состояние при их подготовке.
 Актуальные результаты выполнения берутся из журнала плана; само наличие
@@ -135,13 +152,13 @@
 
 ## Следующий шаг
 
-**Корректировка 9.R1 выполнена; следующий основной шаг — 10.1, тест полноты
-registry в composition.** Пять новых regression-случаев подтверждают terminal
-при ошибке запуска save-задачи и при неверном retry clock. Целевой файл:
-5 passed, связанные проверки — 226 passed, R — 1482 passed, F — 2401 passed.
-Post-commit ошибка terminal writer, декомпозиция `execute()` и P3-hardening
-остаются отдельными задачами. Реальные CAS-сценарии остаются 10.4–10.5; K3 и
-2.R2 также открыты. Команды и границы доказанного — §1.3.43 плана.
+**Итоговая приёмка 10.8 выполнена: основной application core принят в
+подтверждённых границах.** Целевой набор дал 1273 passed, R — 1497 passed,
+F — 2416 passed; normal load evidence 10.6 остаётся PASS. Следующей
+исполняемой карточки внутри core-плана нет. Профиль 10.7 и AC-36 ждут внешний
+admission API X2. Отдельно открыты глубокая immutable-граница 2.R2/AC-24,
+client contract X1/AC-34 и production transport/deployment. Точные команды,
+матрица и ограничения — §1.3.51 плана.
 
 **История 6.3 до реализации 6.4.** Добавлены
 восемь случаев: `AlreadyApplied` и `Superseded` с нулевой/ненулевой версией,

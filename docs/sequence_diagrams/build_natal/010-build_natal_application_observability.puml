@@ -1,7 +1,7 @@
 @startuml
 title exact-orb — BuildNatal: lifecycle-события ApplicationOrchestrator
 
-' Целевой observability contract ApplicationOrchestrator R3.2.
+' Реализованный observability contract ApplicationOrchestrator R3.2.
 ' Orchestrator хранит operation state только в локальных переменных execute().
 
 autonumber
