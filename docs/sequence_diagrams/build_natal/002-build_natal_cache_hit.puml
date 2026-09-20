@@ -73,8 +73,10 @@ note over FE, Orch
 команда идентична, run_id новый.
 end note
 FE -> API : POST /charts/natal\nтот же BirthInput
-API -> Orch : BuildNatalCommand\n+ RunContext(новый run_id)
+API -> API : run = RunContext.new()
+API -> Orch : BuildNatalCommand\n+ session_id + run
 
+Orch -> Orch : handler = handlers.get(\ntype(command))
 Orch -> Context : load(session_id)
 Context -> Store : touch(session_id, now)
 Store --> Context : SessionSnapshot(\nstate = SessionState(state_version = 1), ...)
@@ -129,7 +131,7 @@ Context -> Store : sessions.compare_and_set(\nsession_id, 1, StateDelta, now)
 Store --> Context : 2
 Context --> Orch : Committed(state_version = 2)
 
-Orch --> API : Success(chart, state_version = 2)
+Orch --> API : ApplicationCommitted(artifact, state_version = 2)
 API --> FE : 200 JSON
 FE --> User : та же карта
 

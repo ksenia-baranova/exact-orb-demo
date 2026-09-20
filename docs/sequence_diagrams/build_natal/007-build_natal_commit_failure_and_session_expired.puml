@@ -1,5 +1,5 @@
 @startuml
-title exact-orb — BuildNatal: StateCommitFailed и SessionAbsent(expired)
+title exact-orb — BuildNatal: StateCommitFailed и потеря сессии при commit
 
 ' Расчёт прошёл, состояние — нет. Успешный расчёт не равен
 ' успешной пользовательской операции (ADR-0006).
@@ -63,7 +63,10 @@ end box
 
 User -> FE : отправляет форму
 FE -> API : POST /charts/natal
-API -> Orch : BuildNatalCommand
+API -> API : run = RunContext.new()
+API -> Orch : BuildNatalCommand\n+ session_id + run
+
+Orch -> Orch : handler = handlers.get(\ntype(command))
 
 Orch -> Context : load(session_id)
 Context -> Store : touch(session_id, now)
@@ -97,17 +100,31 @@ alt Session Store недоступен при записи
     Orch -> Context : save(session_id, 3, delta)
     Context -> Store : sessions.compare_and_set(\nsession_id, 3, delta, now)
     Store -[#C62828]-> Context : timeout / unavailable
-    Context --> Orch : StateCommitFailed(error_code)
+    Context --> Orch : StateCommitFailed(error_code_1)
 
-    Orch --> API : 503 STATE_COMMIT_FAILED
+    alt retry разрешён: нет отмены, deadline не истёк
+        Orch -> Context : save(session_id, 3, same delta)
+        Context -> Store : sessions.compare_and_set(\nsession_id, 3, same delta, now)
+        Store -[#C62828]-> Context : timeout / unavailable
+        Context --> Orch : StateCommitFailed(error_code_2)
+    else retry запрещён отменой или deadline
+        note over Orch
+        Первый StateCommitFailed становится
+        окончательным; второй save не начинается.
+        end note
+    end
+
+    Orch -> Orch : ApplicationStateCommitFailure\nFAILURE / SUCCESS / COMMIT_FAILED
+    Orch -> Orch : terminal event\ncommit_attempts = 1 | 2
+    Orch --> API : ApplicationStateCommitFailure\nSTATE_COMMIT_FAILED
     API --> FE : retryable system error
-    FE --> User : «карта рассчитана,\nно не сохранена, повторите»
+    FE --> User : «не удалось подтвердить сохранение;\nобновите страницу»
 
     note over Orch, Store
     **Операция неуспешна.** Расчёт прошёл,
-    состояние не изменилось — значит
-    пользовательская операция не состоялась
-    (§1.5 негативных сценариев).
+    но фактический исход state transition
+    не подтверждён. Состояние проверяется
+    отдельным restore после ответа.
 
     Success не возвращается до завершения
     требуемого state transition.
@@ -120,8 +137,8 @@ else TTL сессии истёк во время расчёта
     Store --> Context : SessionAbsent(reason = expired)
     Context --> Orch : SessionAbsent(reason = expired)
 
-    Orch --> API : SessionAbsent(reason = expired)
-    API --> FE : session_expired
+    Orch --> API : ApplicationSessionAbsent\nSESSION_LOST_DURING_OPERATION
+    API --> FE : session_lost_during_operation
     FE -> FE : возврат к bootstrap
     FE --> User : форма ввода данных рождения
 
@@ -146,10 +163,13 @@ end note
 
 note over Orch
 StateCommitFailed и Superseded — **разные
-исходы**. Первый означает «повтори»,
-второй — «твой результат больше
-не актуален». Смешивать их нельзя:
+исходы**. Первый означает неподтверждённый
+commit, второй — неактуальный результат.
+Смешивать их нельзя:
 проверяется тестом ContextService.
+
+Обе попытки используют original expected=3
+и тот же объект delta; load/rebase между ними нет.
 end note
 
 @enduml

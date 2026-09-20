@@ -1,12 +1,21 @@
 # Архитектура exact-orb
 
-Статус документа: рабочий, версия 2.3 (2026-09-14).
+Статус документа: рабочий, версия 2.5 (2026-09-19).
 Заменяет версию 1.0, описывавшую систему как чистый веб-чат.
 Область: прикладной и агентский слои, их расчётные контракты и хранение данных.
 
 Ревизия 2026-09-14: разделены текущая реализация и целевые потоки; уточнены
 координация, восстановление карты, контракты резолва, Research Corpus и
 решения ADR-0027–0033. Startup wiring остаётся отдельным этапом C3.
+
+Ревизия 2026-09-15: целевой application-flow согласован с ADR-0006 и
+требованиями `ApplicationOrchestrator`; routing выполняется до session load,
+а готовый `RunContext` принадлежит входной границе.
+
+Ревизия 2026-09-19: application core для `BuildNatalCommand`, внешний
+`ApplicationResult`, CAS commit/retry/cancellation, lifecycle logging,
+минимальная composition и normal load profile сверены с реализацией. HTTP/UI,
+session bootstrap, admission и deployment composition остаются внешними.
 
 Документ описывает принятую архитектуру; наличие требования не означает
 наличия реализации. Текущая готовность приведена в §2.1. Подробные контракты
@@ -91,16 +100,16 @@ application-срез ограничен натальной картой и ко�
 
 ### 2.1 Текущая готовность
 
-Сверено на 2026-09-14 с HEAD `086e691`. Подробный реестр выполненных работ
-и их подтверждений — [roadmap, §2](../project_management/roadmap.md).
-Статусы ниже не означают новый прогон тестов при правке документации.
+Сверено повторно 2026-09-19. Подробный реестр application-работ и фактических
+проверок — в
+[плане ApplicationOrchestrator](../project_management/application_orchestrator_implementation_plan.md).
 
 | Область | Реализовано | Остаётся |
 |---|---|---|
 | Standalone CLI и ядро | natal, cosmogram, transit | развитие техник; CLI не является HTTP-приложением |
-| Build Natal | `BuildNatalCommand`, `BuildNatalHandler`, `BuildNatalOutcome`, типизированные порты | внешний `ApplicationOrchestrator` и `ApplicationResult`, state commit полного application-flow |
+| Build Natal | `BuildNatalCommand`, `BuildNatalHandler`, `BuildNatalOutcome`, `ApplicationOrchestrator`, внешний `ApplicationResult`, CAS commit/retry/cancellation, lifecycle logging и минимальная composition | HTTP mapping, client monotonicity X1, admission X2 и production startup/deployment |
 | Резолв и артефакты | `place_id` lookup и JSONL loader, скрипт каталога, historical TZ, resolver, spec, key v2, version, engine, codec, InMemory cache и artifact resolver | рабочие данные и поиск подсказок для UI, общий startup wiring C3 |
-| Сессия | contracts, `ContextService`, InMemory и SQLite adapters, TTL и CAS | подключение к HTTP/application lifecycle |
+| Сессия | contracts, `ContextService`, InMemory и SQLite adapters, TTL/CAS и подключение к application core | подключение к HTTP/session lifecycle |
 | Клиент и HTTP API | — | форма, renderer, middleware, JSON/SSE endpoints |
 | Agent Runtime | интерфейсы, реестры, синхронный `NatalTool`; `orchestration.Orchestrator` — каркас | interpretation handlers, целевой runtime, async Tool, общий путь через артефакты |
 | Интерпретация и допуск | contracts/каркас интерпретации, LLM Gateway transport | `InterpretationService`, recipes, cache, streaming, guards, capabilities, policy и admission |
@@ -121,18 +130,23 @@ BuildNatalHandler
   → BuildNatalSuccess(artifact, delta) / CalculationFailed
 ```
 
-Handler формирует `StateDelta`, но не сохраняет её. Целевой внешний контур:
+Handler формирует `StateDelta`, но не сохраняет её. Реализованный application
+core:
 
 ```text
-HTTP → ApplicationOrchestrator → ContextService.load
+Typed input boundary → ApplicationOrchestrator → route by type(command) → ContextService.load
   → handler → ContextService.save(original expected_state_version, delta)
-  → ApplicationResult → JSON
+  → ApplicationResult
 ```
 
 Успешная пользовательская операция требует подтверждённого commit либо
 `AlreadyApplied`. Успешный расчёт сам по себе этого не доказывает.
-Внешний контур ещё не реализован; [Build Natal sequence diagrams](../sequence_diagrams/build_natal/README.md)
-явно отделяют его от работающего handler.
+Этот поток подтверждён прямыми application/integration-тестами. HTTP JSON,
+cookie/session bootstrap и UI ещё не реализованы;
+[Build Natal sequence diagrams](../sequence_diagrams/build_natal/README.md)
+явно отделяют реализованный application core от целевого transport/client.
+Точный контракт первого use case зафиксирован в
+[требованиях ApplicationOrchestrator](component_responsibilities/exact-orb_application_orchestrator_requirements.md).
 
 Целевой поток интерпретации использует второй уровень координации:
 
@@ -343,8 +357,10 @@ preset-действия, чат при наличии capability. Переклю
 Он сохраняет исходную `expected_state_version`, передаёт её в
 `ContextService.save` и координирует lifecycle канала для streaming-операций.
 Не выбирает tools и не принимает policy-решений (ADR-0006, ADR-0020).
-**Статус:** целевой компонент не реализован. Пакет `application/` существует;
-каркас `exact_orb.orchestration.Orchestrator` относится к агентскому слою.
+**Статус:** application core реализован в
+`exact_orb.application.orchestrator`; минимальная сборка для
+`BuildNatalCommand` находится в `exact_orb.application.composition`. Каркас
+`exact_orb.orchestration.Orchestrator` относится к агентскому слою.
 
 **BuildNatalHandler** — резолв → выбор natal/cosmogram → получение артефакта
 → `BuildNatalOutcome`. Успех содержит `artifact` и подготовленную `StateDelta`;
@@ -354,8 +370,9 @@ handler не выполняет commit. **Статус:** реализован.
 интерпретационных flow, вызывающие Agent Runtime. **Статус:** не реализованы;
 message-путь отложен до подписки.
 
-Внешний `ApplicationResult` ещё проектируется. После расчёта он должен различать
-успех/`AlreadyApplied`, `Superseded`, отсутствие сессии и технический отказ commit.
+Внешний `ApplicationResult` реализован как union десяти моделей. После расчёта
+он различает успех/`AlreadyApplied`, `Superseded`, отсутствие сессии и
+типизированный технический отказ commit.
 Retry неподтверждённого commit повторяет исходные expected и delta без rebase
 (ADR-0014). [Подробный контракт Build Natal](component_responsibilities/exact-orb_build_natal_components.md).
 
@@ -802,15 +819,16 @@ pipeline сам по себе не доказывает качество отв�
 **Выполненная основа.** Расчётное ядро и прямой CLI; резолв рождения;
 расчётный кэш, артефакты и `CalculationVersion`; session contracts,
 `ContextService`, InMemory и SQLite persistence; Research P5a; функциональный
-`BuildNatalHandler` и реальный интеграционный путь до `BuildNatalOutcome`.
+`BuildNatalHandler`; `ApplicationOrchestrator`, `ApplicationResult`,
+commit/retry/cancellation/lifecycle flow, минимальная composition и реальный
+интеграционный путь с SQLite.
 Также реализованы нормализация результата и DEBUG-диагностика ADR-0027/0028,
 семантика точек/оси узлов/конфигураций ADR-0029–0031, неизвестное время и
 key v2 по ADR-0032, единая strength-система ADR-0033 и нормализация орбиса
 на epsilon-границе. LLM Gateway предоставляет синхронный transport.
 
-**M1. Первый сценарий с UI на удалённом сервере.** Остаются:
-Application Orchestrator, commit-flow и `ApplicationResult`, startup wiring
-C3; рабочий каталог `place_id` и поиск; FastAPI и Session Middleware;
+**M1. Первый сценарий с UI на удалённом сервере.** Остаются: production
+startup wiring C3; рабочий каталог `place_id` и поиск; FastAPI и Session Middleware;
 первый UI; условия и presentation checkbox по ADR-0034; отображение
 рассчитанной карты; серверный INFO-profile, деплой и браузерная приёмка.
 Отдельный обязательный import-boundary тест handler ещё не интегрирован.

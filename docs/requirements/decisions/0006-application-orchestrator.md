@@ -5,6 +5,20 @@
 Ревизия: 2026-09-06 — терминология session-flow приведена к ADR-0009 и
 ADR-0014: `SessionState`, `StateDelta`, CAS-предикат передаётся отдельно;
 `ProfileService` не вводится. `SetActiveView` отмечен как post-MVP по ADR-0016.
+Ревизия: 2026-09-15 — уточнены границы application coordination: обязательный
+`RunContext` принадлежит входной границе; routing предшествует load; прямой
+доступ транспорта к `ContextService` ограничен session bootstrap/restore.
+Прежняя возможность создавать fallback correlation context внутри
+Orchestrator исключена. Два уровня оркестрации сохраняются.
+Ревизия: 2026-09-16 — уточнён observability-контракт: Application
+Orchestrator пишет компактные lifecycle-события стадий и ровно одно terminal
+event через штатный structured logging. Реестр активных `run_id`, глобальные
+счётчики и отдельный telemetry port не вводятся; метрики выводятся из событий,
+а concurrency/queue принадлежат transport/composition admission controller.
+Ревизия: 2026-09-17 — уточнены гарантии общей границы: RunContext frozen,
+поля terminal event извлекаются из ApplicationResult, сообщения lifecycle
+кодируются одним JSON object после имени события. Числовые метаданные проверяются
+до записи; ошибка logging не меняет подтверждённый persistence outcome.
 Статус: принято.
 
 ## Контекст
@@ -53,7 +67,8 @@ API → Application ───────┼─ InterpretSelectionHandler
 
 ## Application Orchestrator
 
-`Application Orchestrator` — единая точка координации application-flow после транспортного слоя.
+`Application Orchestrator` — единая точка координации типизированных
+application-команд после транспортного слоя.
 
 Он отвечает на вопрос:
 
@@ -71,7 +86,9 @@ InterpretSelectionCommand
 InterpretMessageCommand
 ```
 
-Выбор handler выполняется детерминированно по типу команды и не требует LLM.
+Выбор handler выполняется детерминированно по точному типу команды и не
+требует LLM. Routing предшествует загрузке состояния: отсутствие handler
+завершает команду до обращения Orchestrator к `ContextService`.
 
 Пример:
 
@@ -90,9 +107,9 @@ InterpretMessageCommand
 
 Application Orchestrator:
 
-1. создаёт или принимает correlation `run_id`;
-2. загружает необходимый application context;
-3. выбирает handler;
+1. принимает обязательный `RunContext`, подготовленный входной границей;
+2. выбирает handler по типу команды до обращения к сессии;
+3. загружает необходимый application context;
 4. запускает handler;
 5. принимает результат handler'а и `StateDelta`;
 6. координирует сохранение состояния;
@@ -102,6 +119,27 @@ Application Orchestrator:
 10. для streaming-операций координирует lifecycle канала.
 
 Предметное решение остаётся внутри handler'а и специализированных services.
+
+### Входная граница и session bootstrap
+
+Входная граница — HTTP transport, CLI либо адаптер другого способа запуска.
+Она создаёт `RunContext` или получает уже созданный контекст **той же
+операции**, разрешает доверенный `session_id` и передаёт оба значения
+Orchestrator отдельно от команды. CLI и тесты следуют тому же правилу:
+отсутствие HTTP не переносит создание контекста внутрь Orchestrator.
+
+Создание сессии и восстановление её состояния при bootstrap транспорт
+выполняет через `ContextService` напрямую. Это разрешённая вторая
+application-зависимость транспорта; handler для bootstrap не требуется.
+При отсутствующей или истёкшей сессии транспорт гасит старую cookie и
+создаёт новую сессию со свежим серверным ID по ADR-0009.
+
+Исключение ограничено **create/restore**. `ResetSessionCommand`,
+`DeleteMyDataCommand` и другие application-команды проходят через
+Orchestrator; транспорт не выполняет их предметные изменения самостоятельно.
+Допуск таких команд этим ADR не означает их реализацию в первом Build Natal
+срезе. Orchestrator остаётся владельцем загрузки snapshot для самой команды:
+bootstrap/restore не заменяет её обязательный load.
 
 ### Build path
 
@@ -165,6 +203,12 @@ Tools
 ```
 
 Application Orchestrator не знает topology agent tools.
+
+Названия компонентов должны явно различать application coordination и
+agent execution. Существование двух уровней оркестрации допустимо и
+предусмотрено этим решением. Переименование существующего agent-каркаса
+является отдельным изменением; его удаление не является условием реализации
+`ApplicationOrchestrator`.
 
 Особенно важный инвариант:
 
@@ -231,6 +275,29 @@ Durable state находится вне процесса.
 
 `run_id` является correlation identifier.
 
+Его единственный владелец — входная граница операции. Контекст создаётся
+до первых стадий её correlation scope, включая транспортные проверки.
+`ApplicationOrchestrator` получает обязательный `RunContext`, не создаёт
+новый `run_id`, не подменяет объект и передаёт тот же объект Handler.
+Fallback вида `run = run or RunContext.new()` запрещён.
+
+RunContext неизменяем после создания: run_id, started_at и deadline нельзя
+переприсваивать, даже другим допустимым значением. Это сохраняет correlation
+и UTC-инвариант между компонентами без копирования передаваемого объекта.
+
+Result-terminal получает тот же ApplicationResult, который подготовлен для
+возврата. Logging проецирует только статусы, code/detail_code, run_id и версию;
+полный payload и user_message не записываются. Метаданные времени и попыток
+принадлежат execute. Формат сообщения — имя события и однострочный JSON object,
+чтобы открытая строка кода не могла создавать дополнительные поля или события.
+Ошибка контракта метаданных не классифицируется как ошибка persistence и
+не опровергает уже подтверждённый commit. Глубокая неизменяемость вложенного
+payload здесь не вводится; она требует отдельного согласования моделей.
+
+Один operation-flow, включая разрешённый повтор commit, сохраняет один
+`run_id`. Самостоятельный новый запрос получает новый контекст; повторная
+доставка того же намерения не делает `run_id` ключом идемпотентности.
+
 Он используется для связывания:
 
 ```text
@@ -248,6 +315,32 @@ API
 
 Если позже появится durable asynchronous build или resumable execution, для этого потребуется отдельный контракт состояния.
 
+### Observability operation-flow
+
+Application Orchestrator владеет observability всей координируемой операции и
+пишет через штатный structured logger:
+
+```text
+application_operation_started
+application_stage_finished             # load / handler
+application_commit_attempt_finished    # на каждый начатый save
+application_operation_finished         # ровно один terminal event
+```
+
+Компоненты продолжают владеть собственными внутренними и boundary-событиями.
+Запись Orchestrator описывает стадию application-flow и не копирует payload
+Handler, resolver, engine, cache или `ContextService`.
+
+Request-specific observability state хранится только в локальных переменных
+одного `execute()`: длительности, число commit attempts, их безопасные error
+codes и признак отменённой доставки. Orchestrator не хранит registry активных
+`run_id`, историю операций или общие counters между вызовами.
+
+Счётчики результатов и retry выводятся из event stream. Активные операции
+определяются парой started/finished; максимум конкурентности и очередь
+измеряются transport/composition admission controller и нагрузочным стендом.
+Конкретный metrics backend не входит в Application Orchestrator.
+
 ## Чего Application Orchestrator не делает
 
 Application Orchestrator:
@@ -263,6 +356,8 @@ Application Orchestrator:
 - не выполняет DataSelector;
 - не принимает policy-решения вместо PolicyService;
 - не определяет стоимость вместо AdmissionControl;
+- не создаёт `RunContext`, session ID или сессию;
+- не управляет cookie и session bootstrap/restore;
 - не мутирует `SessionState` самостоятельно.
 
 ## Чего Agent Runtime не делает
@@ -299,11 +394,23 @@ Agent Runtime:
 
 ## Последствия
 
-- Все пользовательские операции имеют единую application coordination boundary.
+- Все типизированные application-команды имеют единую coordination boundary;
+  session bootstrap/restore выполняется транспортом через `ContextService`.
 - Build Chart остаётся полностью под контролем общего application lifecycle.
 - Детерминированный build не превращается в agent-flow.
 - Agent Runtime может эволюционировать независимо от API и session lifecycle.
 - Новые tools не требуют изменений Application Orchestrator.
 - Новый application use case требует явного handler либо явной маршрутизации.
+- Application lifecycle наблюдаем через единый поток событий с одним started
+  и одним terminal event на вызов; события связываются входным `run_id`.
+- Метрики не требуют хранения operation state между вызовами Orchestrator.
 - Число зависимостей Application Orchestrator необходимо контролировать как метрику риска god-object.
 - Разделение Application Orchestrator и Agent Runtime становится архитектурным инвариантом.
+
+## Связанные требования
+
+Подробный контракт первого use case, статусы, ошибки, повторы, отмена и
+acceptance-сценарии описываются в
+[требованиях ApplicationOrchestrator](../component_responsibilities/exact-orb_application_orchestrator_requirements.md).
+Рабочий статус требований не означает реализацию целевого API и не изменяет
+принятые границы настоящего ADR.

@@ -71,8 +71,10 @@ end box
 
 User -> FE : дата и город;\nполе времени оставлено пустым
 FE -> API : POST /charts/natal\nBirthInput(birth_time = None)
-API -> Orch : BuildNatalCommand
+API -> API : run = RunContext.new()
+API -> Orch : BuildNatalCommand\n+ session_id + run
 
+Orch -> Orch : handler = handlers.get(\ntype(command))
 Orch -> Context : load(session_id)
 Context -> Store : touch(session_id, now)
 Store --> Context : SessionSnapshot(state = SessionState)
@@ -176,7 +178,7 @@ Context -> Store : sessions.compare_and_set(\nsession_id, expected_state_version
 Store --> Context : new state_version
 Context --> Orch : Committed(state_version)
 
-Orch --> API : Success(chart, state_version)\nkind и warnings читаются из chart
+Orch --> API : ApplicationCommitted(artifact, state_version)\nkind и warnings читаются из artifact.chart
 API --> FE : 200 JSON
 FE -> FE : render cosmogram\n(визуально отличен от натала)
 FE --> User : космограмма

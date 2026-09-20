@@ -2,8 +2,8 @@
 title exact-orb — BuildNatal: application-контур недоступен до handler
 
 ' Актуальный транспортный сценарий N2.
-' ApplicationOrchestrator и внешний ApplicationResult — целевой контур,
-' ещё не реализованный как доступный API.
+' ApplicationOrchestrator и внешний ApplicationResult реализованы;
+' HTTP transport и отображение отказа клиентом остаются целевыми.
 
 autonumber
 hide footbox
@@ -42,7 +42,7 @@ box "API / TRANSPORT" #EDE9FE
 end box
 
 box "APPLICATION" #FFEDD5
-    control "ApplicationOrchestrator\n(целевой)" as Orch
+    control "ApplicationOrchestrator" as Orch
     control "BuildNatalHandler" as Handler
 end box
 
@@ -54,29 +54,43 @@ end box
 
 User -> FE : Нажимает «Построить карту»
 FE -> API : POST /charts/natal
+API -> API : run = RunContext.new()
 API -> Session : resolve_or_create(cookie)
 Session --> API : session_id
 API -> Rate : check(IP, session_id, endpoint)
 Rate --> API : RequestPermit
 
-API -> Orch : BuildNatalCommand\n+ session_id + RunContext(run_id)
-Orch -[#C62828]-> API : internal application failure\nдо BuildNatalOutcome
-API --> FE : 503 SERVICE_UNAVAILABLE\nили 500 INTERNAL_ERROR
-FE --> User : «Не удалось выполнить запрос.\nПопробуйте ещё раз»
+API -> Orch : BuildNatalCommand\n+ session_id + run
+Orch -> Orch : handler = handlers.get(\ntype(command))
+
+alt Handler не зарегистрирован
+    Orch --> API : ApplicationInternalFailure\nHANDLER_NOT_REGISTERED\nFAILURE / NOT_STARTED / NOT_ACCESSED
+    note over Orch, Context
+    Routing предшествует load;
+    ContextService не вызывается.
+    end note
+else Handler найден, load выбросил исключение
+    Orch -> Context : load(session_id)
+    Context -[#C62828]-> Orch : unexpected exception\nбез typed outcome
+    Orch --> API : ApplicationInternalFailure\nINTERNAL_FAILURE\nFAILURE / NOT_STARTED / NOT_ACCESSED
+end
+
+API --> FE : 500 INTERNAL_ERROR
+FE --> User : «Произошла внутренняя ошибка»
 
 note over Orch, Handler
 BuildNatalHandler не запускается.
 Сессионная мутация не начинается.
 BuildAttempt и build_revision в MVP отсутствуют.
 
-Показанный вызов ApplicationOrchestrator —
-целевой внешний application-flow,
-а не уже доступный API.
+Показанный ApplicationResult реализован.
+Transport mapping остаётся целевым.
 end note
 
-note over Context, Engine
-ContextService, BirthDataResolver и Engine
-не вызываются. SessionState не изменяется.
+note over Resolver, Engine
+BirthDataResolver и Engine не вызываются.
+SessionState не изменяется. Каждый вызов
+пишет один terminal result event.
 end note
 
 @enduml

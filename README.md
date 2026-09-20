@@ -200,7 +200,8 @@ LLM используется как инструмент анализа и ис�
 | Research in-memory corpus | **Реализован** |
 | LLM gateway | **Реализован как инфраструктурный слой** |
 | Interpretation / agent orchestration | Пока только каркас |
-| Application Orchestrator | Пока не реализован |
+| Application Orchestrator | **Реализован; принят на реальном стеке** |
+| Application composition | **Минимальная сборка реализована**: `ContextService` + `BuildNatalHandler` |
 | Публичный HTTP API | Пока не реализован |
 | Web UI | Пока не реализован |
 
@@ -254,7 +255,7 @@ exact-orb "02.09.1985 00.45 gmt+4" \
 JSON-вывод — тот же вызов с `--format json`.
 
 CLI предназначен прежде всего для прямого запуска calculation engine.
-Он **не проходит через будущий Application Orchestrator** и не является демонстрацией
+Он **пока не проходит через реализованный Application Orchestrator** и не является демонстрацией
 application-handler lifecycle.
 
 ---
@@ -368,8 +369,8 @@ Handler координирует use case, но намеренно не влад
 
 Такое разделение является намеренным архитектурным решением.
 
-Следующий application-level слой — **Application Orchestrator**, который должен замкнуть
-lifecycle пользовательской операции:
+Поверх handler реализован **Application Orchestrator**, который замыкает lifecycle
+пользовательской операции:
 
 ```text
 request
@@ -389,7 +390,23 @@ state commit
 application response
 ```
 
-Этот слой относится к целевой архитектуре и пока не считается реализованным.
+Orchestrator загружает `SessionSnapshot` через `ContextService`, выбирает handler
+по точному типу команды, принимает `BuildNatalSuccess + StateDelta`, сохраняет
+результат с исходной `state_version` и возвращает один из десяти типизированных
+`ApplicationResult`.
+
+Commit-стадия защищена от отмены request-задачи: уже начатый `save` дожидается
+завершения, классификация и terminal event выполняются до возврата результата
+или проброса исходного `CancelledError`. После неподтверждённого
+`StateCommitFailed` разрешён ровно один точный повтор с тем же original expected
+и той же `StateDelta`, без нового load, rebase или повторного handler-вызова.
+
+Минимальная composition собирает production application path из `ContextService`,
+`BuildNatalHandler`, birth-data resolver и chart artifact resolver; registry
+валидация требует точную регистрацию поддержанного `BuildNatalCommand`.
+Интеграционная приёмка покрывает реальный SQLite с двумя соединениями, CAS-гонки
+для одинакового и разного намерения, потерянное подтверждение применённого CAS
+и штатный load profile 300/300 полезных исходов при 5 RPS.
 
 ### Детерминированный расчёт
 
@@ -879,7 +896,7 @@ Mock, удовлетворяющий интерфейсу, полезен для
 | **Нет CI.** Тесты запускаются локально; кроссплатформенная воспроизводимость golden-эталонов не подтверждена | открыто |
 | **`NatalTool` идёт мимо `ChartArtifactResolver`.** `tools/natal_tool.py` вызывает `calculate_natal()` напрямую, поэтому agent-facing путь и application-путь дают разные calculation keys | известный долг, M3-1 roadmap |
 | **Движок читает процессную конфигурацию.** `engine/charts/natal.py` импортирует `exact_orb.config` — противоречит инварианту изоляции движка | известный долг №1 |
-| **CLI не проходит через application-слой** | ожидаемо до Application Orchestrator |
+| **CLI не проходит через application-слой** | application-слой реализован, но CLI пока остаётся прямым входом в calculation engine; подключение CLI/FastAPI к Orchestrator — отдельная интеграционная работа |
 
 ---
 
@@ -927,7 +944,9 @@ Mock, удовлетворяющий интерфейсу, полезен для
 
 ```text
 src/exact_orb/
-├── application/       application commands, ports, results и handlers
+├── application/       application commands, ports, results, handlers и lifecycle
+│   ├── orchestrator.py    load → handler → protected commit → ApplicationResult
+│   └── composition.py     минимальная сборка ContextService + BuildNatalHandler
 ├── birth/             birth-data и timezone resolution
 ├── calculation/       calculation boundary, artifacts, cache, keys, versioning
 ├── engine/            детерминированные domain calculations

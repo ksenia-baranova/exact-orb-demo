@@ -65,8 +65,10 @@ end box
 
 User -> FE : отправляет форму
 FE -> API : POST /charts/natal
-API -> Orch : BuildNatalCommand
+API -> API : run = RunContext.new()
+API -> Orch : BuildNatalCommand\n+ session_id + run
 
+Orch -> Orch : handler = handlers.get(\ntype(command))
 Orch -> Context : load(session_id)
 Context -> Store : touch(session_id, now)
 Store --> Context : SessionSnapshot(state = SessionState)
@@ -131,7 +133,7 @@ Handler поднимает исход **тем же типом**,
 не переупаковывая и не обобщая.
 end note
 
-Orch --> API : InputRequired
+Orch --> API : ApplicationInputRequired(issues, state_version)
 API --> FE : 422 typed issues
 FE -> FE : подсветить поле по issues[].field
 FE --> User : «уточните место» / «уточните время»

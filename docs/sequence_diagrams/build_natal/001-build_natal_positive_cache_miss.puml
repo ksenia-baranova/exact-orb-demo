@@ -92,19 +92,19 @@ Build API принимает только place_id.
 end note
 
 
-== Загрузка контекста ==
+== Routing и загрузка контекста ==
+
+Orch -> Orch : handler = handlers.get(\ntype(command))
+
+note right of Orch
+Точный lookup по типу команды выполняется
+до session I/O. Fallback и LLM-routing нет.
+end note
 
 Orch -> Context : load(session_id)
 Context -> Store : touch(session_id, now)
 Store --> Context : SessionSnapshot(\nstate = SessionState(state_version = 0),\ndialog = ())
 Context --> Orch : SessionSnapshot
-
-Orch -> Orch : handler = handlers[BuildNatalCommand]
-
-note right of Orch
-Маршрутизация по типу команды.
-Словарь, не LLM (ADR-0006).
-end note
 
 Orch -> Handler : handle(command, snapshot.state, run)
 activate Handler
@@ -265,7 +265,7 @@ Context --> Orch : Committed(state_version = 1)
 
 == Ответ ==
 
-Orch --> API : Success(chart, state_version = 1)
+Orch --> API : ApplicationCommitted(artifact, state_version = 1)
 API --> FE : 200 JSON
 FE -> FE : render natal SVG
 FE --> User : натальная карта

@@ -161,16 +161,28 @@ Label on first column
 [H_ORB] is 100% complete
 [H_ORB] is colored in LightGreen
 
+-- Application Orchestrator --
+
 [Сверка истории: 14.09.2026] as [AUDIT] happens 2026-09-14
 [AUDIT] is colored in DarkGreen
+
+' roadmap v3.2 planned M1-2 + M1-3 as 2 working days on 15.09-16.09.
+' Actual implementation/acceptance series: a12daf4 -> e688592.
+[Application Orchestrator core — 4 дн.; план M1-2/3 был 2 раб. дн.] as [H_APP_ORCH] starts 2026-09-16 and ends 2026-09-19
+[H_APP_ORCH] is 100% complete
+[H_APP_ORCH] is colored in Salmon
+
+[README/status sync Orchestrator — 20.09] as [H_APP_DOCS] happens 2026-09-20
+[H_APP_DOCS] is colored in LightSalmon
 
 legend bottom
   Дни = дата конца - дата начала + 1; календарь Europe/Moscow, выходные включены.
   Зелёное: окно от постановки до содержательного коммита. Это не трудозатраты.
   Оранжевое и ~: приблизительное окно ранних промптов; отдельных коммитов нет.
+  Salmon: Application Orchestrator превысил baseline v3.2 15-16.09 и принят 19.09.
   Пересечения строк не доказывают параллельную работу; длительности не суммируются.
   Session начат по локальному промпту 04.09; tracked-редакция и первый код — 05.09.
   Handler: код 08.09, документы 09.09; тест импортных границ ещё не закрыт.
-  Будущие задачи показаны на второй диаграмме этого файла, без календарного прогноза.
+  Будущие задачи показаны на второй диаграмме этого файла, уже со сдвигом после Orchestrator.
 endlegend
 @endgantt

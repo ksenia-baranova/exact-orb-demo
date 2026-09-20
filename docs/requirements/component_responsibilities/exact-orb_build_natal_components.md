@@ -6,14 +6,22 @@
 сверены с реализацией; целевой orchestration/commit-слой отделён от уже
 реализованного среза, startup wiring оставлен за C3.
 **Ревизия:** 2026-09-12 — реализован поток неизвестного времени по ADR-0032.
+**Ревизия:** 2026-09-15 — целевой Orchestrator согласован с ревизией ADR-0006;
+подробные требования вынесены в отдельную рабочую редакцию R3.1.
+**Ревизия:** 2026-09-16 — observability-контракт Orchestrator уточнён в
+рабочей редакции R3.2: lifecycle-события принадлежат Orchestrator, а
+request-specific значения остаются локальными одному `execute()`.
+**Ревизия:** 2026-09-19 — application core, внешний `ApplicationResult`,
+commit/retry/cancellation flow, минимальная composition и normal load profile
+сверены с реализацией; transport/deployment остаются внешним контуром.
 **Область:** application-путь `BuildNatalCommand` — от входа в `Application
 Orchestrator` до возврата результата и подтверждённого изменения состояния.
 **Основание:** ADR-0002, 0005, 0006, 0007, 0008, 0009, 0012, 0013, 0014, 0015,
 0017, 0020, 0032; инварианты И-1, И-5, И-7, И-8, И-11, И-12, И-13, И-14.
 
-Документ фиксирует состав компонентов и контрактов пути. Он различает уже
-реализованный срез `BuildNatalHandler` и целевые компоненты внешней
-оркестрации. Документ не заменяет ADR: каждое решение здесь либо следует
+Документ фиксирует состав компонентов и контрактов пути. Он различает
+реализованный application core и всё ещё целевые transport, client и
+production-startup компоненты. Документ не заменяет ADR: каждое решение здесь либо следует
 принятому ADR, либо явно помечено как открытое.
 
 ---
@@ -26,15 +34,15 @@ Orchestrator` до возврата результата и подтверждё
 
 ```text
 BuildNatalCommand
-    → Application Orchestrator (целевой, ещё не реализован)
+    → Application Orchestrator
     → BuildNatalHandler
     → BirthDataResolver
     → ChartArtifactResolver
     → EngineService
     → BuildNatalSuccess {ChartArtifact, StateDelta}
-    → Application Orchestrator (целевой)
+    → Application Orchestrator
     → ContextService (commit)
-    → ApplicationResult (целевой)
+    → ApplicationResult
 ```
 
 Космограмма при неизвестном времени рассчитывается тем же путём (ADR-0008):
@@ -122,7 +130,9 @@ src/exact_orb/
         commands.py             Command, BuildNatalCommand
         ports.py                Handler, BirthDataResolverPort, ChartArtifactPort
         results.py              BuildNatalSuccess, BuildNatalOutcome
-        orchestrator.py         ApplicationOrchestrator (целевой, ещё не реализован)
+        application_results.py  ApplicationResult
+        orchestrator.py         ApplicationOrchestrator
+        composition.py          минимальная сборка Build Natal application-flow
         handlers/
             __init__.py
             build_natal.py      BuildNatalHandler
@@ -461,6 +471,7 @@ BuildNatalCommand {
 RunContext {
     run_id:     UUID
     started_at: datetime
+    deadline:   datetime | None = None
 }
 ```
 
@@ -476,16 +487,15 @@ RunContext {
 и он остался чистым correlation identifier — **не** хэндлом возобновления
 (ADR-0006, ADR-0012).
 
-**Создаёт его транспорт, а не оркестратор.** ADR-0006 перечисляет
-correlation scope, начиная с `API request`; резолв cookie, rate limit
-и разбор тела запроса происходят до оркестратора, и именно там живут
-отказы, которые труднее всего связать с прогоном. Поэтому `run_id`
-рождается в Session Middleware и приходит в оркестратор отдельным
-аргументом.
+**Создаёт его входная граница, а не оркестратор.** HTTP transport, CLI или
+другой входной адаптер создаёт `RunContext` либо получает контекст той же
+операции до её первых логируемых стадий. Резолв cookie, rate limit и разбор
+тела запроса входят в correlation scope. CLI и тесты также передают готовый
+объект; fallback внутри Orchestrator запрещён ревизией ADR-0006 от 2026-09-15.
 
-Формулировка ADR-0006 «создаёт **или** принимает» читается так: принимает
-от транспорта в обычном режиме, создаёт сам, когда транспорта нет — CLI,
-тест, будущая scheduled-операция.
+В текущей реализации `deadline` присутствует с обратно совместимым default
+`None`; принимается только timezone-aware UTC. Его правила описаны в
+[требованиях Orchestrator](exact-orb_application_orchestrator_requirements.md).
 
 ---
 
@@ -1521,12 +1531,15 @@ import-boundary regression-тест для `build_natal.py` ещё не инте
 
 ### 7.2. `ApplicationOrchestrator` — `application/orchestrator.py`
 
-**Статус реализации.** Целевой компонент по ADR-0006; на сверенном commit
-`9b7a4179fa10ebda066ff998294b05aaa8930fd2` модуль ещё отсутствует. Следующий
-контракт описывает требуемое будущее поведение, а не уже доступный API.
+**Статус реализации.** Компонент реализован в
+`src/exact_orb/application/orchestrator.py`. Routing, load, Handler outcomes,
+commit, один точный retry, cancellation и lifecycle logging подтверждены
+unit-, integration- и concurrency-тестами. Production transport и admission
+остаются внешними владельцами и не входят в этот статус.
 
-**Назначение.** Единая точка координации application-flow после транспортного
-слоя (ADR-0006).
+**Назначение.** Единая точка координации типизированных application-команд
+после транспортного слоя (ADR-0006). Подробный контракт и решения ревью —
+в [требованиях ApplicationOrchestrator](exact-orb_application_orchestrator_requirements.md).
 
 **Контракт.**
 
@@ -1537,29 +1550,31 @@ class ApplicationOrchestrator:
         *,
         context:  ContextService,
         handlers: Mapping[type[Command], Handler],
+        clock:     Callable[[], datetime],
     ) -> None: ...
 
-    async def handle(
+    async def execute(
         self,
         command: Command,
         *,
         session_id: str,
-        run:     RunContext | None = None,
+        run:     RunContext,
     ) -> ApplicationResult: ...
 ```
 
 **Последовательность.**
 
 ```text
-1. transport разрешает `session_id` только из cookie; при отсутствии cookie
-   генерирует свежий ID и insert-only создаёт сессию
-2. run = run or RunContext.new()   — транспорт даёт свой, CLI и тест не дают
-3. context.load(session_id) → `SessionSnapshot` либо типизированный отказ
-4. сохранить original `expected_state_version` из snapshot
-5. выбрать handler по типу команды — словарь, не LLM
-6. await handler.handle(command, snapshot.state, run)
-7. успех → context.save(session_id, original expected, delta)
-8. классифицировать исход и вернуть ApplicationResult
+1. входная граница подготавливает RunContext и доверенный session_id;
+   transport выполняет session bootstrap/create/restore через ContextService
+2. execute(command, session_id=session_id, run=run) принимает все три входа
+3. выбрать handler по type(command); отсутствие handler → отказ без load
+4. context.load(session_id) → SessionSnapshot либо типизированный отказ
+5. сохранить original expected_state_version из snapshot
+6. await handler.handle(command, snapshot.state, run), передав тот же run
+7. BuildNatalSuccess → context.save(session_id, original expected, delta)
+8. классифицировать исход; правила повтора и отмены — в требованиях Orchestrator
+9. вернуть ApplicationResult, завершив нормализацию внутри application boundary
 ```
 
 **Ответственности.**
@@ -1591,25 +1606,16 @@ class ApplicationOrchestrator:
 
 ---
 
-### 7.3. Результат — `application/results.py`
+### 7.3. Результат — `application/application_results.py`
 
-**Статус реализации.** Ниже приведён целевой внешний union после commit.
-В текущем `application/results.py` реализованы только внутренние
-`BuildNatalSuccess` и `BuildNatalOutcome` handler; `ApplicationResult` и его
-commit-исходы ещё не реализованы.
+**Статус реализации.** Внутренние `BuildNatalSuccess` и `BuildNatalOutcome`
+остаются в `application/results.py`; внешний `ApplicationResult` реализован
+отдельно в `application/application_results.py` как union десяти моделей.
 
-```text
-ApplicationResult =
-      Success { chart: ChartArtifact, state_version: int }
-    | InputRequired
-    | AlreadyApplied
-    | Superseded
-    | SessionAbsent
-    | StateReadFailed
-    | ResolutionUnavailable
-    | CalculationFailed
-    | StateCommitFailed
-```
+Union, три уровня статусов, application-коды, `run_id`, `state_version`,
+пользовательские сообщения и правила валидации описаны в
+[требованиях Orchestrator, §7–12](exact-orb_application_orchestrator_requirements.md).
+Эта ссылка заменяет прежний предварительный union в данном разделе.
 
 Отброшенный результат возвращается клиенту явно как `Superseded`, а не
 молчаливым успехом с неактивной картой (ADR-0014).
@@ -1630,7 +1636,10 @@ orchestration/orchestrator.py  →  agent/runtime.py      Orchestrator → Agent
 orchestration/types.py         →  agent/types.py
 ```
 
-Правятся `tests/test_agent_skeleton.py` и импорты.
+Это отдельная задача переименования с обновлением `tests/test_agent_skeleton.py`
+и импортов. Удаление agent-каркаса не требуется; два уровня оркестрации
+предусмотрены ADR-0006. Выполнение этой задачи не является предварительным
+условием реализации application-flow.
 
 ### 8.2. `NatalTool` на общий расчётный путь
 
@@ -1681,17 +1690,23 @@ def build_application(settings) -> ApplicationOrchestrator:
     artifacts = ChartArtifactResolver(cache=cache, engine=engine, version=version)
     places    = LocalPlaceCatalog.from_file(settings.place_catalog_path)
     resolver  = BirthDataResolver(places=places)
-    store     = InMemorySessionStore(ttl_seconds=settings.session_ttl)
-    context   = ContextService(store=store)
+    persistence = InMemorySessionPersistence(...)
+    context   = ContextService(persistence=persistence, clock=utc_now)
     handlers  = {BuildNatalCommand: BuildNatalHandler(resolver=resolver,
                                                       artifacts=artifacts)}
-    return ApplicationOrchestrator(context=context, handlers=handlers)
+    return ApplicationOrchestrator(context=context, handlers=handlers,
+                                   clock=utc_now)
 ```
 
 Реестры наполняются здесь и дальше только читаются (И-9).
-`bootstrap.py` пока не существует: пример фиксирует обязательное wiring C3,
-а не описывает текущий CLI. Значение версии создаётся один раз локально и
-передаётся в `ChartArtifactResolver`; побочного эффекта при импорте нет.
+Полный `bootstrap.py` пока не существует: пример фиксирует обязательное wiring
+C3, а не описывает текущий CLI. Реализованный `application/composition.py`
+собирает только application-часть из явно переданных `ContextService`, resolver,
+artifact port и clock, проверяет полноту registry для `BuildNatalCommand` и
+возвращает `ApplicationOrchestrator`. Настройка эфемерид, создание executor,
+transport/session bootstrap и deployment settings остаются внешними. Значение
+версии создаётся один раз локально и передаётся в `ChartArtifactResolver`;
+побочного эффекта при импорте нет.
 
 ### 9.2. Зависимости
 
@@ -1738,21 +1753,21 @@ B-8 в виде теста на импорты стоит дёшево и лов
 
 ## 11. Порядок реализации и фактический статус
 
-Сверено на 2026-09-14 с HEAD `086e691`. Обозначения Э0–Э6 сохраняют
+Сверено повторно 2026-09-19 в карточке 10.8. Обозначения Э0–Э6 сохраняют
 идентичность работ, а порядок поставки задаёт
 [roadmap](../../project_management/roadmap.md): UI и сервер → первая
-интерпретация прямым вызовом → runtime. Статус реализации не является
-утверждением о новом прогоне тестов при обновлении плана.
+интерпретация прямым вызовом → runtime. Фактические команды и результаты
+приёмки application core записаны в плане реализации §1.3.51.
 
 | Этап | Выполнено | Осталось |
 |---|---|---|
-| Э0 — контракты | Build command/outcome/ports, calculation, birth, session и Research contracts; есть тесты поведения и валидации | Внешний `ApplicationResult` и контракты будущей интерпретации |
+| Э0 — контракты | Build command/outcome/ports, внешний `ApplicationResult`, calculation, birth, session и Research contracts; есть тесты поведения и валидации | Контракты будущей интерпретации; глубокая immutable-граница AC-24/2.R2 |
 | Э1 — расчёт с кэшем | `CalculationVersion`, keys, cache/codec, engine/artifacts, single-flight, нормализованный результат, key v2 и устойчивая космограмма ADR-0032 | Startup wiring C3; отдельные warnings смены знака/направления из §4.6 |
 | Э2 — резолв | `LocalPlaceCatalog` и JSONL loader, `places/tz/resolver`, скрипт каталога, контрольные сценарии и `BirthTimeDomain` | Рабочий каталог и поиск подсказок для UI; готовность resolver не закрывает эти задачи |
-| Э3 — сессия | Контракты, `ContextService`, InMemory и SQLite, TTL/CAS, lifecycle, conformance и benchmark P4; state payload v2 с чтением v1 | Подключение к transport/application lifecycle |
-| Э4 — координация | `BuildNatalHandler`, `BuildNatalOutcome`, logging, `StateDelta`, сквозная валидация результата, реальная интеграция до handler | Import-boundary тест handler — M1-4; Application Orchestrator, commit-flow и внешний результат — M1-2 roadmap |
+| Э3 — сессия | Контракты, `ContextService`, InMemory и SQLite, TTL/CAS, lifecycle, conformance и benchmark P4; state payload v2 с чтением v1; подключение к application core | HTTP/session bootstrap и deployment composition |
+| Э4 — координация | `BuildNatalHandler`, `BuildNatalOutcome`, `ApplicationOrchestrator`, `ApplicationResult`, commit/retry/cancellation/lifecycle logging, минимальная composition и real-component integration | Import-boundary тест handler — M1-4; client monotonicity X1; transport/admission X2 |
 | Э5 — agent-путь | Каркасы `tools/` и `orchestration/` | Общий артефактный путь `NatalTool` — M3-1; async Tool и runtime — M3-2 roadmap |
-| Э6 — нагрузка | Исторические замеры расчётов и отдельный benchmark полного SQLite adapter path | Актуальная проверка natal/cosmogram/transit и серверной конкурентной нагрузки |
+| Э6 — нагрузка | Исторические замеры расчётов, benchmark полного SQLite adapter path и normal application profile 10.6: 300/300 при 5 RPS | Актуальная проверка natal/cosmogram/transit; degraded admission profile 10.7 после X2; серверная/HTTP нагрузка |
 
 Дополнительно завершены семантические исправления ADR-0027–0033 и
 нормализация публичного орбиса на epsilon-границе. Они входят в текущую

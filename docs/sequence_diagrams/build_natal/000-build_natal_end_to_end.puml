@@ -92,15 +92,15 @@ User -> Frontend : дата, время, город\n(город выбран и
 
 Frontend -> API : POST /charts/natal\nBirthInput(birth_date, birth_time, place_id)
 
+API -> API : run = RunContext.new()\n(run_id, started_at, deadline)
+
 API -> Session : resolve_or_create(HttpOnly cookie)
 Session --> API : session_id
 
 API -> RateLimiter : check(ip, session_id, endpoint)
 RateLimiter --> API : RequestPermit
 
-API -> API : run_id = new_run_id()
-
-API -> Orch : BuildNatalCommand(birth_input)\n+ session_id + RunContext(run_id)
+API -> Orch : BuildNatalCommand(birth_input)\n+ session_id + run
 
 note over API, Orch
 Build API принимает только place_id.
@@ -109,15 +109,22 @@ Build API принимает только place_id.
 возникает при разрешении места. Для
 удвоенного времени этот исход допустим.
 
-run_id создаётся транспортом: correlation
-scope по ADR-0006 начинается с API request,
-а резолв cookie и rate limit происходят
-раньше. В команду он не входит — команда
+RunContext создаётся транспортом сразу после
+приёма request: correlation scope включает
+резолв cookie и rate limit. В команду он
+не входит — команда
 описывает намерение, run_id это телеметрия.
 end note
 
 
-== Загрузка контекста ==
+== Routing и загрузка контекста ==
+
+Orch -> Orch : handler = handlers.get(\ntype(command))
+
+note right of Orch
+Точный dict lookup выполняется до load.
+Отсутствие handler завершает flow без I/O.
+end note
 
 Orch -> Context : load(session_id)
 Context -> Store : touch(session_id, now)
@@ -129,13 +136,6 @@ Middleware уже создал fresh SessionState.
 load выполняет агрегатный touch и возвращает
 согласованный SessionSnapshot; отсутствие
 выражается типом SessionAbsent, не None.
-end note
-
-Orch -> Orch : handler = handlers[BuildNatalCommand]
-
-note right of Orch
-Маршрутизация по типу команды.
-Словарь, не LLM (ADR-0006).
 end note
 
 Orch -> Handler : handle(command, snapshot.state, run)
@@ -302,7 +302,7 @@ end note
 
 == Ответ клиенту ==
 
-Orch --> API : ApplicationResult.Success(chart, state_version = 1)\n(целевой: orchestrator/result ещё не реализованы)
+Orch --> API : ApplicationCommitted(artifact, state_version = 1)\n(application core реализован; HTTP mapping целевой)
 API --> Frontend : 200 JSON
 
 Frontend -> Frontend : render natal SVG
