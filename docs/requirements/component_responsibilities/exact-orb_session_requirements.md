@@ -12,8 +12,8 @@
 Согласовано 2026-09-03 и 2026-09-04.
 Ревизия 2026-09-12: реализовано следствие ADR-0032 для state payload v2 и
 чтения frozen payload v1.
-Ревизия 2026-09-21: разделены one-shot операция reaper, runtime seam и
-периодическое расписание FastAPI lifespan.
+Ревизия 2026-09-21: реализован runtime seam one-shot reaper; периодическое
+расписание оставлено FastAPI lifespan.
 
 ---
 

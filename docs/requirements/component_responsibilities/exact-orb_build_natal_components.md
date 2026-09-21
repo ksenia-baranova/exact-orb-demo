@@ -14,9 +14,9 @@ request-specific значения остаются локальными одно
 **Ревизия:** 2026-09-19 — application core, внешний `ApplicationResult`,
 commit/retry/cancellation flow, минимальная composition и normal load profile
 сверены с реализацией; transport/deployment остаются внешним контуром.
-**Ревизия:** 2026-09-21 — полная process runtime composition выделена в
-M1-5.1 между каталогом и FastAPI; уточнены внешний `PlaceCatalog`, SQLite,
-CalculationVersion и lifecycle ownership.
+**Ревизия:** 2026-09-21 — process runtime composition M1-5.1 реализована
+между каталогом и FastAPI: внешний `PlaceCatalog`, SQLite,
+`CalculationVersion` и lifecycle ownership; сквозная приёмка остаётся.
 **Область:** application-путь `BuildNatalCommand` — от входа в `Application
 Orchestrator` до возврата результата и подтверждённого изменения состояния.
 **Основание:** ADR-0002, 0005, 0006, 0007, 0008, 0009, 0012, 0013, 0014, 0015,
@@ -1678,6 +1678,8 @@ async def build_application_runtime(
     natal_calculator=calculate_natal,
 ) -> ApplicationRuntime:
     validate_all_settings_before_owned_resources(settings)
+    checked_clock = lambda: require_utc(clock(), name="clock")
+    checked_clock()
     configure_ephemeris(settings.ephemeris_path, settings.selena_method)
     status = get_ephemeris_status()
     version_record = compute_calculation_version_record(
@@ -1716,12 +1718,12 @@ async def build_application_runtime(
         places=places,
         min_birth_date=settings.min_birth_date,
         max_birth_date=settings.max_birth_date,
-        today_provider=lambda: require_utc(clock()).date(),
+        today_provider=lambda: checked_clock().date(),
     )
-    context = ContextService(persistence=persistence, clock=clock)
+    context = ContextService(persistence=persistence, clock=checked_clock)
     orchestrator = build_application_orchestrator(
         context=context,
-        clock=clock,
+        clock=checked_clock,
         resolver=resolver,
         artifacts=artifacts,
     )
@@ -1742,11 +1744,11 @@ async def build_application_runtime(
 после захвата каждого owned resource и передать ownership runtime только после
 успешной сборки.
 
-Полный `bootstrap.py` пока не существует и остаётся M1-5.1. Реализованный
-`application/composition.py` собирает только application-часть из явно
-переданных `ContextService`, resolver, artifact port и clock, проверяет полноту
-registry для `BuildNatalCommand` и возвращает `ApplicationOrchestrator`.
-M1-5.1 переиспользует эту фабрику; он не создаёт второй registry.
+`application/bootstrap.py` реализует эту сборку и переиспользует
+`application/composition.py`. Последний по-прежнему собирает только
+application-часть из явно переданных `ContextService`, resolver, artifact port
+и clock, проверяет полноту registry для `BuildNatalCommand` и возвращает
+`ApplicationOrchestrator`; второго registry bootstrap не создаёт.
 
 `PlaceCatalog` передаётся извне как готовый порт. Загрузка GeoNames/SQLite и
 search не принадлежат bootstrap, поэтому `LocalPlaceCatalog.from_file()` здесь
@@ -1760,6 +1762,12 @@ one-shot `reap_expired()` и перед закрытием calculation executor 
 `artifacts.drain()`. FastAPI/lifespan, session bootstrap/cookie, request-task
 tracking и периодическое расписание reaper остаются M1-6. Production fail-fast
 для ephemeris fallback и DEBUG guard остаются M1-12.
+
+Component-тесты bootstrap подтверждают strict settings, фактический
+`CalculationVersionRecord`, внешний `PlaceCatalog`, production migrator,
+partial-start cleanup и штатный порядок закрытия. Реальный последовательный
+Build Natal с cache miss → hit и ожидание живого thread-backed расчёта всей
+runtime-границей остаются отдельной сквозной приёмкой M1-5.1.
 
 ### 9.2. Зависимости
 

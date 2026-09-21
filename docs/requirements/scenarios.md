@@ -1,6 +1,6 @@
 # Сквозные сценарии exact-orb
 
-Статус документа: рабочий, версия 2.5 (2026-09-19).
+Статус документа: рабочий, версия 2.6 (2026-09-21).
 Заменяет версию 1.0, где все сценарии начинались со свободного текста в чате.
 
 Ревизия 2026-09-06: session-flow приведён к `SessionState`, `StateDelta` и
@@ -21,8 +21,9 @@ DEBUG-след всех компонентных границ закреплён
 `ApplicationResult`, commit/retry/cancellation, lifecycle logging и normal
 load profile сверены с реализацией; HTTP/UI и deployment остаются целевыми.
 
-Ревизия 2026-09-21: process runtime composition отделена от FastAPI lifespan;
-runtime предоставляет one-shot reaper, а M1-6 владеет его расписанием.
+Ревизия 2026-09-21: process runtime composition реализована отдельно от
+FastAPI lifespan; runtime предоставляет one-shot reaper, а M1-6 владеет его
+расписанием. Сквозная runtime-приёмка остаётся M1-5.1.
 
 Контекст: вход через форму, карта сразу, затем preset-действия и — в подписке —
 свободный вопрос. События потока: `status`, `input_required`, `token`, `done`, `error`.
@@ -32,12 +33,13 @@ runtime предоставляет one-shot reaper, а M1-6 владеет ег�
 **Как читать статусы.** Это целевые пользовательские и приёмочные сценарии,
 а не отчёт о пройденных end-to-end тестах. Формулировка «Проверяет» указывает
 проверяемое требование. `ApplicationOrchestrator` и `ApplicationResult`
-реализованы и проверены через прямую application-границу. HTTP API, интерфейс,
-session bootstrap и общий production startup wiring пока не реализованы.
+реализованы и проверены через прямую application-границу. Process-local
+runtime assembly реализована; HTTP API, интерфейс, session bootstrap и
+deployment startup policy пока не реализованы.
 
 | Сценарии | Реализованная часть | Целевая часть |
 |---|---|---|
-| 1–3, 5, 10–12 | Birth resolution, BuildNatalHandler, расчётный и артефактный слои, session persistence / ContextService, application lifecycle, внешний результат и CAS commit/retry | HTTP/UI, session bootstrap, client monotonicity X1, admission X2 и поиск подсказок |
+| 1–3, 5, 10–12 | Birth resolution, BuildNatalHandler, расчётный и артефактный слои, session persistence / ContextService, application lifecycle, process runtime assembly, внешний результат и CAS commit/retry | HTTP/UI, session bootstrap, client monotonicity X1, admission X2 и поиск подсказок |
 | 4, 9 | интерфейсы и каркас интерпретации, transport Gateway без streaming | preset handler, Agent Runtime, общий Tool-путь, recipes, cache, budget, SSE |
 | 6–8 | расчёт транзитов есть в ядре/CLI; free-form flow отсутствует | производные карты и free-form после MVP |
 | 13 | Research contracts, whitelist-проекция и InMemory adapter | SQLite, producer wiring и политика application-записи |
@@ -514,8 +516,8 @@ Session persistence сохранил resolved-данные и специфика
    Пользователь может заново отправить форму через обычный проверяемый build-путь.
 4. Истечение логическое: запись немедленно перестаёт быть доступной. InMemory
    adapter физически её не удаляет; SQLite очищает просроченные записи reaper.
-   Будущий `ApplicationRuntime` M1-5.1 предоставляет one-shot вызов reaper с
-   единым UTC clock. Периодический запуск и остановка фоновой задачи относятся
+   `ApplicationRuntime` M1-5.1 предоставляет one-shot вызов reaper с единым
+   UTC clock. Периодический запуск и остановка фоновой задачи относятся
    к FastAPI lifespan M1-6.
 
 ### 11б. Пользователь удалил cookie в браузере

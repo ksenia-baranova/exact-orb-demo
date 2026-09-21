@@ -2,11 +2,11 @@
 
 Дата исходной спецификации: 2026-08-29. Ревизия статуса: 2026-09-07.
 Ревизия: 2026-09-12 — реализован контракт идентичности космограммы ADR-0032.
-Ревизия: 2026-09-21 — добавлен lifecycle seam `drain()` для ожидания
-process-local single-flight leaders перед остановкой runtime.
+Ревизия: 2026-09-21 — добавлены lifecycle seam `drain()`, runtime wiring
+фактической версии и cleanup отменённого drain.
 Статус: базовый `ensure_chart` и механизм `CalculationVersion` реализованы;
-startup wiring версии остаётся M1-5.1, `ensure_derived` — целевым
-контрактом после первого MVP.
+startup wiring версии реализован, его сквозная приёмка остаётся M1-5.1,
+`ensure_derived` — целевым контрактом после первого MVP.
 
 Компоненты: `calculation/artifacts.py`, `calculation/keys.py`,
 `calculation/cache.py`, `calculation/engine.py`, `calculation/version.py`.
@@ -1401,8 +1401,9 @@ UTC-моменты, что и тест-пак резолва данных рож
 каталога и metadata, неоднозначный и отсутствующий provider, native digest и
 явное ослабленное логирование. Интеграционный тест с двумя резолверами и общим
 кэшем доказывает механизм B-7: другой отпечаток при тех же данных и спеке даёт
-промах и новый расчёт. В application-пути инвариант вступит в силу после
-startup wiring C3.
+промах и новый расчёт. `ApplicationRuntime` передаёт фактический startup
+fingerprint в resolver; сквозной cache miss → hit через runtime остаётся
+завершающей приёмкой C3.
 
 **Кэш.**
 Промах на пустом; попадание после `put`; вытеснение по `max_entries`;
@@ -1457,6 +1458,12 @@ N параллельных вызовов по одному ключу вызы�
 работа по-прежнему записывает артефакт в cache. Тест управляет движком через
 `asyncio.Event`, не использует задержки как доказательство порядка и хранит
 ссылку на приватную task только для lifecycle-инварианта `task.done()`.
+Отмена `ApplicationRuntime.aclose()` во время `drain()` тоже не отменяет
+leader. Если detached leader затем падает, callback cleanup забирает исключение
+shielded future и event loop не получает `exception was never retrieved`;
+повторный `aclose()` завершает освобождение owned resources. Это component
+lifecycle-проверка, а не сквозное доказательство AC-9 с реальным calculation
+executor.
 
 **Движок и адаптеры.**
 Полный маппинг спеки: каждый параметр функции ядра получает значение
@@ -1505,7 +1512,7 @@ N параллельных вызовов по одному ключу вызы�
 | Отображение ошибок | на прикладной границе, без общего handler'а | §6.2 |
 | Неизвестное время | domain digest входит в key v2; artifact хранит типизированный `time_uncertainty` | ADR-0032; реализовано |
 
-**Статус реализации на 2026-09-14.** Перечисленные ниже работы уже
+**Статус реализации на 2026-09-21.** Перечисленные ниже работы уже
 выполнены и не входят в оставшийся объём ближайшего этапа:
 
 | Работа | Подтверждение |
@@ -1514,14 +1521,15 @@ N параллельных вызовов по одному ключу вызы�
 | Single-flight на `Task` + `shield`, независимость отмены waiter | `calculation/artifacts.py`, `tests/test_chart_artifact_resolver.py` |
 | Lifecycle drain текущих single-flight leaders | `ChartArtifactResolver.drain`, детерминированные resolver-тесты |
 | Сборка `CalculationVersion`, fail-fast на неоднозначном биндинге, B-7 на уровне механизма | `calculation/version.py`, `tests/test_calculation_version.py` |
+| Runtime wiring реальной версии, engine/cache и owned executors | `application/bootstrap.py`, component-тесты bootstrap |
 | Валидация chart/result/artifact и сквозной identity | ADR-0027; tests calculation engine, artifact resolver/codec и application contracts |
 | Полные DEBUG input/output и correlation | ADR-0025/0028; `component_logging.py`, интеграционные тесты calculation/application |
 | Key v2, domain digest и типизированная неопределённость времени | ADR-0032; `calculation/keys.py`, `types.py`, `codec.py` и соответствующие тесты |
 | Первоначальные замеры `T` и размера артефакта | §8.6; исторические результаты, не оценка текущего сервера |
 
-**Остаётся:** startup-композиция C3, передающая реальную версию и зависимости
-в серверный resolver; подключение к HTTP/application lifecycle; общий
-артефактный путь `NatalTool`; актуальные замеры нагрузки. Эти работы
+**Остаётся:** сквозная runtime-приёмка C3 для cache miss → hit и остановки при
+живом расчёте; подключение к HTTP/application lifecycle; общий артефактный путь
+`NatalTool`; актуальные замеры нагрузки. Эти работы
 распределены между M1 и M3 [roadmap](../../project_management/roadmap.md).
 Подготовка полного DEBUG-потока к публичному доступу остаётся отдельной
 ранее отложенной задачей; наличие логирования не закрывает её.

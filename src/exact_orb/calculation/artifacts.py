@@ -127,10 +127,16 @@ class ChartArtifactResolver:
         tasks = tuple({entry.task for entry in self._inflight.values()})
         if not tasks:
             return
-        await asyncio.gather(
-            *(asyncio.shield(task) for task in tasks),
-            return_exceptions=True,
-        )
+        waiters = tuple(asyncio.shield(task) for task in tasks)
+        try:
+            await asyncio.gather(*waiters, return_exceptions=True)
+        except asyncio.CancelledError:
+            for task in tasks:
+                _remove_shield_exception_logger(task)
+            raise
+        finally:
+            for waiter in waiters:
+                waiter.add_done_callback(_drain_future)
 
     async def ensure_chart(
         self,

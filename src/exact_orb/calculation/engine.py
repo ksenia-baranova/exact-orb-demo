@@ -1,8 +1,9 @@
 """Calculation engine boundary for chart artifacts.
 
 Known debt: the current ``NatalChartSpec`` owns 7 of 15 ``calculate_natal``
-parameters. Remaining defaults, including ``selena_method``, are covered by
-the architecture debt until ``CalculationVersion`` and fuller specs land.
+parameters. The application bootstrap fingerprints the relevant engine
+defaults, including ``selena_method``, in ``CalculationVersion``; fuller
+explicit specs and direct CLI/test composition remain separate debt.
 """
 
 from __future__ import annotations
