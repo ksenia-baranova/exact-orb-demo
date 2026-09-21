@@ -685,6 +685,68 @@ async def test_all_waiters_can_cancel_while_shared_task_still_stores_result() ->
     assert contexts == []
 
 
+@pytest.mark.parametrize("completion", ("success", "error", "cancelled"))
+async def test_drain_waits_for_detached_leader_to_finish(
+    completion: str,
+) -> None:
+    cache = FakeCache()
+    error = (
+        ChartCalculationError("ENGINE_UNEXPECTED", run_id=str(RUN_ID))
+        if completion == "error"
+        else None
+    )
+    engine = BlockingEngine(error=error)
+    resolver = _resolver(cache, engine)
+
+    waiter = asyncio.create_task(
+        resolver.ensure_chart(_spec(), _resolved(), run=_run(RUN_ID))
+    )
+    await asyncio.wait_for(engine.first_entered.wait(), timeout=1.0)
+    leader_task = next(iter(resolver._inflight.values())).task
+
+    waiter.cancel()
+    with pytest.raises(asyncio.CancelledError):
+        await waiter
+
+    drain_task = asyncio.create_task(resolver.drain())
+    checkpoint = asyncio.Event()
+    asyncio.get_running_loop().call_soon(checkpoint.set)
+    await checkpoint.wait()
+
+    assert not drain_task.done()
+    assert not leader_task.done()
+    assert cache.put_calls == []
+
+    if completion == "cancelled":
+        leader_task.cancel()
+    else:
+        engine.release.set()
+    await asyncio.wait_for(drain_task, timeout=1.0)
+
+    # This is the ordering assertion: drain must return only after the leader is done.
+    assert leader_task.done()
+    assert resolver._inflight == {}
+    if completion == "success":
+        assert not leader_task.cancelled()
+        assert leader_task.exception() is None
+        assert len(cache.put_calls) == 1
+    elif completion == "error":
+        assert not leader_task.cancelled()
+        assert leader_task.exception() is error
+        assert cache.put_calls == []
+    else:
+        assert leader_task.cancelled()
+        assert cache.put_calls == []
+
+
+async def test_drain_without_inflight_returns() -> None:
+    resolver = _resolver(FakeCache(), FakeEngine(_result()))
+
+    await resolver.drain()
+
+    assert resolver._inflight == {}
+
+
 async def test_different_keys_are_not_serialized_by_resolver() -> None:
     cache = FakeCache()
     engine = BlockingEngine(target_entries=2)

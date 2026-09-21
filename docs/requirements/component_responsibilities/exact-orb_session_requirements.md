@@ -12,6 +12,8 @@
 Согласовано 2026-09-03 и 2026-09-04.
 Ревизия 2026-09-12: реализовано следствие ADR-0032 для state payload v2 и
 чтения frozen payload v1.
+Ревизия 2026-09-21: разделены one-shot операция reaper, runtime seam и
+периодическое расписание FastAPI lifespan.
 
 ---
 
@@ -1065,8 +1067,11 @@ lifecycle-операцией.
 **TTL.** Колонка `expires_at`, проверка при чтении и явная чистка. Встроенного
 TTL у SQLite нет; P4 предоставляет one-shot `reap_expired(now=...)`, который
 удаляет только parent rows с `expires_at <= now`, а dialogs удаляются через
-`ON DELETE CASCADE`. Планирование периодического запуска принадлежит
-runtime-композиции.
+`ON DELETE CASCADE`. M1-5.1 предоставляет на `ApplicationRuntime` one-shot
+`reap_expired(now=None)`: без явного `now` метод использует тот же injected
+UTC clock, что session/application flow. Периодическое расписание и отмена
+такой фоновой задачи принадлежат FastAPI lifespan M1-6, а не persistence и не
+process runtime composition.
 
 SQLite aggregate использует переданный извне executor, открывает и закрывает
 соединение внутри worker на каждую операцию и потому не имеет `close` или

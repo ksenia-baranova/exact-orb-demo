@@ -17,6 +17,9 @@
 минимальная composition и normal load profile сверены с реализацией. HTTP/UI,
 session bootstrap, admission и deployment composition остаются внешними.
 
+Ревизия 2026-09-21: целевая process runtime composition M1-5.1 отделена от
+FastAPI lifespan M1-6 и production/deployment policy M1-12.
+
 Документ описывает принятую архитектуру; наличие требования не означает
 наличия реализации. Текущая готовность приведена в §2.1. Подробные контракты
 задаются component requirements и действующими [ADR](decisions/README.md);
@@ -645,8 +648,9 @@ privacy-hardening не реализованы.
 **Хранилища** развиваются за отдельными портами: InMemory для тестов,
 SQLite для стенда, PostgreSQL при появлении условия перехода (ADR-0024).
 SQLite сейчас реализован для session persistence; это не означает готовности
-SQLite-кэшей и Research Corpus. Периодический запуск session reaper и lifecycle
-executors принадлежат будущей runtime-композиции.
+SQLite-кэшей и Research Corpus. Будущий `ApplicationRuntime` M1-5.1 владеет
+lifecycle executor'ов и предоставляет one-shot session reaper с единым UTC
+clock. Периодическое расписание reaper принадлежит FastAPI lifespan M1-6.
 
 ### 4.13 Research Corpus
 

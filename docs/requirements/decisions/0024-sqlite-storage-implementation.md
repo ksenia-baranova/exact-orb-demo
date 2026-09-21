@@ -8,6 +8,9 @@ component-scoped migrations, parent-only reaper и границу full-adapter
 benchmark; P4.1 разделил подтверждённый transaction outcome и cleanup,
 расширил однократный WAL recovery на неподтверждённый read-back и закрепил
 совместимость payload v1 frozen fixture.
+Ревизия: 2026-09-21 — уточнено владение запуском reaper: persistence и
+process runtime предоставляют one-shot seam, периодическое расписание
+принадлежит FastAPI lifespan.
 Статус: принято.
 
 ## Контекст
@@ -91,7 +94,9 @@ deadline не читает.
 **TTL.** Колонка `expires_at`, проверка при чтении и периодическая чистка.
 Встроенного TTL у SQLite нет. P4 предоставляет one-shot reaper, который
 выбирает только истёкшие parent rows и удаляет dialog через
-`ON DELETE CASCADE`; периодический запуск принадлежит runtime-композиции.
+`ON DELETE CASCADE`. Process runtime M1-5.1 предоставляет one-shot вызов с
+единым UTC clock; периодический запуск, отмена фоновой задачи и её связь с
+server shutdown принадлежат FastAPI lifespan M1-6.
 
 **Граница P4.** Первый SQLite-инкремент реализует только `SessionStore`,
 `DialogStore` и `SessionPersistence`. Кэши и `Research Corpus` сохраняют ту

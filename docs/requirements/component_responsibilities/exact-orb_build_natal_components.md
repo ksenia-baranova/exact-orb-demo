@@ -14,6 +14,9 @@ request-specific значения остаются локальными одно
 **Ревизия:** 2026-09-19 — application core, внешний `ApplicationResult`,
 commit/retry/cancellation flow, минимальная composition и normal load profile
 сверены с реализацией; transport/deployment остаются внешним контуром.
+**Ревизия:** 2026-09-21 — полная process runtime composition выделена в
+M1-5.1 между каталогом и FastAPI; уточнены внешний `PlaceCatalog`, SQLite,
+CalculationVersion и lifecycle ownership.
 **Область:** application-путь `BuildNatalCommand` — от входа в `Application
 Orchestrator` до возврата результата и подтверждённого изменения состояния.
 **Основание:** ADR-0002, 0005, 0006, 0007, 0008, 0009, 0012, 0013, 0014, 0015,
@@ -1670,8 +1673,13 @@ NatalTool
 Одна функция композиции вместо DI-фреймворка:
 
 ```text
-def build_application(settings) -> ApplicationOrchestrator:
-    status = configure_ephemeris(settings.ephemeris_path)
+async def build_application_runtime(
+    *, settings, places: PlaceCatalog, clock,
+    natal_calculator=calculate_natal,
+) -> ApplicationRuntime:
+    validate_all_settings_before_owned_resources(settings)
+    configure_ephemeris(settings.ephemeris_path, settings.selena_method)
+    status = get_ephemeris_status()
     version_record = compute_calculation_version_record(
         ephemeris_path=status.path,
         selena_method=get_selena_method_name(),
@@ -1680,33 +1688,78 @@ def build_application(settings) -> ApplicationOrchestrator:
     )
     version = calculation_version_of(version_record)
     log_calculation_version(version_record)
-    cache     = InMemoryCalculationCache(...)
-    executor  = ThreadPoolExecutor(max_workers=settings.calc_workers)
-    engine    = EngineService(
-        executor=executor,
-        techniques={"natal": NatalTechniqueAdapter()},
-        slow_threshold_ms=settings.calc_slow_threshold_ms,
+
+    sqlite_executor = ThreadPoolExecutor(max_workers=settings.sqlite_max_workers)
+    persistence = await SqliteSessionPersistence.open(
+        settings.session_db_path,
+        executor=sqlite_executor,
+        busy_timeout_ms=settings.sqlite_busy_timeout_ms,
+        unknown_time_migrator=resolve_unknown_birth_time_for_migration,
     )
-    artifacts = ChartArtifactResolver(cache=cache, engine=engine, version=version)
-    places    = LocalPlaceCatalog.from_file(settings.place_catalog_path)
-    resolver  = BirthDataResolver(places=places)
-    persistence = InMemorySessionPersistence(...)
-    context   = ContextService(persistence=persistence, clock=utc_now)
-    handlers  = {BuildNatalCommand: BuildNatalHandler(resolver=resolver,
-                                                      artifacts=artifacts)}
-    return ApplicationOrchestrator(context=context, handlers=handlers,
-                                   clock=utc_now)
+    calculation_executor = ThreadPoolExecutor(max_workers=2)
+    engine    = EngineService(
+        executor=calculation_executor,
+        techniques={"natal": NatalTechniqueAdapter(calculator=natal_calculator)},
+        slow_threshold_ms=settings.engine_slow_threshold_ms,
+    )
+    cache = InMemoryCalculationCache(
+        max_entries=settings.cache_max_entries,
+        ttl_seconds=settings.cache_ttl_seconds,
+    )
+    artifacts = ChartArtifactResolver(
+        cache=cache,
+        engine=engine,
+        version=version,
+        degraded_log_interval_s=settings.degraded_log_interval_s,
+    )
+    resolver = BirthDataResolver(
+        places=places,
+        min_birth_date=settings.min_birth_date,
+        max_birth_date=settings.max_birth_date,
+        today_provider=lambda: require_utc(clock()).date(),
+    )
+    context = ContextService(persistence=persistence, clock=clock)
+    orchestrator = build_application_orchestrator(
+        context=context,
+        clock=clock,
+        resolver=resolver,
+        artifacts=artifacts,
+    )
+    return ApplicationRuntime(
+        orchestrator=orchestrator,
+        context=context,
+        artifacts=artifacts,
+        ephemeris_status=status,
+        calculation_version_record=version_record,
+        calculation_version=version,
+        owned_resources=(calculation_executor, sqlite_executor),
+    )
 ```
 
 Реестры наполняются здесь и дальше только читаются (И-9).
-Полный `bootstrap.py` пока не существует: пример фиксирует обязательное wiring
-C3, а не описывает текущий CLI. Реализованный `application/composition.py`
-собирает только application-часть из явно переданных `ContextService`, resolver,
-artifact port и clock, проверяет полноту registry для `BuildNatalCommand` и
-возвращает `ApplicationOrchestrator`. Настройка эфемерид, создание executor,
-transport/session bootstrap и deployment settings остаются внешними. Значение
-версии создаётся один раз локально и передаётся в `ChartArtifactResolver`;
-побочного эффекта при импорте нет.
+Псевдокод фиксирует зависимости и порядок, а не требует буквально хранить
+ресурсы кортежем: реализация обязана зарегистрировать обратную очистку сразу
+после захвата каждого owned resource и передать ownership runtime только после
+успешной сборки.
+
+Полный `bootstrap.py` пока не существует и остаётся M1-5.1. Реализованный
+`application/composition.py` собирает только application-часть из явно
+переданных `ContextService`, resolver, artifact port и clock, проверяет полноту
+registry для `BuildNatalCommand` и возвращает `ApplicationOrchestrator`.
+M1-5.1 переиспользует эту фабрику; он не создаёт второй registry.
+
+`PlaceCatalog` передаётся извне как готовый порт. Загрузка GeoNames/SQLite и
+search не принадлежат bootstrap, поэтому `LocalPlaceCatalog.from_file()` здесь
+не вызывается. Runtime создаёт реальный SQLite session persistence, а не
+InMemory adapter. Значение версии вычисляется один раз из фактического status
+и engine defaults, логируется и передаётся в `ChartArtifactResolver`; побочного
+эффекта при импорте нет.
+
+`ApplicationRuntime` владеет calculation/SQLite executor'ами, предоставляет
+one-shot `reap_expired()` и перед закрытием calculation executor вызывает
+`artifacts.drain()`. FastAPI/lifespan, session bootstrap/cookie, request-task
+tracking и периодическое расписание reaper остаются M1-6. Production fail-fast
+для ephemeris fallback и DEBUG guard остаются M1-12.
 
 ### 9.2. Зависимости
 
@@ -1762,9 +1815,9 @@ B-8 в виде теста на импорты стоит дёшево и лов
 | Этап | Выполнено | Осталось |
 |---|---|---|
 | Э0 — контракты | Build command/outcome/ports, внешний `ApplicationResult`, calculation, birth, session и Research contracts; есть тесты поведения и валидации | Контракты будущей интерпретации; глубокая immutable-граница AC-24/2.R2 |
-| Э1 — расчёт с кэшем | `CalculationVersion`, keys, cache/codec, engine/artifacts, single-flight, нормализованный результат, key v2 и устойчивая космограмма ADR-0032 | Startup wiring C3; отдельные warnings смены знака/направления из §4.6 |
+| Э1 — расчёт с кэшем | `CalculationVersion`, keys, cache/codec, engine/artifacts, single-flight, resolver drain, нормализованный результат, key v2 и устойчивая космограмма ADR-0032 | Runtime wiring M1-5.1; отдельные warnings смены знака/направления из §4.6 |
 | Э2 — резолв | `LocalPlaceCatalog` и JSONL loader, `places/tz/resolver`, скрипт каталога, контрольные сценарии и `BirthTimeDomain` | Рабочий каталог и поиск подсказок для UI; готовность resolver не закрывает эти задачи |
-| Э3 — сессия | Контракты, `ContextService`, InMemory и SQLite, TTL/CAS, lifecycle, conformance и benchmark P4; state payload v2 с чтением v1; подключение к application core | HTTP/session bootstrap и deployment composition |
+| Э3 — сессия | Контракты, `ContextService`, InMemory и SQLite, TTL/CAS, lifecycle, conformance и benchmark P4; state payload v2 с чтением v1; подключение к application core | Владение SQLite executor и one-shot reaper в M1-5.1; HTTP/session bootstrap и reaper schedule в M1-6; deployment policy в M1-12 |
 | Э4 — координация | `BuildNatalHandler`, `BuildNatalOutcome`, `ApplicationOrchestrator`, `ApplicationResult`, commit/retry/cancellation/lifecycle logging, минимальная composition и real-component integration | Import-boundary тест handler — M1-4; client monotonicity X1; transport/admission X2 |
 | Э5 — agent-путь | Каркасы `tools/` и `orchestration/` | Общий артефактный путь `NatalTool` — M3-1; async Tool и runtime — M3-2 roadmap |
 | Э6 — нагрузка | Исторические замеры расчётов, benchmark полного SQLite adapter path и normal application profile 10.6: 300/300 при 5 RPS | Актуальная проверка natal/cosmogram/transit; degraded admission profile 10.7 после X2; серверная/HTTP нагрузка |

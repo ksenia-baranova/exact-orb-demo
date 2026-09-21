@@ -2,8 +2,10 @@
 
 Дата исходной спецификации: 2026-08-29. Ревизия статуса: 2026-09-07.
 Ревизия: 2026-09-12 — реализован контракт идентичности космограммы ADR-0032.
+Ревизия: 2026-09-21 — добавлен lifecycle seam `drain()` для ожидания
+process-local single-flight leaders перед остановкой runtime.
 Статус: базовый `ensure_chart` и механизм `CalculationVersion` реализованы;
-startup wiring версии остаётся частью C3, `ensure_derived` — целевым
+startup wiring версии остаётся M1-5.1, `ensure_derived` — целевым
 контрактом после первого MVP.
 
 Компоненты: `calculation/artifacts.py`, `calculation/keys.py`,
@@ -436,6 +438,35 @@ inflight: dict[str, InFlight]      поле резолвера, process-local
 process-wide RLock'ом: пять параллельных промахов по одному ключу дают пять
 последовательных расчётов, то есть пятикратное время ответа для последнего,
 при том что четыре из пяти результатов идентичны.
+
+#### Lifecycle: `drain()`
+
+Отмена waiter не отменяет shielded leader: после завершения пользовательского
+ожидания component-owned задача может продолжать расчёт и запись в кэш.
+Закрывать calculation executor до её завершения нельзя. Для границы
+остановки резолвер предоставляет:
+
+```text
+await resolver.drain()
+```
+
+`drain()` делает snapshot leader tasks, активных на момент вызова, и ждёт их
+фактического завершения. Метод не отменяет задачи, не поднимает их предметные
+ошибки вызывающему и корректно принимает success, exception или cancellation
+leader task. При отсутствии активных задач он завершается сразу.
+
+Это **не gate**: новые `ensure_chart()` формально могут начаться после
+snapshot. В будущей серверной границе M1-6 сначала прекращает приём и ждёт
+request tasks, включая уже отменённые, а затем `ApplicationRuntime` вызывает
+resolver drain перед закрытием calculation executor. Сам резолвер не владеет
+transport admission, executor shutdown или общим process lifecycle.
+
+**Открытая lifecycle-граница для M1-5.1.** Отмена самой корутины `drain()`
+одновременно с ошибкой leader пока не покрыта: поведение внутреннего
+shield-логгера зависит от версии CPython, поэтому loop warning возможен.
+Промт 2 обязан сначала добавить детерминированный тест через loop exception
+handler для `aclose() → drain()`, и только наблюдаемый шум может служить
+основанием для дополнительной очистки callback/future.
 
 ### 3.4. Шаг 4 — расчёт
 
@@ -1421,6 +1452,11 @@ N параллельных вызовов по одному ключу вызы�
 Параллельные вызовы по **разным** ключам не сериализуются между собой
 резолвером. Упавшая задача без ожидающих не оставляет предупреждения
 «Task exception was never retrieved».
+`drain()` без активных задач безопасен. При живом leader и отменённом waiter
+он не возвращается до фактического завершения leader; успешная detached
+работа по-прежнему записывает артефакт в cache. Тест управляет движком через
+`asyncio.Event`, не использует задержки как доказательство порядка и хранит
+ссылку на приватную task только для lifecycle-инварианта `task.done()`.
 
 **Движок и адаптеры.**
 Полный маппинг спеки: каждый параметр функции ядра получает значение
@@ -1476,6 +1512,7 @@ N параллельных вызовов по одному ключу вызы�
 |---|---|
 | Opaque bytes, codec, обработка `cache_corrupt` | `calculation/cache.py`, `codec.py`, тесты cache/codec/resolver |
 | Single-flight на `Task` + `shield`, независимость отмены waiter | `calculation/artifacts.py`, `tests/test_chart_artifact_resolver.py` |
+| Lifecycle drain текущих single-flight leaders | `ChartArtifactResolver.drain`, детерминированные resolver-тесты |
 | Сборка `CalculationVersion`, fail-fast на неоднозначном биндинге, B-7 на уровне механизма | `calculation/version.py`, `tests/test_calculation_version.py` |
 | Валидация chart/result/artifact и сквозной identity | ADR-0027; tests calculation engine, artifact resolver/codec и application contracts |
 | Полные DEBUG input/output и correlation | ADR-0025/0028; `component_logging.py`, интеграционные тесты calculation/application |

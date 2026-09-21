@@ -21,6 +21,9 @@ DEBUG-след всех компонентных границ закреплён
 `ApplicationResult`, commit/retry/cancellation, lifecycle logging и normal
 load profile сверены с реализацией; HTTP/UI и deployment остаются целевыми.
 
+Ревизия 2026-09-21: process runtime composition отделена от FastAPI lifespan;
+runtime предоставляет one-shot reaper, а M1-6 владеет его расписанием.
+
 Контекст: вход через форму, карта сразу, затем preset-действия и — в подписке —
 свободный вопрос. События потока: `status`, `input_required`, `token`, `done`, `error`.
 Компоненты и готовность — по [overview](overview.md). Подробные контракты —
@@ -511,7 +514,9 @@ Session persistence сохранил resolved-данные и специфика
    Пользователь может заново отправить форму через обычный проверяемый build-путь.
 4. Истечение логическое: запись немедленно перестаёт быть доступной. InMemory
    adapter физически её не удаляет; SQLite очищает просроченные записи reaper.
-   Периодический запуск reaper относится к будущей runtime-композиции.
+   Будущий `ApplicationRuntime` M1-5.1 предоставляет one-shot вызов reaper с
+   единым UTC clock. Периодический запуск и остановка фоновой задачи относятся
+   к FastAPI lifespan M1-6.
 
 ### 11б. Пользователь удалил cookie в браузере
 

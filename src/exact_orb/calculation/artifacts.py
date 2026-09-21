@@ -1,8 +1,10 @@
 """Chart artifact resolver orchestration.
 
-Known debt until ``CalculationVersion`` exists:
-* callers must pass a ``version`` string that already covers deployment
-  choices affecting numbers, including ``selena_method``;
+Composition boundary:
+* ``ApplicationRuntime`` is the designated owner of the real
+  ``CalculationVersion``; direct callers such as the CLI and test harnesses
+  must still pass a ``version`` string covering every choice that affects
+  numbers, including ``selena_method``;
 * ``calculation_*`` events are logged by ``EngineService`` without the key
   because the engine boundary intentionally does not know cache identity;
 * cache operation timeouts belong to a future Redis adapter or cache settings,
@@ -119,6 +121,16 @@ class ChartArtifactResolver:
         if total == 0:
             return None
         return self.hits / total
+
+    async def drain(self) -> None:
+        """Wait for the single-flight leaders active when draining begins."""
+        tasks = tuple({entry.task for entry in self._inflight.values()})
+        if not tasks:
+            return
+        await asyncio.gather(
+            *(asyncio.shield(task) for task in tasks),
+            return_exceptions=True,
+        )
 
     async def ensure_chart(
         self,
