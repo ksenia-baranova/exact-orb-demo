@@ -62,7 +62,7 @@ class BootstrapSettings(BaseModel):
     min_birth_date: date
     max_birth_date: date
     cache_max_entries: int
-    cache_ttl_seconds: float
+    cache_ttl_seconds: float | None
     engine_slow_threshold_ms: float
     degraded_log_interval_s: float
 
@@ -91,7 +91,6 @@ class BootstrapSettings(BaseModel):
         return value
 
     @field_validator(
-        "cache_ttl_seconds",
         "engine_slow_threshold_ms",
         "degraded_log_interval_s",
         mode="before",
@@ -105,6 +104,22 @@ class BootstrapSettings(BaseModel):
             or value <= 0
         ):
             raise ValueError("value must be a finite positive number")
+        return value
+
+    @field_validator("cache_ttl_seconds", mode="before")
+    @classmethod
+    def _cache_ttl_must_be_disabled_or_positive(cls, value: object) -> object:
+        if value is None:
+            return value
+        if (
+            isinstance(value, bool)
+            or not isinstance(value, (int, float))
+            or not isfinite(value)
+            or value <= 0
+        ):
+            raise ValueError(
+                "cache_ttl_seconds must be a finite positive number or None"
+            )
         return value
 
     @model_validator(mode="after")
@@ -220,7 +235,11 @@ async def build_application_runtime(
     clock: Callable[[], datetime],
     natal_calculator: Callable[..., NatalChart] = calculate_natal,
 ) -> ApplicationRuntime:
-    """Assemble the production application graph and transfer resource ownership."""
+    """Assemble the production application graph and transfer resource ownership.
+
+    A custom ``natal_calculator`` is not represented in ``CalculationVersion``
+    and must not share cached artifacts with the production calculator.
+    """
 
     settings = BootstrapSettings.model_validate(settings, strict=True)
 

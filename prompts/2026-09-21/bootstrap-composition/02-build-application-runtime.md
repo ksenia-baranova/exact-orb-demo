@@ -73,7 +73,8 @@ bootstrap должен импортироваться явно и не утяж�
 - `min_birth_date: date`;
 - `max_birth_date: date`, не раньше `min_birth_date`;
 - `cache_max_entries: int` — строго положительный, `bool` запрещён;
-- `cache_ttl_seconds: float` — конечный и строго положительный;
+- `cache_ttl_seconds: float | None` — `None` либо конечный и строго
+  положительный, `bool` запрещён;
 - `engine_slow_threshold_ms: float` — конечный и строго положительный;
 - `degraded_log_interval_s: float` — конечный и строго положительный.
 
@@ -282,7 +283,8 @@ async context manager.
 Проверки:
 
 ```text
-tests/application/test_application_bootstrap.py                           24 passed
+tests/application/test_application_bootstrap.py                           26 passed
+tests/test_calculation_cache.py                                            25 passed
 composition + CalculationVersion + ephemeris config + SQLite + boundaries 339 passed
 tests/test_chart_artifact_resolver.py                                      51 passed
 ```

@@ -243,6 +243,22 @@ async def test_bootstrap_settings_forbid_coercion_extra_fields_and_mutation(
         valid.cache_max_entries = 64  # type: ignore[misc]
 
 
+@pytest.mark.parametrize("ttl_seconds", (None, 300.0))
+async def test_cache_ttl_accepts_disabled_or_positive_value(
+    tmp_path: Path,
+    ttl_seconds: float | None,
+) -> None:
+    runtime = await build_application_runtime(
+        settings=_settings(tmp_path, cache_ttl_seconds=ttl_seconds),
+        places=LocalPlaceCatalog({}),
+        clock=_clock,
+    )
+    try:
+        assert runtime.artifacts.cache.ttl_seconds == ttl_seconds
+    finally:
+        await runtime.aclose()
+
+
 @pytest.mark.parametrize("invalid_kind", ("settings", "clock"))
 async def test_invalid_startup_input_fails_before_executor_creation(
     tmp_path: Path,

@@ -169,7 +169,7 @@ async def build_application_runtime(
 | `min_birth_date` | Нижняя поддерживаемая граница даты рождения |
 | `max_birth_date` | Верхняя конфигурационная граница даты рождения; не раньше `min_birth_date` |
 | `cache_max_entries` | Обязательное строго положительное целое, `bool` запрещён |
-| `cache_ttl_seconds` | Обязательное конечное положительное число |
+| `cache_ttl_seconds` | `None` для кэша без временного истечения либо конечное положительное число; `bool` запрещён |
 | `engine_slow_threshold_ms` | Обязательное конечное положительное число |
 | `degraded_log_interval_s` | Обязательное конечное положительное число |
 
@@ -634,7 +634,7 @@ bootstrap path после ветки получает реальную Calculati
 |---|---|---|
 | План | Подготовлен 2026-09-21 | Зафиксированы контракт, владельцы, AC-1–AC-12 и три review boundary |
 | Промт 1 | Выполнен 2026-09-21 | Добавлен `ChartArtifactResolver.drain()`; синхронизированы roadmap v3.4 и актуальные requirements; 51 target, 36 boundary и 153 related tests passed |
-| Промт 2 | Выполнен 2026-09-21 | Добавлены strict settings, `ApplicationRuntime`, полная assembly, UTC clock/reaper, actual CalculationVersion, partial-start cleanup и штатный shutdown; 24 target, 339 related и 51 resolver tests passed |
+| Промт 2 | Выполнен 2026-09-21 | Добавлены strict settings, `ApplicationRuntime`, полная assembly, UTC clock/reaper, actual CalculationVersion, partial-start cleanup и штатный shutdown; 26 target, 25 cache, 339 related и 51 resolver tests passed |
 | Промт 3 | Не начат | Заполняется после реализации и фактических запусков |
 
 Исходная подготовка плана не меняла production-код и тесты. Фактические
