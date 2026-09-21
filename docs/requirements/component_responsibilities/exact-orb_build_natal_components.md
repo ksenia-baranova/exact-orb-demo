@@ -16,7 +16,8 @@ commit/retry/cancellation flow, минимальная composition и normal loa
 сверены с реализацией; transport/deployment остаются внешним контуром.
 **Ревизия:** 2026-09-21 — process runtime composition M1-5.1 реализована
 между каталогом и FastAPI: внешний `PlaceCatalog`, SQLite,
-`CalculationVersion` и lifecycle ownership; сквозная приёмка остаётся.
+`CalculationVersion` и lifecycle ownership; сквозные Build Natal и shutdown
+сценарии приняты.
 **Область:** application-путь `BuildNatalCommand` — от входа в `Application
 Orchestrator` до возврата результата и подтверждённого изменения состояния.
 **Основание:** ADR-0002, 0005, 0006, 0007, 0008, 0009, 0012, 0013, 0014, 0015,
@@ -600,8 +601,8 @@ provider'ов дают `EphemerisBindingAmbiguousError`. Ошибка чтени
 отпечаток; смена методики Селены меняет отпечаток; смена пути к каталогу при
 неизменном содержимом файлов отпечаток **не** меняет. Интеграционный тест с
 двумя резолверами и общим кэшем доказывает механизм B-7: другой отпечаток при
-тех же данных и спеке даёт промах и новый расчёт. В реальном application-пути
-инвариант вступит в силу после startup wiring в C3.
+тех же данных и спеке даёт промах и новый расчёт. Реальный application-путь
+собирает и передаёт startup fingerprint через `ApplicationRuntime`.
 
 ---
 
@@ -1765,9 +1766,11 @@ tracking и периодическое расписание reaper остают�
 
 Component-тесты bootstrap подтверждают strict settings, фактический
 `CalculationVersionRecord`, внешний `PlaceCatalog`, production migrator,
-partial-start cleanup и штатный порядок закрытия. Реальный последовательный
-Build Natal с cache miss → hit и ожидание живого thread-backed расчёта всей
-runtime-границей остаются отдельной сквозной приёмкой M1-5.1.
+partial-start cleanup и штатный порядок закрытия. Сквозная приёмка подтверждает
+реальный последовательный Build Natal в одной SQLite-сессии: `Committed(1)` →
+`Committed(2)`, один cache miss и последующий hit. Отдельный сценарий отменяет
+waiter при живом thread-backed расчёте и подтверждает, что `runtime.aclose()`
+ждёт leader до завершения и записи артефакта в cache.
 
 ### 9.2. Зависимости
 
@@ -1800,7 +1803,7 @@ ADR-0012 требует до перехода к background execution измер
 | B-4 | `chart_kind` — явное поле, не выводится по отсутствию домов (И-8); spec задаёт намерение, chart хранит проверенный результат | spec, chart |
 | B-5 | Один `calculation_key` для UI-пути и agent-пути (ADR-0002) | тест на два пути |
 | B-6 | Ключ восстановим из `ChartSpec` и `ResolvedBirthData` (И-12) | keys |
-| B-7 | Обновление эфемерид инвалидирует кэш | механизм: version + artifacts; application wiring: C3 |
+| B-7 | Обновление эфемерид инвалидирует кэш | механизм: version + artifacts; wiring и runtime cache-сценарий M1-5.1 |
 | B-8 | Build-путь не импортирует `agent/`, `tools/`, `intent/` | тест на импорты |
 | B-9 | Предупреждения расчёта доходят до `artifact.chart.warnings` без wrapper-дубликатов (И-7) | engine, artifact |
 | B-10 | Полные персональные и расчётные данные пишутся только в DEBUG `component_message`; технические INFO/WARNING остаются компактными | logging |
@@ -1823,9 +1826,9 @@ B-8 в виде теста на импорты стоит дёшево и лов
 | Этап | Выполнено | Осталось |
 |---|---|---|
 | Э0 — контракты | Build command/outcome/ports, внешний `ApplicationResult`, calculation, birth, session и Research contracts; есть тесты поведения и валидации | Контракты будущей интерпретации; глубокая immutable-граница AC-24/2.R2 |
-| Э1 — расчёт с кэшем | `CalculationVersion`, keys, cache/codec, engine/artifacts, single-flight, resolver drain, нормализованный результат, key v2 и устойчивая космограмма ADR-0032 | Runtime wiring M1-5.1; отдельные warnings смены знака/направления из §4.6 |
+| Э1 — расчёт с кэшем | `CalculationVersion`, keys, cache/codec, engine/artifacts, single-flight, resolver drain, runtime wiring и сквозной cache miss → hit, нормализованный результат, key v2 и устойчивая космограмма ADR-0032 | Отдельные warnings смены знака/направления из §4.6 |
 | Э2 — резолв | `LocalPlaceCatalog` и JSONL loader, `places/tz/resolver`, скрипт каталога, контрольные сценарии и `BirthTimeDomain` | Рабочий каталог и поиск подсказок для UI; готовность resolver не закрывает эти задачи |
-| Э3 — сессия | Контракты, `ContextService`, InMemory и SQLite, TTL/CAS, lifecycle, conformance и benchmark P4; state payload v2 с чтением v1; подключение к application core | Владение SQLite executor и one-shot reaper в M1-5.1; HTTP/session bootstrap и reaper schedule в M1-6; deployment policy в M1-12 |
+| Э3 — сессия | Контракты, `ContextService`, InMemory и SQLite, TTL/CAS, lifecycle, conformance и benchmark P4; state payload v2 с чтением v1; подключение к application core; runtime-owned SQLite executor и one-shot reaper | HTTP/session bootstrap и reaper schedule в M1-6; deployment policy в M1-12 |
 | Э4 — координация | `BuildNatalHandler`, `BuildNatalOutcome`, `ApplicationOrchestrator`, `ApplicationResult`, commit/retry/cancellation/lifecycle logging, минимальная composition и real-component integration | Import-boundary тест handler — M1-4; client monotonicity X1; transport/admission X2 |
 | Э5 — agent-путь | Каркасы `tools/` и `orchestration/` | Общий артефактный путь `NatalTool` — M3-1; async Tool и runtime — M3-2 roadmap |
 | Э6 — нагрузка | Исторические замеры расчётов, benchmark полного SQLite adapter path и normal application profile 10.6: 300/300 при 5 RPS | Актуальная проверка natal/cosmogram/transit; degraded admission profile 10.7 после X2; серверная/HTTP нагрузка |

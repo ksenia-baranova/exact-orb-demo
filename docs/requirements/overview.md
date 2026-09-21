@@ -17,9 +17,9 @@
 минимальная composition и normal load profile сверены с реализацией. HTTP/UI,
 session bootstrap, admission и deployment composition остаются внешними.
 
-Ревизия 2026-09-21: process runtime composition M1-5.1 реализована на уровне
-сборки и владения ресурсами; сквозная приёмка отделена от FastAPI lifespan
-M1-6 и production/deployment policy M1-12.
+Ревизия 2026-09-21: process runtime composition M1-5.1 реализована и принята
+сквозными сценариями Build Natal и остановки с живым расчётом; FastAPI lifespan
+M1-6 и production/deployment policy M1-12 остаются отдельными этапами.
 
 Документ описывает принятую архитектуру; наличие требования не означает
 наличия реализации. Текущая готовность приведена в §2.1. Подробные контракты
@@ -111,8 +111,8 @@ composition — в [плане ApplicationOrchestrator](../project_management/ap
 | Область | Реализовано | Остаётся |
 |---|---|---|
 | Standalone CLI и ядро | natal, cosmogram, transit | развитие техник; CLI не является HTTP-приложением |
-| Build Natal | `BuildNatalCommand`, `BuildNatalHandler`, `BuildNatalOutcome`, `ApplicationOrchestrator`, внешний `ApplicationResult`, CAS commit/retry/cancellation, lifecycle logging, минимальная composition и process-local `ApplicationRuntime` | сквозная runtime-приёмка, HTTP mapping, client monotonicity X1, admission X2 и deployment policy |
-| Резолв и артефакты | `place_id` lookup и JSONL loader, скрипт каталога, historical TZ, resolver, spec, key v2, version, engine, codec, InMemory cache, artifact resolver и runtime wiring фактической версии | рабочие данные и поиск подсказок для UI; сквозной cache miss → hit |
+| Build Natal | `BuildNatalCommand`, `BuildNatalHandler`, `BuildNatalOutcome`, `ApplicationOrchestrator`, внешний `ApplicationResult`, CAS commit/retry/cancellation, lifecycle logging, минимальная composition, process-local `ApplicationRuntime` и его сквозная приёмка | HTTP mapping, client monotonicity X1, admission X2 и deployment policy |
+| Резолв и артефакты | `place_id` lookup и JSONL loader, скрипт каталога, historical TZ, resolver, spec, key v2, version, engine, codec, InMemory cache, artifact resolver, runtime wiring фактической версии и cache miss → hit через runtime | рабочие данные и поиск подсказок для UI |
 | Сессия | contracts, `ContextService`, InMemory и SQLite adapters, TTL/CAS, runtime-owned SQLite executor и one-shot reaper | подключение к HTTP/session lifecycle и периодическое расписание reaper |
 | Клиент и HTTP API | — | форма, renderer, middleware, JSON/SSE endpoints |
 | Agent Runtime | интерфейсы, реестры, синхронный `NatalTool`; `orchestration.Orchestrator` — каркас | interpretation handlers, целевой runtime, async Tool, общий путь через артефакты |
@@ -303,7 +303,8 @@ pipeline — поток и резервацию бюджета. Это сост�
 не обещается (ADR-0017).
 
 Девятикомпонентный отпечаток учитывает код, расчётные профили, native backend
-и эфемериды. Его вычисление и передача в resolver при startup остаются за C3.
+и эфемериды. `ApplicationRuntime` вычисляет его при startup и передаёт в
+resolver; сквозной cache miss → hit подтверждает этот production wiring.
 Research Corpus — отдельная разрешённая проекция для исследования, а не
 хранилище полных карт для восстановления (ADR-0023).
 
@@ -528,8 +529,8 @@ spec, chart, key и delta (ADR-0027). Отдельная версия схемы
 и его Python-дистрибутива/native module, содержимого расчётных профилей и
 файлов `ephe/*.se1`, замороженных методики Селены, набора тел и флагов.
 Сбор record и startup-логирование отделены от чистого хэширования; module-level
-вычисленного значения нет. Механизм и wiring в `ApplicationRuntime`
-реализованы; сквозная cache-приёмка остаётся завершающей частью C3.
+вычисленного значения нет. Механизм, wiring в `ApplicationRuntime` и сквозной
+cache miss → hit через публичную runtime-границу реализованы и приняты.
 
 **Interpretation Cache** — целевой отдельный кэш. Для preset ключ
 `calculation_key + topic + focus + recipe_version + model`; запись разделяема
@@ -835,8 +836,8 @@ bootstrap settings, фактическая `CalculationVersion` и owned executo
 key v2 по ADR-0032, единая strength-система ADR-0033 и нормализация орбиса
 на epsilon-границе. LLM Gateway предоставляет синхронный transport.
 
-**M1. Первый сценарий с UI на удалённом сервере.** Остаются: сквозная
-runtime-приёмка C3; рабочий каталог `place_id` и поиск; FastAPI и Session Middleware;
+**M1. Первый сценарий с UI на удалённом сервере.** Остаются: рабочий каталог
+`place_id` и поиск; FastAPI и Session Middleware;
 первый UI; условия и presentation checkbox по ADR-0034; отображение
 рассчитанной карты; серверный INFO-profile, деплой и браузерная приёмка.
 Отдельный обязательный import-boundary тест handler ещё не интегрирован.

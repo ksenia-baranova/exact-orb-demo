@@ -21,9 +21,9 @@ DEBUG-след всех компонентных границ закреплён
 `ApplicationResult`, commit/retry/cancellation, lifecycle logging и normal
 load profile сверены с реализацией; HTTP/UI и deployment остаются целевыми.
 
-Ревизия 2026-09-21: process runtime composition реализована отдельно от
-FastAPI lifespan; runtime предоставляет one-shot reaper, а M1-6 владеет его
-расписанием. Сквозная runtime-приёмка остаётся M1-5.1.
+Ревизия 2026-09-21: process runtime composition реализована и принята отдельно
+от FastAPI lifespan; runtime предоставляет one-shot reaper, а M1-6 владеет его
+расписанием.
 
 Контекст: вход через форму, карта сразу, затем preset-действия и — в подписке —
 свободный вопрос. События потока: `status`, `input_required`, `token`, `done`, `error`.
@@ -34,7 +34,8 @@ FastAPI lifespan; runtime предоставляет one-shot reaper, а M1-6 в
 а не отчёт о пройденных end-to-end тестах. Формулировка «Проверяет» указывает
 проверяемое требование. `ApplicationOrchestrator` и `ApplicationResult`
 реализованы и проверены через прямую application-границу. Process-local
-runtime assembly реализована; HTTP API, интерфейс, session bootstrap и
+runtime assembly и её сквозные Build Natal/shutdown сценарии приняты; HTTP API,
+интерфейс, session bootstrap и
 deployment startup policy пока не реализованы.
 
 | Сценарии | Реализованная часть | Целевая часть |

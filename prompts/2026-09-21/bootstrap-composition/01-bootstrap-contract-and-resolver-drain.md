@@ -253,3 +253,9 @@ git diff --check                                                           passe
 ограничен resolver lifecycle, затронутые calculation suites и module
 boundaries прошли. Полный runtime, owned executors и сквозной runtime shutdown
 остаются промтам 2–3.
+
+Итоговая синхронизация ветки: `drain()` был единственным изменением поведения
+существующего calculation-компонента именно в промте 1. Промт 2 затем добавил
+заранее оговорённый cancellation cleanup того же lifecycle seam и уточнил
+только module docstring `engine.py`; расчётные, cache и artifact semantics не
+расширялись.
