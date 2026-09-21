@@ -201,7 +201,7 @@ LLM используется как инструмент анализа и ис�
 | LLM gateway | **Реализован как инфраструктурный слой** |
 | Interpretation / agent orchestration | Пока только каркас |
 | Application Orchestrator | **Реализован; принят на реальном стеке** |
-| Application composition | **Минимальная сборка реализована**: `ContextService` + `BuildNatalHandler` |
+| Application composition | **Process-local runtime реализован и принят**: resolver, cache, engine, SQLite, `CalculationVersion`, `ContextService` и Orchestrator |
 | Публичный HTTP API | Пока не реализован |
 | Web UI | Пока не реализован |
 
@@ -401,12 +401,18 @@ Commit-стадия защищена от отмены request-задачи: у�
 `StateCommitFailed` разрешён ровно один точный повтор с тем же original expected
 и той же `StateDelta`, без нового load, rebase или повторного handler-вызова.
 
-Минимальная composition собирает production application path из `ContextService`,
-`BuildNatalHandler`, birth-data resolver и chart artifact resolver; registry
-валидация требует точную регистрацию поддержанного `BuildNatalCommand`.
-Интеграционная приёмка покрывает реальный SQLite с двумя соединениями, CAS-гонки
-для одинакового и разного намерения, потерянное подтверждение применённого CAS
-и штатный load profile 300/300 полезных исходов при 5 RPS.
+Минимальная composition собирает Orchestrator из готовых application-зависимостей;
+registry validation требует точную регистрацию поддержанного
+`BuildNatalCommand`. Process-local `ApplicationRuntime` создаёт реальные resolver,
+cache и engine, SQLite persistence, `ContextService`, фактическую
+`CalculationVersion` и owned executors. Сквозная приёмка подтверждает cache
+miss → hit в одной SQLite-сессии и ожидание живого расчёта при shutdown после
+отмены request waiter. HTTP/lifespan остаётся отдельным этапом.
+
+Интеграционная приёмка Orchestrator также покрывает реальный SQLite с двумя
+соединениями, CAS-гонки для одинакового и разного намерения, потерянное
+подтверждение применённого CAS и штатный load profile 300/300 полезных исходов
+при 5 RPS.
 
 ### Детерминированный расчёт
 
@@ -946,7 +952,8 @@ Mock, удовлетворяющий интерфейсу, полезен для
 src/exact_orb/
 ├── application/       application commands, ports, results, handlers и lifecycle
 │   ├── orchestrator.py    load → handler → protected commit → ApplicationResult
-│   └── composition.py     минимальная сборка ContextService + BuildNatalHandler
+│   ├── composition.py     сборка Orchestrator из готовых зависимостей
+│   └── bootstrap.py       process-local ApplicationRuntime и owned resources
 ├── birth/             birth-data и timezone resolution
 ├── calculation/       calculation boundary, artifacts, cache, keys, versioning
 ├── engine/            детерминированные domain calculations

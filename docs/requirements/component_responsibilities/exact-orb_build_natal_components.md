@@ -14,6 +14,10 @@ request-specific значения остаются локальными одно
 **Ревизия:** 2026-09-19 — application core, внешний `ApplicationResult`,
 commit/retry/cancellation flow, минимальная composition и normal load profile
 сверены с реализацией; transport/deployment остаются внешним контуром.
+**Ревизия:** 2026-09-21 — process runtime composition M1-5.1 реализована
+между каталогом и FastAPI: внешний `PlaceCatalog`, SQLite,
+`CalculationVersion` и lifecycle ownership; сквозные Build Natal и shutdown
+сценарии приняты.
 **Область:** application-путь `BuildNatalCommand` — от входа в `Application
 Orchestrator` до возврата результата и подтверждённого изменения состояния.
 **Основание:** ADR-0002, 0005, 0006, 0007, 0008, 0009, 0012, 0013, 0014, 0015,
@@ -597,8 +601,8 @@ provider'ов дают `EphemerisBindingAmbiguousError`. Ошибка чтени
 отпечаток; смена методики Селены меняет отпечаток; смена пути к каталогу при
 неизменном содержимом файлов отпечаток **не** меняет. Интеграционный тест с
 двумя резолверами и общим кэшем доказывает механизм B-7: другой отпечаток при
-тех же данных и спеке даёт промах и новый расчёт. В реальном application-пути
-инвариант вступит в силу после startup wiring в C3.
+тех же данных и спеке даёт промах и новый расчёт. Реальный application-путь
+собирает и передаёт startup fingerprint через `ApplicationRuntime`.
 
 ---
 
@@ -1670,8 +1674,15 @@ NatalTool
 Одна функция композиции вместо DI-фреймворка:
 
 ```text
-def build_application(settings) -> ApplicationOrchestrator:
-    status = configure_ephemeris(settings.ephemeris_path)
+async def build_application_runtime(
+    *, settings, places: PlaceCatalog, clock,
+    natal_calculator=calculate_natal,
+) -> ApplicationRuntime:
+    validate_all_settings_before_owned_resources(settings)
+    checked_clock = lambda: require_utc(clock(), name="clock")
+    checked_clock()
+    configure_ephemeris(settings.ephemeris_path, settings.selena_method)
+    status = get_ephemeris_status()
     version_record = compute_calculation_version_record(
         ephemeris_path=status.path,
         selena_method=get_selena_method_name(),
@@ -1680,33 +1691,86 @@ def build_application(settings) -> ApplicationOrchestrator:
     )
     version = calculation_version_of(version_record)
     log_calculation_version(version_record)
-    cache     = InMemoryCalculationCache(...)
-    executor  = ThreadPoolExecutor(max_workers=settings.calc_workers)
-    engine    = EngineService(
-        executor=executor,
-        techniques={"natal": NatalTechniqueAdapter()},
-        slow_threshold_ms=settings.calc_slow_threshold_ms,
+
+    sqlite_executor = ThreadPoolExecutor(max_workers=settings.sqlite_max_workers)
+    persistence = await SqliteSessionPersistence.open(
+        settings.session_db_path,
+        executor=sqlite_executor,
+        busy_timeout_ms=settings.sqlite_busy_timeout_ms,
+        unknown_time_migrator=resolve_unknown_birth_time_for_migration,
     )
-    artifacts = ChartArtifactResolver(cache=cache, engine=engine, version=version)
-    places    = LocalPlaceCatalog.from_file(settings.place_catalog_path)
-    resolver  = BirthDataResolver(places=places)
-    persistence = InMemorySessionPersistence(...)
-    context   = ContextService(persistence=persistence, clock=utc_now)
-    handlers  = {BuildNatalCommand: BuildNatalHandler(resolver=resolver,
-                                                      artifacts=artifacts)}
-    return ApplicationOrchestrator(context=context, handlers=handlers,
-                                   clock=utc_now)
+    calculation_executor = ThreadPoolExecutor(max_workers=2)
+    engine    = EngineService(
+        executor=calculation_executor,
+        techniques={"natal": NatalTechniqueAdapter(calculator=natal_calculator)},
+        slow_threshold_ms=settings.engine_slow_threshold_ms,
+    )
+    cache = InMemoryCalculationCache(
+        max_entries=settings.cache_max_entries,
+        ttl_seconds=settings.cache_ttl_seconds,
+    )
+    artifacts = ChartArtifactResolver(
+        cache=cache,
+        engine=engine,
+        version=version,
+        degraded_log_interval_s=settings.degraded_log_interval_s,
+    )
+    resolver = BirthDataResolver(
+        places=places,
+        min_birth_date=settings.min_birth_date,
+        max_birth_date=settings.max_birth_date,
+        today_provider=lambda: checked_clock().date(),
+    )
+    context = ContextService(persistence=persistence, clock=checked_clock)
+    orchestrator = build_application_orchestrator(
+        context=context,
+        clock=checked_clock,
+        resolver=resolver,
+        artifacts=artifacts,
+    )
+    return ApplicationRuntime(
+        orchestrator=orchestrator,
+        context=context,
+        artifacts=artifacts,
+        ephemeris_status=status,
+        calculation_version_record=version_record,
+        calculation_version=version,
+        owned_resources=(calculation_executor, sqlite_executor),
+    )
 ```
 
 Реестры наполняются здесь и дальше только читаются (И-9).
-Полный `bootstrap.py` пока не существует: пример фиксирует обязательное wiring
-C3, а не описывает текущий CLI. Реализованный `application/composition.py`
-собирает только application-часть из явно переданных `ContextService`, resolver,
-artifact port и clock, проверяет полноту registry для `BuildNatalCommand` и
-возвращает `ApplicationOrchestrator`. Настройка эфемерид, создание executor,
-transport/session bootstrap и deployment settings остаются внешними. Значение
-версии создаётся один раз локально и передаётся в `ChartArtifactResolver`;
-побочного эффекта при импорте нет.
+Псевдокод фиксирует зависимости и порядок, а не требует буквально хранить
+ресурсы кортежем: реализация обязана зарегистрировать обратную очистку сразу
+после захвата каждого owned resource и передать ownership runtime только после
+успешной сборки.
+
+`application/bootstrap.py` реализует эту сборку и переиспользует
+`application/composition.py`. Последний по-прежнему собирает только
+application-часть из явно переданных `ContextService`, resolver, artifact port
+и clock, проверяет полноту registry для `BuildNatalCommand` и возвращает
+`ApplicationOrchestrator`; второго registry bootstrap не создаёт.
+
+`PlaceCatalog` передаётся извне как готовый порт. Загрузка GeoNames/SQLite и
+search не принадлежат bootstrap, поэтому `LocalPlaceCatalog.from_file()` здесь
+не вызывается. Runtime создаёт реальный SQLite session persistence, а не
+InMemory adapter. Значение версии вычисляется один раз из фактического status
+и engine defaults, логируется и передаётся в `ChartArtifactResolver`; побочного
+эффекта при импорте нет.
+
+`ApplicationRuntime` владеет calculation/SQLite executor'ами, предоставляет
+one-shot `reap_expired()` и перед закрытием calculation executor вызывает
+`artifacts.drain()`. FastAPI/lifespan, session bootstrap/cookie, request-task
+tracking и периодическое расписание reaper остаются M1-6. Production fail-fast
+для ephemeris fallback и DEBUG guard остаются M1-12.
+
+Component-тесты bootstrap подтверждают strict settings, фактический
+`CalculationVersionRecord`, внешний `PlaceCatalog`, production migrator,
+partial-start cleanup и штатный порядок закрытия. Сквозная приёмка подтверждает
+реальный последовательный Build Natal в одной SQLite-сессии: `Committed(1)` →
+`Committed(2)`, один cache miss и последующий hit. Отдельный сценарий отменяет
+waiter при живом thread-backed расчёте и подтверждает, что `runtime.aclose()`
+ждёт leader до завершения и записи артефакта в cache.
 
 ### 9.2. Зависимости
 
@@ -1739,7 +1803,7 @@ ADR-0012 требует до перехода к background execution измер
 | B-4 | `chart_kind` — явное поле, не выводится по отсутствию домов (И-8); spec задаёт намерение, chart хранит проверенный результат | spec, chart |
 | B-5 | Один `calculation_key` для UI-пути и agent-пути (ADR-0002) | тест на два пути |
 | B-6 | Ключ восстановим из `ChartSpec` и `ResolvedBirthData` (И-12) | keys |
-| B-7 | Обновление эфемерид инвалидирует кэш | механизм: version + artifacts; application wiring: C3 |
+| B-7 | Обновление эфемерид инвалидирует кэш | механизм: version + artifacts; wiring и runtime cache-сценарий M1-5.1 |
 | B-8 | Build-путь не импортирует `agent/`, `tools/`, `intent/` | тест на импорты |
 | B-9 | Предупреждения расчёта доходят до `artifact.chart.warnings` без wrapper-дубликатов (И-7) | engine, artifact |
 | B-10 | Полные персональные и расчётные данные пишутся только в DEBUG `component_message`; технические INFO/WARNING остаются компактными | logging |
@@ -1762,9 +1826,9 @@ B-8 в виде теста на импорты стоит дёшево и лов
 | Этап | Выполнено | Осталось |
 |---|---|---|
 | Э0 — контракты | Build command/outcome/ports, внешний `ApplicationResult`, calculation, birth, session и Research contracts; есть тесты поведения и валидации | Контракты будущей интерпретации; глубокая immutable-граница AC-24/2.R2 |
-| Э1 — расчёт с кэшем | `CalculationVersion`, keys, cache/codec, engine/artifacts, single-flight, нормализованный результат, key v2 и устойчивая космограмма ADR-0032 | Startup wiring C3; отдельные warnings смены знака/направления из §4.6 |
+| Э1 — расчёт с кэшем | `CalculationVersion`, keys, cache/codec, engine/artifacts, single-flight, resolver drain, runtime wiring и сквозной cache miss → hit, нормализованный результат, key v2 и устойчивая космограмма ADR-0032 | Отдельные warnings смены знака/направления из §4.6 |
 | Э2 — резолв | `LocalPlaceCatalog` и JSONL loader, `places/tz/resolver`, скрипт каталога, контрольные сценарии и `BirthTimeDomain` | Рабочий каталог и поиск подсказок для UI; готовность resolver не закрывает эти задачи |
-| Э3 — сессия | Контракты, `ContextService`, InMemory и SQLite, TTL/CAS, lifecycle, conformance и benchmark P4; state payload v2 с чтением v1; подключение к application core | HTTP/session bootstrap и deployment composition |
+| Э3 — сессия | Контракты, `ContextService`, InMemory и SQLite, TTL/CAS, lifecycle, conformance и benchmark P4; state payload v2 с чтением v1; подключение к application core; runtime-owned SQLite executor и one-shot reaper | HTTP/session bootstrap и reaper schedule в M1-6; deployment policy в M1-12 |
 | Э4 — координация | `BuildNatalHandler`, `BuildNatalOutcome`, `ApplicationOrchestrator`, `ApplicationResult`, commit/retry/cancellation/lifecycle logging, минимальная composition и real-component integration | Import-boundary тест handler — M1-4; client monotonicity X1; transport/admission X2 |
 | Э5 — agent-путь | Каркасы `tools/` и `orchestration/` | Общий артефактный путь `NatalTool` — M3-1; async Tool и runtime — M3-2 roadmap |
 | Э6 — нагрузка | Исторические замеры расчётов, benchmark полного SQLite adapter path и normal application profile 10.6: 300/300 при 5 RPS | Актуальная проверка natal/cosmogram/transit; degraded admission profile 10.7 после X2; серверная/HTTP нагрузка |

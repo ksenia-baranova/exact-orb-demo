@@ -2,9 +2,11 @@
 
 Дата исходной спецификации: 2026-08-29. Ревизия статуса: 2026-09-07.
 Ревизия: 2026-09-12 — реализован контракт идентичности космограммы ADR-0032.
+Ревизия: 2026-09-21 — добавлены lifecycle seam `drain()`, runtime wiring
+фактической версии, cleanup отменённого drain и сквозная runtime-приёмка.
 Статус: базовый `ensure_chart` и механизм `CalculationVersion` реализованы;
-startup wiring версии остаётся частью C3, `ensure_derived` — целевым
-контрактом после первого MVP.
+startup wiring версии и его сквозная приёмка реализованы,
+`ensure_derived` — целевым контрактом после первого MVP.
 
 Компоненты: `calculation/artifacts.py`, `calculation/keys.py`,
 `calculation/cache.py`, `calculation/engine.py`, `calculation/version.py`.
@@ -87,7 +89,7 @@ class ChartArtifactResolver:
 передаётся конструктору и внутри жизни объекта не меняется. Это позволяет
 тесту подменить версию конструктором и проверить инвалидацию без глобального
 состояния. Вычисляемой при импорте `CALCULATION_VERSION` в модуле нет;
-production wiring появится вместе с C3.
+production wiring реализован в `ApplicationRuntime` M1-5.1.
 
 ### 2.2. Предусловия — что вызывающий обязан обеспечить
 
@@ -436,6 +438,33 @@ inflight: dict[str, InFlight]      поле резолвера, process-local
 process-wide RLock'ом: пять параллельных промахов по одному ключу дают пять
 последовательных расчётов, то есть пятикратное время ответа для последнего,
 при том что четыре из пяти результатов идентичны.
+
+#### Lifecycle: `drain()`
+
+Отмена waiter не отменяет shielded leader: после завершения пользовательского
+ожидания component-owned задача может продолжать расчёт и запись в кэш.
+Закрывать calculation executor до её завершения нельзя. Для границы
+остановки резолвер предоставляет:
+
+```text
+await resolver.drain()
+```
+
+`drain()` делает snapshot leader tasks, активных на момент вызова, и ждёт их
+фактического завершения. Метод не отменяет задачи, не поднимает их предметные
+ошибки вызывающему и корректно принимает success, exception или cancellation
+leader task. При отсутствии активных задач он завершается сразу.
+
+Это **не gate**: новые `ensure_chart()` формально могут начаться после
+snapshot. В будущей серверной границе M1-6 сначала прекращает приём и ждёт
+request tasks, включая уже отменённые, а затем `ApplicationRuntime` вызывает
+resolver drain перед закрытием calculation executor. Сам резолвер не владеет
+transport admission, executor shutdown или общим process lifecycle.
+
+**Отмена lifecycle-ожидания.** Детерминированный тест через loop exception
+handler покрывает отмену `aclose() → drain()` одновременно с последующей
+ошибкой leader. Cleanup callback забирает исключение внутреннего shielded
+future, loop warning не возникает, а повторный `aclose()` завершает остановку.
 
 ### 3.4. Шаг 4 — расчёт
 
@@ -817,7 +846,7 @@ CalculationUnavailableError(code)  → outcome ResolutionUnavailable(retryable=T
    наружу не выходит: вызывающий не должен разбирать текст сообщения.
 3. `EPHEMERIS_UNAVAILABLE` обязан порождать алерт: это отказ развёртывания
    (не примонтирован том, не выкачаны `*.se1`), а не пользовательских данных.
-   После wiring C3 при нём же не вычисляется startup-значение
+   В `ApplicationRuntime` при нём же не вычисляется startup-значение
    `CalculationVersion` — то есть cache-enabled приложение в норме до этого
    состояния не поднимется, и отказ в рантайме означает, что каталог пропал
    **после** старта. Текущий CLI сборщик версии ещё не вызывает.
@@ -1370,8 +1399,9 @@ UTC-моменты, что и тест-пак резолва данных рож
 каталога и metadata, неоднозначный и отсутствующий provider, native digest и
 явное ослабленное логирование. Интеграционный тест с двумя резолверами и общим
 кэшем доказывает механизм B-7: другой отпечаток при тех же данных и спеке даёт
-промах и новый расчёт. В application-пути инвариант вступит в силу после
-startup wiring C3.
+промах и новый расчёт. `ApplicationRuntime` передаёт фактический startup
+fingerprint в resolver; сквозной cache miss → hit через публичный runtime
+подтверждён интеграционным тестом M1-5.1.
 
 **Кэш.**
 Промах на пустом; попадание после `put`; вытеснение по `max_entries`;
@@ -1421,6 +1451,17 @@ N параллельных вызовов по одному ключу вызы�
 Параллельные вызовы по **разным** ключам не сериализуются между собой
 резолвером. Упавшая задача без ожидающих не оставляет предупреждения
 «Task exception was never retrieved».
+`drain()` без активных задач безопасен. При живом leader и отменённом waiter
+он не возвращается до фактического завершения leader; успешная detached
+работа по-прежнему записывает артефакт в cache. Тест управляет движком через
+`asyncio.Event`, не использует задержки как доказательство порядка и хранит
+ссылку на приватную task только для lifecycle-инварианта `task.done()`.
+Отмена `ApplicationRuntime.aclose()` во время `drain()` тоже не отменяет
+leader. Если detached leader затем падает, callback cleanup забирает исключение
+shielded future и event loop не получает `exception was never retrieved`;
+повторный `aclose()` завершает освобождение owned resources. Это component
+lifecycle-проверка. Сквозной AC-9 отдельно подтверждает ожидание живого
+thread-backed leader реальным calculation executor после отмены waiter.
 
 **Движок и адаптеры.**
 Полный маппинг спеки: каждый параметр функции ядра получает значение
@@ -1469,22 +1510,24 @@ N параллельных вызовов по одному ключу вызы�
 | Отображение ошибок | на прикладной границе, без общего handler'а | §6.2 |
 | Неизвестное время | domain digest входит в key v2; artifact хранит типизированный `time_uncertainty` | ADR-0032; реализовано |
 
-**Статус реализации на 2026-09-14.** Перечисленные ниже работы уже
+**Статус реализации на 2026-09-21.** Перечисленные ниже работы уже
 выполнены и не входят в оставшийся объём ближайшего этапа:
 
 | Работа | Подтверждение |
 |---|---|
 | Opaque bytes, codec, обработка `cache_corrupt` | `calculation/cache.py`, `codec.py`, тесты cache/codec/resolver |
 | Single-flight на `Task` + `shield`, независимость отмены waiter | `calculation/artifacts.py`, `tests/test_chart_artifact_resolver.py` |
+| Lifecycle drain текущих single-flight leaders | `ChartArtifactResolver.drain`, детерминированные resolver-тесты |
 | Сборка `CalculationVersion`, fail-fast на неоднозначном биндинге, B-7 на уровне механизма | `calculation/version.py`, `tests/test_calculation_version.py` |
+| Runtime wiring реальной версии, engine/cache и owned executors | `application/bootstrap.py`, component-тесты bootstrap |
+| Runtime cache miss → hit и shutdown с живым thread-backed leader | `tests/application/test_application_bootstrap_integration.py` |
 | Валидация chart/result/artifact и сквозной identity | ADR-0027; tests calculation engine, artifact resolver/codec и application contracts |
 | Полные DEBUG input/output и correlation | ADR-0025/0028; `component_logging.py`, интеграционные тесты calculation/application |
 | Key v2, domain digest и типизированная неопределённость времени | ADR-0032; `calculation/keys.py`, `types.py`, `codec.py` и соответствующие тесты |
 | Первоначальные замеры `T` и размера артефакта | §8.6; исторические результаты, не оценка текущего сервера |
 
-**Остаётся:** startup-композиция C3, передающая реальную версию и зависимости
-в серверный resolver; подключение к HTTP/application lifecycle; общий
-артефактный путь `NatalTool`; актуальные замеры нагрузки. Эти работы
+**Остаётся:** подключение к HTTP/application lifecycle; общий артефактный путь
+`NatalTool`; актуальные замеры нагрузки. Эти работы
 распределены между M1 и M3 [roadmap](../../project_management/roadmap.md).
 Подготовка полного DEBUG-потока к публичному доступу остаётся отдельной
 ранее отложенной задачей; наличие логирования не закрывает её.

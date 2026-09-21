@@ -1,6 +1,6 @@
 # Архитектура exact-orb
 
-Статус документа: рабочий, версия 2.5 (2026-09-19).
+Статус документа: рабочий, версия 2.6 (2026-09-21).
 Заменяет версию 1.0, описывавшую систему как чистый веб-чат.
 Область: прикладной и агентский слои, их расчётные контракты и хранение данных.
 
@@ -16,6 +16,10 @@
 `ApplicationResult`, CAS commit/retry/cancellation, lifecycle logging,
 минимальная composition и normal load profile сверены с реализацией. HTTP/UI,
 session bootstrap, admission и deployment composition остаются внешними.
+
+Ревизия 2026-09-21: process runtime composition M1-5.1 реализована и принята
+сквозными сценариями Build Natal и остановки с живым расчётом; FastAPI lifespan
+M1-6 и production/deployment policy M1-12 остаются отдельными этапами.
 
 Документ описывает принятую архитектуру; наличие требования не означает
 наличия реализации. Текущая готовность приведена в §2.1. Подробные контракты
@@ -100,16 +104,16 @@ application-срез ограничен натальной картой и ко�
 
 ### 2.1 Текущая готовность
 
-Сверено повторно 2026-09-19. Подробный реестр application-работ и фактических
-проверок — в
-[плане ApplicationOrchestrator](../project_management/application_orchestrator_implementation_plan.md).
+Сверено повторно 2026-09-21. Подробные реестры application core и runtime
+composition — в [плане ApplicationOrchestrator](../project_management/implementation_plans/application_orchestrator_implementation_plan.md)
+и [плане bootstrap composition](../project_management/implementation_plans/bootstrap_composition_implementation_plan.md).
 
 | Область | Реализовано | Остаётся |
 |---|---|---|
 | Standalone CLI и ядро | natal, cosmogram, transit | развитие техник; CLI не является HTTP-приложением |
-| Build Natal | `BuildNatalCommand`, `BuildNatalHandler`, `BuildNatalOutcome`, `ApplicationOrchestrator`, внешний `ApplicationResult`, CAS commit/retry/cancellation, lifecycle logging и минимальная composition | HTTP mapping, client monotonicity X1, admission X2 и production startup/deployment |
-| Резолв и артефакты | `place_id` lookup и JSONL loader, скрипт каталога, historical TZ, resolver, spec, key v2, version, engine, codec, InMemory cache и artifact resolver | рабочие данные и поиск подсказок для UI, общий startup wiring C3 |
-| Сессия | contracts, `ContextService`, InMemory и SQLite adapters, TTL/CAS и подключение к application core | подключение к HTTP/session lifecycle |
+| Build Natal | `BuildNatalCommand`, `BuildNatalHandler`, `BuildNatalOutcome`, `ApplicationOrchestrator`, внешний `ApplicationResult`, CAS commit/retry/cancellation, lifecycle logging, минимальная composition, process-local `ApplicationRuntime` и его сквозная приёмка | HTTP mapping, client monotonicity X1, admission X2 и deployment policy |
+| Резолв и артефакты | `place_id` lookup и JSONL loader, скрипт каталога, historical TZ, resolver, spec, key v2, version, engine, codec, InMemory cache, artifact resolver, runtime wiring фактической версии и cache miss → hit через runtime | рабочие данные и поиск подсказок для UI |
+| Сессия | contracts, `ContextService`, InMemory и SQLite adapters, TTL/CAS, runtime-owned SQLite executor и one-shot reaper | подключение к HTTP/session lifecycle и периодическое расписание reaper |
 | Клиент и HTTP API | — | форма, renderer, middleware, JSON/SSE endpoints |
 | Agent Runtime | интерфейсы, реестры, синхронный `NatalTool`; `orchestration.Orchestrator` — каркас | interpretation handlers, целевой runtime, async Tool, общий путь через артефакты |
 | Интерпретация и допуск | contracts/каркас интерпретации, LLM Gateway transport | `InterpretationService`, recipes, cache, streaming, guards, capabilities, policy и admission |
@@ -299,7 +303,8 @@ pipeline — поток и резервацию бюджета. Это сост�
 не обещается (ADR-0017).
 
 Девятикомпонентный отпечаток учитывает код, расчётные профили, native backend
-и эфемериды. Его вычисление и передача в resolver при startup остаются за C3.
+и эфемериды. `ApplicationRuntime` вычисляет его при startup и передаёт в
+resolver; сквозной cache miss → hit подтверждает этот production wiring.
 Research Corpus — отдельная разрешённая проекция для исследования, а не
 хранилище полных карт для восстановления (ADR-0023).
 
@@ -524,7 +529,8 @@ spec, chart, key и delta (ADR-0027). Отдельная версия схемы
 и его Python-дистрибутива/native module, содержимого расчётных профилей и
 файлов `ephe/*.se1`, замороженных методики Селены, набора тел и флагов.
 Сбор record и startup-логирование отделены от чистого хэширования; module-level
-вычисленного значения нет. Механизм реализован, wiring в приложение — C3.
+вычисленного значения нет. Механизм, wiring в `ApplicationRuntime` и сквозной
+cache miss → hit через публичную runtime-границу реализованы и приняты.
 
 **Interpretation Cache** — целевой отдельный кэш. Для preset ключ
 `calculation_key + topic + focus + recipe_version + model`; запись разделяема
@@ -533,7 +539,8 @@ spec, chart, key и delta (ADR-0027). Отдельная версия схемы
 по существу это защита от повторного списания при двойном клике и refresh,
 а не экономия.
 **Статус:** расчётные spec/input/key/version, engine, codec, cache и resolver
-реализованы; Interpretation Cache и общий startup wiring не реализованы.
+реализованы; process runtime wiring также реализован. Interpretation Cache и
+подключение runtime к HTTP lifecycle не реализованы.
 [Требования к артефактам](component_responsibilities/exact-orb_chart_artifacts.md).
 
 ### 4.10 Расчёт — EngineService
@@ -645,8 +652,9 @@ privacy-hardening не реализованы.
 **Хранилища** развиваются за отдельными портами: InMemory для тестов,
 SQLite для стенда, PostgreSQL при появлении условия перехода (ADR-0024).
 SQLite сейчас реализован для session persistence; это не означает готовности
-SQLite-кэшей и Research Corpus. Периодический запуск session reaper и lifecycle
-executors принадлежат будущей runtime-композиции.
+SQLite-кэшей и Research Corpus. `ApplicationRuntime` M1-5.1 владеет lifecycle
+executor'ов и предоставляет one-shot session reaper с единым UTC clock.
+Периодическое расписание reaper принадлежит FastAPI lifespan M1-6.
 
 ### 4.13 Research Corpus
 
@@ -821,14 +829,15 @@ pipeline сам по себе не доказывает качество отв�
 `ContextService`, InMemory и SQLite persistence; Research P5a; функциональный
 `BuildNatalHandler`; `ApplicationOrchestrator`, `ApplicationResult`,
 commit/retry/cancellation/lifecycle flow, минимальная composition и реальный
-интеграционный путь с SQLite.
+интеграционный путь с SQLite; process-local `ApplicationRuntime`, strict
+bootstrap settings, фактическая `CalculationVersion` и owned executors.
 Также реализованы нормализация результата и DEBUG-диагностика ADR-0027/0028,
 семантика точек/оси узлов/конфигураций ADR-0029–0031, неизвестное время и
 key v2 по ADR-0032, единая strength-система ADR-0033 и нормализация орбиса
 на epsilon-границе. LLM Gateway предоставляет синхронный transport.
 
-**M1. Первый сценарий с UI на удалённом сервере.** Остаются: production
-startup wiring C3; рабочий каталог `place_id` и поиск; FastAPI и Session Middleware;
+**M1. Первый сценарий с UI на удалённом сервере.** Остаются: рабочий каталог
+`place_id` и поиск; FastAPI и Session Middleware;
 первый UI; условия и presentation checkbox по ADR-0034; отображение
 рассчитанной карты; серверный INFO-profile, деплой и браузерная приёмка.
 Отдельный обязательный import-boundary тест handler ещё не интегрирован.
