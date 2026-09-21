@@ -1,0 +1,79 @@
+@startuml
+title exact-orb — поиск места: endpoint возвращает подсказки
+
+autonumber
+hide footbox
+
+skinparam shadowing false
+skinparam responseMessageBelowArrow true
+
+skinparam sequence {
+    ArrowColor #2563EB
+    LifeLineBorderColor #64748B
+    LifeLineBackgroundColor #FFFFFF
+
+    ParticipantBorderColor #64748B
+    ParticipantFontColor #0F172A
+    ParticipantBackgroundColor #F8FAFC
+
+    ActorBorderColor #64748B
+    ActorFontColor #0F172A
+    ActorBackgroundColor #DBEAFE
+
+    GroupBorderColor #94A3B8
+    GroupHeaderFontColor #1E293B
+
+    DividerBorderColor #94A3B8
+    DividerFontColor #1E293B
+
+    NoteBorderColor #94A3B8
+    NoteBackgroundColor #FFFBEA
+    NoteFontColor #334155
+}
+
+actor "Пользователь" as User
+
+box "TARGET TRANSPORT — M1-6 / M1-7" #DBEAFE
+    boundary "Frontend" as FE
+    boundary "Place Search API" as API
+end box
+
+box "PLACE CATALOG — M1-5" #D9F9FF
+    control "SqlitePlaceCatalog\nкак PlaceSearch" as Catalog
+    database "places.sqlite\nодин выпуск данных" as DB
+end box
+
+
+User -> FE : ввод «Москва»
+FE -> API : GET /places?query=Москва&limit=10
+API -> Catalog : search(query = "Москва", limit = 10)
+activate Catalog
+
+Catalog -> Catalog : normalize("Москва")\n→ "москва"
+Catalog -> DB : индексированный prefix search\nsearch_key = "москва"
+activate DB
+DB --> Catalog : строки-кандидаты, включая place_id = "524901"
+deactivate DB
+
+Catalog -> Catalog : дедупликация по place_id\nранжирование и сборка подписей
+Catalog --> API : PlaceSuggestions([\n {place_id = "524901",\n  display_name = "Москва",\n  admin1_name = "Москва", country_code = "RU"}\n])
+deactivate Catalog
+
+API --> FE : 200 + suggestions
+FE --> User : показать варианты
+User -> FE : выбрать «Москва, Москва, RU»
+FE -> FE : сохранить выбранный\nplace_id = "524901"
+
+note over FE, Catalog
+Поисковый flow заканчивается выбором place_id.
+ApplicationOrchestrator, BuildNatalHandler и
+BirthDataResolver здесь не вызываются.
+end note
+
+note right of FE
+Frontend хранит только выбранный place_id.
+Координаты и tz_id не становятся
+доверенным пользовательским вводом.
+end note
+
+@enduml

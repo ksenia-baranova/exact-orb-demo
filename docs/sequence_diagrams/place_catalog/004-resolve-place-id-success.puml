@@ -1,0 +1,86 @@
+@startuml
+title exact-orb — BirthDataResolver: успешный lookup выбранного place_id
+
+autonumber
+hide footbox
+
+skinparam shadowing false
+skinparam responseMessageBelowArrow true
+
+skinparam sequence {
+    ArrowColor #2563EB
+    LifeLineBorderColor #64748B
+    LifeLineBackgroundColor #FFFFFF
+
+    ParticipantBorderColor #64748B
+    ParticipantFontColor #0F172A
+    ParticipantBackgroundColor #F8FAFC
+
+    GroupBorderColor #94A3B8
+    GroupHeaderFontColor #1E293B
+
+    DividerBorderColor #94A3B8
+    DividerFontColor #1E293B
+
+    NoteBorderColor #94A3B8
+    NoteBackgroundColor #FFFBEA
+    NoteFontColor #334155
+}
+
+box "TARGET TRANSPORT — M1-6" #DBEAFE
+    boundary "Build API" as API
+end box
+
+box "IMPLEMENTED APPLICATION" #FFEDD5
+    control "ApplicationOrchestrator" as Orch
+    control "ContextService" as Context
+    control "BuildNatalHandler" as Handler
+end box
+
+box "IMPLEMENTED RESOLVER + TARGET CATALOG — M1-5" #D9F9FF
+    control "BirthDataResolver" as Resolver
+    control "SqlitePlaceCatalog\nкак PlaceCatalog" as Catalog
+    database "places.sqlite\nтот же выпуск данных" as DB
+end box
+
+
+API -> Orch : execute(BuildNatalCommand(\n BirthInput(..., place_id = "524901")\n), session_id, run)
+activate Orch
+
+Orch -> Orch : route по точному типу команды
+Orch -> Context : load(session_id)
+Context --> Orch : SessionSnapshot(state)
+
+note right of Context
+Внутренний SessionPersistence здесь опущен:
+он не участвует в семантике lookup места.
+end note
+
+Orch -> Handler : handle(command, state, run)
+activate Handler
+Handler -> Resolver : resolve(birth_input, run=run)
+activate Resolver
+
+Resolver -> Catalog : lookup("524901")
+activate Catalog
+Catalog -> DB : SELECT place WHERE place_id = "524901"
+activate DB
+DB --> Catalog : одна строка
+deactivate DB
+Catalog --> Resolver : ResolvedPlace(\n canonical_name = "Москва",\n latitude = 55.75, longitude = 37.62,\n tz_id = "Europe/Moscow"\n)
+deactivate Catalog
+
+Resolver -> Resolver : продолжить historical TZ resolution\nпо дате, времени и tz_id
+
+note over Resolver, Catalog
+Успешная часть этой диаграммы заканчивается
+получением доверенных place facts. Дальнейшие
+timezone resolution, расчёт и commit показаны
+в диаграммах birth_resolution и build_natal.
+end note
+
+deactivate Resolver
+deactivate Handler
+deactivate Orch
+
+@enduml

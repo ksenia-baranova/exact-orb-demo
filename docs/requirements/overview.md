@@ -79,7 +79,7 @@ application-срез ограничен натальной картой и ко�
 | API | FastAPI, Session Middleware, Build / Selection / Message API | транспорт | приём запроса, JSON и SSE |
 | КООРДИНАЦИЯ | ApplicationOrchestrator, application handlers | детерминированное | lifecycle операции, routing и commit |
 | СЕССИЯ | ContextService, SessionPersistence, Session Store, Dialog Store | состояние | сессия с TTL, пока анонимная |
-| РЕЗОЛВ | BirthDataResolver, PlaceCatalog, Historical TZ | детерминированное | ввод → расчётные параметры и домен времени |
+| РЕЗОЛВ | BirthDataResolver, PlaceSearch, PlaceCatalog, Historical TZ | детерминированное | текст места → выбранный ID → расчётные параметры и домен времени |
 | ПОНИМАНИЕ | ActionContractBuilder, InputGuard, IntentService, ContractValidator | смешанное | вход → контракт |
 | POLICY | CapabilityService, PolicyService, AdmissionControl | детерминированное | допуск, права, бюджет |
 | РАНТАЙМ | Agent Runtime, Planner, ScenarioRegistry, ToolExecutor, ToolRegistry, Tools | детерминированное | план и исполнение интерпретационного сценария |
@@ -428,6 +428,14 @@ Build-пути вход — `BirthInput(birth_date, birth_time?, place_id)`, б�
 и `RemoteGeocoder` не входят в текущий build-контракт. Технический отказ
 каталога передаётся типизированной ошибкой.
 
+**PlaceSearch** — отдельный целевой async-порт подсказок. Он не расширяет
+`PlaceCatalog` и не проходит через `ApplicationOrchestrator`. Один целевой
+`SqlitePlaceCatalog` реализует оба порта над одним read-only выпуском данных:
+endpoint поиска получает ограниченные подсказки, а `BirthDataResolver`
+повторно проверяет выбранный недоверенный `place_id`. Контракты, ограничения и
+приёмка зафиксированы в
+[требованиях каталога мест](component_responsibilities/exact-orb_place_catalog.md).
+
 **Historical TZ Resolver** — `zoneinfo`/`tzdata`: декретное время, летнее и зимнее,
 отмены 2011 и 2014 годов. Несуществующее и удвоенное локальное время дают явный
 исход, а не исключение и не молчаливую догадку.
@@ -435,7 +443,9 @@ Build-пути вход — `BirthInput(birth_date, birth_time?, place_id)`, б�
 При неизвестном времени birth/timezone-слой формирует `BirthTimeDomain` из
 всех валидных минут локальной даты; расчётный слой получает готовый UTC-домен
 и не резолвит timezone повторно (ADR-0032).
-**Статус:** текущий путь реализован. [Контракты резолва](component_responsibilities/exact-orb_birth_data_resolution.md).
+**Статус:** lookup-путь реализован; SQLite-каталог и поиск остаются M1-5.
+[Контракты резолва](component_responsibilities/exact-orb_birth_data_resolution.md),
+[контракты каталога мест](component_responsibilities/exact-orb_place_catalog.md).
 
 ### 4.6 Понимание запроса
 

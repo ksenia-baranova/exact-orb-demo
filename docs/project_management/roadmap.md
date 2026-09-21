@@ -1,6 +1,6 @@
 # exact-orb — дорожная карта
 
-Статус документа: рабочий, версия 3.4 (2026-09-21).
+Статус документа: рабочий, версия 3.5 (2026-09-21).
 Объединяет milestone-план версии 3.0 с фактической историей выполненных работ
 и заменяет версии 2.x, планировавшие работу блоками A–J от расчётного фундамента.
 
@@ -20,6 +20,9 @@
 Ревизия 2026-09-21 добавляет и фиксирует выполненной отдельную process runtime
 composition M1-5.1 между каталогом и FastAPI, не переоткрывая завершённую
 минимальную M1-3.
+Ревизия 3.5 уточняет M1-5 после проектирования GeoNames/SQLite: в оценку явно
+вошли `alternateNamesV2`, локализация admin1, adapter lifecycle, executor,
+валидация startup, module boundaries и доказательство воспроизводимости.
 
 ---
 
@@ -27,7 +30,7 @@ composition M1-5.1 между каталогом и FastAPI, не переотк
 
 | Веха | Результат | Оценка оставшейся работы |
 |---|---|---:|
-| **M1** | Первый сценарий с UI работает на удалённом сервере | 19.5 рабочего дня после приёмки runtime composition |
+| **M1** | Первый сценарий с UI работает на удалённом сервере | 21.5 рабочего дня после приёмки runtime composition |
 | **M2** | Интерпретация коротким путём: handler → InterpretationService → Gateway | 12.5 рабочего дня + 10–20 дней содержания |
 | **M3** | Agent Runtime и известный остаток | 36 рабочих дней, предварительно |
 
@@ -40,8 +43,9 @@ M1/M2/M3 — рабочие дни в объёме «анализ + разраб
 Baseline v3.2 оценивал M1-2 + M1-3 как 2 рабочих дня до 16.09; фактическая
 реализация и приёмка application core заняли 16–19.09, а README/status были
 синхронизированы 20.09. Версия 3.4 добавила 2 рабочих дня M1-5.1 для полной
-process runtime composition; этап выполнен 21.09, и оставшийся M1 равен 19.5
-рабочего дня. Оценка M3 имеет меньшую точность: транзиты, несколько систем домов,
+process runtime composition; этап выполнен 21.09. Версия 3.5 добавила ещё
+2 дня к M1-5 после детализации каталога; оставшийся M1 равен 21.5 рабочего дня.
+Оценка M3 имеет меньшую точность: транзиты, несколько систем домов,
 соляр и синастрия требуют отдельного уточнения требований.
 
 ---
@@ -258,7 +262,7 @@ JSON-сериализация не выполняются. Локальный DE
 | M1-2 | `feat/application-orchestrator` | **Выполнено с перерасходом:** `application/orchestrator.py`, `ApplicationResult`, protected commit, один точный retry, cancellation/lifecycle semantics, real SQLite/CAS acceptance и load profile | план 1.5; факт 16–19.09 |
 | M1-3 | `feat/application-orchestrator` | **Минимальная composition выполнена внутри Orchestrator-среза:** `application/composition.py` собирает application registry и `ApplicationOrchestrator` из готовых зависимостей. Полная process runtime composition выделена в M1-5.1 | план 0.5; вошло в факт 16–19.09 |
 | M1-4 | `test/build-natal-handler-import-boundary` | Перенести обязательный regression-тест §10.1 требований handler: запрет прямых импортов concrete birth/calculation implementations, session adapters, transport, agent и LLM; позитивный контроль разрешённого импорта. Закрывает формальную приёмку уже работающего handler | 0.5 |
-| M1-5 | `feat/place-catalog` | На основе готовых JSONL-контракта, `LocalPlaceCatalog` и `scripts/build_place_catalog.py`: собрать рабочие GeoNames-данные со стабильным `place_id`, подготовить SQLite-представление, префиксный поиск с ранжированием по населению и тесты; предоставить готовый `PlaceCatalog` для внешнего внедрения | 2 |
+| M1-5 | `feat/place-catalog` | По [требованиям каталога мест](../requirements/component_responsibilities/exact-orb_place_catalog.md) и [implementation plan](implementation_plans/place_catalog_implementation_plan.md): собрать версионированный SQLite из `cities1000`, `admin1CodesASCII` и `alternateNamesV2`; реализовать отдельные `PlaceSearch.search(text)` и `PlaceCatalog.lookup(place_id)` одного leaf-adapter, русские подписи мест и admin1, индексный поиск, lifecycle/executor, startup validation, module boundaries и тесты воспроизводимости | 4 |
 | M1-5.1 | `chore/bootstrap-composition` | **Выполнено 21.09:** process-local `ApplicationRuntime` собирает реальные resolver/cache/engine, SQLite session persistence, `ContextService`, существующий `build_application_orchestrator`, фактическую `CalculationVersion`, owned executors и one-shot reaper. Сквозные cache miss → hit и cancelled-waiter shutdown приняты; `PlaceCatalog` внедряется извне | план 2; факт 21.09 |
 | M1-6 | `feat/http-api-and-session-middleware` | FastAPI и lifespan потребляют готовый `ApplicationRuntime`; Session Middleware (`HttpOnly` / `Secure` / `SameSite` cookie → анонимный `session_id`); Build API; endpoint поиска мест; прекращение приёма и ожидание request tasks, включая отменённые; периодический запуск runtime reaper | 2 |
 | M1-7 | `feat/ui-birth-form-and-facts` | Форма ввода с автодополнением места; вывод фактов таблицами — планеты, дома, аспекты, конфигурации, сила, особые градусы. Содержательный эквивалент human-readable CLI | 2 |
@@ -271,8 +275,9 @@ JSON-сериализация не выполняются. Локальный DE
 | M1-14 | `test/scenario-acceptance` | Сквозная приёмка по [`negative corner scenarios`](../requirements/build_chart/exact_orb_negative_corner_scenarios.md) плюс контрольный кейс: 02.09.1990 Москва → UTC+4, локальные 14:30 = 10:30 UTC | 1.5 |
 | M1-15 | `fix/first-release-issues` | Фиксы по итогам приёмки | 1 |
 
-**Итого M1 после ревизии v3.4 — 24 рабочих дня.** К baseline v3.2 добавлены
-2 дня M1-5.1; после фактического выполнения M1-1–M1-3 и M1-5.1 осталось 19.5
+**Итого M1 после ревизии v3.5 — 26 рабочих дней.** К baseline v3.2 добавлены
+2 дня M1-5.1 и 2 дня к M1-5; после фактического выполнения M1-1–M1-3 и
+M1-5.1 осталось 21.5
 рабочего дня: M1-4–M1-5 и M1-6–M1-15. Перерасход Orchestrator уже сдвинул
 календарный baseline, но не является основанием автоматически резать
 оставшиеся проверки или переносить acceptance в «потом».
@@ -397,11 +402,11 @@ M2-8 обязателен и обязателен до начала этой р�
 
 | Горизонт | Состав | Дней |
 |---|---|---|
-| Первый сценарий с UI на сервере | Остаток M1 после принятого Orchestrator core | 19.5 |
-| Плюс каркас интерпретации | Остаток M1 + M2 каркас | 32 |
-| Плюс содержание интерпретации | + рецепты | 42–52 |
+| Первый сценарий с UI на сервере | Остаток M1 после принятого Orchestrator core | 21.5 |
+| Плюс каркас интерпретации | Остаток M1 + M2 каркас | 34 |
+| Плюс содержание интерпретации | + рецепты | 44–54 |
 | Известная часть M3 | M3 | 36, предварительно |
-| Весь оценённый остаток | M1 остаток + M2 + содержание + M3 | 78–88 |
+| Весь оценённый остаток | M1 остаток + M2 + содержание + M3 | 80–90 |
 
 ---
 
