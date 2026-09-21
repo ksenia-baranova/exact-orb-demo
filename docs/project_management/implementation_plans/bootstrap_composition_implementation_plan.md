@@ -23,7 +23,7 @@ lifespan, request-task lifecycle, HTTP-контрактом и периодич�
 дублируется в M1-6, а deployment-проверки не смешиваются с механикой сборки.
 
 План не переоткрывает завершённую минимальную композицию M1-3:
-[build_application_orchestrator](../../src/exact_orb/application/composition.py) остаётся
+[build_application_orchestrator](../../../src/exact_orb/application/composition.py) остаётся
 фабрикой application-координатора из готовых зависимостей. Новый bootstrap вызывает её,
 но не переносит в неё инфраструктурную сборку.
 
@@ -31,41 +31,41 @@ lifespan, request-task lifecycle, HTTP-контрактом и периодич�
 
 ### 2.1. Источники истины
 
-- [AGENTS.md](../../AGENTS.md).
-- [Roadmap](roadmap.md): последовательность M1-5 → bootstrap composition → M1-6 и
+- [AGENTS.md](../../../AGENTS.md).
+- [Roadmap](../roadmap.md): последовательность M1-5 → bootstrap composition → M1-6 и
   отдельный production/deployment этап M1-12.
 - [ApplicationOrchestrator — план реализации](application_orchestrator_implementation_plan.md):
   завершённая минимальная composition и принятый application-контракт.
-- [ADR-0006](../requirements/decisions/0006-application-orchestrator.md): роль
+- [ADR-0006](../../requirements/decisions/0006-application-orchestrator.md): роль
   `ApplicationOrchestrator`.
-- [ADR-0012](../requirements/decisions/0012-bootstrap-request-response-streaming.md):
+- [ADR-0012](../../requirements/decisions/0012-bootstrap-request-response-streaming.md):
   граница bootstrap/request/response и будущий transport lifecycle.
-- [Chart artifacts](../requirements/component_responsibilities/exact-orb_chart_artifacts.md):
+- [Chart artifacts](../../requirements/component_responsibilities/exact-orb_chart_artifacts.md):
   cache, single-flight и контракт артефактного слоя.
-- [Birth-data resolution](../requirements/component_responsibilities/exact-orb_birth_data_resolution.md):
+- [Birth-data resolution](../../requirements/component_responsibilities/exact-orb_birth_data_resolution.md):
   диапазон даты рождения и семантика `today_provider`.
-- [Session requirements](../requirements/component_responsibilities/exact-orb_session_requirements.md)
-  и [ADR-0024](../requirements/decisions/0024-sqlite-storage-implementation.md): SQLite,
+- [Session requirements](../../requirements/component_responsibilities/exact-orb_session_requirements.md)
+  и [ADR-0024](../../requirements/decisions/0024-sqlite-storage-implementation.md): SQLite,
   expiry, reaper и migration seam.
-- [Deployment](../architecture/deployment.md): рабочая рамка M1-12. На момент исходной
+- [Deployment](../../architecture/deployment.md): рабочая рамка M1-12. На момент исходной
   сверки файл не отслеживается Git и сам по себе не становится действующим контрактом
   этой ветки.
-- [Module boundaries](../../tests/test_module_boundaries.py): архитектурные ограничения,
+- [Module boundaries](../../../tests/test_module_boundaries.py): архитектурные ограничения,
   которые нельзя ослаблять ради bootstrap.
 
 ### 2.2. Подтверждённая реализационная база
 
 | Область | Текущее состояние | Следствие для ветки |
 |---|---|---|
-| Application composition | [composition.py](../../src/exact_orb/application/composition.py) собирает registry, `BuildNatalHandler` и `ApplicationOrchestrator` из готовых `context`, `resolver`, `artifacts`, `clock` | Функция переиспользуется без переноса инфраструктуры внутрь неё |
-| Calculation identity | [version.py](../../src/exact_orb/calculation/version.py) уже предоставляет `CalculationVersionRecord`, fingerprint и startup logging | Bootstrap вычисляет record один раз из фактической конфигурации и возвращает record вместе со строкой версии |
-| Ephemeris configuration | [config.py](../../src/exact_orb/config.py) замораживает process-global путь и метод Селены; повтор тех же значений идемпотентен, несовпадение типизировано | Публичный reset не добавляется; тесты учитывают autouse-конфигурацию процесса |
-| Artifact layer | [artifacts.py](../../src/exact_orb/calculation/artifacts.py) реализует cache, single-flight и `drain()` текущих leader-задач | Промт 1 закрыл component lifecycle seam; runtime вызовет его в промте 2 |
-| Calculation engine | [engine.py](../../src/exact_orb/calculation/engine.py) требует положительный `slow_threshold_ms`; `NatalTechniqueAdapter` принимает синхронный calculator | Bootstrap принимает необязательный синхронный calculator override для детерминированного интеграционного теста |
-| Birth resolver | [resolver.py](../../src/exact_orb/birth/resolver.py) требует границы дат и `today_provider` | Все значения становятся явными bootstrap settings/dependencies |
-| Cache | [cache.py](../../src/exact_orb/calculation/cache.py) требует `max_entries` и `ttl_seconds` | Оба параметра входят в typed settings |
-| SQLite | [sqlite.py](../../src/exact_orb/session/adapters/sqlite.py) открывается с внешним executor, busy timeout и необязательным migrator; `reap_expired` уже реализован | Runtime владеет executor'ом, передаёт production migrator и предоставляет one-shot reaper method |
-| Session clock | [state.py](../../src/exact_orb/session/state.py) предоставляет `require_utc`, экспортированный публичным session-пакетом | Один внедрённый UTC clock используется orchestration, resolver и reaper |
+| Application composition | [composition.py](../../../src/exact_orb/application/composition.py) собирает registry, `BuildNatalHandler` и `ApplicationOrchestrator` из готовых `context`, `resolver`, `artifacts`, `clock` | Функция переиспользуется без переноса инфраструктуры внутрь неё |
+| Calculation identity | [version.py](../../../src/exact_orb/calculation/version.py) уже предоставляет `CalculationVersionRecord`, fingerprint и startup logging | Bootstrap вычисляет record один раз из фактической конфигурации и возвращает record вместе со строкой версии |
+| Ephemeris configuration | [config.py](../../../src/exact_orb/config.py) замораживает process-global путь и метод Селены; повтор тех же значений идемпотентен, несовпадение типизировано | Публичный reset не добавляется; тесты учитывают autouse-конфигурацию процесса |
+| Artifact layer | [artifacts.py](../../../src/exact_orb/calculation/artifacts.py) реализует cache, single-flight и `drain()` текущих leader-задач | Промт 1 закрыл component lifecycle seam; runtime вызовет его в промте 2 |
+| Calculation engine | [engine.py](../../../src/exact_orb/calculation/engine.py) требует положительный `slow_threshold_ms`; `NatalTechniqueAdapter` принимает синхронный calculator | Bootstrap принимает необязательный синхронный calculator override для детерминированного интеграционного теста |
+| Birth resolver | [resolver.py](../../../src/exact_orb/birth/resolver.py) требует границы дат и `today_provider` | Все значения становятся явными bootstrap settings/dependencies |
+| Cache | [cache.py](../../../src/exact_orb/calculation/cache.py) требует `max_entries` и `ttl_seconds` | Оба параметра входят в typed settings |
+| SQLite | [sqlite.py](../../../src/exact_orb/session/adapters/sqlite.py) открывается с внешним executor, busy timeout и необязательным migrator; `reap_expired` уже реализован | Runtime владеет executor'ом, передаёт production migrator и предоставляет one-shot reaper method |
+| Session clock | [state.py](../../../src/exact_orb/session/state.py) предоставляет `require_utc`, экспортированный публичным session-пакетом | Один внедрённый UTC clock используется orchestration, resolver и reaper |
 
 Наличие этих компонентов не означает, что полный runtime уже существует. В исходной
 точке нет публичной фабрики, которая собирает их вместе, выполняет startup cleanup и
@@ -639,7 +639,7 @@ bootstrap path после ветки получает реальную Calculati
 | План | Подготовлен 2026-09-21 | Зафиксированы контракт, владельцы, AC-1–AC-12 и три review boundary |
 | Промт 1 | Выполнен 2026-09-21 | Добавлен `ChartArtifactResolver.drain()`; синхронизированы roadmap v3.4 и актуальные requirements; 51 target, 36 boundary и 153 related tests passed |
 | Промт 2 | Выполнен 2026-09-21 | Добавлены strict settings, `ApplicationRuntime`, полная assembly, UTC clock/reaper, actual CalculationVersion, partial-start cleanup и штатный shutdown; 26 target, 25 cache, 339 related и 51 resolver tests passed |
-| Промт 3 | Выполнен 2026-09-21 | AC-2 подтвердил `Committed(1) → Committed(2)` и cache miss → hit; AC-9 подтвердил ожидание живого thread-backed leader после отмены waiter; 2 target, 1572 related и 2448 full tests passed |
+| Промт 3 | Выполнен 2026-09-21 | AC-2 подтвердил `Committed(1) → Committed(2)` и cache miss → hit; AC-9 подтвердил ожидание живого thread-backed leader после отмены waiter; 2 target, 1572 related, 36 boundary и 2448 full tests passed |
 
 Исходная подготовка плана не меняла production-код и тесты. Фактические
 изменения и проверки промтов 1–3 записаны выше. Унаследованный тест промта 2 воспроизвёл loop warning при отмене
@@ -647,3 +647,13 @@ bootstrap path после ветки получает реальную Calculati
 очистка shield callback добавлена в `ChartArtifactResolver.drain()` и закреплена
 component-тестом. Сквозные AC-2 и AC-9 закрыты через публичную поверхность
 runtime без дополнительных изменений production-кода.
+
+Финальная проверка после синхронизации README выполнена фактическими командами:
+
+```text
+.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/test_module_boundaries.py -q
+36 passed in 2.83s
+
+.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider -q
+2448 passed in 74.96s (0:01:14)
+```

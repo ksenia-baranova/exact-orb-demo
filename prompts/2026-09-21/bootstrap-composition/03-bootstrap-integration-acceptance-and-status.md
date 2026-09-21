@@ -8,7 +8,7 @@
 
 **Статус:** выполнен 2026-09-21.
 
-**План:** [`bootstrap_composition_implementation_plan.md`](../../../docs/project_management/bootstrap_composition_implementation_plan.md), §9.3.
+**План:** [`bootstrap_composition_implementation_plan.md`](../../../docs/project_management/implementation_plans/bootstrap_composition_implementation_plan.md), §9.3.
 
 ## Для менеджмента: что и зачем мы делаем
 
@@ -208,10 +208,13 @@ git status --short
 .venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/application tests/test_chart_artifact_resolver.py tests/test_calculation_version.py tests/test_ephemeris_runtime_config.py tests/session -q
 1572 passed in 34.37s
 
-.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider -q
-2448 passed in 59.86s
+.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/test_module_boundaries.py -q
+36 passed in 2.83s
 
-Markdown links: 9 changed files checked, all local targets exist
+.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider -q
+2448 passed in 74.96s (0:01:14)
+
+Markdown links: 10 branch-changed files checked, all local targets exist
 git diff --check: passed
 ```
 

@@ -1,16 +1,16 @@
 @startgantt
-' Подробный календарный baseline из roadmap v3.4 от текущей точки 21.09.2026.
+' Подробный календарный baseline из roadmap v3.4 после закрытия M1-5.1 21.09.2026.
 ' Оценки остаются рабочими днями. AM/PM в подписях сохраняют половины дня,
 ' которые дневная шкала PlantUML не может показать отдельной шириной полосы.
 
-title exact-orb — подробный план M1 и M2 после перерасхода Orchestrator
+title exact-orb — подробный план M1 и M2 после закрытия runtime composition
 Project starts 2026-09-14
 printscale weekly zoom 2
 Label on first column
 saturday are closed
 sunday are closed
 
--- Выполнено: M1-1 и Orchestrator core --
+-- Выполнено: M1-1, Orchestrator core и process runtime --
 
 [M1-1 ADR-0034 принят — 0.5 дн.] as [M11] happens 2026-09-14
 [M11] is 100% complete
@@ -20,14 +20,17 @@ sunday are closed
 [M12] is 100% complete
 [M12] is colored in Salmon
 
--- M1. Карта с UI на контролируемом удалённом стенде — осталось 21.5 дн. --
+[M1-5.1 Process runtime — план 23–25.09, выполнен 21.09] as [M151] happens 2026-09-21
+[M151] is 100% complete
+[M151] is colored in LightGreen
 
-[M1-4 Import boundary handler — 21.09 AM — 0.5 дн.] as [M14] starts 2026-09-21 and ends 2026-09-21
-[M1-5 Каталог place_id и поиск — 21.09 PM–23.09 AM — 2 дн.] as [M15] starts 2026-09-21 and ends 2026-09-23
-[M1-5.1 Process runtime composition — 23.09 PM–25.09 AM — 2 дн.] as [M151] starts 2026-09-23 and ends 2026-09-25
-[M1-6 FastAPI и Session Middleware — 25.09 PM–29.09 AM — 2 дн.] as [M16] starts 2026-09-25 and ends 2026-09-29
-[M1-7 UI: форма и таблицы фактов — 29.09 PM–01.10 AM — 2 дн.] as [M17] starts 2026-09-29 and ends 2026-10-01
-[M1-8 SVG-колесо карты — 01.10 PM–07.10 AM — 5 дн.] as [M18] starts 2026-10-01 and ends 2026-10-07
+-- M1. Карта с UI на контролируемом удалённом стенде — осталось 19.5 дн. --
+
+[M1-4 Import boundary handler — 22.09 AM — 0.5 дн.] as [M14] starts 2026-09-22 and ends 2026-09-22
+[M1-5 Каталог place_id и поиск — 22.09 PM–24.09 AM — 2 дн.] as [M15] starts 2026-09-22 and ends 2026-09-24
+[M1-6 FastAPI и Session Middleware — 24.09 PM–28.09 AM — 2 дн.] as [M16] starts 2026-09-24 and ends 2026-09-28
+[M1-7 UI: форма и таблицы фактов — 28.09 PM–30.09 AM — 2 дн.] as [M17] starts 2026-09-28 and ends 2026-09-30
+[M1-8 SVG-колесо карты — 30.09 PM–07.10 AM — 5 дн.] as [M18] starts 2026-09-30 and ends 2026-10-07
 [M1-9 Условия использования — 07.10 PM–08.10 AM — 1 дн.] as [M19] starts 2026-10-07 and ends 2026-10-08
 [M1-10 Benchmark natal/cosmogram — 08.10 PM–09.10 AM — 1 дн.] as [M110] starts 2026-10-08 and ends 2026-10-09
 [M1-11 CI на Linux — 09.10 PM — 0.5 дн.] as [M111] starts 2026-10-09 and ends 2026-10-09
@@ -72,8 +75,9 @@ sunday are closed
 
 legend bottom
   Baseline v3.2 планировал M1-2 + M1-3 на 15-16.09; факт Orchestrator принят 19.09.
-  Roadmap v3.4 добавляет M1-5.1 process runtime composition на 2 рабочих дня.
-  После README/status sync 20.09 остаток M1 стартует 21.09 и занимает 21.5 дня.
+  Roadmap v3.4 добавил M1-5.1 на 2 рабочих дня; фактически runtime принят 21.09.
+  Исходное окно M1-5.1 23-25.09 сохранено в подписи выполненной задачи.
+  Оставшиеся M1-4, M1-5 и M1-6–M1-15 стартуют 22.09 и занимают 19.5 дня.
   M1-ready сдвинут на 19.10; M2 core — на 04.11.
   Нижняя оценка содержания M2 теперь 18.11, верхняя — 02.12; review сдвинут на 03.12.
   AM/PM обозначают передачу задачи внутри дня; полосы PlantUML занимают весь календарный день.

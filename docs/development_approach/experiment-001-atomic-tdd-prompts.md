@@ -34,7 +34,7 @@ ApplicationResult
 
 | Документ | Путь |
 |---|---|
-| План реализации, 36 карточек, матрица приёмки, журнал выполнения | [`../project_management/application_orchestrator_implementation_plan.md`](../project_management/application_orchestrator_implementation_plan.md) |
+| План реализации, 36 карточек, матрица приёмки, журнал выполнения | [`../project_management/implementation_plans/application_orchestrator_implementation_plan.md`](../project_management/implementation_plans/application_orchestrator_implementation_plan.md) |
 | Требования R3.2 | [`../requirements/component_responsibilities/exact-orb_application_orchestrator_requirements.md`](../requirements/component_responsibilities/exact-orb_application_orchestrator_requirements.md) |
 | ADR-0006, решение о компоненте | [`../requirements/decisions/0006-application-orchestrator.md`](../requirements/decisions/0006-application-orchestrator.md) |
 | Ручное ревью, с которого начался пересмотр границ | [`problems_detected_by_human/003-application-orchestrator-spec-review-exposed-responsibility-boundary-defects.md`](problems_detected_by_human/003-application-orchestrator-spec-review-exposed-responsibility-boundary-defects.md) |

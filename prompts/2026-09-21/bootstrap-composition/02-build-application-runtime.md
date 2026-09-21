@@ -8,7 +8,7 @@
 
 **Статус:** выполнен 2026-09-21.
 
-**План:** [`bootstrap_composition_implementation_plan.md`](../../../docs/project_management/bootstrap_composition_implementation_plan.md), §9.2.
+**План:** [`bootstrap_composition_implementation_plan.md`](../../../docs/project_management/implementation_plans/bootstrap_composition_implementation_plan.md), §9.2.
 
 ## Для менеджмента: что и зачем мы делаем
 

@@ -105,8 +105,8 @@ application-срез ограничен натальной картой и ко�
 ### 2.1 Текущая готовность
 
 Сверено повторно 2026-09-21. Подробные реестры application core и runtime
-composition — в [плане ApplicationOrchestrator](../project_management/application_orchestrator_implementation_plan.md)
-и [плане bootstrap composition](../project_management/bootstrap_composition_implementation_plan.md).
+composition — в [плане ApplicationOrchestrator](../project_management/implementation_plans/application_orchestrator_implementation_plan.md)
+и [плане bootstrap composition](../project_management/implementation_plans/bootstrap_composition_implementation_plan.md).
 
 | Область | Реализовано | Остаётся |
 |---|---|---|

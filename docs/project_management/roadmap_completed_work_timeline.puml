@@ -175,6 +175,15 @@ Label on first column
 [README/status sync Orchestrator — 20.09] as [H_APP_DOCS] happens 2026-09-20
 [H_APP_DOCS] is colored in LightSalmon
 
+-- Process runtime composition --
+
+' prompts/2026-09-21/bootstrap-composition/01..03 -> 026a470 -> 18198e8.
+' Roadmap planned 2 working days in the 23-25.09 window; implementation and
+' cross-runtime acceptance were completed on 21.09.
+[Process runtime composition M1-5.1 — план 2 раб. дн.; выполнено 21.09] as [H_APP_RUNTIME] happens 2026-09-21
+[H_APP_RUNTIME] is 100% complete
+[H_APP_RUNTIME] is colored in LightGreen
+
 legend bottom
   Дни = дата конца - дата начала + 1; календарь Europe/Moscow, выходные включены.
   Зелёное: окно от постановки до содержательного коммита. Это не трудозатраты.
@@ -183,6 +192,7 @@ legend bottom
   Пересечения строк не доказывают параллельную работу; длительности не суммируются.
   Session начат по локальному промпту 04.09; tracked-редакция и первый код — 05.09.
   Handler: код 08.09, документы 09.09; тест импортных границ ещё не закрыт.
-  Будущие задачи показаны на второй диаграмме этого файла, уже со сдвигом после Orchestrator.
+  M1-5.1 планировался на 23-25.09, но process runtime принят досрочно 21.09.
+  Будущие задачи показаны на отдельной диаграмме плана, уже после закрытия M1-5.1.
 endlegend
 @endgantt

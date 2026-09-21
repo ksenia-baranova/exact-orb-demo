@@ -7,7 +7,7 @@
 
 ## 1. Основание и границы сверки
 
-План подготовлен по [промту 0.1](../../prompts/2026-09-16/00-application-orchestrator-plan/00.1-baseline-and-acceptance-map.md).
+План подготовлен по [промту 0.1](../../../prompts/2026-09-16/00-application-orchestrator-plan/00.1-baseline-and-acceptance-map.md).
 В этапе 0.1 сверялось рабочее дерево, включая изменённые документы и untracked
 R3.2/диаграммы 009–010. HEAD сам по себе не содержит всего актуального контракта.
 До начала работы в дереве уже были staged, modified и untracked файлы;
@@ -17,30 +17,30 @@ R3.2/диаграммы 009–010. HEAD сам по себе не содержи
 
 Источники:
 
-- [AGENTS.md](../../AGENTS.md).
-- [ApplicationOrchestrator R3.2](../requirements/component_responsibilities/exact-orb_application_orchestrator_requirements.md):
+- [AGENTS.md](../../../AGENTS.md).
+- [ApplicationOrchestrator R3.2](../../requirements/component_responsibilities/exact-orb_application_orchestrator_requirements.md):
   §1.3–1.6, FR-01–FR-27, §6, §8–12, §15.
-- [ADR-0006](../requirements/decisions/0006-application-orchestrator.md), ревизии
+- [ADR-0006](../../requirements/decisions/0006-application-orchestrator.md), ревизии
   2026-09-15/16: входной RunContext, отдельный session lifecycle, события операции.
-- [Session requirements](../requirements/component_responsibilities/exact-orb_session_requirements.md):
-  §7–8, P3-AC-11/12; [ADR-0009](../requirements/decisions/0009-context-yes-profiles-later.md)
-  и [ADR-0014](../requirements/decisions/0014-explicit-state-mutations.md).
-- [Handler requirements](../requirements/handlers/exact_orb_build_natal_handler_requirements.md)
-  и [Build Natal components](../requirements/component_responsibilities/exact-orb_build_natal_components.md).
-- [ADR-0012](../requirements/decisions/0012-bootstrap-request-response-streaming.md)
-  и [ADR-0020](../requirements/decisions/0020-agent-runtime-behind-handlers.md):
+- [Session requirements](../../requirements/component_responsibilities/exact-orb_session_requirements.md):
+  §7–8, P3-AC-11/12; [ADR-0009](../../requirements/decisions/0009-context-yes-profiles-later.md)
+  и [ADR-0014](../../requirements/decisions/0014-explicit-state-mutations.md).
+- [Handler requirements](../../requirements/handlers/exact_orb_build_natal_handler_requirements.md)
+  и [Build Natal components](../../requirements/component_responsibilities/exact-orb_build_natal_components.md).
+- [ADR-0012](../../requirements/decisions/0012-bootstrap-request-response-streaming.md)
+  и [ADR-0020](../../requirements/decisions/0020-agent-runtime-behind-handlers.md):
   request/response, отсутствие Agent Runtime в Build Natal.
-- [ADR-0025](../requirements/decisions/0025-debug-component-boundary-messages.md),
-  [ADR-0026](../requirements/decisions/0026-compact-chart-boundary-logging.md),
-  [ADR-0028](../requirements/decisions/0028-full-debug-component-boundary-payloads.md)
-  и [ADR-0034](../requirements/decisions/0034-birth-data-and-terms-of-use.md).
+- [ADR-0025](../../requirements/decisions/0025-debug-component-boundary-messages.md),
+  [ADR-0026](../../requirements/decisions/0026-compact-chart-boundary-logging.md),
+  [ADR-0028](../../requirements/decisions/0028-full-debug-component-boundary-payloads.md)
+  и [ADR-0034](../../requirements/decisions/0034-birth-data-and-terms-of-use.md).
   ADR-0028 явно заменил режим payload ADR-0026; новый lifecycle-журнал следует R3.2.
-- [Индекс диаграмм](../sequence_diagrams/build_natal/README.md),
-  [000](../sequence_diagrams/build_natal/000-build_natal_end_to_end.puml),
-  [006](../sequence_diagrams/build_natal/006-build_natal_superseded_cas.puml),
-  [007](../sequence_diagrams/build_natal/007-build_natal_commit_failure_and_session_expired.puml),
-  [009](../sequence_diagrams/build_natal/009-build_natal_commit_cancellation.puml),
-  [010](../sequence_diagrams/build_natal/010-build_natal_application_observability.puml).
+- [Индекс диаграмм](../../sequence_diagrams/build_natal/README.md),
+  [000](../../sequence_diagrams/build_natal/000-build_natal_end_to_end.puml),
+  [006](../../sequence_diagrams/build_natal/006-build_natal_superseded_cas.puml),
+  [007](../../sequence_diagrams/build_natal/007-build_natal_commit_failure_and_session_expired.puml),
+  [009](../../sequence_diagrams/build_natal/009-build_natal_commit_cancellation.puml),
+  [010](../../sequence_diagrams/build_natal/010-build_natal_application_observability.puml).
 
 ### 1.1. Исходное состояние на этапе 0.1
 
@@ -49,18 +49,18 @@ R3.2/диаграммы 009–010. HEAD сам по себе не содержи
 
 | Компонент | Подтверждённое исходное состояние | Свидетельство |
 |---|---|---|
-| RunContext | Реализованы run_id, started_at, new() и UTC-валидация started_at. deadline отсутствует | [run_context.py](../../src/exact_orb/run_context.py), E1 |
-| Command и Handler protocol | Frozen Command/BuildNatalCommand и handle(command, state, run) существуют | [commands.py](../../src/exact_orb/application/commands.py), [ports.py](../../src/exact_orb/application/ports.py) |
-| Handler outcomes | results.py занят BuildNatalSuccess/BuildNatalOutcome; общий CalculationFailed.error_code — str | [results.py](../../src/exact_orb/application/results.py), [outcomes.py](../../src/exact_orb/outcomes.py), E2 |
-| BuildNatalHandler | Реализованы resolver → artifact → delta, технические исходы и собственные события | [build_natal.py](../../src/exact_orb/application/handlers/build_natal.py), E3/E4 |
-| ContextService | Реальные create/load/save; save делает один CAS и классифицирует его результат. Автоматического retry нет | [context.py](../../src/exact_orb/session/context.py), E5/E6 |
-| Сессионные контракты | Frozen SessionState, StateDelta, SessionSnapshot и typed outcomes существуют | [state.py](../../src/exact_orb/session/state.py), [persistence.py](../../src/exact_orb/session/persistence.py), [outcomes.py](../../src/exact_orb/session/outcomes.py) |
-| Persistence | InMemory и file-backed SQLite реализованы. SQLite работает через executor; сравнение версий и запись атомарны внутри адаптера | [in_memory.py](../../src/exact_orb/session/adapters/in_memory.py), [sqlite.py](../../src/exact_orb/session/adapters/sqlite.py), E7 |
-| Логирование | Штатный logging и component_message существуют; четырёх application lifecycle events пока нет | [component_logging.py](../../src/exact_orb/component_logging.py), [logging_setup.py](../../src/exact_orb/logging_setup.py), E4 |
-| ApplicationOrchestrator и ApplicationResult | Целевые; соответствующие файлы ещё отсутствуют. Переносить существующий внешний union неоткуда | [application-пакет](../../src/exact_orb/application/__init__.py), R3.2 |
-| Agent orchestration | Самостоятельный каркас Orchestrator с NotImplementedError, не application coordinator | [orchestrator.py](../../src/exact_orb/orchestration/orchestrator.py), [types.py](../../src/exact_orb/orchestration/types.py) |
+| RunContext | Реализованы run_id, started_at, new() и UTC-валидация started_at. deadline отсутствует | [run_context.py](../../../src/exact_orb/run_context.py), E1 |
+| Command и Handler protocol | Frozen Command/BuildNatalCommand и handle(command, state, run) существуют | [commands.py](../../../src/exact_orb/application/commands.py), [ports.py](../../../src/exact_orb/application/ports.py) |
+| Handler outcomes | results.py занят BuildNatalSuccess/BuildNatalOutcome; общий CalculationFailed.error_code — str | [results.py](../../../src/exact_orb/application/results.py), [outcomes.py](../../../src/exact_orb/outcomes.py), E2 |
+| BuildNatalHandler | Реализованы resolver → artifact → delta, технические исходы и собственные события | [build_natal.py](../../../src/exact_orb/application/handlers/build_natal.py), E3/E4 |
+| ContextService | Реальные create/load/save; save делает один CAS и классифицирует его результат. Автоматического retry нет | [context.py](../../../src/exact_orb/session/context.py), E5/E6 |
+| Сессионные контракты | Frozen SessionState, StateDelta, SessionSnapshot и typed outcomes существуют | [state.py](../../../src/exact_orb/session/state.py), [persistence.py](../../../src/exact_orb/session/persistence.py), [outcomes.py](../../../src/exact_orb/session/outcomes.py) |
+| Persistence | InMemory и file-backed SQLite реализованы. SQLite работает через executor; сравнение версий и запись атомарны внутри адаптера | [in_memory.py](../../../src/exact_orb/session/adapters/in_memory.py), [sqlite.py](../../../src/exact_orb/session/adapters/sqlite.py), E7 |
+| Логирование | Штатный logging и component_message существуют; четырёх application lifecycle events пока нет | [component_logging.py](../../../src/exact_orb/component_logging.py), [logging_setup.py](../../../src/exact_orb/logging_setup.py), E4 |
+| ApplicationOrchestrator и ApplicationResult | Целевые; соответствующие файлы ещё отсутствуют. Переносить существующий внешний union неоткуда | [application-пакет](../../../src/exact_orb/application/__init__.py), R3.2 |
+| Agent orchestration | Самостоятельный каркас Orchestrator с NotImplementedError, не application coordinator | [orchestrator.py](../../../src/exact_orb/orchestration/orchestrator.py), [types.py](../../../src/exact_orb/orchestration/types.py) |
 | Composition, транспорт, клиентская монотонность | Нужного application wiring и клиентского contract test пока нет | R3.2, components §9; AC-34 — внешний срез |
-| Admission и application load harness | Реализация ограничителя в src/tests/scripts не найдена. Есть отдельный session benchmark | [bench_session_sqlite.py](../../scripts/bench_session_sqlite.py); AC-36 имеет внешнюю предпосылку |
+| Admission и application load harness | Реализация ограничителя в src/tests/scripts не найдена. Есть отдельный session benchmark | [bench_session_sqlite.py](../../../scripts/bench_session_sqlite.py); AC-36 имеет внешнюю предпосылку |
 
 Поиск реализации admission: `rg -n 'admission|Semaphore|max_concurrent|queue_limit' src tests scripts`
 не дал совпадений. Session benchmark не доказывает application throughput.
@@ -73,22 +73,22 @@ R3.2/диаграммы 009–010. HEAD сам по себе не содержи
 
 | ID | Существующие проверки | Чего они ещё не доказывают |
 |---|---|---|
-| E1 | [tests/test_run_context.py](../../tests/test_run_context.py): `test_run_context_new_uses_uuid_and_utc_started_at`, `test_run_context_rejects_naive_started_at` | Контракт deadline и injected clock Orchestrator |
-| E2 | [tests/application/test_contracts.py](../../tests/application/test_contracts.py): `test_build_natal_command_inherits_frozen_config_from_command`, `test_build_natal_success_accepts_an_explicit_consistent_pair` | Внешний ApplicationResult, его union и связи полей |
-| E3 | [tests/application/test_build_natal_handler.py](../../tests/application/test_build_natal_handler.py): `test_resolution_outcomes_short_circuit_with_the_same_object`, `test_empty_input_required_passes_through_unchanged`, `test_artifact_cancellation_propagates_unchanged` | Запрет save, application-нормализацию и terminal event Orchestrator |
-| E4 | [tests/application/test_build_natal_logging.py](../../tests/application/test_build_natal_logging.py): `test_started_is_debug_and_precedes_exactly_one_terminal_event`, `test_cancellation_logs_warning_and_propagates` | Четыре новых lifecycle events всего execute; Handler started остаётся DEBUG |
-| E5 | [tests/session/test_context.py](../../tests/session/test_context.py): `test_load_returns_snapshot_by_identity_without_facet_reads`, `test_load_maps_any_persistence_error_to_read_failed`, `test_save_passes_original_expected_delta_and_now_by_identity`, `test_save_classifies_same_intent_without_an_extra_get` | Порядок application стадий, автоматический retry и преобразование в ApplicationResult |
-| E6 | [tests/session/test_context.py](../../tests/session/test_context.py): `test_two_same_intent_saves_commit_once_without_rebase`, `test_sequential_retry_keeps_original_expected_and_commits_once`, `test_old_retry_is_superseded_after_a_different_intent` | Второй тест получает Committed, затем вручную вызывает save; потеря подтверждения и retry внутри execute не воспроизведены |
-| E7 | [tests/session/test_sqlite.py](../../tests/session/test_sqlite.py): `test_commit_exception_is_unknown_without_retry_or_readback`; унаследованный `TestSqliteSessionPersistence::test_concurrent_cas_commits_once_and_reports_winner` из [conformance.py](../../tests/session/conformance.py) | Первый тест теряет подтверждение create, а не application CAS; второй не собирает Orchestrator/Handler |
-| E8 | [tests/application/test_build_natal_integration.py](../../tests/application/test_build_natal_integration.py): `test_real_natal_path_caches_and_correlates_run_id`, `test_real_unknown_time_path_builds_cosmogram`, `test_real_polar_calculation_fails_and_is_not_cached` | Реальный путь заканчивается Handler outcome; session commit и ApplicationResult отсутствуют |
+| E1 | [tests/test_run_context.py](../../../tests/test_run_context.py): `test_run_context_new_uses_uuid_and_utc_started_at`, `test_run_context_rejects_naive_started_at` | Контракт deadline и injected clock Orchestrator |
+| E2 | [tests/application/test_contracts.py](../../../tests/application/test_contracts.py): `test_build_natal_command_inherits_frozen_config_from_command`, `test_build_natal_success_accepts_an_explicit_consistent_pair` | Внешний ApplicationResult, его union и связи полей |
+| E3 | [tests/application/test_build_natal_handler.py](../../../tests/application/test_build_natal_handler.py): `test_resolution_outcomes_short_circuit_with_the_same_object`, `test_empty_input_required_passes_through_unchanged`, `test_artifact_cancellation_propagates_unchanged` | Запрет save, application-нормализацию и terminal event Orchestrator |
+| E4 | [tests/application/test_build_natal_logging.py](../../../tests/application/test_build_natal_logging.py): `test_started_is_debug_and_precedes_exactly_one_terminal_event`, `test_cancellation_logs_warning_and_propagates` | Четыре новых lifecycle events всего execute; Handler started остаётся DEBUG |
+| E5 | [tests/session/test_context.py](../../../tests/session/test_context.py): `test_load_returns_snapshot_by_identity_without_facet_reads`, `test_load_maps_any_persistence_error_to_read_failed`, `test_save_passes_original_expected_delta_and_now_by_identity`, `test_save_classifies_same_intent_without_an_extra_get` | Порядок application стадий, автоматический retry и преобразование в ApplicationResult |
+| E6 | [tests/session/test_context.py](../../../tests/session/test_context.py): `test_two_same_intent_saves_commit_once_without_rebase`, `test_sequential_retry_keeps_original_expected_and_commits_once`, `test_old_retry_is_superseded_after_a_different_intent` | Второй тест получает Committed, затем вручную вызывает save; потеря подтверждения и retry внутри execute не воспроизведены |
+| E7 | [tests/session/test_sqlite.py](../../../tests/session/test_sqlite.py): `test_commit_exception_is_unknown_without_retry_or_readback`; унаследованный `TestSqliteSessionPersistence::test_concurrent_cas_commits_once_and_reports_winner` из [conformance.py](../../../tests/session/conformance.py) | Первый тест теряет подтверждение create, а не application CAS; второй не собирает Orchestrator/Handler |
+| E8 | [tests/application/test_build_natal_integration.py](../../../tests/application/test_build_natal_integration.py): `test_real_natal_path_caches_and_correlates_run_id`, `test_real_unknown_time_path_builds_cosmogram`, `test_real_polar_calculation_fails_and_is_not_cached` | Реальный путь заканчивается Handler outcome; session commit и ApplicationResult отсутствуют |
 
-Переиспользуемые данные: [tests/fixtures/calculation.py](../../tests/fixtures/calculation.py),
-[places.jsonl](../../tests/fixtures/places.jsonl), [application/stubs.py](../../tests/application/stubs.py).
-Общие [conftest.py](../../tests/conftest.py) и [pyproject.toml](../../pyproject.toml)
+Переиспользуемые данные: [tests/fixtures/calculation.py](../../../tests/fixtures/calculation.py),
+[places.jsonl](../../../tests/fixtures/places.jsonl), [application/stubs.py](../../../tests/application/stubs.py).
+Общие [conftest.py](../../../tests/conftest.py) и [pyproject.toml](../../../pyproject.toml)
 задают pytest-asyncio, src layout, эфемериды и workspace-local tmp_path.
 `.venv/Scripts/python.exe` существует; версия/работоспособность интерпретатора
 и наличие всех runtime-зависимостей в 0.1 запуском не проверялись.
-[tests/test_module_boundaries.py](../../tests/test_module_boundaries.py) сохраняется без ослабления.
+[tests/test_module_boundaries.py](../../../tests/test_module_boundaries.py) сохраняется без ослабления.
 
 ### 1.3. Текущие статусы и журнал выполнения
 
@@ -141,19 +141,19 @@ R3.2/диаграммы 009–010. HEAD сам по себе не содержи
 | 10.7 | Заблокирован внешней зависимостью X2 | Degraded profile не запускался; нужен production admission API с конечными active/queue limits |
 
 По запросу пользователя 2026-09-16 подготовлен
-[промт 2.1](../../prompts/2026-09-16/02-application-results/02.1-application-failure-policy-tests.md)
+[промт 2.1](../../../prompts/2026-09-16/02-application-results/02.1-application-failure-policy-tests.md)
 до реализации 1.4. Это допустимый независимый срез с зависимостью только от 0.1.
 Тестовая карточка выполнена отдельно; фактические результаты и граница
 свидетельства записаны в §1.3.5. Отсутствие operation_logging.py тогда блокировало
 общий набор application; блокировка снята выполнением 1.4, §1.3.11.
 Номера карточек и зависимости не изменены.
 
-[Промт 1.R1](../../prompts/2026-09-16/01-application-foundations/01.R1-test-isolation-and-execution-record.md)
+[Промт 1.R1](../../../prompts/2026-09-16/01-application-foundations/01.R1-test-isolation-and-execution-record.md)
 выполнен между 1.3 и 1.4 как дополнительная корректирующая карточка.
-Его область: новый [telemetry.py](../../tests/fixtures/telemetry.py), импорты
-и тесты started_at в [test_run_context.py](../../tests/test_run_context.py),
+Его область: новый [telemetry.py](../../../tests/fixtures/telemetry.py), импорты
+и тесты started_at в [test_run_context.py](../../../tests/test_run_context.py),
 только источник/имена констант в
-[test_orchestrator_logging.py](../../tests/application/test_orchestrator_logging.py)
+[test_orchestrator_logging.py](../../../tests/application/test_orchestrator_logging.py)
 и настоящий журнал/правила плана. Номера, зависимости и распределение AC
 основных карточек не изменены.
 
@@ -194,7 +194,7 @@ BirthDataResolver и общий conftest; весь файл не объявля�
 
 Источник: предыдущие отчёты выполнения в этой сессии, сведённые в §3.2 промта
 1.R1; исходное падение также зафиксировано в
-[промте 1.2](../../prompts/2026-09-16/01-application-foundations/01.2-run-context-deadline-field.md).
+[промте 1.2](../../../prompts/2026-09-16/01-application-foundations/01.2-run-context-deadline-field.md).
 Это перенос исторических свидетельств, не новые запуски и не воспроизведение
 старого состояния checkout. Времена изменения файлов не служат доказательством
 порядка test-first.
@@ -237,7 +237,7 @@ BirthDataResolver и общий conftest; весь файл не объявля�
 
 **Дата:** 2026-09-16. **Ветка:** `feat/application-orchestrator`.
 Источник: непосредственные запуски при выполнении сохранённого промта 2.1.
-Создан [test_application_failure_policy.py](../../tests/application/test_application_failure_policy.py).
+Создан [test_application_failure_policy.py](../../../tests/application/test_application_failure_policy.py).
 Production-модуль failure_policy.py не добавлялся: это отдельная карточка 2.2.
 
 | Требование / граница | Тест | Описано случаев |
@@ -278,7 +278,7 @@ Production-модуль failure_policy.py не добавлялся: это от
 На момент завершения 2.1 AC-21/25/33 целиком не закрыты: не проверены исполняемые реакции политики,
 фактический WARN Orchestrator, нормализация реальных исключений и весь
 application-flow. Следующим шагом было выполнение
-[сохранённого промта 2.2](../../prompts/2026-09-16/02-application-results/02.2-application-failure-policy.md).
+[сохранённого промта 2.2](../../../prompts/2026-09-16/02-application-results/02.2-application-failure-policy.md).
 Промт подготовлен 2026-09-16; при подготовке реализация не выполнялась.
 Последующее выполнение 2.2 зафиксировано отдельно ниже; результаты запусков
 самого тестового этапа 2.1 остаются историческими.
@@ -287,7 +287,7 @@ application-flow. Следующим шагом было выполнение
 
 **Дата:** 2026-09-16. **Ветка:** `feat/application-orchestrator`.
 Источник: непосредственные запуски при выполнении сохранённого промта 2.2.
-Добавлен [failure_policy.py](../../src/exact_orb/application/failure_policy.py):
+Добавлен [failure_policy.py](../../../src/exact_orb/application/failure_policy.py):
 синхронная keyword-only функция describe_failure, локальный Literal FailureKind
 и frozen dataclass FailureDescription с четырьмя полями реакции.
 
@@ -327,8 +327,8 @@ AC-21/25/33 целиком не закрыты. Остались фактиче�
 #### 1.3.7. Фактические результаты 2.3
 
 **Дата:** 2026-09-16. **Ветка:** `feat/application-orchestrator`.
-Сохранён и выполнен [промт 2.3](../../prompts/2026-09-16/02-application-results/02.3-application-results-tests.md).
-Добавлен [test_application_results.py](../../tests/application/test_application_results.py):
+Сохранён и выполнен [промт 2.3](../../../prompts/2026-09-16/02-application-results/02.3-application-results-tests.md).
+Добавлен [test_application_results.py](../../../tests/application/test_application_results.py):
 тесты ApplicationCommitted, ApplicationAlreadyApplied и ApplicationSuperseded
 по FR-22, §8–10 и §12 R3.2. Production-модуль application_results.py не добавлялся.
 
@@ -379,11 +379,11 @@ fallback. Тесты написаны, но их чувствительност�
 #### 1.3.8. Фактические результаты 2.4
 
 **Дата:** 2026-09-16. **Ветка:** `feat/application-orchestrator`.
-Сохранён и выполнен [промт 2.4](../../prompts/2026-09-16/02-application-results/02.4-application-result-models.md).
+Сохранён и выполнен [промт 2.4](../../../prompts/2026-09-16/02-application-results/02.4-application-result-models.md).
 По запросу пользователя в начало промта добавлен раздел «Что реализует этот
 этап»: назначение трёх ответов, польза для интерфейса и граница текущей работы.
 
-Добавлен [application_results.py](../../src/exact_orb/application/application_results.py)
+Добавлен [application_results.py](../../../src/exact_orb/application/application_results.py)
 с ApplicationCommitted, ApplicationAlreadyApplied и ApplicationSuperseded.
 Три явные модели используют ConfigDict(frozen=True, extra="forbid"), Literal
 для статусов/code/retryable, обязательный UUID и Field с нижней границей версии.
@@ -429,11 +429,11 @@ artifact у Superseded, frozen и публичный model_dump. Связь тр
 #### 1.3.9. Фактические результаты 2.5
 
 **Дата:** 2026-09-16. **Ветка:** `feat/application-orchestrator`.
-Сохранён и выполнен [промт 2.5](../../prompts/2026-09-16/02-application-results/02.5-application-results-union-tests.md).
+Сохранён и выполнен [промт 2.5](../../../prompts/2026-09-16/02-application-results/02.5-application-results-union-tests.md).
 В начале промта объяснены семь ситуаций для пользователя, польза согласованных
 ответов для интерфейса и граница этапа: сначала проверки, реализация — в 2.6.
 
-Расширен [test_application_results.py](../../tests/application/test_application_results.py):
+Расширен [test_application_results.py](../../../tests/application/test_application_results.py):
 добавлены 26 тестовых функций с отдельными таблицами и helpers. Подготовлены
 20 корректных failure-записей, включая четыре варианта SessionAbsent, четыре
 варианта InternalFailure и два неизвестных calculation-кода. Вместе с тремя
@@ -495,12 +495,12 @@ commit и session persistence не проверялись; глубокая не
 #### 1.3.10. Фактические результаты 2.6
 
 **Дата:** 2026-09-16. **Ветка:** `feat/application-orchestrator`.
-Сохранён и выполнен [промт 2.6](../../prompts/2026-09-16/02-application-results/02.6-application-results-union.md).
+Сохранён и выполнен [промт 2.6](../../../prompts/2026-09-16/02-application-results/02.6-application-results-union.md).
 В начале промта дано объяснение для менеджмента: какие семь ответов добавляются,
 зачем интерфейсу согласованные поля и что структура ответа ещё не выполняет
 пользовательскую операцию. Используется формулировка «проверка согласованности полей».
 
-В [application_results.py](../../src/exact_orb/application/application_results.py)
+В [application_results.py](../../../src/exact_orb/application/application_results.py)
 добавлены ApplicationInputRequired, ApplicationResolutionFailure,
 ApplicationCalculationFailure, ApplicationSessionAbsent, ApplicationStateReadFailure,
 ApplicationStateCommitFailure и ApplicationInternalFailure. Реализован обычный union
@@ -519,7 +519,7 @@ Handler остаётся открытым; внешний ответ сейча�
 
 Перед 2.6 по отдельному запросу пользователя внутри всех 39 тестовых функций
 добавлены docstrings со ссылками на FR, разделы R3.2, AC и границы проверки.
-При выполнении 2.6 весь [test_application_results.py](../../tests/application/test_application_results.py)
+При выполнении 2.6 весь [test_application_results.py](../../../tests/application/test_application_results.py)
 сохранён без изменений, включая эти описания, assertions, helpers и параметризации.
 
 **P2.6 — целевой набор до и после реализации:**
@@ -580,13 +580,13 @@ F: 2152 passed не является свидетельством перенос
 
 **Дата:** 2026-09-16. **Ветка:** `feat/application-orchestrator`.
 Исправлен по согласованным замечаниям, сохранён и выполнен
-[промт 1.4](../../prompts/2026-09-16/01-application-foundations/01.4-lifecycle-logging-functions.md).
+[промт 1.4](../../../prompts/2026-09-16/01-application-foundations/01.4-lifecycle-logging-functions.md).
 Уточнены формат getMessage(), коллекции кодов и типы значений, общий запрет
 traceback, различие уровней Handler/Orchestrator и два независимых эксперимента
 для проверки чувствительности тестов. Понятное описание результата находится
 в начале промта.
 
-Добавлен [operation_logging.py](../../src/exact_orb/application/operation_logging.py):
+Добавлен [operation_logging.py](../../../src/exact_orb/application/operation_logging.py):
 пять синхронных keyword-only функций штатного logger, четыре вида событий,
 отдельные формы terminal result/cancelled, WARNING для второй попытки,
 опциональная известная версия у stage/attempt и полный набор nullable-полей
@@ -594,7 +594,7 @@ traceback, различие уровней Handler/Orchestrator и два нез
 и повторы. Длительности и другие факты готовит вызывающий код.
 
 Сначала реализация прошла неизменённый тестовый файл. После экспериментов
-в десять функций [test_orchestrator_logging.py](../../tests/application/test_orchestrator_logging.py)
+в десять функций [test_orchestrator_logging.py](../../../tests/application/test_orchestrator_logging.py)
 добавлены только русские docstring с требованиями и границами проверки.
 Assertions, параметризации, fixtures и helpers не изменены.
 
@@ -671,7 +671,7 @@ AC-26 и AC-29–33 целиком не закрыты. Подключение �
 #### 1.3.12. Подготовка промта 3.1 — 2026-09-17
 
 По запросу пользователя сохранён
-[промт 3.1 — тесты входа и выбора обработчика команды](../../prompts/2026-09-16/03-entry-and-routing/03.1-orchestrator-entry-and-routing-tests.md).
+[промт 3.1 — тесты входа и выбора обработчика команды](../../../prompts/2026-09-16/03-entry-and-routing/03.1-orchestrator-entry-and-routing-tests.md).
 В начале объяснено, что проверяем и зачем: обязательный контекст операции,
 точное назначение Handler, отказ неизвестной команды до чтения сессии,
 защитная копия реестра и связь отказа с журналом по исходному run_id.
@@ -705,10 +705,10 @@ frozen/extra и вопрос K3 не решались и остаются отк
 **HEAD:** `4c289a673efb0fb21eaed83f58ea205564f6d2e6`.
 Сохранённый промт 3.1 не изменялся. Созданы:
 
-- [test_orchestrator_routing.py](../../tests/application/test_orchestrator_routing.py):
+- [test_orchestrator_routing.py](../../../tests/application/test_orchestrator_routing.py):
   11 тестовых функций; по исходным параметризациям предусмотрено 13 случаев.
   Это статический подсчёт, не результат pytest collection;
-- [orchestrator_fakes.py](../../tests/application/orchestrator_fakes.py):
+- [orchestrator_fakes.py](../../../tests/application/orchestrator_fakes.py):
   context и Handler с явно заданными typed outcomes и общим журналом обращений
   одного теста. Аргументы записываются по identity; CAS и расчёт не имитируются.
 
@@ -767,7 +767,7 @@ README/плана и парность блоков кода; статическ�
 #### 1.3.14. Подготовка промта 3.2 — 2026-09-17
 
 По запросу пользователя сохранён
-[промт 3.2 — конструктор координатора и отказ для неизвестной команды](../../prompts/2026-09-16/03-entry-and-routing/03.2-orchestrator-constructor-and-routing-failure.md).
+[промт 3.2 — конструктор координатора и отказ для неизвестной команды](../../../prompts/2026-09-16/03-entry-and-routing/03.2-orchestrator-constructor-and-routing-failure.md).
 В начале объяснены назначение координатора, обязательный контекст операции,
 фиксация назначений Handler и отказ до чтения сессии. Техническая часть сверена
 с R3.2, ADR-0006, карточкой 3.2, существующими тестами 3.1 и logging helpers.
@@ -802,7 +802,7 @@ SHA-256 подтвердил сохранность 422 файлов вне об
 **Ветка:** `feat/application-orchestrator`.
 **HEAD:** `4c289a673efb0fb21eaed83f58ea205564f6d2e6`.
 
-Создан [application/orchestrator.py](../../src/exact_orb/application/orchestrator.py):
+Создан [application/orchestrator.py](../../../src/exact_orb/application/orchestrator.py):
 обязательные зависимости конструктора, shallow copy назначений Handler,
 обязательный RunContext, lookup по точному type(command). Неизвестная команда
 получает ApplicationInternalFailure/HANDLER_NOT_REGISTERED до любого обращения
@@ -871,7 +871,7 @@ Git index и текста плана вне §1.3. Предварительны�
 #### 1.3.16. Подготовка корректирующего промта 3.R1 — 2026-09-17
 
 По запросу «Напиши следующий промт» подготовлен отдельный
-[промт 3.R1 — исправить захват логов и завершить проверку 3.2](../../prompts/2026-09-16/03-entry-and-routing/03.R1-caplog-fixture-and-routing-verification.md).
+[промт 3.R1 — исправить захват логов и завершить проверку 3.2](../../../prompts/2026-09-16/03-entry-and-routing/03.R1-caplog-fixture-and-routing-verification.md).
 Корректировка поставлена перед основной карточкой 4.1, поскольку ранняя
 приёмка 3.2 блокируется установленным дефектом фикстуры 3.1.
 
@@ -901,7 +901,7 @@ records, сохранность assertions/параметризаций и ко�
 #### 1.3.17. Выполнение 3.R1 — 2026-09-17
 
 **Основание:** пользователь поручил сохранить и выполнить подготовленный
-[промт 3.R1](../../prompts/2026-09-16/03-entry-and-routing/03.R1-caplog-fixture-and-routing-verification.md).
+[промт 3.R1](../../../prompts/2026-09-16/03-entry-and-routing/03.R1-caplog-fixture-and-routing-verification.md).
 **Ветка:** `feat/application-orchestrator`.
 **HEAD:** `4c289a673efb0fb21eaed83f58ea205564f6d2e6`.
 
@@ -913,7 +913,7 @@ Pytest заменяет этот список перед call, поэтому т
 exit code 0: `reset()` заменяет `self.records`, а свойство `caplog.records`
 возвращает текущий список обработчика.
 
-В [test_orchestrator_routing.py](../../tests/application/test_orchestrator_routing.py)
+В [test_orchestrator_routing.py](../../../tests/application/test_orchestrator_routing.py)
 изменены ровно четыре строки: фикстура передаёт `caplog`, тест читает
 `operation_records.records` непосредственно после `await execute(...)`,
 две аннотации уточнены до `pytest.LogCaptureFixture`. Настройка и восстановление
@@ -1005,7 +1005,7 @@ load и исходной версии**; он автоматически не в
 
 **Основание:** пользователь поручил написать промт и исправить согласованные
 замечания ревью. Сохранён и выполнен
-[промт 3.R2](../../prompts/2026-09-16/03-entry-and-routing/03.R2-orchestrator-contract-hardening.md).
+[промт 3.R2](../../../prompts/2026-09-16/03-entry-and-routing/03.R2-orchestrator-contract-hardening.md).
 **Ветка:** `feat/application-orchestrator`.
 **HEAD:** `4c289a673efb0fb21eaed83f58ea205564f6d2e6`.
 **Окружение:** Windows 11, Python 3.14.0, Pydantic 2.13.5, pytest 9.1.1.
@@ -1080,7 +1080,7 @@ known command with commit. Каждый падает только на явно�
 Linux-прогон не выполнялся, причинность ОС не доказана.
 
 **Отдельно подготовлена, не выполнена**
-[карточка 2.R2](../../prompts/2026-09-16/02-application-results/02.R2-nested-result-immutability-decision.md).
+[карточка 2.R2](../../../prompts/2026-09-16/02-application-results/02.R2-nested-result-immutability-decision.md).
 Глубокая неизменяемость Issue/ChartArtifact требует выбора границы с учётом
 действующего artifact-контракта §6.1.4. В 3.R2 эти общие модели не менялись;
 глубокая часть AC-24 не закрыта. Политика extra RunContext, K3 и семантика
@@ -1098,7 +1098,7 @@ push и PR не создавалось. Следующая основная ка
 #### 1.3.19. Подготовка промта 4.1 — 2026-09-17
 
 По запросу «Напиши следующий промт» сохранён
-[промт 4.1 — тесты загрузки сессии и исходной версии](../../prompts/2026-09-16/04-session-load/04.1-orchestrator-session-load-tests.md).
+[промт 4.1 — тесты загрузки сессии и исходной версии](../../../prompts/2026-09-16/04-session-load/04.1-orchestrator-session-load-tests.md).
 Он продолжает основной план после 3.2 и выполненной корректировки 3.R2.
 Во вводной части для менеджеров объяснены различия между отсутствующей
 сессией и ошибкой чтения, запрет запуска Handler при этих отказах и роль
@@ -1131,7 +1131,7 @@ SHA-256 подтвердил сохранность 427 файлов вне об
 **Основание:** явное поручение «Выполни промт 4.1».
 **Ветка:** `feat/application-orchestrator`.
 **HEAD:** `a2dbc5fc441f0d8b1ba93966cd06faf014181c42`.
-Создан [test_orchestrator_load.py](../../tests/application/test_orchestrator_load.py):
+Создан [test_orchestrator_load.py](../../../tests/application/test_orchestrator_load.py):
 6 тестовых функций, 11 случаев, фактически собранных и запущенных pytest.
 Сохранённый промт 4.1 и общие `orchestrator_fakes.py` не изменены.
 
@@ -1201,7 +1201,7 @@ code fences. SHA-256 подтвердил сохранность 428 файло�
 #### 1.3.21. Подготовка промта 4.2 — 2026-09-17
 
 По запросу «Напиши промт 4.2» сохранён
-[промт 4.2 — загрузка сессии и понятные отказы](../../prompts/2026-09-16/04-session-load/04.2-orchestrator-session-load-and-failures.md).
+[промт 4.2 — загрузка сессии и понятные отказы](../../../prompts/2026-09-16/04-session-load/04.2-orchestrator-session-load-and-failures.md).
 Вводная часть для менеджеров объясняет различие истёкшей/отсутствующей сессии,
 технического отказа чтения и непредвиденной ошибки, а также назначение
 исходной версии для защиты более свежих данных при будущем сохранении.
@@ -1302,7 +1302,7 @@ Git index, HEAD и текста плана вне §1.3. Полный F, сет�
 #### 1.3.23. Подготовка промта 5.1 — 2026-09-18
 
 По запросу «пиши промт 5.1» сохранён
-[промт 5.1 — тесты вызова Handler и его штатных исходов](../../prompts/2026-09-16/05-handler-execution/05.1-orchestrator-handler-outcomes-tests.md).
+[промт 5.1 — тесты вызова Handler и его штатных исходов](../../../prompts/2026-09-16/05-handler-execution/05.1-orchestrator-handler-outcomes-tests.md).
 Вводная часть для менеджеров объясняет, зачем Handler должен получать исходные
 command/state/run, почему потребность исправить ввод отличается от технической
 недоступности и ошибки расчёта, и почему ни один из этих трёх исходов не
@@ -1403,7 +1403,7 @@ SHA-256 до/после подтвердил сохранность 428 файл
 #### 1.3.25. Подготовка промта 5.3 — 2026-09-18
 
 По запросу «напиши промт 5.3» сохранён
-[промт 5.3 — тесты нарушений Handler и отмены до сохранения](../../prompts/2026-09-16/05-handler-execution/05.3-orchestrator-handler-failures-and-early-cancellation-tests.md).
+[промт 5.3 — тесты нарушений Handler и отмены до сохранения](../../../prompts/2026-09-16/05-handler-execution/05.3-orchestrator-handler-failures-and-early-cancellation-tests.md).
 Его вводная часть объясняет для менеджеров, почему неверный ответ или
 исключение Handler нельзя показывать как ошибку пользовательского ввода и
 почему отменённый load обязан оставить один terminal, но не ложный finished
@@ -1490,7 +1490,7 @@ SHA-256 до/после подтвердил сохранность 428 файл
 #### 1.3.27. Подготовка промта 5.4 — 2026-09-18
 
 По запросу «Пиши промт 5.4» сохранён
-[промт 5.4 — ошибки Handler и отмена до commit](../../prompts/2026-09-16/05-handler-execution/05.4-orchestrator-handler-errors-and-precommit-cancellation.md).
+[промт 5.4 — ошибки Handler и отмена до commit](../../../prompts/2026-09-16/05-handler-execution/05.4-orchestrator-handler-errors-and-precommit-cancellation.md).
 Его вводная часть объясняет менеджерам, зачем превращать нарушение контракта
 Handler или его исключение в безопасный внутренний отказ и почему отмена во
 время load/Handler обязана оставить один terminal event до проброса отмены.
@@ -1647,7 +1647,7 @@ code fences парные, trailing whitespace нет. Git index пуст по st
 #### 1.3.30. Подготовка промта 6.1 — 2026-09-18
 
 По запросу написать промт 6.1 с понятным объяснением для менеджеров сохранён
-[промт 6.1 — тесты одной защищённой попытки сохранения](../../prompts/2026-09-16/06-protected-commit/06.1-orchestrator-protected-commit-tests.md).
+[промт 6.1 — тесты одной защищённой попытки сохранения](../../../prompts/2026-09-16/06-protected-commit/06.1-orchestrator-protected-commit-tests.md).
 Вводная объясняет, почему готовый расчёт ещё не означает сохранение и почему
 после начала записи отмена доставки ответа должна ждать исхода записи и
 итогового события. Результат карточки — тесты, реализация остаётся 6.2.
@@ -1729,7 +1729,7 @@ push и PR не создавались. Следующий отдельный э
 #### 1.3.32. Подготовка промта 6.2 — 2026-09-18
 
 По запросу «пиши следующий промт» сохранён
-[промт 6.2 — защищённое сохранение с первой попытки](../../prompts/2026-09-16/06-protected-commit/06.2-orchestrator-protected-first-commit.md).
+[промт 6.2 — защищённое сохранение с первой попытки](../../../prompts/2026-09-16/06-protected-commit/06.2-orchestrator-protected-first-commit.md).
 Вводная для менеджеров объясняет, почему завершённый расчёт ещё не означает
 сохранение и почему после отмены запроса уже начатую запись нужно дождаться
 и зафиксировать её итог до передачи отмены.
@@ -1801,7 +1801,7 @@ push и PR не создавались. Следующая отдельная к
 #### 1.3.34. Подготовка промта 6.3 — 2026-09-18
 
 По запросу пользователя сохранён
-[промт 6.3](../../prompts/2026-09-16/06-protected-commit/06.3-orchestrator-commit-outcomes-tests.md)
+[промт 6.3](../../../prompts/2026-09-16/06-protected-commit/06.3-orchestrator-commit-outcomes-tests.md)
 для тестов оставшихся исходов первой попытки `ContextService.save`. Основание:
 6.2 подтвердил `Committed` и одну отмену после входа в save, но два связанных
 `Superseded`-теста по-прежнему падают на явном `NotImplementedError` (§1.3.33).
@@ -1877,7 +1877,7 @@ LF/CRLF для ранее изменённых файлов; прямой AST/ne
 #### 1.3.36. Промт и реализация 6.4 — 2026-09-18
 
 По запросу сохранить и выполнить следующий промт создан
-[промт 6.4](../../prompts/2026-09-16/06-protected-commit/06.4-orchestrator-commit-outcome-mapping.md).
+[промт 6.4](../../../prompts/2026-09-16/06-protected-commit/06.4-orchestrator-commit-outcome-mapping.md).
 В `src/exact_orb/application/orchestrator.py` после единственной защищённой
 попытки `save` теперь классифицируются `Committed`, `AlreadyApplied`,
 `Superseded`, оба reason `SessionAbsent`, `StateCommitFailed` и unexpected
@@ -1926,7 +1926,7 @@ exit code 0. У нового untracked-промта, README и плана раз
 
 #### 1.3.37. Промт и выполнение 7.2 вместе с тестовой матрицей 7.1 — 2026-09-18
 
-По запросу сохранён [промт 7.2](../../prompts/2026-09-16/07-commit-retry/07.2-orchestrator-exact-retry.md).
+По запросу сохранён [промт 7.2](../../../prompts/2026-09-16/07-commit-retry/07.2-orchestrator-exact-retry.md).
 Предпосылка 7.1 к началу работы отсутствовала: `test_orchestrator_retry.py` не
 существовал. Поэтому в границы 7.2 явно включено создание этой матрицы перед
 production-правкой; отдельный файл промта 7.1 не создавался. В тесте реальный
@@ -1983,7 +1983,7 @@ Markdown fences и локальные ссылки проверены: exit code
 #### 1.3.38. Отдельный промт и повторная проверка 7.1 — 2026-09-18
 
 По отдельному запросу сохранён
-[промт 7.1](../../prompts/2026-09-16/07-commit-retry/07.1-orchestrator-retry-tests.md).
+[промт 7.1](../../../prompts/2026-09-16/07-commit-retry/07.1-orchestrator-retry-tests.md).
 Тестовая матрица `tests/application/test_orchestrator_retry.py` уже была создана
 при выполнении 7.2 (§1.3.37), поэтому промт не выдаётся за документ,
 предшествовавший реализации. Сверка карточки 7.1 с текущим файлом подтвердила
@@ -2019,7 +2019,7 @@ UTF-8, концевые переводы строк, trailing whitespace, пар
 
 #### 1.3.39. Промт и выполнение 8.1 — 2026-09-18
 
-Сохранён [промт 8.1](../../prompts/2026-09-16/08-lifecycle-events/08.1-orchestrator-lifecycle-sequence-tests.md).
+Сохранён [промт 8.1](../../../prompts/2026-09-16/08-lifecycle-events/08.1-orchestrator-lifecycle-sequence-tests.md).
 Прежние тесты routing/load/Handler/commit/retry/cancellation уже проверяли
 события отдельных веток, но `test_orchestrator_logging.py` проверял функции
 записи, не границы последовательных вызовов `execute()`. Добавлено 13
@@ -2070,7 +2070,7 @@ production/ADR/requirements/диаграммы не менялись. Следу
 
 #### 1.3.40. Промт и выполнение 8.2 — 2026-09-18
 
-Сохранён [промт 8.2](../../prompts/2026-09-16/08-lifecycle-events/08.2-orchestrator-lifecycle-fields-and-durations.md).
+Сохранён [промт 8.2](../../../prompts/2026-09-16/08-lifecycle-events/08.2-orchestrator-lifecycle-fields-and-durations.md).
 Существующие тесты проверяли отдельные функции записи и последовательность
 событий `execute()`; недоставало сквозной проверки, что фактические исходы и
 измеренные длительности переходят в точные поля настоящих `LogRecord`.
@@ -2130,7 +2130,7 @@ ADR, requirements и диаграммы не менялись. Полная пр
 
 #### 1.3.41. Промт и выполнение 9.1 — 2026-09-18
 
-Сохранён [промт 9.1](../../prompts/2026-09-16/09-cancellation-and-concurrency/09.1-orchestrator-repeat-cancellation-tests.md).
+Сохранён [промт 9.1](../../../prompts/2026-09-16/09-cancellation-and-concurrency/09.1-orchestrator-repeat-cancellation-tests.md).
 До этого среза тесты покрывали один сигнал отмены после входа в первый save
 и запрещение retry при таком сигнале. Они не подавали повторную отмену во
 время ожидания inner task и не удерживали уже начавшуюся вторую попытку.
@@ -2185,7 +2185,7 @@ whitespace в трёх документах проверены с exit code 0. S
 
 #### 1.3.42. Промт и выполнение 9.2 — 2026-09-19
 
-Сохранён [промт 9.2](../../prompts/2026-09-16/09-cancellation-and-concurrency/09.2-orchestrator-parallel-request-isolation-tests.md)
+Сохранён [промт 9.2](../../../prompts/2026-09-16/09-cancellation-and-concurrency/09.2-orchestrator-parallel-request-isolation-tests.md)
 с объяснением для менеджеров: при одновременных запросах общий координатор не
 должен смешивать команды, данные сессий, сохранение и результаты. Основание —
 FR-24, §6.1 и AC-28. На момент подготовки промта production `execute()` уже
@@ -2248,13 +2248,13 @@ whitespace в четырёх затронутых файлах проверен�
 #### 1.3.43. Протокол дефектов и выполнение 9.R1 — 2026-09-19
 
 По результатам ручного ревью создана отдельная запись
-[004 — внутренние ошибки commit-flow теряют terminal-событие](../development_approach/problems_detected_by_human/004-application-orchestrator-internal-failures-lose-terminal-event.md).
+[004 — внутренние ошибки commit-flow теряют terminal-событие](../../development_approach/problems_detected_by_human/004-application-orchestrator-internal-failures-lose-terminal-event.md).
 На `e53404a` read-only воспроизведение подтвердило два разрыва контракта:
 синхронная ошибка вызова `save` выходила с 0 attempt/0 terminal, а naive clock
 после первого `StateCommitFailed` — с 1 attempt/0 terminal. Это нарушало
 UC-13, FR-25/26 и AC-29/32.
 
-Сохранён и выполнен [промт 9.R1](../../prompts/2026-09-16/09-cancellation-and-concurrency/09.R1-orchestrator-internal-failure-terminal-guarantee.md).
+Сохранён и выполнен [промт 9.R1](../../../prompts/2026-09-16/09-cancellation-and-concurrency/09.R1-orchestrator-internal-failure-terminal-guarantee.md).
 В новом `test_orchestrator_internal_failures.py` добавлено пять случаев:
 непосредственное исключение `save`, не-awaitable результат `save`, исключение
 clock, naive datetime и значение clock другого типа. До production-правки все
@@ -2299,8 +2299,8 @@ Production, новый regression-файл, finding 004, промт 9.R1, пла
 #### 1.3.44. Промт и выполнение тестовой карточки 10.1 — 2026-09-19
 
 Сохранён и выполнен
-[промт 10.1](../../prompts/2026-09-16/10-integration-and-acceptance/10.1-application-composition-registry-tests.md).
-Создан [test_application_composition.py](../../tests/application/test_application_composition.py)
+[промт 10.1](../../../prompts/2026-09-16/10-integration-and-acceptance/10.1-application-composition-registry-tests.md).
+Создан [test_application_composition.py](../../../tests/application/test_application_composition.py)
 с четырьмя тестовыми функциями для startup-инварианта FR-05. Целевой интерфейс
 10.2 зафиксирован как `build_application_orchestrator(*, context, clock,
 resolver, artifacts)`. Поддерживаемый набор сейчас должен быть ровно
@@ -2336,8 +2336,8 @@ application/session/Handler остаются 10.3–10.5. Коммит, push и 
 #### 1.3.45. Промт и реализация 10.2 — 2026-09-19
 
 Сохранён и выполнен
-[промт 10.2](../../prompts/2026-09-16/10-integration-and-acceptance/10.2-minimal-application-composition.md).
-Добавлен [composition.py](../../src/exact_orb/application/composition.py) с
+[промт 10.2](../../../prompts/2026-09-16/10-integration-and-acceptance/10.2-minimal-application-composition.md).
+Добавлен [composition.py](../../../src/exact_orb/application/composition.py) с
 одной публичной keyword-only функцией `build_application_orchestrator`.
 Она получает готовые `context`, `clock`, `resolver` и `artifacts`, создаёт
 реальный `BuildNatalHandler`, формирует точный mapping для
@@ -2384,7 +2384,7 @@ Python AST, локальные Markdown-ссылки, code fences, trailing whit
 
 По явному решению владельца K3 закрыт правилом «пустой `InputRequired`
 запрещён у источника». Сохранён и выполнен
-[промт 5.R1](../../prompts/2026-09-16/05-handler-execution/05.R1-input-required-source-invariant.md).
+[промт 5.R1](../../../prompts/2026-09-16/05-handler-execution/05.R1-input-required-source-invariant.md).
 В общей модели `InputRequired.issues` и `Issue.field` получили
 `Field(min_length=1)`. `ApplicationInputRequired`, Orchestrator, resolver,
 `IssueCode`, user message и вычислительный путь не менялись; отдельный ADR не
@@ -2435,21 +2435,21 @@ staged index пуст. Поиск пустых конструкций в `src`/`
 #### 1.3.47. Промт и выполнение 10.3 — 2026-09-19
 
 Сохранён и выполнен
-[промт 10.3](../../prompts/2026-09-16/10-integration-and-acceptance/10.3-real-application-handler-session-integration.md).
-Создан [application.py](../../tests/fixtures/application.py) с общим
+[промт 10.3](../../../prompts/2026-09-16/10-integration-and-acceptance/10.3-real-application-handler-session-integration.md).
+Создан [application.py](../../../tests/fixtures/application.py) с общим
 `ApplicationTestStand`. Он собирает реальные `BirthDataResolver`,
 `ChartArtifactResolver`, calculation engine/cache, `BuildNatalHandler`,
 `InMemorySessionPersistence`, `ContextService` и `ApplicationOrchestrator`
 через production composition 10.2. Executor ограничен context manager стенда.
 
 Прежняя локальная сборка `_stand` перенесена из
-[test_build_natal_integration.py](../../tests/application/test_build_natal_integration.py)
+[test_build_natal_integration.py](../../../tests/application/test_build_natal_integration.py)
 в общую fixture. В существующем файле изменены только импорты и четыре вызова
 стенда; его assertions не менялись. До переноса исходный файл отдельно дал
 `4 passed`, после переноса эти же четыре случая входят в зелёный целевой набор.
 
 В новом
-[test_orchestrator_integration.py](../../tests/application/test_orchestrator_integration.py)
+[test_orchestrator_integration.py](../../../tests/application/test_orchestrator_integration.py)
 семь случаев проверяют цельный flow:
 
 - natal cache miss и cache hit в двух реальных сессиях с разными `run_id`;
@@ -2490,9 +2490,9 @@ Markdown-ссылки, code fences, trailing whitespace и `git diff --check`
 #### 1.3.48. Промт и выполнение 10.4 — 2026-09-19
 
 Сохранён и выполнен
-[промт 10.4](../../prompts/2026-09-16/10-integration-and-acceptance/10.4-lost-applied-cas-acknowledgement.md).
+[промт 10.4](../../../prompts/2026-09-16/10-integration-and-acceptance/10.4-lost-applied-cas-acknowledgement.md).
 В
-[test_orchestrator_integration.py](../../tests/application/test_orchestrator_integration.py)
+[test_orchestrator_integration.py](../../../tests/application/test_orchestrator_integration.py)
 добавлен один реальный lost-ack сценарий. Локальная test-only обёртка делегирует
 первый `compare_and_set` настоящему `InMemorySessionPersistence`, сохраняет его
 успешный ответ версии `N+1` и только после записи однократно бросает
@@ -2544,9 +2544,9 @@ code 0 и только предупреждениями LF/CRLF; staged index п
 #### 1.3.49. Промт и выполнение 10.5 — 2026-09-19
 
 Сохранён и выполнен
-[промт 10.5](../../prompts/2026-09-16/10-integration-and-acceptance/10.5-sqlite-application-cas-races.md).
+[промт 10.5](../../../prompts/2026-09-16/10-integration-and-acceptance/10.5-sqlite-application-cas-races.md).
 Создан
-[test_orchestrator_sqlite_integration.py](../../tests/application/test_orchestrator_sqlite_integration.py)
+[test_orchestrator_sqlite_integration.py](../../../tests/application/test_orchestrator_sqlite_integration.py)
 с двумя сквозными CAS-гонками application-слоя над временным SQLite-файлом.
 Каждый сценарий открывает два независимых `SqliteSessionPersistence` через
 два вызова `open` и собирает для них отдельные реальные `ContextService` и
@@ -2603,10 +2603,10 @@ staged index пуст, несвязанные файлы рабочего дер
 #### 1.3.50. Промт и выполнение 10.6 — 2026-09-19
 
 Сохранён и выполнен
-[промт 10.6](../../prompts/2026-09-16/10-integration-and-acceptance/10.6-normal-application-load-profile.md).
+[промт 10.6](../../../prompts/2026-09-16/10-integration-and-acceptance/10.6-normal-application-load-profile.md).
 Созданы отдельный
-[application load harness](../../scripts/bench_application_orchestrator.py) и
-[отчёт штатного профиля](application_orchestrator_load_profile_1.md).
+[application load harness](../../../scripts/bench_application_orchestrator.py) и
+[отчёт штатного профиля](../../requirements/load_profile/application_orchestrator_load_profile_1.md).
 
 Harness собирает реальный `ApplicationOrchestrator` с `BuildNatalHandler`,
 `ContextService`, `SqliteSessionPersistence`, resolver, calculation engine,
@@ -2668,7 +2668,7 @@ exit code 0 и только предупреждениями LF/CRLF; staged ind
 #### 1.3.51. Промт и выполнение 10.8 — 2026-09-19
 
 Сохранён и выполнен
-[промт 10.8](../../prompts/2026-09-16/10-integration-and-acceptance/10.8-final-acceptance-and-documentation-status.md).
+[промт 10.8](../../../prompts/2026-09-16/10-integration-and-acceptance/10.8-final-acceptance-and-documentation-status.md).
 Карточка не меняет production-код, тесты, ADR или архитектурный поток: она
 сводит фактические результаты 1.1–10.6 и синхронизирует текущие статусы.
 
@@ -2792,7 +2792,7 @@ production bootstrap и admission/degraded profile по-прежнему вын�
 
 | ID | Свидетельство и влияние | Действие / зависимые этапы |
 |---|---|---|
-| K1 — устранён 2026-09-16 | При исходной сверке прежний deadline-промт и README назначали 01.1 реализации, тесты — позже. План закрепил обратный порядок. Прежний файл 01.1-run-context-deadline-contract.md в текущем дереве отсутствует | Подготовлены и выполнены отдельные 1.1 (тесты) и 1.2 (реализация). [Общий README серии](../../prompts/2026-09-16/README.md) актуализирован; все промты раздела 1 собраны в 01-application-foundations. Старый идентификатор не считается дополнительной карточкой |
+| K1 — устранён 2026-09-16 | При исходной сверке прежний deadline-промт и README назначали 01.1 реализации, тесты — позже. План закрепил обратный порядок. Прежний файл 01.1-run-context-deadline-contract.md в текущем дереве отсутствует | Подготовлены и выполнены отдельные 1.1 (тесты) и 1.2 (реализация). [Общий README серии](../../../prompts/2026-09-16/README.md) актуализирован; все промты раздела 1 собраны в 01-application-foundations. Старый идентификатор не считается дополнительной карточкой |
 | K2 — устранён 2026-09-19 | Handler requirements §2 называл `application.results` для внешнего `ApplicationResult`, тогда как реализация и R3.2 используют `application.application_results` | В 10.8 строка синхронизирована с фактическим модулем; код Handler/results не переносился |
 | K3 — устранён 2026-09-19 | Handler requirements допускали `InputRequired(issues=())`, тогда как `ApplicationInputRequired` требовал непустой payload | Решением владельца пустой `InputRequired` запрещён у источника. `InputRequired.issues` и `Issue.field` имеют `min_length=1`; Handler не нормализует нарушение, а существующая exception-граница Orchestrator возвращает безопасный InternalFailure без save |
 | X1 | AC-34 требует поведения клиента, которого в текущем срезе нет | Внешний client contract test в одном session lifecycle: новый ответ применён, старый затем проигнорирован; новый lifecycle рассматривается отдельно. Не закрывать серверным тестом |
