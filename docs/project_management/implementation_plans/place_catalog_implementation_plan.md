@@ -2,10 +2,9 @@
 
 **Дата исходной сверки:** 2026-09-21.
 
-**Статус:** выполняется; карточки 1.1–4.1 реализованы и проверены в границах
-своих этапов. SQLite builder, lifecycle/lookup adapter и индексированный
-search готовы; исполняемая приёмка search остаётся 4.2. Карточки 4.2–5.2 не
-выполнялись.
+**Статус:** выполняется; карточки 1.1–4.2 реализованы и проверены в границах
+своих этапов. SQLite builder, lifecycle/lookup adapter, индексированный search
+и его исполняемая приёмка готовы. Карточки 5.1–5.2 не выполнялись.
 
 **Ветка:** `feat/place-catalog`.
 
@@ -102,7 +101,7 @@ prompt-файлы не создаёт.
 | 3.1 | `prompts/2026-09-22/place-catalog/03.1-sqlite-lifecycle-and-lookup-code.md` | выполнено 2026-09-22; lifecycle/lookup smoke, полный pytest пройден |
 | 3.2 | `prompts/2026-09-22/place-catalog/03.2-sqlite-lifecycle-and-lookup-tests.md` | выполнено 2026-09-22; 26 targeted, связанный и полный pytest пройдены |
 | 4.1 | `prompts/2026-09-22/place-catalog/04.1-indexed-place-search-code.md` | выполнено 2026-09-22; indexed search smoke, существующая и полная регрессия пройдены |
-| 4.2 | `prompts/2026-09-21/place-catalog/04.2-indexed-place-search-tests.md` | planned |
+| 4.2 | `prompts/2026-09-22/place-catalog/04.2-indexed-place-search-tests.md` | выполнено 2026-09-22; 16 targeted, связанный и полный pytest пройдены |
 | 5.1 | `prompts/2026-09-21/place-catalog/05.1-place-catalog-end-to-end-tests.md` | planned |
 | 5.2 | `prompts/2026-09-21/place-catalog/05.2-place-catalog-closeout.md` | planned |
 
@@ -1087,4 +1086,91 @@ hot reload, write mode и новый executor не добавлялись. Ка�
 production-код для AC-S1–S14 и AC-L1, а также adapter-часть AC-B6; их полная
 исполняемая приёмка принадлежит 4.2. Сквозной resolver/application остаётся
 5.1, production composition и HTTP endpoint — M1-6. Commit, push и PR не
+выполнялись.
+
+### 11.8. Карточка 4.2 — 2026-09-22
+
+**Результат:** создан и выполнен
+[промт 4.2](../../../prompts/2026-09-22/place-catalog/04.2-indexed-place-search-tests.md).
+Новый `tests/test_place_catalog_search.py` добавляет 16 исполняемых test nodes
+для production search карточки 4.1. Тесты используют настоящий builder,
+schema v1, `SqlitePlaceCatalog` и single-worker executor; production-код,
+builder и fixtures не изменены.
+
+Synthetic catalog подтверждает `Москва`/`москва`/`МОСКВА`/`Moscow`, prefix
+`Моск`, current `Санкт` и historical `Ленинград`. Подсказка всегда содержит
+canonical `display_name`, регион и страну из `places`, не раскрывает
+координаты/timezone/population/matched alias, а каждый найденный ID успешно
+разрешается `lookup()` того же экземпляра.
+
+Управляемые строки в копиях готовой базы доказывают:
+
+- exact → current preferred → current → historical;
+- population DESC внутри rank и стабильный `place_id` tie-breaker;
+- различимость одноимённых мест через `admin1_name` и `country_code`;
+- дедупликацию нескольких aliases до `LIMIT`;
+- default `limit=10` и разрешённые границы `1`/`20`.
+
+Submission counter фиксирует отсутствие worker/SQL для всех четырёх
+`InvalidPlaceQuery`, non-string query и invalid limits, а валидный неизвестный
+query служит позитивным контролем SQL и возвращает пустой
+`PlaceSuggestions`. `%`, `_` и apostrophe/SQL-like текст остаются обычными
+символами и не получают wildcard или исполняемую семантику.
+
+Тест query plan устанавливает trace callback на owning worker, захватывает
+фактически исполненный production statement и запускает `EXPLAIN QUERY PLAN`
+для него без копирования SQL из adapter. Наблюдаемое evidence:
+
+```text
+COLLATE BINARY
+search_key >= lower AND search_key < upper
+no LIKE
+SEARCH place_names USING INDEX idx_place_names_search_key
+```
+
+Отдельно подтверждены search вне event-loop thread, typed failure до open/
+после close и при реальном read failure, прямое распространение cancellation,
+корректное последующее закрытие и fresh модели при конкурентных search/lookup.
+
+**Фактические файлы:**
+
+- `tests/test_place_catalog_search.py`;
+- `prompts/2026-09-22/place-catalog/04.2-indexed-place-search-tests.md`;
+- этот план — путь/status 4.2 и журнал выполнения.
+
+`tests/test_module_boundaries.py` не изменялся: AC-B6 уже имеет adapter
+allow-list/import boundary, а AST/runtime identity canonical normalizer
+проверяются принятыми `tests/test_place_catalog_sqlite.py` и
+`tests/test_place_catalog_builder.py`. Эти тесты включены в общую targeted-
+команду; дублирующий assertion не добавлялся.
+
+**Исходная готовность:** ветка `feat/place-catalog`, HEAD `e1ae261` с
+production search 4.1. Посторонние untracked-пути из §11.1 сохранены без
+изменений.
+
+**Фактические проверки:**
+
+```powershell
+.\.venv\Scripts\python.exe -B -m py_compile tests/test_place_catalog_search.py tests/test_module_boundaries.py
+# exit code 0
+
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/test_place_catalog_search.py -q
+# 16 passed in 0.70s
+
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/test_place_search_contracts.py tests/test_place_catalog_builder.py tests/test_place_catalog_sqlite.py tests/test_place_catalog_search.py tests/test_module_boundaries.py tests/test_birth_places.py tests/test_birth_resolver.py -q
+# 165 passed in 4.45s
+
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider -q
+# 2536 passed in 45.42s
+
+git diff --check
+# exit code 0; ошибок whitespace нет
+```
+
+**Границы результата:** `src/**`, contracts/public re-exports, builder/schema/
+indexes, прежние tests/fixtures, resolver, application/bootstrap,
+requirements/ADR/diagrams, dependencies и HTTP/UI не изменены. Карточка даёт
+исполняемые доказательства AC-S1–S14, AC-L1 и общей контрольной точки AC-B6.
+Сквозной builder → search → lookup → resolver/application flow остаётся 5.1;
+production composition и HTTP endpoint — M1-6. Commit, push и PR не
 выполнялись.
