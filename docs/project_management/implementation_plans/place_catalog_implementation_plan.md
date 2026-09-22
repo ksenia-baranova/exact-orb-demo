@@ -2,9 +2,10 @@
 
 **Дата исходной сверки:** 2026-09-21.
 
-**Статус:** выполняется; карточки 1.1–3.2 реализованы и проверены в границах
-своих этапов. SQLite builder, synthetic-приёмка и lifecycle/lookup adapter с
-исполняемыми тестами готовы. Карточки 4.1–5.2 не выполнялись.
+**Статус:** выполняется; карточки 1.1–4.1 реализованы и проверены в границах
+своих этапов. SQLite builder, lifecycle/lookup adapter и индексированный
+search готовы; исполняемая приёмка search остаётся 4.2. Карточки 4.2–5.2 не
+выполнялись.
 
 **Ветка:** `feat/place-catalog`.
 
@@ -100,7 +101,7 @@ prompt-файлы не создаёт.
 | 2.2 | `prompts/2026-09-22/place-catalog/02.2-geonames-sqlite-builder-tests.md` | выполнено 2026-09-22; 10 targeted, связанный и полный pytest пройдены |
 | 3.1 | `prompts/2026-09-22/place-catalog/03.1-sqlite-lifecycle-and-lookup-code.md` | выполнено 2026-09-22; lifecycle/lookup smoke, полный pytest пройден |
 | 3.2 | `prompts/2026-09-22/place-catalog/03.2-sqlite-lifecycle-and-lookup-tests.md` | выполнено 2026-09-22; 26 targeted, связанный и полный pytest пройдены |
-| 4.1 | `prompts/2026-09-21/place-catalog/04.1-indexed-place-search-code.md` | planned |
+| 4.1 | `prompts/2026-09-22/place-catalog/04.1-indexed-place-search-code.md` | выполнено 2026-09-22; indexed search smoke, существующая и полная регрессия пройдены |
 | 4.2 | `prompts/2026-09-21/place-catalog/04.2-indexed-place-search-tests.md` | planned |
 | 5.1 | `prompts/2026-09-21/place-catalog/05.1-place-catalog-end-to-end-tests.md` | planned |
 | 5.2 | `prompts/2026-09-21/place-catalog/05.2-place-catalog-closeout.md` | planned |
@@ -1002,3 +1003,88 @@ requirements/ADR/diagrams, application/bootstrap и зависимости не 
 lookup/lifecycle-части AC-S10/AC-S14 и adapter-половины AC-B6. Индексированный
 search остаётся 4.1–4.2, сквозной resolver/application — 5.1, общий closeout —
 5.2. Commit, push и PR не выполнялись.
+
+### 11.7. Карточка 4.1 — 2026-09-22
+
+**Результат:** создан и выполнен
+[промт 4.1](../../../prompts/2026-09-22/place-catalog/04.1-indexed-place-search-code.md).
+Существующий leaf-adapter `SqlitePlaceCatalog` теперь реализует полный
+`PlaceSearch` поверх того же read-only connection и caller-owned single-worker
+executor, не изменяя lookup и lifecycle.
+
+`search()` отклоняет non-string query и strict limit вне `1..20` до worker,
+проверяет открытый lifecycle и вызывает canonical `normalize_place_query`.
+`InvalidPlaceQuery` возвращается без SQL. Для валидного ключа adapter выполняет
+один параметризованный BINARY range query
+`lower <= search_key < lower + U+10FFFF` через
+`idx_place_names_search_key`; `LIKE` и интерполяция пользовательского ввода не
+используются.
+
+CTE сначала вычисляет минимальный rank для каждого `place_id`: exact → current
+preferred → current → historical. После `GROUP BY place_id` результат
+присоединяется к `places`, сортируется по rank, population DESC и place ID;
+параметризованный `LIMIT` применяется только после дедупликации. Наружу
+возвращаются fresh immutable `PlaceSuggestions`/`PlaceSuggestion` с
+`place_id`, canonical `display_name`, `admin1_name` и `country_code`, без
+координат, timezone, population и matched alias. Технические отказы worker
+становятся `PlaceCatalogUnavailableError`, cancellation распространяется без
+преобразования.
+
+**Фактические файлы:**
+
+- `src/exact_orb/birth/adapters/sqlite.py`;
+- `prompts/2026-09-22/place-catalog/04.1-indexed-place-search-code.md`;
+- этот план — путь/status 4.1 и журнал выполнения.
+
+**Исходная готовность:** ветка `feat/place-catalog`, HEAD `024be68` с
+реализацией и тестами карточек 1.1–3.2. Посторонние untracked-пути из §11.1
+сохранены без изменений. Tests/fixtures, contracts, builder и schema в
+code-карточке не менялись.
+
+**Ручной synthetic smoke:** использован catalog
+`logs/place-catalog-card-3.1/places.sqlite`, собранный из принятых fixtures.
+На реальном executor один экземпляр adapter дал:
+
+```text
+Москва / москва / МОСКВА / Moscow / Моск -> [524901]
+Санкт -> [498817]
+Ленинград -> [498817]
+Несуществующий город -> PlaceSuggestions(items=())
+###@@@ -> InvalidPlaceQuery(NO_SEARCHABLE_CHARACTERS), без worker submission
+limit 0 / 21 / True -> ValueError, без worker submission
+мос% / мос_ / SQL-like apostrophe input -> пустой успешный outcome
+```
+
+Повторный `search("Москва")` вернул равные, но не тождественные outcome/item
+модели; выданный `524901` успешно разрешился прежним `lookup()`. Query plan
+подтвердил:
+
+```text
+SEARCH place_names USING INDEX idx_place_names_search_key
+    (search_key>? AND search_key<?)
+```
+
+**Фактические проверки:**
+
+```powershell
+.\.venv\Scripts\python.exe -B -m py_compile src/exact_orb/birth/adapters/sqlite.py
+# exit code 0
+
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/test_place_catalog_sqlite.py tests/test_place_search_contracts.py tests/test_place_catalog_builder.py tests/test_module_boundaries.py tests/test_birth_places.py tests/test_birth_resolver.py -q
+# 149 passed in 4.92s
+
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider -q
+# 2520 passed in 117.82s (0:01:57)
+
+git diff --check
+# exit code 0; ошибок whitespace нет
+```
+
+**Границы результата:** contracts и public re-exports, builder/schema/indexes,
+resolver, tests/fixtures, application/bootstrap, requirements/ADR/diagrams,
+dependencies и HTTP/UI не изменены. Сетевой fallback, fuzzy/substring search,
+hot reload, write mode и новый executor не добавлялись. Карточка предоставляет
+production-код для AC-S1–S14 и AC-L1, а также adapter-часть AC-B6; их полная
+исполняемая приёмка принадлежит 4.2. Сквозной resolver/application остаётся
+5.1, production composition и HTTP endpoint — M1-6. Commit, push и PR не
+выполнялись.

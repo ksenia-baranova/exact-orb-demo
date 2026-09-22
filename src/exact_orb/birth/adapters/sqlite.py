@@ -1,4 +1,4 @@
-"""Read-only SQLite adapter for place lookup lifecycle and startup checks."""
+"""Read-only SQLite adapter for place search, lookup, and startup checks."""
 
 from __future__ import annotations
 
@@ -13,9 +13,13 @@ from typing import Any, Self
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 from exact_orb.birth.places import (
+    InvalidPlaceQuery,
     PlaceCatalogUnavailableError,
     PlaceNotFound,
     PlaceResolution,
+    PlaceSearchOutcome,
+    PlaceSuggestion,
+    PlaceSuggestions,
     ResolvedPlace,
     normalize_place_query,
 )
@@ -25,6 +29,8 @@ _LOGGER = logging.getLogger(__name__)
 
 _SCHEMA_VERSION = 1
 _MAX_PLACE_ID_LENGTH = 32
+_MAX_SEARCH_LIMIT = 20
+_PREFIX_UPPER_BOUND = "\U0010FFFF"
 _REQUIRED_TABLE_COLUMNS = {
     "places": (
         "place_id",
@@ -121,6 +127,36 @@ class SqlitePlaceCatalog:
         catalog._opened = True
         return catalog
 
+    async def search(
+        self,
+        query: str,
+        *,
+        limit: int = 10,
+    ) -> PlaceSearchOutcome:
+        if not isinstance(query, str):
+            raise TypeError("query must be str")
+        _validate_search_limit(limit)
+        connection = self._require_open_connection()
+        search_key = normalize_place_query(query)
+        if isinstance(search_key, InvalidPlaceQuery):
+            return search_key
+
+        loop = asyncio.get_running_loop()
+        try:
+            return await loop.run_in_executor(
+                self._executor,
+                _sync_search,
+                connection,
+                search_key,
+                limit,
+            )
+        except asyncio.CancelledError:
+            raise
+        except Exception as exc:
+            raise PlaceCatalogUnavailableError(
+                "place catalog search failed"
+            ) from exc
+
     async def lookup(self, place_id: str) -> PlaceResolution:
         if not isinstance(place_id, str):
             raise TypeError("place_id must be str")
@@ -197,6 +233,11 @@ def _validate_db_path_argument(db_path: str | Path) -> Path:
     if raw_path == "" or raw_path == ":memory:" or raw_path.startswith("file:"):
         raise ValueError("db_path must identify a file-backed SQLite database")
     return Path(db_path)
+
+
+def _validate_search_limit(limit: int) -> None:
+    if type(limit) is not int or not 1 <= limit <= _MAX_SEARCH_LIMIT:
+        raise ValueError("limit must be an int from 1 to 20")
 
 
 async def _finish_cancelled_open(
@@ -404,6 +445,66 @@ def _is_valid_place_id(place_id: str) -> bool:
         0 < len(place_id) <= _MAX_PLACE_ID_LENGTH
         and place_id.isascii()
         and place_id.isdigit()
+    )
+
+
+def _sync_search(
+    connection: sqlite3.Connection,
+    search_key: str,
+    limit: int,
+) -> PlaceSuggestions:
+    rows = connection.execute(
+        """
+        WITH ranked_places AS (
+            SELECT
+                place_names.place_id,
+                MIN(
+                    CASE
+                        WHEN place_names.search_key = :lower COLLATE BINARY
+                            THEN 0
+                        WHEN place_names.preferred = 1
+                             AND place_names.historic = 0
+                            THEN 1
+                        WHEN place_names.historic = 0
+                            THEN 2
+                        ELSE 3
+                    END
+                ) AS match_rank
+            FROM place_names AS place_names
+                INDEXED BY idx_place_names_search_key
+            WHERE place_names.search_key >= :lower COLLATE BINARY
+              AND place_names.search_key < :upper COLLATE BINARY
+            GROUP BY place_names.place_id
+        )
+        SELECT
+            places.place_id,
+            places.display_name,
+            places.admin1_name,
+            places.country_code
+        FROM ranked_places
+        JOIN places ON places.place_id = ranked_places.place_id
+        ORDER BY
+            ranked_places.match_rank ASC,
+            places.population DESC,
+            places.place_id COLLATE BINARY ASC
+        LIMIT :limit
+        """,
+        {
+            "lower": search_key,
+            "upper": search_key + _PREFIX_UPPER_BOUND,
+            "limit": limit,
+        },
+    ).fetchall()
+    return PlaceSuggestions(
+        items=tuple(
+            PlaceSuggestion(
+                place_id=row[0],
+                display_name=row[1],
+                admin1_name=row[2],
+                country_code=row[3],
+            )
+            for row in rows
+        )
     )
 
 
