@@ -6,6 +6,8 @@
 времени.
 **Ревизия:** 2026-09-21 — реализован UTC `today_provider` в server runtime
 composition.
+**Ревизия:** 2026-09-22 — принят SQLite-каталог M1-5 и сквозная цепочка
+search → lookup → resolver/application; HTTP/UI остаются следующими этапами.
 **Область:** путь `BuildNatalHandler → BirthDataResolver → PlaceCatalog →
 resolve_historical_tz → BirthDataResolver → BuildNatalHandler`.
 **Основание:** ADR-0005, 0007, 0008, 0019, 0032; инварианты И-5, И-7, И-11.
@@ -623,8 +625,8 @@ ADR-0005 отмечает, что `place_id` «может устареть по�
 | R-19 | — | `tz_id` из каталога неизвестен `zoneinfo` | `ResolutionUnavailable` — каталог повреждён или `tzdata` устарела |
 | R-20 | — | `place_id` устарел после обновления каталога (§5.4) | `{ birth.place, INVALID }` — механически верно, продуктово тупик |
 
-**R-19 — защитный контракт общего resolver.** Целевой
-`SqlitePlaceCatalog` M1-5 фильтрует зоны по зафиксированной версии `tzdata` и
+**R-19 — защитный контракт общего resolver.** Реализованный
+`SqlitePlaceCatalog` фильтрует зоны по зафиксированной версии `tzdata` и
 проверяет разрешимость всех catalog `tz_id` на startup. Несовпадение версии
 само по себе даёт диагностический `WARNING`; startup останавливает только
 фактически неразрешимая зона. Поэтому штатный SQLite-путь не должен передать
@@ -863,18 +865,20 @@ Digest — SHA-256 канонического JSON диапазонов с ма�
 
 ## 9. Выполнено и осталось
 
-Сверено на 2026-09-14. Реализованы `LocalPlaceCatalog.lookup`, загрузка JSONL,
-скрипт сборки каталога, historical TZ, resolver, проверка диапазона и будущей
-даты, обработка неоднозначного/несуществующего времени и `BirthTimeDomain`
-ADR-0032. Покрытие находится в `tests/test_birth_places.py`,
-`tests/test_birth_tz.py`, `tests/test_birth_resolver.py`.
+Сверено на 2026-09-22. Реализованы `LocalPlaceCatalog.lookup`, production
+SQLite builder, `SqlitePlaceCatalog` с общим lifecycle search/lookup,
+historical TZ, resolver, проверка диапазона и будущей даты, обработка
+неоднозначного/несуществующего времени и `BirthTimeDomain` ADR-0032. Покрытие
+находится в `tests/test_birth_places.py`, `tests/test_birth_tz.py`,
+`tests/test_birth_resolver.py`, place-catalog suites и
+`tests/application/test_place_catalog_integration.py`.
 
 | Вопрос прежнего плана | Выполнено | Осталось |
 |---|---|---|
 | Нижняя граница диапазона дат | Resolver принимает `min_birth_date` и отклоняет дату ниже него | Выбрать настройку для серверного окружения; отдельное сужение продуктового диапазона требует явного решения |
 | Верхняя граница и будущая дата | Проверяются `max_birth_date` и дата из injected `today_provider`; `ApplicationRuntime` передаёт согласованные значения и `today_provider` из проверенного UTC clock | Сквозная серверная приёмка остаётся M1-6; отдельной локальной даты пользователя пока нет |
-| Квантование координат | Общая нормализация до шести знаков реализована в `domain.py` и используется расчётным ключом | Каталог для UI должен соответствовать продуктовой точности `0.01` градуса; менять формат ключа ради её поддержки не требуется |
-| Каталог `place_id` | JSONL-контракт, loader и сборочный скрипт готовы | Реализовать [SQLite-каталог, поиск подсказок и общий lifecycle search/lookup](exact-orb_place_catalog.md) — M1-5 roadmap |
+| Квантование координат | Общая нормализация до шести знаков используется расчётным ключом; SQLite builder публикует координаты с продуктовой точностью `0.01` градуса | Менять формат ключа ради каталога не требуется |
+| Каталог `place_id` | JSONL test adapter сохранён; [SQLite builder, поиск подсказок, lookup и общий lifecycle](exact-orb_place_catalog.md) реализованы и приняты в M1-5 | HTTP/lifespan wiring — M1-6; autocomplete — M1-7; доставка артефакта — M1-12 |
 
 **Закрыт:** вопрос о пороге `place_substituted` — порог невычислим,
 атрибут отменён (§3.4).

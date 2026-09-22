@@ -38,7 +38,7 @@ box "TARGET TRANSPORT — M1-6 / M1-7" #DBEAFE
     boundary "Place Search API" as API
 end box
 
-box "PLACE CATALOG — M1-5" #D9F9FF
+box "IMPLEMENTED PLACE CATALOG — M1-5" #D9F9FF
     control "SqlitePlaceCatalog\nкак PlaceSearch" as Catalog
 end box
 

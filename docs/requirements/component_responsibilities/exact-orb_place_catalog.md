@@ -1,9 +1,10 @@
 # exact-orb — каталог мест: поиск подсказок и lookup выбранного place_id
 
-**Статус:** целевой контракт M1-5 `feat/place-catalog`; существующий
-`PlaceCatalog.lookup` и его использование в `BirthDataResolver` реализованы,
-`PlaceSearch`, SQLite-представление и HTTP endpoint ещё не реализованы.
-**Дата:** 2026-09-21.
+**Статус:** контракт и catalog core M1-5 `feat/place-catalog` реализованы и
+приняты: `PlaceSearch`, SQLite builder, `SqlitePlaceCatalog`, search/lookup и
+сквозная интеграция с `BirthDataResolver`. HTTP endpoint остаётся M1-6, UI —
+M1-7, доставка generated `places.sqlite` — M1-12.
+**Дата:** 2026-09-21, ревизия 2026-09-22 — M1-5 выполнен.
 **Область:** два независимых сценария над одним офлайн-каталогом:
 `Place Search API → PlaceSearch.search(text)` и
 `BirthDataResolver → PlaceCatalog.lookup(place_id)`.
@@ -49,9 +50,9 @@ composition передаёт тот же экземпляр endpoint поиск�
 |---|---|---|
 | `PlaceCatalog.lookup` и `ResolvedPlace` | уже реализованы; контракт сохраняется | — |
 | `LocalPlaceCatalog` из JSONL | остаётся тестовым adapter над вручную поддерживаемой fixture | — |
-| `PlaceSearch`, search outcomes | реализовать в M1-5 | — |
-| `SqlitePlaceCatalog` | реализовать в M1-5 | — |
-| сборка `places.sqlite` из GeoNames | реализовать в M1-5 | deployment M1-12 доставляет артефакт |
+| `PlaceSearch`, search outcomes | реализованы и приняты в M1-5 | HTTP mapping — M1-6 |
+| `SqlitePlaceCatalog` | реализован и принят в M1-5 | lifecycle wiring — M1-6 |
+| сборка `places.sqlite` из GeoNames | реализована и проверена на полных локальных данных | deployment M1-12 доставляет артефакт |
 | `GET /places` и mapping исходов | только целевой контракт здесь | M1-6 |
 | autocomplete и хранение выбранного ID | только целевой контракт здесь | M1-7 |
 

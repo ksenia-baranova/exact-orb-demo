@@ -37,7 +37,7 @@ box "IMPLEMENTED APPLICATION" #FFEDD5
     control "BuildNatalHandler" as Handler
 end box
 
-box "IMPLEMENTED RESOLVER + TARGET CATALOG — M1-5" #D9F9FF
+box "IMPLEMENTED RESOLVER + CATALOG — M1-5" #D9F9FF
     control "BirthDataResolver" as Resolver
     control "SqlitePlaceCatalog\nкак PlaceCatalog" as Catalog
     database "places.sqlite" as DB

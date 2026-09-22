@@ -1,6 +1,6 @@
 # exact-orb — дорожная карта
 
-Статус документа: рабочий, версия 3.5 (2026-09-21).
+Статус документа: рабочий, версия 3.6 (2026-09-22).
 Объединяет milestone-план версии 3.0 с фактической историей выполненных работ
 и заменяет версии 2.x, планировавшие работу блоками A–J от расчётного фундамента.
 
@@ -23,6 +23,9 @@ composition M1-5.1 между каталогом и FastAPI, не переотк
 Ревизия 3.5 уточняет M1-5 после проектирования GeoNames/SQLite: в оценку явно
 вошли `alternateNamesV2`, локализация admin1, adapter lifecycle, executor,
 валидация startup, module boundaries и доказательство воспроизводимости.
+Ревизия 3.6 фиксирует выполнение M1-5: SQLite builder и catalog core приняты
+на synthetic и полных локальных GeoNames-данных; HTTP/UI/deployment ownership
+сохраняются за M1-6/M1-7/M1-12.
 
 ---
 
@@ -30,7 +33,7 @@ composition M1-5.1 между каталогом и FastAPI, не переотк
 
 | Веха | Результат | Оценка оставшейся работы |
 |---|---|---:|
-| **M1** | Первый сценарий с UI работает на удалённом сервере | 21.5 рабочего дня после приёмки runtime composition |
+| **M1** | Первый сценарий с UI работает на удалённом сервере | 17.5 рабочего дня после приёмки каталога мест |
 | **M2** | Интерпретация коротким путём: handler → InterpretationService → Gateway | 12.5 рабочего дня + 10–20 дней содержания |
 | **M3** | Agent Runtime и известный остаток | 36 рабочих дней, предварительно |
 
@@ -44,7 +47,8 @@ Baseline v3.2 оценивал M1-2 + M1-3 как 2 рабочих дня до 1
 реализация и приёмка application core заняли 16–19.09, а README/status были
 синхронизированы 20.09. Версия 3.4 добавила 2 рабочих дня M1-5.1 для полной
 process runtime composition; этап выполнен 21.09. Версия 3.5 добавила ещё
-2 дня к M1-5 после детализации каталога; оставшийся M1 равен 21.5 рабочего дня.
+2 дня к M1-5 после детализации каталога; после выполнения M1-5 оставшийся M1
+равен 17.5 рабочего дня.
 Оценка M3 имеет меньшую точность: транзиты, несколько систем домов,
 соляр и синастрия требуют отдельного уточнения требований.
 
@@ -87,7 +91,7 @@ Application Orchestrator по коммитам `a12daf4` → `e688592` и README
 |---|---|---|
 | Build Natal | Отдельный import-boundary regression-тест handler по §10.1 его требований; функциональная реализация есть, полная формальная приёмка не закрыта | M1-4 |
 | Application integration вне core | Process runtime подключён; FastAPI, client mapping и admission/degraded profile ещё не подключены к реализованному Orchestrator | M1-6, M1-10, M1-12; X1/X2 application-плана |
-| Каталог для UI | Рабочие данные, SQLite-представление и поиск подсказок; lookup и сборочный скрипт уже реализованы | M1-5 |
+| Каталог в пользовательском сценарии | Catalog core M1-5 выполнен: GeoNames builder, SQLite search/lookup, lifecycle и application acceptance; остаются HTTP/lifespan wiring, browser autocomplete и доставка generated артефакта | M1-6, M1-7, M1-12 |
 | Пользовательский сценарий | FastAPI, middleware, первый UI, Chart Renderer, реализация условий использования, CI, удалённый запуск и приёмка | M1-6–M1-15; решение для M1-9 уже принято в ADR-0034 |
 | Интерпретация | Handler, `InterpretationService`, DataSelector, первый рецепт, guards, budget и подключение к готовому Gateway | M2 |
 | Agent-слой | Runtime, async Tool, переименование agent-пакета и общий артефактный путь вместо прямого расчёта `NatalTool` | M3 |
@@ -262,7 +266,7 @@ JSON-сериализация не выполняются. Локальный DE
 | M1-2 | `feat/application-orchestrator` | **Выполнено с перерасходом:** `application/orchestrator.py`, `ApplicationResult`, protected commit, один точный retry, cancellation/lifecycle semantics, real SQLite/CAS acceptance и load profile | план 1.5; факт 16–19.09 |
 | M1-3 | `feat/application-orchestrator` | **Минимальная composition выполнена внутри Orchestrator-среза:** `application/composition.py` собирает application registry и `ApplicationOrchestrator` из готовых зависимостей. Полная process runtime composition выделена в M1-5.1 | план 0.5; вошло в факт 16–19.09 |
 | M1-4 | `test/build-natal-handler-import-boundary` | Перенести обязательный regression-тест §10.1 требований handler: запрет прямых импортов concrete birth/calculation implementations, session adapters, transport, agent и LLM; позитивный контроль разрешённого импорта. Закрывает формальную приёмку уже работающего handler | 0.5 |
-| M1-5 | `feat/place-catalog` | По [требованиям каталога мест](../requirements/component_responsibilities/exact-orb_place_catalog.md) и [implementation plan](implementation_plans/place_catalog_implementation_plan.md): собрать версионированный SQLite из `cities1000`, `admin1CodesASCII` и `alternateNamesV2`; реализовать отдельные `PlaceSearch.search(text)` и `PlaceCatalog.lookup(place_id)` одного leaf-adapter, русские подписи мест и admin1, индексный поиск, lifecycle/executor, startup validation, module boundaries и тесты воспроизводимости | 4 |
+| M1-5 | `feat/place-catalog` | **Выполнено 22.09:** по [требованиям каталога мест](../requirements/component_responsibilities/exact-orb_place_catalog.md) и [implementation plan](implementation_plans/place_catalog_implementation_plan.md) реализованы GeoNames SQLite builder, отдельные `PlaceSearch.search(text)` и `PlaceCatalog.lookup(place_id)` одного leaf-adapter, русские подписи мест/admin1, индексный поиск, lifecycle/executor, startup validation, module boundaries и сквозная приёмка; полный local-data build принят | план 4; факт 21–22.09 |
 | M1-5.1 | `chore/bootstrap-composition` | **Выполнено 21.09:** process-local `ApplicationRuntime` собирает реальные resolver/cache/engine, SQLite session persistence, `ContextService`, существующий `build_application_orchestrator`, фактическую `CalculationVersion`, owned executors и one-shot reaper. Сквозные cache miss → hit и cancelled-waiter shutdown приняты; `PlaceCatalog` внедряется извне | план 2; факт 21.09 |
 | M1-6 | `feat/http-api-and-session-middleware` | FastAPI и lifespan потребляют готовый `ApplicationRuntime`; Session Middleware (`HttpOnly` / `Secure` / `SameSite` cookie → анонимный `session_id`); Build API; endpoint поиска мест; прекращение приёма и ожидание request tasks, включая отменённые; периодический запуск runtime reaper | 2 |
 | M1-7 | `feat/ui-birth-form-and-facts` | Форма ввода с автодополнением места; вывод фактов таблицами — планеты, дома, аспекты, конфигурации, сила, особые градусы. Содержательный эквивалент human-readable CLI | 2 |
@@ -275,10 +279,10 @@ JSON-сериализация не выполняются. Локальный DE
 | M1-14 | `test/scenario-acceptance` | Сквозная приёмка по [`negative corner scenarios`](../requirements/build_chart/exact_orb_negative_corner_scenarios.md) плюс контрольный кейс: 02.09.1990 Москва → UTC+4, локальные 14:30 = 10:30 UTC | 1.5 |
 | M1-15 | `fix/first-release-issues` | Фиксы по итогам приёмки | 1 |
 
-**Итого M1 после ревизии v3.5 — 26 рабочих дней.** К baseline v3.2 добавлены
-2 дня M1-5.1 и 2 дня к M1-5; после фактического выполнения M1-1–M1-3 и
-M1-5.1 осталось 21.5
-рабочего дня: M1-4–M1-5 и M1-6–M1-15. Перерасход Orchestrator уже сдвинул
+**Итого M1 после ревизии v3.6 — 26 рабочих дней.** К baseline v3.2 добавлены
+2 дня M1-5.1 и 2 дня к M1-5; после фактического выполнения M1-1–M1-3,
+M1-5 и M1-5.1 осталось 17.5
+рабочего дня: M1-4 и M1-6–M1-15. Перерасход Orchestrator уже сдвинул
 календарный baseline, но не является основанием автоматически резать
 оставшиеся проверки или переносить acceptance в «потом».
 

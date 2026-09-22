@@ -1,6 +1,6 @@
 # Сквозные сценарии exact-orb
 
-Статус документа: рабочий, версия 2.6 (2026-09-21).
+Статус документа: рабочий, версия 2.7 (2026-09-22).
 Заменяет версию 1.0, где все сценарии начинались со свободного текста в чате.
 
 Ревизия 2026-09-06: session-flow приведён к `SessionState`, `StateDelta` и
@@ -24,6 +24,10 @@ load profile сверены с реализацией; HTTP/UI и deployment о�
 Ревизия 2026-09-21: process runtime composition реализована и принята отдельно
 от FastAPI lifespan; runtime предоставляет one-shot reaper, а M1-6 владеет его
 расписанием.
+
+Ревизия 2026-09-22: реализован и принят M1-5 catalog core — offline builder,
+`PlaceSearch`, `SqlitePlaceCatalog` и сквозной search → lookup → resolver/
+application путь. HTTP endpoint и browser autocomplete остаются целевыми.
 
 Контекст: вход через форму, карта сразу, затем preset-действия и — в подписке —
 свободный вопрос. События потока: `status`, `input_required`, `token`, `done`, `error`.
@@ -173,8 +177,9 @@ ADR-0007 (пустое время само по себе не создаёт `in
 1. **Location Dropdown** запрашивает подсказки после паузы во вводе:
    целевой `GET /places?query=Киров&limit=10` возвращает ограниченный
    `{items: [{place_id, display_name, admin1_name, country_code}]}` и имеет
-   собственный rate limit. Поисковый endpoint ещё не реализован; он вызывает
-   отдельный `PlaceSearch.search(text)` и не проходит через Orchestrator.
+   собственный rate limit. Поисковый endpoint ещё не реализован; готовый
+   `PlaceSearch.search(text)` будет вызываться им напрямую и не проходит через
+   Orchestrator.
 2. Пользователь выбирает вариант. Кнопка отправки разблокируется только после
    выбора: **Build API принимает `place_id` и не принимает свободный текст**,
    поэтому исход `AMBIGUOUS` **для места** на build-пути не возникает.

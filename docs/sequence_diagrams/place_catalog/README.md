@@ -6,15 +6,16 @@
 2. `BirthDataResolver` вызывает `PlaceCatalog.lookup(place_id)` внутри
    Build Natal application-flow.
 
-Диаграммы фиксируют целевой контракт M1-5 `feat/place-catalog` и границу
-с будущими M1-6/M1-7, не объявляя HTTP endpoint и UI уже реализованными.
+Диаграммы фиксируют реализованный catalog core M1-5 `feat/place-catalog` и
+границу с будущими M1-6/M1-7, не объявляя HTTP endpoint и UI уже
+реализованными.
 Нормативные модели, исходы и ограничения описаны в
 [`docs/requirements/component_responsibilities/exact-orb_place_catalog.md`](../../requirements/component_responsibilities/exact-orb_place_catalog.md).
 
-Текущий реализованный build-путь уже содержит
-`BirthDataResolver → PlaceCatalog.lookup(place_id)`. `PlaceSearch`,
-`SqlitePlaceCatalog`, HTTP boundary и форма с подсказками остаются целевыми
-компонентами до выполнения соответствующих веток.
+Реализованы `PlaceSearch`, `SqlitePlaceCatalog` и build-путь
+`ApplicationOrchestrator → BuildNatalHandler → BirthDataResolver →
+PlaceCatalog.lookup(place_id)`. HTTP boundary и форма с подсказками остаются
+целевыми компонентами M1-6/M1-7.
 
 ## 1. Endpoint → каталог мест
 

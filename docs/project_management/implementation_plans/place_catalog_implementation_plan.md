@@ -2,9 +2,9 @@
 
 **Дата исходной сверки:** 2026-09-21.
 
-**Статус:** выполняется; карточки 1.1–4.2 реализованы и проверены в границах
-своих этапов. SQLite builder, lifecycle/lookup adapter, индексированный search
-и его исполняемая приёмка готовы. Карточки 5.1–5.2 не выполнялись.
+**Статус:** завершён 2026-09-22; карточки 1.1–5.2 реализованы и проверены.
+SQLite builder, lifecycle/lookup adapter, индексированный search, сквозная
+application-приёмка, full local-data build и documentation closeout готовы.
 
 **Ветка:** `feat/place-catalog`.
 
@@ -102,8 +102,8 @@ prompt-файлы не создаёт.
 | 3.2 | `prompts/2026-09-22/place-catalog/03.2-sqlite-lifecycle-and-lookup-tests.md` | выполнено 2026-09-22; 26 targeted, связанный и полный pytest пройдены |
 | 4.1 | `prompts/2026-09-22/place-catalog/04.1-indexed-place-search-code.md` | выполнено 2026-09-22; indexed search smoke, существующая и полная регрессия пройдены |
 | 4.2 | `prompts/2026-09-22/place-catalog/04.2-indexed-place-search-tests.md` | выполнено 2026-09-22; 16 targeted, связанный и полный pytest пройдены |
-| 5.1 | `prompts/2026-09-21/place-catalog/05.1-place-catalog-end-to-end-tests.md` | planned |
-| 5.2 | `prompts/2026-09-21/place-catalog/05.2-place-catalog-closeout.md` | planned |
+| 5.1 | `prompts/2026-09-22/place-catalog/05.1-place-catalog-end-to-end-tests.md` | выполнено 2026-09-22; 4 targeted, связанный и полный pytest пройдены |
+| 5.2 | `prompts/2026-09-22/place-catalog/05.2-place-catalog-closeout.md` | выполнено 2026-09-22; 128 targeted, 1012 related, 2540 full, local-data smoke пройден |
 
 ```text
 1.1 contracts/normalizer code
@@ -1174,3 +1174,164 @@ requirements/ADR/diagrams, dependencies и HTTP/UI не изменены. Кар
 Сквозной builder → search → lookup → resolver/application flow остаётся 5.1;
 production composition и HTTP endpoint — M1-6. Commit, push и PR не
 выполнялись.
+
+### 11.9. Карточка 5.1 — 2026-09-22
+
+**Результат:** создан и выполнен
+[промт 5.1](../../../prompts/2026-09-22/place-catalog/05.1-place-catalog-end-to-end-tests.md).
+Новый `tests/application/test_place_catalog_integration.py` добавляет четыре
+сквозных test nodes поверх настоящих builder, schema v1,
+`SqlitePlaceCatalog`, `BirthDataResolver` и существующего application flow.
+Для каждого теста adapter открывается на caller-owned single-worker executor и
+закрывается до shutdown executor. `application_test_stand` переиспользован без
+изменения и получает тот же catalog instance, который обслуживает search и
+lookup.
+
+Прямая цепочка `search("Москва") → "524901" → lookup → BirthDataResolver`
+подтверждает, что:
+
+- search/resolver не вызывают `ApplicationOrchestrator` или `ContextService`;
+- каждый suggestion ID разрешается lookup того же выпуска;
+- Москва имеет canonical name `Москва`, координаты `55.75/37.62` и
+  `Europe/Moscow`;
+- 02.09.1990 14:30 даёт `utc_offset_seconds=14400` и `10:30Z`.
+
+Отдельный успешный сценарий передаёт выбранный ID через реальную цепочку
+Orchestrator → Handler → Resolver. Recording wrapper того же SQLite adapter
+фиксирует lookup выбранного ID; application возвращает `ApplicationCommitted`
+версии 1, а snapshot содержит исходный `BirthInput`, московские resolved facts
+и базовую карту.
+
+Негативные сценарии проходят через тот же application flow. Неизвестный
+числовой ID даёт только `Issue(field="birth.place", code="INVALID")`. После
+реального закрытия SQLite connection на owning worker read failure становится
+retryable `ApplicationResolutionFailure` с
+`PLACE_CATALOG_UNAVAILABLE`, а не input failure. В обоих случаях positive
+state assertions подтверждают версию 0 и отсутствие birth/calculation данных;
+timezone resolver, calculation/cache и commit не выполняются.
+
+**Фактические файлы:**
+
+- `tests/application/test_place_catalog_integration.py`;
+- `prompts/2026-09-22/place-catalog/05.1-place-catalog-end-to-end-tests.md`;
+- этот план — путь/status 5.1 и журнал выполнения.
+
+**Исходная готовность:** ветка `feat/place-catalog`, HEAD `53b872a` после
+карточки 4.2. Посторонние untracked-пути из §11.1 сохранены без изменений.
+
+Первый targeted-запуск внутри restricted sandbox завершился четырьмя setup
+errors до collection: pytest не получил доступ к
+`C:\Users\KateUser\AppData\Local\Temp\pytest-of-KateUser`. Повтор той же
+команды с доступом к системному временному каталогу выполнил тесты успешно.
+Это ограничение среды, а не отказ сценариев.
+
+**Фактические проверки:**
+
+```powershell
+.\.venv\Scripts\python.exe -B -m py_compile tests/application/test_place_catalog_integration.py
+# exit code 0
+
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/application/test_place_catalog_integration.py -q
+# 4 passed in 0.47s
+
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/application/test_place_catalog_integration.py tests/application tests/test_birth_resolver.py tests/test_birth_tz.py -q
+# 1002 passed in 8.81s
+
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider -q
+# 2540 passed in 44.56s
+
+git diff --check
+# exit code 0; ошибок whitespace нет
+```
+
+Проверка относительных Markdown-ссылок плана и prompt нашла 23 ссылки и 0
+отсутствующих целей. Отдельная проверка новых prompt/test-файлов не нашла
+trailing whitespace.
+
+**Границы результата:** `src/**`, builder, ранее принятые tests/helpers/
+fixtures, production bootstrap ownership, requirements/ADR/diagrams,
+dependencies и HTTP/UI не изменены. Карточка даёт сквозное исполняемое
+подтверждение AC-P4 и AC-L1–L6. Полный build из локальных GeoNames dumps,
+documentation closeout и финальные link/diagram checks остаются 5.2. Commit,
+push и PR не выполнялись.
+
+### 11.10. Карточка 5.2 — 2026-09-22
+
+**Результат:** создан и выполнен
+[промт 5.2](../../../prompts/2026-09-22/place-catalog/05.2-place-catalog-closeout.md).
+Все десять карточек плана завершены. Полная regression, сборка из локальных
+GeoNames dumps, smoke production adapter-а и documentation closeout прошли без
+изменения production-кода, тестов, fixtures или raw data.
+
+**Фактические pytest-проверки:**
+
+```powershell
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/test_place_search_contracts.py tests/test_place_catalog_builder.py tests/test_place_catalog_sqlite.py tests/test_place_catalog_search.py tests/application/test_place_catalog_integration.py tests/test_module_boundaries.py -q
+# 128 passed in 4.26s
+
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/test_birth_places.py tests/test_birth_resolver.py tests/test_birth_tz.py tests/application -q
+# 1012 passed in 8.89s
+
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider -q
+# 2540 passed in 44.23s
+```
+
+**Полная локальная сборка:**
+
+```powershell
+New-Item -ItemType Directory -Force -Path data | Out-Null
+.\.venv\Scripts\python.exe -B scripts/build_place_catalog.py --cities cities/cities1000.txt --admin1 cities/admin1CodesASCII.txt --alternate-names cities/alternateNamesV2.txt --out data/places.sqlite
+```
+
+Builder завершился успешно и напечатал:
+
+```json
+{"admin1_rows_read":3865,"cities_rows_read":170981,"alternate_names_rows_read":19211781,"places_written":16329,"place_names_written":36648,"filtered_feature_class":0,"filtered_feature_code":9502,"filtered_country_population":145150,"filtered_timezone":0,"filtered_alternate_language":398215,"rejected_names":0}
+```
+
+Первый принятый anchor для повторной сборки этих же файлов с default-
+параметрами — **16 329 мест**. SHA-256 источников:
+
+| Источник | SHA-256 |
+|---|---|
+| `cities/cities1000.txt` | `b2f5239acc9f894f4bfd7d38bbc17a6a5c0b168d71ef14ec08c345f8fb701563` |
+| `cities/admin1CodesASCII.txt` | `590651498043f674accda2b7f46d21286cda0e290b02f8561c5005eee9a5448c` |
+| `cities/alternateNamesV2.txt` | `058c470a07b0a6cfe1c238584e0b74e1b1693ac80b22af66f421f09887a9d24a` |
+
+Generated `data/places.sqlite` имеет размер `5 238 784` байта, schema version
+`1`, metadata `tzdata_version="2026.3"`, `16 329` строк `places` и `36 648`
+строк `place_names`. Metadata checksums совпали с hashes входных файлов.
+`git check-ignore -v data/places.sqlite` подтвердил правило `.gitignore`
+`data/`; артефакт не появился в обычном `git status`.
+
+Реальный `SqlitePlaceCatalog` успешно открыл generated файл на caller-owned
+single-worker executor. `search("Москва")` включил `place_id="524901"`, а
+`lookup("524901")` вернул `Москва`, `55.75/37.62` и `Europe/Moscow`; adapter
+закрыт до shutdown executor.
+
+**Documentation closeout:**
+
+- `exact-orb_place_catalog.md` помечает M1-5 core реализованным и принятым;
+- `exact-orb_birth_data_resolution.md`, `overview.md` и `scenarios.md`
+  отделяют готовые builder/ports/adapter/application evidence от будущих
+  HTTP/UI границ;
+- place-catalog README и шесть PUML помечают catalog core implemented, сохраняя
+  transport/client как target M1-6/M1-7;
+- roadmap версии 3.6 помечает M1-5 выполненным 2026-09-22 и уменьшает остаток
+  M1 с `21.5` до `17.5` рабочего дня без удаления истории.
+
+**Финальные проверки документов:**
+
+- `git diff --check` — exit code 0;
+- 9 Markdown-файлов: 114 относительных ссылок, отсутствующих целей 0;
+- 6 PUML: по одной паре `@startuml/@enduml`, сбалансированные `box/end box`,
+  дублирующихся aliases нет;
+- Java, команда PlantUML и локальный `plantuml*.jar` отсутствуют, поэтому PNG-
+  render не выполнялся; структурная проверка прошла полностью;
+- отдельная проверка новых prompt/test-файлов не нашла trailing whitespace.
+
+**Границы результата:** `src/**`, `tests/**`, builder, fixtures/goldens, ADR,
+соседние requirements/diagrams, dependencies, `.gitignore` и raw `cities/**`
+не изменены. Generated SQLite остался ignored. M1-6 владеет HTTP mapping и
+lifespan wiring, M1-7 — browser autocomplete, M1-12 — доставкой каталога и
+deployment policy. Commit, push и PR не выполнялись.

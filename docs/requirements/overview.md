@@ -1,6 +1,6 @@
 # Архитектура exact-orb
 
-Статус документа: рабочий, версия 2.6 (2026-09-21).
+Статус документа: рабочий, версия 2.7 (2026-09-22).
 Заменяет версию 1.0, описывавшую систему как чистый веб-чат.
 Область: прикладной и агентский слои, их расчётные контракты и хранение данных.
 
@@ -20,6 +20,11 @@ session bootstrap, admission и deployment composition остаются внеш
 Ревизия 2026-09-21: process runtime composition M1-5.1 реализована и принята
 сквозными сценариями Build Natal и остановки с живым расчётом; FastAPI lifespan
 M1-6 и production/deployment policy M1-12 остаются отдельными этапами.
+
+Ревизия 2026-09-22: M1-5 catalog core реализован и принят — offline GeoNames
+builder, `PlaceSearch`, `SqlitePlaceCatalog`, индексированные search/lookup и
+сквозная application-интеграция. HTTP/lifespan, UI и доставка артефакта
+остаются M1-6/M1-7/M1-12.
 
 Документ описывает принятую архитектуру; наличие требования не означает
 наличия реализации. Текущая готовность приведена в §2.1. Подробные контракты
@@ -104,7 +109,7 @@ application-срез ограничен натальной картой и ко�
 
 ### 2.1 Текущая готовность
 
-Сверено повторно 2026-09-21. Подробные реестры application core и runtime
+Сверено повторно 2026-09-22. Подробные реестры application core и runtime
 composition — в [плане ApplicationOrchestrator](../project_management/implementation_plans/application_orchestrator_implementation_plan.md)
 и [плане bootstrap composition](../project_management/implementation_plans/bootstrap_composition_implementation_plan.md).
 
@@ -112,7 +117,7 @@ composition — в [плане ApplicationOrchestrator](../project_management/im
 |---|---|---|
 | Standalone CLI и ядро | natal, cosmogram, transit | развитие техник; CLI не является HTTP-приложением |
 | Build Natal | `BuildNatalCommand`, `BuildNatalHandler`, `BuildNatalOutcome`, `ApplicationOrchestrator`, внешний `ApplicationResult`, CAS commit/retry/cancellation, lifecycle logging, минимальная composition, process-local `ApplicationRuntime` и его сквозная приёмка | HTTP mapping, client monotonicity X1, admission X2 и deployment policy |
-| Резолв и артефакты | `place_id` lookup и JSONL loader, скрипт каталога, historical TZ, resolver, spec, key v2, version, engine, codec, InMemory cache, artifact resolver, runtime wiring фактической версии и cache miss → hit через runtime | рабочие данные и поиск подсказок для UI |
+| Резолв и артефакты | `PlaceSearch`, `PlaceCatalog`, JSONL test adapter, GeoNames SQLite builder, `SqlitePlaceCatalog`, индексированные search/lookup, lifecycle/startup validation, historical TZ, resolver, spec, key v2, version, engine, codec, InMemory cache, artifact resolver и сквозная catalog/application приёмка | HTTP/lifespan wiring M1-6, UI autocomplete M1-7 и доставка `places.sqlite` M1-12 |
 | Сессия | contracts, `ContextService`, InMemory и SQLite adapters, TTL/CAS, runtime-owned SQLite executor и one-shot reaper | подключение к HTTP/session lifecycle и периодическое расписание reaper |
 | Клиент и HTTP API | — | форма, renderer, middleware, JSON/SSE endpoints |
 | Agent Runtime | интерфейсы, реестры, синхронный `NatalTool`; `orchestration.Orchestrator` — каркас | interpretation handlers, целевой runtime, async Tool, общий путь через артефакты |
@@ -194,8 +199,9 @@ InMemory adapters и кэши и не обещает взаимозаменяе�
 
 **И-5. Способ исполнения зависимости скрыт за портом/адаптером.**
 Сейчас `CalculationEnginePort` реализует локальный `EngineService`, а
-`PlaceCatalog` — `LocalPlaceCatalog`. Сетевые реализации не вводятся заранее
-(ADR-0002, ADR-0021).
+`SqlitePlaceCatalog` реализует `PlaceCatalog` и `PlaceSearch` над одним
+read-only выпуском. `LocalPlaceCatalog` сохранён для тестовой JSONL fixture.
+Сетевые реализации не вводятся заранее (ADR-0002, ADR-0021).
 
 **И-6. Исследовательский корпус не является источником данных горячего пути.**
 `ResearchCorpus` — write-only порт для application producer; исследовательское
@@ -423,17 +429,19 @@ Build-пути вход — `BirthInput(birth_date, birth_time?, place_id)`, б�
 зависимости не превращается в просьбу исправить ввод. В состояние resolver
 не пишет: результат обрабатывает handler.
 
-**PlaceCatalog** — async-порт `lookup(place_id) → ResolvedPlace | PlaceNotFound`;
-реализован `LocalPlaceCatalog`. Форма передаёт выбранный ID: список кандидатов
+**PlaceCatalog** — реализованный async-порт
+`lookup(place_id) → ResolvedPlace | PlaceNotFound`. Production leaf-adapter
+`SqlitePlaceCatalog` читает generated SQLite; `LocalPlaceCatalog` остаётся
+test-adapter над JSONL fixture. Форма передаёт выбранный ID: список кандидатов
 и `RemoteGeocoder` не входят в текущий build-контракт. Технический отказ
 каталога передаётся типизированной ошибкой.
 
-**PlaceSearch** — отдельный целевой async-порт подсказок. Он не расширяет
-`PlaceCatalog` и не проходит через `ApplicationOrchestrator`. Один целевой
+**PlaceSearch** — реализованный отдельный async-порт подсказок. Он не расширяет
+`PlaceCatalog` и не проходит через `ApplicationOrchestrator`.
 `SqlitePlaceCatalog` реализует оба порта над одним read-only выпуском данных:
-endpoint поиска получает ограниченные подсказки, а `BirthDataResolver`
-повторно проверяет выбранный недоверенный `place_id`. Контракты, ограничения и
-приёмка зафиксированы в
+будущий endpoint поиска получает ограниченные подсказки, а
+`BirthDataResolver` повторно проверяет выбранный недоверенный `place_id`.
+Контракты, ограничения и приёмка зафиксированы в
 [требованиях каталога мест](component_responsibilities/exact-orb_place_catalog.md).
 
 **Historical TZ Resolver** — `zoneinfo`/`tzdata`: декретное время, летнее и зимнее,
@@ -443,7 +451,8 @@ endpoint поиска получает ограниченные подсказк
 При неизвестном времени birth/timezone-слой формирует `BirthTimeDomain` из
 всех валидных минут локальной даты; расчётный слой получает готовый UTC-домен
 и не резолвит timezone повторно (ADR-0032).
-**Статус:** lookup-путь реализован; SQLite-каталог и поиск остаются M1-5.
+**Статус:** catalog core M1-5 реализован и принят; HTTP wiring и UI остаются
+M1-6/M1-7.
 [Контракты резолва](component_responsibilities/exact-orb_birth_data_resolution.md),
 [контракты каталога мест](component_responsibilities/exact-orb_place_catalog.md).
 
@@ -804,7 +813,8 @@ HTTP-транспорта. Процессный `RLock` обеспечивает
 
 **Входит:** клиент с формой и renderer, Session Middleware, Build API,
 ApplicationOrchestrator, BuildNatalHandler, BirthDataResolver,
-LocalPlaceCatalog, Historical TZ, ContextService, Session Store, Dialog Store,
+`SqlitePlaceCatalog` (`LocalPlaceCatalog` только для тестов), Historical TZ,
+ContextService, Session Store, Dialog Store,
 ChartArtifactResolver, calculation_key, CalculationVersion, Calculation Cache,
 EngineService, Selection API, InterpretSelectionHandler, ActionContractBuilder,
 ContractValidator, каркас рантайма, InterpretationService, Gateway, OutputGuard,
@@ -840,15 +850,17 @@ pipeline сам по себе не доказывает качество отв�
 `BuildNatalHandler`; `ApplicationOrchestrator`, `ApplicationResult`,
 commit/retry/cancellation/lifecycle flow, минимальная composition и реальный
 интеграционный путь с SQLite; process-local `ApplicationRuntime`, strict
-bootstrap settings, фактическая `CalculationVersion` и owned executors.
+bootstrap settings, фактическая `CalculationVersion` и owned executors;
+GeoNames SQLite builder, `PlaceSearch`, `SqlitePlaceCatalog`, индексированные
+search/lookup и их сквозная application-приёмка.
 Также реализованы нормализация результата и DEBUG-диагностика ADR-0027/0028,
 семантика точек/оси узлов/конфигураций ADR-0029–0031, неизвестное время и
 key v2 по ADR-0032, единая strength-система ADR-0033 и нормализация орбиса
 на epsilon-границе. LLM Gateway предоставляет синхронный transport.
 
-**M1. Первый сценарий с UI на удалённом сервере.** Остаются: рабочий каталог
-`place_id` и поиск; FastAPI и Session Middleware;
-первый UI; условия и presentation checkbox по ADR-0034; отображение
+**M1. Первый сценарий с UI на удалённом сервере.** Остаются: FastAPI и Session
+Middleware, HTTP wiring готового каталога; первый UI с autocomplete; условия и
+presentation checkbox по ADR-0034; отображение
 рассчитанной карты; серверный INFO-profile, деплой и браузерная приёмка.
 Отдельный обязательный import-boundary тест handler ещё не интегрирован.
 Build-путь не требует LLM или Agent Runtime.
