@@ -2,9 +2,9 @@
 
 **Дата исходной сверки:** 2026-09-21.
 
-**Статус:** выполняется; карточки 1.1–1.2 реализованы и проверены. Контракты и
-каноническая нормализация закреплены специализированными тестами; карточки
-2.1–5.2 ещё не выполнялись.
+**Статус:** выполняется; карточки 1.1–2.1 реализованы и проверены в границах
+своих этапов. SQLite builder прошёл synthetic smoke и ручную проверку schema;
+его исполняемые тесты остаются карточке 2.2. Карточки 2.2–5.2 не выполнялись.
 
 **Ветка:** `feat/place-catalog`.
 
@@ -83,26 +83,27 @@ M1-6/M1-7.
    Тестовый промт не получает скрытого разрешения исправлять production.
 
 Карточка не обязана становиться отдельным коммитом. Commit, push и PR требуют
-отдельного указания пользователя. При подготовке будущих prompt-файлов
-используются пути `prompts/2026-09-21/place-catalog/<ID>-<topic>.md`; сам этот
-план prompt-файлы не создаёт.
+отдельного указания пользователя. Исходный путь prompt-файлов —
+`prompts/2026-09-21/place-catalog/<ID>-<topic>.md`; для 2.1 владелец явно
+потребовал текущую дату, поэтому её prompt находится в `prompts/2026-09-22/`.
+Сам этот план prompt-файлы не создаёт.
 
 ## 5. Последовательность и зависимости
 
 Будущие карточки создаются только по отдельному запросу:
 
-| ID | Файл внутри `prompts/2026-09-21/place-catalog/` | Статус |
+| ID | Prompt-файл | Статус |
 |---|---|---|
-| 1.1 | `01.1-contracts-and-normalization-code.md` | выполнено 2026-09-21; code, существующая регрессия пройдена |
-| 1.2 | `01.2-contracts-and-normalization-tests.md` | выполнено 2026-09-22; 30 targeted, полный pytest пройден |
-| 2.1 | `02.1-geonames-sqlite-builder-code.md` | planned |
-| 2.2 | `02.2-geonames-sqlite-builder-tests.md` | planned |
-| 3.1 | `03.1-sqlite-lifecycle-and-lookup-code.md` | planned |
-| 3.2 | `03.2-sqlite-lifecycle-and-lookup-tests.md` | planned |
-| 4.1 | `04.1-indexed-place-search-code.md` | planned |
-| 4.2 | `04.2-indexed-place-search-tests.md` | planned |
-| 5.1 | `05.1-place-catalog-end-to-end-tests.md` | planned |
-| 5.2 | `05.2-place-catalog-closeout.md` | planned |
+| 1.1 | `prompts/2026-09-21/place-catalog/01.1-contracts-and-normalization-code.md` | выполнено 2026-09-21; code, существующая регрессия пройдена |
+| 1.2 | `prompts/2026-09-21/place-catalog/01.2-contracts-and-normalization-tests.md` | выполнено 2026-09-22; 30 targeted, полный pytest пройден |
+| 2.1 | `prompts/2026-09-22/place-catalog/02.1-geonames-sqlite-builder-code.md` | выполнено 2026-09-22; synthetic build/schema smoke, полный pytest пройден |
+| 2.2 | `prompts/2026-09-21/place-catalog/02.2-geonames-sqlite-builder-tests.md` | planned |
+| 3.1 | `prompts/2026-09-21/place-catalog/03.1-sqlite-lifecycle-and-lookup-code.md` | planned |
+| 3.2 | `prompts/2026-09-21/place-catalog/03.2-sqlite-lifecycle-and-lookup-tests.md` | planned |
+| 4.1 | `prompts/2026-09-21/place-catalog/04.1-indexed-place-search-code.md` | planned |
+| 4.2 | `prompts/2026-09-21/place-catalog/04.2-indexed-place-search-tests.md` | planned |
+| 5.1 | `prompts/2026-09-21/place-catalog/05.1-place-catalog-end-to-end-tests.md` | planned |
+| 5.2 | `prompts/2026-09-21/place-catalog/05.2-place-catalog-closeout.md` | planned |
 
 ```text
 1.1 contracts/normalizer code
@@ -671,3 +672,108 @@ fixtures/goldens и архитектурные проверки не измен�
 исходов. Доказательство отсутствия SQL для invalid query остаётся 4.2; builder,
 SQLite lifecycle/search и сквозная интеграция остаются карточкам 2.1–5.1.
 Общий documentation closeout остаётся 5.2. Commit, push и PR не выполнялись.
+
+### 11.3. Карточка 2.1 — 2026-09-22
+
+**Результат:** создан и выполнен
+[промт 2.1](../../../prompts/2026-09-22/place-catalog/02.1-geonames-sqlite-builder-code.md).
+`scripts/build_place_catalog.py` больше не создаёт production JSONL: builder
+обязательными потоковыми проходами читает admin1 → cities → alternate names,
+фильтрует данные и атомарно публикует проверенный SQLite schema v1.
+
+IANA keys прочитаны из `tzdata/zones`, версия `2026.3` — через metadata Python
+distribution; системная timezone database не используется. Координаты
+округляются `Decimal/ROUND_HALF_UP` и хранятся целыми сотыми. Русские place и
+admin1 names выбираются по current/preferred и минимальному числовому
+`alternateNameId`; source, ASCII, текущие и исторические русские aliases
+нормализуются объектом из `exact_orb.birth.places`.
+
+Schema содержит `places`, `place_names`, singleton `catalog_metadata`,
+`user_version=1`, foreign keys и индексы `idx_place_names_search_key` с BINARY
+collation и `idx_place_names_place_id`. Metadata состоит из канонического JSON
+с SHA-256 трёх входов и фактическими build parameters без времени, mtime и
+путей. Перед `os.replace` builder выполняет integrity/foreign-key/schema/index/
+metadata/count/timezone validation и закрывает connection.
+
+**Фактические файлы:**
+
+- `scripts/build_place_catalog.py`;
+- `tests/fixtures/place_catalog/cities1000.txt`;
+- `tests/fixtures/place_catalog/admin1CodesASCII.txt`;
+- `tests/fixtures/place_catalog/alternateNamesV2.txt`;
+- `prompts/2026-09-22/place-catalog/02.1-geonames-sqlite-builder-code.md`;
+- этот план — путь prompt, статус 2.1 и журнал выполнения.
+
+**Исходная готовность:** ветка `feat/place-catalog`, HEAD `947c106` с
+карточками 1.1–1.2. Установлен editable package и `tzdata 2026.3`; локально
+доступны все три обязательных real-data источника. Посторонние untracked-пути
+из §11.1 сохранены без изменений. По явному указанию владельца prompt 2.1
+создан в папке с текущей датой 22 сентября, а не в исходной папке плана.
+
+**Synthetic fixtures:** 4 admin1 строки, 10 city строк и 15 alternate-name
+строк. Admin1/cities содержат `4/19` колонок; alternate names логически имеют
+10 колонок, но пустые конечные `from/to` опущены (`8/10` физических колонок),
+чтобы не хранить trailing tabs. Набор содержит
+Москву, `Məskeү`, два preferred и non-preferred русские имена, псевдоязык,
+исторические варианты по flag и `to`, русские admin1, `Nowhere/Fake`,
+half-boundary, population/country filters, PPLX, другой feature class и пустую
+timezone.
+
+**Фактические проверки:**
+
+```powershell
+.\.venv\Scripts\python.exe -B scripts/build_place_catalog.py --help
+# exit code 0; обязательны --cities, --admin1, --alternate-names, --out
+
+.\.venv\Scripts\python.exe -B -m py_compile scripts/build_place_catalog.py
+# exit code 0
+
+.\.venv\Scripts\python.exe -B scripts/build_place_catalog.py --cities tests/fixtures/place_catalog/cities1000.txt --admin1 tests/fixtures/place_catalog/admin1CodesASCII.txt --alternate-names tests/fixtures/place_catalog/alternateNamesV2.txt --out logs/place-catalog-card-2.1/places.sqlite
+# 4 admin1, 10 cities, 15 alternate names; 5 places, 13 names
+# filtered: language=2, population=1, feature class=1, feature code=1,
+# timezone=2; rejected_names=1
+
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/test_place_search_contracts.py tests/test_birth_places.py tests/test_birth_resolver.py -q
+# 71 passed in 0.42s
+
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider -q
+# 2478 passed in 110.75s
+```
+
+Read-only SQL smoke подтвердил три таблицы и два обязательных индекса. Москва
+получила `display_name="Москва"`, `admin1_name="Москва"`, координаты
+`5575/3762` и `Europe/Moscow`; `Məskeү`, псевдоязык и `###@@@` не попали в
+индекс. Half-boundary дала `1235/-4568`. `Nowhere/Fake`, пустая timezone,
+PPLX, другой feature class и место ниже внешнего population threshold
+отсутствуют. Две независимые сборки логически совпали: `[5, 13, 1]` строк в
+`places/place_names/catalog_metadata`.
+
+Failure-smoke с отсутствующим `alternate-names` завершился кодом `1` и сохранил
+прежний target с тем же SHA-256
+`6DE7C18BC2194574B6F95851EF27FC1CBEA15B15E04AF8822A8845E866935CE0`.
+Ручная identity-проверка подтвердила, что builder использует именно canonical
+`normalize_place_query` и `ALLOWED_ALTERNATE_LANGUAGES` из contract-модуля.
+
+**Ranking/dedup schema check:** в in-memory SQLite через `_create_schema` были
+вставлены семь совпадающих aliases для шести place IDs. Один параметризованный
+range query вычислил лучший alias rank через `GROUP BY place_id`, затем применил
+`ORDER BY rank, population DESC, place_id` и только после этого `LIMIT 6`.
+Фактический результат:
+
+```text
+place_ids = ["1", "2", "3", "5", "6", "4"]
+rows = [["1",3,100], ["2",4,100000], ["3",6,900],
+        ["5",6,500], ["6",6,500], ["4",7,999999]]
+unique_place_ids = 6
+```
+
+Он подтверждает exact → current preferred → current перед historic →
+population DESC → ID tie-breaker и дедупликацию до limit без реализации
+runtime `search`.
+
+**Границы результата:** `src/**`, исполняемые tests, существующий JSONL,
+goldens, requirements/ADR/diagrams и `cities/` не изменены. Generated SQLite
+находится только в ignored `logs/` и не включается в Git. Полный 785-MB
+real-data build не запускался: он принадлежит 5.2. Исполняемая приёмка AC-P1–P4
+и AC-P6–P10 остаётся 2.2; startup validation AC-P5/P11 — 3.x, runtime search —
+4.x. Commit, push и PR не выполнялись.
