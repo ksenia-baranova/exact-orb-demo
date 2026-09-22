@@ -2,10 +2,9 @@
 
 **Дата исходной сверки:** 2026-09-21.
 
-**Статус:** выполняется; карточки 1.1–3.1 реализованы и проверены в границах
-своих этапов. SQLite builder и его synthetic-приёмка готовы; lifecycle/lookup
-adapter прошёл ручной smoke, его исполняемые тесты остаются 3.2. Карточки
-3.2–5.2 не выполнялись.
+**Статус:** выполняется; карточки 1.1–3.2 реализованы и проверены в границах
+своих этапов. SQLite builder, synthetic-приёмка и lifecycle/lookup adapter с
+исполняемыми тестами готовы. Карточки 4.1–5.2 не выполнялись.
 
 **Ветка:** `feat/place-catalog`.
 
@@ -100,7 +99,7 @@ prompt-файлы не создаёт.
 | 2.1 | `prompts/2026-09-22/place-catalog/02.1-geonames-sqlite-builder-code.md` | выполнено 2026-09-22; synthetic build/schema smoke, полный pytest пройден |
 | 2.2 | `prompts/2026-09-22/place-catalog/02.2-geonames-sqlite-builder-tests.md` | выполнено 2026-09-22; 10 targeted, связанный и полный pytest пройдены |
 | 3.1 | `prompts/2026-09-22/place-catalog/03.1-sqlite-lifecycle-and-lookup-code.md` | выполнено 2026-09-22; lifecycle/lookup smoke, полный pytest пройден |
-| 3.2 | `prompts/2026-09-21/place-catalog/03.2-sqlite-lifecycle-and-lookup-tests.md` | planned |
+| 3.2 | `prompts/2026-09-22/place-catalog/03.2-sqlite-lifecycle-and-lookup-tests.md` | выполнено 2026-09-22; 26 targeted, связанный и полный pytest пройдены |
 | 4.1 | `prompts/2026-09-21/place-catalog/04.1-indexed-place-search-code.md` | planned |
 | 4.2 | `prompts/2026-09-21/place-catalog/04.2-indexed-place-search-tests.md` | planned |
 | 5.1 | `prompts/2026-09-21/place-catalog/05.1-place-catalog-end-to-end-tests.md` | planned |
@@ -923,3 +922,83 @@ requirements/ADR/diagrams и реальные `cities/**` не изменены.
 ranking SQL не добавлялись; они остаются 4.1. Исполняемая приёмка lifecycle,
 thread ownership, startup drift, cancellation и path cases остаётся 3.2.
 Production composition остаётся M1-6. Commit, push и PR не выполнялись.
+
+### 11.6. Карточка 3.2 — 2026-09-22
+
+**Результат:** создан и выполнен
+[промт 3.2](../../../prompts/2026-09-22/place-catalog/03.2-sqlite-lifecycle-and-lookup-tests.md).
+Новый `tests/test_place_catalog_sqlite.py` добавляет 26 тестовых сценариев для
+готового adapter 3.1 на реальной временной schema v1 базе из существующих
+synthetic fixtures; production-код не изменён.
+
+Проверки подтверждают:
+
+- read-only URI через `Path.as_uri()` для Windows-пути с пробелом, Unicode и
+  `#`, точные `mode=ro`, `uri=True`, `check_same_thread=True`, отсутствие
+  `immutable=1`, включённый `PRAGMA query_only` и фактический запрет записи;
+- открытие, lookup и close на одном injected single worker вне event-loop
+  thread; executor остаётся рабочим после close и завершается только
+  владельцем;
+- unopened/closed lifecycle, единственный close при конкурентных вызовах и
+  отсутствие SQL для invalid IDs и non-string Python-contract violation;
+- точную модель Москвы, fresh положительные и отрицательные outcomes,
+  неизвестный допустимый ID и pathological IDs длиной 10 000/Unicode/
+  non-ASCII;
+- typed open failure для отсутствующего файла, каталога и malformed SQLite
+  без создания или удержания файла;
+- hard failure при drift `user_version`, колонок, обязательного индекса,
+  JSON/shape/cardinality metadata и при пустой/неразрешимой timezone;
+- ровно один structured WARNING при несовпадении `tzdata_version` с успешным
+  startup для разрешимых зон;
+- typed runtime failure после startup и прямое распространение cancellation
+  из open/lookup/close, включая завершённый cleanup соединения;
+- AST/runtime identity canonical `normalize_place_query`.
+
+`tests/test_module_boundaries.py` дополнен отдельными birth-adapter
+инвариантами. AST проверяет полный набор adapter-файлов, project allow-list,
+запрещённые зависимости и отсутствие реэкспорта concrete adapter. Два
+изолированных process probes доказывают, что лёгкие birth imports не загружают
+`sqlite3`, а прямой импорт `exact_orb.birth.adapters.sqlite` загружает его и
+предоставляет `SqlitePlaceCatalog` как положительный контроль. Существующие
+session allow-lists не менялись.
+
+**Фактические файлы:**
+
+- `tests/test_place_catalog_sqlite.py`;
+- `tests/test_module_boundaries.py`;
+- `prompts/2026-09-22/place-catalog/03.2-sqlite-lifecycle-and-lookup-tests.md`;
+- этот план — путь/status 3.2 и журнал выполнения.
+
+**Исходная готовность:** ветка `feat/place-catalog`, HEAD `36d3e5e` с
+реализацией 3.1. Посторонние untracked-пути из §11.1 сохранены без изменений.
+Первый запуск targeted pytest внутри restricted sandbox не получил доступ к
+системному `%TEMP%`; это был environment setup error до выполнения зависящих
+от `tmp_path` сценариев. Та же команда вне файлового ограничения выполнила все
+тесты успешно.
+
+**Фактические проверки:**
+
+```powershell
+.\.venv\Scripts\python.exe -B -m py_compile tests/test_place_catalog_sqlite.py tests/test_module_boundaries.py
+# exit code 0
+
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/test_place_catalog_sqlite.py -q
+# 26 passed in 0.53s
+
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/test_place_catalog_sqlite.py tests/test_module_boundaries.py tests/test_birth_places.py tests/test_birth_resolver.py -q
+# 109 passed in 4.01s
+
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider -q
+# 2520 passed in 113.55s (0:01:53)
+
+git diff --check
+# exit code 0; ошибок whitespace нет
+```
+
+**Границы результата:** `src/**`, builder, builder tests/fixtures, contracts,
+requirements/ADR/diagrams, application/bootstrap и зависимости не изменены.
+Новых дефектов production-кода 3.1 тесты не обнаружили. Карточка даёт
+исполняемые доказательства AC-P5, AC-P11, AC-L2, AC-L7, AC-B1–B5 и AC-B7,
+lookup/lifecycle-части AC-S10/AC-S14 и adapter-половины AC-B6. Индексированный
+search остаётся 4.1–4.2, сквозной resolver/application — 5.1, общий closeout —
+5.2. Commit, push и PR не выполнялись.
