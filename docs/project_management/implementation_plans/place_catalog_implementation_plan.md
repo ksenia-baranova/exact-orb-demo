@@ -2,9 +2,9 @@
 
 **Дата исходной сверки:** 2026-09-21.
 
-**Статус:** выполняется; карточки 1.1–2.1 реализованы и проверены в границах
-своих этапов. SQLite builder прошёл synthetic smoke и ручную проверку schema;
-его исполняемые тесты остаются карточке 2.2. Карточки 2.2–5.2 не выполнялись.
+**Статус:** выполняется; карточки 1.1–2.2 реализованы и проверены в границах
+своих этапов. SQLite builder и его synthetic-приёмка готовы; карточки 3.1–5.2
+не выполнялись.
 
 **Ветка:** `feat/place-catalog`.
 
@@ -84,9 +84,9 @@ M1-6/M1-7.
 
 Карточка не обязана становиться отдельным коммитом. Commit, push и PR требуют
 отдельного указания пользователя. Исходный путь prompt-файлов —
-`prompts/2026-09-21/place-catalog/<ID>-<topic>.md`; для 2.1 владелец явно
-потребовал текущую дату, поэтому её prompt находится в `prompts/2026-09-22/`.
-Сам этот план prompt-файлы не создаёт.
+`prompts/2026-09-21/place-catalog/<ID>-<topic>.md`; выполненные 22 сентября
+карточки 2.1–2.2 находятся в текущей папке `prompts/2026-09-22/`. Сам этот план
+prompt-файлы не создаёт.
 
 ## 5. Последовательность и зависимости
 
@@ -97,7 +97,7 @@ M1-6/M1-7.
 | 1.1 | `prompts/2026-09-21/place-catalog/01.1-contracts-and-normalization-code.md` | выполнено 2026-09-21; code, существующая регрессия пройдена |
 | 1.2 | `prompts/2026-09-21/place-catalog/01.2-contracts-and-normalization-tests.md` | выполнено 2026-09-22; 30 targeted, полный pytest пройден |
 | 2.1 | `prompts/2026-09-22/place-catalog/02.1-geonames-sqlite-builder-code.md` | выполнено 2026-09-22; synthetic build/schema smoke, полный pytest пройден |
-| 2.2 | `prompts/2026-09-21/place-catalog/02.2-geonames-sqlite-builder-tests.md` | planned |
+| 2.2 | `prompts/2026-09-22/place-catalog/02.2-geonames-sqlite-builder-tests.md` | выполнено 2026-09-22; 10 targeted, связанный и полный pytest пройдены |
 | 3.1 | `prompts/2026-09-21/place-catalog/03.1-sqlite-lifecycle-and-lookup-code.md` | planned |
 | 3.2 | `prompts/2026-09-21/place-catalog/03.2-sqlite-lifecycle-and-lookup-tests.md` | planned |
 | 4.1 | `prompts/2026-09-21/place-catalog/04.1-indexed-place-search-code.md` | planned |
@@ -777,3 +777,63 @@ goldens, requirements/ADR/diagrams и `cities/` не изменены. Generated
 real-data build не запускался: он принадлежит 5.2. Исполняемая приёмка AC-P1–P4
 и AC-P6–P10 остаётся 2.2; startup validation AC-P5/P11 — 3.x, runtime search —
 4.x. Commit, push и PR не выполнялись.
+
+### 11.4. Карточка 2.2 — 2026-09-22
+
+**Результат:** создан и выполнен
+[промт 2.2](../../../prompts/2026-09-22/place-catalog/02.2-geonames-sqlite-builder-tests.md).
+Новый `tests/test_place_catalog_builder.py` добавляет исполняемую synthetic-
+приёмку builder карточки 2.1, не меняя production-код и data fixtures.
+
+Десять тестовых сценариев используют настоящий `build()`/`main()`, SQLite и
+три GeoNames fixtures. Они подтверждают:
+
+- положительное наличие всех обязательных fixture-случаев до отрицательных
+  утверждений о фильтрации;
+- статистику `4/10/15` прочитанных строк, 5 places, 13 names и точные счётчики
+  каждой причины фильтрации;
+- итоговые IDs `498817`, `524901`, `900001`, `900003`, `900005`, московские
+  display/admin1 names, `5575/3762`, half-boundary `1235/-4568`, внешний
+  population threshold и full-country inclusion;
+- отбрасывание `Məskeү`, псевдоязыка, invalid normalized name,
+  `Nowhere/Fake`, пустой timezone, PPLX, другого feature class и места ниже
+  внешнего population threshold;
+- выбор минимального числового `alternateNameId`, current/historic semantics,
+  русский admin1 по GeoNames ID и ASCII fallback;
+- schema/user version, integrity/foreign keys, обязательные индексы с BINARY
+  collation, canonical metadata, SHA-256 fixtures и `tzdata_version` project
+  `.venv`;
+- логическое равенство двух независимых сборок через упорядоченные SELECT без
+  побайтового сравнения SQLite-файлов;
+- обязательность каждого из трёх inputs и сохранение прежней цели при
+  управляемом отказе `os.replace` после полной валидации временной базы;
+- AST import canonical normalizer/allow-list без локальной копии и runtime
+  identity обоих объектов с `exact_orb.birth.places`;
+- exit code и фиксированный порядок CLI JSON-статистики.
+
+В failure-сценарии fault injection ограничен leaf seam `os.replace`: parsing,
+SQLite, schema validation и сам `build()` выполняются реально. Временный файл
+создаётся рядом с target, доступен как валидный закрытый SQLite перед
+публикацией и удаляется после отказа; прежние bytes target сохраняются.
+
+**Фактические проверки:**
+
+```powershell
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/test_place_catalog_builder.py -q
+# 10 passed in 0.33s
+
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/test_place_catalog_builder.py tests/test_place_search_contracts.py tests/test_birth_places.py tests/test_birth_resolver.py tests/test_module_boundaries.py -q
+# 117 passed in 3.33s
+
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider -q
+# 2488 passed in 106.43s
+
+git diff --check
+# exit code 0; ошибок whitespace нет
+```
+
+**Границы результата:** `src/**`, builder, fixtures, существующие tests,
+реальные `cities/**`, JSONL/goldens, requirements/ADR/diagrams и зависимости
+не изменены. Полный real-data build не запускался. Карточка даёт исполняемые
+доказательства AC-P1–P4, AC-P6–P10 и builder-половины AC-B6. Startup validation
+AC-P5/P11 остаётся 3.x, runtime search — 4.x. Commit, push и PR не выполнялись.
