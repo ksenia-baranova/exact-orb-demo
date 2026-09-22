@@ -2,9 +2,9 @@
 
 **Дата исходной сверки:** 2026-09-21.
 
-**Статус:** выполняется; карточка 1.1 реализована и проверена существующей
-регрессией. Специализированные тесты новых контрактов остаются карточке 1.2;
-остальные карточки ещё не выполнялись.
+**Статус:** выполняется; карточки 1.1–1.2 реализованы и проверены. Контракты и
+каноническая нормализация закреплены специализированными тестами; карточки
+2.1–5.2 ещё не выполнялись.
 
 **Ветка:** `feat/place-catalog`.
 
@@ -94,7 +94,7 @@ M1-6/M1-7.
 | ID | Файл внутри `prompts/2026-09-21/place-catalog/` | Статус |
 |---|---|---|
 | 1.1 | `01.1-contracts-and-normalization-code.md` | выполнено 2026-09-21; code, существующая регрессия пройдена |
-| 1.2 | `01.2-contracts-and-normalization-tests.md` | planned |
+| 1.2 | `01.2-contracts-and-normalization-tests.md` | выполнено 2026-09-22; 30 targeted, полный pytest пройден |
 | 2.1 | `02.1-geonames-sqlite-builder-code.md` | planned |
 | 2.2 | `02.2-geonames-sqlite-builder-tests.md` | planned |
 | 3.1 | `03.1-sqlite-lifecycle-and-lookup-code.md` | planned |
@@ -614,3 +614,60 @@ timezone, builder, adapters и tests не изменены. Новые тест�
 приёмка этих AC требует последующих test-карточек. SQLite search, builder и
 сквозной каталог ещё не реализованы и здесь не проверялись. Общая актуализация
 статусов requirements/diagrams остаётся 5.2. Commit, push и PR не выполнялись.
+
+### 11.2. Карточка 1.2 — 2026-09-22
+
+**Результат:** создан и выполнен
+[промт 1.2](../../../prompts/2026-09-21/place-catalog/01.2-contracts-and-normalization-tests.md).
+Новый test-модуль закрепляет NFKC, Unicode whitespace, casefold, `Ё/ё`,
+непустые Unicode-названия и границу 200 code points. Перекрывающиеся случаи
+доказывают порядок raw `Cc` → normalization → `EMPTY` → `TOO_LONG` →
+`NO_SEARCHABLE_CHARACTERS`, включая увеличение длины после NFKC.
+
+Для search-моделей проверены точные поля, tuple выдачи, четыре допустимых кода,
+Pydantic `frozen_instance`, `extra_forbidden` и `literal_error`. Пустой
+`PlaceSuggestions` доказан как успешный исход, отличный от
+`InvalidPlaceQuery`; четыре публичных реэкспорта сверены по identity, а
+language allow-list закреплён как `frozenset({"ru"})`.
+
+**Фактические файлы:**
+
+- `tests/test_place_search_contracts.py` — единственное изменение
+  исполняемого кода;
+- `prompts/2026-09-21/place-catalog/01.2-contracts-and-normalization-tests.md`;
+- этот план — статус 1.2 и журнал выполнения.
+
+**Исходная готовность:** ветка `feat/place-catalog`, HEAD `840daaa` с
+реализацией 1.1. До добавления тестов существующая birth-регрессия дала
+`41 passed in 0.44s`. Посторонние untracked-пути, перечисленные в §11.1,
+оставлены без изменений.
+
+**Фактические проверки после добавления тестов:**
+
+```powershell
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/test_place_search_contracts.py -q
+# 30 passed in 0.22s
+
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/test_place_search_contracts.py tests/test_birth_places.py tests/test_birth_resolver.py -q
+# 71 passed in 0.44s
+
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/test_birth_tz.py tests/test_module_boundaries.py tests/application -q
+# 1003 passed in 11.36s
+
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider -q
+# 2478 passed in 43.04s
+
+git diff --check
+# exit code 0; ошибок whitespace нет
+```
+
+PowerShell-проверка относительных Markdown-ссылок обоих актуальных документов
+нашла 17 ссылок и 0 отсутствующих целей. Отдельная проверка трёх изменённых
+файлов не нашла trailing whitespace.
+
+**Границы результата:** `src/**`, builder, adapters, существующие tests,
+fixtures/goldens и архитектурные проверки не изменены. Отклонений от карточки
+нет. AC-S6 закрыт в части pure-нормализации, AC-S12 — на уровне контрактных
+исходов. Доказательство отсутствия SQL для invalid query остаётся 4.2; builder,
+SQLite lifecycle/search и сквозная интеграция остаются карточкам 2.1–5.1.
+Общий documentation closeout остаётся 5.2. Commit, push и PR не выполнялись.
