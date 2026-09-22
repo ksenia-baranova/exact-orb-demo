@@ -411,7 +411,8 @@ async def test_tzdata_version_mismatch_warns_once_and_allows_open(
 ) -> None:
     path = _copy_catalog(catalog_path, tmp_path / "version-mismatch.sqlite")
     catalog_version = "0.test-mismatch"
-    assert catalog_version != metadata.version("tzdata")
+    runtime_version = metadata.version("tzdata")
+    assert catalog_version != runtime_version
     _update_build_parameters(path, tzdata_version=catalog_version)
 
     executor = RecordingExecutor()
@@ -432,14 +433,37 @@ async def test_tzdata_version_mismatch_warns_once_and_allows_open(
     records = [
         record
         for record in caplog.records
-        if record.getMessage() == "place_catalog_tzdata_version_mismatch"
+        if record.getMessage().startswith("place_catalog_tzdata_version_mismatch ")
     ]
     assert len(records) == 1
     assert records[0].levelno == logging.WARNING
     assert records[0].catalog_tzdata_version == catalog_version
-    assert records[0].runtime_tzdata_version == metadata.version("tzdata")
+    assert records[0].runtime_tzdata_version == runtime_version
+    assert records[0].getMessage() == (
+        "place_catalog_tzdata_version_mismatch "
+        f"catalog_tzdata_version={catalog_version} "
+        f"runtime_tzdata_version={runtime_version}"
+    )
     assert "524901" not in records[0].getMessage()
     assert "Москва" not in records[0].getMessage()
+
+
+async def test_missing_tzdata_distribution_stops_startup(
+    catalog_path: Path,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    path = _copy_catalog(catalog_path, tmp_path / "missing-tzdata.sqlite")
+
+    def missing_version(distribution_name: str) -> str:
+        assert distribution_name == "tzdata"
+        raise metadata.PackageNotFoundError(distribution_name)
+
+    monkeypatch.setattr(sqlite_adapter.metadata, "version", missing_version)
+
+    error = await _expect_open_unavailable(path)
+
+    assert isinstance(error.__cause__, metadata.PackageNotFoundError)
 
 
 @pytest.mark.parametrize("tz_id", ["", "Nowhere/Fake"])
@@ -479,6 +503,59 @@ async def test_read_failure_after_startup_is_typed(
         assert isinstance(caught.value.__cause__, sqlite3.ProgrammingError)
         await catalog.aclose()
     finally:
+        executor.shutdown(wait=True)
+
+
+async def test_lookup_scheduling_failure_is_typed(
+    catalog_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    executor = RecordingExecutor()
+    catalog = await SqlitePlaceCatalog.open(catalog_path, executor=executor)
+    real_submit = executor.submit
+
+    def reject_submission(
+        fn: Callable[..., Any],
+        /,
+        *args: Any,
+        **kwargs: Any,
+    ) -> Future[Any]:
+        raise RuntimeError("executor is unavailable")
+
+    try:
+        monkeypatch.setattr(executor, "submit", reject_submission)
+        with pytest.raises(
+            PlaceCatalogUnavailableError,
+            match="lookup could not be scheduled",
+        ) as caught:
+            await catalog.lookup("524901")
+        assert isinstance(caught.value.__cause__, RuntimeError)
+    finally:
+        monkeypatch.setattr(executor, "submit", real_submit)
+        await catalog.aclose()
+        executor.shutdown(wait=True)
+
+
+async def test_unexpected_lookup_worker_failure_is_not_retryable_unavailable(
+    catalog_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    executor = RecordingExecutor()
+    catalog = await SqlitePlaceCatalog.open(catalog_path, executor=executor)
+
+    def fail_lookup(
+        connection: sqlite3.Connection,
+        place_id: str,
+    ) -> object:
+        raise AssertionError("injected lookup defect")
+
+    monkeypatch.setattr(sqlite_adapter, "_sync_lookup", fail_lookup)
+    try:
+        with pytest.raises(AssertionError, match="injected lookup defect"):
+            await catalog.lookup("524901")
+        assert executor.submitted_names[-1] == "fail_lookup"
+    finally:
+        await catalog.aclose()
         executor.shutdown(wait=True)
 
 

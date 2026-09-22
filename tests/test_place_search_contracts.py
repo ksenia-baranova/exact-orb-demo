@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import unicodedata
 from typing import Any
 
 import pytest
@@ -84,6 +85,31 @@ def test_normalized_length_is_checked_after_nfkc() -> None:
 
     assert len(query) == 67
     assert normalize_place_query(query) == InvalidPlaceQuery(code="TOO_LONG")
+
+
+def test_format_character_is_preserved_and_is_not_a_control_error() -> None:
+    query = "Моск\u00adва"
+
+    assert unicodedata.category("\u00ad") == "Cf"
+    assert normalize_place_query(query) == "моск\u00adва"
+
+
+@pytest.mark.parametrize("query", ["\u3021", "\u0bf0"])
+def test_unicode_number_categories_are_searchable(query: str) -> None:
+    assert unicodedata.category(query) in {"Nl", "No"}
+    assert query.isalnum()
+    assert normalize_place_query(query) == query
+
+
+@pytest.mark.parametrize(
+    "query",
+    ["ＭＯＳＣＯＷ", "Straße", "  ЁЖ\u2003ёлка  ", "Моск\u00adва"],
+)
+def test_successful_normalization_is_idempotent(query: str) -> None:
+    normalized = normalize_place_query(query)
+
+    assert isinstance(normalized, str)
+    assert normalize_place_query(normalized) == normalized
 
 
 def test_two_hundred_code_point_search_key_is_valid() -> None:

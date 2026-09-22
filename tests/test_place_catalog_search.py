@@ -506,6 +506,8 @@ async def test_search_before_open_and_after_close_never_reaches_worker(
     unopened_executor = RecordingExecutor()
     try:
         unopened = SqlitePlaceCatalog(executor=unopened_executor)
+        with pytest.raises(ValueError, match="limit"):
+            await unopened.search("Москва", limit=0)
         with pytest.raises(PlaceCatalogUnavailableError, match="not open"):
             await unopened.search("Москва")
         assert unopened_executor.submitted_names == []
@@ -518,6 +520,8 @@ async def test_search_before_open_and_after_close_never_reaches_worker(
         catalog = await SqlitePlaceCatalog.open(catalog_path, executor=executor)
         await catalog.aclose()
         before = len(executor.submitted_names)
+        with pytest.raises(ValueError, match="limit"):
+            await catalog.search("Москва", limit=0)
         with pytest.raises(PlaceCatalogUnavailableError, match="not open"):
             await catalog.search("Москва")
         assert len(executor.submitted_names) == before
@@ -541,6 +545,60 @@ async def test_search_read_failure_after_startup_is_typed(
         assert isinstance(caught.value.__cause__, sqlite3.ProgrammingError)
         await catalog.aclose()
     finally:
+        executor.shutdown(wait=True)
+
+
+async def test_search_scheduling_failure_is_typed(
+    catalog_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    executor = RecordingExecutor()
+    catalog = await SqlitePlaceCatalog.open(catalog_path, executor=executor)
+    real_submit = executor.submit
+
+    def reject_submission(
+        fn: Callable[..., Any],
+        /,
+        *args: Any,
+        **kwargs: Any,
+    ) -> Future[Any]:
+        raise RuntimeError("executor is unavailable")
+
+    try:
+        monkeypatch.setattr(executor, "submit", reject_submission)
+        with pytest.raises(
+            PlaceCatalogUnavailableError,
+            match="search could not be scheduled",
+        ) as caught:
+            await catalog.search("Москва")
+        assert isinstance(caught.value.__cause__, RuntimeError)
+    finally:
+        monkeypatch.setattr(executor, "submit", real_submit)
+        await catalog.aclose()
+        executor.shutdown(wait=True)
+
+
+async def test_unexpected_search_worker_failure_is_not_retryable_unavailable(
+    catalog_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    executor = RecordingExecutor()
+    catalog = await SqlitePlaceCatalog.open(catalog_path, executor=executor)
+
+    def fail_search(
+        connection: sqlite3.Connection,
+        search_key: str,
+        limit: int,
+    ) -> PlaceSuggestions:
+        raise AssertionError("injected search defect")
+
+    monkeypatch.setattr(sqlite_adapter, "_sync_search", fail_search)
+    try:
+        with pytest.raises(AssertionError, match="injected search defect"):
+            await catalog.search("Москва")
+        assert executor.submitted_names[-1] == "fail_search"
+    finally:
+        await catalog.aclose()
         executor.shutdown(wait=True)
 
 

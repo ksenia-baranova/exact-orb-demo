@@ -143,16 +143,23 @@ class SqlitePlaceCatalog:
 
         loop = asyncio.get_running_loop()
         try:
-            return await loop.run_in_executor(
+            search_future = loop.run_in_executor(
                 self._executor,
                 _sync_search,
                 connection,
                 search_key,
                 limit,
             )
+        except RuntimeError as exc:
+            raise PlaceCatalogUnavailableError(
+                "place catalog search could not be scheduled"
+            ) from exc
+
+        try:
+            return await search_future
         except asyncio.CancelledError:
             raise
-        except Exception as exc:
+        except sqlite3.Error as exc:
             raise PlaceCatalogUnavailableError(
                 "place catalog search failed"
             ) from exc
@@ -166,15 +173,22 @@ class SqlitePlaceCatalog:
 
         loop = asyncio.get_running_loop()
         try:
-            return await loop.run_in_executor(
+            lookup_future = loop.run_in_executor(
                 self._executor,
                 _sync_lookup,
                 connection,
                 place_id,
             )
+        except RuntimeError as exc:
+            raise PlaceCatalogUnavailableError(
+                "place catalog lookup could not be scheduled"
+            ) from exc
+
+        try:
+            return await lookup_future
         except asyncio.CancelledError:
             raise
-        except Exception as exc:
+        except sqlite3.Error as exc:
             raise PlaceCatalogUnavailableError(
                 "place catalog lookup failed"
             ) from exc
@@ -319,7 +333,10 @@ def _validate_catalog(connection: sqlite3.Connection) -> None:
     runtime_tzdata_version = metadata.version("tzdata")
     if catalog_tzdata_version != runtime_tzdata_version:
         _LOGGER.warning(
-            "place_catalog_tzdata_version_mismatch",
+            "place_catalog_tzdata_version_mismatch "
+            "catalog_tzdata_version=%s runtime_tzdata_version=%s",
+            catalog_tzdata_version,
+            runtime_tzdata_version,
             extra={
                 "catalog_tzdata_version": catalog_tzdata_version,
                 "runtime_tzdata_version": runtime_tzdata_version,

@@ -2,18 +2,20 @@
 
 **Дата исходной сверки:** 2026-09-21.
 
-**Статус:** завершён 2026-09-22; карточки 1.1–5.2 реализованы и проверены.
-SQLite builder, lifecycle/lookup adapter, индексированный search, сквозная
-application-приёмка, full local-data build и documentation closeout готовы.
+**Статус:** завершён 2026-09-22; карточки 1.1–5.2 и post-closeout correction 6
+реализованы и проверены. SQLite builder, lifecycle/lookup adapter,
+индексированный search, сквозная application-приёмка, full local-data build,
+documentation closeout и review corrections готовы.
 
 **Ветка:** `feat/place-catalog`.
 
 **HEAD исходной сверки:** `4d3c7953e5cdaa2f7b885028438714185d238661`.
 
-**Плановое разбиение:** десять рабочих промтов. Первые четыре функциональные
-группы идут парами production-код → отдельный промт с тестами; после готовности
-всего кода следуют два сквозных приёмочных промта. RED/GREEN и test-first
-порядок не используются.
+**Плановое разбиение:** десять основных рабочих промтов и отдельный
+post-closeout correction prompt. Первые четыре функциональные группы идут
+парами production-код → отдельный промт с тестами; после готовности всего кода
+следуют два сквозных приёмочных промта. RED/GREEN и test-first порядок не
+используются.
 
 ## 1. Цель ветки
 
@@ -104,6 +106,7 @@ prompt-файлы не создаёт.
 | 4.2 | `prompts/2026-09-22/place-catalog/04.2-indexed-place-search-tests.md` | выполнено 2026-09-22; 16 targeted, связанный и полный pytest пройдены |
 | 5.1 | `prompts/2026-09-22/place-catalog/05.1-place-catalog-end-to-end-tests.md` | выполнено 2026-09-22; 4 targeted, связанный и полный pytest пройдены |
 | 5.2 | `prompts/2026-09-22/place-catalog/05.2-place-catalog-closeout.md` | выполнено 2026-09-22; 128 targeted, 1012 related, 2540 full, local-data smoke пройден |
+| 6 | `prompts/2026-09-22/place-catalog/06-place-catalog-review-corrections.md` | выполнено 2026-09-22; 84 targeted, 97 related, 2552 full |
 
 ```text
 1.1 contracts/normalizer code
@@ -533,8 +536,8 @@ Timeout в concurrency/cancellation tests служит только защито
 - Актуальные requirements, scenarios, diagrams, overview и roadmap отражают
   реализованный статус, а M1-6/M1-7 остаются target/deferred.
 - `git diff --check` и проверки ссылок/диаграмм прошли.
-- Не осталось скрытых решений по schema, timezone, ranking, lifecycle или
-  ownership executor.
+- Не осталось скрытых решений по normalization, schema, timezone, ranking,
+  read-error classification, lifecycle или ownership executor.
 
 ## 11. Журнал выполнения
 
@@ -1335,3 +1338,77 @@ single-worker executor. `search("Москва")` включил `place_id="52490
 не изменены. Generated SQLite остался ignored. M1-6 владеет HTTP mapping и
 lifespan wiring, M1-7 — browser autocomplete, M1-12 — доставкой каталога и
 deployment policy. Commit, push и PR не выполнялись.
+
+### 11.11. Post-closeout correction 6 — 2026-09-22
+
+**Результат:** создан и выполнен
+[промт 6](../../../prompts/2026-09-22/place-catalog/06-place-catalog-review-corrections.md).
+Коррекция устранила три подтверждённых разрыва closeout: точная семантика
+normalizer находилась только в историческом промте 1.1, поля WARNING не
+попадали в форматируемый message, а `search`/`lookup` преобразовывали любой
+дефект worker-кода в retryable недоступность каталога.
+
+`SqlitePlaceCatalog` теперь отдельно обрабатывает синхронный отказ executor-а
+принять search/lookup task и результат worker-а. Первый становится
+`PlaceCatalogUnavailableError` с причиной `RuntimeError`, реальный SQLite read
+failure — с причиной `sqlite3.Error`, cancellation распространяется напрямую,
+а внедрённый `AssertionError` выходит как внутренний дефект без ложного
+`retryable=true`. Startup/cleanup semantics `open`/`aclose` не менялись.
+
+WARNING `place_catalog_tzdata_version_mismatch` сохраняет structured `extra`,
+но теперь также содержит `catalog_tzdata_version=<value>` и
+`runtime_tzdata_version=<value>` в `LogRecord.getMessage()`. Отсутствие
+обязательного distribution `tzdata` закреплено как typed startup failure, а не
+как fallback на системную timezone database.
+
+Требования синхронизированы с уже принятыми решениями:
+
+- control check охватывает ровно Unicode category `Cc`; `Cf`, включая U+00AD,
+  сохраняется, если его не меняет NFKC;
+- лимит 200 применяется к итоговому ключу, а searchable-символ определяется
+  точной семантикой `str.isalnum()`, включая `Nl`/`No`;
+- raw-size guard остаётся M1-6 transport concern, чтобы M1-5 normalizer не
+  менял результат строк, сжимающихся после normalization/whitespace folding;
+- минимальная структура каждой строки `alternateNamesV2` проверяется до
+  relevance filter как fail-fast проверка целого обязательного входа;
+- независимые schema-v1 expectations builder-а и adapter-а сохранены как
+  consumer compatibility check; общий schema-модуль не добавлен;
+- фиксированные имена `PRAGMA table_info` не являются пользовательским SQL;
+  размещение AC-B6 уже отражено карточкой 4.2, а singleton module lists
+  подтверждены как tuple и не изменялись.
+
+Новые regression nodes проверяют `Cf`, `Nl`/`No`, идемпотентность успешной
+нормализации, видимый текст WARNING, отсутствие `tzdata`, scheduler failures,
+непреобразование неожиданных worker errors и порядок argument validation до
+lifecycle. Production normalizer, builder/schema/indexes, fixtures, resolver,
+application/bootstrap, dependencies и HTTP/UI не изменены.
+
+Первый targeted-запуск внутри restricted sandbox выполнил 45 тестов и получил
+37 setup errors из-за запрета доступа к
+`C:\Users\KateUser\AppData\Local\Temp\pytest-of-KateUser`. Та же команда с
+доступом к системному временному каталогу прошла; это ограничение среды, а не
+отказ тестовых сценариев.
+
+**Фактические проверки:**
+
+```powershell
+.\.venv\Scripts\python.exe -B -m py_compile src/exact_orb/birth/adapters/sqlite.py tests/test_place_search_contracts.py tests/test_place_catalog_sqlite.py tests/test_place_catalog_search.py
+# exit code 0
+
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/test_place_search_contracts.py tests/test_place_catalog_sqlite.py tests/test_place_catalog_search.py -q
+# 84 passed in 0.88s
+
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/test_place_catalog_builder.py tests/application/test_place_catalog_integration.py tests/test_module_boundaries.py tests/test_birth_places.py tests/test_birth_resolver.py -q
+# 97 passed in 3.92s
+
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider -q
+# 2552 passed in 44.86s
+
+git diff --check
+# exit code 0; ошибок whitespace нет
+```
+
+Проверка трёх изменённых/new Markdown-файлов нашла 29 относительных ссылок и
+0 отсутствующих целей. Диаграммы не менялись, поэтому повторный PlantUML render
+не требовался. Generated SQLite и посторонние untracked-файлы сохранены без
+изменений. Commit, push и PR не выполнялись.

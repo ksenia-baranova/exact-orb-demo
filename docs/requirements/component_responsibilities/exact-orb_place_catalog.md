@@ -122,6 +122,10 @@ Allow-list языков альтернативных имён в M1-5 содер
 4. детерминированно записать места и имена в SQLite.
 
 Полный `alternateNamesV2.txt` и все его строки в память не загружаются.
+Минимальная физическая структура каждой непустой строки проверяется до
+фильтрации по нужным GeoNames ID. Поэтому повреждённая строка о нерелевантном
+месте также останавливает сборку: обязательный вход принимается целиком либо
+отклоняется как повреждённый, а не читается частично.
 
 В каталог входят только записи:
 
@@ -256,6 +260,14 @@ catalog_metadata
 производный артефакт: миграции для него не создаются, несовместимая схема
 требует пересборки.
 
+Builder и runtime adapter держат независимые ожидания schema v1: builder
+проверяет созданный артефакт, а adapter независимо проверяет совместимость
+потребляемого выпуска. Общий модуль schema-констант намеренно не используется,
+чтобы изменение producer-а не стало автоматически принятым consumer-ом без
+повышения schema version. В `PRAGMA table_info(...)` подставляются только
+фиксированные имена таблиц из этих ожиданий; пользовательский ввод в имена SQL
+объектов не попадает.
+
 `source_checksums` содержит только SHA-256 содержимого трёх входных файлов.
 `build_parameters.tzdata_version` содержит версию установленного Python
 distribution `tzdata`. Metadata не включает mtime, время сборки или иное
@@ -354,6 +366,13 @@ Concrete SQLite-adapter через этот пакет не реэкспорти
 Технический отказ открытия или чтения каталога поднимается как существующий
 типизированный `PlaceCatalogUnavailableError`. `CancelledError` не
 перехватывается и не преобразуется в доменный исход.
+
+Для `search` и `lookup` к ожидаемой недоступности относятся отказ executor-а
+принять задачу и `sqlite3.Error` выполненного чтения. Неожиданная ошибка
+Python/model-кода не становится retryable `PlaceCatalogUnavailableError`, а
+распространяется как внутренний сбой. Проверка типа query и `limit` выполняется
+до проверки открытого lifecycle; поэтому некорректный аргумент сохраняет
+`TypeError`/`ValueError` даже у unopened или closed экземпляра.
 
 ### 3.4. Существующий lookup-контракт
 
@@ -454,6 +473,11 @@ Adapter может импортировать birth contracts, но не зав�
 6. прекращает приём запросов и ждёт активные request tasks;
 7. закрывает каталог один раз после остановки зависимых путей.
 
+`tzdata` остаётся обязательной direct dependency runtime. Отсутствие metadata
+этого distribution является ошибкой окружения и останавливает startup через
+`PlaceCatalogUnavailableError`; системная timezone database не заменяет
+версию, необходимую для сравнения с metadata выпуска.
+
 Таким образом, шаги 2–4 принадлежат `SqlitePlaceCatalog.open()` уже в M1-5.
 Роль будущего composition из M1-6 — вызвать `open()` до приёма запросов и не
 запускать HTTP server при его типизированном отказе.
@@ -485,6 +509,9 @@ lifespan прекращает приём запросов и дожидаетс�
 `catalog_tzdata_version` и `runtime_tzdata_version`. Оно не содержит данных
 пользователя. Если вслед за ним найдена неразрешимая зона, startup завершается
 ошибкой; если все зоны разрешимы, каталог считается пригодным.
+Обе пары `catalog_tzdata_version=<value>` и
+`runtime_tzdata_version=<value>` входят также в форматируемый message, поэтому
+остаются видимыми при formatter-е без поддержки произвольных `LogRecord.extra`.
 
 Файл не заменяется под работающим процессом. Новый выпуск активируется только
 при следующем старте. Благодаря этому любой `place_id`, возвращённый поиском,
@@ -535,7 +562,9 @@ HTTP-приложения, но результат поиска не завис�
 Единственная реализация — объект `exact_orb.birth.places.normalize_place_query`.
 И `scripts/build_place_catalog.py`, и `exact_orb.birth.adapters.sqlite`
 импортируют именно этот объект; локальные копии функции запрещены. Сначала raw
-query проверяется на Unicode control characters; затем:
+query проверяется на символы Unicode General Category `Cc`; другие категории
+`C*`, включая format character `Cf` и U+00AD SOFT HYPHEN, этой ошибкой не
+отклоняются. Затем:
 
 ```python
 def normalize_place_query(query: str) -> str | InvalidPlaceQuery: ...
@@ -552,10 +581,19 @@ def normalize_place_query(query: str) -> str | InvalidPlaceQuery: ...
 
 Правила исходов:
 
-- управляющий символ в raw query → `CONTROL_CHARACTERS`;
+- символ категории `Cc` в raw query → `CONTROL_CHARACTERS`;
 - пустая строка → `EMPTY`;
-- длина больше 200 Unicode code points → `TOO_LONG`;
-- нет ни одной Unicode-буквы или цифры → `NO_SEARCHABLE_CHARACTERS`.
+- длина итогового ключа после всех четырёх преобразований больше 200 Unicode
+  code points → `TOO_LONG`;
+- `any(character.isalnum() for character in normalized)` ложно →
+  `NO_SEARCHABLE_CHARACTERS`; используется точная Python-семантика
+  `str.isalnum()`, включая принимаемые ею Unicode numbers `Nl` и `No`.
+
+У pure normalizer нет отдельного ограничения длины raw-строки: например,
+длинная последовательность Unicode whitespace может схлопнуться до пустого
+ключа и вернуть `EMPTY`. За ограничение HTTP query/body до вызова каталога
+отвечает M1-6; transport не должен передавать многомегабайтный ввод в
+event-loop нормализацию.
 
 Отсутствующий query или значение не строкового типа отклоняются схемой HTTP
 endpoint до вызова `PlaceSearch`. `query=` с пустой строкой достигает каталога
