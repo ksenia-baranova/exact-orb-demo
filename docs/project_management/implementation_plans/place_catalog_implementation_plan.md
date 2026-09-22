@@ -2,9 +2,10 @@
 
 **Дата исходной сверки:** 2026-09-21.
 
-**Статус:** выполняется; карточки 1.1–2.2 реализованы и проверены в границах
-своих этапов. SQLite builder и его synthetic-приёмка готовы; карточки 3.1–5.2
-не выполнялись.
+**Статус:** выполняется; карточки 1.1–3.1 реализованы и проверены в границах
+своих этапов. SQLite builder и его synthetic-приёмка готовы; lifecycle/lookup
+adapter прошёл ручной smoke, его исполняемые тесты остаются 3.2. Карточки
+3.2–5.2 не выполнялись.
 
 **Ветка:** `feat/place-catalog`.
 
@@ -85,7 +86,7 @@ M1-6/M1-7.
 Карточка не обязана становиться отдельным коммитом. Commit, push и PR требуют
 отдельного указания пользователя. Исходный путь prompt-файлов —
 `prompts/2026-09-21/place-catalog/<ID>-<topic>.md`; выполненные 22 сентября
-карточки 2.1–2.2 находятся в текущей папке `prompts/2026-09-22/`. Сам этот план
+карточки 2.1–3.1 находятся в текущей папке `prompts/2026-09-22/`. Сам этот план
 prompt-файлы не создаёт.
 
 ## 5. Последовательность и зависимости
@@ -98,7 +99,7 @@ prompt-файлы не создаёт.
 | 1.2 | `prompts/2026-09-21/place-catalog/01.2-contracts-and-normalization-tests.md` | выполнено 2026-09-22; 30 targeted, полный pytest пройден |
 | 2.1 | `prompts/2026-09-22/place-catalog/02.1-geonames-sqlite-builder-code.md` | выполнено 2026-09-22; synthetic build/schema smoke, полный pytest пройден |
 | 2.2 | `prompts/2026-09-22/place-catalog/02.2-geonames-sqlite-builder-tests.md` | выполнено 2026-09-22; 10 targeted, связанный и полный pytest пройдены |
-| 3.1 | `prompts/2026-09-21/place-catalog/03.1-sqlite-lifecycle-and-lookup-code.md` | planned |
+| 3.1 | `prompts/2026-09-22/place-catalog/03.1-sqlite-lifecycle-and-lookup-code.md` | выполнено 2026-09-22; lifecycle/lookup smoke, полный pytest пройден |
 | 3.2 | `prompts/2026-09-21/place-catalog/03.2-sqlite-lifecycle-and-lookup-tests.md` | planned |
 | 4.1 | `prompts/2026-09-21/place-catalog/04.1-indexed-place-search-code.md` | planned |
 | 4.2 | `prompts/2026-09-21/place-catalog/04.2-indexed-place-search-tests.md` | planned |
@@ -837,3 +838,88 @@ git diff --check
 не изменены. Полный real-data build не запускался. Карточка даёт исполняемые
 доказательства AC-P1–P4, AC-P6–P10 и builder-половины AC-B6. Startup validation
 AC-P5/P11 остаётся 3.x, runtime search — 4.x. Commit, push и PR не выполнялись.
+
+### 11.5. Карточка 3.1 — 2026-09-22
+
+**Результат:** создан и выполнен
+[промт 3.1](../../../prompts/2026-09-22/place-catalog/03.1-sqlite-lifecycle-and-lookup-code.md).
+Добавлен leaf-adapter `exact_orb.birth.adapters.sqlite.SqlitePlaceCatalog` и
+пустой package boundary `exact_orb.birth.adapters` без реэкспорта concrete
+adapter.
+
+`open()` принимает только file-backed path и внешний
+`ThreadPoolExecutor(max_workers=1)`. На worker выполняются
+`Path.resolve(strict=True)`, `Path.as_uri()`, read-only SQLite open через
+`mode=ro`, schema/metadata/index validation, сравнение версии `tzdata` и
+проверка всех distinct timezone эффективным runtime `ZoneInfo`. Adapter не
+создаёт и не завершает executor, не использует `asyncio.to_thread`,
+`check_same_thread=False`, `immutable=1` или write connection.
+
+Startup validation фиксирует schema v1: точные обязательные колонки трёх
+таблиц, оба индекса и BINARY search key, singleton metadata, три lowercase
+SHA-256 и shape build parameters. Mismatch версии пишет ровно одно событие
+`place_catalog_tzdata_version_mismatch` уровня WARNING с catalog/runtime
+версиями и не останавливает startup; неразрешимая timezone останавливает.
+
+`lookup()` проверяет lifecycle и Python-type, возвращает pathological string
+IDs как fresh `PlaceNotFound` без SQL, а допустимый ID разрешает одним
+параметризованным exact query на worker. `ResolvedPlace.canonical_name`
+получает `display_name`, координаты переводятся из целых сотых. Технические
+отказы становятся `PlaceCatalogUnavailableError`; `CancelledError` не
+преобразуется. `aclose()` идемпотентен, разделяет один close future между
+повторными вызовами и завершает начатое закрытие перед распространением
+cancellation.
+
+**Фактические файлы:**
+
+- `src/exact_orb/birth/adapters/__init__.py`;
+- `src/exact_orb/birth/adapters/sqlite.py`;
+- `prompts/2026-09-22/place-catalog/03.1-sqlite-lifecycle-and-lookup-code.md`;
+- этот план — путь/status 3.1 и журнал выполнения.
+
+**Ручной synthetic smoke:** builder создал ignored
+`logs/place-catalog-card-3.1/places.sqlite` из 4 admin1, 10 cities и 15
+alternate-name строк: 5 places и 13 names. На реальном executor adapter вернул
+для `524901` новую модель Москвы `55.75/37.62`, `Europe/Moscow`; повторный
+lookup дал равную, но не тождественную модель. Unknown, non-numeric ID и
+строка длиной 10 000 дали `PlaceNotFound`; lookup до open и после двойного
+close дал typed unavailable.
+
+Отдельные копии базы подтвердили:
+
+```text
+schema_drift typed_unavailable _CatalogValidationError
+bad_timezone typed_unavailable _CatalogValidationError
+version_mismatch_warning WARNING 0.invalid 2026.3
+```
+
+Три изолированных import-smoke дали:
+
+```text
+import exact_orb.birth                  -> sqlite3_loaded=False
+import exact_orb.birth.adapters         -> sqlite3_loaded=False; no re-export
+import exact_orb.birth.adapters.sqlite  -> sqlite3_loaded=True
+```
+
+**Фактические проверки:**
+
+```powershell
+.\.venv\Scripts\python.exe -B -m py_compile src/exact_orb/birth/adapters/__init__.py src/exact_orb/birth/adapters/sqlite.py
+# exit code 0
+
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/test_place_catalog_builder.py tests/test_place_search_contracts.py tests/test_birth_places.py tests/test_birth_resolver.py tests/test_module_boundaries.py -q
+# 117 passed in 3.42s
+
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider -q
+# 2488 passed in 108.57s
+
+git diff --check
+# exit code 0; ошибок whitespace нет
+```
+
+**Границы результата:** `exact_orb.birth.__init__`, contracts, resolver,
+builder, fixtures, tests, application/bootstrap, dependencies,
+requirements/ADR/diagrams и реальные `cities/**` не изменены. `search()` и
+ranking SQL не добавлялись; они остаются 4.1. Исполняемая приёмка lifecycle,
+thread ownership, startup drift, cancellation и path cases остаётся 3.2.
+Production composition остаётся M1-6. Commit, push и PR не выполнялись.
