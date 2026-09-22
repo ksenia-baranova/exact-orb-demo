@@ -2,7 +2,9 @@
 
 **Дата исходной сверки:** 2026-09-21.
 
-**Статус:** запланировано; ни одна карточка реализации не выполнялась.
+**Статус:** выполняется; карточка 1.1 реализована и проверена существующей
+регрессией. Специализированные тесты новых контрактов остаются карточке 1.2;
+остальные карточки ещё не выполнялись.
 
 **Ветка:** `feat/place-catalog`.
 
@@ -91,7 +93,7 @@ M1-6/M1-7.
 
 | ID | Файл внутри `prompts/2026-09-21/place-catalog/` | Статус |
 |---|---|---|
-| 1.1 | `01.1-contracts-and-normalization-code.md` | planned |
+| 1.1 | `01.1-contracts-and-normalization-code.md` | выполнено 2026-09-21; code, существующая регрессия пройдена |
 | 1.2 | `01.2-contracts-and-normalization-tests.md` | planned |
 | 2.1 | `02.1-geonames-sqlite-builder-code.md` | planned |
 | 2.2 | `02.2-geonames-sqlite-builder-tests.md` | planned |
@@ -535,7 +537,80 @@ Timeout в concurrency/cancellation tests служит только защито
 
 ## 11. Журнал выполнения
 
-До исполнения карточек раздел остаётся пустым. Каждая выполненная карточка
-добавляет дату, фактические файлы, команды, результаты, отклонения от плана и
-оставшиеся зависимости. Статус не повышается по факту написания кода или
-наличия тестового файла: требуется исполненное наблюдаемое evidence.
+Каждая выполненная карточка добавляет дату, фактические файлы, команды,
+результаты, отклонения от плана и оставшиеся зависимости. Статус не повышается
+по факту написания кода или наличия тестового файла: требуется исполненное
+наблюдаемое evidence.
+
+### 11.1. Карточка 1.1 — 2026-09-21
+
+**Результат:** создан и выполнен
+[промт 1.1](../../../prompts/2026-09-21/place-catalog/01.1-contracts-and-normalization-code.md).
+Добавлены immutable search-модели, `PlaceSearch`, alias исходов, singleton
+allow-list `{"ru"}` и единственная pure-функция `normalize_place_query`.
+Нормализация проверяет raw Unicode `Cc` до преобразований, затем выполняет
+NFKC → whitespace → casefold → `ё → е`; пустота, предел 200 code points и
+наличие букв/цифр проверяются на готовом ключе. Пустая выдача остаётся
+успешным исходом. Четыре search-контракта доступны из `exact_orb.birth`.
+
+**Фактические файлы:**
+
+- `src/exact_orb/birth/places.py`;
+- `src/exact_orb/birth/__init__.py` — только четыре новых реэкспорта;
+- `prompts/2026-09-21/place-catalog/01.1-contracts-and-normalization-code.md`;
+- этот план — статус 1.1 и журнал выполнения.
+
+**Исходная готовность:** ветка `feat/place-catalog`; requirements и diagrams
+присутствуют и уже отслеживаются Git. До изменения кода целевые тесты дали
+`41 passed in 0.41s`.
+
+Существовавшие до начала работы untracked-пути сохранены без изменений:
+
+```text
+Claude outputs/
+_local/
+docs/architecture/deployment.md
+prompts/2026-08-22/10-data-selector.md
+prompts/2026-08-22/10-include-gates-computation.md
+prompts/2026-08-22/11-include-gates-computation-tests.md
+prompts/2026-08-26/
+prompts/2026-08-27/05-run-id-correlation.md
+prompts/2026-09-04/
+prompts/2026-09-06/03-research-corpus-fixes.md
+prompts/2026-09-08/00-build-natal-handler-plan-decisions.md
+prompts/2026-09-08/05-align-build-natal-docs.md
+prompts/2026-09-09/02-align-build-natal-documentation.md
+```
+
+**Фактические проверки после изменения кода:**
+
+```powershell
+.\.venv\Scripts\python.exe -B -m compileall -q src/exact_orb/birth/places.py src/exact_orb/birth/__init__.py
+# exit code 0
+
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/test_birth_places.py tests/test_birth_resolver.py -q
+# 41 passed in 0.35s
+
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/test_birth_tz.py tests/test_module_boundaries.py tests/application -q
+# 1003 passed in 29.53s
+
+.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider -q
+# 2448 passed in 113.09s (0:01:53)
+
+.\.venv\Scripts\python.exe -B -c 'import sys; from exact_orb.birth import PlaceSearch, PlaceSuggestion, PlaceSuggestions, InvalidPlaceQuery; assert "sqlite3" not in sys.modules; print("Four public imports OK; sqlite3 not loaded")'
+# Four public imports OK; sqlite3 not loaded
+
+.\.venv\Scripts\python.exe -B -c 'import re; from pathlib import Path; p = Path("prompts/2026-09-21/place-catalog/01.1-contracts-and-normalization-code.md"); links = re.findall(r"\]\(([^)]+)\)", p.read_text(encoding="utf-8")); missing = [link for link in links if not (p.parent / link.split("#", 1)[0]).exists()]; print({"links": len(links), "missing": missing}); assert not missing'
+# {'links': 8, 'missing': []}
+
+git diff --check
+# exit code 0; ошибок whitespace нет
+```
+
+**Границы результата:** production-scope карточки соблюдён; JSONL, resolver,
+timezone, builder, adapters и tests не изменены. Новые тесты не создавались;
+специализированное покрытие normalizer и immutable моделей остаётся 1.2.
+Контрактная часть AC-S6/AC-S12 реализована, основа AC-B6 добавлена; полная
+приёмка этих AC требует последующих test-карточек. SQLite search, builder и
+сквозной каталог ещё не реализованы и здесь не проверялись. Общая актуализация
+статусов requirements/diagrams остаётся 5.2. Commit, push и PR не выполнялись.

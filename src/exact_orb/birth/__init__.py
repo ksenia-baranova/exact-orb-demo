@@ -3,10 +3,14 @@
 from __future__ import annotations
 
 from exact_orb.birth.places import (
+    InvalidPlaceQuery,
     LocalPlaceCatalog,
     PlaceCatalog,
     PlaceCatalogUnavailableError,
     PlaceNotFound,
+    PlaceSearch,
+    PlaceSuggestion,
+    PlaceSuggestions,
     ResolvedPlace,
 )
 from exact_orb.birth.resolver import BirthDataResolver
@@ -35,10 +39,14 @@ __all__ = [
     "BirthDataResolver",
     "BirthInput",
     "BirthTimeDomain",
+    "InvalidPlaceQuery",
     "LocalPlaceCatalog",
     "PlaceCatalog",
     "PlaceCatalogUnavailableError",
     "PlaceNotFound",
+    "PlaceSearch",
+    "PlaceSuggestion",
+    "PlaceSuggestions",
     "ResolutionWarning",
     "ResolvedBirthData",
     "ResolvedPlace",
