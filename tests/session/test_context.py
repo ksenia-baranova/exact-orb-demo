@@ -6,10 +6,13 @@ import asyncio
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from inspect import Parameter, iscoroutinefunction, signature
+import json
+import logging
 
 import pytest
 from pydantic import ValidationError
 
+import exact_orb.session.context as context_module
 from exact_orb.session.adapters import InMemorySessionPersistence
 from exact_orb.session.context import ContextService
 from exact_orb.session.dialog import DialogStore, DialogTurn
@@ -310,6 +313,94 @@ async def _invoke(service: ContextService, operation: str) -> object:
         return await service.reset_all("session-1", 0)
     assert operation == "delete"
     return await service.delete("session-1")
+
+
+@pytest.mark.parametrize("operation", tuple(_PUBLIC_PARAMETERS))
+async def test_public_context_operation_logs_full_debug_input_and_output(
+    operation: str, caplog: pytest.LogCaptureFixture,
+) -> None:
+    caplog.set_level(logging.DEBUG, logger="exact_orb.session.context")
+    service, _, _, script = _service()
+    expected = _response_for(operation)
+    script.expect(_method_for(operation), expected)
+
+    result = await _invoke(service, operation)
+
+    records = [
+        record for record in caplog.records
+        if record.name == "exact_orb.session.context"
+        and record.getMessage().startswith("component_message ")
+    ]
+    assert len(records) == 2
+    incoming, outgoing = (record.getMessage() for record in records)
+    assert f"direction=in operation=context_{operation} " in incoming
+    assert f"direction=out operation=context_{operation} " in outgoing
+    assert "run_id=- calculation_key=- status=ok payload_mode=full" in incoming
+    assert "run_id=- calculation_key=- status=ok payload_mode=full" in outgoing
+    assert json.loads(incoming.split(" message=", 1)[1])["session_id"] == "session-1"
+    assert f"message_type={type(result).__name__}" in outgoing
+    expected_payload = result.model_dump(mode="json") if hasattr(result, "model_dump") else None
+    assert json.loads(outgoing.split(" message=", 1)[1]) == expected_payload
+
+
+async def test_context_debug_boundary_logs_exception_without_changing_it(
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    caplog.set_level(logging.DEBUG, logger="exact_orb.session.context")
+    service, _, _, script = _service()
+    error = RuntimeError("synthetic failure")
+    script.expect("persistence.touch", error)
+
+    with pytest.raises(RuntimeError) as raised:
+        await service.load("session-1")
+
+    assert raised.value is error
+    messages = [
+        record.getMessage() for record in caplog.records
+        if record.name == "exact_orb.session.context"
+    ]
+    assert len(messages) == 2
+    assert "direction=in operation=context_load" in messages[0]
+    assert "direction=out operation=context_load" in messages[1]
+    assert "status=error payload_mode=error message_type=RuntimeError" in messages[1]
+    assert json.loads(messages[1].split(" message=", 1)[1]) == {
+        "exception_type": "RuntimeError", "message": "synthetic failure",
+    }
+
+
+async def test_context_load_debug_output_contains_complete_snapshot(
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    caplog.set_level(logging.DEBUG, logger="exact_orb.session.context")
+    service, _, _, script = _service()
+    snapshot = SessionSnapshot(state=_populated_state(), dialog=(make_turn(),))
+    script.expect("persistence.touch", snapshot)
+
+    assert await service.load("session-1") is snapshot
+
+    outputs = [
+        record.getMessage() for record in caplog.records
+        if record.name == "exact_orb.session.context"
+        and "direction=out operation=context_load " in record.getMessage()
+    ]
+    assert len(outputs) == 1
+    assert "message_type=SessionSnapshot" in outputs[0]
+    assert json.loads(outputs[0].split(" message=", 1)[1]) == snapshot.model_dump(mode="json")
+
+
+async def test_context_info_does_not_serialize_debug_payload(
+    monkeypatch: pytest.MonkeyPatch, caplog: pytest.LogCaptureFixture,
+) -> None:
+    caplog.set_level(logging.INFO, logger="exact_orb.session.context")
+    service, _, _, script = _service()
+    script.expect("sessions.compare_and_set", SessionAbsent(reason="not_found"))
+
+    def unexpected_projection(_: object) -> object:
+        raise AssertionError("DEBUG payload was serialized at INFO")
+
+    monkeypatch.setattr(context_module, "_json_value", unexpected_projection)
+    assert await service.save("session-1", 0, DELTA) == SessionAbsent(reason="not_found")
+    assert not any(record.name == "exact_orb.session.context" for record in caplog.records)
 
 
 @pytest.mark.parametrize("operation", _CLOCK_OPERATIONS)

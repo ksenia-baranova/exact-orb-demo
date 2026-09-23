@@ -9,6 +9,8 @@ data/ephe/
 # Каталог мест — производный артефакт scripts/build_place_catalog.py,
 # восстанавливается из дампа GeoNames; в репозиторий не кладётся.
 data/
+# Локальные исходные дампы GeoNames для сборки places.sqlite.
+/cities/
 logs/
 .idea/
 .env

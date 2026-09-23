@@ -92,6 +92,13 @@ class NatalTechniqueAdapter:
         spec: ChartSpec,
         resolved: ResolvedBirthData,
     ) -> CalculationResult:
+        peer = getattr(self._calculator, "__name__", type(self._calculator).__name__)
+        LOGGER.info(
+            "calculation_message direction=send run_id=- sender=NatalTechniqueAdapter "
+            "peer=%s operation=calculate_natal message_type=NatalCalculationRequest "
+            "calculation_key=-",
+            peer,
+        )
         chart = self._calculator(
             resolved.utc_datetime,
             resolved.latitude,
@@ -102,6 +109,12 @@ class NatalTechniqueAdapter:
             include=frozenset(spec.include),
             near_interception_threshold=spec.near_interception_threshold,
             birth_time_domain=resolved.birth_time_domain,
+        )
+        LOGGER.info(
+            "calculation_message direction=receive run_id=- sender=NatalTechniqueAdapter "
+            "peer=%s operation=calculate_natal message_type=%s calculation_key=-",
+            peer,
+            type(chart).__name__,
         )
         return CalculationResult(chart=chart)
 
@@ -254,7 +267,23 @@ def _calculate_sync(
         spec.chart_kind,
     )
     try:
-        return adapter.calculate(spec, resolved)
+        peer = type(adapter).__name__
+        LOGGER.info(
+            "calculation_message direction=send run_id=%s sender=EngineService "
+            "peer=%s operation=calculate message_type=TechniqueCalculationRequest "
+            "calculation_key=-",
+            run_id,
+            peer,
+        )
+        result = adapter.calculate(spec, resolved)
+        LOGGER.info(
+            "calculation_message direction=receive run_id=%s sender=EngineService "
+            "peer=%s operation=calculate message_type=%s calculation_key=-",
+            run_id,
+            peer,
+            type(result).__name__,
+        )
+        return result
     finally:
         LOGGER.debug(
             "calculation_thread_finished run_id=%s technique=%s chart_kind=%s duration_ms=%.3f",

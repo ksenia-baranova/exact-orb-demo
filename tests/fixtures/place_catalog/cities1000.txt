@@ -1,0 +1,10 @@
+524901	Moscow	Moscow	Məskeү,Москва	55.75222	37.61556	P	PPLC	RU		48				10381222		156	Europe/Moscow	2026-09-22
+498817	Saint Petersburg	Saint Petersburg		59.93863	30.31413	P	PPLA	RU		66				5351935		6	Europe/Moscow	2026-09-22
+900001	Half Boundary	Half Boundary		12.345	-45.675	P	PPL	RU		48				1		0	Europe/Moscow	2026-09-22
+900002	Nowhere	Nowhere		10.00	20.00	P	PPL	RU		48				1000		0	Nowhere/Fake	2026-09-22
+900003	Largeville	Largeville		40.7128	-74.0060	P	PPL	US		NY				100000		0	America/New_York	2026-09-22
+900004	Smallville	Smallville		41.00	-75.00	P	PPL	US		NY				99999		0	America/New_York	2026-09-22
+900005	Tiny Kazakhstan	Tiny Kazakhstan		43.25	76.95	P	PPL	KZ		75				1		0	Asia/Almaty	2026-09-22
+900006	District	District		55.76	37.62	P	PPLX	RU		48				50000		0	Europe/Moscow	2026-09-22
+900007	Administrative Region	Administrative Region		55.76	37.62	A	ADM1	RU		48				50000		0	Europe/Moscow	2026-09-22
+900008	No Zone	No Zone		55.76	37.62	P	PPL	RU		48				50000		0		2026-09-22

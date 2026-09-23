@@ -35,6 +35,11 @@ box "SESSION" #D1FAE5
     control "ContextService" as Context
 end box
 
+box "BUILD NATAL DEPENDENCIES" #E8F5E9
+    control "BirthDataResolver" as Resolver
+    control "ChartArtifactResolver" as Artifacts
+end box
+
 Request -> Orch : execute(command, session_id, run)
 activate Orch
 note right of Orch
@@ -42,23 +47,46 @@ RunContext frozen; Handler получает тот же объект.
 run_id, started_at и deadline не переприсваиваются.
 end note
 Orch -> Log : INFO application_operation_started\nrun_id, command_type
+Orch -> Log : DEBUG component_message direction=in\noperation=application_execute; command, session_id, run
 
 Orch -> Orch : exact routing by type(command)
+Orch -> Log : INFO application_message direction=send\npeer=ContextService, message_type=ContextLoadRequest
 Orch -> Context : load(session_id)
+Context -> Log : DEBUG component_message direction=in\noperation=context_load, run_id=-
+Context -> Log : DEBUG component_message direction=out\nmessage_type=SessionSnapshot, run_id=-
 Context --> Orch : SessionSnapshot(state_version=N)
+Orch -> Log : INFO application_message direction=receive\npeer=ContextService, message_type=SessionSnapshot
 Orch -> Log : DEBUG application_stage_finished\nstage=load, outcome=loaded, duration_ms
 
+Orch -> Log : INFO application_message direction=send\npeer=BuildNatalHandler, message_type=BuildNatalRequest
 Orch -> Handler : handle(command, snapshot.state, same run)
+Handler -> Log : INFO application_message direction=send\npeer=BirthDataResolver, message_type=BirthResolutionRequest
+Handler -> Resolver : resolve(birth_input, run)
+Resolver --> Handler : ResolvedBirthData
+Handler -> Log : INFO application_message direction=receive\nmessage_type=ResolvedBirthData
+Handler -> Log : INFO application_message direction=send\npeer=ChartArtifactResolver, message_type=EnsureChartRequest
+Handler -> Artifacts : ensure_chart(spec, resolved, run)
+Artifacts --> Handler : ChartArtifact
+Handler -> Log : INFO application_message direction=receive\nmessage_type=ChartArtifact
 Handler --> Orch : BuildNatalSuccess(artifact, delta)
+Orch -> Log : INFO application_message direction=receive\npeer=BuildNatalHandler, message_type=BuildNatalSuccess
 Orch -> Log : DEBUG application_stage_finished\nstage=handler, outcome=success, duration_ms
 
+Orch -> Log : INFO application_message direction=send\npeer=ContextService, message_type=ContextSaveRequest, attempt=1
 Orch -> Context : save(session_id, N, delta)
+Context -> Log : DEBUG component_message direction=in\noperation=context_save, run_id=-
+Context -> Log : DEBUG component_message direction=out\nmessage_type=StateCommitFailed, run_id=-
 Context --> Orch : StateCommitFailed(error_code_1)
+Orch -> Log : INFO application_message direction=receive\npeer=ContextService, message_type=StateCommitFailed, attempt=1
 Orch -> Log : WARNING application_commit_attempt_finished\nattempt=1, outcome=state_commit_failed, detail_code
 
 alt retry разрешён
+    Orch -> Log : INFO application_message direction=send\npeer=ContextService, message_type=ContextSaveRequest, attempt=2
     Orch -> Context : save(session_id, N, same delta)
+    Context -> Log : DEBUG component_message direction=in\noperation=context_save, run_id=-
+    Context -> Log : DEBUG component_message direction=out\nmessage_type=Committed, run_id=-
     Context --> Orch : Committed(state_version=N+1)
+    Orch -> Log : INFO application_message direction=receive\npeer=ContextService, message_type=Committed, attempt=2
     Orch -> Log : WARNING application_commit_attempt_finished\nattempt=2, outcome=committed
     Orch -> Orch : ApplicationCommitted
 else retry запрещён отменой или deadline
@@ -75,9 +103,19 @@ note over Orch, Log
 только после завершения стадии; commit-attempt event —
 только для фактически начатого save.
 
-Payload команды, StateDelta, ChartArtifact и полный
-session_id в lifecycle events не записываются.
-Имя события + один JSON object: значения экранируются.
+На входе Orchestrator payload команды и полный
+session_id пишутся отдельным DEBUG-сообщением.
+StateDelta, ChartArtifact и полный session_id
+в lifecycle events не записываются.
+Lifecycle event: имя + один JSON object.
+INFO application_message показывает только прямые
+вызовы Orchestrator и Handler; тела отсутствуют.
+На cache miss отдельный calculation_message
+показывает вызовы Artifacts -> Engine ->
+NatalTechniqueAdapter -> calculate_natal;
+подробности в chart_artifacts/001.
+ContextService пишет полные DEBUG in/out,
+но не получает RunContext, поэтому run_id=-.
 Поля terminal берутся из возвращаемого результата.
 Невалидные длительности/попытки отклоняются до записи.
 Ошибка logging не меняет подтверждённый commit outcome.

@@ -323,7 +323,23 @@ class ChartArtifactResolver:
         resolved: ResolvedBirthData,
         run: RunContext,
     ) -> ChartArtifact:
+        LOGGER.info(
+            "calculation_message direction=send run_id=%s sender=ChartArtifactResolver "
+            "peer=%s operation=calculate_chart message_type=CalculationRequest "
+            "calculation_key=%s",
+            run.run_id,
+            type(self.engine).__name__,
+            key,
+        )
         result = await self.engine.calculate(spec, resolved, run=run)
+        LOGGER.info(
+            "calculation_message direction=receive run_id=%s sender=ChartArtifactResolver "
+            "peer=%s operation=calculate_chart message_type=%s calculation_key=%s",
+            run.run_id,
+            type(self.engine).__name__,
+            type(result).__name__,
+            key,
+        )
         run_id = str(run.run_id)
         try:
             artifact = ChartArtifact(

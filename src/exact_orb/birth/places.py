@@ -4,10 +4,82 @@ from __future__ import annotations
 
 import json
 import os
+import unicodedata
 from collections.abc import Mapping
-from typing import Any, Protocol
+from typing import Any, Literal, Protocol
 
-from pydantic import BaseModel, ValidationError
+from pydantic import BaseModel, ConfigDict, ValidationError
+
+
+ALLOWED_ALTERNATE_LANGUAGES = frozenset({"ru"})
+
+PlaceQueryErrorCode = Literal[
+    "EMPTY",
+    "TOO_LONG",
+    "CONTROL_CHARACTERS",
+    "NO_SEARCHABLE_CHARACTERS",
+]
+
+
+class PlaceSuggestion(BaseModel):
+    """Place identity and display labels without trusted calculation facts."""
+
+    model_config = ConfigDict(frozen=True, extra="forbid")
+
+    place_id: str
+    display_name: str
+    admin1_name: str | None
+    country_code: str
+
+
+class PlaceSuggestions(BaseModel):
+    """Successful search results, including an empty collection."""
+
+    model_config = ConfigDict(frozen=True, extra="forbid")
+
+    items: tuple[PlaceSuggestion, ...]
+
+
+class InvalidPlaceQuery(BaseModel):
+    """A structurally invalid search query, distinct from no matches."""
+
+    model_config = ConfigDict(frozen=True, extra="forbid")
+
+    code: PlaceQueryErrorCode
+
+
+PlaceSearchOutcome = PlaceSuggestions | InvalidPlaceQuery
+
+
+class PlaceSearch(Protocol):
+    """Search port for place suggestions from untrusted user text."""
+
+    async def search(
+        self,
+        query: str,
+        *,
+        limit: int = 10,
+    ) -> PlaceSearchOutcome: ...
+
+
+def normalize_place_query(query: str) -> str | InvalidPlaceQuery:
+    """Build one canonical search key for catalog names and runtime queries."""
+
+    # Check before whitespace folding so controls cannot silently disappear.
+    if any(unicodedata.category(char) == "Cc" for char in query):
+        return InvalidPlaceQuery(code="CONTROL_CHARACTERS")
+
+    normalized = unicodedata.normalize("NFKC", query)
+    normalized = " ".join(normalized.split())
+    normalized = normalized.casefold().replace("ё", "е")
+
+    if not normalized:
+        return InvalidPlaceQuery(code="EMPTY")
+    if len(normalized) > 200:
+        return InvalidPlaceQuery(code="TOO_LONG")
+    if not any(char.isalnum() for char in normalized):
+        return InvalidPlaceQuery(code="NO_SEARCHABLE_CHARACTERS")
+    return normalized
 
 
 class ResolvedPlace(BaseModel):
@@ -110,10 +182,18 @@ def _build_place_record(
 
 
 __all__ = [
+    "ALLOWED_ALTERNATE_LANGUAGES",
+    "InvalidPlaceQuery",
     "LocalPlaceCatalog",
     "PlaceCatalog",
     "PlaceCatalogUnavailableError",
     "PlaceNotFound",
+    "PlaceQueryErrorCode",
     "PlaceResolution",
+    "PlaceSearch",
+    "PlaceSearchOutcome",
+    "PlaceSuggestion",
+    "PlaceSuggestions",
     "ResolvedPlace",
+    "normalize_place_query",
 ]

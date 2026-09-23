@@ -1,0 +1,80 @@
+@startuml
+title exact-orb — каталог мест: корректное название без совпадений
+
+autonumber
+hide footbox
+
+skinparam shadowing false
+skinparam responseMessageBelowArrow true
+
+skinparam sequence {
+    ArrowColor #2563EB
+    LifeLineBorderColor #64748B
+    LifeLineBackgroundColor #FFFFFF
+
+    ParticipantBorderColor #64748B
+    ParticipantFontColor #0F172A
+    ParticipantBackgroundColor #F8FAFC
+
+    ActorBorderColor #64748B
+    ActorFontColor #0F172A
+    ActorBackgroundColor #DBEAFE
+
+    GroupBorderColor #94A3B8
+    GroupHeaderFontColor #1E293B
+
+    DividerBorderColor #94A3B8
+    DividerFontColor #1E293B
+
+    NoteBorderColor #94A3B8
+    NoteBackgroundColor #FFFBEA
+    NoteFontColor #334155
+}
+
+actor "Пользователь" as User
+
+box "TARGET TRANSPORT — M1-6 / M1-7" #DBEAFE
+    boundary "Frontend" as FE
+    boundary "Place Search API" as API
+end box
+
+box "IMPLEMENTED PLACE CATALOG — M1-5" #D9F9FF
+    control "SqlitePlaceCatalog\nкак PlaceSearch" as Catalog
+    database "places.sqlite" as DB
+end box
+
+
+User -> FE : ввод «Несуществоград»
+FE -> API : GET /places?query=Несуществоград&limit=10
+API -> Catalog : search(query = "Несуществоград", limit = 10)
+activate Catalog
+
+Catalog -> Catalog : normalize("Несуществоград")\n→ "несуществоград"
+Catalog -> Catalog : validate(normalized_query)\n— запрос структурно корректен
+
+Catalog -> DB : индексированный prefix search\nsearch_key = "несуществоград"
+activate DB
+DB --> Catalog : 0 строк
+deactivate DB
+
+Catalog --> API : PlaceSuggestions(items = ())
+deactivate Catalog
+
+API --> FE : 200 + suggestions = []
+FE --> User : «Населённый пункт не найден.\nВыберите ближайший известный вам город»
+FE -> FE : place_id отсутствует,\nпостроение заблокировано
+
+note over FE, Catalog
+Пустая выдача — успешный результат поиска,
+а не InvalidPlaceQuery и не техническая ошибка.
+BirthDataResolver не вызывается: пользователь
+ещё не выбрал доверенно проверяемый place_id.
+end note
+
+note right of DB
+Этот сценарий отличается от устаревшего
+или подделанного place_id: там lookup(id)
+возвращает PlaceNotFound уже после выбора.
+end note
+
+@enduml

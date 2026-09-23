@@ -1,0 +1,86 @@
+@startuml
+title exact-orb — BirthDataResolver: неизвестный или устаревший place_id
+
+autonumber
+hide footbox
+
+skinparam shadowing false
+skinparam responseMessageBelowArrow true
+
+skinparam sequence {
+    ArrowColor #2563EB
+    LifeLineBorderColor #64748B
+    LifeLineBackgroundColor #FFFFFF
+
+    ParticipantBorderColor #64748B
+    ParticipantFontColor #0F172A
+    ParticipantBackgroundColor #F8FAFC
+
+    GroupBorderColor #94A3B8
+    GroupHeaderFontColor #1E293B
+
+    DividerBorderColor #94A3B8
+    DividerFontColor #1E293B
+
+    NoteBorderColor #94A3B8
+    NoteBackgroundColor #FFFBEA
+    NoteFontColor #334155
+}
+
+box "TARGET TRANSPORT — M1-6" #DBEAFE
+    boundary "Build API" as API
+end box
+
+box "IMPLEMENTED APPLICATION" #FFEDD5
+    control "ApplicationOrchestrator" as Orch
+    control "ContextService" as Context
+    control "BuildNatalHandler" as Handler
+end box
+
+box "IMPLEMENTED RESOLVER + CATALOG — M1-5" #D9F9FF
+    control "BirthDataResolver" as Resolver
+    control "SqlitePlaceCatalog\nкак PlaceCatalog" as Catalog
+    database "places.sqlite" as DB
+end box
+
+
+API -> Orch : execute(BuildNatalCommand(\n BirthInput(..., place_id = "999999999")\n), session_id, run)
+activate Orch
+
+Orch -> Orch : route по точному типу команды
+Orch -> Context : load(session_id)
+Context --> Orch : SessionSnapshot(state)
+Orch -> Handler : handle(command, state, run)
+activate Handler
+Handler -> Resolver : resolve(birth_input, run=run)
+activate Resolver
+
+Resolver -> Catalog : lookup("999999999")
+activate Catalog
+Catalog -> DB : SELECT place WHERE place_id = "999999999"
+activate DB
+DB --> Catalog : 0 строк
+deactivate DB
+Catalog --> Resolver : PlaceNotFound(place_id = "999999999")
+deactivate Catalog
+
+Resolver --> Handler : InputRequired {\n issues: [{field = "birth.place",\n code = "INVALID"}]\n}
+deactivate Resolver
+Handler --> Orch : InputRequired
+deactivate Handler
+
+Orch --> API : ApplicationInputRequired(\n issues, state_version\n)
+deactivate Orch
+
+note over Resolver, Catalog
+place_id остаётся недоверенным после выбора:
+он мог устареть после обновления каталога
+или быть подделан клиентом.
+end note
+
+note over Handler, Orch
+Расчёт и commit не выполняются.
+Поиск подсказок повторно не запускается.
+end note
+
+@enduml

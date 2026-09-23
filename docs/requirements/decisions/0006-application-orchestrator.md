@@ -328,8 +328,12 @@ application_operation_finished         # ровно один terminal event
 ```
 
 Компоненты продолжают владеть собственными внутренними и boundary-событиями.
-Запись Orchestrator описывает стадию application-flow и не копирует payload
-Handler, resolver, engine, cache или `ContextService`.
+Lifecycle-запись Orchestrator описывает стадию application-flow и не копирует
+payload Handler, resolver, engine, cache или `ContextService`.
+Исключение для полного входа `execute()` на DEBUG принято в ADR-0035;
+компактные lifecycle-события этим не изменены.
+ADR-0036 добавляет отдельные INFO-события `application_message direction=send|receive`
+для прямых вызовов `ContextService` и выбранного Handler без тела сообщения.
 
 Request-specific observability state хранится только в локальных переменных
 одного `execute()`: длительности, число commit attempts, их безопасные error

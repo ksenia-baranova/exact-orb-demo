@@ -58,6 +58,32 @@ SESSION_SERVICE_MODULES: tuple[str, ...] = (
     "exact_orb.session.context",
 )
 
+BIRTH_ADAPTER_MODULES: tuple[str, ...] = (
+    "exact_orb.birth.adapters",
+    "exact_orb.birth.adapters.sqlite",
+)
+
+BIRTH_ADAPTER_ALLOWED_PROJECT_IMPORTS: tuple[str, ...] = (
+    "exact_orb.birth.places",
+)
+
+BIRTH_ADAPTER_FORBIDDEN_IMPORTS: tuple[str, ...] = (
+    "swisseph",
+    "httpx",
+    "fastapi",
+    "exact_orb.session",
+    "exact_orb.application",
+    "exact_orb.calculation",
+    "exact_orb.engine",
+    "exact_orb.swiss_backend",
+    "exact_orb.agent",
+    "exact_orb.orchestration",
+    "exact_orb.tools",
+    "exact_orb.llm",
+    "exact_orb.cli",
+    "exact_orb.edge",
+)
+
 RESEARCH_PACKAGE_MODULE = "exact_orb.research"
 
 RESEARCH_CONTRACT_MODULES: tuple[str, ...] = (
@@ -411,6 +437,10 @@ def _session_service_source_files() -> list[Path]:
         for path in (PACKAGE_ROOT / "session").glob("*.py")
         if _module_name(path) not in contract_modules
     )
+
+
+def _birth_adapter_source_files() -> list[Path]:
+    return sorted((PACKAGE_ROOT / "birth" / "adapters").rglob("*.py"))
 
 
 def _research_source_files(modules: tuple[str, ...]) -> list[Path]:
@@ -769,6 +799,65 @@ def test_session_adapter_source_files_are_discovered() -> None:
     assert modules == set(SESSION_ADAPTER_MODULES)
 
 
+def test_birth_adapter_source_files_are_discovered() -> None:
+    modules = {_module_name(path) for path in _birth_adapter_source_files()}
+
+    assert modules == set(BIRTH_ADAPTER_MODULES)
+
+
+def test_birth_adapter_only_imports_allowlisted_project_contracts() -> None:
+    violations = sorted(
+        {
+            f"{_module_name(path)} -> {imported}"
+            for path in _birth_adapter_source_files()
+            for imported in _declared_imports(path)
+            if imported.startswith("exact_orb.")
+            and not any(
+                imported == allowed or imported.startswith(f"{allowed}.")
+                for allowed in BIRTH_ADAPTER_ALLOWED_PROJECT_IMPORTS
+            )
+        }
+    )
+
+    assert not violations, "birth adapter импортирует вне allowlist:\n" + "\n".join(
+        violations
+    )
+
+
+def test_birth_adapter_declares_no_forbidden_edges() -> None:
+    violations = sorted(
+        {
+            f"{_module_name(path)} -> {forbidden}"
+            for path in _birth_adapter_source_files()
+            for imported in _declared_imports(path)
+            for forbidden in BIRTH_ADAPTER_FORBIDDEN_IMPORTS
+            if _violates(imported, forbidden)
+        }
+    )
+
+    assert not violations, "birth adapter импортирует запрещённые слои:\n" + "\n".join(
+        violations
+    )
+
+
+def test_birth_adapter_package_does_not_import_or_export_sqlite_adapter() -> None:
+    path = PACKAGE_ROOT / "birth" / "adapters" / "__init__.py"
+    imports = _declared_imports(path)
+    tree = ast.parse(path.read_text(encoding="utf-8"), str(path))
+    exported_names = {
+        element.value
+        for node in ast.walk(tree)
+        if isinstance(node, ast.Assign)
+        and any(isinstance(target, ast.Name) and target.id == "__all__" for target in node.targets)
+        and isinstance(node.value, (ast.List, ast.Tuple))
+        for element in node.value.elts
+        if isinstance(element, ast.Constant) and isinstance(element.value, str)
+    }
+
+    assert not any(_violates(imported, "exact_orb.birth.adapters.sqlite") for imported in imports)
+    assert "SqlitePlaceCatalog" not in exported_names
+
+
 def test_session_adapters_only_import_session_project_modules() -> None:
     violations = sorted(
         {
@@ -916,6 +1005,68 @@ def test_session_service_does_not_read_wall_or_monotonic_time() -> None:
     assert not violations, "session service читает скрытое время:\n" + "\n".join(
         violations
     )
+
+
+def _run_isolated_import_probe(script: str, *, label: str) -> dict[str, object]:
+    env = dict(os.environ)
+    env["PYTHONPATH"] = str(SRC_ROOT)
+    completed = subprocess.run(
+        [sys.executable, "-c", script],
+        cwd=str(REPO_ROOT),
+        env=env,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert completed.returncode == 0, f"{label} завершился ошибкой:\n{completed.stderr}"
+    return json.loads(completed.stdout.strip().splitlines()[-1])
+
+
+def test_birth_contract_and_adapter_package_imports_do_not_load_sqlite() -> None:
+    modules = (
+        "exact_orb.birth",
+        "exact_orb.birth.types",
+        "exact_orb.birth.places",
+        "exact_orb.birth.adapters",
+    )
+    script = "\n".join(
+        (
+            "import importlib, json, sys",
+            f"modules = {list(modules)!r}",
+            "loaded_modules = [importlib.import_module(name) for name in modules]",
+            "adapters = loaded_modules[-1]",
+            "print(json.dumps({",
+            "    'sqlite_loaded': 'sqlite3' in sys.modules,",
+            "    'concrete_loaded': 'exact_orb.birth.adapters.sqlite' in sys.modules,",
+            "    'concrete_exported': hasattr(adapters, 'SqlitePlaceCatalog'),",
+            "}))",
+        )
+    )
+
+    result = _run_isolated_import_probe(script, label="birth light import")
+
+    assert result == {
+        "sqlite_loaded": False,
+        "concrete_loaded": False,
+        "concrete_exported": False,
+    }
+
+
+def test_direct_birth_sqlite_adapter_import_loads_sqlite_positive_control() -> None:
+    script = "\n".join(
+        (
+            "import importlib, json, sys",
+            "module = importlib.import_module('exact_orb.birth.adapters.sqlite')",
+            "print(json.dumps({",
+            "    'sqlite_loaded': 'sqlite3' in sys.modules,",
+            "    'symbol_present': hasattr(module, 'SqlitePlaceCatalog'),",
+            "}))",
+        )
+    )
+
+    result = _run_isolated_import_probe(script, label="birth SQLite adapter import")
+
+    assert result == {"sqlite_loaded": True, "symbol_present": True}
 
 
 def _assert_session_runtime_module_upper_bound(

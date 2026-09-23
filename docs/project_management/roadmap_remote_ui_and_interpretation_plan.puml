@@ -18,16 +18,20 @@ sunday are closed
 
 [M1-2/M1-3 Orchestrator + composition — план 15–16, принят 19.09] as [M12] starts 2026-09-15 and ends 2026-09-19
 [M12] is 100% complete
-[M12] is colored in Salmon
+[M12] is colored in LightGreen
 
-[M1-5.1 Process runtime — план 23–25.09, выполнен 21.09] as [M151] happens 2026-09-21
+[M1-5.1 Process runtime — план 23–25.09, выполнен 21.09] as [M151] starts 2026-09-21
 [M151] is 100% complete
 [M151] is colored in LightGreen
 
 -- M1. Карта с UI на контролируемом удалённом стенде — осталось 19.5 дн. --
 
-[M1-4 Import boundary handler — 22.09 AM — 0.5 дн.] as [M14] starts 2026-09-22 and ends 2026-09-22
-[M1-5 Каталог place_id и поиск — 22.09 PM–24.09 AM — 2 дн.] as [M15] starts 2026-09-22 and ends 2026-09-24
+[M1-4 Import boundary handler — 22.09 AM — 0.5 дн.] as [M14] starts 2026-09-21 and ends 2026-09-22
+[M14] is 100% complete
+[M14] is colored in LightGreen
+[M1-5 Каталог place_id и поиск — 22.09 PM–24.09 AM — 2 дн.] as [M15] starts 2026-09-21 and ends 2026-09-23
+[M15] is 100% complete
+[M15] is colored in LightGreen
 [M1-6 FastAPI и Session Middleware — 24.09 PM–28.09 AM — 2 дн.] as [M16] starts 2026-09-24 and ends 2026-09-28
 [M1-7 UI: форма и таблицы фактов — 28.09 PM–30.09 AM — 2 дн.] as [M17] starts 2026-09-28 and ends 2026-09-30
 [M1-8 SVG-колесо карты — 30.09 PM–07.10 AM — 5 дн.] as [M18] starts 2026-09-30 and ends 2026-10-07

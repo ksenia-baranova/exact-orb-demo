@@ -26,7 +26,7 @@ from exact_orb.application.application_results import (
     ApplicationStateReadFailure,
     ApplicationSuperseded,
 )
-from exact_orb.application.commands import Command
+from exact_orb.application.commands import BuildNatalCommand, Command
 from exact_orb.application.failure_policy import describe_failure
 from exact_orb.application.operation_logging import (
     log_commit_attempt_finished,
@@ -37,6 +37,7 @@ from exact_orb.application.operation_logging import (
 )
 from exact_orb.application.ports import Handler
 from exact_orb.application.results import BuildNatalSuccess
+from exact_orb.component_logging import log_component_message
 from exact_orb.calculation.errors import (
     CalculationUnavailableErrorCode,
     ChartCalculationErrorCode,
@@ -87,6 +88,19 @@ def _require_utc_clock(value: object) -> datetime:
     return value
 
 
+def _log_message(
+    *, run: RunContext, direction: str, peer: str, operation: str,
+    message_type: str = "-", attempt: int | None = None,
+) -> None:
+    """Expose only direct Orchestrator calls and returned message types at INFO."""
+    _logger.info(
+        "application_message direction=%s run_id=%s peer=%s operation=%s "
+        "message_type=%s attempt=%s",
+        direction, run.run_id, peer, operation, message_type,
+        "-" if attempt is None else attempt,
+    )
+
+
 class ApplicationOrchestrator:
     """Keep startup dependencies and route commands by their exact type."""
 
@@ -112,6 +126,19 @@ class ApplicationOrchestrator:
         log_operation_started(
             run_id=run.run_id,
             command_type=type(command).__name__,
+        )
+        log_component_message(
+            _logger,
+            direction="in",
+            operation="application_execute",
+            run_id=run.run_id,
+            message_type="ApplicationExecuteRequest",
+            message={
+                "command_type": type(command).__name__,
+                "command": command,
+                "session_id": session_id,
+                "run": run,
+            },
         )
         handler = self._handlers.get(type(command))
         if handler is None:
@@ -139,6 +166,10 @@ class ApplicationOrchestrator:
             return result
 
         load_started = time.perf_counter()
+        _log_message(
+            run=run, direction="send", peer=type(self._context).__name__,
+            operation="load", message_type="ContextLoadRequest",
+        )
         try:
             loaded = await self._context.load(session_id)
         except asyncio.CancelledError:
@@ -155,6 +186,10 @@ class ApplicationOrchestrator:
             outcome = "unexpected_failure"
         else:
             load_duration_ms = (time.perf_counter() - load_started) * 1000
+            _log_message(
+                run=run, direction="receive", peer=type(self._context).__name__,
+                operation="load", message_type=type(loaded).__name__,
+            )
             if isinstance(loaded, SessionSnapshot):
                 snapshot = loaded
                 original_expected_state_version = snapshot.state.state_version
@@ -182,6 +217,13 @@ class ApplicationOrchestrator:
 
         if outcome == "loaded":
             handler_started = time.perf_counter()
+            _log_message(
+                run=run, direction="send", peer=type(handler).__name__,
+                operation="handle", message_type=(
+                    "BuildNatalRequest" if type(command) is BuildNatalCommand
+                    else type(command).__name__
+                ),
+            )
             try:
                 handled = await handler.handle(command, snapshot.state, run)
             except asyncio.CancelledError:
@@ -210,6 +252,10 @@ class ApplicationOrchestrator:
                 )
             else:
                 handler_duration_ms = (time.perf_counter() - handler_started) * 1000
+                _log_message(
+                    run=run, direction="receive", peer=type(handler).__name__,
+                    operation="handle", message_type=type(handled).__name__,
+                )
                 if isinstance(handled, InputRequired):
                     handler_outcome = "input_required"
                     reaction = describe_failure(kind="input_required")
@@ -285,6 +331,11 @@ class ApplicationOrchestrator:
                         except Exception as exc:
                             save_error = exc
                         else:
+                            _log_message(
+                                run=run, direction="send", peer=type(self._context).__name__,
+                                operation="save", message_type="ContextSaveRequest",
+                                attempt=attempt,
+                            )
                             while True:
                                 try:
                                     saved = await asyncio.shield(commit_task)
@@ -307,6 +358,11 @@ class ApplicationOrchestrator:
                         commit_duration_ms = (time.perf_counter() - commit_started) * 1000
                         commit_durations.append(commit_duration_ms)
                         if save_error is None:
+                            _log_message(
+                                run=run, direction="receive", peer=type(self._context).__name__,
+                                operation="save", message_type=type(saved).__name__,
+                                attempt=attempt,
+                            )
                             if isinstance(saved, Committed):
                                 result = ApplicationCommitted(
                                     run_id=run.run_id,

@@ -469,7 +469,9 @@ async def test_artifact_construction_failure_maps_to_engine_unexpected_without_p
     assert resolver._inflight == {}
 
 
-async def test_engine_error_is_not_cached_and_next_call_retries() -> None:
+async def test_engine_error_is_not_cached_and_next_call_retries(
+    caplog: pytest.LogCaptureFixture,
+) -> None:
     engine = SequenceEngine(
         [
             ChartCalculationError("ENGINE_UNEXPECTED", run_id=str(RUN_ID)),
@@ -478,6 +480,7 @@ async def test_engine_error_is_not_cached_and_next_call_retries() -> None:
     )
     cache = FakeCache()
     resolver = _resolver(cache, engine)
+    caplog.set_level(logging.INFO, logger="exact_orb.calculation.artifacts")
 
     with pytest.raises(ChartCalculationError):
         await resolver.ensure_chart(_spec(), _resolved(), run=_run())
@@ -490,6 +493,17 @@ async def test_engine_error_is_not_cached_and_next_call_retries() -> None:
     assert artifact.calculation_version == VERSION
     assert engine.calls == 2
     assert len(cache.put_calls) == 1
+    exchanges = [
+        record.getMessage() for record in caplog.records
+        if record.name == "exact_orb.calculation.artifacts"
+        and record.getMessage().startswith("calculation_message ")
+    ]
+    assert [message.split(" ", 3)[1] for message in exchanges] == [
+        "direction=send", "direction=send", "direction=receive",
+    ]
+    assert all("peer=SequenceEngine operation=calculate_chart" in message for message in exchanges)
+    assert all("message_type=CalculationRequest" in message for message in exchanges[:2])
+    assert "message_type=CalculationResult" in exchanges[2]
 
 
 async def test_concurrent_miss_singleflight_calls_engine_once(

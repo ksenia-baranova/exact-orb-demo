@@ -30,6 +30,7 @@
 - [Пример результата](#пример-результата)
 - [Архитектура](#архитектура)
   - [Текущий application slice](#текущий-application-slice)
+  - [Каталог мест](#каталог-мест)
   - [Детерминированный расчёт](#детерминированный-расчёт)
   - [Неизвестное время рождения](#неизвестное-время-рождения)
   - [Calculation identity и воспроизводимость](#calculation-identity-и-воспроизводимость)
@@ -202,6 +203,7 @@ LLM используется как инструмент анализа и ис�
 | Interpretation / agent orchestration | Пока только каркас |
 | Application Orchestrator | **Реализован; принят на реальном стеке** |
 | Application composition | **Process-local runtime реализован и принят**: resolver, cache, engine, SQLite, `CalculationVersion`, `ContextService` и Orchestrator |
+| Каталог мест | **M1-5 core реализован и принят**: deterministic SQLite builder, `PlaceSearch`, search/lookup и интеграция с `BirthDataResolver`; HTTP/UI/deployment остаются M1-6/M1-7/M1-12 |
 | Публичный HTTP API | Пока не реализован |
 | Web UI | Пока не реализован |
 
@@ -413,6 +415,48 @@ miss → hit в одной SQLite-сессии и ожидание живого 
 соединениями, CAS-гонки для одинакового и разного намерения, потерянное
 подтверждение применённого CAS и штатный load profile 300/300 полезных исходов
 при 5 RPS.
+
+### Каталог мест
+
+Catalog core M1-5 реализован как один process-local read-only SQLite-выпуск для
+двух независимых сценариев:
+
+```text
+текст пользователя → PlaceSearch.search → ограниченные подсказки с place_id
+
+выбранный place_id → BirthDataResolver → PlaceCatalog.lookup → координаты + tz_id
+```
+
+Поиск подсказок не вызывает `ApplicationOrchestrator`, не загружает session и
+не запускает расчёт. Выбранный недоверенный `place_id` повторно разрешается
+внутри существующего Build Natal application-flow. Оба пути используют один
+экземпляр `SqlitePlaceCatalog` и один неизменяемый выпуск `places.sqlite`,
+поэтому ID из подсказки разрешим тем же каталогом в пределах process lifecycle.
+
+Каталог собирается локальным deterministic builder-ом из `cities1000.txt`,
+`admin1CodesASCII.txt` и `alternateNamesV2.txt`. Raw GeoNames dumps и
+производный `data/places.sqlite` не входят в Git или Python wheel. Builder
+фиксирует checksums, параметры фильтрации, schema version и версию `tzdata`.
+
+`SqlitePlaceCatalog` открывает выпуск read-only на caller-owned
+`ThreadPoolExecutor(max_workers=1)` и до serving проверяет schema, metadata,
+обязательные индексы и разрешимость timezone. Несовпадение catalog/runtime
+`tzdata` даёт WARNING с обеими версиями; отсутствие обязательного distribution
+или неразрешимая зона останавливают startup.
+
+Builder и runtime search используют один объект `normalize_place_query`:
+raw-символы Unicode category `Cc` отклоняются, затем выполняются NFKC,
+whitespace folding, `casefold()` и `ё → е`. Лимит 200 code points проверяется
+у итогового ключа, а наличие searchable-символа определяется
+`str.isalnum()`. Ограничение размера HTTP query/body до нормализации относится
+к будущей transport-композиции M1-6.
+
+Нормативный контракт описан в
+[`exact-orb_place_catalog.md`](docs/requirements/component_responsibilities/exact-orb_place_catalog.md),
+а реализованные и целевые потоки разделены в
+[`docs/sequence_diagrams/place_catalog/README.md`](docs/sequence_diagrams/place_catalog/README.md).
+HTTP endpoint/lifespan wiring остаются M1-6, browser autocomplete — M1-7,
+доставка `places.sqlite` — M1-12.
 
 ### Детерминированный расчёт
 
@@ -918,6 +962,7 @@ Mock, удовлетворяющий интерфейсу, полезен для
 | [`docs/requirements/overview.md`](docs/requirements/overview.md) | Общие требования и системные invariants |
 | [`docs/requirements/scenarios.md`](docs/requirements/scenarios.md) | Пользовательские сценарии |
 | [`docs/requirements/component_responsibilities/`](docs/requirements/component_responsibilities/) | Responsibilities и контракты компонентов |
+| [`docs/requirements/component_responsibilities/exact-orb_place_catalog.md`](docs/requirements/component_responsibilities/exact-orb_place_catalog.md) | Контракты builder, search/lookup, нормализации и lifecycle каталога мест |
 | [`docs/requirements/handlers/`](docs/requirements/handlers/) | Требования к application handlers |
 | [`docs/architecture/service_ready_architecture.md`](docs/architecture/service_ready_architecture.md) | Modular monolith и service seams |
 | [`docs/sequence_diagrams/`](docs/sequence_diagrams/) | Positive, negative и concurrency scenarios |
@@ -954,7 +999,7 @@ src/exact_orb/
 │   ├── orchestrator.py    load → handler → protected commit → ApplicationResult
 │   ├── composition.py     сборка Orchestrator из готовых зависимостей
 │   └── bootstrap.py       process-local ApplicationRuntime и owned resources
-├── birth/             birth-data и timezone resolution
+├── birth/             birth-data, timezone resolution и place-catalog ports/adapters
 ├── calculation/       calculation boundary, artifacts, cache, keys, versioning
 ├── engine/            детерминированные domain calculations
 ├── intent/            intent / planning contracts
@@ -1005,9 +1050,10 @@ ContextService.save
 application result
 ```
 
-После commit результата этот flow подключается к FastAPI, каталогу `place_id`,
-форме, таблицам фактов и SVG-колесу карты. Готовность M1 проверяется через
-браузер на удалённом сервере.
+После commit результата этот flow подключается к FastAPI; уже реализованный
+catalog core получает HTTP/lifespan wiring и browser autocomplete, затем форма
+связывается с таблицами фактов и SVG-колесом карты. Готовность M1 проверяется
+через браузер на удалённом сервере.
 
 Следующая веха даёт первую интерпретацию коротким путём:
 

@@ -1,0 +1,75 @@
+@startuml
+title exact-orb — каталог мест: структурно невалидный поисковый запрос
+
+autonumber
+hide footbox
+
+skinparam shadowing false
+skinparam responseMessageBelowArrow true
+
+skinparam sequence {
+    ArrowColor #2563EB
+    LifeLineBorderColor #64748B
+    LifeLineBackgroundColor #FFFFFF
+
+    ParticipantBorderColor #64748B
+    ParticipantFontColor #0F172A
+    ParticipantBackgroundColor #F8FAFC
+
+    ActorBorderColor #64748B
+    ActorFontColor #0F172A
+    ActorBackgroundColor #DBEAFE
+
+    GroupBorderColor #94A3B8
+    GroupHeaderFontColor #1E293B
+
+    DividerBorderColor #94A3B8
+    DividerFontColor #1E293B
+
+    NoteBorderColor #94A3B8
+    NoteBackgroundColor #FFFBEA
+    NoteFontColor #334155
+}
+
+actor "Пользователь" as User
+
+box "TARGET TRANSPORT — M1-6 / M1-7" #DBEAFE
+    boundary "Frontend" as FE
+    boundary "Place Search API" as API
+end box
+
+box "IMPLEMENTED PLACE CATALOG — M1-5" #D9F9FF
+    control "SqlitePlaceCatalog\nкак PlaceSearch" as Catalog
+end box
+
+
+User -> FE : ввод «###@@@»
+FE -> API : GET /places?query=###@@@&limit=10
+API -> Catalog : search(query = "###@@@", limit = 10)
+activate Catalog
+
+Catalog -> Catalog : Unicode normalization, casefold,\nсхлопывание пробелов
+Catalog -> Catalog : validate(normalized_query)\n— букв и цифр нет
+
+Catalog --> API : InvalidPlaceQuery(\n code = "NO_SEARCHABLE_CHARACTERS"\n)
+deactivate Catalog
+
+API --> FE : 422 + typed query issue
+FE --> User : «Введите название населённого пункта»
+
+note right of Catalog
+SQL не выполняется.
+
+Ограничение не сводится к кириллице
+или латинице: допустимы реальные названия
+на разных письменностях, с диакритикой,
+дефисами и апострофами.
+end note
+
+note over API, Catalog
+Это ошибка формы поискового запроса,
+а не PlaceNotFound и не техническая
+недоступность каталога.
+end note
+
+@enduml

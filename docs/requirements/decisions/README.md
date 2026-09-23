@@ -238,3 +238,24 @@ lifecycle-решений:
   очередь измеряет transport/composition admission controller. Подробности
   закреплены в рабочей
   [редакции R3.2](../component_responsibilities/exact-orb_application_orchestrator_requirements.md).
+
+## Решения 2026-09-22
+
+* **0035** частично изменяет **0006**: вход `ApplicationOrchestrator.execute`
+  получает полную запись `component_message direction=in` только на DEBUG,
+  до routing и load. Она содержит команду, `session_id` и `run`; компактные
+  lifecycle-события и пять парных расчётных границ ADR-0025/0028 сохранены.
+* **0036** дополняет **0006** и **0035**: Orchestrator пишет INFO-события
+  `application_message direction=send|receive` для прямых вызовов
+  `ContextService.load/save` и выбранного `Handler.handle`. Запись содержит
+  `run_id`, адресата, операцию, тип сообщения и номер save attempt без payload.
+* **0037** дополняет **0025/0028** и **0036**: все публичные операции
+  `ContextService` пишут полный DEBUG-вход и выход; `BuildNatalHandler` пишет
+  INFO-отправку и приём своих прямых вызовов resolver и artifact resolver.
+
+## Решения 2026-09-23
+
+* **0038** дополняет **0025/0028** и **0036/0037**: расчётный путь пишет
+  компактные INFO-события отправки и приёма прямых вызовов от artifact
+  resolver к engine, от engine к adapter и от adapter к расчётной функции.
+  Cache hit не создаёт вызов движка.

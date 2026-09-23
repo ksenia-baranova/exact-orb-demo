@@ -922,6 +922,12 @@ Cache hit/miss должен журналироваться самим `ChartArti
     `calculation_key`. При исключении выход имеет `status=error` и
     `payload_mode=error`.
     Компактный `build_natal_failed` по-прежнему не содержит `str(exception)`.
+По ADR-0037 Handler также пишет INFO-события `application_message` с
+`direction=send|receive` для прямых вызовов resolver и artifact resolver.
+`message_type` на отправке — `BirthResolutionRequest` или
+`EnsureChartRequest`, на приёме — фактический тип результата. События
+содержат `run_id`, peer и operation без тела; при исключении или отмене
+ложного `receive` нет.
 
 ### 12.5. Границы ответственности
 
