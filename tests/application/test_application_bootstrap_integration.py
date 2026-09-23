@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import asyncio
 from datetime import date, datetime, time, timezone
+import json
+import logging
 from pathlib import Path
 import threading
 from typing import Any
@@ -109,7 +111,13 @@ class _BlockingNatalCalculator:
 
 async def test_runtime_build_natal_miss_then_hit_commits_same_session(
     tmp_path: Path,
+    caplog: pytest.LogCaptureFixture,
 ) -> None:
+    caplog.set_level(logging.DEBUG, logger="exact_orb.application.orchestrator")
+    caplog.set_level(logging.DEBUG, logger="exact_orb.application.handlers.build_natal")
+    caplog.set_level(logging.DEBUG, logger="exact_orb.session.context")
+    caplog.set_level(logging.DEBUG, logger="exact_orb.calculation")
+    caplog.set_level(logging.DEBUG, logger="exact_orb.engine.charts.natal")
     runtime = await build_application_runtime(
         settings=_settings(tmp_path, db_name="build-natal.sqlite3"),
         places=LocalPlaceCatalog.from_file(PLACES_PATH),
@@ -152,6 +160,150 @@ async def test_runtime_build_natal_miss_then_hit_commits_same_session(
         assert runtime.artifacts.hits == 1
         assert runtime.artifacts.misses == 1
         assert runtime.artifacts.put_ok == 1
+
+        messages = [record.getMessage() for record in caplog.records]
+        for run_number, run in enumerate((first_run, second_run)):
+            correlated = [
+                (index, message) for index, message in enumerate(messages)
+                if f"run_id={run.run_id} " in message
+            ]
+            exchanges = [
+                (index, message) for index, message in correlated
+                if message.startswith("application_message ")
+                and caplog.records[index].name == "exact_orb.application.orchestrator"
+            ]
+            assert [message for _, message in exchanges] == [
+                f"application_message direction=send run_id={run.run_id} "
+                "peer=ContextService operation=load message_type=ContextLoadRequest attempt=-",
+                f"application_message direction=receive run_id={run.run_id} "
+                "peer=ContextService operation=load message_type=SessionSnapshot attempt=-",
+                f"application_message direction=send run_id={run.run_id} "
+                "peer=BuildNatalHandler operation=handle message_type=BuildNatalRequest attempt=-",
+                f"application_message direction=receive run_id={run.run_id} "
+                "peer=BuildNatalHandler operation=handle message_type=BuildNatalSuccess attempt=-",
+                f"application_message direction=send run_id={run.run_id} "
+                "peer=ContextService operation=save message_type=ContextSaveRequest attempt=1",
+                f"application_message direction=receive run_id={run.run_id} "
+                "peer=ContextService operation=save message_type=Committed attempt=1",
+            ]
+            assert all(caplog.records[index].levelno == logging.INFO for index, _ in exchanges)
+            handler_exchanges = [
+                (index, message) for index, message in correlated
+                if message.startswith("application_message ")
+                and caplog.records[index].name == "exact_orb.application.handlers.build_natal"
+            ]
+            assert [message for _, message in handler_exchanges] == [
+                f"application_message direction=send run_id={run.run_id} "
+                "peer=BirthDataResolver operation=resolve_birth_data "
+                "message_type=BirthResolutionRequest attempt=-",
+                f"application_message direction=receive run_id={run.run_id} "
+                "peer=BirthDataResolver operation=resolve_birth_data "
+                "message_type=ResolvedBirthData attempt=-",
+                f"application_message direction=send run_id={run.run_id} "
+                "peer=ChartArtifactResolver operation=ensure_chart "
+                "message_type=EnsureChartRequest attempt=-",
+                f"application_message direction=receive run_id={run.run_id} "
+                "peer=ChartArtifactResolver operation=ensure_chart "
+                "message_type=ChartArtifact attempt=-",
+            ]
+            assert all(
+                caplog.records[index].levelno == logging.INFO
+                for index, _ in handler_exchanges
+            )
+            calculation_exchanges = [
+                (index, message)
+                for index, message in enumerate(messages)
+                if handler_exchanges[2][0] < index < handler_exchanges[3][0]
+                and message.startswith("calculation_message ")
+            ]
+            if run_number == 0:
+                key = first.artifact.calculation_key
+                assert [message for _, message in calculation_exchanges] == [
+                    f"calculation_message direction=send run_id={run.run_id} "
+                    "sender=ChartArtifactResolver peer=EngineService "
+                    f"operation=calculate_chart message_type=CalculationRequest calculation_key={key}",
+                    f"calculation_message direction=send run_id={run.run_id} "
+                    "sender=EngineService peer=NatalTechniqueAdapter "
+                    "operation=calculate message_type=TechniqueCalculationRequest "
+                    "calculation_key=-",
+                    "calculation_message direction=send run_id=- "
+                    "sender=NatalTechniqueAdapter peer=calculate_natal "
+                    "operation=calculate_natal message_type=NatalCalculationRequest "
+                    "calculation_key=-",
+                    "calculation_message direction=receive run_id=- "
+                    "sender=NatalTechniqueAdapter peer=calculate_natal "
+                    "operation=calculate_natal message_type=NatalChart calculation_key=-",
+                    f"calculation_message direction=receive run_id={run.run_id} "
+                    "sender=EngineService peer=NatalTechniqueAdapter "
+                    "operation=calculate message_type=CalculationResult calculation_key=-",
+                    f"calculation_message direction=receive run_id={run.run_id} "
+                    "sender=ChartArtifactResolver peer=EngineService "
+                    f"operation=calculate_chart message_type=CalculationResult calculation_key={key}",
+                ]
+                assert all(
+                    caplog.records[index].levelno == logging.INFO
+                    for index, _ in calculation_exchanges
+                )
+                engine_input = next(
+                    index for index, message in enumerate(messages)
+                    if "component_message direction=in operation=calculate_chart " in message
+                )
+                natal_input = next(
+                    index for index, message in enumerate(messages)
+                    if "component_message direction=in operation=calculate_natal " in message
+                )
+                assert calculation_exchanges[0][0] < engine_input
+                assert calculation_exchanges[2][0] < natal_input < calculation_exchanges[3][0]
+            else:
+                assert calculation_exchanges == []
+            input_index, input_message = next(
+                (index, message) for index, message in correlated
+                if "component_message direction=in operation=application_execute " in message
+            )
+            handler_index, _ = next(
+                (index, message) for index, message in correlated
+                if "component_message direction=in operation=build_natal " in message
+            )
+            handler_output_index, _ = next(
+                (index, message) for index, message in correlated
+                if "component_message direction=out operation=build_natal " in message
+            )
+            assert input_index < exchanges[0][0] < exchanges[1][0]
+            assert exchanges[2][0] < handler_index < handler_output_index < exchanges[3][0]
+            assert exchanges[3][0] < exchanges[4][0] < exchanges[5][0]
+            assert handler_index < handler_exchanges[0][0]
+            assert handler_exchanges[0][0] < handler_exchanges[1][0]
+            assert handler_exchanges[1][0] < handler_exchanges[2][0]
+            assert handler_exchanges[2][0] < handler_exchanges[3][0]
+            assert handler_exchanges[3][0] < handler_output_index
+
+            context_records = [
+                (index, message) for index, message in enumerate(messages)
+                if caplog.records[index].name == "exact_orb.session.context"
+            ]
+            for operation, send_index, receive_index, expected_type in (
+                ("load", exchanges[0][0], exchanges[1][0], "SessionSnapshot"),
+                ("save", exchanges[4][0], exchanges[5][0], "Committed"),
+            ):
+                inputs = [
+                    (index, message) for index, message in context_records
+                    if f"direction=in operation=context_{operation} " in message
+                ]
+                outputs = [
+                    (index, message) for index, message in context_records
+                    if f"direction=out operation=context_{operation} " in message
+                ]
+                assert len(inputs) == len(outputs) == 2
+                assert send_index < inputs[run_number][0] < outputs[run_number][0]
+                assert outputs[run_number][0] < receive_index
+                assert f"message_type={expected_type}" in outputs[run_number][1]
+            assert "message_type=ApplicationExecuteRequest" in input_message
+            assert json.loads(input_message.split(" message=", 1)[1]) == {
+                "command_type": "BuildNatalCommand",
+                "command": command.model_dump(mode="json"),
+                "session_id": session_id,
+                "run": run.model_dump(mode="json"),
+            }
 
         loaded = await runtime.context.load(session_id)
         assert isinstance(loaded, SessionSnapshot)

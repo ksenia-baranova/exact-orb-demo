@@ -824,6 +824,14 @@ DEBUG пишут полные входы и полные `CalculationResult`/`Na
 `component_message`; summary-типов нет. Ниже DEBUG payload и logging-проекции
 не вычисляются.
 
+По ADR-0038 `EngineService` пишет компактные INFO-события
+`calculation_message direction=send|receive` вокруг вызова выбранного
+`TechniqueAdapter` в executor с исходным `run_id`. `NatalTechniqueAdapter`
+пишет такие же события вокруг вызова расчётной функции с `run_id=-`, потому
+что его контракт не получает `RunContext`. События содержат вызывающего,
+адресата, операцию и `message_type`, без payload и cache key. При исключении
+или отмене `receive` не создаётся.
+
 **Т-ГРН-9. Пробел / намеренно отложено.** Расчётная и артефактная границы
 пока поддерживают только натальную технику: `CalculationResult.chart`
 объявлен как `NatalChart`, `ChartArtifact.chart` — как `ArtifactNatalChart`,

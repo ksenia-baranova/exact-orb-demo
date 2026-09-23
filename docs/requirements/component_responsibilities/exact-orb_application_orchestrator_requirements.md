@@ -418,14 +418,33 @@ snapshot, delta, outcome или result fields.
 
 Все события используют переданный `run.run_id`; второй `run_id` не создаётся.
 Orchestrator пишет собственные lifecycle-события через штатный structured
-logger. Он не дублирует payload и внутренние события Handler, resolver, engine,
-cache или `ContextService`, а фиксирует положение этих вызовов в общем
+logger. В них он не дублирует payload и внутренние события Handler, resolver,
+engine, cache или `ContextService`, а фиксирует положение этих вызовов в общем
 application-flow.
+Исключение ADR-0035: на входе `execute()` Orchestrator пишет полные
+`command_type`, `command`, `session_id` и `run` в отдельном DEBUG-сообщении
+`component_message direction=in operation=application_execute` с
+`message_type=ApplicationExecuteRequest`. Оно появляется после
+`application_operation_started`, до routing и load. При effective `INFO`
+payload не сериализуется. Полный выход Orchestrator отдельно не дублируется:
+его итог отражает `application_operation_finished`.
+По ADR-0036 Orchestrator также пишет компактные INFO-события
+`application_message direction=send|receive` для своих прямых вызовов
+`ContextService.load/save` и выбранного `Handler.handle`. Поля: `run_id`,
+фактический класс адресата (`peer`), операция, тип диагностической проекции
+запроса или фактического результата (`message_type`) и номер save attempt либо
+`-`. На отправке load/save это `ContextLoadRequest`/`ContextSaveRequest`, для
+текущего Handler — `BuildNatalRequest`; тело, `session_id` и данные рождения
+не записываются. `send` для save означает успешное создание задачи; `receive`
+появляется только после фактического возврата. Вызовы resolver, artifact
+resolver и engine не приписываются Orchestrator.
 
 На каждый начатый `execute()` приходится:
 
 ```text
 application_operation_started                   # ровно одно
+component_message direction=in operation=application_execute  # только DEBUG
+application_message direction=send|receive       # только прямые вызовы/ответы
 application_stage_finished stage=load            # если load завершился
 application_stage_finished stage=handler         # если Handler завершился
 application_commit_attempt_finished attempt=N    # на каждый начатый save
@@ -438,6 +457,8 @@ commit пишутся на `DEBUG`. `StateCommitFailed`, непредвиден�
 commit и выполняемый вслед за ними retry отражаются на `WARNING`; отдельное
 событие `retry_scheduled` не требуется, поскольку `attempt=2` однозначно
 доказывает начатый повтор.
+`application_message` пишется на `INFO` рядом с фактическими прямыми вызовами;
+оно не заменяет lifecycle-события и не считается отдельной операцией.
 
 `application_commit_attempt_finished` содержит `run_id`, номер попытки
 `1 | 2`, нормализованный outcome, безопасный `detail_code`, длительность и
@@ -824,7 +845,8 @@ event: str
 run_id: UUID
 ```
 
-Допустимые события и обязательные поля:
+Допустимые lifecycle-события и обязательные поля; отдельный формат
+`application_message` описан в FR-26 и ADR-0036:
 
 | `event` | Уровень | Поля |
 |---|---|---|
@@ -1039,18 +1061,25 @@ Input boundary
           ▼
 ApplicationOrchestrator.execute(command, session_id, run)
   ├─ INFO application_operation_started
+  ├─ DEBUG component_message direction=in operation=application_execute
   ├─ exact routing
   │    └─ absent → HANDLER_NOT_REGISTERED, no load
+  ├─ INFO application_message direction=send operation=load
   ├─ ContextService.load
+  │    ├─ INFO application_message direction=receive operation=load
   │    ├─ SessionAbsent
   │    ├─ StateReadFailed
   │    ├─ SessionSnapshot + original expected
   │    └─ application_stage_finished(stage=load) after completed call
+  ├─ INFO application_message direction=send operation=handle
   ├─ BuildNatalHandler.handle(command, state, same run)
+  │    ├─ INFO application_message direction=receive operation=handle
   │    ├─ InputRequired / ResolutionUnavailable / CalculationFailed
   │    ├─ BuildNatalSuccess(artifact, delta)
   │    └─ application_stage_finished(stage=handler) after completed call
   └─ protected ContextService.save(original expected, same delta)
+       ├─ INFO application_message direction=send operation=save, attempt=N
+       ├─ INFO application_message direction=receive operation=save, attempt=N
        ├─ Committed / AlreadyApplied / Superseded / SessionAbsent
        ├─ StateCommitFailed
        │    └─ at most one exact retry if not cancelled/deadline-expired

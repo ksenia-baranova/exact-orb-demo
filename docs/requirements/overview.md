@@ -654,6 +654,12 @@ cache miss → hit через публичную runtime-границу реал
 компонент, `run_id`, доступный `calculation_key`, статус, тип сообщения и режим
 payload. Путь Build Natal по ADR-0025/0028 сохраняет полные входящие и
 исходящие сообщения всех пяти границ только на DEBUG; summary-режима нет.
+ADR-0035 добавляет отдельную полную DEBUG-запись входа в
+`ApplicationOrchestrator.execute` до вызова Handler.
+ADR-0036 добавляет INFO-записи отправки и получения прямых сообщений
+Orchestrator с ContextService и Handler без тел сообщений.
+ADR-0037 добавляет парные DEBUG-сообщения `ContextService` и INFO-сообщения
+Handler о прямых вызовах resolver и artifact resolver.
 При отключённом DEBUG payload и logging-проекции не сериализуются. Это сознательная
 диагностика локального стенда; она сохраняет birth-data и итоговую карту за
 пределами TTL сессии.

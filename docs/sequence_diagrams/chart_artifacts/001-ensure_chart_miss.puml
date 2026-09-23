@@ -45,6 +45,7 @@ box "РАСЧЁТ" #FFFFF0
     control "EngineService" as Engine
     control "NatalTechniqueAdapter" as Adapter
     entity "calculate_natal\n+ Swiss Ephemeris" as Swiss
+    collections "Structured Log" as Log
 end box
 
 
@@ -125,6 +126,7 @@ Artifacts -> Artifacts : журнал: cache_miss(\nrun_id, calculation_key = ke
 
 == 4. Расчёт ==
 
+Artifacts -> Log : INFO calculation_message direction=send\nsender=ChartArtifactResolver, peer=EngineService\nmessage_type=CalculationRequest, calculation_key=key
 Artifacts -> Engine : calculate(spec, resolved, run)
 activate Engine
 
@@ -158,20 +160,25 @@ end note
 
 Engine -> Engine : await loop.run_in_executor(executor, ...)
 
+Engine -> Log : INFO calculation_message direction=send\nsender=EngineService, peer=NatalTechniqueAdapter\nmessage_type=TechniqueCalculationRequest, run_id
 Engine -> Adapter : calculate(spec, resolved)
 activate Adapter
 
 Adapter -> Adapter : маппинг спеки в аргументы:\nhouse_system, rulership, include,\nnear_interception_threshold; остальные\ndefaults покрыты CalculationVersion
 
+Adapter -> Log : INFO calculation_message direction=send\nsender=NatalTechniqueAdapter, peer=calculate_natal\nmessage_type=NatalCalculationRequest, run_id=-
 Adapter -> Swiss : with ephemeris_session():\ncalculate_natal(...)
 Swiss --> Adapter : NatalChart(warnings)
+Adapter -> Log : INFO calculation_message direction=receive\nmessage_type=NatalChart, run_id=-
 
 Adapter --> Engine : CalculationResult(chart)
+Engine -> Log : INFO calculation_message direction=receive\nmessage_type=CalculationResult, run_id
 deactivate Adapter
 
 Engine -> Engine : validate chart ↔ spec/resolved\n(kind, house system, include,\nUTC time, normalized coordinates)
 
 Engine --> Artifacts : CalculationResult
+Artifacts -> Log : INFO calculation_message direction=receive\nmessage_type=CalculationResult, calculation_key=key
 deactivate Engine
 
 note over Engine, Swiss

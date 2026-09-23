@@ -424,6 +424,14 @@ clock через keyword-only конструктор. Его публичные 
 concrete adapter, не генерирует `session_id`, не гасит cookie и не делает
 скрытых retry, rebase или дополнительного чтения после CAS-конфликта.
 
+По ADR-0037 все семь публичных операций пишут на DEBUG парные
+`component_message direction=in|out` с полными аргументами и фактическим
+результатом в однострочном JSON. Для исключения выход имеет `status=error`.
+`message_type=Context<Method>Request` на входе — диагностическое имя проекции,
+не новый публичный тип. `run_id=-`: сервис не получает `RunContext` и не
+использует скрытый контекст корреляции. При effective INFO сериализации
+DEBUG-payload нет.
+
 Runtime-проверка импортов дополняет AST-границу: для чистых импортов
 `exact_orb.session`, `.adapters`, `.adapters.sqlite` и `.context` задано
 обязательное подмножество project-модулей и верхняя граница, допускающая

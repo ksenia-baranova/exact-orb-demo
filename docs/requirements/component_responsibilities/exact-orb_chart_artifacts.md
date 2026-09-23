@@ -1061,6 +1061,13 @@ Startup-события `CalculationVersion` принадлежат отдель�
    содержит персональные данные и разрешён только для текущего локального
    стенда; публичное развёртывание блокируется до privacy-hardening из
    ADR-0025/0028. Ниже DEBUG проекторы и JSON-сериализация не выполняются.
+
+   По ADR-0038 на cache miss `ChartArtifactResolver` дополнительно пишет
+   компактные INFO-события `calculation_message direction=send|receive` вокруг
+   прямого вызова `CalculationEnginePort.calculate`. Запись содержит `run_id`,
+   фактический класс engine, тип входа/результата и полный `calculation_key`,
+   но не тело сообщения. На cache hit движок не вызывается и этих событий нет;
+   single-flight waiter также не создаёт отдельный вызов engine.
 3. `slow = duration_ms > slow_threshold_ms`, **`slow_threshold_ms = 3000`**.
    Порог живёт в конфигурации и берётся заведомо большим сознательно: он
    отмечает не «медленно», а «ненормально». Это замена таймауту (§3.4.3);

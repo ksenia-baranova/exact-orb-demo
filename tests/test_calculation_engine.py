@@ -399,7 +399,9 @@ async def test_engine_error_mapping_does_not_expose_source_messages(
     error: Exception,
     expected_type: type[Exception],
     code: str,
+    caplog: pytest.LogCaptureFixture,
 ) -> None:
+    caplog.set_level(logging.INFO, logger="exact_orb.calculation.engine")
     with ThreadPoolExecutor(max_workers=1) as executor:
         service = EngineService(
             executor=executor,
@@ -415,6 +417,16 @@ async def test_engine_error_mapping_does_not_expose_source_messages(
     assert isinstance(getattr(mapped, "run_id"), str)
     assert mapped.__cause__ is None
     assert SENSITIVE_MESSAGE not in str(mapped)
+    exchanges = [
+        record.getMessage() for record in caplog.records
+        if record.name == "exact_orb.calculation.engine"
+        and record.getMessage().startswith("calculation_message ")
+    ]
+    assert exchanges == [
+        f"calculation_message direction=send run_id={RUN_ID} "
+        "sender=EngineService peer=FakeAdapter operation=calculate "
+        "message_type=TechniqueCalculationRequest calculation_key=-",
+    ]
 
 
 @pytest.mark.parametrize(

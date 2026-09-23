@@ -61,7 +61,15 @@ class BuildNatalHandler:
         stage = "resolve"
         _log_started(run)
         try:
+            _log_message(
+                run, direction="send", peer=type(self._resolver).__name__,
+                operation="resolve_birth_data", message_type="BirthResolutionRequest",
+            )
             resolution = await self._resolver.resolve(command.birth_input, run=run)
+            _log_message(
+                run, direction="receive", peer=type(self._resolver).__name__,
+                operation="resolve_birth_data", message_type=type(resolution).__name__,
+            )
             if isinstance(resolution, (InputRequired, ResolutionUnavailable)):
                 _log_completed(run, resolution, None, started_at)
                 return resolution
@@ -72,10 +80,18 @@ class BuildNatalHandler:
 
             stage = "ensure_chart"
             try:
+                _log_message(
+                    run, direction="send", peer=type(self._artifacts).__name__,
+                    operation="ensure_chart", message_type="EnsureChartRequest",
+                )
                 artifact = await self._artifacts.ensure_chart(
                     spec,
                     resolution,
                     run=run,
+                )
+                _log_message(
+                    run, direction="receive", peer=type(self._artifacts).__name__,
+                    operation="ensure_chart", message_type=type(artifact).__name__,
                 )
             except (ChartCalculationError, CalculationUnavailableError) as error:
                 outcome = CalculationFailed(error_code=error.code)
@@ -96,6 +112,16 @@ class BuildNatalHandler:
         except BaseException as exc:
             _log_failed(run, stage, exc, started_at)
             raise
+
+
+def _log_message(
+    run: RunContext, *, direction: str, peer: str, operation: str, message_type: str,
+) -> None:
+    LOGGER.info(
+        "application_message direction=%s run_id=%s peer=%s operation=%s "
+        "message_type=%s attempt=-",
+        direction, run.run_id, peer, operation, message_type,
+    )
 
 
 def _log_started(run: RunContext) -> None:

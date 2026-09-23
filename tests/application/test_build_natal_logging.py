@@ -274,12 +274,38 @@ async def test_started_is_debug_and_precedes_exactly_one_terminal_event(
 
     records = _handler_records(caplog)
     event_names = [record.getMessage().partition(" ")[0] for record in records]
+    resolver_send = ("send", "resolve_birth_data", "BirthResolutionRequest")
+    resolver_receive = (
+        "receive", "resolve_birth_data",
+        {
+            "input_required": "InputRequired",
+            "resolution_unavailable": "ResolutionUnavailable",
+        }.get(scenario, "ResolvedBirthData"),
+    )
+    artifact_send = ("send", "ensure_chart", "EnsureChartRequest")
+    exchanges = [resolver_send]
+    if scenario != "unexpected_exception":
+        exchanges.append(resolver_receive)
+    if scenario in {"success", "calculation_failed", "cancelled"}:
+        exchanges.append(artifact_send)
+    if scenario == "success":
+        exchanges.append(("receive", "ensure_chart", "ChartArtifact"))
     assert event_names == [
         "component_message",
         "build_natal_started",
+        *(["application_message"] * len(exchanges)),
         terminal_event,
         "component_message",
     ]
+    for record, (direction, operation, message_type) in zip(
+        records[2:2 + len(exchanges)], exchanges,
+    ):
+        assert record.levelno == logging.INFO
+        message = record.getMessage()
+        assert f"direction={direction}" in message
+        assert f"operation={operation}" in message
+        assert f"message_type={message_type}" in message
+        assert "attempt=-" in message
     assert records[0].levelno == logging.DEBUG
     assert "direction=in" in records[0].getMessage()
     assert "message_type=BuildNatalRequest" in records[0].getMessage()
