@@ -31,7 +31,7 @@ R3.2/диаграммы 009–010. HEAD сам по себе не содержи
   и [ADR-0020](../../requirements/decisions/0020-agent-runtime-behind-handlers.md):
   request/response, отсутствие Agent Runtime в Build Natal.
 - [ADR-0025](../../requirements/decisions/0025-debug-component-boundary-messages.md),
-  [ADR-0026](../../requirements/decisions/0026-compact-chart-boundary-logging.md),
+  [ADR-0026](../../requirements/decisions/archive/0026-compact-chart-boundary-logging.md),
   [ADR-0028](../../requirements/decisions/0028-full-debug-component-boundary-payloads.md)
   и [ADR-0034](../../requirements/decisions/0034-birth-data-and-terms-of-use.md).
   ADR-0028 явно заменил режим payload ADR-0026; новый lifecycle-журнал следует R3.2.
