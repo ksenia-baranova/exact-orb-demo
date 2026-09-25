@@ -26,6 +26,7 @@
   - [Управляемая разработка с AI-агентами](#управляемая-разработка-с-ai-агентами)
 - [Инженерные принципы](#инженерные-принципы)
 - [Текущее состояние](#текущее-состояние)
+  - [Целевой интерфейс](#целевой-интерфейс)
 - [Быстрый старт](#быстрый-старт)
 - [Пример результата](#пример-результата)
 - [Архитектура](#архитектура)
@@ -211,6 +212,15 @@ LLM используется как инструмент анализа и ис�
 транзитов, но текущий application calculation service обслуживает базовый сценарий
 натальной карты / космограммы. Поэтому полноценный transit application flow
 не заявляется как завершённый.
+
+### Целевой интерфейс
+
+[Раздел UI/UX](docs/ui_ux/README.md) содержит требования, открытые решения и рендеры.
+[Интерактивный web-прототип](docs/ui_ux/web-prototype.html) показывает экраны на
+демонстрационных данных. **Все материалы раздела имеют статус черновика.**
+Изображение ниже показывает желаемый конечный вид; Web UI пока не реализован.
+
+![Желаемый конечный вид интерфейса exact-orb — персональный разбор](docs/ui_ux/renders/r4-chat.png)
 
 ---
 
@@ -964,6 +974,7 @@ Mock, удовлетворяющий интерфейсу, полезен для
 | [`docs/requirements/component_responsibilities/`](docs/requirements/component_responsibilities/) | Responsibilities и контракты компонентов |
 | [`docs/requirements/component_responsibilities/exact-orb_place_catalog.md`](docs/requirements/component_responsibilities/exact-orb_place_catalog.md) | Контракты builder, search/lookup, нормализации и lifecycle каталога мест |
 | [`docs/requirements/handlers/`](docs/requirements/handlers/) | Требования к application handlers |
+| [`docs/ui_ux/README.md`](docs/ui_ux/README.md) | Черновик требований, решений, прототипа и рендеров UI/UX |
 | [`docs/architecture/service_ready_architecture.md`](docs/architecture/service_ready_architecture.md) | Modular monolith и service seams |
 | [`docs/sequence_diagrams/`](docs/sequence_diagrams/) | Positive, negative и concurrency scenarios |
 | [`docs/project_management/roadmap.md`](docs/project_management/roadmap.md) | Roadmap проекта |
