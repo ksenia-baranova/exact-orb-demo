@@ -862,13 +862,13 @@ search/lookup и их сквозная application-приёмка.
 Также реализованы нормализация результата и DEBUG-диагностика ADR-0027/0028,
 семантика точек/оси узлов/конфигураций ADR-0029–0031, неизвестное время и
 key v2 по ADR-0032, единая strength-система ADR-0033 и нормализация орбиса
-на epsilon-границе. LLM Gateway предоставляет синхронный transport.
+на epsilon-границе. Обязательный import-boundary тест `BuildNatalHandler`
+интегрирован в M1-4. LLM Gateway предоставляет синхронный transport.
 
 **M1. Первый сценарий с UI на удалённом сервере.** Остаются: FastAPI и Session
 Middleware, HTTP wiring готового каталога; первый UI с autocomplete; условия и
 presentation checkbox по ADR-0034; отображение
 рассчитанной карты; серверный INFO-profile, деплой и браузерная приёмка.
-Отдельный обязательный import-boundary тест handler ещё не интегрирован.
 Build-путь не требует LLM или Agent Runtime.
 
 **M2. Первая интерпретация.** На основе готового Gateway реализовать
