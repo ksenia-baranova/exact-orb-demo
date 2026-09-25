@@ -1,6 +1,6 @@
 # exact-orb — дорожная карта
 
-Статус документа: рабочий, версия 3.6 (2026-09-22).
+Статус документа: рабочий, версия 3.8 (2026-09-25).
 Объединяет milestone-план версии 3.0 с фактической историей выполненных работ
 и заменяет версии 2.x, планировавшие работу блоками A–J от расчётного фундамента.
 
@@ -26,6 +26,10 @@ composition M1-5.1 между каталогом и FastAPI, не переотк
 Ревизия 3.6 фиксирует выполнение M1-5: SQLite builder и catalog core приняты
 на synthetic и полных локальных GeoNames-данных; HTTP/UI/deployment ownership
 сохраняются за M1-6/M1-7/M1-12.
+Ревизия 3.7 фиксирует выполнение M1-4: обязательная граница прямых импортов
+`BuildNatalHandler` закреплена regression-тестом без изменения самого handler.
+Ревизия 3.8 добавляет M1-8.1 — отдельную ветку переноса UI/UX-прототипа в
+основной код. Оценка и календарное окно этой ветки пока не определены.
 
 ---
 
@@ -33,7 +37,7 @@ composition M1-5.1 между каталогом и FastAPI, не переотк
 
 | Веха | Результат | Оценка оставшейся работы |
 |---|---|---:|
-| **M1** | Первый сценарий с UI работает на удалённом сервере | 17.5 рабочего дня после приёмки каталога мест |
+| **M1** | Первый сценарий с UI работает на удалённом сервере | 17 рабочих дней после выполнения M1-4 и M1-5 + M1-8.1 без оценки |
 | **M2** | Интерпретация коротким путём: handler → InterpretationService → Gateway | 12.5 рабочего дня + 10–20 дней содержания |
 | **M3** | Agent Runtime и известный остаток | 36 рабочих дней, предварительно |
 
@@ -47,8 +51,9 @@ Baseline v3.2 оценивал M1-2 + M1-3 как 2 рабочих дня до 1
 реализация и приёмка application core заняли 16–19.09, а README/status были
 синхронизированы 20.09. Версия 3.4 добавила 2 рабочих дня M1-5.1 для полной
 process runtime composition; этап выполнен 21.09. Версия 3.5 добавила ещё
-2 дня к M1-5 после детализации каталога; после выполнения M1-5 оставшийся M1
-равен 17.5 рабочего дня.
+2 дня к M1-5 после детализации каталога; после выполнения M1-4 и M1-5
+оставшийся M1 по этому baseline равен 17 рабочим дням. Новая M1-8.1 в оценку
+не включена.
 Оценка M3 имеет меньшую точность: транзиты, несколько систем домов,
 соляр и синастрия требуют отдельного уточнения требований.
 
@@ -76,6 +81,7 @@ Application Orchestrator по коммитам `a12daf4` → `e688592` и README
 | Сессии P1–P4.1 | Контракты, `ContextService`, InMemory и SQLite, TTL, CAS, `AlreadyApplied`, retry без rebase, общий conformance; benchmark полного SQLite adapter path | `session/`, `tests/session/`, [отчёт P4](../benchmarks/2026-09-06-session-sqlite.md) |
 | Research P5a | Контракты, whitelist-проекция, digest, append-only port и InMemory adapter | `research/`, `tests/research/`, `457a9dc`, `11c8c9e` |
 | Build Natal C1 | Команда, порты, четыре исхода handler, выбор natal/cosmogram, `StateDelta`, обработка ошибок, реальная интеграция резолва/расчёта/кэша | `application/`, `tests/application/`, `2f86fb9`, `5406306` |
+| Граница импортов Build Natal | AST regression-тест прямых импортов handler, денилист §10.1 и позитивные контроли | `tests/test_module_boundaries.py`, `0828c26`; 44 теста файла, 910 application-тестов и полный `pytest` (2564 теста) прошли 23.09 |
 | Application lifecycle | `ApplicationResult`, `ApplicationOrchestrator`, защищённый commit, один точный retry, минимальная composition, сквозные SQLite/CAS-проверки и normal load profile | `application/`, `tests/application/`, `scripts/bench_application_orchestrator.py`, `e688592`, `011f0fc` |
 | Согласованность результата | Нормализация chart/result/artifact и сквозная проверка resolved data, spec, chart, key и delta | ADR-0027; `30eb1f3`, `e975871`, `645bb4e` |
 | Диагностика компонентных границ | Correlation по `run_id`, полные DEBUG input/output, отсутствие сериализации payload ниже DEBUG | ADR-0025/0028; `component_logging.py`, `tests/application/test_build_natal_logging.py`, `babeb09` |
@@ -85,11 +91,11 @@ Application Orchestrator по коммитам `a12daf4` → `e688592` и README
 | LLM transport | Существующий синхронный `llm/gateway.py:complete()` | Gateway и его тесты; готовность transport не означает готовность интерпретации |
 | Документация | ADR до 0034, включая границу данных рождения/условий/публичного запуска; актуальные Build Natal sequence diagrams, отделение deferred BuildAttempt, описание процесса разработки | `docs/requirements/decisions/`, `docs/sequence_diagrams/`, `docs/development_approach/` |
 
-### 2.2. Что не закрыто выполненной работой
+### 2.2. Остатки после выполненной работы и их дальнейший статус
 
-| Область | Остаток | Новый этап |
+| Область | Остаток / статус | Этап |
 |---|---|---|
-| Build Natal | Отдельный import-boundary regression-тест handler по §10.1 его требований; функциональная реализация есть, полная формальная приёмка не закрыта | M1-4 |
+| Build Natal | В `main` до переноса 23.09 отсутствовал отдельный import-boundary regression-тест handler по §10.1; закрыт коммитом `0828c26` | M1-4 выполнен |
 | Application integration вне core | Process runtime подключён; FastAPI, client mapping и admission/degraded profile ещё не подключены к реализованному Orchestrator | M1-6, M1-10, M1-12; X1/X2 application-плана |
 | Каталог в пользовательском сценарии | Catalog core M1-5 выполнен: GeoNames builder, SQLite search/lookup, lifecycle и application acceptance; остаются HTTP/lifespan wiring, browser autocomplete и доставка generated артефакта | M1-6, M1-7, M1-12 |
 | Пользовательский сценарий | FastAPI, middleware, первый UI, Chart Renderer, реализация условий использования, CI, удалённый запуск и приёмка | M1-6–M1-15; решение для M1-9 уже принято в ADR-0034 |
@@ -136,7 +142,7 @@ Git начинается 22.08.2026: `46372eb` — начальная запис
 | Решение о заморозке ChartSpec | 06.09 | 07.09 | 2 | [промпт](../../prompts/2026-09-06/06-adr-chart-spec-completeness-freeze.md); `7f05723`. Включены обоснование ключа и синхронизация документов; реализация version вынесена отдельной строкой. |
 | CalculationVersion | 07.09 | 07.09 | 1 | [промпт](../../prompts/2026-09-07/02-calculation-version.md); `55f0f03` → `f94d8c6` |
 | Долг API движка | 07.09 | 07.09 | 1 | [промпт](../../prompts/2026-09-07/03-engine-debt.md); `604d411` |
-| BuildNatalHandler, интеграция и ревью | 08.09 | 09.09 | 2 | [промпт](../../prompts/2026-09-08/01-application-contracts.md); `e18ab87` → `d48f303`. Код, тесты и cleanup завершены 08.09; согласование требований — 09.09. Import-boundary тест остаётся незакрытым. |
+| BuildNatalHandler, интеграция и ревью | 08.09 | 09.09 | 2 | [промпт](../../prompts/2026-09-08/01-application-contracts.md); `e18ab87` → `d48f303`. Код, тесты и cleanup завершены 08.09; согласование требований — 09.09. Import-boundary тест не входил в это окно и закрыт отдельно 23.09 (M1-4). |
 | Correlation и component logging | 09.09 | 09.09 | 1 | [промпт](../../prompts/2026-09-09/03-optimize-chart-boundary-logging.md); `3c9fa6e` |
 | Нормализация результата ADR-0027 | 10.09 | 11.09 | 2 | [промпт](../../prompts/2026-09-10/01-research-build-natal-sources-of-truth.md); `30eb1f3` → `d6c0c89`. Result → artifact → BuildNatalSuccess; включена синхронизация итогового контракта. |
 | Полный DEBUG payload ADR-0028 | 10.09 | 11.09 | 2 | [промпт](../../prompts/2026-09-10/05-full-debug-component-boundary-logging.md); `babeb09` → `d6c0c89` |
@@ -164,7 +170,7 @@ Git начинается 22.08.2026: `46372eb` — начальная запис
   и коммиты, видимый интервал сессий — 05–06.09, 2 дня.
 - BuildNatalHandler: реализация, тесты и cleanup завершены 08.09;
   документы синхронизированы 09.09. Отдельный тест импортных границ
-  остаётся задачей M1-4 и не считается выполненным в эти 2 дня.
+  закрыт 23.09 в M1-4 и не считается выполненным в эти 2 дня.
 - Полная серия семантики ADR-0029–0033 и epsilon-исправление охватывает
   11–13.09 — 3 календарных дня. Её подэтапы в таблице пересекаются.
 - Application Orchestrator: исходный M1 baseline отводил на core + composition
@@ -265,12 +271,13 @@ JSON-сериализация не выполняются. Локальный DE
 | M1-1 | `docs/adr-birth-data-and-terms-of-use` | **ADR-0034 принят:** данные рождения остаются защищаемой категорией; условия и presentation checkbox отделены от юридического согласия; отметка не хранится; удалённый контролируемый стенд использует effective `INFO`; зафиксированы stop conditions | 0.5 |
 | M1-2 | `feat/application-orchestrator` | **Выполнено с перерасходом:** `application/orchestrator.py`, `ApplicationResult`, protected commit, один точный retry, cancellation/lifecycle semantics, real SQLite/CAS acceptance и load profile | план 1.5; факт 16–19.09 |
 | M1-3 | `feat/application-orchestrator` | **Минимальная composition выполнена внутри Orchestrator-среза:** `application/composition.py` собирает application registry и `ApplicationOrchestrator` из готовых зависимостей. Полная process runtime composition выделена в M1-5.1 | план 0.5; вошло в факт 16–19.09 |
-| M1-4 | `test/build-natal-handler-import-boundary` | Перенести обязательный regression-тест §10.1 требований handler: запрет прямых импортов concrete birth/calculation implementations, session adapters, transport, agent и LLM; позитивный контроль разрешённого импорта. Закрывает формальную приёмку уже работающего handler | 0.5 |
+| M1-4 | `test/build-natal-handler-import-boundary` | **Выполнено 23.09:** обязательный regression-тест §10.1 запрещает прямые импорты concrete birth/calculation implementations, session adapters, transport, agent и LLM; позитивные контроли проверяют разрешённые импорты. Формальная приёмка handler закрыта (`0828c26`) | план 0.5; принято 23.09 |
 | M1-5 | `feat/place-catalog` | **Выполнено 22.09:** по [требованиям каталога мест](../requirements/component_responsibilities/exact-orb_place_catalog.md) и [implementation plan](implementation_plans/place_catalog_implementation_plan.md) реализованы GeoNames SQLite builder, отдельные `PlaceSearch.search(text)` и `PlaceCatalog.lookup(place_id)` одного leaf-adapter, русские подписи мест/admin1, индексный поиск, lifecycle/executor, startup validation, module boundaries и сквозная приёмка; полный local-data build принят | план 4; факт 21–22.09 |
 | M1-5.1 | `chore/bootstrap-composition` | **Выполнено 21.09:** process-local `ApplicationRuntime` собирает реальные resolver/cache/engine, SQLite session persistence, `ContextService`, существующий `build_application_orchestrator`, фактическую `CalculationVersion`, owned executors и one-shot reaper. Сквозные cache miss → hit и cancelled-waiter shutdown приняты; `PlaceCatalog` внедряется извне | план 2; факт 21.09 |
 | M1-6 | `feat/http-api-and-session-middleware` | FastAPI и lifespan потребляют готовый `ApplicationRuntime`; Session Middleware (`HttpOnly` / `Secure` / `SameSite` cookie → анонимный `session_id`); Build API; endpoint поиска мест; прекращение приёма и ожидание request tasks, включая отменённые; периодический запуск runtime reaper | 2 |
 | M1-7 | `feat/ui-birth-form-and-facts` | Форма ввода с автодополнением места; вывод фактов таблицами — планеты, дома, аспекты, конфигурации, сила, особые градусы. Содержательный эквивалент human-readable CLI | 2 |
 | M1-8 | `feat/ui-chart-wheel` | Chart Renderer: SVG-колесо — знаки, дома и углы, планеты и производные точки, линии аспектов по категориям. Отрисовочные решения фиксируются ADR: что делать при скучивании планет, как показывать ретроградность, какие аспекты рисовать | 5 |
+| M1-8.1 | `feat/ui-chart-wheel-imolementation` | Перенос [чернового web-прототипа](../ui_ux/web-prototype.html) и экранов Э1–Э7 в основной UI-код: собрать пользовательский поток из формы и фактов M1-7, SVG-колеса M1-8 и реальных ответов API. Демо-значения прототипа не становятся расчётными данными; чат Э8–Э9 остаётся в M2-7 | оценка открыта |
 | M1-9 | `feat/terms-of-use` | Страница «Условия использования сервиса» по §3.2; неотмеченный по умолчанию checkbox блокирует отправку расчёта до подтверждения ознакомления; ссылка на исходный код (AGPL §13). Отметка не сохраняется и не объявляется юридическим согласием | 1 |
 | M1-10 | `chore/bench-concurrency` | `p50/p95/p99` для натала и космограммы при 1, 2, 5 и 10 одновременных расчётах (ADR-0012). Идёт **до** деплоя: определяет конфигурацию воркеров и может отменить целый блок отложенных решений — или потребовать его немедленно | 1 |
 | M1-11 | `chore/ci-pipeline` | GitHub Actions: `pytest` на Linux. Закрывает известное ограничение «нет CI» и впервые проверяет переносимость golden-эталонов на другую ОС | 0.5 |
@@ -279,17 +286,21 @@ JSON-сериализация не выполняются. Локальный DE
 | M1-14 | `test/scenario-acceptance` | Сквозная приёмка по [`negative corner scenarios`](../requirements/build_chart/exact_orb_negative_corner_scenarios.md) плюс контрольный кейс: 02.09.1990 Москва → UTC+4, локальные 14:30 = 10:30 UTC | 1.5 |
 | M1-15 | `fix/first-release-issues` | Фиксы по итогам приёмки | 1 |
 
-**Итого M1 после ревизии v3.6 — 26 рабочих дней.** К baseline v3.2 добавлены
+**Итого оценённый M1 по baseline v3.7 — 26 рабочих дней.** К baseline v3.2 добавлены
 2 дня M1-5.1 и 2 дня к M1-5; после фактического выполнения M1-1–M1-3,
-M1-5 и M1-5.1 осталось 17.5
-рабочего дня: M1-4 и M1-6–M1-15. Перерасход Orchestrator уже сдвинул
+M1-4, M1-5 и M1-5.1 осталось 17
+рабочих дней: M1-6–M1-15. Перерасход Orchestrator уже сдвинул
 календарный baseline, но не является основанием автоматически резать
 оставшиеся проверки или переносить acceptance в «потом».
 
+M1-8.1 пока не входит в эти 26 дней и 17 дней остатка. Её объём и оценку нужно
+уточнить до обновления календарного плана; даты M1-9 и последующих задач в
+текущей диаграмме остаются прежним baseline без этой ветки.
+
 В версии 3.0 пункт M1-4 содержал рефакторинг agent-пакета и `NatalTool`.
 При слиянии он перенесён в M3: build-сценарий не вызывает Agent Runtime или
-Tools. Его место и оценку 0.5 дня занимает остающийся обязательный
-import-boundary тест `BuildNatalHandler`, поэтому итог M1 не изменился.
+Tools. Его место и оценку 0.5 дня занял обязательный
+import-boundary тест `BuildNatalHandler` (M1-4, выполнен 23.09), поэтому итог M1 не изменился.
 
 ### 3.4. Что из прежней карты не вошло
 
@@ -412,6 +423,8 @@ M2-8 обязателен и обязателен до начала этой р�
 | Известная часть M3 | M3 | 36, предварительно |
 | Весь оценённый остаток | M1 остаток + M2 + содержание + M3 | 80–90 |
 
+Оценки в таблице не включают M1-8.1; после её оценки горизонты пересчитываются.
+
 ---
 
 ## 7. Решения, требуемые до старта
@@ -451,7 +464,7 @@ M2-8 обязателен и обязателен до начала этой р�
 |---|---|
 | A — расчётный фундамент | Готовая основа; текущие доменные изменения проверяются по своим ADR |
 | B — сессия | Готовая основа для этапа 1 |
-| C1 — BuildNatalHandler | Реализованная основа M1; оставшийся boundary-тест — M1-4 |
+| C1 — BuildNatalHandler | Реализованная основа M1; boundary-тест закрыт в M1-4 |
 | C2/C3 — Application Orchestrator и bootstrap | M1-2, минимальная composition M1-3, полная process runtime composition M1-5.1 |
 | C4 — agent-пакет и общий путь NatalTool | M3-1; не блокирует M1 и короткий путь M2 |
 | D — CLI и сценарная приёмка | Приёмка HTTP/UI входит в M1/M2; отдельный application-режим CLI снят с ближайшего горизонта |
@@ -460,7 +473,7 @@ M2-8 обязателен и обязателен до начала этой р�
 | G — preset-интерпретация | Короткий прямой путь — M2; runtime и streaming — M3-2–M3-6 |
 | H — содержание | Eval и первый набор — M2; расширение по результатам обратной связи |
 | I — эксплуатация | M1 содержит необходимое для выбранного стенда; маскирование и observability — M3-8/M3-9 либо раньше по условию срочности |
-| J — клиент | Форма/таблицы — M1-7, колесо — M1-8, интерпретация — M2-7 |
+| J — клиент | Форма/таблицы — M1-7, колесо — M1-8, перенос прототипа в основной код — M1-8.1, интерпретация — M2-7 |
 | P — упаковка портфолио | После работающих пользовательских сценариев |
 
 ---
@@ -494,7 +507,8 @@ M2-8 обязателен и обязателен до начала этой р�
 оставшиеся оценки M1 и M2 в подробный baseline после фактической Orchestrator
 приёмки: половины дня указаны как AM/PM, а совпадающие дневные полосы означают
 передачу работы внутри дня. Третья сохраняет предварительную оценку M3 после
-этой контрольной точки.
+этой контрольной точки. Новая M1-8.1 ещё не оценена и в календарной диаграмме
+не показана.
 PNG изменённых первой и второй диаграмм остаются предыдущими рендерами:
 локальные PlantUML и Java сейчас недоступны, поэтому новые исходники в этой
 задаче не отрисованы.
