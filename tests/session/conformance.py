@@ -15,6 +15,7 @@ from pydantic import ValidationError
 
 from exact_orb.birth.types import BirthInput, ResolutionWarning, ResolvedBirthData
 from exact_orb.calculation.spec import NatalChartSpec
+from exact_orb.session.context import ContextService
 from exact_orb.session.dialog import (
     MAX_DIALOG_CHARS,
     MAX_DIALOG_TURN_CHARS,
@@ -29,6 +30,8 @@ from exact_orb.session.errors import (
     StateWriteError,
 )
 from exact_orb.session.outcomes import (
+    AlreadyApplied,
+    Committed,
     SessionAbsent,
     SessionCreated,
     SessionIdConflict,
@@ -536,11 +539,15 @@ class SessionPersistenceConformance:
                 now=NOW,
             )
             stored = await persistence.sessions.get("cas", now=NOW)
+            snapshot = await persistence.touch("cas", now=NOW)
 
             assert result == 1
             assert isinstance(stored, SessionState)
             assert stored.state_version == 1
             assert stored.base_chart == ChartRef(state_version=1, spec=SPEC)
+            assert isinstance(snapshot, SessionSnapshot)
+            assert snapshot.state == stored
+            assert snapshot.chart == CHART
 
     @pytest.mark.parametrize("lifecycle_kind", ["missing", "expired"])
     async def test_cas_absence_does_not_create_or_revive(
@@ -594,6 +601,9 @@ class SessionPersistenceConformance:
                 ) == 1
             await persistence.dialogs.append("conflict", make_turn(), now=NOW)
             before = await _observable(persistence, "conflict", now=NOW)
+            before_snapshot = await persistence.touch("conflict", now=NOW)
+            assert isinstance(before_snapshot, SessionSnapshot)
+            assert before_snapshot.chart == (CHART if actual_version == 1 else None)
 
             result = await persistence.sessions.compare_and_set(
                 "conflict",
@@ -606,6 +616,37 @@ class SessionPersistenceConformance:
             assert result.actual == before[0]
             assert result.actual.state_version == actual_version
             assert await _observable(persistence, "conflict", now=NOW) == before
+            after_snapshot = await persistence.touch("conflict", now=NOW)
+            assert after_snapshot == before_snapshot
+
+    async def test_already_applied_keeps_first_committed_chart(
+        self,
+        persistence_factory: PersistenceFactory,
+    ) -> None:
+        async with persistence_factory() as handles:
+            persistence = handles.primary
+            await create_session(persistence, "same-intent")
+            context = ContextService(persistence=persistence, clock=lambda: NOW)
+
+            first = await context.save("same-intent", 0, DELTA)
+            before = await persistence.touch("same-intent", now=NOW)
+            assert first == Committed(state_version=1)
+            assert isinstance(before, SessionSnapshot)
+            assert before.chart == CHART
+
+            same_intent_other_bytes = StateDelta(
+                birth_input=BIRTH_INPUT,
+                birth_resolved=RESOLVED,
+                base_chart_spec=SPEC,
+                base_chart_payload=OTHER_CHART,
+            )
+            repeated = await context.save("same-intent", 0, same_intent_other_bytes)
+            after = await persistence.touch("same-intent", now=NOW)
+
+            assert repeated == AlreadyApplied(state_version=1)
+            assert after == before
+            assert isinstance(after, SessionSnapshot)
+            assert after.chart == CHART
 
     @pytest.mark.parametrize("pair_kind", ["same-handle", "cross-handle"])
     async def test_concurrent_cas_commits_once_and_reports_winner(
@@ -633,6 +674,11 @@ class SessionPersistenceConformance:
             conflicts = [item for item in results if isinstance(item, VersionConflict)]
             assert len(conflicts) == 1
             assert conflicts[0].actual == stored
+            snapshot = await handles.primary.touch("cas-race", now=NOW)
+            assert isinstance(snapshot, SessionSnapshot)
+            assert snapshot.chart == (
+                CHART if stored.birth_input == BIRTH_INPUT else OTHER_CHART
+            )
 
     async def test_successful_cas_renews_state_and_preserves_dialog(
         self,
@@ -661,6 +707,29 @@ class SessionPersistenceConformance:
             assert isinstance(state, SessionState)
             assert state.expires_at == NOW + timedelta(days=13)
             assert dialog == (turn,)
+
+    async def test_rebuild_replaces_state_and_chart_together(
+        self,
+        persistence_factory: PersistenceFactory,
+    ) -> None:
+        async with persistence_factory() as handles:
+            persistence = handles.primary
+            _, turn = await populate_with_dialog(persistence, "rebuild")
+            before = await persistence.touch("rebuild", now=NOW)
+            assert isinstance(before, SessionSnapshot)
+            assert before.chart == CHART
+
+            assert await persistence.sessions.compare_and_set(
+                "rebuild", 1, OTHER_DELTA, now=NOW
+            ) == 2
+            after = await persistence.touch("rebuild", now=NOW)
+
+            assert isinstance(after, SessionSnapshot)
+            assert after.state.state_version == 2
+            assert after.state.birth_input == OTHER_BIRTH_INPUT
+            assert after.state.base_chart == ChartRef(state_version=2, spec=OTHER_SPEC)
+            assert after.dialog == (turn,)
+            assert after.chart == OTHER_CHART
 
     async def test_dialog_read_handles_empty_missing_expired_without_touch(
         self,
@@ -979,10 +1048,27 @@ class SessionPersistenceConformance:
 
             assert isinstance(result, SessionSnapshot)
             assert result.dialog == ()
+            assert result.chart == CHART
             assert result.state.expires_at == NOW + timedelta(days=13)
             assert result.state.model_copy(update={"expires_at": original.expires_at}) == original
             with pytest.raises(ValidationError):
                 result.dialog = ()  # type: ignore[misc]
+
+    async def test_new_empty_session_touch_has_no_chart(
+        self,
+        persistence_factory: PersistenceFactory,
+    ) -> None:
+        async with persistence_factory() as handles:
+            persistence = handles.primary
+            await create_session(persistence, "empty-touch")
+
+            snapshot = await persistence.touch("empty-touch", now=NOW)
+
+            assert isinstance(snapshot, SessionSnapshot)
+            assert snapshot.state.state_version == 0
+            assert snapshot.state.base_chart is None
+            assert snapshot.dialog == ()
+            assert snapshot.chart is None
 
     async def test_touch_returns_consistent_renewed_snapshot(
         self,
@@ -1005,6 +1091,7 @@ class SessionPersistenceConformance:
             )
 
             assert result.dialog == (turn,)
+            assert result.chart == CHART
             assert result.state.expires_at == NOW + timedelta(days=13)
             assert result.state.model_copy(update={"expires_at": original.expires_at}) == original
             assert state == result.state
@@ -1109,6 +1196,9 @@ class SessionPersistenceConformance:
             assert state.birth_input is state.birth_resolved is state.base_chart is None
             assert state.expires_at == NOW + timedelta(days=8)
             assert dialog == ()
+            snapshot = await persistence.touch("reset-direct", now=NOW + timedelta(days=1))
+            assert isinstance(snapshot, SessionSnapshot)
+            assert snapshot.chart is None
 
     async def test_value_equivalent_reset_delta_uses_reset_semantics(
         self,
@@ -1131,6 +1221,9 @@ class SessionPersistenceConformance:
                 now=NOW,
             ) == 2
             assert await persistence.dialogs.read("reset-value", now=NOW) == ()
+            snapshot = await persistence.touch("reset-value", now=NOW)
+            assert isinstance(snapshot, SessionSnapshot)
+            assert snapshot.chart is None
 
     async def test_aggregate_reset_matches_direct_cas_reset(
         self,
@@ -1168,6 +1261,11 @@ class SessionPersistenceConformance:
             assert isinstance(cas_state, SessionState)
             assert aggregate_state.model_copy(update={"session_id": "reset-cas"}) == cas_state
             assert aggregate_dialog == cas_dialog == ()
+            aggregate_snapshot = await persistence.touch("reset-aggregate", now=NOW + timedelta(days=1))
+            cas_snapshot = await persistence.touch("reset-cas", now=NOW + timedelta(days=1))
+            assert isinstance(aggregate_snapshot, SessionSnapshot)
+            assert isinstance(cas_snapshot, SessionSnapshot)
+            assert aggregate_snapshot.chart is cas_snapshot.chart is None
 
     async def test_reset_conflict_and_repeated_old_expected_do_not_mutate(
         self,
@@ -1177,6 +1275,9 @@ class SessionPersistenceConformance:
             persistence = handles.primary
             await populate_with_dialog(persistence, "reset-conflict")
             before = await _observable(persistence, "reset-conflict", now=NOW)
+            before_snapshot = await persistence.touch("reset-conflict", now=NOW)
+            assert isinstance(before_snapshot, SessionSnapshot)
+            assert before_snapshot.chart == CHART
 
             conflict = await persistence.reset(
                 "reset-conflict",
@@ -1185,6 +1286,7 @@ class SessionPersistenceConformance:
             )
             assert isinstance(conflict, VersionConflict)
             assert await _observable(persistence, "reset-conflict", now=NOW) == before
+            assert await persistence.touch("reset-conflict", now=NOW) == before_snapshot
 
             assert await persistence.reset("reset-conflict", 1, now=NOW) == 2
             repeated = await persistence.reset("reset-conflict", 1, now=NOW)
@@ -1192,6 +1294,9 @@ class SessionPersistenceConformance:
             assert repeated.actual.state_version == 2
             assert repeated.actual.birth_input is None
             assert await persistence.dialogs.read("reset-conflict", now=NOW) == ()
+            final_snapshot = await persistence.touch("reset-conflict", now=NOW)
+            assert isinstance(final_snapshot, SessionSnapshot)
+            assert final_snapshot.chart is None
 
     @pytest.mark.parametrize("lifecycle_kind", ["missing", "expired"])
     async def test_reset_absence_does_not_create_or_revive(
@@ -1243,11 +1348,15 @@ class SessionPersistenceConformance:
             assert (
                 touch_result.state.state_version,
                 touch_result.dialog,
-            ) in {(1, (turn,)), (2, ())}
+                touch_result.chart,
+            ) in ((1, (turn,), CHART), (2, (), None))
             assert isinstance(final_state, SessionState)
             assert final_state.state_version == 2
             assert final_state.birth_input is None
             assert final_dialog == ()
+            final_snapshot = await persistence.touch("touch-reset-race", now=NOW)
+            assert isinstance(final_snapshot, SessionSnapshot)
+            assert final_snapshot.chart is None
 
     async def test_delete_is_idempotent_for_missing_and_live_or_expired(
         self,
@@ -1277,6 +1386,10 @@ class SessionPersistenceConformance:
                     session_id,
                     now=delete_time,
                 ) == SessionAbsent(reason="not_found")
+                await create_session(persistence, session_id, now=NOW)
+                recreated = await persistence.touch(session_id, now=NOW)
+                assert isinstance(recreated, SessionSnapshot)
+                assert recreated.chart is None
 
     @pytest.mark.parametrize("pair_kind", ["same-handle", "cross-handle"])
     async def test_append_delete_race_leaves_no_orphan(

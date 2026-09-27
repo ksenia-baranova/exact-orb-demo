@@ -19,6 +19,7 @@ from exact_orb.session.state import (
     RESET_DELTA,
     SessionState,
     StateDelta,
+    StoredChart,
     apply_delta,
     is_expired,
     new_session,
@@ -37,6 +38,7 @@ class _InMemoryBackend:
         self.lock = asyncio.Lock()
         self.states: dict[str, SessionState] = {}
         self.dialogs: dict[str, _DialogRecord] = {}
+        self.charts: dict[str, StoredChart] = {}
 
 
 def _live_state(
@@ -119,6 +121,10 @@ class InMemorySessionStore:
                 self._backend.dialogs.pop(session_id, None)
             elif next_dialog is not None:
                 self._backend.dialogs[session_id] = next_dialog
+            if delta.base_chart_payload is None:
+                self._backend.charts.pop(session_id, None)
+            else:
+                self._backend.charts[session_id] = delta.base_chart_payload
             return next_state.state_version
 
 
@@ -187,7 +193,7 @@ class InMemoryDialogStore:
 
 
 class InMemorySessionPersistence:
-    """Aggregate owning coherent state and dialog facets."""
+    """Aggregate owning coherent state, dialog, and chart facets."""
 
     sessions: InMemorySessionStore
     dialogs: InMemoryDialogStore
@@ -218,11 +224,16 @@ class InMemorySessionPersistence:
                 if dialog is not None
                 else None
             )
+            snapshot = SessionSnapshot(
+                state=next_state,
+                dialog=turns,
+                chart=self._backend.charts.get(session_id),
+            )
 
             self._backend.states[session_id] = next_state
             if next_dialog is not None:
                 self._backend.dialogs[session_id] = next_dialog
-            return SessionSnapshot(state=next_state, dialog=turns)
+            return snapshot
 
     async def reset(
         self,
@@ -242,6 +253,7 @@ class InMemorySessionPersistence:
     async def delete(self, session_id: str) -> None:
         async with self._backend.lock:
             self._backend.dialogs.pop(session_id, None)
+            self._backend.charts.pop(session_id, None)
             self._backend.states.pop(session_id, None)
 
 

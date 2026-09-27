@@ -257,6 +257,12 @@ lock и отдаёт согласованный snapshot.
 **Готово, когда:** InMemory tests и применимая к нему часть conformance
 проходят; SQLite-часть ожидает промты 06–07.
 
+**Уточнение исполнения 2026-09-27:** упоминание reaper в lifecycle относится
+к SQLite. Действующие session requirements (§ P2/P4) оставляют истёкшую
+InMemory-запись физически на месте; публичного `reap_expired` у этого адаптера
+нет. В 05 проверяются логическое истечение и удаление карты при `delete`, а
+SQLite reaper с дочерней картой проверяется в 07.
+
 ### Промт 06 — SQLite schema v2 и миграция
 
 **Результат:** SQLite открывается только с проверенной схемой session
@@ -391,7 +397,7 @@ tests; только затронутые актуальные requirements, ADR 
 Статус обновляется после каждого промта. «Пройдено» относится только к
 указанному checkout и составу тестов; после изменения контрактов старый
 результат не считается подтверждением нового дерева. Журнал ниже содержит
-фактические запуски промтов 01–03; команды после таблицы остаются планом для
+фактические запуски промтов 01–05; команды после таблицы остаются планом для
 последующих срезов.
 
 | Промт | Статус | Целевые проверки | Связанные проверки и открытое окно |
@@ -400,7 +406,7 @@ tests; только затронутые актуальные requirements, ADR 
 | 02 | Выполнен | `test_state.py` + `test_contracts.py`: 110 passed | Связанный набор: 327 passed; 1499 session/application тестов собраны. InMemory и Handler ещё требуют промтов 05 и 03; независимое ревью границ остаётся отдельным контрольным шагом. |
 | 03 | Выполнен | Handler/Orchestrator/logging/contracts/boundary: 820 passed | Расширенный application-набор: 949 passed, 14 failed на ещё не переведённых InMemory/SQLite адаптерах; SQLite aggregate и restart остаются 05–08. |
 | 04 | Выполнен | `test_session_view.py` + module boundaries: 62 passed | Связанный codec/session/application-набор: 262 passed; чувствительность границы подтверждена временным запрещённым импортом. InMemory/SQLite и restart остаются 05–08. |
-| 05 | Не начат | Не запускались | Не оценивалось |
+| 05 | Выполнен | `test_in_memory.py`: 124 passed | Связанный session/application/boundary-набор: 312 passed. SQLite `touch` ещё не передаёт chart; schema/adapter/reaper и restart остаются 06–08. |
 | 06 | Не начат | Не запускались | Не оценивалось |
 | 07 | Не начат | Не запускались | Не оценивалось |
 | 08 | Не начат | Не запускались | Не оценивалось |
@@ -441,6 +447,15 @@ tests; только затронутые актуальные requirements, ADR 
 | 2026-09-27 / `156bd30` | 04, после удаления мутанта | `.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/test_module_boundaries.py::test_application_session_view_has_only_pure_contract_direct_imports -q --tb=short` | 0; 1 passed | Подтверждено восстановление границы в рабочем дереве; затем тест усилен проверкой, что из `session.persistence` импортируется только `SessionSnapshot`. |
 | 2026-09-27 / `156bd30` | 04, финальный связанный состав с усиленной границей | `.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/application/test_session_view.py tests/application/test_contracts.py tests/application/test_build_natal_handler.py tests/application/test_stored_chart_build.py tests/test_chart_artifact_codec.py tests/session/test_state.py tests/session/test_contracts.py tests/test_module_boundaries.py -q --tb=short` | 0; 262 passed | Подтверждены результаты карточки 04 и совместимость затронутых контрактов на финальном коде. Полный `pytest`, адаптеры сессии, restart и transport остаются вне этого набора. |
 | 2026-09-27 / `156bd30` | 04, финальные пробелы | `git diff --check`; `rg -n '[ \t]+$' prompts/2026-09-27/session-stored-chart/04-session-view.md src/exact_orb/application/session_view.py tests/application/test_session_view.py tests/test_module_boundaries.py` | 0 для Git; 1 для `rg` без совпадений | Tracked diff без ошибок пробелов; `rg` дополнительно проверил хвостовые пробелы в новых файлах. Содержимое untracked-файлов `git diff --check` не охватывает. |
+| 2026-09-27 / `4eb0f51` | 05, исходный InMemory до изменений | `.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/session/test_in_memory.py -q --maxfail=5 --tb=short` | 1; 88 passed, 5 failed, остановка на 5 | Пять отказов возникают при `touch`: прежний InMemory adapter создаёт `SessionSnapshot` без обязательного `chart`. Полный исходный набор не запускался. |
+| 2026-09-27 / `4eb0f51` | 05, первая реализация InMemory и conformance | `.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/session/test_in_memory.py -q --tb=short` | 0; 122 passed | Подтверждены state+chart CAS, конфликт, `AlreadyApplied`, touch, reset/delete и физическая очистка chart по InMemory; дополнительные проверки перестроения и пустого touch добавлены позже. |
+| 2026-09-27 / `4eb0f51` | 05, мутант: проигравшая дельта записывает chart при VersionConflict | `.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/session/test_in_memory.py::TestInMemorySessionPersistence::test_cas_conflict_returns_atomic_actual_without_mutation tests/session/test_in_memory.py::TestInMemorySessionPersistence::test_already_applied_keeps_first_committed_chart -q --tb=short` | 1; 3 failed | Два conflict-варианта и точный retry с `AlreadyApplied` обнаруживают перезапись карты проигравшим. Положительный CAS с `CHART` был подтверждён в целевом наборе. Мутант удалён. |
+| 2026-09-27 / `4eb0f51` | 05, после удаления мутанта | `.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/session/test_in_memory.py::TestInMemorySessionPersistence::test_cas_conflict_returns_atomic_actual_without_mutation tests/session/test_in_memory.py::TestInMemorySessionPersistence::test_already_applied_keeps_first_committed_chart -q --tb=short` | 0; 3 passed | Подтверждена чувствительность отрицательных правил и возвращение корректной конфликтной ветки; SQLite не охвачен. |
+| 2026-09-27 / `4eb0f51` | 05, первый связанный состав | `.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/session/test_in_memory.py tests/session/test_context.py tests/application/test_build_natal_integration.py tests/application/test_build_natal_handler.py tests/application/test_orchestrator_commit.py tests/test_module_boundaries.py -q --tb=short` | 0; 310 passed | Совместимость InMemory с ContextService, BuildNatal и модульными границами; до двух дополнительных conformance-проверок. |
+| 2026-09-27 / `4eb0f51` | 05, добавлены перестроение и пустой touch | `.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/session/test_in_memory.py -q --tb=short` | 0; 124 passed | Подтверждены все сценарии карточки на InMemory, включая замену карты и отсутствие chart в новой пустой сессии. SQLite и restart не охвачены. |
+| 2026-09-27 / `4eb0f51` | 05, адресный SQLite-контроль будущего среза | `.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/session/test_sqlite.py::TestSqliteSessionPersistence::test_populated_cas_commits_version_and_chart_reference -q --tb=short` | 1; 1 failed | Ожидаемый долг 06–07: SQLite `touch` ещё создаёт `SessionSnapshot` без `chart`; этот запуск не опровергает InMemory-результат и не подтверждает SQLite aggregate. |
+| 2026-09-27 / `4eb0f51` | 05, финальный связанный состав | `.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/session/test_in_memory.py tests/session/test_context.py tests/application/test_build_natal_integration.py tests/application/test_build_natal_handler.py tests/application/test_orchestrator_commit.py tests/test_module_boundaries.py -q --tb=short` | 0; 312 passed | Подтверждены изменения InMemory, общие контракты, ContextService и затронутые application-пути на финальном коде; SQLite schema/adapter/reaper и restart остаются 06–08. |
+| 2026-09-27 / `4eb0f51` | 05, пробелы | `git diff --check`; `rg -n '[ \t]+$' prompts/2026-09-27/session-stored-chart/05-in-memory-aggregate.md src/exact_orb/session/adapters/in_memory.py tests/session/conformance.py tests/session/test_in_memory.py` | 0 для Git; 1 для `rg` без совпадений | Tracked diff без ошибок пробелов; новый untracked prompt дополнительно проверен `rg`. Полный `pytest` сознательно оставлен до завершения 06–08. |
 
 После 02, 07 и перед закрытием 08 провести независимое ревью спорных границ
 контрактов, атомарности и сквозного сценария. Подтверждённые находки и их

@@ -14,8 +14,10 @@ from exact_orb.session.adapters import (
     InMemorySessionStore,
 )
 from exact_orb.session.persistence import SessionSnapshot
-from exact_orb.session.state import RESET_DELTA, SessionState
+from exact_orb.session.outcomes import SessionAbsent
+from exact_orb.session.state import RESET_DELTA, SLIDING_TTL, SessionState
 from tests.session.conformance import (
+    CHART,
     DELTA,
     NOW,
     PersistenceFactory,
@@ -23,6 +25,7 @@ from tests.session.conformance import (
     SessionPersistenceConformance,
     create_session,
     make_turn,
+    populate_session,
 )
 
 
@@ -142,6 +145,26 @@ class TestInMemorySessionPersistence(SessionPersistenceConformance):
         assert isinstance(result, SessionSnapshot)
         assert record.turns == (turn,)
         assert record.expires_at == result.state.expires_at
+
+    async def test_chart_record_follows_reset_delete_but_not_logical_expiry(self) -> None:
+        persistence = InMemorySessionPersistence()
+        await populate_session(persistence, "chart-lifecycle")
+        assert persistence._backend.charts["chart-lifecycle"] == CHART
+
+        assert await persistence.reset("chart-lifecycle", 1, now=NOW) == 2
+        assert "chart-lifecycle" not in persistence._backend.charts
+
+        assert await persistence.sessions.compare_and_set(
+            "chart-lifecycle", 2, DELTA, now=NOW
+        ) == 3
+        assert persistence._backend.charts["chart-lifecycle"] == CHART
+        assert await persistence.sessions.get(
+            "chart-lifecycle", now=NOW + SLIDING_TTL
+        ) == SessionAbsent(reason="expired")
+        assert persistence._backend.charts["chart-lifecycle"] == CHART
+
+        await persistence.delete("chart-lifecycle")
+        assert "chart-lifecycle" not in persistence._backend.charts
 
     async def test_reset_delegates_once_to_facet_cas(self) -> None:
         persistence = InMemorySessionPersistence()
