@@ -5,7 +5,7 @@
 **Ревизия:** 2026-09-27 — порядок работ, проверки отрицательных требований
 и журнал свидетельств уточнены после ревью плана.
 
-**Статус:** промты 01–03 выполнены 2026-09-27; промты 04–08 не начаты.
+**Статус:** промты 01–06 выполнены 2026-09-27; промты 07–08 не начаты.
 
 **Ветка:** существующая `feat/session-stored-chart`; исходный HEAD `e7327bf`.
 Рабочее дерево содержит несвязанные и ещё не зафиксированные изменения:
@@ -397,7 +397,7 @@ tests; только затронутые актуальные requirements, ADR 
 Статус обновляется после каждого промта. «Пройдено» относится только к
 указанному checkout и составу тестов; после изменения контрактов старый
 результат не считается подтверждением нового дерева. Журнал ниже содержит
-фактические запуски промтов 01–05; команды после таблицы остаются планом для
+фактические запуски промтов 01–06; команды после таблицы остаются планом для
 последующих срезов.
 
 | Промт | Статус | Целевые проверки | Связанные проверки и открытое окно |
@@ -407,7 +407,7 @@ tests; только затронутые актуальные requirements, ADR 
 | 03 | Выполнен | Handler/Orchestrator/logging/contracts/boundary: 820 passed | Расширенный application-набор: 949 passed, 14 failed на ещё не переведённых InMemory/SQLite адаптерах; SQLite aggregate и restart остаются 05–08. |
 | 04 | Выполнен | `test_session_view.py` + module boundaries: 62 passed | Связанный codec/session/application-набор: 262 passed; чувствительность границы подтверждена временным запрещённым импортом. InMemory/SQLite и restart остаются 05–08. |
 | 05 | Выполнен | `test_in_memory.py`: 124 passed | Связанный session/application/boundary-набор: 312 passed. SQLite `touch` ещё не передаёт chart; schema/adapter/reaper и restart остаются 06–08. |
-| 06 | Не начат | Не запускались | Не оценивалось |
+| 06 | Выполнен | SQLite schema/migration/constraints: 26 passed | Связанный SQLite/boundary-набор: 71 passed. Полный SQLite-файл остановлен после 83 passed, 12 failed на прежнем `touch` без `chart`; aggregate, reaper и restart остаются 07–08. |
 | 07 | Не начат | Не запускались | Не оценивалось |
 | 08 | Не начат | Не запускались | Не оценивалось |
 
@@ -456,6 +456,10 @@ tests; только затронутые актуальные requirements, ADR 
 | 2026-09-27 / `4eb0f51` | 05, адресный SQLite-контроль будущего среза | `.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/session/test_sqlite.py::TestSqliteSessionPersistence::test_populated_cas_commits_version_and_chart_reference -q --tb=short` | 1; 1 failed | Ожидаемый долг 06–07: SQLite `touch` ещё создаёт `SessionSnapshot` без `chart`; этот запуск не опровергает InMemory-результат и не подтверждает SQLite aggregate. |
 | 2026-09-27 / `4eb0f51` | 05, финальный связанный состав | `.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/session/test_in_memory.py tests/session/test_context.py tests/application/test_build_natal_integration.py tests/application/test_build_natal_handler.py tests/application/test_orchestrator_commit.py tests/test_module_boundaries.py -q --tb=short` | 0; 312 passed | Подтверждены изменения InMemory, общие контракты, ContextService и затронутые application-пути на финальном коде; SQLite schema/adapter/reaper и restart остаются 06–08. |
 | 2026-09-27 / `4eb0f51` | 05, пробелы | `git diff --check`; `rg -n '[ \t]+$' prompts/2026-09-27/session-stored-chart/05-in-memory-aggregate.md src/exact_orb/session/adapters/in_memory.py tests/session/conformance.py tests/session/test_in_memory.py` | 0 для Git; 1 для `rg` без совпадений | Tracked diff без ошибок пробелов; новый untracked prompt дополнительно проверен `rg`. Полный `pytest` сознательно оставлен до завершения 06–08. |
+| 2026-09-27 / `5d3a369` | 06, целевая схема и миграция | `.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/session/test_sqlite.py -q -k "schema or migration or chart_table or initialization or foreign_migration or database_constraints" --tb=short` | 0; 26 passed, 230 deselected | Новая база, v1→v2, очистка старых сессий/диалогов, чужой компонент, rollback после удаления, несовместимые schema/ledger, SQL constraints и повторное открытие. Прикладной aggregate CAS/touch не охвачен. |
+| 2026-09-27 / `5d3a369` | 06, расширенный SQLite-файл | `.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/session/test_sqlite.py -q --maxfail=12 --tb=line --show-capture=no` | 1; 83 passed, 12 failed; остановка на 12 отказах | Все 12 показанных отказов связаны с тем, что SQLite `touch` создаёт `SessionSnapshot` без обязательного `chart` (строка 1042); это работа 07. Полный SQLite-файл не завершился; этот запуск не подтверждает aggregate/reaper. |
+| 2026-09-27 / `5d3a369` | 06, связанный набор и модульные границы | `.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/session/test_sqlite.py tests/test_module_boundaries.py -q -k "schema or migration or chart_table or initialization or foreign_migration or database_constraints or module_boundaries" --tb=short` | 0; 71 passed, 230 deselected | Схема/миграция и действующие модульные границы проходят вместе; SQLite CAS/touch, полный `pytest` и restart остаются вне проверки. |
+| 2026-09-27 / `5d3a369` | 06, пробелы | `git diff --check`; `rg -n '[ \t]+$' prompts/2026-09-27/session-stored-chart/06-sqlite-schema-v2-migration.md src/exact_orb/session/adapters/sqlite.py tests/session/test_sqlite.py docs/project_management/implementation_plans/session_stored_chart_implementation_plan.md` | 0 для Git; 1 для `rg` без совпадений | Tracked diff без ошибок пробелов; новый untracked prompt дополнительно проверен `rg`. Git предупредил о возможной конверсии LF в CRLF. |
 
 После 02, 07 и перед закрытием 08 провести независимое ревью спорных границ
 контрактов, атомарности и сквозного сценария. Подтверждённые находки и их
