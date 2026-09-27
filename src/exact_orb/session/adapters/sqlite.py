@@ -36,6 +36,7 @@ from exact_orb.session.state import (
     RESET_DELTA,
     SessionState,
     StateDelta,
+    StoredChart,
     apply_delta,
     is_expired,
     new_session,
@@ -711,6 +712,43 @@ def _select_dialog_row(
     )
 
 
+def _select_chart_row(
+    connection: sqlite3.Connection,
+    session_id: str,
+) -> tuple[Any, ...] | None:
+    return _fetch_one(
+        connection,
+        """
+        SELECT payload_format, calculation_key, calculation_version, payload
+        FROM session_charts
+        WHERE session_id = ?
+        """,
+        (session_id,),
+    )
+
+
+def _decode_chart_row(row: tuple[Any, ...]) -> StoredChart:
+    if len(row) != 4:
+        raise _AdapterFailure(_DATA_CORRUPT)
+    payload_format, calculation_key, calculation_version, payload = row
+    if (
+        type(payload_format) is not int
+        or type(calculation_key) is not str
+        or type(calculation_version) is not str
+        or type(payload) is not bytes
+    ):
+        raise _AdapterFailure(_DATA_CORRUPT)
+    try:
+        return StoredChart(
+            payload_format=payload_format,
+            calculation_key=calculation_key,
+            calculation_version=calculation_version,
+            payload=payload,
+        )
+    except ValidationError as exc:
+        raise _AdapterFailure(_DATA_CORRUPT) from exc
+
+
 def _guarded_update_state(
     connection: sqlite3.Connection,
     state: SessionState,
@@ -868,6 +906,35 @@ def _sync_compare_and_set(
             next_state,
             expected_state_version=actual.state_version,
         )
+        chart = delta.base_chart_payload
+        if chart is None:
+            _execute_no_result(
+                connection,
+                "DELETE FROM session_charts WHERE session_id = ?",
+                (session_id,),
+            )
+        else:
+            _execute_no_result(
+                connection,
+                """
+                INSERT INTO session_charts (
+                    session_id, payload_format, calculation_key,
+                    calculation_version, payload
+                ) VALUES (?, ?, ?, ?, ?)
+                ON CONFLICT(session_id) DO UPDATE SET
+                    payload_format = excluded.payload_format,
+                    calculation_key = excluded.calculation_key,
+                    calculation_version = excluded.calculation_version,
+                    payload = excluded.payload
+                """,
+                (
+                    session_id,
+                    chart.payload_format,
+                    chart.calculation_key,
+                    chart.calculation_version,
+                    chart.payload,
+                ),
+            )
         if delta == RESET_DELTA:
             _execute_no_result(
                 connection,
@@ -1023,7 +1090,13 @@ def _sync_touch(
 
         row = _select_dialog_row(connection, session_id)
         turns = () if row is None else _decode_dialog_row(row)
+        chart_row = _select_chart_row(connection, session_id)
+        chart = None if chart_row is None else _decode_chart_row(chart_row)
         next_state = touched(actual, now=now)
+        try:
+            snapshot = SessionSnapshot(state=next_state, dialog=turns, chart=chart)
+        except ValidationError as exc:
+            raise _AdapterFailure(_DATA_CORRUPT) from exc
         _guarded_update_state(
             connection,
             next_state,
@@ -1039,7 +1112,7 @@ def _sync_touch(
                 """,
                 (_datetime_to_micros(next_state.expires_at), session_id),
             )
-        return _TransactionResult(SessionSnapshot(state=next_state, dialog=turns))
+        return _TransactionResult(snapshot)
 
     return _run_immediate(
         backend,

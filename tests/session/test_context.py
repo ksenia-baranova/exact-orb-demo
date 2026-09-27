@@ -386,7 +386,41 @@ async def test_context_load_debug_output_contains_complete_snapshot(
     ]
     assert len(outputs) == 1
     assert "message_type=SessionSnapshot" in outputs[0]
-    assert json.loads(outputs[0].split(" message=", 1)[1]) == snapshot.model_dump(mode="json")
+    projection = json.loads(outputs[0].split(" message=", 1)[1])
+    assert projection["state"] == snapshot.state.model_dump(mode="json")
+    assert projection["dialog"] == [turn.model_dump(mode="json") for turn in snapshot.dialog]
+    assert projection["chart"] == {
+        "payload_format": CHART.payload_format,
+        "calculation_key": CHART.calculation_key,
+        "calculation_version": CHART.calculation_version,
+        "payload_size": len(CHART.payload),
+    }
+    assert CHART.payload.decode("ascii") not in outputs[0]
+
+
+async def test_context_save_debug_input_redacts_stored_chart(
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    caplog.set_level(logging.DEBUG, logger="exact_orb.session.context")
+    service, _, _, script = _service()
+    script.expect("sessions.compare_and_set", 1)
+
+    assert await service.save("session-1", 0, DELTA) == Committed(state_version=1)
+
+    inputs = [
+        record.getMessage() for record in caplog.records
+        if record.name == "exact_orb.session.context"
+        and "direction=in operation=context_save " in record.getMessage()
+    ]
+    assert len(inputs) == 1
+    projection = json.loads(inputs[0].split(" message=", 1)[1])
+    assert projection["delta"]["base_chart_payload"] == {
+        "payload_format": CHART.payload_format,
+        "calculation_key": CHART.calculation_key,
+        "calculation_version": CHART.calculation_version,
+        "payload_size": len(CHART.payload),
+    }
+    assert CHART.payload.decode("ascii") not in inputs[0]
 
 
 async def test_context_info_does_not_serialize_debug_payload(

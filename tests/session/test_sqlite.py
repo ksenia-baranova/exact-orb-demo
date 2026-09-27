@@ -33,6 +33,7 @@ from exact_orb.session.adapters.sqlite import (
     SqliteSessionPersistence,
     SqliteSessionStore,
 )
+from exact_orb.session.context import ContextService
 from exact_orb.session.dialog import (
     MAX_DIALOG_CHARS,
     MAX_DIALOG_TURN_CHARS,
@@ -42,9 +43,11 @@ from exact_orb.session.dialog import (
 )
 from exact_orb.session.errors import StateReadError, StateWriteError
 from exact_orb.session.outcomes import (
+    AlreadyApplied,
     SessionAbsent,
     SessionCreated,
     SessionIdConflict,
+    StateReadFailed,
     VersionConflict,
 )
 from exact_orb.session.persistence import SessionSnapshot
@@ -60,6 +63,7 @@ from tests.session.conformance import (
     CHART,
     DELTA,
     NOW,
+    OTHER_CHART,
     PersistenceFactory,
     PersistenceHandles,
     SessionPersistenceConformance,
@@ -1999,6 +2003,20 @@ def _insert_golden_payload_v1(path: Path, fixture: dict[str, Any]) -> None:
                 _json(dialog["payload"]),
             ),
         )
+        # This fixture checks the state JSON decoder inside an already-v2
+        # aggregate. Its populated state needs the independent chart row.
+        connection.execute(
+            """INSERT INTO session_charts
+            (session_id, payload_format, calculation_key, calculation_version, payload)
+            VALUES (?, ?, ?, ?, ?)""",
+            (
+                metadata["session_id"],
+                CHART.payload_format,
+                CHART.calculation_key,
+                CHART.calculation_version,
+                CHART.payload,
+            ),
+        )
         connection.commit()
     finally:
         connection.close()
@@ -2459,6 +2477,87 @@ async def test_dialog_deadline_drift_is_ignored_by_read_and_repaired_by_touch(
         ) == (_epoch_us(touched.state.expires_at), _epoch_us(touched.state.expires_at))
 
 
+@pytest.mark.parametrize("corruption", ["missing_chart", "extra_chart"])
+async def test_structural_chart_corruption_blocks_touch_and_context_load(
+    tmp_path: Path,
+    corruption: str,
+) -> None:
+    path = tmp_path / f"chart-{corruption}.sqlite3"
+    async with _opened(path) as (persistence, _):
+        if corruption == "missing_chart":
+            await populate_session(persistence, "damaged")
+        else:
+            await create_session(persistence, "damaged")
+
+        good = await persistence.touch("damaged", now=NOW + timedelta(days=1))
+        assert isinstance(good, SessionSnapshot)
+        assert (good.chart is not None) == (corruption == "missing_chart")
+        before = _fetchone(
+            path,
+            "SELECT state_version, expires_at_us FROM session_states "
+            "WHERE session_id = 'damaged'",
+        )
+        if corruption == "missing_chart":
+            _execute(path, "DELETE FROM session_charts WHERE session_id = 'damaged'")
+        else:
+            _execute(
+                path,
+                """INSERT INTO session_charts
+                (session_id, payload_format, calculation_key, calculation_version, payload)
+                VALUES ('damaged', ?, ?, ?, ?)""",
+                (
+                    CHART.payload_format,
+                    CHART.calculation_key,
+                    CHART.calculation_version,
+                    CHART.payload,
+                ),
+            )
+
+        failed_now = NOW + timedelta(days=2)
+        with pytest.raises(StateReadError) as caught:
+            await persistence.touch("damaged", now=failed_now)
+        assert caught.value.error_code == DATA_CORRUPT
+        context = ContextService(persistence=persistence, clock=lambda: failed_now)
+        assert await context.load("damaged") == StateReadFailed(error_code=DATA_CORRUPT)
+        assert _fetchone(
+            path,
+            "SELECT state_version, expires_at_us FROM session_states "
+            "WHERE session_id = 'damaged'",
+        ) == before
+
+
+async def test_invalid_stored_chart_row_is_typed_corruption_before_renewal(
+    tmp_path: Path,
+) -> None:
+    path = tmp_path / "chart-payload-corrupt.sqlite3"
+    async with _opened(path) as (persistence, _):
+        await populate_session(persistence, "bad-chart")
+        good = await persistence.touch("bad-chart", now=NOW)
+        assert isinstance(good, SessionSnapshot)
+        assert good.chart == CHART
+        before = _fetchone(
+            path,
+            "SELECT expires_at_us FROM session_states WHERE session_id = 'bad-chart'",
+        )
+        connection = _connect(path)
+        try:
+            connection.execute("PRAGMA ignore_check_constraints = ON")
+            connection.execute(
+                "UPDATE session_charts SET payload = ? WHERE session_id = 'bad-chart'",
+                (b"",),
+            )
+        finally:
+            connection.close()
+
+        with pytest.raises(StateReadError) as caught:
+            await persistence.touch("bad-chart", now=NOW + timedelta(days=1))
+        assert caught.value.error_code == DATA_CORRUPT
+        assert _fetchone(
+            path,
+            "SELECT expires_at_us FROM session_states WHERE session_id = 'bad-chart'",
+        ) == before
+
+
 @pytest.mark.parametrize("renewer", ["compare_and_set", "append", "touch"])
 async def test_successful_renewers_persist_equal_parent_and_dialog_deadlines(
     tmp_path: Path,
@@ -2515,6 +2614,10 @@ async def test_dialog_row_is_physically_removed_by_aggregate_removers(
             path,
             "SELECT COUNT(*) FROM session_dialogs WHERE session_id = 'remove-dialog'",
         ) == (0,)
+        assert _fetchone(
+            path,
+            "SELECT COUNT(*) FROM session_charts WHERE session_id = 'remove-dialog'",
+        ) == ((1,) if remover == "clear" else (0,))
 
 
 async def test_logical_expiry_does_not_physically_delete_or_free_session_id(
@@ -2581,6 +2684,7 @@ async def test_reaper_deletes_only_expired_parents_at_exact_boundary(tmp_path: P
             now=expired_at_boundary.expires_at,
         ) == live
         assert _fetchone(path, "SELECT COUNT(*) FROM session_dialogs") == (1,)
+        assert _fetchone(path, "SELECT COUNT(*) FROM session_charts") == (1,)
 
 
 async def test_reaper_ignores_dialog_deadline_and_redundant_hard_predicate(
@@ -3008,6 +3112,85 @@ async def test_commit_exception_is_unknown_without_retry_or_readback(
         # The seam commits before losing acknowledgement. This positive control proves
         # the operation did not retry or classify by reading the post-commit state.
         assert isinstance(await persistence.sessions.get("uncertain", now=NOW), SessionState)
+    finally:
+        CommitThenRaiseConnection.enabled = False
+        executor.shutdown(wait=True)
+
+
+async def test_chart_write_failure_rolls_back_parent_and_retry_commits_pair(
+    tmp_path: Path,
+) -> None:
+    path = tmp_path / "chart-write-rollback.sqlite3"
+    async with _opened(path) as (persistence, _):
+        await create_session(persistence, "atomic")
+        before = _fetchone(
+            path,
+            "SELECT state_version, expires_at_us FROM session_states "
+            "WHERE session_id = 'atomic'",
+        )
+        _execute(
+            path,
+            "CREATE TRIGGER reject_chart BEFORE INSERT ON session_charts "
+            "BEGIN SELECT RAISE(ABORT, 'injected chart write failure'); END",
+        )
+
+        with pytest.raises(StateWriteError) as caught:
+            await persistence.sessions.compare_and_set("atomic", 0, DELTA, now=NOW)
+        assert caught.value.error_code == WRITE_FAILED
+        assert _fetchone(
+            path,
+            "SELECT state_version, expires_at_us FROM session_states "
+            "WHERE session_id = 'atomic'",
+        ) == before
+        assert _fetchall(path, "SELECT session_id FROM session_charts") == []
+
+        _execute(path, "DROP TRIGGER reject_chart")
+        assert await persistence.sessions.compare_and_set("atomic", 0, DELTA, now=NOW) == 1
+        snapshot = await persistence.touch("atomic", now=NOW)
+        assert isinstance(snapshot, SessionSnapshot)
+        assert snapshot.state.state_version == 1
+        assert snapshot.chart == CHART
+
+
+async def test_lost_chart_commit_acknowledgement_preserves_pair_and_retry_winner(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    path = tmp_path / "chart-commit-unknown.sqlite3"
+    CommitThenRaiseConnection.enabled = False
+    CommitThenRaiseConnection.commits_that_raised = 0
+    monkeypatch.setattr(sqlite_adapter, "_CONNECTION_FACTORY", _commit_fault_factory)
+    executor = ThreadPoolExecutor(max_workers=SQLITE_TEST_EXECUTOR_WORKERS)
+    try:
+        persistence = await SqliteSessionPersistence.open(path, executor=executor)
+        await create_session(persistence, "uncertain-chart")
+        CommitThenRaiseConnection.enabled = True
+
+        with pytest.raises(StateWriteError) as caught:
+            await persistence.sessions.compare_and_set(
+                "uncertain-chart", 0, DELTA, now=NOW
+            )
+        assert caught.value.error_code == COMMIT_UNKNOWN
+        assert CommitThenRaiseConnection.commits_that_raised == 1
+        CommitThenRaiseConnection.enabled = False
+        assert _fetchone(
+            path,
+            "SELECT state_version FROM session_states WHERE session_id = 'uncertain-chart'",
+        ) == (1,)
+        assert _fetchone(
+            path,
+            "SELECT payload FROM session_charts WHERE session_id = 'uncertain-chart'",
+        ) == (CHART.payload,)
+
+        context = ContextService(persistence=persistence, clock=lambda: NOW)
+        retry = DELTA.model_copy(update={"base_chart_payload": OTHER_CHART})
+        assert await context.save("uncertain-chart", 0, retry) == AlreadyApplied(
+            state_version=1
+        )
+        snapshot = await persistence.touch("uncertain-chart", now=NOW)
+        assert isinstance(snapshot, SessionSnapshot)
+        assert snapshot.chart == CHART
+        assert snapshot.state.state_version == 1
     finally:
         CommitThenRaiseConnection.enabled = False
         executor.shutdown(wait=True)

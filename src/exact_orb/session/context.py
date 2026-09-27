@@ -26,7 +26,13 @@ from exact_orb.session.outcomes import (
     VersionConflict,
 )
 from exact_orb.session.persistence import SessionPersistence, SessionSnapshot
-from exact_orb.session.state import RESET_DELTA, StateDelta, matches_intent, require_utc
+from exact_orb.session.state import (
+    RESET_DELTA,
+    StateDelta,
+    StoredChart,
+    matches_intent,
+    require_utc,
+)
 
 
 LOGGER = logging.getLogger(__name__)
@@ -34,7 +40,27 @@ P = ParamSpec("P")
 R = TypeVar("R")
 
 
+def _chart_metadata(chart: StoredChart) -> dict[str, object]:
+    return {
+        "payload_format": chart.payload_format,
+        "calculation_key": chart.calculation_key,
+        "calculation_version": chart.calculation_version,
+        "payload_size": len(chart.payload),
+    }
+
+
 def _json_value(value: object) -> object:
+    if isinstance(value, StoredChart):
+        return _chart_metadata(value)
+    if isinstance(value, StateDelta):
+        data = value.model_dump(mode="json", exclude={"base_chart_payload"}, warnings=False)
+        chart = value.base_chart_payload
+        data["base_chart_payload"] = None if chart is None else _chart_metadata(chart)
+        return data
+    if isinstance(value, SessionSnapshot):
+        data = value.model_dump(mode="json", exclude={"chart"}, warnings=False)
+        data["chart"] = None if value.chart is None else _chart_metadata(value.chart)
+        return data
     if isinstance(value, BaseModel):
         return value.model_dump(mode="json", warnings=False)
     if isinstance(value, BaseException):
