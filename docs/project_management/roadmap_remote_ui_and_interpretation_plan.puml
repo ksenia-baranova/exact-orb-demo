@@ -33,8 +33,10 @@ sunday are closed
 [M1-5 Каталог place_id и поиск — 22.09 PM–24.09 AM — 2 дн.] as [M15] starts 2026-09-21 and ends 2026-09-23
 [M15] is 100% complete
 [M15] is colored in LightGreen
-[M1-6 FastAPI и Session Middleware — 24.09 PM–28.09 AM — 2 дн.] as [M16] starts 2026-09-24 and ends 2026-09-28
-[M1-7 UI: форма и таблицы фактов — 28.09 PM–30.09 AM — 2 дн.] as [M17] starts 2026-09-28 and ends 2026-09-30
+[M1-6 FastAPI и Session Middleware — 24.09 PM–28.09 AM — 5 дн.] as [M16] starts 2026-09-24 and ends 2026-09-29
+[M16] is 50% complete
+[M16] is colored in Orange
+[M1-7 UI: форма и таблицы фактов — 28.09 PM–30.09 AM — 3 дн.] as [M17] starts 2026-09-29 and ends 2026-10-01
 [M1-8 SVG-колесо карты — 30.09 PM–07.10 AM — 5 дн.] as [M18] starts 2026-09-30 and ends 2026-10-07
 [M1-9 Условия использования — 07.10 PM–08.10 AM — 1 дн.] as [M19] starts 2026-10-07 and ends 2026-10-08
 [M1-10 Benchmark natal/cosmogram — 08.10 PM–09.10 AM — 1 дн.] as [M110] starts 2026-10-08 and ends 2026-10-09
