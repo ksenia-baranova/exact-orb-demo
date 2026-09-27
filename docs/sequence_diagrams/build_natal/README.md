@@ -7,8 +7,9 @@
 а также ADR-0006, 0012, 0014, 0017, 0020 и 0040. `ApplicationOrchestrator`, commit-flow,
 один точный retry, cancellation/lifecycle semantics и внешний
 `ApplicationResult` реализованы и подтверждены тестами. Порт и реализация
-`to_stored` добавлены в первом срезе ADR-0040; показанный вызов из Handler и
-хранение `StoredChart` в агрегате сессии остаются целевыми. HTTP API, session bootstrap, client rendering и
+`to_stored` добавлены в первом срезе ADR-0040; вызов из Handler и передача
+полной дельты Orchestrator реализованы в промте 03 M1-5.2. Хранение
+`StoredChart` в агрегате сессии остаётся целевым. HTTP API, session bootstrap, client rendering и
 production admission остаются целевым контуром следующей ветки.
 
 Ключевое отличие от [отложенной модели](../deferred/build_attempt/README.md):
@@ -32,7 +33,8 @@ production admission остаются целевым контуром следу
 | 010 | `010-build_natal_application_observability.puml` | Lifecycle-события Orchestrator | Started, stage/commit-attempt events и ровно один terminal event |
 
 Диаграммы `000`–`010` показывают ветви `ApplicationResult` и
-защищённого commit-flow с целевым дополнением о сохранённой карте. `000` соединяет их с ещё целевыми HTTP/client
+защищённого commit-flow с реализованной подготовкой `StoredChart` и целевой
+атомарной записью в session storage. `000` соединяет их с ещё целевыми HTTP/client
 участками, а остальные файлы разбирают отдельные application-сценарии.
 Транспортная диаграмма `008` заканчивается отказом до запуска handler и поэтому
 не получает `BuildNatalOutcome`. Реализованный контракт handler заканчивается

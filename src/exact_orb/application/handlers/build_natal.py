@@ -5,10 +5,14 @@ from __future__ import annotations
 import asyncio
 import logging
 from time import perf_counter
+from typing import Literal
+
+from pydantic import ValidationError
 
 from exact_orb.application.commands import BuildNatalCommand
 from exact_orb.application.ports import BirthDataResolverPort, ChartArtifactPort
 from exact_orb.application.results import BuildNatalOutcome, BuildNatalSuccess
+from exact_orb.component_logging import log_component_message
 from exact_orb.calculation.errors import (
     CalculationUnavailableError,
     ChartCalculationError,
@@ -16,10 +20,23 @@ from exact_orb.calculation.errors import (
 from exact_orb.calculation.spec import NatalChartSpec
 from exact_orb.outcomes import CalculationFailed, InputRequired, ResolutionUnavailable
 from exact_orb.run_context import RunContext
-from exact_orb.session.state import SessionState, StateDelta
+from exact_orb.session.state import SessionState, StateDelta, StoredChart
 
 
 LOGGER = logging.getLogger(__name__)
+
+
+StoredChartPreparationReason = Literal[
+    "ENCODE_FAILED", "PAYLOAD_SIZE_INVALID", "ENVELOPE_INVALID"
+]
+
+
+class StoredChartPreparationError(Exception):
+    """Safe internal failure while preparing a chart for session commit."""
+
+    def __init__(self, reason: StoredChartPreparationReason) -> None:
+        self.reason = reason
+        super().__init__(reason)
 
 
 class BuildNatalHandler:
@@ -98,15 +115,50 @@ class BuildNatalHandler:
                 _log_completed(run, outcome, chart_kind, started_at)
                 return outcome
 
-            stage = "build_delta"
-            delta = StateDelta(
-                birth_input=command.birth_input,
-                birth_resolved=resolution,
-                base_chart_spec=spec,
+            stage = "to_stored"
+            _log_message(
+                run, direction="send", peer=type(self._artifacts).__name__,
+                operation="to_stored", message_type="ToStoredRequest",
+            )
+            log_component_message(
+                LOGGER, direction="in", operation="to_stored", run_id=run.run_id,
+                message=artifact, message_type="ToStoredRequest",
+            )
+            try:
+                payload_format, payload = self._artifacts.to_stored(artifact)
+            except Exception:
+                raise StoredChartPreparationError("ENCODE_FAILED") from None
+            _log_message(
+                run, direction="receive", peer=type(self._artifacts).__name__,
+                operation="to_stored", message_type="StoredChartEncoding",
+            )
+            log_component_message(
+                LOGGER, direction="out", operation="to_stored", run_id=run.run_id,
+                message={"payload_format": payload_format, "payload_size": len(payload)
+                         if isinstance(payload, bytes) else None},
+                message_type="StoredChartEncoding",
             )
 
-            stage = "build_result"
-            outcome = BuildNatalSuccess(artifact=artifact, delta=delta)
+            stage = "build_delta"
+            if isinstance(payload, bytes) and not 1 <= len(payload) <= 1_048_576:
+                raise StoredChartPreparationError("PAYLOAD_SIZE_INVALID") from None
+            try:
+                stored_chart = StoredChart(
+                    payload_format=payload_format,
+                    calculation_key=artifact.calculation_key,
+                    calculation_version=artifact.calculation_version,
+                    payload=payload,
+                )
+                delta = StateDelta(
+                    birth_input=command.birth_input,
+                    birth_resolved=resolution,
+                    base_chart_spec=spec,
+                    base_chart_payload=stored_chart,
+                )
+                stage = "build_result"
+                outcome = BuildNatalSuccess(artifact=artifact, delta=delta)
+            except ValidationError:
+                raise StoredChartPreparationError("ENVELOPE_INVALID") from None
             _log_completed(run, outcome, chart_kind, started_at)
             return outcome
         except BaseException as exc:
@@ -216,4 +268,4 @@ def _outcome_calculation_key(outcome: BuildNatalOutcome) -> str | None:
     return None
 
 
-__all__ = ["BuildNatalHandler"]
+__all__ = ["BuildNatalHandler", "StoredChartPreparationError"]

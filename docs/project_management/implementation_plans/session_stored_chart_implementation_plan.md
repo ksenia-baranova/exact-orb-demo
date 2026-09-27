@@ -5,7 +5,7 @@
 **Ревизия:** 2026-09-27 — порядок работ, проверки отрицательных требований
 и журнал свидетельств уточнены после ревью плана.
 
-**Статус:** промты 01–02 выполнены 2026-09-27; промты 03–08 не начаты.
+**Статус:** промты 01–03 выполнены 2026-09-27; промты 04–08 не начаты.
 
 **Ветка:** существующая `feat/session-stored-chart`; исходный HEAD `e7327bf`.
 Рабочее дерево содержит несвязанные и ещё не зафиксированные изменения:
@@ -391,14 +391,14 @@ tests; только затронутые актуальные requirements, ADR 
 Статус обновляется после каждого промта. «Пройдено» относится только к
 указанному checkout и составу тестов; после изменения контрактов старый
 результат не считается подтверждением нового дерева. Журнал ниже содержит
-фактические запуски промтов 01–02; команды после таблицы остаются планом для
+фактические запуски промтов 01–03; команды после таблицы остаются планом для
 последующих срезов.
 
 | Промт | Статус | Целевые проверки | Связанные проверки и открытое окно |
 |---|---|---|---|
 | 01 | Выполнен | Codec/resolver: 88 passed | Cache/integration/port/boundary: 97 passed; application/CalculationVersion: 954 passed. Запись в session storage остаётся промтам 02–08. |
 | 02 | Выполнен | `test_state.py` + `test_contracts.py`: 110 passed | Связанный набор: 327 passed; 1499 session/application тестов собраны. InMemory и Handler ещё требуют промтов 05 и 03; независимое ревью границ остаётся отдельным контрольным шагом. |
-| 03 | Не начат | Не запускались | Не оценивалось |
+| 03 | Выполнен | Handler/Orchestrator/logging/contracts/boundary: 820 passed | Расширенный application-набор: 949 passed, 14 failed на ещё не переведённых InMemory/SQLite адаптерах; SQLite aggregate и restart остаются 05–08. |
 | 04 | Не начат | Не запускались | Не оценивалось |
 | 05 | Не начат | Не запускались | Не оценивалось |
 | 06 | Не начат | Не запускались | Не оценивалось |
@@ -429,6 +429,11 @@ tests; только затронутые актуальные requirements, ADR 
 | 2026-09-27 / `e7327bf` | 02, проверка сбора | `.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/session tests/application --collect-only -q` | 0; 1499 tests collected | Подтверждён сбор session/application после адаптации тестовых конструкторов; не подтверждено исполнение этих 1499 тестов. |
 | 2026-09-27 / `e7327bf` | 02, итоговый связанный набор | `.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/session/test_state.py tests/session/test_contracts.py tests/session/test_context.py tests/application/test_contracts.py tests/application/test_orchestrator_routing.py tests/application/test_orchestrator_load.py tests/application/test_orchestrator_handler.py tests/application/test_orchestrator_concurrency.py tests/application/test_orchestrator_commit.py tests/test_module_boundaries.py -q` | 0; 327 passed | Зелёные тесты текущего контрактного среза и fake-путей; не включает реальные адаптеры, успешный Handler, SQLite или restart. |
 | 2026-09-27 / `e7327bf` | 02, финальная проверка diff | `git diff --check` | 0; ошибок пробелов нет, Git сообщает о возможной конверсии LF в CRLF в существующих файлах | Отслеживаемый diff корректен по пробелам; untracked prompt/plan/fixture не охватываются этой Git-командой. |
+| 2026-09-27 / `e9e3145` | 03, новые отказные проверки | `.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/application/test_stored_chart_build.py -q --tb=line --show-capture=no` | 0; 6 passed | Fake-порты подтверждают передачу той же дельты в save и отсутствие save при ошибках кодирования, размера и envelope; SQLite/InMemory здесь не используются. |
+| 2026-09-27 / `e9e3145` | 03, текущий целевой состав | `.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/application/test_build_natal_handler.py tests/application/test_build_natal_logging.py tests/application/test_build_natal_integration.py tests/application/test_stored_chart_build.py tests/application/test_contracts.py tests/application/test_application_results.py tests/application/test_orchestrator_handler.py tests/application/test_orchestrator_logging.py tests/test_module_boundaries.py -q --tb=line --show-capture=no` | 0; 820 passed | Подтверждены Handler, Orchestrator на fake-портах, реальный расчётный путь, безопасный traceback, INFO/DEBUG и границы импортов; реальный session aggregate ещё не проверен. |
+| 2026-09-27 / `e9e3145` | 03, расширенный application-набор в песочнице | `.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/application tests/test_module_boundaries.py -q --tb=short --maxfail=15` | 1; 897 passed, 12 failed, 3 errors; остановка на 15 отказах | Три error вызваны запретом доступа к системному pytest temp. Большинство failure до Handler вызваны `SessionSnapshot` без chart в старых адаптерах; состав дерева тогда ещё включал старое ожидание количества DEBUG-сообщений в `test_build_natal_integration.py`, которое затем исправлено. Этот запуск не подтверждает полный набор. |
+| 2026-09-27 / `e9e3145` | 03, расширенный application-набор вне песочницы после исправления ожиданий журнала | `.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/application tests/test_module_boundaries.py -q --tb=line --show-capture=no` | 1; 949 passed, 14 failed | Все оставшиеся failure — application-интеграции с InMemory/SQLite: адаптеры ещё строят `SessionSnapshot` без обязательного chart; это работа промтов 05–07. Запуск не доказывает сквозное сохранение или восстановление. |
+| 2026-09-27 / `e9e3145` | 03, финальный diff | `git diff --check` | 0; ошибок пробелов нет, Git предупредил о возможной конверсии LF в CRLF | Проверен tracked diff; новый prompt и новый тест дополнительно проверены на хвостовые пробелы, но не охватываются этой Git-командой до добавления в индекс. |
 
 После 02, 07 и перед закрытием 08 провести независимое ревью спорных границ
 контрактов, атомарности и сквозного сценария. Подтверждённые находки и их

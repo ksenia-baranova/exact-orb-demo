@@ -13,7 +13,10 @@ from pydantic import ValidationError
 
 import exact_orb.application.handlers.build_natal as build_natal_module
 from exact_orb.application.commands import BuildNatalCommand
-from exact_orb.application.handlers.build_natal import BuildNatalHandler
+from exact_orb.application.handlers.build_natal import (
+    BuildNatalHandler,
+    StoredChartPreparationError,
+)
 from exact_orb.birth.types import BirthInput, ResolvedBirthData
 from exact_orb.calculation.errors import ChartCalculationError
 from exact_orb.calculation.spec import NatalChartSpec
@@ -290,16 +293,25 @@ async def test_started_is_debug_and_precedes_exactly_one_terminal_event(
         exchanges.append(artifact_send)
     if scenario == "success":
         exchanges.append(("receive", "ensure_chart", "ChartArtifact"))
+        exchanges.extend([
+            ("send", "to_stored", "ToStoredRequest"),
+            ("receive", "to_stored", "StoredChartEncoding"),
+        ])
+    middle_events = (
+        ["application_message"] * 5
+        + ["component_message", "application_message", "component_message"]
+        if scenario == "success"
+        else ["application_message"] * len(exchanges)
+    )
     assert event_names == [
         "component_message",
         "build_natal_started",
-        *(["application_message"] * len(exchanges)),
+        *middle_events,
         terminal_event,
         "component_message",
     ]
-    for record, (direction, operation, message_type) in zip(
-        records[2:2 + len(exchanges)], exchanges,
-    ):
+    messages = [record for record in records if record.getMessage().startswith("application_message ")]
+    for record, (direction, operation, message_type) in zip(messages, exchanges, strict=True):
         assert record.levelno == logging.INFO
         message = record.getMessage()
         assert f"direction={direction}" in message
@@ -376,8 +388,8 @@ async def test_handler_logs_complete_input_and_output_component_messages(
     ]
     assert f"run_id={run.run_id}" in completed.getMessage()
     assert f"calculation_key={calculation_key}" in completed.getMessage()
-    assert len(component_messages) == 2
-    incoming, outgoing = component_messages
+    assert len(component_messages) == 4
+    incoming, to_stored_input, to_stored_output, outgoing = component_messages
     assert "direction=in" in incoming
     assert "calculation_key=-" in incoming
     assert "payload_mode=full" in incoming
@@ -386,6 +398,9 @@ async def test_handler_logs_complete_input_and_output_component_messages(
     assert f"calculation_key={calculation_key}" in outgoing
     assert "payload_mode=full" in outgoing
     assert "message_type=BuildNatalSuccess" in outgoing
+    assert "message_type=ToStoredRequest" in to_stored_input
+    assert "message_type=StoredChartEncoding" in to_stored_output
+    assert json.loads(to_stored_input.partition(" message=")[2]) == expected_artifact.model_dump(mode="json")
 
     expected_input = {
         "command": command.model_dump(mode="json"),
@@ -397,11 +412,18 @@ async def test_handler_logs_complete_input_and_output_component_messages(
             "base_chart_spec": spec.model_dump(mode="json"),
             "birth_input": birth_input.model_dump(mode="json"),
             "birth_resolved": resolved.model_dump(mode="json"),
+            "base_chart_payload": {
+                "payload_format": result.delta.base_chart_payload.payload_format,
+                "calculation_key": expected_artifact.calculation_key,
+                "calculation_version": expected_artifact.calculation_version,
+                "payload_size": len(result.delta.base_chart_payload.payload),
+            },
         },
     }
     assert json.loads(incoming.partition(" message=")[2]) == expected_input
     assert json.loads(outgoing.partition(" message=")[2]) == expected_output
-    assert result.model_dump(mode="json") == expected_output
+    assert result.artifact == expected_artifact
+    assert result.delta.base_chart_payload.calculation_key == calculation_key
 
     local_datetime = (
         resolved.utc_datetime + timedelta(seconds=resolved.utc_offset_seconds)
@@ -529,7 +551,7 @@ async def test_inconsistent_artifact_logs_build_result_stage(
     assert foreign_artifact.chart.datetime_utc == foreign_resolved.utc_datetime
     assert foreign_artifact.chart.latitude == foreign_resolved.latitude
     assert foreign_artifact.chart.longitude == foreign_resolved.longitude
-    with pytest.raises(ValidationError):
+    with pytest.raises(StoredChartPreparationError, match="ENVELOPE_INVALID"):
         await handler.handle(
             BuildNatalCommand(birth_input=_birth_input()),
             new_session("session-1", now=BASE_UTC),
@@ -539,7 +561,7 @@ async def test_inconsistent_artifact_logs_build_result_stage(
     failed = _single_event(caplog, "build_natal_failed")
     assert failed.levelno == logging.ERROR
     assert "stage=build_result" in failed.getMessage()
-    assert "exception_type=ValidationError" in failed.getMessage()
+    assert "exception_type=StoredChartPreparationError" in failed.getMessage()
     assert "cancelled=false" in failed.getMessage()
     assert artifacts.received_spec == requested_spec
     assert _event_records(caplog, "build_natal_completed") == []

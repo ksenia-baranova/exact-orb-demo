@@ -31,6 +31,9 @@
 **Целевая ревизия 2026-09-26:** ADR-0040 добавляет в handler вызов
 `ChartArtifactPort.to_stored` и `StoredChart` в `StateDelta`. Ниже этот
 целевой контракт отделён от уже реализованного R5.
+**Сверка 2026-09-27:** подготовка `StoredChart`, полная `StateDelta`,
+валидация `BuildNatalSuccess` и безопасные отказы до CAS реализованы в
+промте 03 M1-5.2; сохранение агрегата остаётся следующим срезом.
 
 **Ограничение исходного R5:** он не требовал изменения модулей `birth`,
 `calculation` и `session`; ветка ADR-0040 отдельно меняет calculation и session.
@@ -161,7 +164,7 @@ class ChartArtifactPort(Protocol):
 ```
 
 `ChartArtifactPort.to_stored` и реализация в `ChartArtifactResolver` уже
-добавлены в первом срезе ADR-0040; вызов из Handler остаётся целевым.
+добавлены в первом срезе ADR-0040; вызов из Handler реализован в промте 03.
 
 `Handler`, `BirthDataResolverPort` и `ChartArtifactPort` не помечаются `@runtime_checkable`: система не выполняет `isinstance(..., Protocol)`. Совместимость обеспечивается статической проверкой типов и contract-тестами. Это намеренное решение, а не пропущенный декоратор.
 

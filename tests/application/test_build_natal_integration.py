@@ -129,6 +129,17 @@ async def test_real_natal_path_caches_and_correlates_run_id(
             for record in records
         )
 
+    real_handoff = [record.getMessage() for record in _event_records(
+        caplog, logger=HANDLER_LOGGER, event="application_message",
+    ) if "operation=to_stored" in record.getMessage()
+       and f"run_id={first_run.run_id}" in record.getMessage()]
+    assert len(real_handoff) == 2
+    assert "direction=send" in real_handoff[0]
+    assert "message_type=ToStoredRequest" in real_handoff[0]
+    assert "direction=receive" in real_handoff[1]
+    assert "message_type=StoredChartEncoding" in real_handoff[1]
+    assert all("peer=ChartArtifactResolver" in message for message in real_handoff)
+
     correlated_boundaries = (
         HANDLER_LOGGER,
         BIRTH_LOGGER,
@@ -145,9 +156,14 @@ async def test_real_natal_path_caches_and_correlates_run_id(
             )
             if f"run_id={first_run.run_id}" in record.getMessage()
         ]
-        assert len(records) == 2
+        assert len(records) == (4 if logger == HANDLER_LOGGER else 2)
         assert "direction=in" in records[0].getMessage()
-        assert "direction=out" in records[1].getMessage()
+        assert "direction=out" in records[-1].getMessage()
+        if logger == HANDLER_LOGGER:
+            assert "operation=to_stored" in records[1].getMessage()
+            assert "direction=in" in records[1].getMessage()
+            assert "operation=to_stored" in records[2].getMessage()
+            assert "direction=out" in records[2].getMessage()
 
     natal_boundaries = _event_records(
         caplog,
@@ -201,6 +217,7 @@ async def test_real_natal_path_caches_and_correlates_run_id(
         )
         if f"run_id={first_run.run_id}" in record.getMessage()
         and "direction=out" in record.getMessage()
+        and "operation=build_natal" in record.getMessage()
     )
     assert "message_type=BuildNatalSuccess" in handler_output
     assert "payload_mode=full" in handler_output
@@ -266,7 +283,7 @@ async def test_real_natal_path_caches_and_correlates_run_id(
     assert serialized_types.count("BuildNatalSuccess") == 2
     assert serialized_types.count("NatalChart") == 1
     assert serialized_types.count("CalculationResult") == 1
-    assert serialized_types.count("ChartArtifact") == 2
+    assert serialized_types.count("ChartArtifact") == 4
 
 
 async def test_real_unknown_time_path_builds_cosmogram() -> None:

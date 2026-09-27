@@ -16,7 +16,7 @@ from exact_orb.session.state import StateDelta
 class BuildNatalSuccess(BaseModel):
     """A chart artifact paired with the state delta prepared for commit."""
 
-    model_config = ConfigDict(frozen=True)
+    model_config = ConfigDict(frozen=True, hide_input_in_errors=True)
 
     artifact: ChartArtifact
     delta: StateDelta
@@ -31,6 +31,7 @@ class BuildNatalSuccess(BaseModel):
             delta.birth_input is None
             or delta.birth_resolved is None
             or delta.base_chart_spec is None
+            or delta.base_chart_payload is None
         ):
             raise ValueError("successful build requires a fully populated StateDelta")
 
@@ -40,6 +41,12 @@ class BuildNatalSuccess(BaseModel):
 
         if self.artifact.spec != base_chart_spec:
             raise ValueError("artifact.spec must equal delta.base_chart_spec")
+        if (
+            self.artifact.calculation_key != delta.base_chart_payload.calculation_key
+            or self.artifact.calculation_version
+            != delta.base_chart_payload.calculation_version
+        ):
+            raise ValueError("artifact key and version must equal stored chart envelope")
 
         expected_chart_kind = (
             "cosmogram" if birth_resolved.time_unknown else "natal"

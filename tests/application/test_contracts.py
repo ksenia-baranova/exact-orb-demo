@@ -31,6 +31,7 @@ from exact_orb.calculation.chart_contract import calculation_input_from_chart
 from exact_orb.calculation.engine import NatalTechniqueAdapter, TechniqueAdapter
 from exact_orb.calculation.keys import calculation_input_from, calculation_key
 from exact_orb.calculation.spec import NatalChartSpec
+from exact_orb.calculation.types import ChartArtifact
 from exact_orb.session.state import RESET_DELTA, StateDelta
 from tests.fixtures.calculation import (
     VERSION,
@@ -54,13 +55,17 @@ def _populated_delta(
     *,
     birth_input: BirthInput | None = None,
     resolved: ResolvedBirthData | None = None,
+    stored_artifact: ChartArtifact | None = None,
 ) -> StateDelta:
     resolved = resolved_birth_data() if resolved is None else resolved
     return StateDelta(
         birth_input=_birth_input() if birth_input is None else birth_input,
         birth_resolved=resolved,
         base_chart_spec=spec,
-        base_chart_payload=stored_chart_for(artifact(spec=spec, resolved=resolved)),
+        base_chart_payload=stored_chart_for(
+            artifact(spec=spec, resolved=resolved)
+            if stored_artifact is None else stored_artifact
+        ),
     )
 
 
@@ -125,6 +130,23 @@ def test_build_natal_success_accepts_an_explicit_consistent_pair() -> None:
         spec,
         chart_artifact.calculation_version,
     )
+
+
+@pytest.mark.parametrize("field", ("calculation_key", "calculation_version"))
+def test_build_natal_success_rejects_mismatched_stored_envelope(field: str) -> None:
+    spec = chart_spec(chart_kind="natal")
+    chart_artifact = artifact(spec=spec)
+    delta = _populated_delta(spec)
+    assert delta.base_chart_payload is not None
+    assert BuildNatalSuccess(artifact=chart_artifact, delta=delta).delta is delta
+    changed = delta.model_copy(update={
+        "base_chart_payload": delta.base_chart_payload.model_copy(update={
+            field: "foreign-identity",
+        }),
+    })
+
+    with pytest.raises(ValidationError, match="stored chart envelope"):
+        BuildNatalSuccess(artifact=chart_artifact, delta=changed)
 
 
 def test_build_natal_success_accepts_consistent_unknown_time_cosmogram() -> None:
@@ -241,7 +263,9 @@ def test_build_natal_success_rejects_artifact_for_different_calculation_input(
     ):
         BuildNatalSuccess(
             artifact=chart_artifact,
-            delta=_populated_delta(spec, resolved=delta_resolved),
+            delta=_populated_delta(
+                spec, resolved=delta_resolved, stored_artifact=chart_artifact,
+            ),
         )
 
 
@@ -336,7 +360,14 @@ def test_build_natal_success_rejects_tampered_artifact_key() -> None:
         artifact=valid_artifact,
         delta=_populated_delta(spec, resolved=resolved),
     )
-    tampered_result = valid_result.model_copy(update={"artifact": tampered_artifact})
+    tampered_delta = valid_result.delta.model_copy(update={
+        "base_chart_payload": valid_result.delta.base_chart_payload.model_copy(update={
+            "calculation_key": tampered_artifact.calculation_key,
+        }),
+    })
+    tampered_result = valid_result.model_copy(update={
+        "artifact": tampered_artifact, "delta": tampered_delta,
+    })
 
     assert valid_artifact.calculation_key == calculation_key(
         calculation_input_from(resolved),

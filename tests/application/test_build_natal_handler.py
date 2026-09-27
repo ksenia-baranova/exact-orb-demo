@@ -15,7 +15,10 @@ from pydantic import ValidationError
 import exact_orb.application.handlers.build_natal as build_natal_module
 from exact_orb.application.application_results import ApplicationInternalFailure
 from exact_orb.application.commands import BuildNatalCommand
-from exact_orb.application.handlers.build_natal import BuildNatalHandler
+from exact_orb.application.handlers.build_natal import (
+    BuildNatalHandler,
+    StoredChartPreparationError,
+)
 from exact_orb.application.orchestrator import ApplicationOrchestrator
 from exact_orb.application.results import BuildNatalSuccess
 from exact_orb.birth.places import LocalPlaceCatalog
@@ -392,10 +395,7 @@ async def test_foreign_artifact_spec_is_rejected_by_success_validation() -> None
     )
 
     assert requested_spec != foreign_spec
-    with pytest.raises(
-        ValidationError,
-        match=r"artifact\.spec must equal delta\.base_chart_spec",
-    ):
+    with pytest.raises(StoredChartPreparationError, match="ENVELOPE_INVALID"):
         await handler.handle(
             BuildNatalCommand(birth_input=_birth_input()),
             new_session("session-1", now=BASE_UTC),
@@ -433,13 +433,7 @@ async def test_foreign_artifact_input_is_rejected_by_success_validation(
     assert getattr(foreign_artifact.chart, chart_field) != getattr(
         resolved, resolved_field
     )
-    with pytest.raises(
-        ValidationError,
-        match=(
-            r"artifact\.chart calculation input must equal "
-            r"delta\.birth_resolved calculation input"
-        ),
-    ):
+    with pytest.raises(StoredChartPreparationError, match="ENVELOPE_INVALID"):
         await handler.handle(
             BuildNatalCommand(birth_input=_birth_input()),
             new_session("session-1", now=BASE_UTC),
