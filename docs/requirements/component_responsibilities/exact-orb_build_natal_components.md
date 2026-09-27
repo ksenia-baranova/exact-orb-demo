@@ -18,10 +18,12 @@ commit/retry/cancellation flow, минимальная composition и normal loa
 между каталогом и FastAPI: внешний `PlaceCatalog`, SQLite,
 `CalculationVersion` и lifecycle ownership; сквозные Build Natal и shutdown
 сценарии приняты.
+**Ревизия:** 2026-09-26 — ADR-0040 задаёт целевой `StoredChart` и атомарный
+commit карты с состоянием; этот срез ещё не реализован.
 **Область:** application-путь `BuildNatalCommand` — от входа в `Application
 Orchestrator` до возврата результата и подтверждённого изменения состояния.
 **Основание:** ADR-0002, 0005, 0006, 0007, 0008, 0009, 0012, 0013, 0014, 0015,
-0017, 0020, 0032; инварианты И-1, И-5, И-7, И-8, И-11, И-12, И-13, И-14.
+0017, 0020, 0032, 0040; инварианты И-1, И-5, И-7, И-8, И-11, И-12, И-13, И-14.
 
 Документ фиксирует состав компонентов и контрактов пути. Он различает
 реализованный application core и всё ещё целевые transport, client и
@@ -340,9 +342,9 @@ SessionAbsent         { reason: Literal["expired", "not_found"] }
 
 ### 3.3. `calculation/spec.py`
 
-`ChartSpec` — полная спецификация расчёта и **источник восстановления** после
-eviction кэша (ADR-0017, И-12). Хранится в сессии, ключ выводится из неё
-чистой функцией.
+`ChartSpec` — полная спецификация расчётного намерения для явного нового
+построения (ADR-0017 с изменением ADR-0040, И-12). Возврат уже построенной
+карты читает `StoredChart` из сессии без обращения к кэшу и движку.
 
 ```text
 NatalChartSpec {
@@ -444,19 +446,22 @@ StateDelta {
     birth_input:     BirthInput | None
     birth_resolved:  ResolvedBirthData | None
     base_chart_spec: ChartSpec | None
+    base_chart_payload: StoredChart | None
 }
 
-RESET_DELTA = StateDelta(None, None, None)
+RESET_DELTA = StateDelta(None, None, None, None)
 
 SessionSnapshot {
     state:  SessionState
     dialog: tuple[DialogTurn, ...]
+    chart:  StoredChart | None
 }
 ```
 
-Все модели frozen. У `SessionState` и `StateDelta` три nullable-поля либо
-целиком пусты, либо целиком заполнены. `SessionSnapshot` — согласованный
-persistence-снимок состояния и диалога, а не ещё одна сохраняемая сущность.
+Все модели frozen. У `SessionState` три nullable-поля, у `StateDelta` четыре:
+каждая группа либо целиком пуста, либо целиком заполнена. `SessionSnapshot` —
+согласованный persistence-снимок состояния, диалога и сохранённой карты,
+а не ещё одна сохраняемая сущность.
 `SessionContext` и `current_build` не вводятся — см. §1.4 и §13.
 
 `ChartRef` несёт версию, при которой карта получена. Инвариант
@@ -712,7 +717,8 @@ class InMemoryCalculationCache:
 **Ответственности.** Хранение opaque bytes, вытеснение, TTL. Формат payload
 принадлежит artifact-слою: `calculation/codec.py` кодирует `ChartArtifact` как
 gzip-6 от UTF-8 JSON и выполняет обратную валидацию на чтение. TTL кэша расчётов
-**не обязан** превосходить TTL сессии: промах восстановим.
+**не обязан** превосходить TTL сессии: сохранённая карта переживает eviction
+кэша; явный новый build может выполнить расчёт заново.
 
 `cache_timeout_ms` — параметр будущего Redis-адаптера или `CacheSettings`.
 Для in-memory реализации это no-op и не входит в конструктор.
@@ -1327,7 +1333,7 @@ class DialogStore(Protocol):
     ) -> None | SessionAbsent: ...
 ```
 
-Операции, затрагивающие обе записи, принадлежат агрегату:
+Операции, затрагивающие записи агрегата, принадлежат `SessionPersistence`:
 
 ```text
 @runtime_checkable
@@ -1345,12 +1351,12 @@ class SessionPersistence(Protocol):
 ```
 
 `touch` одним `now` продлевает состояние и существующую запись диалога и
-возвращает frozen `SessionSnapshot`. `reset` не является вторым алгоритмом:
+возвращает frozen `SessionSnapshot` также с картой. `reset` не является вторым алгоритмом:
 семантически это
 `sessions.compare_and_set(session_id, expected_state_version, RESET_DELTA,
 now=now)`: агрегат только делегирует, а RESET_DELTA-aware facet CAS сам
-очищает диалог внутри своей backend-секции. `delete`
-атомарно удаляет обе записи. Реализация через два независимых вызова фасетов
+очищает диалог и карту внутри своей backend-секции. `delete`
+атомарно удаляет все записи агрегата. Реализация через независимые вызовы фасетов
 недопустима.
 
 Поддерживаемые process-local композиции — `InMemorySessionPersistence()` и
@@ -1501,7 +1507,10 @@ spec = NatalChartSpec(chart_kind=chart_kind)
 
 3. `artifacts.ensure_chart(spec, resolved, run=run)`.
 
-4. Сформировать all-set `StateDelta`; новую версию handler не вычисляет.
+4. Получить `(payload_format, payload)` через `artifacts.to_stored(artifact)`,
+   собрать `StoredChart` с ключом и версией артефакта и включить его в all-set
+   `StateDelta`. Новую версию handler не вычисляет. Отказ кодирования или
+   превышение 1 МиБ завершают build до CAS внутренней ошибкой.
 
 5. Собрать `BuildNatalSuccess`. Его модель требует полностью заполненный
    delta, точное равенство artifact spec и `base_chart_spec`, согласованность
@@ -1528,8 +1537,9 @@ payload, projector и JSON не вычисляются. Это намеренн�
 **Тесты.** Детальная матрица функционального покрытия приведена в требованиях
 handler, §12. Известное время даёт `chart_kind = natal` и полный `include`,
 неизвестное — `cosmogram` и суженный `include`, без вопроса пользователю;
-типизированные short-circuit исходы сохраняются. На сверенном commit отдельный
-import-boundary regression-тест для `build_natal.py` ещё не интегрирован.
+типизированные short-circuit исходы сохраняются. Отдельный import-boundary
+regression-тест для `build_natal.py` интегрирован в M1-4 (`0828c26`);
+он проверяет прямые импорты handler и позитивные контроли.
 
 ---
 
@@ -1829,7 +1839,7 @@ B-8 в виде теста на импорты стоит дёшево и лов
 | Э1 — расчёт с кэшем | `CalculationVersion`, keys, cache/codec, engine/artifacts, single-flight, resolver drain, runtime wiring и сквозной cache miss → hit, нормализованный результат, key v2 и устойчивая космограмма ADR-0032 | Отдельные warnings смены знака/направления из §4.6 |
 | Э2 — резолв | `LocalPlaceCatalog` и JSONL loader, `places/tz/resolver`, скрипт каталога, контрольные сценарии и `BirthTimeDomain` | Рабочий каталог и поиск подсказок для UI; готовность resolver не закрывает эти задачи |
 | Э3 — сессия | Контракты, `ContextService`, InMemory и SQLite, TTL/CAS, lifecycle, conformance и benchmark P4; state payload v2 с чтением v1; подключение к application core; runtime-owned SQLite executor и one-shot reaper | HTTP/session bootstrap и reaper schedule в M1-6; deployment policy в M1-12 |
-| Э4 — координация | `BuildNatalHandler`, `BuildNatalOutcome`, `ApplicationOrchestrator`, `ApplicationResult`, commit/retry/cancellation/lifecycle logging, минимальная composition и real-component integration | Import-boundary тест handler — M1-4; client monotonicity X1; transport/admission X2 |
+| Э4 — координация | `BuildNatalHandler`, `BuildNatalOutcome`, `ApplicationOrchestrator`, `ApplicationResult`, commit/retry/cancellation/lifecycle logging, минимальная composition, real-component integration и import-boundary тест handler (M1-4) | Client monotonicity X1; transport/admission X2 |
 | Э5 — agent-путь | Каркасы `tools/` и `orchestration/` | Общий артефактный путь `NatalTool` — M3-1; async Tool и runtime — M3-2 roadmap |
 | Э6 — нагрузка | Исторические замеры расчётов, benchmark полного SQLite adapter path и normal application profile 10.6: 300/300 при 5 RPS | Актуальная проверка natal/cosmogram/transit; degraded admission profile 10.7 после X2; серверная/HTTP нагрузка |
 

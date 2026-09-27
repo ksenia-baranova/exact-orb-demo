@@ -168,13 +168,17 @@ Artifacts -> Cache : put(key, bytes)
 Artifacts --> Handler : ChartArtifact\n(kind и warnings находятся в chart)
 deactivate Artifacts
 
-Handler -> Handler : StateDelta(\nbirth_input, birth_resolved,\nbase_chart_spec = spec)
+Handler -> Artifacts : to_stored(artifact)
+Artifacts --> Handler : payload_format, payload
+Handler -> Handler : StoredChart(format, artifact.key,\nartifact.version, payload)
+Handler -> Handler : StateDelta(\nbirth_input, birth_resolved,\nbase_chart_spec = spec, base_chart_payload = StoredChart)
 Handler -> Handler : BuildNatalSuccess(artifact, delta)\nvalidate time_unknown ↔ kind/time\nand resolved ↔ chart ↔ key
 Handler --> Orch : BuildNatalSuccess(artifact, delta)
 deactivate Handler
 
 Orch -> Context : save(session_id,\nexpected_state_version, delta)
 Context -> Store : sessions.compare_and_set(\nsession_id, expected_state_version,\nStateDelta, now)
+Store -> Store : state и StoredChart — одна CAS-транзакция
 Store --> Context : new state_version
 Context --> Orch : Committed(state_version)
 

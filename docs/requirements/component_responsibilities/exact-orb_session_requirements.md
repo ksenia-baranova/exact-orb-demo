@@ -9,11 +9,17 @@
 расхождении имён или сигнатур для session-портов нормативен настоящий
 документ и действующие ADR.
 
+Пользовательские сценарии открытия, построения, повторного входа и работы
+двух вкладок после ADR-0040 уточнены в
+[требованиях к поведению сессии с сохранённой картой](../session/stored-chart-session-behavior.md).
+
 Согласовано 2026-09-03 и 2026-09-04.
 Ревизия 2026-09-12: реализовано следствие ADR-0032 для state payload v2 и
 чтения frozen payload v1.
 Ревизия 2026-09-21: реализован runtime seam one-shot reaper; периодическое
 расписание оставлено FastAPI lifespan.
+Ревизия 2026-09-26: целевой контракт ADR-0040 добавляет `StoredChart` в агрегат
+сессии. Существующие статусы реализации ниже относятся к коду до этой ветки.
 
 ---
 
@@ -111,12 +117,13 @@ CAS — единственный механизм защиты состояни�
 Механизм и три исхода записи — `sequence_diagrams/session/005-compare-and-set.puml`.
 
 Отдельный случай — полный reset. `RESET_DELTA` является обычной валидной
-дельтой со всеми тремя nullable-полями, равными `None`. Агрегатный
+дельтой со всеми четырьмя nullable-полями, равными `None`. Агрегатный
 `SessionPersistence.reset(...)` не вводит второй алгоритм: его семантика
 тождественна
 `sessions.compare_and_set(session_id, expected_state_version, RESET_DELTA,
 now=now)`. Агрегат только делегирует; RESET_DELTA-aware реализация фасетного
-CAS сама очищает диалог в той же backend-секции или транзакции.
+CAS сама очищает диалог и сохранённую карту в той же backend-секции или
+транзакции.
 
 ### 2.2. Переименование
 
@@ -158,9 +165,13 @@ StateDelta {
     birth_input:     BirthInput | None
     birth_resolved:  ResolvedBirthData | None
     base_chart_spec: ChartSpec | None
+    base_chart_payload: StoredChart | None
 }
 
-RESET_DELTA = StateDelta(None, None, None)
+StoredChart { payload_format: int, calculation_key: str,
+              calculation_version: str, payload: bytes }
+
+RESET_DELTA = StateDelta(None, None, None, None)
 
 DialogTurn {
     turn_id:                 str
@@ -193,7 +204,8 @@ StateCommitFailed { error_code: str }
 fresh-сессии и `RESET_DELTA`, но не является подтверждённым commit. У
 `SessionState` тройка `birth_input`,
 `birth_resolved`, `base_chart` либо целиком пуста, либо целиком заполнена;
-то же правило действует для тройки полей `StateDelta`. `session_id` непуст,
+все четыре nullable-поля `StateDelta` также задаются вместе либо все пусты.
+`session_id` непуст,
 `state_version >= 0`, `ChartRef.state_version >= 1`, а при наличии ссылки
 `base_chart.state_version == state_version`. Времена — timezone-aware UTC,
 и выполняется `created_at <= expires_at <= hard_expires_at`.
@@ -355,13 +367,14 @@ append/clear/reset/delete — `StateCommitFailed(error_code)`. Поэтому
 ### 3.4. Агрегат persistence — `session/persistence.py`
 
 `SessionStore` и `DialogStore` остаются узкими фасетами для CAS и диалога.
-Операции, которым нужна атомарность между обеими записями, принадлежат
+Операции, которым нужна атомарность между записями агрегата, принадлежат
 агрегату:
 
 ```text
 SessionSnapshot {
     state:  SessionState
     dialog: tuple[DialogTurn, ...]
+    chart:  StoredChart | None
 }
 
 @runtime_checkable
@@ -379,15 +392,17 @@ class SessionPersistence(Protocol):
 ```
 
 `SessionSnapshot` frozen и является persistence-снимком согласованного
-состояния и диалога, а не новой доменной сущностью. `touch` — единственный
+состояния, диалога и карты, а не новой доменной сущностью. Инвариант:
+`state.base_chart is None` тогда и только тогда, когда `chart is None`.
+`touch` — единственный
 публичный read-and-renew путь: в одной критической секции продлевает TTL
 состояния и существующей записи диалога одним значением и возвращает снимок.
 Фасетные `get` и `read` остаются read-only.
 
 `reset` и `delete` также агрегатные. Полный reset только делегирует
 фасетному CAS ровно `RESET_DELTA`; RESET_DELTA-aware CAS применяет переход и
-очищает диалог в одной backend-секции. `delete` атомарно
-удаляет обе записи; порядок двух отдельных вызовов не считается реализацией
+очищает диалог и карту в одной backend-секции. `delete` атомарно
+удаляет все записи агрегата; порядок отдельных вызовов не считается реализацией
 контракта.
 
 ### 3.5. Правило перехода отделено от записи
@@ -546,7 +561,8 @@ ResetSessionCommand { scope: Literal["dialog", "all"] }
   может продлить `expires_at` state;
 - `scope="all"` — только `SessionPersistence.reset(session_id,
   expected_state_version, now=now)`: агрегат делегирует `RESET_DELTA` тому же
-  фасетному CAS, который атомарно меняет state и очищает dialog; сессия и её
+  фасетному CAS, который атомарно меняет state и очищает dialog и chart;
+  сессия и её
   лимиты сохраняются.
 
 **`state_version` инкрементируется, а не сбрасывается в ноль.** Иначе
@@ -557,7 +573,7 @@ ResetSessionCommand { scope: Literal["dialog", "all"] }
 ### 5.3. `DeleteMyDataCommand`
 
 `ContextService` вызывает только агрегатный `SessionPersistence.delete`,
-который атомарно удаляет обе записи. После подтверждения transport
+который атомарно удаляет state, dialog и chart. После подтверждения transport
 **гасит cookie** — `Set-Cookie` с истёкшим сроком. Следующий запрос получает
 свежий серверный идентификатор и новую сессию.
 
@@ -1007,7 +1023,7 @@ ADR-0013 называл кэш интерпретаций вторым уров�
 |---|---|---|
 | `SessionStore` | атомарный CAS, TTL | чтение при каждой операции, запись редко |
 | `DialogStore` | атомарный append с вытеснением, TTL | запись после каждой интерпретации |
-| `SessionPersistence` | атомарные touch/reset/delete двух записей | lifecycle сессии |
+| `SessionPersistence` | согласованный touch и атомарные reset/delete агрегата из трёх записей | lifecycle сессии |
 | `CalculationCache` | opaque bytes, TTL | чтение часто, запись при промахе |
 | Кэш интерпретаций | ключ → текст, TTL | то же |
 | `ResearchCorpus` | группировка и агрегирование, бессрочно | запись всегда, чтение вручную |
@@ -1301,8 +1317,8 @@ aggregate touch/reset/delete и конкурирующие писатели. О�
 **Жизненный цикл**
 
 - фасетные `get` и `read` read-only;
-- агрегатный `touch` одним `now` продлевает обе записи и возвращает
-  согласованный frozen `SessionSnapshot`;
+- агрегатный `touch` одним `now` продлевает state и существующий dialog,
+  возвращает согласованный frozen `SessionSnapshot` с chart;
 - CAS, append, clear и touch не укорачивают TTL и не проходят
   `hard_expires_at`;
 - достижение `hard_expires_at` делает сессию логически недоступной независимо
@@ -1311,9 +1327,9 @@ aggregate touch/reset/delete и конкурирующие писатели. О�
 - `ExpiredSessionTransitionError` не пересекает persistence boundary;
 - `session_expired` и `session_not_found` различимы в метриках и
   неразличимы в ответе пользователю;
-- `DeleteMyDataCommand` гасит cookie и удаляет обе записи; последующий
+- `DeleteMyDataCommand` гасит cookie и удаляет все записи агрегата; последующий
   запрос получает сессию с новым серверным идентификатором;
-- агрегатный delete не оставляет частично удалённую пару записей;
+- агрегатный delete не оставляет частично удалённый агрегат;
 - `session_id` из тела/query/path не принимается, а absent/stale cookie не
   используется для создания новой записи; коллизия create не перезаписывает
   существующую сессию.

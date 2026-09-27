@@ -112,7 +112,10 @@ EngineService не вызывается вовсе.
 не пускает второй commit.
 end note
 
-Handler -> Handler : StateDelta(\nbirth_input, birth_resolved,\nbase_chart_spec = spec)
+Handler -> Artifacts : to_stored(artifact)
+Artifacts --> Handler : payload_format, payload
+Handler -> Handler : StoredChart(format, artifact.key,\nartifact.version, payload)
+Handler -> Handler : StateDelta(\nbirth_input, birth_resolved,\nbase_chart_spec = spec, base_chart_payload = StoredChart)
 Handler -> Handler : BuildNatalSuccess(artifact, delta)\nvalidate delta ↔ spec ↔ chart ↔ key
 
 Handler --> Orch : BuildNatalSuccess(artifact, delta)
@@ -128,6 +131,7 @@ end note
 
 Orch -> Context : save(session_id,\nexpected_state_version = 1, delta)
 Context -> Store : sessions.compare_and_set(\nsession_id, 1, StateDelta, now)
+Store -> Store : state и StoredChart — одна CAS-транзакция
 Store --> Context : 2
 Context --> Orch : Committed(state_version = 2)
 

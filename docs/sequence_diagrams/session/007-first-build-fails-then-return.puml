@@ -1,0 +1,83 @@
+@startuml
+title exact-orb — первая постройка не удалась до CAS; повторный вход
+
+' Целевой сценарий M1-5.2 + последующий transport M1-6.
+' StateCommitFailed после CAS — отдельный неопределённый исход, см. 003.
+
+autonumber
+hide footbox
+skinparam shadowing false
+skinparam responseMessageBelowArrow true
+
+actor "Пользователь" as User
+boundary "Вкладка" as FE
+boundary "API M1-6" as API
+control "application/session_view" as View
+control "ApplicationOrchestrator" as Orch
+control "BuildNatalHandler" as Handler
+control "BirthDataResolver" as Birth
+control "ContextService" as Context
+database "SessionPersistence\nstate + session_charts" as Store
+
+== Первый bootstrap создаёт пустую сессию ==
+
+User -> FE : впервые открывает страницу
+FE -> API : bootstrap(cookie отсутствует)
+API -> API : сгенерировать новый session_id
+API -> Context : create(session_id)
+Context -> Store : create(session_id, now)
+Store --> Context : SessionCreated(state_version=0)
+Context --> API : SessionCreated
+API --> FE : empty + новая HttpOnly cookie
+FE --> User : пустая форма ввода
+
+== Первая попытка заканчивается до CAS ==
+
+User -> FE : вводит данные и нажимает «Построить»
+FE -> API : BuildNatalCommand(birth_input)
+API -> Orch : execute(command, session_id, run)
+Orch -> Context : load(session_id)
+Context -> Store : touch(session_id, now)
+Store --> Context : SessionSnapshot(state_version=0, chart=None)
+Context --> Orch : SessionSnapshot
+Orch -> Handler : handle(command, empty state, run)
+Handler -> Birth : resolve(birth_input)
+Birth --> Handler : InputRequired
+Handler --> Orch : InputRequired
+Orch --> API : ApplicationInputRequired
+API --> FE : просьба исправить/дополнить данные
+
+note over Handler, Store
+Здесь показан InputRequired. Технические отказы resolve,
+ensure_chart и to_stored до CAS дают тот же итог для
+сессионного содержимого; их ветви — build_natal/005.
+end note
+
+note over Orch, Store
+ContextService.save и CAS не вызываются.
+На сервере остаются state_version=0,
+birth_input=None, birth_resolved=None,
+base_chart=None, chart=None, dialog=().
+Текст формы может жить лишь в этой открытой вкладке.
+end note
+
+== Вкладка закрыта; пользователь возвращается ==
+
+User -> FE : закрывает вкладку, позже открывает снова
+FE -> API : bootstrap(та же живая cookie)
+API -> Context : load(session_id)
+Context -> Store : touch(session_id, now)
+Store --> Context : SessionSnapshot(state_version=0, chart=None)
+Context --> API : SessionSnapshot
+API -> View : assemble(snapshot, current_version)
+View --> API : empty(state_version=0)
+API --> FE : пустая форма; прежняя cookie
+FE --> User : снова требуется ввод данных
+
+note over API, Store
+Если уже вызывался CAS и получен StateCommitFailed,
+отсутствие карты не гарантировано. Следующий bootstrap
+читает фактический snapshot; неопределённый commit — 003.
+end note
+
+@enduml

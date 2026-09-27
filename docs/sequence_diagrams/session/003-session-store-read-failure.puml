@@ -56,11 +56,15 @@ end box
 == Хранилище не отвечает ==
 
 User -> FE : открывает приложение
-FE -> API : RestoreSessionQuery + HttpOnly cookie
+FE -> API : bootstrap + HttpOnly cookie
 API -> API : lookup session_id только из cookie
-API -> Orch : execute(query, session_id, run)
 
-Orch -> Context : load(session_id)
+note over API, Context
+Bootstrap/restore транспорт выполняет через ContextService
+напрямую (ADR-0006, ред. 2026-09-15), без Orchestrator.
+end note
+
+API -> Context : load(session_id)
 Context -> Context : now = require_utc(clock(), name="clock")
 Context -> Persistence : touch(session_id, now)
 activate Persistence
@@ -71,13 +75,14 @@ note right of Store
 Это **не** "пусто". Могло не пройти чтение
 либо обязательное продление после чтения.
 Outcome не доказывает утрату записи.
+Отказ persistence snapshot отличается от
+chart_unavailable после успешного touch (002).
 end note
 
 Context -> Context : failed load-and-renew != SessionAbsent
-Context --> Orch : StateReadFailed(error_code)
+Context --> API : StateReadFailed(error_code)
 
-Orch --> API : StateReadFailed(error_code)
-API --> FE : 503
+API --> FE : 503; cookie не меняется,\n новая сессия не создаётся
 FE -> FE : "сервис временно недоступен,\n обновите страницу"
 FE --> User : не утверждаем утрату сессии; ждём
 
@@ -97,8 +102,8 @@ end note
 note over Orch, Store
 Предыстория: расчёт прошёл, но commit не подтвердился
 (N8, StateCommitFailed(error_code)). Фактический исход неизвестен:
-запись могла пройти и потеряться в ответе, а могла
-не пройти вовсе. Сохранены delta и original expected=5.
+state и StoredChart могли записаться вместе и ответ потеряться,
+либо не записаться вовсе. Сохранены delta и original expected=5.
 end note
 
 User -> FE : «Повторить»
