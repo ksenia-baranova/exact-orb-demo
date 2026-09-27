@@ -50,8 +50,11 @@ class ChartArtifactEncodingError(Exception):
 
     code: ChartArtifactEncodingErrorCode
 
-    def __init__(self, code: ChartArtifactEncodingErrorCode) -> None:
+    def __init__(
+        self, code: ChartArtifactEncodingErrorCode, *, cause_type: str | None = None,
+    ) -> None:
         self.code = code
+        self.cause_type = cause_type
         super().__init__(code)
 
 

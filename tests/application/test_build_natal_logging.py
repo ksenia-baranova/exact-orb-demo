@@ -551,7 +551,7 @@ async def test_inconsistent_artifact_logs_build_result_stage(
     assert foreign_artifact.chart.datetime_utc == foreign_resolved.utc_datetime
     assert foreign_artifact.chart.latitude == foreign_resolved.latitude
     assert foreign_artifact.chart.longitude == foreign_resolved.longitude
-    with pytest.raises(StoredChartPreparationError, match="ENVELOPE_INVALID"):
+    with pytest.raises(ValidationError, match="artifact.chart calculation input"):
         await handler.handle(
             BuildNatalCommand(birth_input=_birth_input()),
             new_session("session-1", now=BASE_UTC),
@@ -561,7 +561,8 @@ async def test_inconsistent_artifact_logs_build_result_stage(
     failed = _single_event(caplog, "build_natal_failed")
     assert failed.levelno == logging.ERROR
     assert "stage=build_result" in failed.getMessage()
-    assert "exception_type=StoredChartPreparationError" in failed.getMessage()
+    assert "exception_type=ValidationError" in failed.getMessage()
+    assert "reason=- cause_type=-" in failed.getMessage()
     assert "cancelled=false" in failed.getMessage()
     assert artifacts.received_spec == requested_spec
     assert _event_records(caplog, "build_natal_completed") == []

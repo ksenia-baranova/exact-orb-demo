@@ -1,8 +1,8 @@
 # ADR-0040. Построенная карта хранится в агрегате сессии
 
 Дата: 2026-09-26.
-**Статус: принято; реализация начата в отдельной ветке до M1-6
-(артефактный формат и сессионные контракты).**
+**Статус: принято; компонентная реализация M1-5.2 выполнена в ветке
+`feat/session-stored-chart` 2026-09-27; HTTP bootstrap остаётся M1-6.**
 
 Частично изменяет ADR-0017: источником показа уже построенной карты после
 возврата пользователя становится сохранённый артефакт, а не повторный расчёт
@@ -14,12 +14,13 @@
 
 ## Контекст
 
-Сейчас `SessionState` хранит введённые и разрешённые данные рождения и
-`ChartRef { state_version, spec }`, но не построенную карту. Расчётный кэш
-живёт в памяти процесса и пуст после рестарта. Поэтому возврат пользователя
-с живой cookie потребовал бы нового обращения к расчётному пути; обновление
-`CalculationVersion`, эфемерид или `tzdata` могло бы изменить показанную карту
-без действия пользователя. Открытие страницы также зависело бы от доступности
+На момент принятия решения `SessionState` хранил введённые и разрешённые
+данные рождения и `ChartRef { state_version, spec }`, но не построенную карту.
+Расчётный кэш живёт в памяти процесса и пуст после рестарта. Поэтому
+возврат пользователя с живой cookie потребовал бы нового обращения к
+расчётному пути; обновление `CalculationVersion`, эфемерид или `tzdata`
+могло бы изменить показанную карту без действия пользователя. Открытие
+страницы также зависело бы от доступности
 движка и слота расчёта.
 
 ADR-0017 отверг отдельный `ChartRepository`: самостоятельное хранилище
@@ -167,16 +168,36 @@ UI. HTTP bootstrap в M1-6 использует готовый сборщик п
 нужно отдельно согласовать источник артефакта для интерпретации; ADR-0040
 утверждает только build, хранение и восстановление карты для показа.
 
-Решение считается реализованным после следующих проверок:
+Компонентная реализация подтверждена следующими проверками; HTTP bootstrap
+остаётся задачей M1-6. Подробные команды и результаты приведены в
+[журнале плана M1-5.2](../../project_management/implementation_plans/session_stored_chart_implementation_plan.md#8-статус-журнал-свидетельств-и-передача-в-m1-6):
 
 - общий session conformance для InMemory и SQLite: атомарный CAS state+chart,
-  конфликт без записи chart, reset/delete/reaper и согласованный touch;
+  конфликт без записи chart, reset/delete/reaper и согласованный touch —
+  `tests/session/conformance.py::test_populated_cas_commits_version_and_chart_reference`,
+  `test_cas_conflict_returns_atomic_actual_without_mutation`,
+  `test_already_applied_keeps_first_committed_chart`,
+  `test_touch_returns_consistent_renewed_snapshot`,
+  `test_direct_reset_delta_clears_state_and_dialog`,
+  `test_delete_is_idempotent_for_missing_and_live_or_expired` и
+  `tests/session/test_sqlite.py::test_reaper_deletes_only_expired_parents_at_exact_boundary`;
 - неподтверждённый commit: обе записи появляются вместе или обе отсутствуют;
-  точный retry с original expected сохраняет прежнюю классификацию;
-- миграция удаляет прежние сессии и откатывается целиком при отказе;
+  точный retry с original expected сохраняет прежнюю классификацию —
+  `tests/session/test_sqlite.py::test_chart_write_failure_rolls_back_parent_and_retry_commits_pair`
+  и `test_lost_chart_commit_acknowledgement_preserves_pair_and_retry_winner`;
+- миграция удаляет прежние сессии и откатывается целиком при отказе —
+  `tests/session/test_sqlite.py::test_v1_to_v2_clears_legacy_sessions_and_preserves_foreign_component`
+  и `test_v2_migration_failure_after_delete_rolls_back_every_change`;
 - build → закрытие runtime → новый runtime с пустым кэшем → чтение той же
-  карты без вызова движка и без cache miss; различие версии даёт `chart_stale`;
+  карты без вызова движка и без cache miss; различие версии даёт `chart_stale` —
+  `tests/application/test_application_bootstrap_integration.py::test_runtime_restart_restores_identical_chart_without_calculation`;
 - неподдерживаемый формат и повреждённый payload дают `chart_unavailable`
-  без мутации содержимого; отказ touch остаётся `StateReadFailed`;
+  без мутации содержимого; отказ touch остаётся `StateReadFailed` —
+  `tests/application/test_session_view.py::test_unsupported_format_precedes_decode_and_preserves_snapshot`,
+  `test_first_failed_check_wins_before_staleness` и
+  `tests/session/test_sqlite.py::test_structural_chart_corruption_blocks_touch_and_context_load`;
 - DEBUG-проекции `StoredChart` не содержат payload, а прямой вызов
-  `to_stored` виден в парных INFO-событиях.
+  `to_stored` виден в парных INFO-событиях —
+  `tests/session/test_context.py::test_context_save_debug_input_redacts_stored_chart`
+  и `tests/application/test_build_natal_logging.py::test_started_is_debug_and_precedes_exactly_one_terminal_event`,
+  `test_handler_logs_complete_input_and_output_component_messages`.

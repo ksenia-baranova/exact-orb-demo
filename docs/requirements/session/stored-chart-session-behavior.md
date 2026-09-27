@@ -1,8 +1,8 @@
 # Поведение сессии с сохранённой картой — M1-5.2
 
 Дата: 2026-09-26. Ревизия: 2026-09-27.
-**Статус: целевые требования; артефактный формат и сессионные контракты
-реализованы 2026-09-27, остальные срезы в работе.**
+**Статус: компонентный контракт M1-5.2 реализован и проверен 2026-09-27;
+HTTP bootstrap и транспорт остаются M1-6.**
 
 Нормативное решение — [ADR-0040](../decisions/0040-stored-chart-in-session.md).
 Действующий контракт жизненного цикла, TTL и CAS —
@@ -10,8 +10,8 @@
 Настоящий документ уточняет пользовательское поведение первой ветки
 `feat/session-stored-chart`. HTTP-реализация bootstrap относится к следующей
 ветке M1-6; ниже для неё задан внутренний контракт с готовыми компонентами.
-Существующий код пока хранит только `SessionState` и `ChartRef`, без
-`StoredChart` и проекции `application/session_view`.
+Существующий код хранит `StoredChart` рядом с `SessionState` и `ChartRef`;
+чистая проекция `application/session_view` восстанавливает его из snapshot.
 
 ## 1. Что делаем и зачем
 
@@ -212,7 +212,7 @@ Bootstrap не выполняет CAS, не меняет `state_version` и не
 | Orchestrator → `BuildNatalHandler` | `BuildNatalRequest {command, state, run}` | `BuildNatalSuccess {artifact, delta}`; либо `InputRequired`, `ResolutionUnavailable`, `CalculationFailed` / `StoredChartPreparationError` до CAS. Последний переводится Orchestrator в `ApplicationInternalFailure`. |
 | Handler → `BirthDataResolver` | `BirthResolutionRequest {birth_input, run}` | `ResolvedBirthData` либо `InputRequired` / `ResolutionUnavailable`. |
 | Handler → `ChartArtifactPort.ensure_chart` | `EnsureChartRequest {spec, resolved, run}` | `ChartArtifact {spec, calculation_key, calculation_version, chart}` либо типизированная ошибка расчёта. |
-| Handler → `ChartArtifactPort.to_stored` | `ToStoredRequest {artifact}` | `(payload_format=1, payload: bytes)` либо `ChartArtifactEncodingError {error_code=CHART_ARTIFACT_ENCODE_FAILED}`. Лимит размера этот метод не проверяет. |
+| Handler → `ChartArtifactPort.to_stored` | `ToStoredRequest {artifact}` | `(payload_format=1, payload: bytes)` либо `ChartArtifactEncodingError {error_code=CHART_ARTIFACT_ENCODE_FAILED, cause_type}` для ожидаемого отказа сериализации. Неожиданное исключение порта Handler классифицирует как `ENCODE_UNEXPECTED`. Лимит размера этот метод не проверяет. |
 | Handler → Orchestrator → `ContextService.save` | `ContextSaveRequest {session_id, expected_state_version, delta}`; `StateDelta {birth_input, birth_resolved, base_chart_spec, base_chart_payload: StoredChart}` | `Committed {state_version}`; `AlreadyApplied {state_version}`; `Superseded {actual: SessionState}`; `SessionAbsent {reason}`; `StateCommitFailed {error_code}`. |
 
 `StoredChart {payload_format:int, calculation_key:str, calculation_version:str,
@@ -224,10 +224,15 @@ payload:bytes}` содержит ключ и версию из того же `Ch
 никогда не передаётся как публичный ответ bootstrap.
 
 `to_stored` переводит ожидаемый отказ сериализации в типизированный
-`ChartArtifactEncodingError`, не раскрывая байты или исходный текст ошибки
-наружу. Handler переводит его и отказ валидации создаваемого `StoredChart` в
-типизированный `StoredChartPreparationError` с `reason=ENCODE_FAILED`,
-`PAYLOAD_SIZE_INVALID` или `ENVELOPE_INVALID`. `PAYLOAD_SIZE_INVALID`
+`ChartArtifactEncodingError` с безопасным именем исходного типа
+`cause_type`, не раскрывая байты или исходный текст ошибки наружу. Другие
+исключения resolver не маскирует. Handler переводит типизированный отказ в
+`StoredChartPreparationError {reason=ENCODE_FAILED, cause_type}`, а другое
+`Exception` из порта — в `{reason=ENCODE_UNEXPECTED, cause_type}`. `MemoryError`
+и `BaseException` вне `Exception` не классифицируются. Отказ валидации
+создаваемого `StoredChart`/`StateDelta` даёт `ENVELOPE_INVALID`;
+`ValidationError` при сборке `BuildNatalSuccess` сохраняет исходный тип и
+`stage=build_result` согласно ADR-0027. `PAYLOAD_SIZE_INVALID`
 относится к сжатым байтам вне диапазона 1…1 048 576; положительность
 `payload_format` и непустые ключ/версия относятся к `ENVELOPE_INVALID`.
 Основная проверка лимита выполняется моделью `StoredChart` при сборке
@@ -238,13 +243,16 @@ Handler в `ApplicationInternalFailure {orch_status=FAILURE,
 handler_status=UNEXPECTED_FAILURE, context_status=LOADED,
 code=INTERNAL_FAILURE}` без вызова CAS и без нового публичного outcome.
 Причина подготовки остаётся во внутренней диагностике и не становится
-публичным текстом ошибки. Текст обоих типизированных исключений содержит
-только безопасный код или причину. При преобразовании ошибок сериализации и
-валидации исходное исключение не включается в поля или текст новой ошибки;
+публичным текстом ошибки. Текст типизированных исключений содержит только
+безопасный код/причину и `cause_type` для двух отказов кодирования. При
+преобразовании ошибок сериализации и валидации исходное исключение не
+включается в поля или текст новой ошибки;
 цепочка в форматируемом traceback подавляется (`raise ... from None`). Это
 необходимо и для `StoredChartPreparationError`: Orchestrator журналирует
 отказ Handler через `logger.exception`, а исходный Pydantic
-`ValidationError` может содержать `input_value` с началом бинарного payload.
+`ValidationError` модели `StoredChart` может содержать `input_value` с
+началом бинарного payload. `BuildNatalSuccess` скрывает входы в тексте ошибок;
+полный форматированный traceback его валидации проверяется тестом.
 
 Атрибуты вложенных сообщений, существенные для этого сценария:
 
@@ -257,7 +265,7 @@ code=INTERNAL_FAILURE}` без вызова CAS и без нового публ�
 | `SessionSnapshot` | `state`, `dialog: tuple[DialogTurn,...]`, `chart: StoredChart\|None`; один атомарный результат touch. |
 | `StateDelta` | `birth_input`, `birth_resolved`, `base_chart_spec`, `base_chart_payload`; все четыре обязательные nullable-поля, заполненные вместе либо все `None`. |
 | `StoredChart` | `payload_format`, `calculation_key`, `calculation_version`, `payload: bytes`; сессионный слой не интерпретирует bytes. |
-| Отказы до CAS | `InputRequired {issues: tuple[Issue,...]}`, где `Issue {field, code, candidates?, constraints?}`; `ResolutionUnavailable {error_code, retryable}`; `CalculationFailed {error_code}`; `ChartArtifactEncodingError {error_code}`; `StoredChartPreparationError {reason}`. |
+| Отказы до CAS | `InputRequired {issues: tuple[Issue,...]}`, где `Issue {field, code, candidates?, constraints?}`; `ResolutionUnavailable {error_code, retryable}`; `CalculationFailed {error_code}`; `ChartArtifactEncodingError {error_code, cause_type?}`; `StoredChartPreparationError {reason, cause_type?}`. Причины Handler: `ENCODE_FAILED`, `ENCODE_UNEXPECTED`, `PAYLOAD_SIZE_INVALID`, `ENVELOPE_INVALID`. |
 
 ## 8. Логирование и восстановимость последовательности
 
@@ -310,6 +318,10 @@ DEBUG. Для `to_stored` DEBUG-вход содержит полный арте�
 Orchestrator, включая форматированный traceback `logger.exception`,
 ограничиваются типом исключения и безопасным кодом/причиной: без
 `input_value`, исходной ошибки валидации или фрагмента payload.
+Событие `build_natal_failed` явно содержит `reason` и `cause_type`; для
+отказов, у которых их нет, оба поля имеют значение `-`. Для
+`ENCODE_FAILED` и `ENCODE_UNEXPECTED` traceback показывает только эти два
+значения, без исходного текста исключения порта.
 
 При проверке логов прямым стрелкам координации Orchestrator/Handler на
 sequence должны соответствовать наблюдаемые отправка и приём либо
@@ -392,12 +404,19 @@ CREATE TABLE session_charts (
   `StoredChart` и проверяет полный форматированный журнал с traceback:
   в нём нет `input_value`, исходного текста `ValidationError` и узнаваемого
   префикса payload.
-- Замороженная golden-фикстура содержит байты `StoredChart` формата 1 и
-  ожидаемые ключ, версию, spec и расчётный вход. Пока формат 1 поддерживается,
-  критерий совместимости — успешное декодирование и сверка идентичности,
-  без сравнения с заново закодированными байтами. Фикстуру не перегенерируют
-  вслед за изменением модели. При намеренном несовместимом формате 2
-  добавляют новую фикстуру, а старую сохраняют для проверки
+- Замороженные golden-фикстуры содержат байты `StoredChart` формата 1:
+  прежний минимальный артефакт, полный натал 1985 года и космограмму той же
+  даты с `time_uncertainty`. Пока формат 1 поддерживается, критерий
+  совместимости — успешное декодирование, сверка ключа, версии, spec и
+  расчётного входа, а также структурная полнота для **каждой** фикстуры,
+  включая прежнюю: `decode(bin).model_dump(mode="json")` должен равняться
+  словарю `json.loads(gzip.decompress(bin))`. Сравниваются словари, без
+  сравнения с заново закодированными байтами. Структурное расхождение по
+  умолчанию требует нового `payload_format`, если поле не внесено явно в
+  список допустимых аддитивных. Сейчас этот список пуст. Эталоны не
+  перегенерируют вслед за изменением
+  модели. При намеренном несовместимом формате 2 добавляют новую фикстуру,
+  а старые сохраняют для проверки
   `chart_unavailable`, если декодер формата 1 удалён. `to_stored` выдаёт
   текущий формат из единого набора форматов кодека.
 - Тесты проекции проверяют все коды `safe_reason`, порядок проверок и то,

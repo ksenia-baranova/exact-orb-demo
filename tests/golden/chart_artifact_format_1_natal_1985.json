@@ -1,0 +1,36 @@
+{
+  "payload_format": 1,
+  "calculation_key": "eo:calc:v2:471780444330e2d9108e7ae97652bb4a47d3142ffc14cb238a587a6002df8eee",
+  "calculation_version": "baseline-version",
+  "spec": {
+    "technique": "natal",
+    "chart_kind": "natal",
+    "include": [
+      "aspects",
+      "configurations",
+      "houses",
+      "positions",
+      "rulers",
+      "strength"
+    ],
+    "house_system": "P",
+    "rulership": "combined",
+    "near_interception_threshold": 1.0
+  },
+  "calculation_input": {
+    "utc_datetime": "1985-09-01T20:45:00Z",
+    "latitude": 55.7522,
+    "longitude": 37.6155,
+    "birth_time_domain_digest": null
+  },
+  "source": {
+    "birth_date_local": "1985-09-02",
+    "birth_time_local": "00:45+04:00",
+    "place": "Москва",
+    "tz_id": "Europe/Moscow",
+    "latitude": 55.7522,
+    "longitude": 37.6155,
+    "reference": "natal_1985_human.txt"
+  },
+  "payload_sha256": "661848cbc0d0aa5b204a92e57e888f765ebb14acc14d419d99cafa4798bf7b4b"
+}

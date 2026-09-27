@@ -395,7 +395,7 @@ async def test_foreign_artifact_spec_is_rejected_by_success_validation() -> None
     )
 
     assert requested_spec != foreign_spec
-    with pytest.raises(StoredChartPreparationError, match="ENVELOPE_INVALID"):
+    with pytest.raises(ValidationError, match="artifact.spec must equal"):
         await handler.handle(
             BuildNatalCommand(birth_input=_birth_input()),
             new_session("session-1", now=BASE_UTC),
@@ -433,7 +433,7 @@ async def test_foreign_artifact_input_is_rejected_by_success_validation(
     assert getattr(foreign_artifact.chart, chart_field) != getattr(
         resolved, resolved_field
     )
-    with pytest.raises(StoredChartPreparationError, match="ENVELOPE_INVALID"):
+    with pytest.raises(ValidationError, match="artifact.chart calculation input"):
         await handler.handle(
             BuildNatalCommand(birth_input=_birth_input()),
             new_session("session-1", now=BASE_UTC),

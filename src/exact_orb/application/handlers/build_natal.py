@@ -15,6 +15,7 @@ from exact_orb.application.results import BuildNatalOutcome, BuildNatalSuccess
 from exact_orb.component_logging import log_component_message
 from exact_orb.calculation.errors import (
     CalculationUnavailableError,
+    ChartArtifactEncodingError,
     ChartCalculationError,
 )
 from exact_orb.calculation.spec import NatalChartSpec
@@ -27,16 +28,22 @@ LOGGER = logging.getLogger(__name__)
 
 
 StoredChartPreparationReason = Literal[
-    "ENCODE_FAILED", "PAYLOAD_SIZE_INVALID", "ENVELOPE_INVALID"
+    "ENCODE_FAILED", "ENCODE_UNEXPECTED", "PAYLOAD_SIZE_INVALID", "ENVELOPE_INVALID"
 ]
 
 
 class StoredChartPreparationError(Exception):
     """Safe internal failure while preparing a chart for session commit."""
 
-    def __init__(self, reason: StoredChartPreparationReason) -> None:
+    def __init__(
+        self, reason: StoredChartPreparationReason, *, cause_type: str | None = None,
+    ) -> None:
         self.reason = reason
-        super().__init__(reason)
+        self.cause_type = cause_type
+        super().__init__(
+            f"reason={reason} cause_type={cause_type}"
+            if cause_type is not None else f"reason={reason}"
+        )
 
 
 class BuildNatalHandler:
@@ -126,8 +133,16 @@ class BuildNatalHandler:
             )
             try:
                 payload_format, payload = self._artifacts.to_stored(artifact)
-            except Exception:
-                raise StoredChartPreparationError("ENCODE_FAILED") from None
+            except ChartArtifactEncodingError as exc:
+                raise StoredChartPreparationError(
+                    "ENCODE_FAILED", cause_type=exc.cause_type or type(exc).__name__,
+                ) from None
+            except MemoryError:
+                raise
+            except Exception as exc:
+                raise StoredChartPreparationError(
+                    "ENCODE_UNEXPECTED", cause_type=type(exc).__name__,
+                ) from None
             _log_message(
                 run, direction="receive", peer=type(self._artifacts).__name__,
                 operation="to_stored", message_type="StoredChartEncoding",
@@ -155,10 +170,10 @@ class BuildNatalHandler:
                     base_chart_spec=spec,
                     base_chart_payload=stored_chart,
                 )
-                stage = "build_result"
-                outcome = BuildNatalSuccess(artifact=artifact, delta=delta)
             except ValidationError:
                 raise StoredChartPreparationError("ENVELOPE_INVALID") from None
+            stage = "build_result"
+            outcome = BuildNatalSuccess(artifact=artifact, delta=delta)
             _log_completed(run, outcome, chart_kind, started_at)
             return outcome
         except BaseException as exc:
@@ -247,12 +262,16 @@ def _log_failed(
 ) -> None:
     cancelled = isinstance(exc, asyncio.CancelledError)
     log = LOGGER.warning if cancelled else LOGGER.error
+    reason = exc.reason if isinstance(exc, StoredChartPreparationError) else "-"
+    cause_type = exc.cause_type if isinstance(exc, StoredChartPreparationError) else None
     log(
-        "build_natal_failed run_id=%s stage=%s exception_type=%s "
+        "build_natal_failed run_id=%s stage=%s exception_type=%s reason=%s cause_type=%s "
         "duration_ms=%.3f cancelled=%s",
         str(run.run_id),
         stage,
         type(exc).__name__,
+        reason,
+        cause_type or "-",
         _elapsed_ms(started_at),
         "true" if cancelled else "false",
     )

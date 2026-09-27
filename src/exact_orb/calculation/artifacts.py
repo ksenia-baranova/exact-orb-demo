@@ -23,8 +23,10 @@ import logging
 from math import isfinite
 import time
 from typing import Literal
+import zlib
 
 from pydantic import ValidationError
+from pydantic_core import PydanticSerializationError
 
 from exact_orb.birth.types import ResolvedBirthData
 from exact_orb.domain import validate_geography
@@ -131,8 +133,10 @@ class ChartArtifactResolver:
         """Encode an artifact for session storage without storing it."""
         try:
             payload = encode_chart_artifact(artifact)
-        except Exception:
-            raise ChartArtifactEncodingError("CHART_ARTIFACT_ENCODE_FAILED") from None
+        except (PydanticSerializationError, UnicodeEncodeError, zlib.error) as exc:
+            raise ChartArtifactEncodingError(
+                "CHART_ARTIFACT_ENCODE_FAILED", cause_type=type(exc).__name__,
+            ) from None
         return CHART_ARTIFACT_PAYLOAD_FORMAT, payload
 
     async def drain(self) -> None:

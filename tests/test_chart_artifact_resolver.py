@@ -13,6 +13,7 @@ from typing import Any
 from uuid import UUID
 
 import pytest
+from pydantic_core import PydanticSerializationError
 
 from exact_orb.birth.types import BirthTimeDomain, ResolvedBirthData, UtcMinuteRange
 from exact_orb.calculation import artifacts as artifacts_module
@@ -85,7 +86,7 @@ def test_to_stored_encoding_failure_has_safe_type_and_formatted_traceback(
     resolver = _resolver(cache, engine)
 
     def fail_encode(_artifact: ChartArtifact) -> bytes:
-        raise ValueError("input_value=secret-payload-prefix 55.7558")
+        raise PydanticSerializationError("input_value=secret-payload-prefix 55.7558")
 
     monkeypatch.setattr(artifacts_module, "encode_chart_artifact", fail_encode)
 
@@ -95,6 +96,7 @@ def test_to_stored_encoding_failure_has_safe_type_and_formatted_traceback(
     error = exc_info.value
     formatted = "".join(traceback.format_exception(error))
     assert error.code == "CHART_ARTIFACT_ENCODE_FAILED"
+    assert error.cause_type == "PydanticSerializationError"
     assert str(error) == error.code
     assert error.__suppress_context__ is True
     assert "input_value" not in formatted
@@ -103,6 +105,19 @@ def test_to_stored_encoding_failure_has_safe_type_and_formatted_traceback(
     assert cache.get_calls == []
     assert cache.put_calls == []
     assert engine.calls == 0
+
+
+def test_to_stored_unexpected_failure_keeps_original_type(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    resolver = _resolver(FakeCache(), FakeEngine(_result()))
+
+    def fail_encode(_artifact: ChartArtifact) -> bytes:
+        raise RuntimeError("unexpected codec failure")
+
+    monkeypatch.setattr(artifacts_module, "encode_chart_artifact", fail_encode)
+    with pytest.raises(RuntimeError, match="unexpected codec failure"):
+        resolver.to_stored(_artifact())
 
 
 @pytest.mark.parametrize(
