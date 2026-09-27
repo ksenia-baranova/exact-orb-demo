@@ -21,6 +21,7 @@ from exact_orb.session.state import (
     ChartRef,
     SessionState,
     StateDelta,
+    StoredChart,
     apply_delta,
     is_expired,
     matches_intent,
@@ -65,10 +66,17 @@ OTHER_RESOLVED = ResolvedBirthData(
 )
 SPEC = NatalChartSpec(chart_kind="natal")
 OTHER_SPEC = NatalChartSpec(chart_kind="cosmogram")
+STORED_CHART = StoredChart(
+    payload_format=1,
+    calculation_key="key-1",
+    calculation_version="version-1",
+    payload=b"opaque-chart",
+)
 DELTA = StateDelta(
     birth_input=BIRTH_INPUT,
     birth_resolved=RESOLVED,
     base_chart_spec=SPEC,
+    base_chart_payload=STORED_CHART,
 )
 
 
@@ -113,6 +121,7 @@ def _empty_state_values() -> dict[str, object]:
         (ChartRef(state_version=1, spec=SPEC), "state_version", 2),
         (_populated_state(), "state_version", 2),
         (DELTA, "base_chart_spec", OTHER_SPEC),
+        (STORED_CHART, "payload_format", 2),
     ],
 )
 def test_contract_models_are_frozen(model: object, field: str, new_value: object) -> None:
@@ -243,28 +252,62 @@ def test_state_delta_fields_are_required() -> None:
     with pytest.raises(ValidationError, match="Field required"):
         StateDelta()
 
+    assert StateDelta.model_fields["base_chart_payload"].is_required()
+
+
+@pytest.mark.parametrize("size", (1, 1_048_576))
+def test_stored_chart_accepts_opaque_payload_at_size_boundaries(size: int) -> None:
+    chart = StoredChart(
+        payload_format=1,
+        calculation_key="key-1",
+        calculation_version="version-1",
+        payload=b"\x00" * size,
+    )
+
+    assert chart.payload == b"\x00" * size
+
+
+@pytest.mark.parametrize("size", (0, 1_048_577))
+def test_stored_chart_rejects_payload_outside_size_boundaries(size: int) -> None:
+    with pytest.raises(ValidationError, match="payload"):
+        StoredChart(
+            payload_format=1,
+            calculation_key="key-1",
+            calculation_version="version-1",
+            payload=b"x" * size,
+        )
+
 
 @pytest.mark.parametrize(
-    ("birth_input", "birth_resolved", "base_chart_spec"),
-    [
-        (BIRTH_INPUT, None, None),
-        (None, RESOLVED, None),
-        (None, None, SPEC),
-        (BIRTH_INPUT, RESOLVED, None),
-        (BIRTH_INPUT, None, SPEC),
-        (None, RESOLVED, SPEC),
-    ],
+    ("field", "value"),
+    (
+        ("payload_format", 0),
+        ("payload_format", -1),
+        ("payload_format", True),
+        ("calculation_key", ""),
+        ("calculation_version", ""),
+        ("payload", "not bytes"),
+    ),
 )
-def test_state_delta_rejects_partial_replacement(
-    birth_input: BirthInput | None,
-    birth_resolved: ResolvedBirthData | None,
-    base_chart_spec: NatalChartSpec | None,
-) -> None:
+def test_stored_chart_rejects_invalid_envelope(field: str, value: object) -> None:
+    with pytest.raises(ValidationError, match=field):
+        StoredChart.model_validate({**STORED_CHART.model_dump(), field: value})
+
+
+@pytest.mark.parametrize("present_mask", range(1, 15))
+def test_state_delta_rejects_partial_replacement(present_mask: int) -> None:
+    values = (BIRTH_INPUT, RESOLVED, SPEC, STORED_CHART)
+    selected = tuple(
+        value if present_mask & (1 << index) else None
+        for index, value in enumerate(values)
+    )
+
     with pytest.raises(ValidationError, match="all set or all None"):
         StateDelta(
-            birth_input=birth_input,
-            birth_resolved=birth_resolved,
-            base_chart_spec=base_chart_spec,
+            birth_input=selected[0],
+            birth_resolved=selected[1],
+            base_chart_spec=selected[2],
+            base_chart_payload=selected[3],
         )
 
 
@@ -273,6 +316,7 @@ def test_reset_delta_is_an_explicit_immutable_full_replacement() -> None:
         birth_input=None,
         birth_resolved=None,
         base_chart_spec=None,
+        base_chart_payload=None,
     )
     with pytest.raises(ValidationError, match="frozen"):
         RESET_DELTA.birth_input = BIRTH_INPUT
@@ -349,6 +393,7 @@ def test_apply_delta_replaces_content_and_increments_version_once() -> None:
         birth_input=OTHER_BIRTH_INPUT,
         birth_resolved=OTHER_RESOLVED,
         base_chart_spec=OTHER_SPEC,
+        base_chart_payload=STORED_CHART,
     )
 
     candidate = apply_delta(state, changed, now=NOW + timedelta(days=1))
@@ -445,11 +490,13 @@ def test_matches_intent_rejects_different_resolved_data_or_spec() -> None:
         birth_input=BIRTH_INPUT,
         birth_resolved=OTHER_RESOLVED,
         base_chart_spec=SPEC,
+        base_chart_payload=STORED_CHART,
     )
     different_spec = StateDelta(
         birth_input=BIRTH_INPUT,
         birth_resolved=RESOLVED,
         base_chart_spec=OTHER_SPEC,
+        base_chart_payload=STORED_CHART,
     )
 
     assert not matches_intent(actual, different_resolved)
@@ -462,9 +509,21 @@ def test_matches_intent_excludes_original_birth_input() -> None:
         birth_input=OTHER_BIRTH_INPUT,
         birth_resolved=RESOLVED,
         base_chart_spec=SPEC,
+        base_chart_payload=STORED_CHART,
     )
 
     assert matches_intent(actual, same_calculation_intent)
+
+
+def test_matches_intent_does_not_compare_stored_chart_bytes() -> None:
+    actual = apply_delta(new_session("session-1", now=NOW), DELTA, now=NOW)
+    different_payload = DELTA.model_copy(
+        update={
+            "base_chart_payload": STORED_CHART.model_copy(update={"payload": b"other-chart"})
+        }
+    )
+
+    assert matches_intent(actual, different_payload)
 
 
 def test_matches_intent_for_reset_delta_distinguishes_empty_and_populated_state() -> None:

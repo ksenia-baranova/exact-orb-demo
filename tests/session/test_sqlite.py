@@ -48,8 +48,16 @@ from exact_orb.session.outcomes import (
     VersionConflict,
 )
 from exact_orb.session.persistence import SessionSnapshot
-from exact_orb.session.state import HARD_TTL, SLIDING_TTL, ChartRef, SessionState, StateDelta
+from exact_orb.session.state import (
+    HARD_TTL,
+    SLIDING_TTL,
+    ChartRef,
+    SessionState,
+    StateDelta,
+    StoredChart,
+)
 from tests.session.conformance import (
+    CHART,
     DELTA,
     NOW,
     PersistenceFactory,
@@ -1706,11 +1714,13 @@ def _golden_models() -> tuple[
             birth_input=unknown_birth,
             birth_resolved=unknown_resolved,
             base_chart_spec=unknown_spec,
+            base_chart_payload=CHART,
         ),
         "golden-known": StateDelta(
             birth_input=known_birth,
             birth_resolved=known_resolved,
             base_chart_spec=known_spec,
+            base_chart_payload=CHART,
         ),
     }
     return states, dialog, deltas
@@ -1827,6 +1837,7 @@ async def test_frozen_payload_v1_is_read_through_public_ports(
             SessionSnapshot(
                 state=expected_states["golden-full"],
                 dialog=expected_dialog,
+                chart=CHART,
             ),
         )
         assert _fetchone(
@@ -1990,6 +2001,12 @@ async def test_full_models_round_trip_losslessly_across_independent_handles(
         birth_input=birth_input,
         birth_resolved=resolved,
         base_chart_spec=spec,
+        base_chart_payload=StoredChart(
+            payload_format=1,
+            calculation_key="round-trip-key",
+            calculation_version="round-trip-version",
+            payload=b"opaque-round-trip-chart",
+        ),
     )
     complete = DialogTurn(
         turn_id="complete-🌕",
@@ -2983,7 +3000,7 @@ from exact_orb.birth.types import BirthInput, ResolvedBirthData
 from exact_orb.calculation.spec import NatalChartSpec
 from exact_orb.session.adapters.sqlite import SqliteSessionPersistence
 from exact_orb.session.dialog import DialogTurn, Selection
-from exact_orb.session.state import StateDelta
+from exact_orb.session.state import StateDelta, StoredChart
 
 NOW = datetime(2026, 9, 5, 12, 0, 0, 123456, tzinfo=UTC)
 
@@ -3007,6 +3024,12 @@ async def main():
                 birth_time_domain=None,
             ),
             base_chart_spec=NatalChartSpec(chart_kind="natal"),
+            base_chart_payload=StoredChart(
+                payload_format=1,
+                calculation_key="restart-key",
+                calculation_version="restart-version",
+                payload=b"opaque-restart-chart",
+            ),
         )
         await persistence.sessions.compare_and_set("restart", 0, delta, now=NOW)
         turn = DialogTurn(

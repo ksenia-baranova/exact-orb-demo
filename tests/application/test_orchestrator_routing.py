@@ -32,6 +32,7 @@ from exact_orb.session.outcomes import Committed, SessionAbsent
 from exact_orb.session.persistence import SessionSnapshot
 from exact_orb.session.state import SessionState, StateDelta, new_session
 from tests.application.orchestrator_fakes import Call, RecordingContext, RecordingHandler
+from tests.fixtures.stored_chart import stored_chart_for
 from tests.fixtures.telemetry import RUN_ID, RUN_ID_B, STARTED_AT
 
 
@@ -75,7 +76,7 @@ def snapshot() -> SessionSnapshot:
         **new_session(SESSION_ID, now=STARTED_AT).model_dump(),
         "state_version": 7,
     })
-    return SessionSnapshot(state=state, dialog=())
+    return SessionSnapshot(state=state, dialog=(), chart=None)
 
 
 @pytest.fixture
@@ -373,10 +374,12 @@ async def test_known_command_completes_with_commit(
         place_id="moscow-ru",
     )
     command = BuildNatalCommand(birth_input=birth_input)
+    chart_artifact = artifact(spec=spec, resolved=resolved)
     outcome = BuildNatalSuccess(
-        artifact=artifact(spec=spec, resolved=resolved),
+        artifact=chart_artifact,
         delta=StateDelta(
             birth_input=birth_input, birth_resolved=resolved, base_chart_spec=spec,
+            base_chart_payload=stored_chart_for(chart_artifact),
         ),
     )
     handler = RecordingHandler(journal, result=outcome)

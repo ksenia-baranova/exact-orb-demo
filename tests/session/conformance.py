@@ -42,6 +42,7 @@ from exact_orb.session.state import (
     ChartRef,
     SessionState,
     StateDelta,
+    StoredChart,
 )
 from exact_orb.session.store import SessionStore
 
@@ -86,15 +87,29 @@ OTHER_RESOLVED = ResolvedBirthData(
 )
 SPEC = NatalChartSpec(chart_kind="natal")
 OTHER_SPEC = NatalChartSpec(chart_kind="cosmogram")
+CHART = StoredChart(
+    payload_format=1,
+    calculation_key="key-1",
+    calculation_version="version-1",
+    payload=b"opaque-chart-1",
+)
+OTHER_CHART = StoredChart(
+    payload_format=1,
+    calculation_key="key-2",
+    calculation_version="version-1",
+    payload=b"opaque-chart-2",
+)
 DELTA = StateDelta(
     birth_input=BIRTH_INPUT,
     birth_resolved=RESOLVED,
     base_chart_spec=SPEC,
+    base_chart_payload=CHART,
 )
 OTHER_DELTA = StateDelta(
     birth_input=OTHER_BIRTH_INPUT,
     birth_resolved=OTHER_RESOLVED,
     base_chart_spec=OTHER_SPEC,
+    base_chart_payload=OTHER_CHART,
 )
 SELECTION = Selection(topic="natal", focus="relationships")
 
@@ -1106,6 +1121,7 @@ class SessionPersistenceConformance:
                 birth_input=None,
                 birth_resolved=None,
                 base_chart_spec=None,
+                base_chart_payload=None,
             )
 
             assert await persistence.sessions.compare_and_set(

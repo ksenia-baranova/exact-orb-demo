@@ -33,6 +33,7 @@ from exact_orb.session.persistence import SessionSnapshot
 from exact_orb.session.state import SessionState, StateDelta, new_session
 from tests.application.orchestrator_fakes import Call, RecordingContext, RecordingHandler
 from tests.fixtures.calculation import artifact, chart_spec, resolved_birth_data
+from tests.fixtures.stored_chart import stored_chart_for
 from tests.fixtures.telemetry import RUN_ID_B, STARTED_AT
 
 
@@ -91,7 +92,7 @@ def _snapshot(version: int) -> SessionSnapshot:
         **new_session(SESSION_ID, now=STARTED_AT).model_dump(),
         "state_version": version,
     })
-    return SessionSnapshot(state=state, dialog=())
+    return SessionSnapshot(state=state, dialog=(), chart=None)
 
 
 def _orchestrator(context: RecordingContext, command: Command, handler: RecordingHandler) -> ApplicationOrchestrator:
@@ -336,9 +337,15 @@ async def test_save_uses_original_version_when_available_snapshot_changes(
         birth_date=local_birth.date(), birth_time=local_birth.time().replace(tzinfo=None), place_id="moscow-ru",
     )
     command = BuildNatalCommand(birth_input=birth_input)
+    chart_artifact = artifact(spec=spec, resolved=resolved)
     outcome = BuildNatalSuccess(
-        artifact=artifact(spec=spec, resolved=resolved),
-        delta=StateDelta(birth_input=birth_input, birth_resolved=resolved, base_chart_spec=spec),
+        artifact=chart_artifact,
+        delta=StateDelta(
+            birth_input=birth_input,
+            birth_resolved=resolved,
+            base_chart_spec=spec,
+            base_chart_payload=stored_chart_for(chart_artifact),
+        ),
     )
 
     class ReplacingHandler(RecordingHandler):

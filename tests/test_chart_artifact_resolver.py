@@ -8,6 +8,7 @@ from datetime import datetime, timedelta, timezone
 import gzip
 import json
 import logging
+import traceback
 from typing import Any
 from uuid import UUID
 
@@ -17,9 +18,9 @@ from exact_orb.birth.types import BirthTimeDomain, ResolvedBirthData, UtcMinuteR
 from exact_orb.calculation import artifacts as artifacts_module
 from exact_orb.calculation.artifacts import ChartArtifactResolver
 from exact_orb.calculation.chart_contract import calculation_input_from_chart
-from exact_orb.calculation.codec import encode_chart_artifact
+from exact_orb.calculation.codec import CHART_ARTIFACT_PAYLOAD_FORMAT, encode_chart_artifact
 from exact_orb.calculation.engine import CalculationResult
-from exact_orb.calculation.errors import ChartCalculationError
+from exact_orb.calculation.errors import ChartArtifactEncodingError, ChartCalculationError
 from exact_orb.calculation.keys import calculation_input_from, calculation_key
 from exact_orb.calculation.spec import NatalChartSpec
 from exact_orb.calculation.types import ArtifactNatalChart, ChartArtifact
@@ -59,6 +60,49 @@ def test_constructor_validates_version_and_initial_stats() -> None:
             version="",
             degraded_log_interval_s=60.0,
         )
+
+
+def test_to_stored_returns_cache_codec_bytes_without_cache_or_engine_calls() -> None:
+    cache = FakeCache()
+    engine = FakeEngine(_result())
+    resolver = _resolver(cache, engine)
+    artifact = _artifact()
+
+    first = resolver.to_stored(artifact)
+    second = resolver.to_stored(artifact)
+
+    assert first == second == (CHART_ARTIFACT_PAYLOAD_FORMAT, encode_chart_artifact(artifact))
+    assert cache.get_calls == []
+    assert cache.put_calls == []
+    assert engine.calls == 0
+
+
+def test_to_stored_encoding_failure_has_safe_type_and_formatted_traceback(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    cache = FakeCache()
+    engine = FakeEngine(_result())
+    resolver = _resolver(cache, engine)
+
+    def fail_encode(_artifact: ChartArtifact) -> bytes:
+        raise ValueError("input_value=secret-payload-prefix 55.7558")
+
+    monkeypatch.setattr(artifacts_module, "encode_chart_artifact", fail_encode)
+
+    with pytest.raises(ChartArtifactEncodingError) as exc_info:
+        resolver.to_stored(_artifact())
+
+    error = exc_info.value
+    formatted = "".join(traceback.format_exception(error))
+    assert error.code == "CHART_ARTIFACT_ENCODE_FAILED"
+    assert str(error) == error.code
+    assert error.__suppress_context__ is True
+    assert "input_value" not in formatted
+    assert "secret-payload-prefix" not in formatted
+    assert "55.7558" not in formatted
+    assert cache.get_calls == []
+    assert cache.put_calls == []
+    assert engine.calls == 0
 
 
 @pytest.mark.parametrize(

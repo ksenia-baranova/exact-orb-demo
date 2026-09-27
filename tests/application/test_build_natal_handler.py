@@ -223,7 +223,7 @@ async def test_empty_input_required_from_resolver_becomes_safe_application_failu
 
     session_id = "session-1"
     state = new_session(session_id, now=BASE_UTC)
-    snapshot = SessionSnapshot(state=state, dialog=())
+    snapshot = SessionSnapshot(state=state, dialog=(), chart=None)
     journal: list[Call] = []
     context = RecordingContext(journal, load_result=snapshot)
     artifacts = StubChartArtifactPort()

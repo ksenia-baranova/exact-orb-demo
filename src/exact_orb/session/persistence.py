@@ -3,24 +3,31 @@
 from __future__ import annotations
 
 from datetime import date, datetime
-from typing import Protocol, runtime_checkable
+from typing import Protocol, Self, runtime_checkable
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, model_validator
 
 from exact_orb.session.dialog import DialogStore, DialogTurn
 from exact_orb.session.outcomes import SessionAbsent, VersionConflict
-from exact_orb.session.state import SessionState
+from exact_orb.session.state import SessionState, StoredChart
 from exact_orb.session.store import SessionStore
 from exact_orb.birth.types import BirthTimeDomain
 
 
 class SessionSnapshot(BaseModel):
-    """State and dialog observed and touched in one aggregate operation."""
+    """Consistent state, dialog, and chart from one aggregate operation."""
 
-    model_config = ConfigDict(frozen=True)
+    model_config = ConfigDict(frozen=True, hide_input_in_errors=True)
 
     state: SessionState
     dialog: tuple[DialogTurn, ...]
+    chart: StoredChart | None
+
+    @model_validator(mode="after")
+    def _chart_matches_state(self) -> Self:
+        if (self.state.base_chart is None) != (self.chart is None):
+            raise ValueError("state.base_chart and chart must be present together")
+        return self
 
 
 @runtime_checkable
@@ -36,13 +43,13 @@ class UnknownTimeStateMigrator(Protocol):
 
 @runtime_checkable
 class SessionPersistence(Protocol):
-    """Aggregate exposing co-located state and dialog persistence facets.
+    """Aggregate exposing co-located state, dialog, and chart persistence.
 
     Implementations of ``reset`` delegate to
     ``sessions.compare_and_set(session_id, expected_state_version,
     RESET_DELTA, now=now)``. The facet CAS owns the atomic state transition,
-    dialog clear, and shared TTL update; aggregate adapters must not implement
-    a second reset algorithm.
+    dialog/chart clear, and shared TTL update; aggregate adapters must not
+    implement a second reset algorithm.
     """
 
     sessions: SessionStore
@@ -54,7 +61,7 @@ class SessionPersistence(Protocol):
         *,
         now: datetime,
     ) -> SessionSnapshot | SessionAbsent:
-        """Atomically load and touch live state plus its existing dialog."""
+        """Atomically renew live state TTL and load its dialog and chart."""
 
         ...
 
@@ -70,7 +77,7 @@ class SessionPersistence(Protocol):
         ...
 
     async def delete(self, session_id: str) -> None:
-        """Idempotently delete state and dialog in one atomic operation."""
+        """Idempotently delete state, dialog, and chart atomically."""
 
         ...
 

@@ -1,0 +1,19 @@
+{
+  "payload_format": 1,
+  "calculation_key": "eo:calc:v2:8919eab892bc556aa85ed5584e57a570c919bd49f7036648f5da5d1457e282a4",
+  "calculation_version": "test-version-1",
+  "spec": {
+    "technique": "natal",
+    "chart_kind": "natal",
+    "include": ["aspects", "configurations", "houses", "positions", "rulers", "strength"],
+    "house_system": "P",
+    "rulership": "combined",
+    "near_interception_threshold": 1.0
+  },
+  "calculation_input": {
+    "utc_datetime": "1990-09-02T10:30:45Z",
+    "latitude": 55.7558,
+    "longitude": 37.6173,
+    "birth_time_domain_digest": null
+  }
+}

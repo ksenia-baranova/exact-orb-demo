@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from datetime import UTC, datetime
+from datetime import UTC, date, datetime, time
 from inspect import Parameter, iscoroutinefunction, signature
 
 import pytest
@@ -10,6 +10,7 @@ from pydantic import ValidationError
 
 import exact_orb.session as session_contracts
 import exact_orb.session.outcomes as outcomes_module
+from exact_orb.birth.types import BirthInput
 from exact_orb.session.dialog import DialogStore, DialogTurn, Selection
 from exact_orb.session.errors import (
     ExpiredSessionTransitionError,
@@ -29,15 +30,43 @@ from exact_orb.session.outcomes import (
     VersionConflict,
 )
 from exact_orb.session.persistence import SessionPersistence, SessionSnapshot
-from exact_orb.session.state import RESET_DELTA, SessionState, new_session
+from exact_orb.session.state import (
+    RESET_DELTA,
+    SessionState,
+    StateDelta,
+    StoredChart,
+    apply_delta,
+    new_session,
+)
 from exact_orb.session.store import SessionStore
+from tests.fixtures.calculation import chart_spec, resolved_birth_data
 
 
 NOW = datetime(2026, 9, 5, 12, tzinfo=UTC)
+CHART = StoredChart(
+    payload_format=1,
+    calculation_key="key-1",
+    calculation_version="version-1",
+    payload=b"opaque-chart",
+)
 
 
 def _new_state() -> SessionState:
     return new_session("session-1", now=NOW)
+
+
+def _populated_state() -> SessionState:
+    delta = StateDelta(
+        birth_input=BirthInput(
+            birth_date=date(1990, 9, 2),
+            birth_time=time(13, 30),
+            place_id="moscow",
+        ),
+        birth_resolved=resolved_birth_data(),
+        base_chart_spec=chart_spec(),
+        base_chart_payload=CHART,
+    )
+    return apply_delta(_new_state(), delta, now=NOW)
 
 
 def _turn() -> DialogTurn:
@@ -100,11 +129,37 @@ def test_outcomes_are_frozen(outcome: object) -> None:
 
 
 def test_session_snapshot_is_frozen_and_uses_an_immutable_dialog_tuple() -> None:
-    snapshot = SessionSnapshot(state=_new_state(), dialog=(_turn(),))
+    snapshot = SessionSnapshot(state=_new_state(), dialog=(_turn(),), chart=None)
 
     assert isinstance(snapshot.dialog, tuple)
+    assert snapshot.chart is None
     with pytest.raises(ValidationError):
         snapshot.dialog = ()  # type: ignore[misc]
+
+
+def test_session_snapshot_requires_chart_field() -> None:
+    with pytest.raises(ValidationError, match="chart"):
+        SessionSnapshot(state=_new_state(), dialog=())
+
+    assert SessionSnapshot.model_fields["chart"].is_required()
+
+
+def test_session_snapshot_accepts_matching_populated_state_and_chart() -> None:
+    snapshot = SessionSnapshot(state=_populated_state(), dialog=(), chart=CHART)
+
+    assert snapshot.state.base_chart is not None
+    assert snapshot.chart is CHART
+
+
+@pytest.mark.parametrize(
+    ("state", "chart"),
+    ((_new_state(), CHART), (_populated_state(), None)),
+)
+def test_session_snapshot_rejects_one_sided_chart(
+    state: SessionState, chart: StoredChart | None,
+) -> None:
+    with pytest.raises(ValidationError, match="present together"):
+        SessionSnapshot(state=state, dialog=(), chart=chart)
 
 
 @pytest.mark.parametrize("reason", ["expired", "not_found"])
@@ -181,7 +236,7 @@ class _Persistence:
         self.dialogs = _Dialogs()
 
     async def touch(self, session_id: str, *, now: datetime):
-        return SessionSnapshot(state=new_session(session_id, now=now), dialog=())
+        return SessionSnapshot(state=new_session(session_id, now=now), dialog=(), chart=None)
 
     async def reset(
         self,
@@ -257,6 +312,7 @@ def test_snapshot_belongs_to_persistence_and_not_outcomes() -> None:
     assert SessionSnapshot.__module__ == "exact_orb.session.persistence"
     assert not hasattr(outcomes_module, "SessionSnapshot")
     assert session_contracts.SessionSnapshot is SessionSnapshot
+    assert session_contracts.StoredChart is StoredChart
 
 
 def test_session_package_exports_the_complete_public_contract() -> None:
@@ -285,6 +341,7 @@ def test_session_package_exports_the_complete_public_contract() -> None:
         "UnknownTimeStateMigrator",
         "StateCommitFailed",
         "StateDelta",
+        "StoredChart",
         "StateReadError",
         "StateReadFailed",
         "StateWriteError",

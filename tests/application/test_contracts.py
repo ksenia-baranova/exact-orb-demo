@@ -38,6 +38,7 @@ from tests.fixtures.calculation import (
     chart_spec,
     resolved_birth_data,
 )
+from tests.fixtures.stored_chart import stored_chart_for
 
 
 def _birth_input() -> BirthInput:
@@ -54,10 +55,12 @@ def _populated_delta(
     birth_input: BirthInput | None = None,
     resolved: ResolvedBirthData | None = None,
 ) -> StateDelta:
+    resolved = resolved_birth_data() if resolved is None else resolved
     return StateDelta(
         birth_input=_birth_input() if birth_input is None else birth_input,
-        birth_resolved=resolved_birth_data() if resolved is None else resolved,
+        birth_resolved=resolved,
         base_chart_spec=spec,
+        base_chart_payload=stored_chart_for(artifact(spec=spec, resolved=resolved)),
     )
 
 
@@ -374,6 +377,12 @@ def test_application_ports_are_not_runtime_checkable() -> None:
             ("self", "spec", "resolved", "run"),
             Parameter.empty,
         ),
+        (
+            ChartArtifactResolver.to_stored,
+            ChartArtifactPort.to_stored,
+            ("self", "artifact"),
+            Parameter.empty,
+        ),
     ],
 )
 def test_implemented_dependencies_match_port_signatures(
@@ -385,8 +394,7 @@ def test_implemented_dependencies_match_port_signatures(
     implementation_parameters = signature(implementation_method).parameters
     port_parameters = signature(port_method).parameters
 
-    assert iscoroutinefunction(implementation_method)
-    assert iscoroutinefunction(port_method)
+    assert iscoroutinefunction(implementation_method) is iscoroutinefunction(port_method)
     assert tuple(implementation_parameters) == parameter_names
     assert tuple(port_parameters) == parameter_names
 
@@ -395,7 +403,8 @@ def test_implemented_dependencies_match_port_signatures(
         assert implementation_parameter.kind is port_parameter.kind
         assert implementation_parameter.default == port_parameter.default
 
-    assert implementation_parameters["run"].kind is Parameter.KEYWORD_ONLY
-    assert implementation_parameters["run"].default is run_default
-    assert port_parameters["run"].default is run_default
+    if "run" in parameter_names:
+        assert implementation_parameters["run"].kind is Parameter.KEYWORD_ONLY
+        assert implementation_parameters["run"].default is run_default
+        assert port_parameters["run"].default is run_default
     assert get_type_hints(implementation_method) == get_type_hints(port_method)

@@ -14,6 +14,8 @@ from pydantic import ValidationError
 from exact_orb.birth.types import BirthTimeDomain, UtcMinuteRange
 from exact_orb.calculation.chart_contract import calculation_input_from_chart
 from exact_orb.calculation.codec import (
+    CHART_ARTIFACT_PAYLOAD_FORMAT,
+    SUPPORTED_CHART_ARTIFACT_PAYLOAD_FORMATS,
     ChartArtifactDecodeError,
     decode_chart_artifact,
     encode_chart_artifact,
@@ -284,6 +286,28 @@ def test_codec_round_trip_returns_equal_new_instance() -> None:
     assert decoded == artifact
     assert decoded is not artifact
     assert encode_chart_artifact(decode_chart_artifact(encoded)) == encoded
+
+
+def test_frozen_format_1_payload_decodes_with_expected_identity() -> None:
+    golden = REPO_ROOT / "tests" / "golden"
+    expected = json.loads((golden / "chart_artifact_format_1.json").read_text(encoding="utf-8"))
+    stored = (golden / "chart_artifact_format_1.bin").read_bytes()
+
+    decoded = decode_chart_artifact(stored)
+
+    assert CHART_ARTIFACT_PAYLOAD_FORMAT == expected["payload_format"]
+    assert CHART_ARTIFACT_PAYLOAD_FORMAT in SUPPORTED_CHART_ARTIFACT_PAYLOAD_FORMATS
+    assert decoded.calculation_key == expected["calculation_key"]
+    assert decoded.calculation_version == expected["calculation_version"]
+    assert decoded.spec.model_dump(mode="json") == expected["spec"]
+    assert calculation_input_from_chart(decoded.chart).model_dump(mode="json") == expected[
+        "calculation_input"
+    ]
+    assert decoded.calculation_key == calculation_key(
+        CalculationInput.model_validate(expected["calculation_input"]),
+        decoded.spec,
+        decoded.calculation_version,
+    )
 
 
 def test_mutating_decoded_nested_chart_does_not_affect_next_decode() -> None:

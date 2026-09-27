@@ -32,9 +32,14 @@ from exact_orb.run_context import RunContext
 
 from .cache import CalculationCache
 from .chart_contract import calculation_input_from_chart
-from .codec import ChartArtifactDecodeError, decode_chart_artifact, encode_chart_artifact
+from .codec import (
+    CHART_ARTIFACT_PAYLOAD_FORMAT,
+    ChartArtifactDecodeError,
+    decode_chart_artifact,
+    encode_chart_artifact,
+)
 from .engine import CalculationEnginePort
-from .errors import ChartCalculationError
+from .errors import ChartArtifactEncodingError, ChartCalculationError
 from .keys import KEY_PREFIX, CalculationInput, calculation_input_from, calculation_key
 from .spec import ChartSpec
 from .types import ChartArtifact
@@ -121,6 +126,14 @@ class ChartArtifactResolver:
         if total == 0:
             return None
         return self.hits / total
+
+    def to_stored(self, artifact: ChartArtifact) -> tuple[int, bytes]:
+        """Encode an artifact for session storage without storing it."""
+        try:
+            payload = encode_chart_artifact(artifact)
+        except Exception:
+            raise ChartArtifactEncodingError("CHART_ARTIFACT_ENCODE_FAILED") from None
+        return CHART_ARTIFACT_PAYLOAD_FORMAT, payload
 
     async def drain(self) -> None:
         """Wait for the single-flight leaders active when draining begins."""

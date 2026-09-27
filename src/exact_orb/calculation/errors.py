@@ -15,6 +15,7 @@ ChartCalculationErrorCode = Literal[
 CalculationUnavailableErrorCode = Literal[
     "EPHEMERIS_UNAVAILABLE",
 ]
+ChartArtifactEncodingErrorCode = Literal["CHART_ARTIFACT_ENCODE_FAILED"]
 
 
 class ArtifactError(Exception):
@@ -44,10 +45,22 @@ class CalculationUnavailableError(ArtifactError):
         super().__init__(code, run_id=run_id)
 
 
+class ChartArtifactEncodingError(Exception):
+    """Safe artifact encoding failure before session persistence."""
+
+    code: ChartArtifactEncodingErrorCode
+
+    def __init__(self, code: ChartArtifactEncodingErrorCode) -> None:
+        self.code = code
+        super().__init__(code)
+
+
 __all__ = [
     "ArtifactError",
     "CalculationUnavailableError",
     "CalculationUnavailableErrorCode",
+    "ChartArtifactEncodingError",
+    "ChartArtifactEncodingErrorCode",
     "ChartCalculationError",
     "ChartCalculationErrorCode",
 ]

@@ -50,6 +50,8 @@ class ChartArtifactPort(Protocol):
         run: RunContext,
     ) -> ChartArtifact: ...
 
+    def to_stored(self, artifact: ChartArtifact) -> tuple[int, bytes]: ...
+
 
 __all__ = [
     "BirthDataResolverPort",
