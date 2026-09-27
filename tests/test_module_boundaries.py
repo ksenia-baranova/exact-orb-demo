@@ -1512,6 +1512,54 @@ def test_application_results_declares_allowed_calculation_types_import() -> None
     ), "calculation.types намеренно разрешён application-границей"
 
 
+def test_application_session_view_has_only_pure_contract_direct_imports() -> None:
+    """Restore may decode bytes but must not coordinate or calculate a new chart."""
+
+    path = PACKAGE_ROOT / "application" / "session_view.py"
+    assert path.is_file(), "не найден application/session_view.py"
+    imports = _declared_imports(path)
+    assert {
+        "exact_orb.calculation.codec",
+        "exact_orb.calculation.keys",
+        "exact_orb.calculation.types",
+    } <= imports, "positive control: проекция должна проверять реальный артефакт"
+
+    # This module owns an I/O protocol too; only its snapshot value is allowed.
+    tree = ast.parse(path.read_text(encoding="utf-8"), str(path))
+    persistence_imports = [
+        node for node in ast.walk(tree)
+        if isinstance(node, ast.ImportFrom)
+        and node.module == "exact_orb.session.persistence"
+    ]
+    assert len(persistence_imports) == 1
+    assert [alias.name for alias in persistence_imports[0].names] == ["SessionSnapshot"]
+    assert not any(
+        isinstance(node, ast.Import)
+        and any(alias.name == "exact_orb.session.persistence" for alias in node.names)
+        for node in ast.walk(tree)
+    )
+
+    allowed = {
+        "exact_orb.birth.types",
+        "exact_orb.calculation.chart_contract",
+        "exact_orb.calculation.codec",
+        "exact_orb.calculation.keys",
+        "exact_orb.calculation.types",
+        "exact_orb.session.persistence",
+    }
+    violations = sorted({
+        imported
+        for imported in imports
+        if imported.startswith("exact_orb.")
+        and not any(_violates(imported, item) for item in allowed)
+    })
+    assert not violations, (
+        "application.session_view импортирует I/O, resolver, cache, engine, "
+        "adapter, transport или иной слой вне pure contracts: "
+        + ", ".join(violations)
+    )
+
+
 def test_calculation_cache_declares_no_artifact_payload_imports() -> None:
     """Opaque byte cache must not know the artifact payload format."""
 
