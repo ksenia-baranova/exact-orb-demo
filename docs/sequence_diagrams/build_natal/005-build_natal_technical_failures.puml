@@ -137,6 +137,20 @@ else Отказ расчётного ядра
     API --> FE : system error
     FE --> User : «не удалось рассчитать карту»
 
+else Отказ кодирования сохранённой карты (ADR-0040)
+
+    Handler -> Resolver : resolve(birth_input)
+    Resolver --> Handler : ResolvedBirthData
+    Handler -> Artifacts : ensure_chart(spec, resolved, run=run)
+    Artifacts --> Handler : ChartArtifact
+    Handler -> Artifacts : to_stored(artifact)
+    Artifacts -[#C62828]-> Handler : ошибка кодирования или payload > 1 МиБ
+    Handler -> Handler : ERROR build_natal_failed без payload
+    Handler -[#C62828]-> Orch : внутренняя ошибка до StateDelta/CAS
+    Orch --> API : ApplicationInternalFailure
+    API --> FE : technical error
+    FE --> User : «не удалось сохранить карту»
+
 end
 
 deactivate Handler
@@ -153,7 +167,7 @@ note over Handler, Orch
 end note
 
 note over Context, Store
-В обеих ветках commit не выполняется.
+Во всех ветках commit не выполняется.
 Ранее успешный SessionState
 остаётся неизменным.
 end note

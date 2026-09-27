@@ -1,0 +1,105 @@
+@startuml
+title exact-orb — две вкладки одной сессии: перестроение и позднее восстановление
+
+' Целевой сценарий M1-5.2 + последующий transport M1-6.
+' Вкладки не получают push-обновления; CAS использует серверный load команды.
+
+autonumber
+hide footbox
+skinparam shadowing false
+skinparam responseMessageBelowArrow true
+
+actor "Пользователь" as User
+boundary "Вкладка A" as A
+boundary "Вкладка B" as B
+boundary "API M1-6" as API
+control "application/session_view" as View
+control "ApplicationOrchestrator" as Orch
+control "BuildNatalHandler" as Handler
+control "BirthDataResolver" as Birth
+control "ChartArtifactResolver" as Artifacts
+control "ContextService" as Context
+database "SessionPersistence\nstate + session_charts" as Store
+
+note over A, Store
+Предыстория: одна живая cookie; подтверждённый CAS сохранил
+SessionState и StoredChart версии N. Обе вкладки обращаются к
+одному агрегату сессии.
+end note
+
+== Обе вкладки показывают N ==
+
+User -> A : открывает вкладку A
+A -> API : bootstrap(cookie)
+API -> Context : load(session_id)
+Context -> Store : touch(session_id, now)
+Store --> Context : SessionSnapshot(state_version=N, chart_N)
+Context --> API : SessionSnapshot
+API -> View : assemble(snapshot_N, current_version)
+View --> API : chart_ready(artifact_N, state_version=N)
+API --> A : представление версии N
+
+User -> B : открывает вкладку B с той же cookie
+B -> API : bootstrap(cookie)
+API -> Context : load(session_id)
+Context -> Store : touch(session_id, now)
+Store --> Context : SessionSnapshot(state_version=N, chart_N)
+Context --> API : SessionSnapshot
+API -> View : assemble(snapshot_N, current_version)
+View --> API : chart_ready(artifact_N, state_version=N)
+API --> B : представление версии N
+
+== B явно перестраивает карту ==
+
+User -> B : изменяет данные и нажимает «Построить»
+B -> API : BuildNatalCommand(new_birth_input)
+API -> Orch : execute(command, session_id, run_B)
+Orch -> Context : load(session_id)
+Context -> Store : touch(session_id, now)
+Store --> Context : SessionSnapshot(state_version=N, chart_N)
+Context --> Orch : SessionSnapshot
+Orch -> Handler : handle(command, state_N, run_B)
+Handler -> Birth : resolve(new_birth_input)
+Birth --> Handler : ResolvedBirthData_B
+Handler -> Artifacts : ensure_chart(spec_B, resolved_B, run_B)
+Artifacts --> Handler : ChartArtifact_B
+Handler -> Artifacts : to_stored(artifact_B)
+Artifacts --> Handler : payload_format_B, payload_B
+Handler --> Orch : BuildNatalSuccess(artifact_B, delta_B\nсо StoredChart_B)
+Orch -> Context : save(session_id, expected=N, delta_B)
+Context -> Store : compare_and_set(N, delta_B, now)
+Store -> Store : атомарно заменить state и chart;\nназначить state_version=N+1
+Store --> Context : N+1
+Context --> Orch : Committed(state_version=N+1)
+Orch --> API : ApplicationCommitted(artifact_B, N+1)
+API --> B : новая карта, state_version=N+1
+B --> User : показывает новую карту
+
+note over A, B
+Вкладка A по-прежнему локально показывает N.
+Изменение B не доставляется ей автоматически.
+end note
+
+== A обновляется позднее ==
+
+User -> A : обновляет страницу / явно загружает сессию
+A -> API : bootstrap(та же cookie)
+API -> Context : load(session_id)
+Context -> Store : touch(session_id, now)
+Store --> Context : SessionSnapshot(state_version=N+1, chart_B)
+Context --> API : SessionSnapshot
+API -> View : assemble(snapshot_N+1, current_version)
+View --> API : chart_ready(artifact_B, state_version=N+1)
+API --> A : карта B, state_version=N+1
+A --> User : показывает актуальную сохранённую карту
+
+note over A, Store
+Если A вместо refresh отправит новую BuildNatalCommand,
+Orchestrator сначала загрузит текущую серверную версию N+1.
+Старое отображаемое N не служит CAS-precondition;
+новый commit A может записать N+2 поверх результата B.
+Если два build одновременно загрузили N, исходы показаны
+в 005-compare-and-set и build_natal/006.
+end note
+
+@enduml

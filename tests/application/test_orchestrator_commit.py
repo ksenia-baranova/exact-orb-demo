@@ -45,6 +45,7 @@ from tests.application.orchestrator_fakes import (
     SaveOutcome,
 )
 from tests.fixtures.calculation import artifact, chart_spec, resolved_birth_data
+from tests.fixtures.stored_chart import stored_chart_for
 from tests.fixtures.telemetry import RUN_ID_B, STARTED_AT
 
 
@@ -114,7 +115,7 @@ def make_case(*, loaded_version: int, committed_version: int) -> CommitCase:
         **new_session(SESSION_ID, now=STARTED_AT).model_dump(),
         "state_version": loaded_version,
     })
-    snapshot = SessionSnapshot(state=state, dialog=())
+    snapshot = SessionSnapshot(state=state, dialog=(), chart=None)
     spec, fixture_birth = chart_spec(), resolved_birth_data()
     resolved = ResolvedBirthData.model_validate({
         **fixture_birth.model_dump(),
@@ -127,10 +128,12 @@ def make_case(*, loaded_version: int, committed_version: int) -> CommitCase:
         place_id="moscow-ru",
     )
     command = BuildNatalCommand(birth_input=birth_input)
+    chart_artifact = artifact(spec=spec, resolved=resolved)
     outcome = BuildNatalSuccess(
-        artifact=artifact(spec=spec, resolved=resolved),
+        artifact=chart_artifact,
         delta=StateDelta(
             birth_input=birth_input, birth_resolved=resolved, base_chart_spec=spec,
+            base_chart_payload=stored_chart_for(chart_artifact),
         ),
     )
     committed = Committed(state_version=committed_version)

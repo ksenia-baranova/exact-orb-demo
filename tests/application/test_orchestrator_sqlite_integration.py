@@ -23,6 +23,7 @@ from exact_orb.application.application_results import (
 from exact_orb.application.commands import BuildNatalCommand
 from exact_orb.application.composition import build_application_orchestrator
 from exact_orb.application.orchestrator import ApplicationOrchestrator
+from exact_orb.application.session_view import ChartReadySessionView, session_view
 from exact_orb.birth.types import BirthInput
 from exact_orb.run_context import RunContext
 from exact_orb.session.adapters.sqlite import SqliteSessionPersistence
@@ -362,6 +363,13 @@ async def test_same_intent_sqlite_cas_race_commits_once_and_reports_already_appl
         assert stored.base_chart is not None
         assert stored.base_chart.state_version == 1
         assert stored.base_chart.spec == committed[0].artifact.spec
+        snapshot = await pair.primary.touch(SESSION_ID, now=BASE_UTC)
+        assert isinstance(snapshot, SessionSnapshot)
+        assert snapshot.state == stored
+        assert snapshot.chart is not None
+        view = session_view(snapshot, pair.components.artifacts.version)
+        assert isinstance(view, ChartReadySessionView)
+        assert view.artifact == committed[0].artifact
         _assert_store_outcomes(pair, stored)
         _assert_lifecycle_per_run(caplog.records, runs, results)
 
@@ -409,5 +417,14 @@ async def test_different_intent_sqlite_cas_race_preserves_winner_and_reports_sup
         assert stored.base_chart is not None
         assert stored.base_chart.state_version == 1
         assert stored.base_chart.spec == committed[0].artifact.spec
+        snapshot = await pair.primary.touch(SESSION_ID, now=BASE_UTC)
+        assert isinstance(snapshot, SessionSnapshot)
+        assert snapshot.state == stored
+        assert snapshot.chart is not None
+        view = session_view(snapshot, pair.components.artifacts.version)
+        assert isinstance(view, ChartReadySessionView)
+        assert view.artifact == committed[0].artifact
+        assert snapshot.chart == (left_delta, right_delta)[winner].base_chart_payload
+        assert snapshot.chart != (left_delta, right_delta)[1 - winner].base_chart_payload
         _assert_store_outcomes(pair, stored)
         _assert_lifecycle_per_run(caplog.records, runs, results)

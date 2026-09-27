@@ -12,18 +12,26 @@ from typing import Any
 
 import pytest
 
-from exact_orb.application.application_results import ApplicationCommitted
+from exact_orb.application.application_results import (
+    ApplicationCommitted,
+    ApplicationInputRequired,
+)
 from exact_orb.application.bootstrap import (
     ApplicationRuntime,
     BootstrapSettings,
     build_application_runtime,
 )
 from exact_orb.application.commands import BuildNatalCommand
+from exact_orb.application.session_view import (
+    ChartReadySessionView,
+    EmptySessionView,
+    session_view,
+)
 from exact_orb.birth.places import LocalPlaceCatalog
 from exact_orb.birth.types import BirthInput
 from exact_orb.config import get_ephemeris_status, get_selena_method_name
 from exact_orb.engine.charts.natal import NatalChart
-from exact_orb.session.outcomes import SessionCreated
+from exact_orb.session.outcomes import Committed, SessionCreated
 from exact_orb.session.persistence import SessionSnapshot
 from tests.fixtures.calculation import RUN_ID_B, raw_chart, run_context
 
@@ -55,10 +63,10 @@ def _settings(tmp_path: Path, *, db_name: str) -> BootstrapSettings:
     )
 
 
-def _command() -> BuildNatalCommand:
+def _command(*, birth_date: date = date(1990, 9, 2)) -> BuildNatalCommand:
     return BuildNatalCommand(
         birth_input=BirthInput(
-            birth_date=date(1990, 9, 2),
+            birth_date=birth_date,
             birth_time=time(14, 30),
             place_id="524901",
         )
@@ -205,6 +213,12 @@ async def test_runtime_build_natal_miss_then_hit_commits_same_session(
                 f"application_message direction=receive run_id={run.run_id} "
                 "peer=ChartArtifactResolver operation=ensure_chart "
                 "message_type=ChartArtifact attempt=-",
+                f"application_message direction=send run_id={run.run_id} "
+                "peer=ChartArtifactResolver operation=to_stored "
+                "message_type=ToStoredRequest attempt=-",
+                f"application_message direction=receive run_id={run.run_id} "
+                "peer=ChartArtifactResolver operation=to_stored "
+                "message_type=StoredChartEncoding attempt=-",
             ]
             assert all(
                 caplog.records[index].levelno == logging.INFO
@@ -275,7 +289,9 @@ async def test_runtime_build_natal_miss_then_hit_commits_same_session(
             assert handler_exchanges[0][0] < handler_exchanges[1][0]
             assert handler_exchanges[1][0] < handler_exchanges[2][0]
             assert handler_exchanges[2][0] < handler_exchanges[3][0]
-            assert handler_exchanges[3][0] < handler_output_index
+            assert handler_exchanges[3][0] < handler_exchanges[4][0]
+            assert handler_exchanges[4][0] < handler_exchanges[5][0]
+            assert handler_exchanges[5][0] < handler_output_index
 
             context_records = [
                 (index, message) for index, message in enumerate(messages)
@@ -313,8 +329,165 @@ async def test_runtime_build_natal_miss_then_hit_commits_same_session(
         assert loaded.state.base_chart is not None
         assert loaded.state.base_chart.state_version == 2
         assert loaded.state.base_chart.spec == second.artifact.spec
+        assert loaded.chart is not None
+        assert loaded.chart.calculation_key == second.artifact.calculation_key
+        assert loaded.chart.calculation_version == second.artifact.calculation_version
+        assert session_view(loaded, runtime.calculation_version).artifact == second.artifact
     finally:
         await runtime.aclose()
+
+
+async def test_runtime_restart_restores_identical_chart_without_calculation(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    settings = _settings(tmp_path, db_name="return.sqlite3")
+    places = LocalPlaceCatalog.from_file(PLACES_PATH)
+    session_id = "runtime-return"
+    async with await build_application_runtime(
+        settings=settings, places=places, clock=_clock,
+    ) as first_runtime:
+        await _create_session(first_runtime, session_id)
+        built = await first_runtime.orchestrator.execute(
+            _command(), session_id=session_id, run=run_context(),
+        )
+        assert isinstance(built, ApplicationCommitted)
+        before = await first_runtime.context.load(session_id)
+        assert isinstance(before, SessionSnapshot)
+        assert before.chart is not None
+
+    async with await build_application_runtime(
+        settings=settings, places=places, clock=_clock,
+    ) as restored_runtime:
+        assert len(restored_runtime.artifacts.cache) == 0
+
+        async def unexpected_call(*args: object, **kwargs: object) -> None:
+            raise AssertionError("restore called a calculation component")
+
+        monkeypatch.setattr(restored_runtime.artifacts, "ensure_chart", unexpected_call)
+        monkeypatch.setattr(restored_runtime.artifacts.cache, "get", unexpected_call)
+        monkeypatch.setattr(restored_runtime.artifacts.engine, "calculate", unexpected_call)
+
+        snapshot = await restored_runtime.context.load(session_id)
+        assert isinstance(snapshot, SessionSnapshot)
+        assert snapshot.chart == before.chart
+        assert snapshot.state == before.state
+        view = session_view(snapshot, restored_runtime.calculation_version)
+        assert isinstance(view, ChartReadySessionView)
+        assert view.state_version == built.state_version
+        assert view.artifact == built.artifact
+        assert view.chart_stale is False
+
+        stale = session_view(snapshot, "different-calculation-version")
+        assert isinstance(stale, ChartReadySessionView)
+        assert stale.artifact == built.artifact
+        assert stale.chart_stale is True
+        assert snapshot.chart == before.chart
+        assert restored_runtime.artifacts.hits == 0
+        assert restored_runtime.artifacts.misses == 0
+
+
+async def test_empty_first_return_failed_build_and_reset_remain_empty(
+    tmp_path: Path,
+) -> None:
+    settings = _settings(tmp_path, db_name="empty-return.sqlite3")
+    places = LocalPlaceCatalog.from_file(PLACES_PATH)
+    session_id = "runtime-empty-return"
+    async with await build_application_runtime(
+        settings=settings, places=places, clock=_clock,
+    ) as runtime:
+        await _create_session(runtime, session_id)
+        initial = await runtime.context.load(session_id)
+        assert isinstance(initial, SessionSnapshot)
+        assert session_view(initial, runtime.calculation_version) == EmptySessionView(
+            state_version=0
+        )
+
+        invalid = BuildNatalCommand(
+            birth_input=BirthInput(
+                birth_date=date(1990, 9, 2),
+                birth_time=time(14, 30),
+                place_id="unknown-place",
+            )
+        )
+        failed = await runtime.orchestrator.execute(
+            invalid, session_id=session_id, run=run_context(),
+        )
+        assert isinstance(failed, ApplicationInputRequired)
+        after_failure = await runtime.context.load(session_id)
+        assert isinstance(after_failure, SessionSnapshot)
+        assert after_failure.state == initial.state
+        assert after_failure.chart is None
+
+    async with await build_application_runtime(
+        settings=settings, places=places, clock=_clock,
+    ) as runtime:
+        returned = await runtime.context.load(session_id)
+        assert isinstance(returned, SessionSnapshot)
+        assert session_view(returned, runtime.calculation_version) == EmptySessionView(
+            state_version=0
+        )
+        assert returned.state.birth_input is None
+
+        built = await runtime.orchestrator.execute(
+            _command(), session_id=session_id, run=run_context(RUN_ID_B),
+        )
+        assert isinstance(built, ApplicationCommitted)
+        reset = await runtime.context.reset_all(session_id, built.state_version)
+        assert isinstance(reset, Committed)
+        cleared = await runtime.context.load(session_id)
+        assert isinstance(cleared, SessionSnapshot)
+        assert cleared.chart is None
+        assert session_view(cleared, runtime.calculation_version) == EmptySessionView(
+            state_version=reset.state_version
+        )
+
+    async with await build_application_runtime(
+        settings=settings, places=places, clock=_clock,
+    ) as runtime:
+        returned = await runtime.context.load(session_id)
+        assert isinstance(returned, SessionSnapshot)
+        assert returned.state.birth_input is None
+        assert session_view(returned, runtime.calculation_version) == EmptySessionView(
+            state_version=reset.state_version
+        )
+
+
+async def test_second_tab_commit_appears_on_first_tabs_next_load(tmp_path: Path) -> None:
+    async with await build_application_runtime(
+        settings=_settings(tmp_path, db_name="two-tabs.sqlite3"),
+        places=LocalPlaceCatalog.from_file(PLACES_PATH),
+        clock=_clock,
+    ) as runtime:
+        session_id = "runtime-two-tabs"
+        await _create_session(runtime, session_id)
+        first = await runtime.orchestrator.execute(
+            _command(), session_id=session_id, run=run_context(),
+        )
+        assert isinstance(first, ApplicationCommitted)
+        tab_a = await runtime.context.load(session_id)
+        tab_b = await runtime.context.load(session_id)
+        assert isinstance(tab_a, SessionSnapshot)
+        assert isinstance(tab_b, SessionSnapshot)
+        assert tab_a == tab_b
+
+        second = await runtime.orchestrator.execute(
+            _command(birth_date=date(1990, 9, 3)),
+            session_id=session_id, run=run_context(RUN_ID_B),
+        )
+        assert isinstance(second, ApplicationCommitted)
+        assert second.state_version == first.state_version + 1
+        assert second.artifact != first.artifact
+        old_view = session_view(tab_a, runtime.calculation_version)
+        assert isinstance(old_view, ChartReadySessionView)
+        assert old_view.artifact == first.artifact
+
+        refreshed = await runtime.context.load(session_id)
+        assert isinstance(refreshed, SessionSnapshot)
+        current_view = session_view(refreshed, runtime.calculation_version)
+        assert isinstance(current_view, ChartReadySessionView)
+        assert current_view.state_version == second.state_version
+        assert current_view.artifact == second.artifact
 
 
 async def test_runtime_close_waits_for_cancelled_waiter_live_leader(

@@ -26,6 +26,10 @@ builder, `PlaceSearch`, `SqlitePlaceCatalog`, индексированные sea
 сквозная application-интеграция. HTTP/lifespan, UI и доставка артефакта
 остаются M1-6/M1-7/M1-12.
 
+Ревизия 2026-09-26: ADR-0040 меняет целевое восстановление уже построенной
+карты: она хранится в агрегате сессии как `StoredChart`. Реализация вынесена
+в отдельную ветку до M1-6; статус текущего кода приведён в §2.1.
+
 Документ описывает принятую архитектуру; наличие требования не означает
 наличия реализации. Текущая готовность приведена в §2.1. Подробные контракты
 задаются component requirements и действующими [ADR](decisions/README.md);
@@ -109,16 +113,16 @@ application-срез ограничен натальной картой и ко�
 
 ### 2.1 Текущая готовность
 
-Сверено повторно 2026-09-22. Подробные реестры application core и runtime
+Сверено повторно 2026-09-27. Подробные реестры application core и runtime
 composition — в [плане ApplicationOrchestrator](../project_management/implementation_plans/application_orchestrator_implementation_plan.md)
 и [плане bootstrap composition](../project_management/implementation_plans/bootstrap_composition_implementation_plan.md).
 
 | Область | Реализовано | Остаётся |
 |---|---|---|
 | Standalone CLI и ядро | natal, cosmogram, transit | развитие техник; CLI не является HTTP-приложением |
-| Build Natal | `BuildNatalCommand`, `BuildNatalHandler`, `BuildNatalOutcome`, `ApplicationOrchestrator`, внешний `ApplicationResult`, CAS commit/retry/cancellation, lifecycle logging, минимальная composition, process-local `ApplicationRuntime` и его сквозная приёмка | HTTP mapping, client monotonicity X1, admission X2 и deployment policy |
+| Build Natal | `BuildNatalCommand`, `BuildNatalHandler`, `BuildNatalOutcome`, `ApplicationOrchestrator`, внешний `ApplicationResult`, CAS commit/retry/cancellation, lifecycle logging, минимальная composition, process-local `ApplicationRuntime`, атомарное сохранение `StoredChart` и сквозная приёмка после рестарта | HTTP mapping, client monotonicity X1, admission X2 и deployment policy |
 | Резолв и артефакты | `PlaceSearch`, `PlaceCatalog`, JSONL test adapter, GeoNames SQLite builder, `SqlitePlaceCatalog`, индексированные search/lookup, lifecycle/startup validation, historical TZ, resolver, spec, key v2, version, engine, codec, InMemory cache, artifact resolver и сквозная catalog/application приёмка | HTTP/lifespan wiring M1-6, UI autocomplete M1-7 и доставка `places.sqlite` M1-12 |
-| Сессия | contracts, `ContextService`, InMemory и SQLite adapters, TTL/CAS, runtime-owned SQLite executor и one-shot reaper | подключение к HTTP/session lifecycle и периодическое расписание reaper |
+| Сессия | contracts, `ContextService`, InMemory и SQLite adapters, TTL/CAS, `StoredChart`, согласованный snapshot, чистая `session_view`, runtime-owned SQLite executor и one-shot reaper | подключение к HTTP/session lifecycle и периодическое расписание reaper |
 | Клиент и HTTP API | — | форма, renderer, middleware, JSON/SSE endpoints |
 | Agent Runtime | интерфейсы, реестры, синхронный `NatalTool`; `orchestration.Orchestrator` — каркас | interpretation handlers, целевой runtime, async Tool, общий путь через артефакты |
 | Интерпретация и допуск | contracts/каркас интерпретации, LLM Gateway transport | `InterpretationService`, recipes, cache, streaming, guards, capabilities, policy и admission |
@@ -233,10 +237,12 @@ read-only выпуском. `LocalPlaceCatalog` сохранён для тест
 (ADR-0007).
 
 **И-12. Кэш расчётов воспроизводим.**
-Запись можно удалить без потери пользовательского ввода: сессия сохраняет
-`ResolvedBirthData` и `ChartSpec`, а ключ строится из `CalculationInput`, spec
-и `CalculationVersion`. Для космограммы input включает digest домена времени.
-Изменение версии расчёта даёт новый ключ (ADR-0017, ADR-0032).
+Запись можно удалить без потери уже подтверждённой карты: агрегат сессии
+хранит `StoredChart`, а `ResolvedBirthData` и `ChartSpec` остаются для проверки
+и явного нового построения. Ключ строится из `CalculationInput`, spec и
+`CalculationVersion`; для космограммы input включает digest домена времени.
+Изменение версии расчёта даёт новый ключ для нового build, но само открытие
+сессии не пересчитывает прежнюю карту (ADR-0017, ADR-0032, ADR-0040).
 
 **И-13. Состояние меняется только явной типизированной командой.**
 Построение/изменение карты начинается со структурированного ввода формы;
@@ -299,14 +305,14 @@ pipeline — поток и резервацию бюджета. Это сост�
 блокирует startup, recipe без ссылок даёт предупреждение (ADR-0020).
 Наличие текущих классов реестров не означает готовности всей этой проверки.
 
-### И-12 — почему кэш, а не хранилище
+### И-12 — кэш расчётов и сохранённая карта
 
-Ключ является хэшем и сам не позволяет восстановить карту. В MVP сессия хранит
-`birth_resolved` и `base_chart.spec`; из них и текущей `CalculationVersion`
-можно повторить расчёт. `ChartSpec` описывает методику и состав результата,
-но не содержит дату и координаты рождения. При смене версии строится новый
-артефакт под новым ключом; старый числовой результат без прежнего окружения
-не обещается (ADR-0017).
+Ключ является хэшем и сам не позволяет восстановить карту. Реализованный агрегат
+сессии хранит `StoredChart` вместе с `birth_resolved` и `base_chart.spec`.
+Открытие живой сессии показывает сохранённый результат даже после рестарта
+процесса; при смене версии он получает `chart_stale`, а новый расчёт требует
+явного действия пользователя. `ChartSpec` описывает методику и состав
+результата, но не содержит дату и координаты рождения (ADR-0017, ADR-0040).
 
 Девятикомпонентный отпечаток учитывает код, расчётные профили, native backend
 и эфемериды. `ApplicationRuntime` вычисляет его при startup и передаёт в
@@ -413,8 +419,12 @@ hard_expires_at
 
 **Session Store** — состояние с TTL и compare-and-set. **Dialog Store** хранит
 ходы отдельно: append/clear не меняют `state_version`. Агрегат
-`SessionPersistence` владеет общими `touch`, `reset` и `delete`. Производных
-полей в MVP нет; сессия хранит только `base_chart` (ADR-0016).
+`SessionPersistence` владеет общими `touch`, `reset` и `delete`. По ADR-0040
+отдельная дочерняя `session_charts` хранит сериализованный `StoredChart` с тем
+же жизненным циклом; `SessionSnapshot` включает карту. Производных видов
+карт в MVP нет: единственная активная ссылка — `base_chart` (ADR-0016).
+Пользовательские сценарии и компонентный bootstrap для этой ветки
+описаны в [требованиях M1-5.2](session/stored-chart-session-behavior.md).
 
 Долговременного `Profile DB` нет.
 **Статус:** contracts, `ContextService`, InMemory и SQLite adapters реализованы.
@@ -518,8 +528,9 @@ startup-проверка согласованности реестров ещё 
 
 ### 4.9 Артефакты и кэши
 
-**ChartArtifactResolver** — `get → miss → calculate → put`. Не репозиторий:
-любой объект удаляем без потери пользовательских данных (И-12).
+**ChartArtifactResolver** — `get → miss → calculate → put`. Расчётный кэш не
+репозиторий: любой объект кэша удаляем без потери подтверждённой карты,
+хранящейся в сессии (И-12, ADR-0040).
 Cache hit проверяется на соответствие запросу; повреждённый payload приводит
 к пересчёту. Отказ кэша не блокирует доступный расчёт. Одновременные запросы
 одного ключа разделяют одну задачу расчёта в пределах resolver/event loop
@@ -719,8 +730,8 @@ SQLite и application producer wiring отложены; утверждение �
 | `CalculationResult` | Engine → ArtifactResolver | только `chart: NatalChart` |
 | `ChartArtifact` | ArtifactResolver → Handler | `calculation_key`, `spec`, `calculation_version`, artifact-safe `chart` |
 | `BuildNatalSuccess` / `BuildNatalOutcome` | Handler → Caller | успех: `artifact + delta`; union также включает `InputRequired`, `ResolutionUnavailable`, `CalculationFailed` |
-| `StateDelta` | Handler → будущий Orchestrator → ContextService | полная замена `birth_input`, `birth_resolved`, `base_chart_spec` либо all-None reset; expected version отдельно |
-| `SessionState` / `SessionSnapshot` | Session persistence → ContextService → Caller | состояние с TTL/CAS; snapshot объединяет state и отдельный dialog |
+| `StateDelta` | Handler → Orchestrator → ContextService | полная замена `birth_input`, `birth_resolved`, `base_chart_spec`, `base_chart_payload` либо all-None reset; expected version отдельно; четвёртое поле целевое по ADR-0040 |
+| `SessionState` / `SessionSnapshot` | Session persistence → ContextService → Caller | состояние с TTL/CAS; целевой snapshot объединяет state, dialog и StoredChart |
 | `ToolRequest` / `ToolResult` | Текущий Tool port | `tool_name + args`; результат: `tool_name`, `data`, `warnings`, `meta`; текущий вызов синхронный |
 | `PromptBundle` | Контракт подготовки промпта | `system`, `user`, `recipe_id`; модель существует, полный pipeline ещё не собран |
 | `ChartFeatures`, `ResearchRecord`, quality events | Producer → ResearchCorpus | закрытая проекция и отдельные append-only события без session/calculation IDs |

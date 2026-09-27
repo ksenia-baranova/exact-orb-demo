@@ -36,6 +36,7 @@ from exact_orb.session.state import (
     RESET_DELTA,
     SessionState,
     StateDelta,
+    StoredChart,
     apply_delta,
     is_expired,
     new_session,
@@ -107,6 +108,17 @@ CREATE INDEX IF NOT EXISTS idx_session_states_expires_at_us
 ON session_states(expires_at_us)
 """
 
+_CREATE_SESSION_CHARTS: Final = """
+CREATE TABLE session_charts (
+    session_id TEXT PRIMARY KEY
+        REFERENCES session_states(session_id) ON DELETE CASCADE,
+    payload_format INTEGER NOT NULL CHECK (payload_format >= 1),
+    calculation_key TEXT NOT NULL CHECK (length(calculation_key) > 0),
+    calculation_version TEXT NOT NULL CHECK (length(calculation_version) > 0),
+    payload BLOB NOT NULL CHECK (length(payload) BETWEEN 1 AND 1048576)
+)
+"""
+
 
 @dataclass(frozen=True, slots=True)
 class _Migration:
@@ -122,6 +134,10 @@ _SESSION_MIGRATIONS: tuple[_Migration, ...] = (
             _CREATE_SESSION_DIALOGS,
             _CREATE_SESSION_EXPIRY_INDEX,
         ),
+    ),
+    _Migration(
+        version=2,
+        statements=(_CREATE_SESSION_CHARTS, "DELETE FROM session_states"),
     ),
 )
 
@@ -696,6 +712,43 @@ def _select_dialog_row(
     )
 
 
+def _select_chart_row(
+    connection: sqlite3.Connection,
+    session_id: str,
+) -> tuple[Any, ...] | None:
+    return _fetch_one(
+        connection,
+        """
+        SELECT payload_format, calculation_key, calculation_version, payload
+        FROM session_charts
+        WHERE session_id = ?
+        """,
+        (session_id,),
+    )
+
+
+def _decode_chart_row(row: tuple[Any, ...]) -> StoredChart:
+    if len(row) != 4:
+        raise _AdapterFailure(_DATA_CORRUPT)
+    payload_format, calculation_key, calculation_version, payload = row
+    if (
+        type(payload_format) is not int
+        or type(calculation_key) is not str
+        or type(calculation_version) is not str
+        or type(payload) is not bytes
+    ):
+        raise _AdapterFailure(_DATA_CORRUPT)
+    try:
+        return StoredChart(
+            payload_format=payload_format,
+            calculation_key=calculation_key,
+            calculation_version=calculation_version,
+            payload=payload,
+        )
+    except ValidationError as exc:
+        raise _AdapterFailure(_DATA_CORRUPT) from exc
+
+
 def _guarded_update_state(
     connection: sqlite3.Connection,
     state: SessionState,
@@ -853,6 +906,35 @@ def _sync_compare_and_set(
             next_state,
             expected_state_version=actual.state_version,
         )
+        chart = delta.base_chart_payload
+        if chart is None:
+            _execute_no_result(
+                connection,
+                "DELETE FROM session_charts WHERE session_id = ?",
+                (session_id,),
+            )
+        else:
+            _execute_no_result(
+                connection,
+                """
+                INSERT INTO session_charts (
+                    session_id, payload_format, calculation_key,
+                    calculation_version, payload
+                ) VALUES (?, ?, ?, ?, ?)
+                ON CONFLICT(session_id) DO UPDATE SET
+                    payload_format = excluded.payload_format,
+                    calculation_key = excluded.calculation_key,
+                    calculation_version = excluded.calculation_version,
+                    payload = excluded.payload
+                """,
+                (
+                    session_id,
+                    chart.payload_format,
+                    chart.calculation_key,
+                    chart.calculation_version,
+                    chart.payload,
+                ),
+            )
         if delta == RESET_DELTA:
             _execute_no_result(
                 connection,
@@ -1008,7 +1090,13 @@ def _sync_touch(
 
         row = _select_dialog_row(connection, session_id)
         turns = () if row is None else _decode_dialog_row(row)
+        chart_row = _select_chart_row(connection, session_id)
+        chart = None if chart_row is None else _decode_chart_row(chart_row)
         next_state = touched(actual, now=now)
+        try:
+            snapshot = SessionSnapshot(state=next_state, dialog=turns, chart=chart)
+        except ValidationError as exc:
+            raise _AdapterFailure(_DATA_CORRUPT) from exc
         _guarded_update_state(
             connection,
             next_state,
@@ -1024,7 +1112,7 @@ def _sync_touch(
                 """,
                 (_datetime_to_micros(next_state.expires_at), session_id),
             )
-        return _TransactionResult(SessionSnapshot(state=next_state, dialog=turns))
+        return _TransactionResult(snapshot)
 
     return _run_immediate(
         backend,
@@ -1235,6 +1323,44 @@ def _validate_v1_schema(connection: sqlite3.Connection) -> None:
         raise _AdapterFailure(_SCHEMA_INCOMPATIBLE)
 
 
+def _validate_v2_schema(connection: sqlite3.Connection) -> None:
+    expected_charts = (
+        ("session_id", "TEXT", 0, 1),
+        ("payload_format", "INTEGER", 1, 0),
+        ("calculation_key", "TEXT", 1, 0),
+        ("calculation_version", "TEXT", 1, 0),
+        ("payload", "BLOB", 1, 0),
+    )
+    if _table_shape(connection, "session_charts") != expected_charts:
+        raise _AdapterFailure(_SCHEMA_INCOMPATIBLE)
+
+    charts_sql = _normalized_schema_sql(
+        _schema_sql(connection, object_type="table", name="session_charts")
+    )
+    for required in (
+        "check(payload_format>=1)",
+        "check(length(calculation_key)>0)",
+        "check(length(calculation_version)>0)",
+        "check(length(payload)between1and1048576)",
+    ):
+        if required not in charts_sql:
+            raise _AdapterFailure(_SCHEMA_INCOMPATIBLE)
+
+    foreign_keys = _fetch_all(connection, "PRAGMA foreign_key_list(session_charts)")
+    expected_foreign_key = (
+        "session_states",
+        "session_id",
+        "session_id",
+        "NO ACTION",
+        "CASCADE",
+    )
+    if len(foreign_keys) != 1 or len(foreign_keys[0]) < 7:
+        raise _AdapterFailure(_SCHEMA_INCOMPATIBLE)
+    foreign_key = foreign_keys[0]
+    if tuple(foreign_key[2:7]) != expected_foreign_key:
+        raise _AdapterFailure(_SCHEMA_INCOMPATIBLE)
+
+
 def _known_migration_versions() -> list[int]:
     versions = [migration.version for migration in _SESSION_MIGRATIONS]
     if versions != list(range(1, len(versions) + 1)):
@@ -1266,18 +1392,26 @@ def _apply_migrations(connection: sqlite3.Connection) -> None:
     if observed_versions != known_versions[: len(observed_versions)]:
         raise _AdapterFailure(_SCHEMA_INCOMPATIBLE)
 
-    # Owned objects without their ledger entry cannot be adopted safely. This
-    # also keeps a pre-existing incompatible table from being misreported as a
-    # failure of the known v1 migration that merely encountered it.
+    # Owned objects without their ledger entry cannot be adopted safely.
     if not observed_versions and any(
         _schema_object_exists(connection, object_type=object_type, name=name)
         for object_type, name in (
             ("table", "session_states"),
             ("table", "session_dialogs"),
             ("index", "idx_session_states_expires_at_us"),
+            ("table", "session_charts"),
         )
     ):
         raise _AdapterFailure(_SCHEMA_INCOMPATIBLE)
+    if len(observed_versions) < 2 and _schema_object_exists(
+        connection, object_type="table", name="session_charts"
+    ):
+        raise _AdapterFailure(_SCHEMA_INCOMPATIBLE)
+
+    if observed_versions:
+        _validate_v1_schema(connection)
+    if len(observed_versions) >= 2:
+        _validate_v2_schema(connection)
 
     for migration in _SESSION_MIGRATIONS[len(observed_versions) :]:
         for statement in migration.statements:
@@ -1295,6 +1429,8 @@ def _apply_migrations(connection: sqlite3.Connection) -> None:
 
     if 1 in known_versions:
         _validate_v1_schema(connection)
+    if 2 in known_versions:
+        _validate_v2_schema(connection)
 
 
 def _sync_initialize(backend: _SqliteBackend) -> None:

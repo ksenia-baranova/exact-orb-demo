@@ -12,6 +12,8 @@ from .types import ChartArtifact
 
 
 ChartArtifactDecodeReason = Literal["gzip", "utf8", "validation"]
+CHART_ARTIFACT_PAYLOAD_FORMAT = 1
+SUPPORTED_CHART_ARTIFACT_PAYLOAD_FORMATS = frozenset({CHART_ARTIFACT_PAYLOAD_FORMAT})
 
 
 class ChartArtifactDecodeError(ValueError):
@@ -48,6 +50,8 @@ def decode_chart_artifact(payload: bytes) -> ChartArtifact:
 
 
 __all__ = [
+    "CHART_ARTIFACT_PAYLOAD_FORMAT",
+    "SUPPORTED_CHART_ARTIFACT_PAYLOAD_FORMATS",
     "ChartArtifactDecodeError",
     "ChartArtifactDecodeReason",
     "decode_chart_artifact",

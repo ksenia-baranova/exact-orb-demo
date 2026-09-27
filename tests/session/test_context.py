@@ -43,6 +43,7 @@ from exact_orb.session.state import (
 from exact_orb.session.store import SessionStore
 from tests.session.conformance import (
     BIRTH_INPUT,
+    CHART,
     DELTA,
     NOW,
     OTHER_BIRTH_INPUT,
@@ -373,7 +374,7 @@ async def test_context_load_debug_output_contains_complete_snapshot(
 ) -> None:
     caplog.set_level(logging.DEBUG, logger="exact_orb.session.context")
     service, _, _, script = _service()
-    snapshot = SessionSnapshot(state=_populated_state(), dialog=(make_turn(),))
+    snapshot = SessionSnapshot(state=_populated_state(), dialog=(make_turn(),), chart=CHART)
     script.expect("persistence.touch", snapshot)
 
     assert await service.load("session-1") is snapshot
@@ -385,7 +386,41 @@ async def test_context_load_debug_output_contains_complete_snapshot(
     ]
     assert len(outputs) == 1
     assert "message_type=SessionSnapshot" in outputs[0]
-    assert json.loads(outputs[0].split(" message=", 1)[1]) == snapshot.model_dump(mode="json")
+    projection = json.loads(outputs[0].split(" message=", 1)[1])
+    assert projection["state"] == snapshot.state.model_dump(mode="json")
+    assert projection["dialog"] == [turn.model_dump(mode="json") for turn in snapshot.dialog]
+    assert projection["chart"] == {
+        "payload_format": CHART.payload_format,
+        "calculation_key": CHART.calculation_key,
+        "calculation_version": CHART.calculation_version,
+        "payload_size": len(CHART.payload),
+    }
+    assert CHART.payload.decode("ascii") not in outputs[0]
+
+
+async def test_context_save_debug_input_redacts_stored_chart(
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    caplog.set_level(logging.DEBUG, logger="exact_orb.session.context")
+    service, _, _, script = _service()
+    script.expect("sessions.compare_and_set", 1)
+
+    assert await service.save("session-1", 0, DELTA) == Committed(state_version=1)
+
+    inputs = [
+        record.getMessage() for record in caplog.records
+        if record.name == "exact_orb.session.context"
+        and "direction=in operation=context_save " in record.getMessage()
+    ]
+    assert len(inputs) == 1
+    projection = json.loads(inputs[0].split(" message=", 1)[1])
+    assert projection["delta"]["base_chart_payload"] == {
+        "payload_format": CHART.payload_format,
+        "calculation_key": CHART.calculation_key,
+        "calculation_version": CHART.calculation_version,
+        "payload_size": len(CHART.payload),
+    }
+    assert CHART.payload.decode("ascii") not in inputs[0]
 
 
 async def test_context_info_does_not_serialize_debug_payload(
@@ -510,7 +545,7 @@ async def test_all_mutating_operations_map_any_persistence_error_to_commit_faile
 
 async def test_load_returns_snapshot_by_identity_without_facet_reads() -> None:
     service, _, _, script = _service()
-    snapshot = SessionSnapshot(state=_empty_state(), dialog=())
+    snapshot = SessionSnapshot(state=_empty_state(), dialog=(), chart=None)
     script.expect("persistence.touch", snapshot)
 
     result = await service.load("session-1")
@@ -545,7 +580,7 @@ async def test_load_maps_any_persistence_error_to_read_failed(
 
 async def test_failed_touch_never_returns_a_previous_snapshot() -> None:
     service, _, _, script = _service()
-    previous = SessionSnapshot(state=_empty_state(), dialog=())
+    previous = SessionSnapshot(state=_empty_state(), dialog=(), chart=None)
     script.expect(
         "persistence.touch",
         previous,
@@ -603,6 +638,7 @@ async def test_save_ignores_birth_input_spelling_when_matching_intent() -> None:
         birth_input=OTHER_BIRTH_INPUT,
         birth_resolved=RESOLVED,
         base_chart_spec=SPEC,
+        base_chart_payload=CHART,
     )
     service, _, _, script = _service()
     actual = _populated_state(equivalent)

@@ -1,0 +1,33 @@
+{
+  "payload_format": 1,
+  "calculation_key": "eo:calc:v2:4c52e4cba142fe93852fa1498d9e770e85c94ca5d4466f551f214ccb870afcf7",
+  "calculation_version": "baseline-version",
+  "spec": {
+    "technique": "natal",
+    "chart_kind": "cosmogram",
+    "include": [
+      "aspects",
+      "configurations",
+      "positions"
+    ],
+    "house_system": "P",
+    "rulership": "combined",
+    "near_interception_threshold": 1.0
+  },
+  "calculation_input": {
+    "utc_datetime": "1985-09-02T08:00:00Z",
+    "latitude": 55.7522,
+    "longitude": 37.6155,
+    "birth_time_domain_digest": "127b8bfc81b5af8bd2c70ee760ed576ab9fa6bed9beecc8e8755f075a6122156"
+  },
+  "source": {
+    "birth_date_local": "1985-09-02",
+    "birth_time_local": null,
+    "place": "Москва",
+    "tz_id": "Europe/Moscow",
+    "latitude": 55.7522,
+    "longitude": 37.6155,
+    "reference": "natal_1985_human.txt"
+  },
+  "payload_sha256": "2f96788d83b24493eac009f54d94d1d227f54b3a6d7ebcf4ebfcfd870c8cc201"
+}

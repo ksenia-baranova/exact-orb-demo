@@ -33,6 +33,7 @@ from exact_orb.session.adapters.sqlite import (
     SqliteSessionPersistence,
     SqliteSessionStore,
 )
+from exact_orb.session.context import ContextService
 from exact_orb.session.dialog import (
     MAX_DIALOG_CHARS,
     MAX_DIALOG_TURN_CHARS,
@@ -42,16 +43,27 @@ from exact_orb.session.dialog import (
 )
 from exact_orb.session.errors import StateReadError, StateWriteError
 from exact_orb.session.outcomes import (
+    AlreadyApplied,
     SessionAbsent,
     SessionCreated,
     SessionIdConflict,
+    StateReadFailed,
     VersionConflict,
 )
 from exact_orb.session.persistence import SessionSnapshot
-from exact_orb.session.state import HARD_TTL, SLIDING_TTL, ChartRef, SessionState, StateDelta
+from exact_orb.session.state import (
+    HARD_TTL,
+    SLIDING_TTL,
+    ChartRef,
+    SessionState,
+    StateDelta,
+    StoredChart,
+)
 from tests.session.conformance import (
+    CHART,
     DELTA,
     NOW,
+    OTHER_CHART,
     PersistenceFactory,
     PersistenceHandles,
     SessionPersistenceConformance,
@@ -114,6 +126,38 @@ def _execute(path: Path, statement: str, parameters: tuple[object, ...] = ()) ->
     try:
         connection.execute("BEGIN IMMEDIATE")
         connection.execute(statement, parameters)
+        connection.commit()
+    finally:
+        connection.close()
+
+
+def _prepare_v1_database(path: Path) -> None:
+    connection = _connect(path)
+    try:
+        connection.execute("BEGIN IMMEDIATE")
+        connection.execute(sqlite_adapter._CREATE_SCHEMA_MIGRATIONS)
+        for statement in sqlite_adapter._SESSION_MIGRATIONS[0].statements:
+            connection.execute(statement)
+        connection.execute(
+            "INSERT INTO schema_migrations(component, version) VALUES ('session', 1)"
+        )
+        connection.execute(
+            """INSERT INTO session_states
+            (session_id, state_version, created_at_us, expires_at_us,
+             hard_expires_at_us, payload_version, state_json)
+            VALUES ('legacy', 0, 0, 1, 2, 2, '{}')"""
+        )
+        connection.execute(
+            """INSERT INTO session_dialogs
+            (session_id, expires_at_us, payload_version, turns_json)
+            VALUES ('legacy', 1, 1, '[]')"""
+        )
+        connection.execute("CREATE TABLE foreign_records(value TEXT NOT NULL)")
+        connection.execute("INSERT INTO foreign_records(value) VALUES ('preserved')")
+        connection.execute(
+            "INSERT INTO schema_migrations(component, version) "
+            "VALUES ('research-corpus', 41)"
+        )
         connection.commit()
     finally:
         connection.close()
@@ -404,17 +448,18 @@ async def test_zero_busy_timeout_is_supported(tmp_path: Path) -> None:
         executor.shutdown(wait=True)
 
 
-async def test_schema_v1_ledger_columns_constraints_and_indexes(tmp_path: Path) -> None:
+async def test_schema_v2_ledger_columns_constraints_and_indexes(tmp_path: Path) -> None:
     path = tmp_path / "schema.sqlite3"
     async with _opened(path):
         ledger = _fetchall(
             path,
             "SELECT component, version FROM schema_migrations ORDER BY component, version",
         )
-        assert ledger == [("session", 1)]
+        assert ledger == [("session", 1), ("session", 2)]
 
         state_columns = _fetchall(path, "PRAGMA table_info(session_states)")
         dialog_columns = _fetchall(path, "PRAGMA table_info(session_dialogs)")
+        chart_columns = _fetchall(path, "PRAGMA table_info(session_charts)")
         ledger_columns = _fetchall(path, "PRAGMA table_info(schema_migrations)")
         assert [(row[1], row[2].upper(), row[3], row[5]) for row in ledger_columns] == [
             ("component", "TEXT", 0, 1),
@@ -435,12 +480,24 @@ async def test_schema_v1_ledger_columns_constraints_and_indexes(tmp_path: Path) 
             ("payload_version", "INTEGER", 1, 0),
             ("turns_json", "TEXT", 1, 0),
         ]
+        assert [(row[1], row[2].upper(), row[3], row[5]) for row in chart_columns] == [
+            ("session_id", "TEXT", 0, 1),
+            ("payload_format", "INTEGER", 1, 0),
+            ("calculation_key", "TEXT", 1, 0),
+            ("calculation_version", "TEXT", 1, 0),
+            ("payload", "BLOB", 1, 0),
+        ]
 
         foreign_keys = _fetchall(path, "PRAGMA foreign_key_list(session_dialogs)")
         assert len(foreign_keys) == 1
         assert foreign_keys[0][2] == "session_states"
         assert foreign_keys[0][3:5] == ("session_id", "session_id")
         assert foreign_keys[0][6].upper() == "CASCADE"
+        chart_foreign_keys = _fetchall(path, "PRAGMA foreign_key_list(session_charts)")
+        assert len(chart_foreign_keys) == 1
+        assert chart_foreign_keys[0][2:7] == (
+            "session_states", "session_id", "session_id", "NO ACTION", "CASCADE"
+        )
 
         state_indexes = _fetchall(path, "PRAGMA index_list(session_states)")
         dialog_indexes = _fetchall(path, "PRAGMA index_list(session_dialogs)")
@@ -456,6 +513,186 @@ async def test_schema_v1_ledger_columns_constraints_and_indexes(tmp_path: Path) 
         }
         assert state_index_columns == {("expires_at_us",)}
         assert ("expires_at_us",) not in dialog_index_columns
+        assert all(index[3] == "pk" for index in _fetchall(path, "PRAGMA index_list(session_charts)"))
+
+
+async def test_v1_to_v2_clears_legacy_sessions_and_preserves_foreign_component(
+    tmp_path: Path,
+) -> None:
+    path = tmp_path / "v1-to-v2.sqlite3"
+    _prepare_v1_database(path)
+
+    async with _opened(path) as (primary, _):
+        assert _fetchall(path, "SELECT session_id FROM session_states") == []
+        assert _fetchall(path, "SELECT session_id FROM session_dialogs") == []
+        assert _fetchall(path, "SELECT session_id FROM session_charts") == []
+        assert _fetchall(
+            path,
+            "SELECT component, version FROM schema_migrations ORDER BY component, version",
+        ) == [("research-corpus", 41), ("session", 1), ("session", 2)]
+        assert _fetchall(path, "SELECT value FROM foreign_records") == [("preserved",)]
+        assert isinstance(await primary.sessions.create("new", now=NOW), SessionCreated)
+
+
+async def test_v2_migration_failure_after_delete_rolls_back_every_change(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    path = tmp_path / "v2-rollback.sqlite3"
+    _prepare_v1_database(path)
+    executor = ThreadPoolExecutor(max_workers=SQLITE_TEST_EXECUTOR_WORKERS)
+    try:
+        v2 = sqlite_adapter._SESSION_MIGRATIONS[1]
+        broken_v2 = sqlite_adapter._Migration(
+            version=2,
+            statements=(*v2.statements, "THIS IS NOT SQL"),
+        )
+        with monkeypatch.context() as patcher:
+            patcher.setattr(
+                sqlite_adapter,
+                "_SESSION_MIGRATIONS",
+                (sqlite_adapter._SESSION_MIGRATIONS[0], broken_v2),
+            )
+            with pytest.raises(StateWriteError) as caught:
+                await SqliteSessionPersistence.open(path, executor=executor)
+            assert caught.value.error_code == MIGRATION_FAILED
+
+        assert _fetchall(path, "SELECT session_id FROM session_states") == [("legacy",)]
+        assert _fetchall(path, "SELECT session_id FROM session_dialogs") == [("legacy",)]
+        assert _fetchall(
+            path,
+            "SELECT name FROM sqlite_schema WHERE type = 'table' AND name = 'session_charts'",
+        ) == []
+        assert _fetchall(
+            path,
+            "SELECT component, version FROM schema_migrations ORDER BY component, version",
+        ) == [("research-corpus", 41), ("session", 1)]
+        assert _fetchall(path, "SELECT value FROM foreign_records") == [("preserved",)]
+
+        await SqliteSessionPersistence.open(path, executor=executor)
+        assert _fetchall(path, "SELECT session_id FROM session_states") == []
+        assert _fetchall(path, "SELECT session_id FROM session_dialogs") == []
+    finally:
+        executor.shutdown(wait=True)
+
+
+async def test_v1_schema_drift_blocks_destructive_migration(tmp_path: Path) -> None:
+    path = tmp_path / "v1-drift.sqlite3"
+    _prepare_v1_database(path)
+    _execute(path, "ALTER TABLE session_states ADD COLUMN unexpected INTEGER")
+    executor = ThreadPoolExecutor(max_workers=SQLITE_TEST_EXECUTOR_WORKERS)
+    try:
+        with pytest.raises(StateWriteError) as caught:
+            await SqliteSessionPersistence.open(path, executor=executor)
+        assert caught.value.error_code == SCHEMA_INCOMPATIBLE
+        assert _fetchall(path, "SELECT session_id FROM session_states") == [("legacy",)]
+        assert _fetchall(path, "SELECT session_id FROM session_dialogs") == [("legacy",)]
+        assert _fetchall(
+            path,
+            "SELECT name FROM sqlite_schema WHERE type = 'table' AND name = 'session_charts'",
+        ) == []
+        assert _fetchall(
+            path,
+            "SELECT version FROM schema_migrations WHERE component = 'session'",
+        ) == [(1,)]
+    finally:
+        executor.shutdown(wait=True)
+
+
+@pytest.mark.parametrize(
+    ("changed", "replacement"),
+    [
+        ("payload BLOB", "payload TEXT"),
+        ("calculation_key TEXT NOT NULL", "calculation_key TEXT"),
+        ("session_id TEXT PRIMARY KEY", "session_id TEXT"),
+        ("CHECK (payload_format >= 1)", ""),
+        ("CHECK (length(calculation_key) > 0)", ""),
+        ("CHECK (length(calculation_version) > 0)", ""),
+        ("CHECK (length(payload) BETWEEN 1 AND 1048576)", ""),
+        ("ON DELETE CASCADE", "ON DELETE RESTRICT"),
+    ],
+)
+async def test_v2_schema_drift_is_rejected_before_serving(
+    tmp_path: Path,
+    changed: str,
+    replacement: str,
+) -> None:
+    path = tmp_path / "v2-drift.sqlite3"
+    executor = ThreadPoolExecutor(max_workers=SQLITE_TEST_EXECUTOR_WORKERS)
+    try:
+        await SqliteSessionPersistence.open(path, executor=executor)
+        original = sqlite_adapter._CREATE_SESSION_CHARTS
+        assert changed in original
+        connection = _connect(path)
+        try:
+            connection.execute("BEGIN IMMEDIATE")
+            connection.execute("DROP TABLE session_charts")
+            connection.execute(original.replace(changed, replacement))
+            connection.commit()
+        finally:
+            connection.close()
+
+        with pytest.raises(StateWriteError) as caught:
+            await SqliteSessionPersistence.open(path, executor=executor)
+        assert caught.value.error_code == SCHEMA_INCOMPATIBLE
+    finally:
+        executor.shutdown(wait=True)
+
+
+@pytest.mark.parametrize("orphan", ["table", "ledger"])
+async def test_v2_table_and_ledger_must_match(tmp_path: Path, orphan: str) -> None:
+    path = tmp_path / f"v2-{orphan}-orphan.sqlite3"
+    executor = ThreadPoolExecutor(max_workers=SQLITE_TEST_EXECUTOR_WORKERS)
+    try:
+        if orphan == "table":
+            _prepare_v1_database(path)
+            _execute(path, sqlite_adapter._CREATE_SESSION_CHARTS)
+        else:
+            await SqliteSessionPersistence.open(path, executor=executor)
+            _execute(path, "DROP TABLE session_charts")
+
+        with pytest.raises(StateWriteError) as caught:
+            await SqliteSessionPersistence.open(path, executor=executor)
+        assert caught.value.error_code == SCHEMA_INCOMPATIBLE
+        if orphan == "table":
+            assert _fetchall(path, "SELECT session_id FROM session_states") == [("legacy",)]
+            assert _fetchall(
+                path,
+                "SELECT version FROM schema_migrations WHERE component = 'session'",
+            ) == [(1,)]
+    finally:
+        executor.shutdown(wait=True)
+
+
+async def test_chart_table_enforces_payload_and_parent_constraints(tmp_path: Path) -> None:
+    path = tmp_path / "chart-constraints.sqlite3"
+    async with _opened(path) as (primary, _):
+        assert isinstance(await primary.sessions.create("parent", now=NOW), SessionCreated)
+        assert isinstance(await primary.sessions.create("other", now=NOW), SessionCreated)
+        connection = _connect(path)
+        try:
+            statement = """INSERT INTO session_charts
+                (session_id, payload_format, calculation_key, calculation_version, payload)
+                VALUES (?, ?, ?, ?, ?)"""
+            connection.execute(statement, ("parent", 99, "key", "version", b"x"))
+            for values in (
+                ("parent", 1, "key", "version", b"x"),
+                ("missing", 1, "key", "version", b"x"),
+                ("other", 0, "key", "version", b"x"),
+                ("other", 1, "", "version", b"x"),
+                ("other", 1, "key", "", b"x"),
+                ("other", 1, "key", "version", b""),
+                ("other", 1, "key", "version", b"x" * 1_048_577),
+            ):
+                with pytest.raises(sqlite3.IntegrityError):
+                    connection.execute(statement, values)
+            assert connection.execute(
+                "SELECT payload_format, length(payload) FROM session_charts"
+            ).fetchall() == [(99, 1)]
+            connection.execute("DELETE FROM session_states WHERE session_id = 'parent'")
+            assert connection.execute("SELECT * FROM session_charts").fetchall() == []
+        finally:
+            connection.close()
 
 
 @pytest.mark.parametrize(
@@ -513,7 +750,8 @@ async def test_initialization_is_idempotent_and_preserves_data(tmp_path: Path) -
 
         assert await second.sessions.get("preserved", now=NOW) == expected
         assert _fetchall(path, "SELECT component, version FROM schema_migrations") == [
-            ("session", 1)
+            ("session", 1),
+            ("session", 2),
         ]
     finally:
         executor.shutdown(wait=True)
@@ -533,7 +771,8 @@ async def test_concurrent_initialization_of_new_file_is_serializable(tmp_path: P
         assert isinstance(await left.sessions.create("left", now=NOW), SessionCreated)
         assert isinstance(await right.sessions.create("right", now=NOW), SessionCreated)
         assert _fetchall(path, "SELECT component, version FROM schema_migrations") == [
-            ("session", 1)
+            ("session", 1),
+            ("session", 2),
         ]
     finally:
         executor.shutdown(wait=True)
@@ -809,10 +1048,10 @@ async def test_foreign_migration_namespace_is_ignored_and_preserved(tmp_path: Pa
         assert _fetchall(
             path,
             "SELECT component, version FROM schema_migrations ORDER BY component, version",
-        ) == [("research-corpus", 41), ("session", 1)]
+        ) == [("research-corpus", 41), ("session", 1), ("session", 2)]
 
 
-@pytest.mark.parametrize("versions", [(1, 2), (2,)])
+@pytest.mark.parametrize("versions", [(1, 2, 3), (2,), (1, 3)])
 async def test_future_or_gapped_session_ledger_is_schema_incompatible(
     tmp_path: Path,
     versions: tuple[int, ...],
@@ -874,7 +1113,7 @@ async def test_known_migration_failure_rolls_back_ddl_and_ledger(
     try:
         await SqliteSessionPersistence.open(path, executor=executor)
         broken = sqlite_adapter._Migration(
-            version=2,
+            version=3,
             statements=(
                 "CREATE TABLE migration_probe(value INTEGER NOT NULL)",
                 "THIS IS NOT SQL",
@@ -892,7 +1131,7 @@ async def test_known_migration_failure_rolls_back_ddl_and_ledger(
         assert _fetchall(
             path,
             "SELECT version FROM schema_migrations WHERE component = 'session' ORDER BY version",
-        ) == [(1,)]
+        ) == [(1,), (2,)]
         assert _fetchall(
             path,
             "SELECT name FROM sqlite_schema WHERE type = 'table' AND name = 'migration_probe'",
@@ -1706,11 +1945,13 @@ def _golden_models() -> tuple[
             birth_input=unknown_birth,
             birth_resolved=unknown_resolved,
             base_chart_spec=unknown_spec,
+            base_chart_payload=CHART,
         ),
         "golden-known": StateDelta(
             birth_input=known_birth,
             birth_resolved=known_resolved,
             base_chart_spec=known_spec,
+            base_chart_payload=CHART,
         ),
     }
     return states, dialog, deltas
@@ -1760,6 +2001,20 @@ def _insert_golden_payload_v1(path: Path, fixture: dict[str, Any]) -> None:
                 metadata["expires_at_us"],
                 metadata["payload_version"],
                 _json(dialog["payload"]),
+            ),
+        )
+        # This fixture checks the state JSON decoder inside an already-v2
+        # aggregate. Its populated state needs the independent chart row.
+        connection.execute(
+            """INSERT INTO session_charts
+            (session_id, payload_format, calculation_key, calculation_version, payload)
+            VALUES (?, ?, ?, ?, ?)""",
+            (
+                metadata["session_id"],
+                CHART.payload_format,
+                CHART.calculation_key,
+                CHART.calculation_version,
+                CHART.payload,
             ),
         )
         connection.commit()
@@ -1827,6 +2082,7 @@ async def test_frozen_payload_v1_is_read_through_public_ports(
             SessionSnapshot(
                 state=expected_states["golden-full"],
                 dialog=expected_dialog,
+                chart=CHART,
             ),
         )
         assert _fetchone(
@@ -1990,6 +2246,12 @@ async def test_full_models_round_trip_losslessly_across_independent_handles(
         birth_input=birth_input,
         birth_resolved=resolved,
         base_chart_spec=spec,
+        base_chart_payload=StoredChart(
+            payload_format=1,
+            calculation_key="round-trip-key",
+            calculation_version="round-trip-version",
+            payload=b"opaque-round-trip-chart",
+        ),
     )
     complete = DialogTurn(
         turn_id="complete-🌕",
@@ -2215,6 +2477,87 @@ async def test_dialog_deadline_drift_is_ignored_by_read_and_repaired_by_touch(
         ) == (_epoch_us(touched.state.expires_at), _epoch_us(touched.state.expires_at))
 
 
+@pytest.mark.parametrize("corruption", ["missing_chart", "extra_chart"])
+async def test_structural_chart_corruption_blocks_touch_and_context_load(
+    tmp_path: Path,
+    corruption: str,
+) -> None:
+    path = tmp_path / f"chart-{corruption}.sqlite3"
+    async with _opened(path) as (persistence, _):
+        if corruption == "missing_chart":
+            await populate_session(persistence, "damaged")
+        else:
+            await create_session(persistence, "damaged")
+
+        good = await persistence.touch("damaged", now=NOW + timedelta(days=1))
+        assert isinstance(good, SessionSnapshot)
+        assert (good.chart is not None) == (corruption == "missing_chart")
+        before = _fetchone(
+            path,
+            "SELECT state_version, expires_at_us FROM session_states "
+            "WHERE session_id = 'damaged'",
+        )
+        if corruption == "missing_chart":
+            _execute(path, "DELETE FROM session_charts WHERE session_id = 'damaged'")
+        else:
+            _execute(
+                path,
+                """INSERT INTO session_charts
+                (session_id, payload_format, calculation_key, calculation_version, payload)
+                VALUES ('damaged', ?, ?, ?, ?)""",
+                (
+                    CHART.payload_format,
+                    CHART.calculation_key,
+                    CHART.calculation_version,
+                    CHART.payload,
+                ),
+            )
+
+        failed_now = NOW + timedelta(days=2)
+        with pytest.raises(StateReadError) as caught:
+            await persistence.touch("damaged", now=failed_now)
+        assert caught.value.error_code == DATA_CORRUPT
+        context = ContextService(persistence=persistence, clock=lambda: failed_now)
+        assert await context.load("damaged") == StateReadFailed(error_code=DATA_CORRUPT)
+        assert _fetchone(
+            path,
+            "SELECT state_version, expires_at_us FROM session_states "
+            "WHERE session_id = 'damaged'",
+        ) == before
+
+
+async def test_invalid_stored_chart_row_is_typed_corruption_before_renewal(
+    tmp_path: Path,
+) -> None:
+    path = tmp_path / "chart-payload-corrupt.sqlite3"
+    async with _opened(path) as (persistence, _):
+        await populate_session(persistence, "bad-chart")
+        good = await persistence.touch("bad-chart", now=NOW)
+        assert isinstance(good, SessionSnapshot)
+        assert good.chart == CHART
+        before = _fetchone(
+            path,
+            "SELECT expires_at_us FROM session_states WHERE session_id = 'bad-chart'",
+        )
+        connection = _connect(path)
+        try:
+            connection.execute("PRAGMA ignore_check_constraints = ON")
+            connection.execute(
+                "UPDATE session_charts SET payload = ? WHERE session_id = 'bad-chart'",
+                (b"",),
+            )
+        finally:
+            connection.close()
+
+        with pytest.raises(StateReadError) as caught:
+            await persistence.touch("bad-chart", now=NOW + timedelta(days=1))
+        assert caught.value.error_code == DATA_CORRUPT
+        assert _fetchone(
+            path,
+            "SELECT expires_at_us FROM session_states WHERE session_id = 'bad-chart'",
+        ) == before
+
+
 @pytest.mark.parametrize("renewer", ["compare_and_set", "append", "touch"])
 async def test_successful_renewers_persist_equal_parent_and_dialog_deadlines(
     tmp_path: Path,
@@ -2271,6 +2614,10 @@ async def test_dialog_row_is_physically_removed_by_aggregate_removers(
             path,
             "SELECT COUNT(*) FROM session_dialogs WHERE session_id = 'remove-dialog'",
         ) == (0,)
+        assert _fetchone(
+            path,
+            "SELECT COUNT(*) FROM session_charts WHERE session_id = 'remove-dialog'",
+        ) == ((1,) if remover == "clear" else (0,))
 
 
 async def test_logical_expiry_does_not_physically_delete_or_free_session_id(
@@ -2337,6 +2684,7 @@ async def test_reaper_deletes_only_expired_parents_at_exact_boundary(tmp_path: P
             now=expired_at_boundary.expires_at,
         ) == live
         assert _fetchone(path, "SELECT COUNT(*) FROM session_dialogs") == (1,)
+        assert _fetchone(path, "SELECT COUNT(*) FROM session_charts") == (1,)
 
 
 async def test_reaper_ignores_dialog_deadline_and_redundant_hard_predicate(
@@ -2769,6 +3117,85 @@ async def test_commit_exception_is_unknown_without_retry_or_readback(
         executor.shutdown(wait=True)
 
 
+async def test_chart_write_failure_rolls_back_parent_and_retry_commits_pair(
+    tmp_path: Path,
+) -> None:
+    path = tmp_path / "chart-write-rollback.sqlite3"
+    async with _opened(path) as (persistence, _):
+        await create_session(persistence, "atomic")
+        before = _fetchone(
+            path,
+            "SELECT state_version, expires_at_us FROM session_states "
+            "WHERE session_id = 'atomic'",
+        )
+        _execute(
+            path,
+            "CREATE TRIGGER reject_chart BEFORE INSERT ON session_charts "
+            "BEGIN SELECT RAISE(ABORT, 'injected chart write failure'); END",
+        )
+
+        with pytest.raises(StateWriteError) as caught:
+            await persistence.sessions.compare_and_set("atomic", 0, DELTA, now=NOW)
+        assert caught.value.error_code == WRITE_FAILED
+        assert _fetchone(
+            path,
+            "SELECT state_version, expires_at_us FROM session_states "
+            "WHERE session_id = 'atomic'",
+        ) == before
+        assert _fetchall(path, "SELECT session_id FROM session_charts") == []
+
+        _execute(path, "DROP TRIGGER reject_chart")
+        assert await persistence.sessions.compare_and_set("atomic", 0, DELTA, now=NOW) == 1
+        snapshot = await persistence.touch("atomic", now=NOW)
+        assert isinstance(snapshot, SessionSnapshot)
+        assert snapshot.state.state_version == 1
+        assert snapshot.chart == CHART
+
+
+async def test_lost_chart_commit_acknowledgement_preserves_pair_and_retry_winner(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    path = tmp_path / "chart-commit-unknown.sqlite3"
+    CommitThenRaiseConnection.enabled = False
+    CommitThenRaiseConnection.commits_that_raised = 0
+    monkeypatch.setattr(sqlite_adapter, "_CONNECTION_FACTORY", _commit_fault_factory)
+    executor = ThreadPoolExecutor(max_workers=SQLITE_TEST_EXECUTOR_WORKERS)
+    try:
+        persistence = await SqliteSessionPersistence.open(path, executor=executor)
+        await create_session(persistence, "uncertain-chart")
+        CommitThenRaiseConnection.enabled = True
+
+        with pytest.raises(StateWriteError) as caught:
+            await persistence.sessions.compare_and_set(
+                "uncertain-chart", 0, DELTA, now=NOW
+            )
+        assert caught.value.error_code == COMMIT_UNKNOWN
+        assert CommitThenRaiseConnection.commits_that_raised == 1
+        CommitThenRaiseConnection.enabled = False
+        assert _fetchone(
+            path,
+            "SELECT state_version FROM session_states WHERE session_id = 'uncertain-chart'",
+        ) == (1,)
+        assert _fetchone(
+            path,
+            "SELECT payload FROM session_charts WHERE session_id = 'uncertain-chart'",
+        ) == (CHART.payload,)
+
+        context = ContextService(persistence=persistence, clock=lambda: NOW)
+        retry = DELTA.model_copy(update={"base_chart_payload": OTHER_CHART})
+        assert await context.save("uncertain-chart", 0, retry) == AlreadyApplied(
+            state_version=1
+        )
+        snapshot = await persistence.touch("uncertain-chart", now=NOW)
+        assert isinstance(snapshot, SessionSnapshot)
+        assert snapshot.chart == CHART
+        assert snapshot.state.state_version == 1
+    finally:
+        CommitThenRaiseConnection.enabled = False
+        executor.shutdown(wait=True)
+
+
 async def test_corrupt_database_is_mapped_to_typed_data_error(tmp_path: Path) -> None:
     path = tmp_path / "not-a-database.sqlite3"
     path.write_bytes(b"not a sqlite database")
@@ -2983,7 +3410,7 @@ from exact_orb.birth.types import BirthInput, ResolvedBirthData
 from exact_orb.calculation.spec import NatalChartSpec
 from exact_orb.session.adapters.sqlite import SqliteSessionPersistence
 from exact_orb.session.dialog import DialogTurn, Selection
-from exact_orb.session.state import StateDelta
+from exact_orb.session.state import StateDelta, StoredChart
 
 NOW = datetime(2026, 9, 5, 12, 0, 0, 123456, tzinfo=UTC)
 
@@ -3007,6 +3434,12 @@ async def main():
                 birth_time_domain=None,
             ),
             base_chart_spec=NatalChartSpec(chart_kind="natal"),
+            base_chart_payload=StoredChart(
+                payload_format=1,
+                calculation_key="restart-key",
+                calculation_version="restart-version",
+                payload=b"opaque-restart-chart",
+            ),
         )
         await persistence.sessions.compare_and_set("restart", 0, delta, now=NOW)
         turn = DialogTurn(

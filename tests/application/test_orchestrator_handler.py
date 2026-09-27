@@ -88,7 +88,7 @@ def _snapshot(version: int) -> SessionSnapshot:
         **new_session(SESSION_ID, now=STARTED_AT).model_dump(),
         "state_version": version,
     })
-    return SessionSnapshot(state=state, dialog=())
+    return SessionSnapshot(state=state, dialog=(), chart=None)
 
 
 def _setup(

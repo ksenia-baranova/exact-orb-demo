@@ -83,7 +83,10 @@ Artifacts -> Artifacts : ChartArtifact(key, spec, version, chart)\nvalidate char
 Artifacts -> Cache : put(key, bytes)
 Artifacts --> Handler : ChartArtifact
 
-Handler -> Handler : StateDelta(\nbirth_input, birth_resolved,\nbase_chart_spec = spec)
+Handler -> Artifacts : to_stored(artifact)
+Artifacts --> Handler : payload_format, payload
+Handler -> Handler : StoredChart(format, artifact.key,\nartifact.version, payload)
+Handler -> Handler : StateDelta(\nbirth_input, birth_resolved,\nbase_chart_spec = spec, base_chart_payload = StoredChart)
 Handler -> Handler : BuildNatalSuccess(artifact, delta)\nvalidate delta ↔ spec ↔ chart ↔ key
 
 Handler --> Orch : BuildNatalSuccess(artifact, delta)
@@ -122,8 +125,9 @@ alt Session Store недоступен при записи
 
     note over Orch, Store
     **Операция неуспешна.** Расчёт прошёл,
-    но фактический исход state transition
-    не подтверждён. Состояние проверяется
+    но фактический исход сохранения state и chart
+    не подтверждён. Оба записаны или оба не записаны;
+    состояние проверяется
     отдельным restore после ответа.
 
     Success не возвращается до завершения

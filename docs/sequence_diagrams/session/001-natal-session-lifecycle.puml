@@ -4,7 +4,8 @@ title exact-orb — Session: построение → интерпретация
 ' Упрощённая модель MVP:
 ' - SessionState — состояние сессии; ходы диалога хранятся отдельной
 '   записью через DialogStore с тем же TTL;
-' - полной карты в SessionState нет;
+' - полной карты в SessionState нет: StoredChart хранится отдельной
+'   дочерней записью того же агрегата сессии (ADR-0040);
 ' - изменение данных рождения возможно только явной командой из формы.
 
 autonumber
@@ -55,6 +56,7 @@ box "3. SESSION" #D1FAE5
     control "SessionPersistence" as Persistence
     database "SessionStore" as Store
     database "DialogStore" as Dialog
+    database "session_charts" as Charts
 end box
 
 box "4. NATAL" #E8F5E9
@@ -99,7 +101,7 @@ API -> Orch : execute(command, session_id, run)
 Orch -> Context : load(session_id)
 Context -> Context : now = require_utc(clock(), name="clock")
 Context -> Persistence : touch(session_id, now)
-Persistence --> Context : SessionSnapshot(state_version = 0,\ndialog = ())
+Persistence --> Context : SessionSnapshot(state_version = 0,\ndialog = (), chart = None)
 Context --> Orch : SessionSnapshot
 
 Orch -> Build : handle(command, empty state_version=0, run)
@@ -108,14 +110,18 @@ Build -> Birth : resolve(birth_input)
 Birth --> Build : ResolvedBirthData
 Build -> Artifacts : ensure_chart(resolved, natal_spec, run)
 Artifacts --> Build : ChartArtifact
-Build -> Build : подготовить StateDelta(\n birth_input, resolved, natal_spec)
+Build -> Artifacts : to_stored(artifact)
+Artifacts --> Build : payload_format, payload
+Build -> Build : StoredChart(format, artifact.key,\nartifact.version, payload)
+Build -> Build : подготовить StateDelta(\n birth_input, resolved, natal_spec, StoredChart)
 Build --> Orch : BuildNatalSuccess(artifact, delta)
 deactivate Build
 
 Orch -> Context : save(session_id, original expected=0, delta)
 Context -> Context : now = require_utc(clock(), name="clock")
 Context -> Store : compare_and_set(expected_version=0, delta, now)
-Store -> Store : применить delta и назначить version=1\nв атомарной CAS-секции
+Store -> Store : применить delta и назначить version=1
+Store -> Charts : записать StoredChart в той же CAS-секции
 Store --> Context : 1
 Context --> Orch : Committed(state_version=1)
 
@@ -127,7 +133,7 @@ FE --> User : карта и интерпретация доступны
 
 note over FE, Store
 Карта становится текущей только после
-успешного сохранения SessionState.
+подтверждённого сохранения state и StoredChart.
 
 До этого Frontend не отправляет запрос
 на интерпретацию, а backend всё равно
@@ -139,18 +145,30 @@ SessionState хранит только состояние выбора:
 birth_input + birth_resolved + base_chart(spec)
 + state_version.
 
+Сериализованный ChartArtifact хранится как
+StoredChart в session_charts с жизненным циклом
+этой же сессии; расчётный кэш удаляем.
+
 Ходы диалога лежат отдельной записью
 в DialogStore: иначе каждая запись карты
 через CAS переписывала бы весь диалог,
 а добавление хода конкурировало бы
 с изменением карты за одну версию.
 
-Полный ChartArtifact и calculation_key
+Формат и проверка полного ChartArtifact
 принадлежат артефактному слою.
 end note
 
 
-== 2. Интерпретация текущей карты ==
+== 2. Отложенная интерпретация M2 — контракт требует ревизии ==
+
+note over Orch, Agent
+Эта историческая M2-ветка вызывает ensure_natal по spec.
+После ADR-0040 это может дать карту другой CalculationVersion,
+чем сохранённая и показанная пользователю. Перед M2 надо отдельно
+решить, как интерпретация использует StoredChart или явный rebuild;
+ветка ниже не является контрактом первой ветки хранения карты.
+end note
 
 User -> FE : запрашивает интерпретацию
 FE -> API : InterpretSelectionCommand(topic, focus)
@@ -232,14 +250,18 @@ Build -> Birth : resolve(new_birth_input)
 Birth --> Build : new ResolvedBirthData
 Build -> Artifacts : ensure_chart(new_resolved, natal_spec, run)
 Artifacts --> Build : new ChartArtifact
-Build -> Build : подготовить StateDelta(\n replace base_chart)
+Build -> Artifacts : to_stored(new_artifact)
+Artifacts --> Build : payload_format, payload
+Build -> Build : new StoredChart(format, new_artifact.key,\nnew_artifact.version, payload)
+Build -> Build : подготовить StateDelta(\n replace base_chart и payload)
 Build --> Orch : BuildNatalSuccess(new_artifact, delta)
 deactivate Build
 
 Orch -> Context : save(session_id, original expected=1, delta)
 Context -> Context : now = require_utc(clock(), name="clock")
 Context -> Store : compare_and_set(expected_version=1, delta, now)
-Store -> Store : применить delta и назначить version=2\nв атомарной CAS-секции
+Store -> Store : применить delta и назначить version=2
+Store -> Charts : заменить StoredChart в той же CAS-секции
 Store --> Context : 2
 Context --> Orch : Committed(state_version=2)
 
@@ -250,9 +272,9 @@ FE -> FE : диалог теперь использует state_version=2
 FE --> User : обновлённая карта
 
 note over FE, Store
-До успешного commit остаётся активной карта
-версии 1. Ошибка resolve, calculation или save
-не переключает сессию на новый расчёт.
+До подтверждённого commit остаётся карта
+версии 1. Ошибка resolve, calculation, to_stored
+или save не переключает сессию на новый расчёт.
 end note
 
 note over Dialog, Store

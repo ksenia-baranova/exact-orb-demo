@@ -128,7 +128,7 @@ end note
 
 Orch -> Context : load(session_id)
 Context -> Store : touch(session_id, now)
-Store --> Context : SessionSnapshot(\nstate = SessionState(state_version = 0),\ndialog = ())
+Store --> Context : SessionSnapshot(\nstate = SessionState(state_version = 0),\ndialog = (), chart = None)
 Context --> Orch : SessionSnapshot
 
 note right of Context
@@ -256,19 +256,24 @@ key → get → miss → calculate
 Handler кэша не видит и знает
 только ensure_chart.
 
-Кэш, а не репозиторий: после eviction
-артефакт воспроизводится из ChartSpec
-и ResolvedBirthData (ADR-0017, И-12).
+Кэш можно очистить: после commit уже построенная
+карта восстанавливается из StoredChart сессии.
+ChartSpec и ResolvedBirthData нужны для явного
+нового расчёта (ADR-0040, И-12).
 end note
 
 
 == Формирование дельты ==
 
-Handler -> Handler : StateDelta(\nbirth_input, birth_resolved,\nbase_chart_spec = spec)
+Handler -> Artifacts : to_stored(artifact)
+Artifacts --> Handler : payload_format, payload
+Handler -> Handler : StoredChart(format, artifact.key,\nartifact.version, payload)
+Handler -> Handler : StateDelta(\nbirth_input, birth_resolved,\nbase_chart_spec = spec, base_chart_payload = StoredChart)
 Handler -> Handler : BuildNatalSuccess(artifact, delta)\nvalidate delta ↔ spec ↔ chart ↔ key
 
 note right of Handler
 Handler формирует только all-set StateDelta.
+Отказ сериализации завершает handler до CAS.
 Original expected_state_version = 0
 сохранил оркестратор при load. Новую версию
 присвоит store атомарно в CAS (ADR-0014).
@@ -286,10 +291,11 @@ SessionState, выход — StateDelta.
 end note
 
 
-== Commit состояния ==
+== Commit состояния и карты ==
 
 Orch -> Context : save(session_id,\nexpected_state_version = 0, delta)
 Context -> Store : sessions.compare_and_set(\nsession_id, 0, StateDelta, now)
+Store -> Store : state и StoredChart — одна CAS-транзакция
 Store --> Context : 1
 Context --> Orch : Committed(state_version = 1)
 

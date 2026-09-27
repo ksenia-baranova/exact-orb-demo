@@ -1,6 +1,6 @@
 # exact-orb — требования к `BuildNatalHandler`
 
-**Статус:** функциональная реализация сверена; обязательный import-boundary gate из §10.1 ещё не перенесён в текущую ветку
+**Статус:** функциональная реализация сверена; обязательный import-boundary gate из §10.1 интегрирован и проверен
 
 **Дата:** 2026-09-08
 
@@ -15,7 +15,7 @@
 **Исходная сверка реализации R5:** commit `9b7a4179fa10ebda066ff998294b05aaa8930fd2`.
 **Сверка выполнения 2026-09-14:** HEAD `086e691`; функциональный handler,
 реальная интеграция, identity ADR-0027 и DEBUG-границы ADR-0028 реализованы.
-Отдельный import-boundary тест §10.1 по-прежнему отсутствует.
+На этом срезе отдельный import-boundary тест §10.1 ещё отсутствовал.
 **Ревизия 2026-09-15:** ownership `RunContext` согласован с ADR-0006;
 контракт получает optional `deadline` по требованиям `ApplicationOrchestrator`.
 Поле реализовано и не меняет предметное поведение Handler: он только передаёт
@@ -25,8 +25,18 @@
 **Сверка 2026-09-19:** внешний `ApplicationResult`, `ApplicationOrchestrator`
 и commit/retry flow реализованы за границей Handler; его собственный контракт
 и ответственность за подготовку `StateDelta` не изменились.
+**Сверка 2026-09-23:** тест §10.1 перенесён в текущую ветку коммитом
+`0828c26`; проверены 44 теста в `tests/test_module_boundaries.py`,
+910 application-тестов и полный `pytest` (2564 теста).
+**Целевая ревизия 2026-09-26:** ADR-0040 добавляет в handler вызов
+`ChartArtifactPort.to_stored` и `StoredChart` в `StateDelta`. Ниже этот
+целевой контракт отделён от уже реализованного R5.
+**Сверка 2026-09-27:** подготовка `StoredChart`, полная `StateDelta`,
+валидация `BuildNatalSuccess` и безопасные отказы до CAS реализованы в
+промте 03 M1-5.2; сохранение агрегата остаётся следующим срезом.
 
-**Ограничение:** документ не требует изменения уже реализованных модулей `birth`, `calculation` и `session`.
+**Ограничение исходного R5:** он не требовал изменения модулей `birth`,
+`calculation` и `session`; ветка ADR-0040 отдельно меняет calculation и session.
 
 `ApplicationOrchestrator` и внешний `ApplicationResult` реализуют принятую
 ADR-0006 границу после `BuildNatalOutcome`. Сам Handler по-прежнему заканчивает
@@ -148,13 +158,17 @@ class ChartArtifactPort(Protocol):
         run: RunContext,
     ) -> ChartArtifact:
         ...
+
+    def to_stored(self, artifact: ChartArtifact) -> tuple[int, bytes]:
+        ...  # порт расширен в первом срезе ADR-0040
 ```
 
-Реализованные `BirthDataResolver` и `ChartArtifactResolver` удовлетворяют этим протоколам структурно и не требуют изменения.
+`ChartArtifactPort.to_stored` и реализация в `ChartArtifactResolver` уже
+добавлены в первом срезе ADR-0040; вызов из Handler реализован в промте 03.
 
 `Handler`, `BirthDataResolverPort` и `ChartArtifactPort` не помечаются `@runtime_checkable`: система не выполняет `isinstance(..., Protocol)`. Совместимость обеспечивается статической проверкой типов и contract-тестами. Это намеренное решение, а не пропущенный декоратор.
 
-Оба порта должны быть защищены денилистом импортов симметрично: прямой импорт как `exact_orb.calculation.artifacts`, так и `exact_orb.birth.resolver` в модуле handler запрещён (§10.1). Фактические импорты handler это ограничение соблюдают, но обязательный regression-тест на сверенном commit отсутствует. Конкретные реализации поступают только через конструктор.
+Оба порта должны быть защищены денилистом импортов симметрично: прямой импорт как `exact_orb.calculation.artifacts`, так и `exact_orb.birth.resolver` в модуле handler запрещён (§10.1). Фактические импорты handler это ограничение соблюдают; обязательный regression-тест добавлен в M1-4. Конкретные реализации поступают только через конструктор.
 
 `BuildNatalCommand` наследуется от `Command`. Целевой реестр `ApplicationOrchestrator` будет маршрутизировать команды по типу через `Mapping[type[Command], Handler]`; строковый routing и LLM для выбора handler не используются.
 
@@ -465,20 +479,28 @@ Handler не должен различать cache hit и cache miss: оба я�
 
 ### Шаг 5. Сформировать `StateDelta`
 
+Целевой шаг ADR-0040 получает сериализацию у resolver и собирает сессионный
+envelope с ключом и версией артефакта. Отказ кодирования или лимита размера
+завершает build внутренней ошибкой до вызова CAS.
+
 ```python
+payload_format, payload = artifacts.to_stored(artifact)
 delta = StateDelta(
     birth_input=command.birth_input,
     birth_resolved=resolved,
     base_chart_spec=spec,
+    base_chart_payload=StoredChart(
+        payload_format=payload_format,
+        calculation_key=artifact.calculation_key,
+        calculation_version=artifact.calculation_version,
+        payload=payload,
+    ),
 )
 ```
 
-В дельту входит `ChartSpec`, а не:
+В дельту входят `ChartSpec` и непрозрачный `StoredChart`, а не:
 
-- `calculation_key`;
 - весь `ChartArtifact`;
-- рассчитанная карта;
-- сериализованные байты кэша;
 - новый `state_version`;
 - `ChartRef`.
 
@@ -754,9 +776,9 @@ APPLICATION_BUILD_NATAL_FORBIDDEN_DIRECT_IMPORTS
 ```
 
 На сверенном commit `9b7a4179fa10ebda066ff998294b05aaa8930fd2` эта константа и
-обязательная автоматическая проверка ещё отсутствуют. Прямые импорты handler соответствуют
-описанной границе при ручной сверке, но до переноса regression-теста критерий §13 формально
-не выполнен.
+обязательная автоматическая проверка ещё отсутствовали. Прямые импорты handler соответствовали
+описанной границе при ручной сверке; с коммита `0828c26` граница закреплена
+автоматическим regression-тестом в `tests/test_module_boundaries.py`.
 
 Общий запрет для всего пакета `application` некорректен: `application/results.py` обязан импортировать `exact_orb.calculation.types`, поскольку Pydantic-модель `BuildNatalSuccess` содержит настоящий `ChartArtifact`.
 
@@ -965,7 +987,7 @@ Cache hit/miss должен журналироваться самим `ChartArti
 
 Главная предметная ответственность `BuildNatalHandler` — выбрать между натальной картой и космограммой и собрать согласованный результат `{artifact, StateDelta}`. Все вычислительные, кэшовые и сессионные механизмы остаются за границей handler.
 
-Состояние выполнения повторно сверено 2026-09-19:
+Состояние выполнения повторно сверено 2026-09-19; дополнено 2026-09-23:
 
 | Выполнено | Подтверждение |
 |---|---|
@@ -973,10 +995,11 @@ Cache hit/miss должен журналироваться самим `ChartArti
 | Реальный путь резолв → артефакты → расчёт/кэш | `tests/application/test_build_natal_integration.py` |
 | Сквозная согласованность результата | ADR-0027; validator `BuildNatalSuccess` и негативные contract-тесты |
 | Полные DEBUG input/output, correlation и terminal events | ADR-0028; `tests/application/test_build_natal_logging.py` |
+| Граница прямых импортов §10.1 | `tests/test_module_boundaries.py`; `0828c26`; 44 теста файла прошли |
 
-Остаётся обязательный import-boundary regression-тест §10.1. Он включён
-в M1-4 [roadmap](../../project_management/roadmap.md); до его интеграции
-формальная готовность всего перечня Handler неполна. Внешние
+Обязательный import-boundary regression-тест §10.1 выполнен в M1-4
+[roadmap](../../project_management/roadmap.md); формальная готовность
+перечня Handler закрыта. Внешние
 `ApplicationOrchestrator`, `ApplicationResult` и commit-flow реализованы за
 границей предметной ответственности Handler. Их итоговая приёмка и новый
 прогон тестов зафиксированы в плане ApplicationOrchestrator §1.3.51.
@@ -1045,6 +1068,7 @@ Frozen Pydantic base type для всех application-команд. Собств
 | Атрибут / метод | Тип | Описание | Возможные значения | Пример |
 |---|---|---|---|---|
 | `ensure_chart` | `async (ChartSpec, ResolvedBirthData, *, RunContext) -> ChartArtifact` | Возвращает валидный артефакт из кэша или расчёта | `ChartArtifact`; typed calculation exceptions | `await artifacts.ensure_chart(spec, resolved, run=run)` |
+| `to_stored` | `(ChartArtifact) -> tuple[int, bytes]` | Реализованное дополнение ADR-0040; детерминированно кодирует карту в формат сессии | Формат и gzip JSON payload; внутренняя ошибка кодирования | `artifacts.to_stored(artifact)` |
 
 ## Сообщение: `BuildNatalCommand`
 
@@ -1133,7 +1157,7 @@ Frozen Pydantic base type для всех application-команд. Собств
 | Атрибут | Тип атрибута | Описание | Возможные значения | Пример |
 |---|---|---|---|---|
 | `state_version` | `int` | Версия состояния, для которой карта является активной | Целое число `>= 1` | `3` |
-| `spec` | `ChartSpec` | Полная спецификация восстановления карты | В MVP — `NatalChartSpec` | См. полный natal-пример в разделе `NatalChartSpec` |
+| `spec` | `ChartSpec` | Спецификация расчётного намерения для явного нового построения | В MVP — `NatalChartSpec` | См. полный natal-пример в разделе `NatalChartSpec` |
 
 `BuildNatalHandler` не создаёт `ChartRef`. Он возвращает `StateDelta`, а `ChartRef` создаётся при применении дельты.
 
@@ -1353,8 +1377,10 @@ Handler не читает и не изменяет внутренние поля
 | `birth_input` | `BirthInput \| None` | Исходные данные, которые должны стать подтверждёнными | Для build — `BirthInput`; `None` только при reset | `{"birth_date":"1985-09-02","birth_time":"00:45:00","place_id":"moscow-ru"}` |
 | `birth_resolved` | `ResolvedBirthData \| None` | Разрешённые backend данные | Для build — `ResolvedBirthData`; `None` только при reset | `{"utc_datetime":"1985-09-01T20:45:00Z","latitude":55.7558,"longitude":37.6173}` |
 | `base_chart_spec` | `ChartSpec \| None` | Спецификация новой базовой карты | Для build — `NatalChartSpec`; `None` только при reset | См. полный natal-пример в разделе `NatalChartSpec` |
+| `base_chart_payload` | `StoredChart \| None` | Сохранённый артефакт в агрегате сессии по ADR-0040 | Для build — `StoredChart`; `None` только при reset | Формат 1, ключ, версия, gzip JSON payload |
 
-Инвариант: три атрибута либо одновременно заполнены, либо одновременно равны `None`. Успешный handler всегда возвращает полностью заполненную дельту.
+Инвариант целевой ветки: четыре атрибута либо одновременно заполнены,
+либо одновременно равны `None`. Успешный handler возвращает полную дельту.
 
 ## Сообщение: `BuildNatalSuccess`
 
@@ -1367,8 +1393,10 @@ Handler не читает и не изменяет внутренние поля
 
 `BuildNatalSuccess` ещё не означает, что состояние сессии сохранено. Модель frozen. Валидатор выполняет проверки строго в следующем порядке:
 
-1. `delta.birth_input`, `delta.birth_resolved` и `delta.base_chart_spec` не равны `None`;
-2. `artifact.spec == delta.base_chart_spec`;
+1. `delta.birth_input`, `delta.birth_resolved`, `delta.base_chart_spec` и
+   `delta.base_chart_payload` не равны `None`;
+2. `artifact.spec == delta.base_chart_spec`, а ключ и версия артефакта
+   совпадают с `delta.base_chart_payload`;
 3. `delta.base_chart_spec.chart_kind == "cosmogram"` тогда и только тогда,
    когда `delta.birth_resolved.time_unknown == true`;
 4. `delta.birth_input.birth_time is None` тогда и только тогда, когда

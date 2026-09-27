@@ -16,7 +16,7 @@ from exact_orb.session.state import SessionState, StateDelta
 
 @runtime_checkable
 class SessionStore(Protocol):
-    """Atomic, TTL-aware state facet implemented by P2 and P4 adapters."""
+    """TTL-aware state facet whose CAS also owns the chart update."""
 
     async def create(
         self,
@@ -46,11 +46,11 @@ class SessionStore(Protocol):
         *,
         now: datetime,
     ) -> int | VersionConflict | SessionAbsent:
-        """Atomically apply ``delta`` or raise ``StateWriteError``.
+        """Atomically apply state and chart from ``delta`` or raise ``StateWriteError``.
 
         A failed comparison returns the actual state from the same atomic
-        operation and changes neither state, dialog, nor their TTL. Applying
-        ``RESET_DELTA`` also clears the dialog in that operation.
+        operation and changes neither state, chart, dialog, nor their TTL.
+        Applying ``RESET_DELTA`` also clears chart and dialog in that operation.
         """
 
         ...

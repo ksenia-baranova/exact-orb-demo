@@ -4,10 +4,13 @@
 участками, зафиксированными в
 `docs/requirements/component_responsibilities/exact-orb_build_natal_components.md`
 и [требованиях ApplicationOrchestrator](../../requirements/component_responsibilities/exact-orb_application_orchestrator_requirements.md),
-а также ADR-0006, 0012, 0014, 0017, 0020. `ApplicationOrchestrator`, commit-flow,
+а также ADR-0006, 0012, 0014, 0017, 0020 и 0040. `ApplicationOrchestrator`, commit-flow,
 один точный retry, cancellation/lifecycle semantics и внешний
-`ApplicationResult` реализованы и подтверждены тестами. HTTP API, session
-bootstrap, client rendering и production admission остаются целевым контуром.
+`ApplicationResult` реализованы и подтверждены тестами. Порт и реализация
+`to_stored` добавлены в первом срезе ADR-0040; вызов из Handler и передача
+полной дельты Orchestrator реализованы в промте 03 M1-5.2. Хранение
+`StoredChart` в агрегате сессии остаётся целевым. HTTP API, session bootstrap, client rendering и
+production admission остаются целевым контуром следующей ветки.
 
 Ключевое отличие от [отложенной модели](../deferred/build_attempt/README.md):
 `BuildAttempt`, `build_revision` и статусы попытки не используются.
@@ -22,15 +25,16 @@ bootstrap, client rendering и production admission остаются целев�
 | 002 | `002-build_natal_cache_hit.puml` | Повтор с теми же данными | `ApplicationCommitted`, движок не вызван |
 | 003 | `003-build_cosmogram_time_unknown.puml` | Пустое поле времени | `ApplicationCommitted`, `chart_kind = cosmogram`, устойчивые аспекты + `time_uncertainty` |
 | 004 | `004-build_natal_input_required.puml` | Неизвестный `place_id`; несуществующее или удвоенное локальное время | `ApplicationInputRequired` |
-| 005 | `005-build_natal_technical_failures.puml` | Отказ зависимости резолва; отказ движка | `ApplicationResolutionFailure`, `ApplicationCalculationFailure` |
+| 005 | `005-build_natal_technical_failures.puml` | Отказ резолва, движка или кодирования StoredChart | `ApplicationResolutionFailure`, `ApplicationCalculationFailure`, `ApplicationInternalFailure` |
 | 006 | `006-build_natal_superseded_cas.puml` | Два конкурентных построения в одной сессии | `ApplicationSuperseded` |
 | 007 | `007-build_natal_commit_failure_and_session_expired.puml` | Store недоступен при commit; session исчезла при commit | `ApplicationStateCommitFailure`, `SESSION_LOST_DURING_OPERATION` |
 | 008 | `008-build_natal_application_unavailable.puml` | Routing или load отказал до запуска handler | `ApplicationInternalFailure`; `BuildNatalOutcome` не получен |
 | 009 | `009-build_natal_commit_cancellation.puml` | Отмена request после начала commit | Commit классифицируется и логируется до `CancelledError` |
 | 010 | `010-build_natal_application_observability.puml` | Lifecycle-события Orchestrator | Started, stage/commit-attempt events и ровно один terminal event |
 
-Диаграммы `000`–`010` показывают реализованные ветви `ApplicationResult` и
-защищённого commit-flow. `000` соединяет их с ещё целевыми HTTP/client
+Диаграммы `000`–`010` показывают ветви `ApplicationResult` и
+защищённого commit-flow с реализованной подготовкой `StoredChart` и целевой
+атомарной записью в session storage. `000` соединяет их с ещё целевыми HTTP/client
 участками, а остальные файлы разбирают отдельные application-сценарии.
 Транспортная диаграмма `008` заканчивается отказом до запуска handler и поэтому
 не получает `BuildNatalOutcome`. Реализованный контракт handler заканчивается
@@ -53,12 +57,16 @@ task недостаточно. `010` фиксирует observability-поток
   не равен успешной пользовательской операции (ADR-0006).
 - **`Calculation Cache` не является пользовательским состоянием:**
   корректный, но устаревший для сессии артефакт остаётся в кэше (ADR-0017).
+  После подтверждённого CAS текущий артефакт хранится в сессии как
+  `StoredChart`; восстановление после рестарта не обращается к кэшу (ADR-0040).
 - **Движок возвращает `CalculationResult`, а кэш хранит `bytes`:**
   `ChartArtifact` собирает только `ChartArtifactResolver`.
 - **Boundary-журнал показывает полный сквозной объектный поток:** по
   ADR-0025/0028 все пять границ пишут полные входы и фактические выходы только
   на DEBUG. Конкретный запуск ищется по `run_id`, артефакт и cache hit — по
-  полному `calculation_key`; ниже DEBUG payload не сериализуется.
+  полному `calculation_key`; ниже DEBUG payload не сериализуется. Бинарный
+  payload `StoredChart` исключён из DEBUG-дампов: выводятся только метаданные
+  и размер, при сохранении полных DEBUG-сообщений для `ChartArtifact`.
 - **Orchestrator пишет lifecycle-события:** один started, завершённые стадии,
   каждую начатую commit attempt и ровно один terminal event. Эти компактные
   записи не содержат command payload, артефакт или полный `session_id`.

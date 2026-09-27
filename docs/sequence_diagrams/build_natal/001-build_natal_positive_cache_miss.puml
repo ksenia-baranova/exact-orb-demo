@@ -103,7 +103,7 @@ end note
 
 Orch -> Context : load(session_id)
 Context -> Store : touch(session_id, now)
-Store --> Context : SessionSnapshot(\nstate = SessionState(state_version = 0),\ndialog = ())
+Store --> Context : SessionSnapshot(\nstate = SessionState(state_version = 0),\ndialog = (), chart = None)
 Context --> Orch : SessionSnapshot
 
 Orch -> Handler : handle(command, snapshot.state, run)
@@ -224,15 +224,19 @@ Artifacts --> Handler : ChartArtifact
 deactivate Artifacts
 
 note over Artifacts, Cache
-Кэш, а не репозиторий: после eviction
-артефакт воспроизводится из ChartSpec
-и ResolvedBirthData (И-12).
+Кэш можно очистить: сохранённый после commit
+StoredChart восстанавливает карту без расчёта.
+ChartSpec и ResolvedBirthData нужны для явного
+нового построения (ADR-0040, И-12).
 end note
 
 
 == Формирование дельты ==
 
-Handler -> Handler : StateDelta(\nbirth_input, birth_resolved,\nbase_chart_spec = spec)
+Handler -> Artifacts : to_stored(artifact)
+Artifacts --> Handler : payload_format, payload
+Handler -> Handler : StoredChart(format, artifact.key,\nartifact.version, payload)
+Handler -> Handler : StateDelta(\nbirth_input, birth_resolved,\nbase_chart_spec = spec, base_chart_payload = StoredChart)
 Handler -> Handler : BuildNatalSuccess(artifact, delta)\nvalidate delta ↔ spec ↔ chart ↔ key
 
 note right of Handler
@@ -255,10 +259,11 @@ run_id связывает границы, calculation_key — артефакт.
 end note
 
 
-== Commit состояния ==
+== Commit состояния и карты ==
 
 Orch -> Context : save(session_id,\nexpected_state_version = 0, delta)
 Context -> Store : sessions.compare_and_set(\nsession_id, 0, StateDelta, now)
+Store -> Store : state и StoredChart — одна CAS-транзакция
 Store --> Context : 1
 Context --> Orch : Committed(state_version = 1)
 

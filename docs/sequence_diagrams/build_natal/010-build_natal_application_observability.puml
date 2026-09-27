@@ -68,6 +68,11 @@ Handler -> Log : INFO application_message direction=send\npeer=ChartArtifactReso
 Handler -> Artifacts : ensure_chart(spec, resolved, run)
 Artifacts --> Handler : ChartArtifact
 Handler -> Log : INFO application_message direction=receive\nmessage_type=ChartArtifact
+Handler -> Log : INFO application_message direction=send\npeer=ChartArtifactResolver, message_type=ToStoredRequest
+Handler -> Artifacts : to_stored(artifact)
+Artifacts --> Handler : payload_format, payload
+Handler -> Log : INFO application_message direction=receive\npeer=ChartArtifactResolver, message_type=StoredChartEncoding
+Handler -> Handler : StoredChart(format, artifact.key,\nartifact.version, payload)
 Handler --> Orch : BuildNatalSuccess(artifact, delta)
 Orch -> Log : INFO application_message direction=receive\npeer=BuildNatalHandler, message_type=BuildNatalSuccess
 Orch -> Log : DEBUG application_stage_finished\nstage=handler, outcome=success, duration_ms
@@ -116,6 +121,10 @@ NatalTechniqueAdapter -> calculate_natal;
 подробности в chart_artifacts/001.
 ContextService пишет полные DEBUG in/out,
 но не получает RunContext, поэтому run_id=-.
+StoredChart в DEBUG проецируется только как
+key, version, format и размер payload: байты
+не сериализуются на границах Handler и ContextService
+(ADR-0040). INFO-события to_stored связаны run_id.
 Поля terminal берутся из возвращаемого результата.
 Невалидные длительности/попытки отклоняются до записи.
 Ошибка logging не меняет подтверждённый commit outcome.

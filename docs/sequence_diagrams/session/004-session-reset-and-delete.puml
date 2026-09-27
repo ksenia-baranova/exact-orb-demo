@@ -50,6 +50,7 @@ box "3. SESSION" #D1FAE5
     control "SessionPersistence" as Persistence
     database "SessionStore" as Store
     database "DialogStore" as Dialog
+    database "session_charts" as Charts
 end box
 
 box "4. RESEARCH" #EDE9FE
@@ -76,9 +77,9 @@ Orch --> API : Success(state_version не изменился)
 API --> FE : ok
 FE --> User : карта на месте, лента пуста
 
-note over Context, Store
-CAS не выполняется; version, birth data и chart
-остаются прежними. Успешный clear считается
+note over Context, Charts
+CAS не выполняется; version, birth data, ChartRef
+и StoredChart остаются прежними. Успешный clear считается
 активностью и может продлить expires_at state,
 а dialog становится пустым в той же backend-секции.
 end note
@@ -97,6 +98,7 @@ activate Persistence
 Persistence -> Store : compare_and_set(4, RESET_DELTA, now)
 activate Store
 Store -> Store : RESET_DELTA-aware CAS:\nstate version=5 + clear dialog\nв одной backend-секции
+Store -> Charts : удалить StoredChart в той же backend-секции
 Store --> Persistence : 5
 deactivate Store
 Persistence --> Context : 5
@@ -115,11 +117,11 @@ state_version **инкрементируется**, а не обнуляется
 и записала старую карту в очищенную сессию.
 end note
 
-note over Persistence, Dialog
+note over Persistence, Charts
 reset — не второй алгоритм: Persistence только
 делегирует SessionStore.compare_and_set с
 RESET_DELTA. RESET_DELTA-aware facet CAS сам
-очищает dialog внутри backend-секции. При
+очищает dialog и chart внутри backend-секции. При
 VersionConflict, SessionAbsent или SessionPersistenceError(error_code)
 частично сброшенного агрегата нет.
 end note
@@ -135,6 +137,7 @@ Orch -> Context : delete(session_id)
 Context -> Persistence : delete(session_id)
 activate Persistence
 Persistence -> Dialog : удалить dialog
+Persistence -> Charts : удалить StoredChart
 Persistence -> Store : удалить state\nв той же атомарной секции
 Persistence --> Context : ok
 deactivate Persistence
@@ -148,13 +151,14 @@ end note
 Orch --> API : Deleted
 API --> FE : Set-Cookie с истёкшим сроком
 FE -> FE : очищает локальное состояние
-FE --> User : «Данные рождения и переписка удалены.\n Обезличенная статистика качества ответов —\n без даты, времени и места рождения —\n сохраняется для улучшения сервиса.»
+FE --> User : «Данные рождения, карта и переписка удалены.\n Обезличенная статистика качества ответов —\n без даты, времени и места рождения —\n сохраняется для улучшения сервиса.»
 
-note over Persistence, Store
+note over Persistence, Charts
 Два последовательных вызова фасетов не являются
 реализацией delete. InMemory использует один lock,
 SQLite — одну BEGIN IMMEDIATE transaction: наружу
 не наблюдается частично удалённый агрегат.
+Reaper удаляет chart каскадом с parent state.
 end note
 
 Orch -[#94A3B8]-> Research : ничего не удаляет

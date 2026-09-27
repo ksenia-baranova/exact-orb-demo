@@ -11,6 +11,8 @@ import logging
 from pathlib import Path
 from typing import Literal, TypeVar
 
+from pydantic import BaseModel
+
 
 MessageDirection = Literal["in", "out"]
 MessageStatus = Literal["ok", "error"]
@@ -172,6 +174,24 @@ def serialize_component_message(message: object) -> str:
 
 
 def _json_value(value: object) -> object:
+    from exact_orb.session.state import StoredChart
+
+    if isinstance(value, StoredChart):
+        return {
+            "payload_format": value.payload_format,
+            "calculation_key": value.calculation_key,
+            "calculation_version": value.calculation_version,
+            "payload_size": len(value.payload),
+        }
+    if isinstance(value, BaseModel) and _contains_stored_chart(value):
+        return {
+            name: (
+                getattr(value, name)
+                if _contains_stored_chart(getattr(value, name))
+                else value.model_dump(mode="json", include={name}, warnings=False)[name]
+            )
+            for name in type(value).model_fields
+        }
     model_dump = getattr(value, "model_dump", None)
     if callable(model_dump):
         try:
@@ -201,6 +221,23 @@ def _json_value(value: object) -> object:
     if isinstance(value, (set, frozenset)):
         return sorted(value, key=repr)
     return repr(value)
+
+
+def _contains_stored_chart(value: object) -> bool:
+    from exact_orb.session.state import StoredChart
+
+    if isinstance(value, StoredChart):
+        return True
+    if isinstance(value, BaseModel):
+        return any(
+            _contains_stored_chart(getattr(value, name))
+            for name in type(value).model_fields
+        )
+    if isinstance(value, dict):
+        return any(_contains_stored_chart(item) for item in value.values())
+    if isinstance(value, (list, tuple)):
+        return any(_contains_stored_chart(item) for item in value)
+    return False
 
 
 __all__ = [

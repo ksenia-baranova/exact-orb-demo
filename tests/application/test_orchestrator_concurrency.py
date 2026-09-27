@@ -31,6 +31,7 @@ from tests.application.test_orchestrator_commit import (
     lifecycle,
 )
 from tests.fixtures.calculation import artifact, chart_spec, resolved_birth_data
+from tests.fixtures.stored_chart import stored_chart_for
 from tests.fixtures.telemetry import RUN_ID, RUN_ID_B, STARTED_AT
 
 
@@ -71,10 +72,12 @@ def _operation(
         place_id=place_id,
     )
     spec = chart_spec()
+    chart_artifact = artifact(spec=spec, resolved=resolved)
     outcome = BuildNatalSuccess(
-        artifact=artifact(spec=spec, resolved=resolved),
+        artifact=chart_artifact,
         delta=StateDelta(
             birth_input=birth_input, birth_resolved=resolved, base_chart_spec=spec,
+            base_chart_payload=stored_chart_for(chart_artifact),
         ),
     )
     if snapshot is None:
@@ -82,7 +85,7 @@ def _operation(
             **new_session(session_id, now=STARTED_AT).model_dump(),
             "state_version": loaded_version,
         })
-        snapshot = SessionSnapshot(state=state, dialog=())
+        snapshot = SessionSnapshot(state=state, dialog=(), chart=None)
     assert snapshot.state.session_id == session_id
     assert snapshot.state.state_version == loaded_version
     return _Operation(

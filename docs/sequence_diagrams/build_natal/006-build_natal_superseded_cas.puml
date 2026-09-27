@@ -91,9 +91,10 @@ end note
 
 == B заканчивается первым ==
 
-HandlerB --> OrchB : BuildNatalSuccess(artifact_B, delta_B)
+HandlerB --> OrchB : BuildNatalSuccess(artifact_B,\ndelta_B со StoredChart_B)
 OrchB -> Context : save(session_id, 5, delta_B)
 Context -> Store : sessions.compare_and_set(\nsession_id, 5, delta_B, now_B)
+Store -> Store : state_B и StoredChart_B атомарно
 Store --> Context : 6
 Context --> OrchB : Committed(state_version = 6)
 OrchB --> FE : ApplicationCommitted(artifact_B, state_version = 6)
@@ -105,7 +106,11 @@ HandlerA -> Artifacts : ensure_chart(spec_A, resolved_A, run_A)
 Artifacts -> Cache : put(key_A, bytes_A)
 Artifacts --> HandlerA : ChartArtifact
 
-HandlerA --> OrchA : BuildNatalSuccess(artifact_A, delta_A)
+HandlerA -> Artifacts : to_stored(artifact_A)
+Artifacts --> HandlerA : payload_format_A, payload_A
+HandlerA -> HandlerA : StoredChart_A(key_A, version_A, payload_A)
+
+HandlerA --> OrchA : BuildNatalSuccess(artifact_A,\ndelta_A со StoredChart_A)
 
 note right of Cache
 Артефакт A **корректен** и остаётся
@@ -114,6 +119,7 @@ note right of Cache
 
 Calculation Cache не является
 пользовательским состоянием (ADR-0017).
+В session_charts остаётся только StoredChart_B.
 end note
 
 OrchA -> Context : save(session_id, 5, delta_A)
@@ -123,6 +129,12 @@ Context --> OrchA : Superseded(actual)
 
 OrchA --> FE : ApplicationSuperseded(state_version = 6)
 FE --> User : карта не меняется;\nактивной остаётся chart_B
+
+note over Context, Store
+Конфликт не меняет ни state, ни session_charts.
+AlreadyApplied при равном намерении также
+не переписывает карту победителя (ADR-0040).
+end note
 
 note over Store
 Инкремент выполняется **compare-and-set

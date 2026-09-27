@@ -43,6 +43,7 @@ box "SESSION" #D1FAE5
     control "ContextService" as Context
     control "SessionPersistence" as Persistence
     database "SessionStore" as Store
+    database "session_charts" as Charts
 end box
 
 
@@ -51,13 +52,13 @@ end box
 A -> Context : load(session_id)
 Context -> Context : now_A_load = require_utc(clock(), name="clock")
 Context -> Persistence : touch(session_id, now_A_load)
-Persistence --> Context : SessionSnapshot(state_version = 5)
+Persistence --> Context : SessionSnapshot(state_version = 5, chart)
 Context --> A : state_version = 5
 
 B -> Context : load(session_id)
 Context -> Context : now_B_load = require_utc(clock(), name="clock")
 Context -> Persistence : touch(session_id, now_B_load)
-Persistence --> Context : SessionSnapshot(state_version = 5)
+Persistence --> Context : SessionSnapshot(state_version = 5, chart)
 Context --> B : state_version = 5
 
 note over A, B
@@ -74,6 +75,7 @@ Context -> Context : now_A_save = require_utc(clock(), name="clock")
 Context -> Store : compare_and_set(expected = 5, delta_A, now_A_save)
 activate Store
 Store -> Store : проверить version; применить delta_A;\nназначить version=6; записать атомарно
+Store -> Charts : заменить StoredChart_A в той же CAS-транзакции
 Store --> Context : 6
 deactivate Store
 Context --> A : Committed(state_version = 6)
@@ -106,6 +108,14 @@ Store возвращает не только факт отказа,
 между отказом и сравнением никто
 не вклинится, и повторное чтение
 не требуется.
+end note
+
+note over Store, Charts
+При VersionConflict chart_B не записывается.
+Если ответ о commit потерян, StateCommitFailed
+не раскрывает фактический исход: сохранены
+либо state и chart вместе, либо ни один из них.
+Retry использует ту же delta и original expected.
 end note
 
 Context -> Context : сравнить намерение B\nс actual: birth_resolved и spec
@@ -147,7 +157,7 @@ end note
 == Чего CAS не делает ==
 
 note over A, Store
-CAS защищает **состояние сессии**, а не расчёт.
+CAS защищает **состояние и сохранённую карту**, а не расчёт.
 Дублирование расчёта предотвращает single-flight
 в ChartArtifactResolver: одинаковый calculation_key
 даёт один вызов движка, второй ждёт результат.
@@ -164,7 +174,7 @@ state_version и не конфликтует с построением
 
 Полный reset использует тот же CAS с RESET_DELTA.
 SessionPersistence только делегирует reset этому CAS;
-RESET_DELTA-aware facet CAS сам очищает dialog
+RESET_DELTA-aware facet CAS сам очищает dialog и chart
 в своей backend-секции. Второго алгоритма нет.
 
 Save(RESET_DELTA) и reset_all на одинаковом lifecycle

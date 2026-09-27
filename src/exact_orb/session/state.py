@@ -33,6 +33,17 @@ class ChartRef(BaseModel):
     spec: ChartSpec
 
 
+class StoredChart(BaseModel):
+    """Opaque chart bytes owned by the session aggregate."""
+
+    model_config = ConfigDict(frozen=True, hide_input_in_errors=True)
+
+    payload_format: int = Field(gt=0, strict=True)
+    calculation_key: str = Field(min_length=1)
+    calculation_version: str = Field(min_length=1)
+    payload: bytes = Field(min_length=1, max_length=1_048_576, strict=True, repr=False)
+
+
 class SessionState(BaseModel):
     """The complete immutable state of one anonymous session."""
 
@@ -72,23 +83,30 @@ class SessionState(BaseModel):
 
 
 class StateDelta(BaseModel):
-    """A full replacement of the mutable state fields."""
+    """A full replacement of mutable state and its stored chart."""
 
-    model_config = ConfigDict(frozen=True)
+    model_config = ConfigDict(frozen=True, hide_input_in_errors=True)
 
     # These fields are nullable but intentionally required. Callers must choose
     # explicitly between a populated replacement and RESET_DELTA.
     birth_input: BirthInput | None
     birth_resolved: ResolvedBirthData | None
     base_chart_spec: ChartSpec | None
+    base_chart_payload: StoredChart | None
 
     @model_validator(mode="after")
     def _replacement_must_be_complete(self) -> Self:
-        values = (self.birth_input, self.birth_resolved, self.base_chart_spec)
+        values = (
+            self.birth_input,
+            self.birth_resolved,
+            self.base_chart_spec,
+            self.base_chart_payload,
+        )
         present = tuple(value is not None for value in values)
         if any(present) and not all(present):
             raise ValueError(
-                "birth_input, birth_resolved, and base_chart_spec must be all set "
+                "birth_input, birth_resolved, base_chart_spec, and base_chart_payload "
+                "must be all set "
                 "or all None"
             )
         return self
@@ -98,6 +116,7 @@ RESET_DELTA: Final[StateDelta] = StateDelta(
     birth_input=None,
     birth_resolved=None,
     base_chart_spec=None,
+    base_chart_payload=None,
 )
 
 
@@ -196,6 +215,7 @@ __all__ = [
     "ChartRef",
     "SessionState",
     "StateDelta",
+    "StoredChart",
     "apply_delta",
     "is_expired",
     "matches_intent",

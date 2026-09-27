@@ -14,6 +14,8 @@ from pydantic import ValidationError
 from exact_orb.birth.types import BirthTimeDomain, UtcMinuteRange
 from exact_orb.calculation.chart_contract import calculation_input_from_chart
 from exact_orb.calculation.codec import (
+    CHART_ARTIFACT_PAYLOAD_FORMAT,
+    SUPPORTED_CHART_ARTIFACT_PAYLOAD_FORMATS,
     ChartArtifactDecodeError,
     decode_chart_artifact,
     encode_chart_artifact,
@@ -31,7 +33,7 @@ from exact_orb.engine.charts.natal import NatalChart, calculate_natal
 from exact_orb.engine.charts.uncertainty import CosmogramTimeUncertainty
 from exact_orb.engine.ephemeris.types import BodyPosition, CalculationWarning
 from tests.conftest import REPO_ROOT
-from tests.fixtures.natal_1985 import REFERENCE
+from tests.fixtures.natal_1985 import BODY_IDS, REFERENCE
 
 
 pytestmark = pytest.mark.no_ephemeris_autoinit
@@ -284,6 +286,84 @@ def test_codec_round_trip_returns_equal_new_instance() -> None:
     assert decoded == artifact
     assert decoded is not artifact
     assert encode_chart_artifact(decode_chart_artifact(encoded)) == encoded
+
+
+@pytest.mark.parametrize(
+    "name",
+    (
+        "chart_artifact_format_1",
+        "chart_artifact_format_1_natal_1985",
+        "chart_artifact_format_1_cosmogram_1985",
+    ),
+)
+def test_frozen_format_1_payload_decodes_without_structural_loss(name: str) -> None:
+    golden = REPO_ROOT / "tests" / "golden"
+    expected = json.loads((golden / f"{name}.json").read_text(encoding="utf-8"))
+    stored = (golden / f"{name}.bin").read_bytes()
+
+    decoded = decode_chart_artifact(stored)
+    raw = json.loads(gzip.decompress(stored).decode("utf-8"))
+
+    assert decoded.model_dump(mode="json") == raw
+    assert CHART_ARTIFACT_PAYLOAD_FORMAT == expected["payload_format"]
+    assert CHART_ARTIFACT_PAYLOAD_FORMAT in SUPPORTED_CHART_ARTIFACT_PAYLOAD_FORMATS
+    assert decoded.calculation_key == expected["calculation_key"]
+    assert decoded.calculation_version == expected["calculation_version"]
+    assert decoded.spec.model_dump(mode="json") == expected["spec"]
+    assert calculation_input_from_chart(decoded.chart).model_dump(mode="json") == expected[
+        "calculation_input"
+    ]
+    assert decoded.calculation_key == calculation_key(
+        CalculationInput.model_validate(expected["calculation_input"]),
+        decoded.spec,
+        decoded.calculation_version,
+    )
+    if "payload_sha256" in expected:
+        assert sha256(stored).hexdigest() == expected["payload_sha256"]
+
+
+def test_frozen_1985_natal_has_complete_chart_and_independent_human_facts() -> None:
+    stored = (
+        REPO_ROOT / "tests" / "golden" / "chart_artifact_format_1_natal_1985.bin"
+    ).read_bytes()
+    chart = decode_chart_artifact(stored).chart
+
+    assert chart.chart_kind == "natal"
+    assert chart.datetime_utc == REFERENCE["datetime_utc"]
+    assert chart.bodies is not None
+    assert set(chart.bodies) >= set(BODY_IDS) | {
+        "south_node", "pars_fortune", "selena",
+    }
+    assert chart.cusps is not None and len(chart.cusps) == 12
+    assert chart.angles
+    assert chart.aspects
+    assert chart.configurations
+    assert chart.interceptions
+    assert chart.strength is not None
+    sun = chart.bodies["sun"]
+    assert sun.longitude == pytest.approx(
+        150 + 9 + 20 / 60 + 27 / 3600, abs=0.5 / 3600,
+    )
+    assert sun.house == 4
+    assert chart.bodies["jupiter"].retrograde is True
+    assert {(item.sign, item.house) for item in chart.interceptions} >= {
+        ("Virgo", 4), ("Pisces", 10),
+    }
+
+
+def test_frozen_1985_cosmogram_has_unknown_time_domain() -> None:
+    stored = (
+        REPO_ROOT / "tests" / "golden" / "chart_artifact_format_1_cosmogram_1985.bin"
+    ).read_bytes()
+    chart = decode_chart_artifact(stored).chart
+
+    assert chart.chart_kind == "cosmogram"
+    assert chart.datetime_utc == datetime(1985, 9, 2, 8, tzinfo=timezone.utc)
+    assert chart.time_uncertainty is not None
+    assert chart.time_uncertainty.domain.minute_count == 1440
+    assert chart.datetime_utc in chart.time_uncertainty.domain
+    assert chart.bodies
+    assert chart.aspects is not None
 
 
 def test_mutating_decoded_nested_chart_does_not_affect_next_decode() -> None:
