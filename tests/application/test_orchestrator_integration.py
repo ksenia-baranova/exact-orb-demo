@@ -387,6 +387,9 @@ async def test_session_deleted_after_real_handler_is_reported_as_lost() -> None:
         await _create_session(stand, session_id)
 
         class DeletingArtifactPort:
+            def to_stored(self, artifact: ChartArtifact) -> tuple[int, bytes]:
+                return stand.artifacts.to_stored(artifact)
+
             async def ensure_chart(
                 self,
                 spec: ChartSpec,

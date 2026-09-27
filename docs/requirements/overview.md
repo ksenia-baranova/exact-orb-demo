@@ -113,16 +113,16 @@ application-срез ограничен натальной картой и ко�
 
 ### 2.1 Текущая готовность
 
-Сверено повторно 2026-09-22. Подробные реестры application core и runtime
+Сверено повторно 2026-09-27. Подробные реестры application core и runtime
 composition — в [плане ApplicationOrchestrator](../project_management/implementation_plans/application_orchestrator_implementation_plan.md)
 и [плане bootstrap composition](../project_management/implementation_plans/bootstrap_composition_implementation_plan.md).
 
 | Область | Реализовано | Остаётся |
 |---|---|---|
 | Standalone CLI и ядро | natal, cosmogram, transit | развитие техник; CLI не является HTTP-приложением |
-| Build Natal | `BuildNatalCommand`, `BuildNatalHandler`, `BuildNatalOutcome`, `ApplicationOrchestrator`, внешний `ApplicationResult`, CAS commit/retry/cancellation, lifecycle logging, минимальная composition, process-local `ApplicationRuntime` и его сквозная приёмка | HTTP mapping, client monotonicity X1, admission X2 и deployment policy |
+| Build Natal | `BuildNatalCommand`, `BuildNatalHandler`, `BuildNatalOutcome`, `ApplicationOrchestrator`, внешний `ApplicationResult`, CAS commit/retry/cancellation, lifecycle logging, минимальная composition, process-local `ApplicationRuntime`, атомарное сохранение `StoredChart` и сквозная приёмка после рестарта | HTTP mapping, client monotonicity X1, admission X2 и deployment policy |
 | Резолв и артефакты | `PlaceSearch`, `PlaceCatalog`, JSONL test adapter, GeoNames SQLite builder, `SqlitePlaceCatalog`, индексированные search/lookup, lifecycle/startup validation, historical TZ, resolver, spec, key v2, version, engine, codec, InMemory cache, artifact resolver и сквозная catalog/application приёмка | HTTP/lifespan wiring M1-6, UI autocomplete M1-7 и доставка `places.sqlite` M1-12 |
-| Сессия | contracts, `ContextService`, InMemory и SQLite adapters, TTL/CAS, runtime-owned SQLite executor и one-shot reaper | подключение к HTTP/session lifecycle и периодическое расписание reaper |
+| Сессия | contracts, `ContextService`, InMemory и SQLite adapters, TTL/CAS, `StoredChart`, согласованный snapshot, чистая `session_view`, runtime-owned SQLite executor и one-shot reaper | подключение к HTTP/session lifecycle и периодическое расписание reaper |
 | Клиент и HTTP API | — | форма, renderer, middleware, JSON/SSE endpoints |
 | Agent Runtime | интерфейсы, реестры, синхронный `NatalTool`; `orchestration.Orchestrator` — каркас | interpretation handlers, целевой runtime, async Tool, общий путь через артефакты |
 | Интерпретация и допуск | contracts/каркас интерпретации, LLM Gateway transport | `InterpretationService`, recipes, cache, streaming, guards, capabilities, policy и admission |
@@ -307,7 +307,7 @@ pipeline — поток и резервацию бюджета. Это сост�
 
 ### И-12 — кэш расчётов и сохранённая карта
 
-Ключ является хэшем и сам не позволяет восстановить карту. Целевой агрегат
+Ключ является хэшем и сам не позволяет восстановить карту. Реализованный агрегат
 сессии хранит `StoredChart` вместе с `birth_resolved` и `base_chart.spec`.
 Открытие живой сессии показывает сохранённый результат даже после рестарта
 процесса; при смене версии он получает `chart_stale`, а новый расчёт требует
@@ -423,7 +423,7 @@ hard_expires_at
 отдельная дочерняя `session_charts` хранит сериализованный `StoredChart` с тем
 же жизненным циклом; `SessionSnapshot` включает карту. Производных видов
 карт в MVP нет: единственная активная ссылка — `base_chart` (ADR-0016).
-Целевые пользовательские сценарии и компонентный bootstrap для этой ветки
+Пользовательские сценарии и компонентный bootstrap для этой ветки
 описаны в [требованиях M1-5.2](session/stored-chart-session-behavior.md).
 
 Долговременного `Profile DB` нет.

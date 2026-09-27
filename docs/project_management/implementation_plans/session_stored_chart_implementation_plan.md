@@ -5,7 +5,8 @@
 **Ревизия:** 2026-09-27 — порядок работ, проверки отрицательных требований
 и журнал свидетельств уточнены после ревью плана.
 
-**Статус:** промты 01–07 выполнены 2026-09-27; промт 08 не начат.
+**Статус:** промты 01–08 выполнены 2026-09-27; компонентная приёмка M1-5.2
+закрыта, публичный HTTP bootstrap остаётся M1-6.
 
 **Ветка:** существующая `feat/session-stored-chart`; исходный HEAD `e7327bf`.
 Рабочее дерево содержит несвязанные и ещё не зафиксированные изменения:
@@ -367,6 +368,24 @@ tests; только затронутые актуальные requirements, ADR 
 | Sequence 004/006/007: reset, две вкладки, первая неудача | 03–05, 07–08 |
 | INFO/DEBUG, отсутствие payload в traceback | 03, 07–08 |
 
+**Свидетельство закрытия S-01–S-12 на компонентной границе:**
+
+| Требование | Исполняемое свидетельство | Граница |
+|---|---|---|
+| S-01–S-03 | `test_empty_first_return_failed_build_and_reset_remain_empty`; общий `tests/session/conformance.py` и `tests/session/test_context.py` проверяют create, TTL и согласованный load | Генерация ID и cookie остаются transport M1-6. |
+| S-04, S-08–S-09 | `test_runtime_restart_restores_identical_chart_without_calculation`, `tests/application/test_session_view.py`, `test_structural_chart_corruption_blocks_touch_and_context_load` | Restore использует snapshot; transport ERROR при `chart_unavailable` остаётся M1-6. |
+| S-05–S-07 | `test_runtime_build_natal_miss_then_hit_commits_same_session`, две SQLite CAS-гонки, `test_chart_write_failure_rolls_back_parent_and_retry_commits_pair`, `test_lost_chart_commit_acknowledgement_preserves_pair_and_retry_winner` | Неопределённый commit читается как unknown до нового load. |
+| S-10 | `test_second_tab_commit_appears_on_first_tabs_next_load` и две гонки в `test_orchestrator_sqlite_integration.py` с `asyncio.Barrier` | Автоматическая доставка между вкладками не требуется. |
+| S-11–S-12 | `tests/session/test_in_memory.py`, `tests/session/test_sqlite.py`: reset/delete/reaper, `test_v1_to_v2_clears_legacy_sessions_and_preserves_foreign_component`, `test_v2_migration_failure_after_delete_rolls_back_every_change` | Проверен локальный SQLite, без сетевого deployment. |
+
+Sequence 001/005/006/007 и Build Natal sequence сверены с реальным путём
+Handler → Orchestrator → ContextService → SQLite: INFO-пары `load`, `handle`,
+`resolve_birth_data`, `ensure_chart`, `to_stored`, `save` и terminal outcome
+наблюдаются в интеграционных тестах. DEBUG показывает вход/выход компонентов
+и безопасную проекцию `StoredChart`. Sequence 002/003/004 содержат будущие
+стрелки transport bootstrap; их HTTP-журнал проверяется в M1-6. Действующие
+ADR-0040 и спецификация §8–10 не потребовали ревизии.
+
 ## 7. Чувствительность отрицательных проверок
 
 Для каждого правила ниже сначала нужен положительный контроль, доказывающий,
@@ -397,8 +416,8 @@ tests; только затронутые актуальные requirements, ADR 
 Статус обновляется после каждого промта. «Пройдено» относится только к
 указанному checkout и составу тестов; после изменения контрактов старый
 результат не считается подтверждением нового дерева. Журнал ниже содержит
-фактические запуски промтов 01–07; команды после таблицы остаются планом для
-последующих срезов.
+фактические запуски промтов 01–08; команды после таблицы служат образцом для
+повторной проверки.
 
 | Промт | Статус | Целевые проверки | Связанные проверки и открытое окно |
 |---|---|---|---|
@@ -409,7 +428,7 @@ tests; только затронутые актуальные requirements, ADR 
 | 05 | Выполнен | `test_in_memory.py`: 124 passed | Связанный session/application/boundary-набор: 312 passed. SQLite `touch` ещё не передаёт chart; schema/adapter/reaper и restart остаются 06–08. |
 | 06 | Выполнен | SQLite schema/migration/constraints: 26 passed | Связанный SQLite/boundary-набор: 71 passed. Полный SQLite-файл остановлен после 83 passed, 12 failed на прежнем `touch` без `chart`; aggregate, reaper и restart остаются 07–08. |
 | 07 | Выполнен | SQLite/ContextService адресно: 12 passed; session и module boundaries: 661 passed | SQLite CAS/touch/chart, отказ commit, повреждение, reset/delete/reaper и безопасные DEBUG-проекции подтверждены. Дополнительный application-набор: 240 passed, 1 failed на устаревшем ожидании `to_stored` в сквозном тесте карточки 08. |
-| 08 | Не начат | Не запускались | Не оценивалось |
+| 08 | Выполнен | Сквозная выборка: 8 passed; поведенческий мутант: 1 expected failure, после удаления 1 passed | Session/application/boundary: 1600 passed; полный локальный `pytest`: 2649 passed. M1-6 ещё должен проверить HTTP bootstrap/cookie и транспортный журнал. |
 
 Журнал заполняется фактическими запусками, включая намеренно падающий мутант
 и последующий зелёный повтор. Для каждого запуска записать команду целиком,
@@ -469,6 +488,13 @@ tests; только затронутые актуальные requirements, ADR 
 | 2026-09-27 / `1235d36` | 07, финальный session-набор и модульные границы | `.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/session tests/test_module_boundaries.py -q --tb=short` | 0; 661 passed | Оба адаптера, общий conformance, SQLite schema/corruption/lifecycle, ContextService и границы импортов прошли на финальном коде. Сквозной runtime restart и полный `pytest` остаются 08. |
 | 2026-09-27 / `1235d36` | 07, дополнительный application-набор | `.\.venv\Scripts\python.exe -B -m pytest -p no:cacheprovider tests/application/test_application_bootstrap_integration.py tests/application/test_build_natal_integration.py tests/application/test_build_natal_logging.py tests/application/test_orchestrator_logging.py tests/application/test_session_view.py -q --tb=short` | 1; 240 passed, 1 failed | `test_runtime_build_natal_miss_then_hit_commits_same_session` ожидает старый список Handler-событий без пары `to_stored`; сценарий фактически дошёл до двух `Committed`. Обновление этого сквозного теста и отдельная restart-приёмка принадлежат 08; результат application-набора не объявлен зелёным. |
 | 2026-09-27 / `1235d36` | 07, финальные пробелы и отдельная сверка diff | `git diff --check`; `rg -n '[ \t]+$' prompts/2026-09-27/session-stored-chart/07-sqlite-aggregate-and-session-logging.md src/exact_orb/session/adapters/sqlite.py src/exact_orb/session/context.py tests/session/test_context.py tests/session/test_sqlite.py docs/project_management/implementation_plans/session_stored_chart_implementation_plan.md` | 0 для Git; 1 для `rg` без совпадений | Финальный diff без ошибок пробелов; untracked prompt проверен отдельно. Повторная сверка ADR-0040, §8–10 и sequence 004/005 не выявила нового конфликта: структурный отказ предшествует renew, конфликтный CAS не меняет chart, payload скрыт в DEBUG. |
+| 2026-09-27 / `6dc385d` | 08, сквозные сценарии и два SQLite outcome | `.\.venv\Scripts\python.exe -m pytest -q tests/application/test_application_bootstrap_integration.py tests/application/test_orchestrator_sqlite_integration.py tests/session/test_sqlite.py -k "runtime or sqlite_cas_race or chart_write_failure_rolls_back_parent_and_retry_commits_pair or lost_chart_commit_acknowledgement_preserves_pair_and_retry_winner"` | 0; 8 passed, 260 deselected | Проверены новый runtime и пустой cache, отказ первого build, reset/return, поздний load вкладки A, атомарная пара, `Superseded` и unknown commit/retry. Остальные тесты этой командой не запускались. |
+| 2026-09-27 / `6dc385d` | 08, первая связанная проверка | `.\.venv\Scripts\python.exe -m pytest -q tests/session tests/application tests/test_module_boundaries.py` | 1; 1599 passed, 1 failed | Старый локальный тестовый порт в `test_session_deleted_after_real_handler_is_reported_as_lost` не имел нового `to_stored`; проверяемая ветка не дошла до удаления. Порт дополнен делегированием реальному resolver, production-код не менялся. |
+| 2026-09-27 / `6dc385d` | 08, связанный набор после исправления | `.\.venv\Scripts\python.exe -m pytest -q tests/application/test_orchestrator_integration.py::test_session_deleted_after_real_handler_is_reported_as_lost tests/session tests/application tests/test_module_boundaries.py` | 0; 1600 passed | Повторно прошли session/application и архитектурные границы. Один адресный тест указан вместе с полным application-набором и запускается дважды. |
+| 2026-09-27 / `6dc385d` | 08, полный локальный набор | `.\.venv\Scripts\python.exe -m pytest -q` | 0; 2649 passed | Подтверждён текущий локальный checkout без сетевых и платных smoke-тестов; HTTP, cookie и межверсионный `AlreadyApplied` остаются отдельными границами. |
+| 2026-09-27 / `6dc385d` | 08, временный вызов cache через инструментированный runtime | `.\.venv\Scripts\python.exe -m pytest -q tests/application/test_application_bootstrap_integration.py::test_runtime_restart_restores_identical_chart_without_calculation --tb=short` | 1; 1 failed с `AssertionError: restore called a calculation component` | Временный запрещённый `cache.get` после установки ловушки обнаружен нужным тестом. Вызов удалён, в итоговом diff мутанта нет. |
+| 2026-09-27 / `6dc385d` | 08, после удаления мутанта | `.\.venv\Scripts\python.exe -m pytest -q tests/application/test_application_bootstrap_integration.py::test_runtime_restart_restores_identical_chart_without_calculation` | 0; 1 passed | Восстановление снова проходит без доступа к cache/resolver/engine. |
+| 2026-09-27 / `6dc385d` | 08, итоговое дерево после документации и удаления мутанта | `.\.venv\Scripts\python.exe -m pytest -q` | 0; 2649 passed | Повторно проверен итоговый код. Локальные ссылки изменённых Markdown-файлов разрешаются; `git diff --check` — 0, `rg -n '[ \t]+$' prompts/2026-09-27/session-stored-chart/08-end-to-end-acceptance.md` — 1 без совпадений. PlantUML PNG не рендерились. |
 
 После 02, 07 и перед закрытием 08 провести независимое ревью спорных границ
 контрактов, атомарности и сквозного сценария. Подтверждённые находки и их
