@@ -1,0 +1,48 @@
+@startgantt
+' Рабочая оценка текущего change.
+' AM/PM сохраняют половины дня, которые дневная шкала PlantUML
+' не может показать отдельной шириной полосы.
+
+title exact-orb — M1-6 HTTP API and Session Middleware
+Project starts 2026-09-29
+printscale daily zoom 2
+Label on first column
+saturday are closed
+sunday are closed
+
+-- Подготовка change — 0.5 рабочего дня --
+
+[Подготовка change (Lead) — 29.09 AM — 0.5 дн.] as [CHANGE] starts 2026-09-29 and ends 2026-09-29
+[CHANGE] is colored in Orange
+[Подготовка change завершена] as [CHANGE_DONE] happens 2026-09-29
+[CHANGE_DONE] is colored in Green
+
+-- Analysis — 1.5 рабочего дня --
+
+[Analysis — 29.09 PM–30.09 — 1.5 дн.] as [ANALYSIS] starts 2026-09-29 and ends 2026-09-30
+[ANALYSIS] is colored in Wheat
+[Требования утверждены] as [ANALYSIS_DONE] happens 2026-09-30
+[ANALYSIS_DONE] is colored in Green
+
+-- Разработка — 1 рабочий день --
+
+[Разработка — 01.10 — 1 дн.] as [DEVELOPMENT] starts 2026-10-01 and ends 2026-10-01
+[DEVELOPMENT] is colored in LightBlue
+[Реализация готова к тестированию] as [DEVELOPMENT_DONE] happens 2026-10-01
+[DEVELOPMENT_DONE] is colored in Green
+
+-- Тестирование — 1 рабочий день --
+
+[Тестирование — 02.10 — 1 дн.] as [TESTING] starts 2026-10-02 and ends 2026-10-02
+[TESTING] is colored in LightGreen
+[Change готов к финальной приёмке — оценка 4 рабочих дня] as [CHANGE_READY] happens 2026-10-02
+[CHANGE_READY] is colored in Green
+
+legend bottom
+  Точная сумма оценок: 0.5 + 1.5 + 1 + 1 = 4 рабочих дня.
+  AM/PM обозначают передачу работы внутри 29.09; полосы PlantUML занимают весь календарный день.
+  Оценка каждого этапа включает подготовку его артефактов, обязательное review и approval.
+  Отдельный резерв на возвраты и исправления не добавлен.
+  Даты являются текущим рабочим планом и уточняются по фактическому ходу change.
+endlegend
+@endgantt
