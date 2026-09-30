@@ -26,7 +26,7 @@ builder, `PlaceSearch`, `SqlitePlaceCatalog`, индексированные sea
 сквозная application-интеграция. HTTP/lifespan, UI и доставка артефакта
 остаются M1-6/M1-7/M1-12.
 
-Ревизия 2026-09-26: ADR-0040 меняет целевое восстановление уже построенной
+Ревизия 2026-09-26: ADR-0041 меняет целевое восстановление уже построенной
 карты: она хранится в агрегате сессии как `StoredChart`. Реализация вынесена
 в отдельную ветку до M1-6; статус текущего кода приведён в §2.1.
 
@@ -242,7 +242,7 @@ read-only выпуском. `LocalPlaceCatalog` сохранён для тест
 и явного нового построения. Ключ строится из `CalculationInput`, spec и
 `CalculationVersion`; для космограммы input включает digest домена времени.
 Изменение версии расчёта даёт новый ключ для нового build, но само открытие
-сессии не пересчитывает прежнюю карту (ADR-0017, ADR-0032, ADR-0040).
+сессии не пересчитывает прежнюю карту (ADR-0017, ADR-0032, ADR-0041).
 
 **И-13. Состояние меняется только явной типизированной командой.**
 Построение/изменение карты начинается со структурированного ввода формы;
@@ -312,7 +312,7 @@ pipeline — поток и резервацию бюджета. Это сост�
 Открытие живой сессии показывает сохранённый результат даже после рестарта
 процесса; при смене версии он получает `chart_stale`, а новый расчёт требует
 явного действия пользователя. `ChartSpec` описывает методику и состав
-результата, но не содержит дату и координаты рождения (ADR-0017, ADR-0040).
+результата, но не содержит дату и координаты рождения (ADR-0017, ADR-0041).
 
 Девятикомпонентный отпечаток учитывает код, расчётные профили, native backend
 и эфемериды. `ApplicationRuntime` вычисляет его при startup и передаёт в
@@ -419,7 +419,7 @@ hard_expires_at
 
 **Session Store** — состояние с TTL и compare-and-set. **Dialog Store** хранит
 ходы отдельно: append/clear не меняют `state_version`. Агрегат
-`SessionPersistence` владеет общими `touch`, `reset` и `delete`. По ADR-0040
+`SessionPersistence` владеет общими `touch`, `reset` и `delete`. По ADR-0041
 отдельная дочерняя `session_charts` хранит сериализованный `StoredChart` с тем
 же жизненным циклом; `SessionSnapshot` включает карту. Производных видов
 карт в MVP нет: единственная активная ссылка — `base_chart` (ADR-0016).
@@ -530,7 +530,7 @@ startup-проверка согласованности реестров ещё 
 
 **ChartArtifactResolver** — `get → miss → calculate → put`. Расчётный кэш не
 репозиторий: любой объект кэша удаляем без потери подтверждённой карты,
-хранящейся в сессии (И-12, ADR-0040).
+хранящейся в сессии (И-12, ADR-0041).
 Cache hit проверяется на соответствие запросу; повреждённый payload приводит
 к пересчёту. Отказ кэша не блокирует доступный расчёт. Одновременные запросы
 одного ключа разделяют одну задачу расчёта в пределах resolver/event loop
@@ -730,7 +730,7 @@ SQLite и application producer wiring отложены; утверждение �
 | `CalculationResult` | Engine → ArtifactResolver | только `chart: NatalChart` |
 | `ChartArtifact` | ArtifactResolver → Handler | `calculation_key`, `spec`, `calculation_version`, artifact-safe `chart` |
 | `BuildNatalSuccess` / `BuildNatalOutcome` | Handler → Caller | успех: `artifact + delta`; union также включает `InputRequired`, `ResolutionUnavailable`, `CalculationFailed` |
-| `StateDelta` | Handler → Orchestrator → ContextService | полная замена `birth_input`, `birth_resolved`, `base_chart_spec`, `base_chart_payload` либо all-None reset; expected version отдельно; четвёртое поле целевое по ADR-0040 |
+| `StateDelta` | Handler → Orchestrator → ContextService | полная замена `birth_input`, `birth_resolved`, `base_chart_spec`, `base_chart_payload` либо all-None reset; expected version отдельно; четвёртое поле целевое по ADR-0041 |
 | `SessionState` / `SessionSnapshot` | Session persistence → ContextService → Caller | состояние с TTL/CAS; целевой snapshot объединяет state, dialog и StoredChart |
 | `ToolRequest` / `ToolResult` | Текущий Tool port | `tool_name + args`; результат: `tool_name`, `data`, `warnings`, `meta`; текущий вызов синхронный |
 | `PromptBundle` | Контракт подготовки промпта | `system`, `user`, `recipe_id`; модель существует, полный pipeline ещё не собран |

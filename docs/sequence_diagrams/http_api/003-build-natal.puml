@@ -1,0 +1,117 @@
+@startuml
+title exact-orb — HTTP Build Natal: validation, deadline, admission и outcome
+
+autonumber
+hide footbox
+skinparam shadowing false
+skinparam responseMessageBelowArrow true
+
+actor "Клиент" as Client
+boundary "POST /charts/natal" as API
+control "AdmissionControl\n(calculation)" as Admission
+control "ApplicationOrchestrator" as Orch
+control "BuildNatalHandler" as Handler
+control "ContextService" as Context
+database "SessionPersistence" as Store
+collections "Журнал" as Log
+
+Client -> API : JSON birth fields + cookie
+API -> Log : http_request_started(request_id, route)
+
+alt service shutting down
+    API --> Client : 503 SERVICE_SHUTTING_DOWN; Retry-After: 30\ncookie unchanged
+else trusted forwarding invalid
+    API --> Client : 400 FORWARDED_HEADER_INVALID; cookie unchanged
+else Origin rejected
+    API --> Client : 403 ORIGIN_NOT_ALLOWED; cookie unchanged
+else media type / encoding rejected
+    API --> Client : 415 UNSUPPORTED_MEDIA_TYPE; cookie unchanged
+else body slow / too large
+    API --> Client : 408 REQUEST_TIMEOUT + Retry-After:1\n/ 413 REQUEST_TOO_LARGE; cookie unchanged
+else JSON/schema rejected
+    API --> Client : 422 INVALID_REQUEST + field issues\ncookie unchanged
+else cookie missing / invalid / duplicated
+    API --> Client : 409 SESSION_REQUIRED; clear if present
+else transport-valid request
+    API -> Log : http_message send AdmissionControl.reserve
+    API -> Admission : reserve(session_id, client_ip, calculation)
+
+    alt rate/capacity rejected
+        Admission --> API : rejected(code, detail, retry_after)
+        API -> Log : http_message receive AdmissionRejected
+        API -> Log : http_admission_rejected(code, detail)
+        API --> Client : 429 + computed Retry-After\n/ 503 capacity + Retry-After:1; cookie unchanged
+    else admitted
+        Admission --> API : permit
+        API -> Log : http_message receive AdmissionPermit
+        API -> API : RunContext(request_id, started_at,\ndeadline=+30s)
+        API -> Log : http_message send ApplicationOrchestrator.execute
+        API -> Orch : execute(BuildNatalCommand, session_id, run)\nunder monotonic response deadline
+
+        Orch -> Context : load(session_id)
+        Context -> Store : touch(session_id, now)
+        Store --> Context : SessionSnapshot / typed outcome
+        Context --> Orch : typed outcome
+
+        alt live snapshot
+            Orch -> Handler : handle(command, current state, run)
+            Handler --> Orch : success / InputRequired / typed failure
+            alt BuildNatalSuccess
+                Orch -> Context : save(original expected, delta)
+                Context -> Store : atomic CAS state + StoredChart
+                Store --> Context : Committed / AlreadyApplied /\nSuperseded / failure
+                Context --> Orch : typed commit outcome
+            end
+        end
+
+        alt execute returned typed result
+            Orch --> API : ApplicationResult
+            API -> Log : http_message receive ApplicationResult
+
+            alt Committed
+                API --> Client : 200 chart_ready + committed ChartDTO; renew
+            else AlreadyApplied
+                API --> Client : 200 already_applied; no request artifact; renew
+            else InputRequired / typed dependency failure / Superseded
+                API --> Client : 422 / 503 Retry-After:5 / 409; renew after successful load
+            else StateCommitFailed
+                API --> Client : 503 STATE_COMMIT_FAILED; retryable=true\nRetry-After:1; renew; only GET current recovery
+            else StateReadFailed
+                API --> Client : 503 STATE_READ_FAILED; Retry-After:5\ncookie unchanged
+            else SessionAbsent
+                API --> Client : 409 session code; clear cookie
+            else internal failure
+                API --> Client : 500 INTERNAL_FAILURE; internal code hidden
+            end
+        else response deadline / disconnect
+            API --> Client : 504 BUILD_TIMEOUT; retryable=false; Retry-After:5\nno Set-Cookie (unchanged) if connection exists
+            note over API, Orch
+            Accepted task remains registered.
+            Protected commit is retained and awaited.
+            Permit is not released at socket loss.
+            M1-6 option C: at 30s watchdog marks process unhealthy;
+            health becomes 503 and external supervisor restarts process.
+            Target state A moves calculation to a dedicated worker process.
+            end note
+        end
+
+        API -> Log : if terminal before restart:
+http_message send AdmissionControl.release
+        API -> Admission : release only after terminal task
+        Admission --> API : released
+        API -> Log : http_message receive AdmissionReleased
+    end
+end
+
+API -> Log : http_request_finished(status, code, duration)
+
+note over API, Store
+POST покрывает first build и explicit rebuild.
+После STATE_COMMIT_FAILED или BUILD_TIMEOUT клиент делает
+GET /charts/current, а не автоматический повтор POST.
+До supervisor restart current не доказывает terminal failure;
+после restart current является authoritative.
+Новый разрешённый POST всегда делает fresh load.
+end note
+
+@enduml

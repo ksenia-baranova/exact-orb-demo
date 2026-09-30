@@ -9,6 +9,9 @@ TTL-сессии, а не пользовательский профиль. От�
 
 Семь пользовательских сценариев, компонентный bootstrap и таблицы сообщений
 описаны в [требованиях к поведению сессии с картой](../../requirements/session/stored-chart-session-behavior.md).
+Конкретные endpoint, HTTP DTO, cookie actions и transport observability M1-6
+описаны в [проекте требований HTTP API](../../requirements/http_api.md) и
+диаграммах [`../http_api/`](../http_api/README.md).
 
 `ContextService` получает один aggregate и явный clock. Публичные create,
 load, save, append_turn, clear_dialog и reset_all не принимают `now`: каждый
@@ -26,7 +29,7 @@ dialog, сохраняя предметные поля и `state_version`. `touc
 В `SessionState` нет полной карты и `calculation_key`. Он хранит
 пользовательский ввод, разрешённые данные рождения, ссылку на текущую
 натальную карту и версию состояния. Сериализованный `ChartArtifact` в виде
-`StoredChart` хранится отдельной дочерней записью агрегата сессии по ADR-0040;
+`StoredChart` хранится отдельной дочерней записью агрегата сессии по ADR-0041;
 форматом и проверкой карты владеет артефактный слой. Компонентный контракт
 M1-5.2 реализован; HTTP bootstrap и cookie относятся к M1-6.
 
@@ -41,10 +44,10 @@ M1-5.2 реализован; HTTP bootstrap и cookie относятся к M1-6
 body/query/path. Отсутствующий или истёкший ключ не переиспользуется для
 create — transport гасит cookie и генерирует свежий ID.
 
-Create и restore при bootstrap транспорт выполняет через `ContextService`
-напрямую, без `ApplicationOrchestrator` (ADR-0006, ред. 2026-09-15): так
-нарисованы 001, 002 и первая ветка 003. Команды над уже загруженной сессией —
-построение, reset, delete — проходят через Orchestrator.
+Create и restore при bootstrap transport выполняет через `ContextService`
+напрямую, без `ApplicationOrchestrator`. По ADR-0040 bootstrap возвращает
+только liveness/version; отдельный `GET /charts/current` делает новый load и
+вызывает `session_view`. Build, reset и delete проходят через Orchestrator.
 
 Межзаписные touch/reset/delete принадлежат одному `SessionPersistence`.
 Полный reset агрегат только делегирует фасетному CAS с `RESET_DELTA`;
@@ -62,8 +65,8 @@ Sequence намеренно сворачивают внутренности ра
 | № | Файл | Сценарий | Исход |
 |---|---|---|---|
 | 001 | `001-natal-session-lifecycle.puml` | Первая карта → интерпретация → явное изменение данных через форму | Диалог доступен только для успешно сохранённой текущей карты |
-| 002 | `002-session-restore-on-return.puml` | Возврат после рестарта с пустым расчётным кэшем; живая пустая сессия; сессии нет | `chart_ready`, `chart_stale`, `chart_unavailable`, `empty` либо `SessionAbsent` |
-| 003 | `003-session-store-read-failure.puml` | Отказ required touch; exact retry после неподтверждённого commit | `StateReadFailed`; N8 без rebase |
+| 002 | `002-session-restore-on-return.puml` | Bootstrap без карты, затем отдельный current GET после restart | `ready`; затем `chart_ready`, `chart_stale`, `chart_unavailable` или `empty` |
+| 003 | `003-session-store-read-failure.puml` | Отказ current load; recovery после неизвестного commit | `StateReadFailed`; GET current до нового HTTP POST |
 | 004 | `004-session-reset-and-delete.puml` | Очистка диалога, атомарный reset/delete, гашение cookie | `RESET_DELTA` и один aggregate lifecycle |
 | 005 | `005-compare-and-set.puml` | Механизм CAS и три исхода записи | `Committed`, `Superseded`, `AlreadyApplied` |
 | 006 | `006-two-tabs-rebuild-and-restore.puml` | Две вкладки: B перестраивает карту, A обновляется позднее | Общая серверная версия; без автоматической синхронизации вкладок |
@@ -81,7 +84,7 @@ Sequence намеренно сворачивают внутренности ра
 находятся за границей MVP. В текущем потоке используется только tool
 `ensure_natal`, который материализует уже выбранную в сессии карту и не
 меняет `SessionState`. Показанная в 001 M2-интерпретация пока вызывает
-`ensure_natal` по spec и после ADR-0040 может получить карту другой версии,
+`ensure_natal` по spec и после ADR-0041 может получить карту другой версии,
 чем сохранённая. Её контракт нужно пересмотреть до реализации M2; первая
 ветка хранения карты этот поток не меняет.
 

@@ -28,7 +28,7 @@
 **Сверка 2026-09-23:** тест §10.1 перенесён в текущую ветку коммитом
 `0828c26`; проверены 44 теста в `tests/test_module_boundaries.py`,
 910 application-тестов и полный `pytest` (2564 теста).
-**Целевая ревизия 2026-09-26:** ADR-0040 добавляет в handler вызов
+**Целевая ревизия 2026-09-26:** ADR-0041 добавляет в handler вызов
 `ChartArtifactPort.to_stored` и `StoredChart` в `StateDelta`. Ниже этот
 целевой контракт отделён от уже реализованного R5.
 **Сверка 2026-09-27:** подготовка `StoredChart`, полная `StateDelta`,
@@ -36,7 +36,7 @@
 промте 03 M1-5.2; сохранение агрегата остаётся следующим срезом.
 
 **Ограничение исходного R5:** он не требовал изменения модулей `birth`,
-`calculation` и `session`; ветка ADR-0040 отдельно меняет calculation и session.
+`calculation` и `session`; ветка ADR-0041 отдельно меняет calculation и session.
 
 `ApplicationOrchestrator` и внешний `ApplicationResult` реализуют принятую
 ADR-0006 границу после `BuildNatalOutcome`. Сам Handler по-прежнему заканчивает
@@ -160,11 +160,11 @@ class ChartArtifactPort(Protocol):
         ...
 
     def to_stored(self, artifact: ChartArtifact) -> tuple[int, bytes]:
-        ...  # порт расширен в первом срезе ADR-0040
+        ...  # порт расширен в первом срезе ADR-0041
 ```
 
 `ChartArtifactPort.to_stored` и реализация в `ChartArtifactResolver` уже
-добавлены в первом срезе ADR-0040; вызов из Handler реализован в промте 03.
+добавлены в первом срезе ADR-0041; вызов из Handler реализован в промте 03.
 
 `Handler`, `BirthDataResolverPort` и `ChartArtifactPort` не помечаются `@runtime_checkable`: система не выполняет `isinstance(..., Protocol)`. Совместимость обеспечивается статической проверкой типов и contract-тестами. Это намеренное решение, а не пропущенный декоратор.
 
@@ -479,7 +479,7 @@ Handler не должен различать cache hit и cache miss: оба я�
 
 ### Шаг 5. Сформировать `StateDelta`
 
-Целевой шаг ADR-0040 получает сериализацию у resolver и собирает сессионный
+Целевой шаг ADR-0041 получает сериализацию у resolver и собирает сессионный
 envelope с ключом и версией артефакта. Отказ кодирования или лимита размера
 завершает build внутренней ошибкой до вызова CAS.
 
@@ -1068,7 +1068,7 @@ Frozen Pydantic base type для всех application-команд. Собств
 | Атрибут / метод | Тип | Описание | Возможные значения | Пример |
 |---|---|---|---|---|
 | `ensure_chart` | `async (ChartSpec, ResolvedBirthData, *, RunContext) -> ChartArtifact` | Возвращает валидный артефакт из кэша или расчёта | `ChartArtifact`; typed calculation exceptions | `await artifacts.ensure_chart(spec, resolved, run=run)` |
-| `to_stored` | `(ChartArtifact) -> tuple[int, bytes]` | Реализованное дополнение ADR-0040; детерминированно кодирует карту в формат сессии | Формат и gzip JSON payload; внутренняя ошибка кодирования | `artifacts.to_stored(artifact)` |
+| `to_stored` | `(ChartArtifact) -> tuple[int, bytes]` | Реализованное дополнение ADR-0041; детерминированно кодирует карту в формат сессии | Формат и gzip JSON payload; внутренняя ошибка кодирования | `artifacts.to_stored(artifact)` |
 
 ## Сообщение: `BuildNatalCommand`
 
@@ -1377,7 +1377,7 @@ Handler не читает и не изменяет внутренние поля
 | `birth_input` | `BirthInput \| None` | Исходные данные, которые должны стать подтверждёнными | Для build — `BirthInput`; `None` только при reset | `{"birth_date":"1985-09-02","birth_time":"00:45:00","place_id":"moscow-ru"}` |
 | `birth_resolved` | `ResolvedBirthData \| None` | Разрешённые backend данные | Для build — `ResolvedBirthData`; `None` только при reset | `{"utc_datetime":"1985-09-01T20:45:00Z","latitude":55.7558,"longitude":37.6173}` |
 | `base_chart_spec` | `ChartSpec \| None` | Спецификация новой базовой карты | Для build — `NatalChartSpec`; `None` только при reset | См. полный natal-пример в разделе `NatalChartSpec` |
-| `base_chart_payload` | `StoredChart \| None` | Сохранённый артефакт в агрегате сессии по ADR-0040 | Для build — `StoredChart`; `None` только при reset | Формат 1, ключ, версия, gzip JSON payload |
+| `base_chart_payload` | `StoredChart \| None` | Сохранённый артефакт в агрегате сессии по ADR-0041 | Для build — `StoredChart`; `None` только при reset | Формат 1, ключ, версия, gzip JSON payload |
 
 Инвариант целевой ветки: четыре атрибута либо одновременно заполнены,
 либо одновременно равны `None`. Успешный handler возвращает полную дельту.
