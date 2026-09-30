@@ -5,7 +5,7 @@ title exact-orb — Session: построение → интерпретация
 ' - SessionState — состояние сессии; ходы диалога хранятся отдельной
 '   записью через DialogStore с тем же TTL;
 ' - полной карты в SessionState нет: StoredChart хранится отдельной
-'   дочерней записью того же агрегата сессии (ADR-0040);
+'   дочерней записью того же агрегата сессии (ADR-0041);
 ' - изменение данных рождения возможно только явной командой из формы.
 
 autonumber
@@ -46,6 +46,7 @@ end box
 
 box "2. API / APPLICATION" #FFEDD5
     boundary "API" as API
+    control "AdmissionControl\n(calculation)" as Admission
     control "ApplicationOrchestrator" as Orch
     control "BuildNatalHandler" as Build
     control "InterpretSelectionHandler" as Selection
@@ -76,14 +77,18 @@ end box
 User -> FE : открывает приложение
 FE -> FE : показывает форму данных рождения
 FE -> FE : карта и диалог недоступны
-FE -> API : bootstrap (cookie отсутствует)
+FE -> API : POST /session/bootstrap {}\n(cookie отсутствует)
 API -> API : сгенерировать свежий server session_id
 API -> Context : create(session_id)
 Context -> Context : now = require_utc(clock(), name="clock")
 Context -> Store : create(session_id, now)
 Store --> Context : SessionCreated(state_version = 0)
 Context --> API : SessionCreated
-API --> FE : Set-Cookie(HttpOnly, Secure, SameSite)
+API --> FE : 200 SessionBootstrapDTO ready/0\n+ Set-Cookie(HttpOnly, Secure, SameSite=Lax)
+FE -> API : GET /charts/current + cookie
+API -> Context : load(session_id)
+Context --> API : SessionSnapshot(empty, 0)
+API --> FE : 200 SessionViewDTO empty + renew cookie
 
 note over FE, Store
 session_id не приходит из body/query/path.
@@ -95,7 +100,10 @@ end note
 
 User -> FE : вводит дату, время и город
 User -> FE : нажимает «Построить карту»
-FE -> API : BuildNatalCommand(birth_input)
+FE -> API : POST /charts/natal\n{birth_date, birth_time, place_id} + cookie
+API -> Admission : reserve(session_id, client_ip, calculation)
+Admission --> API : permit
+API -> API : run = RunContext(run_id=request_id,\n deadline=started_at+30s)
 API -> Orch : execute(command, session_id, run)
 
 Orch -> Context : load(session_id)
@@ -125,8 +133,9 @@ Store -> Charts : записать StoredChart в той же CAS-секции
 Store --> Context : 1
 Context --> Orch : Committed(state_version=1)
 
-Orch --> API : Success(chart, state_version=1)
-API --> FE : Chart DTO
+Orch --> API : ApplicationCommitted(chart, birth_view, state_version=1)
+API -> Admission : release(permit)
+API --> FE : 200 ChartReadyDTO + renew cookie
 FE -> FE : показывает значения карты
 FE -> FE : разблокирует диалог
 FE --> User : карта и интерпретация доступны
@@ -164,7 +173,7 @@ end note
 
 note over Orch, Agent
 Эта историческая M2-ветка вызывает ensure_natal по spec.
-После ADR-0040 это может дать карту другой CalculationVersion,
+После ADR-0041 это может дать карту другой CalculationVersion,
 чем сохранённая и показанная пользователю. Перед M2 надо отдельно
 решить, как интерпретация использует StoredChart или явный rebuild;
 ветка ниже не является контрактом первой ветки хранения карты.
@@ -235,8 +244,9 @@ User -> FE : нажимает «Изменить данные рождения»
 FE -> FE : открывает форму с сохранённым birth_input
 User -> FE : подтверждает новые данные
 
-FE -> API : UpdateBirthDataCommand(new_birth_input)
-API -> Orch : execute(command, session_id, run)
+FE -> API : POST /charts/natal(new_birth_input) + cookie
+API -> API : BuildNatalCommand(new_birth_input)
+API -> Orch : execute(command, session_id, new run)
 
 Orch -> Context : load(session_id)
 Context -> Context : now = require_utc(clock(), name="clock")
@@ -244,7 +254,7 @@ Context -> Persistence : touch(session_id, now)
 Persistence --> Context : SessionSnapshot(state_version=1, dialog)
 Context --> Orch : SessionSnapshot
 
-Orch -> Build : handle(update_command, current_state, run)
+Orch -> Build : handle(BuildNatalCommand, current_state, run)
 activate Build
 Build -> Birth : resolve(new_birth_input)
 Birth --> Build : new ResolvedBirthData
@@ -266,7 +276,7 @@ Store --> Context : 2
 Context --> Orch : Committed(state_version=2)
 
 Orch --> API : Success(new_chart, state_version=2)
-API --> FE : new Chart DTO
+API --> FE : 200 chart_ready + new ChartDTO
 FE -> FE : заменяет значения карты
 FE -> FE : диалог теперь использует state_version=2
 FE --> User : обновлённая карта

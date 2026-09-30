@@ -1,11 +1,11 @@
 # Change plan: HTTP API and Session Middleware
 
-- **Статус:** подготовка Lead завершена; готово к review.
+- **Статус:** проект анализа переработан после review; ожидает Developer/Tester review и Lead approval.
 - **Change:** `change/http-api-and-session-middleware`.
 - **Roadmap:** M1-6, `feat/http-api-and-session-middleware`.
 - **Исходный `main`:** `e337f5107d7a3092983f1d920aac45040c2df6ed`.
 - **Стартовый commit `change/*`:** `acc0a7671d52676e0e230e76497d59f769ec4fa8`.
-- **Текущая ветка:** `lead/http-api-and-session-middleware`.
+- **Текущая ветка:** `analysis/http-api-and-session-middleware`.
 - **Владелец плана:** Technical Change Lead.
 - **Календарный план:** [http-api-and-session-middleware.puml](http-api-and-session-middleware.puml).
 
@@ -14,8 +14,9 @@
 Добавить HTTP API для уже реализованного приложения. Через него клиент сможет:
 
 1. создать новую анонимную сессию или восстановить существующую;
-2. найти населённый пункт;
-3. передать данные рождения и получить рассчитанную натальную карту.
+2. отдельным запросом прочитать текущую сохранённую карту;
+3. найти населённый пункт;
+4. передать данные рождения и получить рассчитанную натальную карту.
 
 HTTP-слой принимает запросы, вызывает существующие компоненты приложения и возвращает ответы клиенту. Он не создаёт отдельную реализацию расчётов, сессий или каталога мест.
 
@@ -28,7 +29,12 @@ HTTP-слой принимает запросы, вызывает существ
 - Корректная остановка приложения: прекращение приёма новых запросов, завершение уже начатых запросов и закрытие ресурсов.
 - Периодическое удаление истёкших сессий через готовый `ApplicationRuntime`.
 - Работа с анонимной сессией через защищённую cookie: создание новой сессии и восстановление сохранённого состояния.
-- HTTP API для создания или восстановления сессии.
+- HTTP API для создания или восстановления сессии без карты в ответе.
+- Отдельный HTTP API чтения текущей сохранённой карты.
+- Предложение Analysis к расширению scope, ожидающее решения Lead:
+  ограниченное расширение чистой `application/session_view` — проекция birth
+  из уже загруженного snapshot без I/O, resolver, cache, engine и новых
+  application ports (FIND-HTTP-001/019).
 - HTTP API поиска населённых пунктов на основе готового `PlaceSearch` и `SqlitePlaceCatalog`.
 - HTTP API построения натальной карты через существующий `ApplicationOrchestrator`.
 - Форматы HTTP-запросов, успешных ответов и ошибок для этих операций.
@@ -42,24 +48,37 @@ HTTP-слой принимает запросы, вызывает существ
 - Настройка production-сервера, публичное развёртывание и доставка файла каталога мест — M1-12.
 - Интерпретации, LLM, Selection API, Message API и SSE.
 - Регистрация, учётные записи и подписки.
-- Изменение расчётного движка, Session Store, `ContextService`, `ApplicationRuntime` или `ApplicationOrchestrator`, если анализ не обнаружит подтверждённую необходимость.
+- Публичные endpoint полного reset и удаления сессии; component contract ADR-0009 сохраняется.
+- Изменения расчётного движка, Session Store, `ContextService`,
+  `ApplicationRuntime` или `ApplicationOrchestrator`. Предложенное в §2
+  расширение чистой `session_view` станет единственным исключением только после
+  решения Lead; до этого оно не считается утверждённой частью scope.
 - Отдельные инфраструктурные работы. Если они понадобятся, Lead дополнит границы change и назначит отдельную работу.
 
 ## 4. Принятые входные артефакты
 
-Первая рабочая роль получает состояние `change/*` после принятия подготовительного PR. Источниками требований являются документы, код и тесты в этом commit. Переписка предыдущих ролей и исторические файлы `prompts/**` входом не являются.
+Первая рабочая роль получает состояние `change/*` после принятия
+подготовительного PR. Источниками являются текущие документы, код и тесты;
+`prompts/**` остаётся историческим журналом.
 
 | Артефакт | Для чего используется |
 |---|---|
-| [Roadmap](../roadmap.md), M1-6 | состав change и связь с предыдущими этапами |
-| [Обзор требований](../../requirements/overview.md) и [сценарии](../../requirements/scenarios.md) | границы системы и пользовательские сценарии |
-| [ADR-0006](../../requirements/decisions/0006-application-orchestrator.md) | создание и восстановление сессии, граница `ApplicationOrchestrator` |
-| [ADR-0013](../../requirements/decisions/0013-token-abuse-protection.md) | ограничения расчётных запросов |
-| [ADR-0040](../../requirements/decisions/0040-stored-chart-in-session.md) | восстановление сохранённой карты |
-| [Требования к сессии](../../requirements/component_responsibilities/exact-orb_session_requirements.md) и [восстановлению карты](../../requirements/session/stored-chart-session-behavior.md) | поведение сессии и представление её состояния |
-| [Требования к каталогу мест](../../requirements/component_responsibilities/exact-orb_place_catalog.md) | поиск мест и известные варианты ответа |
-| Код `src/exact_orb/application/` и тесты `tests/application/` | фактически реализованные интерфейсы и поведение |
-| `tests/test_module_boundaries.py` | обязательные архитектурные границы |
+| [Roadmap](../roadmap.md), M1-6 | scope change и связь с предыдущими этапами |
+| [HTTP requirements](../../requirements/http_api.md) | единый draft публичного контракта, limits и acceptance scenarios |
+| [Overview](../../requirements/overview.md) и [scenarios](../../requirements/scenarios.md) | границы системы и пользовательские сценарии |
+| [ADR-0006](../../requirements/decisions/0006-application-orchestrator.md) | transport/session и Orchestrator boundary |
+| [ADR-0009](../../requirements/decisions/0009-context-yes-profiles-later.md) | cookie session, TTL, reset/delete |
+| [ADR-0012](../../requirements/decisions/0012-bootstrap-request-response-streaming.md) | request/response build и границы streaming |
+| [ADR-0013](../../requirements/decisions/0013-token-abuse-protection.md) | admission и session build limits |
+| [ADR-0032](../../requirements/decisions/0032-unknown-birth-time-aspect-semantics.md) | cosmogram и устойчивые аспекты |
+| [ADR-0036](../../requirements/decisions/0036-application-orchestrator-coordination-info-events.md), [ADR-0037](../../requirements/decisions/0037-context-boundary-and-handler-coordination-logs.md) | обязательные межкомпонентные события |
+| [ADR-0039](../../requirements/decisions/0039-https-in-all-environments.md) | HTTPS и Secure cookie в local/test/production |
+| [ADR-0040](../../requirements/decisions/0040-session-bootstrap-and-current-chart.md) | bootstrap без карты и отдельный current GET |
+| [ADR-0041](../../requirements/decisions/0041-stored-chart-in-session.md) | persisted StoredChart и restore без расчёта |
+| [Session requirements](../../requirements/component_responsibilities/exact-orb_session_requirements.md) и [stored chart](../../requirements/session/stored-chart-session-behavior.md) | aggregate lifecycle, projection и recovery |
+| [Place catalog](../../requirements/component_responsibilities/exact-orb_place_catalog.md) | search contract и typed outcomes |
+| `src/exact_orb/application/`, `tests/application/` | реализованные interfaces/results/cancellation semantics |
+| `tests/test_module_boundaries.py` | обязательные architecture invariants |
 
 ## 5. Журнал change
 
@@ -82,9 +101,9 @@ HTTP-слой принимает запросы, вызывает существ
 
 | Этап и ветка | Результат | Статус |
 |---|---|---|
-| Подготовка Lead — `lead/http-api-and-session-middleware` | протокол, change plan, журнал и список входных артефактов | готово к review |
-| Анализ — `analysis/http-api-initial` | требования к HTTP API, примеры запросов и ответов, ошибки, acceptance scenarios, критерии приёмки и sequence diagrams | ожидает завершения подготовки |
-| Разработка — `dev/http-api-and-session-middleware` | план реализации, код, автоматизированные тесты и результаты review | ожидает утверждения анализа |
+| Подготовка Lead — `lead/http-api-and-session-middleware` | протокол, change plan, журнал и список входных артефактов | принято в `change/*` PR #36 |
+| Анализ — `analysis/http-api-and-session-middleware` | требования к HTTP API, примеры запросов и ответов, ошибки, acceptance scenarios, критерии приёмки и sequence diagrams | проект готов к review |
+| Разработка — `dev/http-api-and-session-middleware` | план реализации, код, автоматизированные тесты и результаты review | ожидает review и утверждения анализа |
 | Тестирование — `test/http-api-and-session-middleware` | ручная и исследовательская проверка, необходимые regression tests и evidence | ожидает завершения разработки |
 | Финальная приёмка Lead | решение о готовности change к merge в `main` или возврат на доработку | ожидает завершения тестирования |
 
@@ -92,13 +111,14 @@ HTTP-слой принимает запросы, вызывает существ
 
 ## 7. Что необходимо определить до начала разработки
 
-| ID | Вопрос | Кто готовит решение | Статус |
+| ID | Вопрос | Предложение Analysis | Статус |
 |---|---|---|---|
-| DP-HTTP-01 | Адреса HTTP API, поля запросов и ответов, HTTP-статусы и формат ошибок | Functional Analyst; review Developer и Tester; утверждает Lead | открыт |
-| DP-HTTP-02 | Значения лимита по IP и максимального числа одновременных расчётов | Functional Analyst и Developer; утверждает Lead | открыт |
-| DP-HTTP-03 | Как надёжно определить IP клиента с учётом доверенных прокси | Developer; утверждает Lead | открыт |
-| DP-HTTP-04 | Точный порядок остановки HTTP-приложения и фоновых задач | Developer; утверждает Lead до реализации | открыт |
-| DP-HTTP-05 | Какие sequence diagrams необходимо обновить для фактического пути создания и восстановления сессии | Functional Analyst; утверждает Lead | открыт |
+| DP-HTTP-01 | endpoints, DTO, statuses, errors | bootstrap, current chart, places, build и internal health по HTTP requirements; retry semantics и exact `Retry-After` определены | FIND-HTTP-011, 014–016 исправлены; затем review Developer/Tester и approval Lead |
+| DP-HTTP-02 | admission limits | create 300/час/IP; build 20/час и 100/сутки/session, 300/час и 1500/сутки/IP; 5 active; places 120/мин/IP | пересчитано для NAT/CGNAT; требуется review/approval |
+| DP-HTTP-03 | trusted proxy/client IP | строгий XFF/XFP algorithm и CIDR allowlist по HTTP §10 | Developer security review и Lead approval |
+| DP-HTTP-04 | deadline, timeout, shutdown ownership | body 5с, build 30с, shutdown grace 30с; bounded leaf operations обязательны; варианты A–D в HTTP §15.2 | Developer выбирает вариант и доказывает deterministic tests; остаётся blocker |
+| DP-HTTP-05 | sequence coverage | четыре HTTP diagrams; session 001–003 и 006 синхронизированы | требуется Lead approval |
+| DP-HTTP-06 | scope и оценка после роста контракта | Analysis предлагает pure `session_view` expansion и базовую оценку development 4 дня / testing 2 дня | ожидает выбора Developer по DP-HTTP-04 и решения Lead; FIND-HTTP-019 открыт |
 
 ## 8. Условия перехода между этапами
 
@@ -111,7 +131,7 @@ HTTP-слой принимает запросы, вызывает существ
 
 ### Анализ → разработка
 
-- описаны все три HTTP-сценария: сессия, поиск места и построение карты;
+- описаны четыре business-сценария: bootstrap, current chart, поиск места и build;
 - для каждого сценария определены запрос, успешный ответ и ошибки;
 - описаны правила cookie, ограничения запросов и необходимые события журнала;
 - подготовлены позитивные и негативные acceptance scenarios;
@@ -142,8 +162,17 @@ HTTP-слой принимает запросы, вызывает существ
 
 ## 9. Текущее состояние
 
-- Подготовка Lead: готова к review.
-- Analysis, Development и Testing: не начаты.
-- Текущие blockers: отсутствуют.
-- Текущие findings: отсутствуют.
+- Подготовка Lead: принята в `change/*` PR #36, merge commit `27ae072`.
+- Analysis: проект требований и sequence diagrams подготовлен; замечания
+  второго review FIND-HTTP-011…019 отражены в контракте и плане. Формулировку
+  provenance ADR-0040 по FIND-HTTP-010/012 Lead сверяет до commit.
+- Development и Testing: не начаты.
+- Текущие gates: DP-HTTP-04 (FIND-HTTP-004/009) требует доказанного
+  bounded ownership timeout/native/commit задач; DP-HTTP-06 (FIND-HTTP-019)
+  требует решения Lead о расширении scope и базовой оценке 4/2 дня после
+  уточнения Developer. DP-HTTP-03 и численные DP-HTTP-02/04 также ожидают
+  Developer review и финальный approval Lead.
+- FIND-HTTP-007 закрыт разделением ADR-0040: build не требует birth-проекции,
+  полное сохранённое представление читает явный `GET /charts/current`.
+- Текущие findings: перечислены в [HTTP requirements, §15](../../requirements/http_api.md#15-findings-и-ограничения).
 - Финальный статус: не присвоен.

@@ -7,7 +7,7 @@
 а также ADR-0006, 0012, 0014, 0017, 0020 и 0040. `ApplicationOrchestrator`, commit-flow,
 один точный retry, cancellation/lifecycle semantics и внешний
 `ApplicationResult` реализованы и подтверждены тестами. Порт и реализация
-`to_stored` добавлены в первом срезе ADR-0040; вызов из Handler и передача
+`to_stored` добавлены в первом срезе ADR-0041; вызов из Handler и передача
 полной дельты Orchestrator реализованы в промте 03 M1-5.2. Хранение
 `StoredChart` в агрегате сессии остаётся целевым. HTTP API, session bootstrap, client rendering и
 production admission остаются целевым контуром следующей ветки.
@@ -58,7 +58,7 @@ task недостаточно. `010` фиксирует observability-поток
 - **`Calculation Cache` не является пользовательским состоянием:**
   корректный, но устаревший для сессии артефакт остаётся в кэше (ADR-0017).
   После подтверждённого CAS текущий артефакт хранится в сессии как
-  `StoredChart`; восстановление после рестарта не обращается к кэшу (ADR-0040).
+  `StoredChart`; восстановление после рестарта не обращается к кэшу (ADR-0041).
 - **Движок возвращает `CalculationResult`, а кэш хранит `bytes`:**
   `ChartArtifact` собирает только `ChartArtifactResolver`.
 - **Boundary-журнал показывает полный сквозной объектный поток:** по

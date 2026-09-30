@@ -523,6 +523,10 @@ lifespan прекращает приём запросов и дожидаетс�
 
 ### 4.1. HTTP-контракт
 
+Transport validation, IP rate limit и корреляция запроса для M1-6 описаны в
+[проекте требований HTTP API](../http_api.md). Таблица typed outcomes ниже
+остаётся исходным контрактом `PlaceSearch` и не зависит от session lifecycle.
+
 Целевой M1-6 endpoint:
 
 ```http

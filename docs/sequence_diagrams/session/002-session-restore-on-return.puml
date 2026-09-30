@@ -1,169 +1,87 @@
 @startuml
-title exact-orb — Session: возврат с сохранённой картой после рестарта
-
-' После подтверждённого build процесс мог перезапуститься:
-' SQLite-сессия жива, Calculation Cache нового процесса пуст.
-' Bootstrap остаётся целевым HTTP-шагом M1-6; session_view — первая ветка.
+title exact-orb — Session restore: bootstrap отдельно от current chart
 
 autonumber
 hide footbox
-
 skinparam shadowing false
 skinparam responseMessageBelowArrow true
 
-skinparam sequence {
-    ArrowColor #2563EB
-    LifeLineBorderColor #64748B
-    LifeLineBackgroundColor #FFFFFF
-
-    ParticipantBorderColor #64748B
-    ParticipantFontColor #0F172A
-    ParticipantBackgroundColor #F8FAFC
-
-    ActorBorderColor #64748B
-    ActorFontColor #0F172A
-    ActorBackgroundColor #DBEAFE
-
-    GroupBorderColor #94A3B8
-    GroupHeaderFontColor #1E293B
-
-    DividerBorderColor #94A3B8
-    DividerFontColor #1E293B
-
-    NoteBorderColor #94A3B8
-    NoteBackgroundColor #FFFBEA
-    NoteFontColor #334155
-}
-
 actor "Пользователь" as User
-
-box "1. CLIENT" #DBEAFE
-    boundary "Frontend" as FE
-end box
-
-box "2. API / APPLICATION" #FFEDD5
-    boundary "API" as API
-    control "application/session_view" as View
-end box
-
-box "3. SESSION" #D1FAE5
-    control "ContextService" as Context
-    control "SessionPersistence" as Persistence
-    database "SessionStore" as Store
-    database "DialogStore" as Dialog
-    database "session_charts" as Charts
-end box
-
+boundary "Frontend" as FE
+boundary "HTTP API" as API
+control "ContextService" as Context
+database "SessionPersistence" as Store
+control "application/session_view" as View
 collections "Журнал" as Log
 
-note over API, Context
-Bootstrap/restore транспорт выполняет через ContextService
-напрямую (ADR-0006, ред. 2026-09-15). ApplicationOrchestrator
-на этом пути не участвует: он координирует типизированные
-команды над уже загруженной сессией.
-end note
-
-
-== Живая сессия после рестарта процесса ==
-
-note over API, Charts
-Предыстория: Committed записал состояние и StoredChart
-одной CAS-транзакцией. Новый runtime имеет пустой Calculation Cache.
-У StoredChart нет собственного TTL; parent state определяет живость.
-end note
+== Живая сессия после restart ==
 
 User -> FE : открывает приложение
-FE -> API : bootstrap + HttpOnly cookie
-API -> API : lookup session_id только из cookie
-
+FE -> API : POST /session/bootstrap {} + cookie
 API -> Context : load(session_id)
-Context -> Context : now = require_utc(clock(), name="clock")
-Context -> Persistence : touch(session_id, now)
-activate Persistence
-Persistence -> Store : обновить TTL состояния
-Persistence -> Dialog : обновить тот же TTL, если запись есть
-Persistence -> Charts : прочитать StoredChart той же сессии
-Charts --> Persistence : StoredChart(payload_format, key, version, payload)
-Persistence --> Context : SessionSnapshot(state, dialog, chart)
-deactivate Persistence
+Context -> Store : touch(session_id, now)
+Store --> Context : SessionSnapshot(state_version=N, chart)
 Context --> API : SessionSnapshot
+API --> FE : 200 SessionBootstrapDTO ready/N + renew cookie
 
-note over Context, Charts
-TTL state и существующего dialog продлевается
-одной агрегатной операцией и одним `now`.
-Chart не получает отдельный deadline.
-Фасетные get/read read-only и не могут вернуть
-stale snapshot после неуспешного required touch.
+note over API, View
+Bootstrap не вызывает session_view и не возвращает birth/chart.
 end note
 
-API -> View : assemble(snapshot, current_calculation_version)
-View -> View : если chart есть: формат и strict decode;\nkey по сохранённой version, spec и расчётный вход
+FE -> API : GET /charts/current + cookie
+API -> Context : load(session_id)
+Context -> Store : touch(session_id, now)
+Store --> Context : SessionSnapshot(state_version=N, chart)
+Context --> API : SessionSnapshot
+API -> View : session_view(snapshot, current calculation version)
 
-alt карта корректна, версия расчёта та же
-    View --> API : chart_ready(artifact, chart_stale=false,\n birth_input, canonical_place, state_version=3)
-    API --> FE : SessionViewDTO chart_ready + карта
-    FE --> User : прежняя построенная карта на месте
-else карта корректна, версия расчёта изменилась
-    View --> API : chart_ready(artifact, chart_stale=true,\n birth_input, canonical_place, state_version=3)
-    API --> FE : SessionViewDTO chart_ready + chart_stale
-    FE --> User : прежняя карта с пометкой «Пересчитать»
-else формат не поддержан или проверка карты не прошла
-    View --> API : chart_unavailable(safe_reason, birth_input,\n canonical_place, state_version=3)
-    API -> Log : ERROR chart_unavailable(safe_reason);\nбез payload и данных рождения
-    API --> FE : SessionViewDTO chart_unavailable; cookie прежняя
-    FE --> User : заполненная форма и явное «Построить заново»
+alt сохранённая карта валидна и current version совпадает
+    View --> API : chart_ready(stale=false, N)
+    API --> FE : 200 chart_ready + ChartDTO + renew cookie
+    FE --> User : прежняя карта
+else карта валидна, calculation version отличается
+    View --> API : chart_ready(stale=true, N)
+    API --> FE : 200 chart_ready + chart_stale + renew cookie
+    FE --> User : карта с действием «Пересчитать»
+else safe decode/invariant refusal
+    View --> API : chart_unavailable(safe_reason, N)
+    API -> Log : ERROR chart_unavailable(request_id, safe_reason)
+    API --> FE : 200 chart_unavailable + birth + renew cookie
+    FE --> User : заполненная форма и «Построить заново»
 else живая сессия пуста
-    View --> API : empty(state_version)
-    API --> FE : SessionViewDTO empty
+    View --> API : empty(N)
+    API --> FE : 200 empty + renew cookie
     FE --> User : форма ввода
 end
 
-note over API, Charts
-Чтение и сборка представления не вызывают engine,
-ChartArtifactResolver или Calculation Cache и не меняют
-state_version. При chart_unavailable обязательный touch
-мог продлить TTL; содержимое сессии не меняется.
-Отказ touch — StateReadFailed, отдельная диаграмма 003.
+note over Context, View
+Оба load продлевают TTL, но не меняют state_version.
+Current GET не вызывает resolver/cache/engine и не занимает build slot.
+Structural dangling state/chart reference является StateReadFailed.
 end note
 
+== Cookie указывает на absent session ==
 
-== Сессии нет ==
-
-User -> FE : открывает приложение
-FE -> API : bootstrap + HttpOnly cookie
-API -> API : lookup session_id только из cookie
-
-API -> Context : load(session_id)
-Context -> Context : now = require_utc(clock(), name="clock")
-Context -> Persistence : touch(session_id, now)
-Persistence --> Context : SessionAbsent(reason)
+FE -> API : POST /session/bootstrap {} + old cookie
+API -> Context : load(old session_id)
+Context -> Store : touch(old session_id, now)
+Store --> Context : SessionAbsent(expired|not_found)
 Context --> API : SessionAbsent
+API -> API : creation admission; fresh ID
+API -> Context : create(fresh ID)
+Context --> API : SessionCreated(0)
+API --> FE : 200 ready/0 + one new cookie
+FE -> API : GET /charts/current + new cookie
+API -> Context : load(new ID)
+Context --> API : SessionSnapshot(empty, 0)
+API -> View : session_view(snapshot)
+View --> API : empty(0)
+API --> FE : 200 empty
 
-API -> API : сгенерировать свежий server session_id
-API -> Context : create(new_session_id)
-Context -> Context : now = require_utc(clock(), name="clock")
-Context -> Store : create(new_session_id, now)
-Store --> Context : SessionCreated(state_version = 0)
-Context --> API : SessionCreated
-API --> FE : пустая сессия + Set-Cookie(новый ID;\n HttpOnly, Secure, SameSite)
-FE -> FE : показывает форму данных рождения
-FE --> User : как при первом входе
-
-note over Store, Dialog
-Технически это два разных случая одного outcome:
-* session_expired — запись была, TTL истёк;
-* session_not_found — cookie жива, записи нет.
-
-Пользователю оба даются одинаково. Различие
-уходит в метрики: расхождение сроков жизни
-cookie и записи — дефект конфигурации,
-и его надо видеть.
-
-Старая cookie гасится в том же bootstrap: transport
-генерирует свежий server session_id, insert-only
-создаёт новую запись и заменяет значение cookie.
-Прежний ID не переиспользуется (ADR-0009). При
-SessionIdConflict — новый ID, как в 001.
+note over API, Store
+GET current сам не заменяет absent session.
+Если absent обнаружен на GET, ответ 409 и clear cookie;
+создание выполняет только последующий bootstrap.
 end note
 
 @enduml

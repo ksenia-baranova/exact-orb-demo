@@ -124,7 +124,7 @@ ContextService пишет полные DEBUG in/out,
 StoredChart в DEBUG проецируется только как
 key, version, format и размер payload: байты
 не сериализуются на границах Handler и ContextService
-(ADR-0040). INFO-события to_stored связаны run_id.
+(ADR-0041). INFO-события to_stored связаны run_id.
 Поля terminal берутся из возвращаемого результата.
 Невалидные длительности/попытки отклоняются до записи.
 Ошибка logging не меняет подтверждённый commit outcome.

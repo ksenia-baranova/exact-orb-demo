@@ -18,7 +18,7 @@ commit/retry/cancellation flow, минимальная composition и normal loa
 между каталогом и FastAPI: внешний `PlaceCatalog`, SQLite,
 `CalculationVersion` и lifecycle ownership; сквозные Build Natal и shutdown
 сценарии приняты.
-**Ревизия:** 2026-09-26 — ADR-0040 задаёт целевой `StoredChart` и атомарный
+**Ревизия:** 2026-09-26 — ADR-0041 задаёт целевой `StoredChart` и атомарный
 commit карты с состоянием; этот срез ещё не реализован.
 **Ревизия:** 2026-09-27 — Handler подготавливает `StoredChart` и полную дельту,
 Orchestrator передаёт её в CAS; InMemory/SQLite ещё не хранят карту вместе
@@ -346,7 +346,7 @@ SessionAbsent         { reason: Literal["expired", "not_found"] }
 ### 3.3. `calculation/spec.py`
 
 `ChartSpec` — полная спецификация расчётного намерения для явного нового
-построения (ADR-0017 с изменением ADR-0040, И-12). Возврат уже построенной
+построения (ADR-0017 с изменением ADR-0041, И-12). Возврат уже построенной
 карты читает `StoredChart` из сессии без обращения к кэшу и движку.
 
 ```text

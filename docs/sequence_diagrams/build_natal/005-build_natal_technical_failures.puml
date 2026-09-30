@@ -137,7 +137,7 @@ else Отказ расчётного ядра
     API --> FE : system error
     FE --> User : «не удалось рассчитать карту»
 
-else Отказ кодирования сохранённой карты (ADR-0040)
+else Отказ кодирования сохранённой карты (ADR-0041)
 
     Handler -> Resolver : resolve(birth_input)
     Resolver --> Handler : ResolvedBirthData
