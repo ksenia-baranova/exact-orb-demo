@@ -1,10 +1,9 @@
 # exact-orb — требования к HTTP API и Session Middleware
 
-- **Статус:** проект Functional Analyst обновлён после review PR #37:
-  DP-HTTP-02 согласован всеми ролями; для DP-HTTP-04 Lead выбрал вариант C
-  в M1-6 и вариант A как target state. FIND-HTTP-019 ожидает решения Lead о
-  scope и оценке; FIND-HTTP-020 — синхронизации Lead-owned plan/Gantt. Затем
-  нужны review Developer/Tester и остальные approval Lead.
+- **Статус:** требования Functional Analyst приняты в `change/*` через PR #37;
+  решения DP-HTTP-01…06, ограничения M1 и уточнение FIND-HTTP-021
+  подтверждены владельцем change 2026-09-30. Developer подготовил draft
+  implementation plan; код, Gate A и проверка lifecycle ещё не выполнены.
 - **Change:** `change/http-api-and-session-middleware`, roadmap M1-6.
 - **Входной commit анализа:** `27ae072e5e99cea72f7575cd35ef45ca3eeb829e`.
 - **Рабочая ветка:** `analysis/http-api-and-session-middleware`.
@@ -76,12 +75,12 @@ build и не позволяет возобновить получение от�
 
 | ID         | Предложение Functional Analyst                                                                                                        | Статус                                                                                                             |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| DP-HTTP-01 | четыре business endpoint и два health endpoint из §2; DTO и mapping ниже                                                              | готово к review/approval; разделение bootstrap/current принято ADR-0040                                            |
+| DP-HTTP-01 | четыре business endpoint и два health endpoint из §2; DTO и mapping ниже                                                              | согласовано Lead 2026-09-30; точные схемы фиксируются при реализации |
 | DP-HTTP-02 | session create 300/час на IP; build 20/час и 100/24ч на session, 300/час и 1500/24ч на IP; place search 120/мин на IP; 5 active build | согласовано всеми ролями; принято Lead в review PR #37                                                             |
-| DP-HTTP-03 | доверять только `X-Forwarded-For`/`X-Forwarded-Proto` от peer из CIDR allowlist; алгоритм §10                                         | предложение закрывает прежнюю неоднозначность; требуется security review Developer и approval Lead                 |
+| DP-HTTP-03 | доверять только `X-Forwarded-For`/`X-Forwarded-Proto` от peer из CIDR allowlist; алгоритм §10                                         | Developer review выполнен; согласовано Lead 2026-09-30; исходный ASGI peer обязателен |
 | DP-HTTP-04 | body receive 5 с, build response deadline 30 с, shutdown grace 30 с; task ownership §9 и §11                                          | решение Lead: M1-6 — вариант C, target state — вариант A; Developer подтверждает реализацией и deterministic tests |
-| DP-HTTP-05 | четыре HTTP sequence и синхронизация session 001–003/006                                                                              | проект обновлён; требуется Lead approval                                                                           |
-| DP-HTTP-06 | расширить чистую `session_view` только проекцией birth из готового snapshot                                                           | предложение Analysis; ожидает Developer review и решения Lead о расширении scope                                   |
+| DP-HTTP-05 | четыре HTTP sequence и синхронизация session 001–003/006                                                                              | согласовано Lead 2026-09-30; реализация и сверка журналов впереди |
+| DP-HTTP-06 | расширить чистую `session_view` только проекцией birth из готового snapshot | scope согласован Lead; Developer подтвердил реализуемость; код и тесты впереди |
 
 Build IP-limit пересчитан для общего NAT/CGNAT. Демо на 10 человек по пять
 построений даёт 50 запросов; прежний предел 60/час оставлял 10 запросов на
@@ -376,11 +375,10 @@ type BuildChartResponseDTO =
 `time_unknown`, `warnings[{source, code}]`. При неизвестном времени offset
 технического noon anchor не публикуется как пользовательское точное время.
 
-`session_view` на входном commit не публикует весь этот набор. Analysis
-предлагает включить в M1-6 только чистую application projection из уже
-загруженного `state.birth_resolved`; новых I/O, application ports и transport
-типов в application layer нет. Расширение не входит в утверждённый scope до
-явного решения Lead по DP-HTTP-06/FIND-HTTP-019.
+`session_view` на входном commit не публикует весь этот набор. Решением Lead
+по DP-HTTP-06/FIND-HTTP-019 в M1-6 включена только чистая application projection
+из уже загруженного `state.birth_resolved`; новых I/O, application ports и
+transport типов в application layer нет.
 Build success не требует birth projection: committed artifact и version уже
 есть в `ApplicationResult`, а полная восстановленная форма читается через
 `GET /charts/current`. Это закрывает прежний разрыв без второго скрытого load
@@ -398,7 +396,7 @@ Projector использует явный whitelist; `model_dump()` внутре
 | `zodiac`         | `tropical` в M1                                                              |
 | `house_system`   | код для natal; `null` для cosmogram                                          |
 | `points[]`       | `id`, `longitude`, `sign`, `degree`, `minute`, `house`, `retrograde`         |
-| `angles`         | `asc`, `mc`, `vertex`, `dsc`, `ic`; `null` для cosmogram                     |
+| `angles`         | `asc`, `mc`, `vertex`, `dsc`, `ic` как `AngleDTO`; `null` для cosmogram       |
 | `houses[]`       | `number`, `cusp_longitude`, `sign`, `degree`, `minute`; `null` для cosmogram |
 | `aspects[]`      | `from`, `to`, `type`, `orb`, `category`                                      |
 
@@ -408,11 +406,24 @@ Projector использует явный whitelist; `model_dump()` внутре
 `pars_fortune`. Неизвестный новый engine point не публикуется автоматически.
 Houses сортируются по number; aspects сохраняют канонический порядок engine.
 
-Каждый `from/to` разрешается в опубликованный point либо angle. Dangling
-reference является projector defect и даёт безопасный 500, а не частичную
-карту. `dsc/ic` формирует тот же backend projector. Для cosmogram
+`AngleDTO = {longitude: number, sign: string, degree: integer, minute: integer}`;
+других полей нет. `sign` в `points[]`, `houses[]` и `AngleDTO` имеет ровно
+одно из значений `Aries`, `Taurus`, `Gemini`, `Cancer`, `Leo`, `Virgo`,
+`Libra`, `Scorpio`, `Sagittarius`, `Capricorn`, `Aquarius`, `Pisces` в
+указанном регистре. `degree` — целое 0…29, `minute` — целое 0…59.
+Для `dsc` и `ic` projector нормализует противоположную долготу из
+сохранённой долготы `asc` и `mc`, сдвигает сохранённый
+`ZodiacPosition.sign_index` на шесть знаков, а `degree/minute` копирует
+без повторного округления из сохранённого `ZodiacPosition`.
+
+`aspects[].from/to` — строковые ID. Исходная `AspectPointRef` каждого конца
+обязана иметь `chart == "natal"` и `body`, равный реально опубликованному
+ID из 16 `points[]` выше либо `asc`, `mc`, `vertex`. `dsc/ic` не входят в
+аспектные ID. Другая chart ownership, недопустимый или dangling ID —
+projector defect с безопасным 500, а не частичной картой. Для cosmogram
 `house_system`, `angles`, `houses` и `points[].house` равны null; публикуются
-только устойчивые аспекты ADR-0032. Поле `time_dependent` не синтезируется.
+только устойчивые аспекты ADR-0032 между реально опубликованными points.
+Поле `time_dependent` не синтезируется.
 
 В DTO не входят `CalculationVersion`, `ChartSpec`, координаты, Julian day,
 ephemeris flags/path, raw warnings, stored payload, strength, configurations,
@@ -529,7 +540,7 @@ cookie в M1-6 не вводится. Analysis предлагает принят
 SQLite lookup/touch до creation admission. До публичного M1-12 reverse proxy
 обязан ограничивать общую частоту business requests на IP; evidence перегрузки
 или переход к нескольким workers является условием добавить отдельный shared
-read limiter. Предложение требует approval Lead.
+read limiter. Риск для контролируемого M1-стенда принят Lead 2026-09-30.
 
 ### 9.2. Неопределённый build outcome
 
@@ -563,11 +574,23 @@ HTTP-запросами не переносится. Отсутствие status
 
 ### 9.3. Disconnect и timeout
 
-Disconnect не откатывает admission quota. До commit операция отменяется; после
-старта protected commit inner task удерживается и ожидается. Если commit
-подтвердился после disconnect/504, последующий bootstrap + current GET видит
-карту. Permit освобождается только после terminal application task, а не в
-момент потери сокета.
+Disconnect не откатывает admission quota. Каждый принятый build удерживает
+собственный permit. До commit операция отменяется; после старта protected commit
+inner task удерживается и ожидается. Если commit подтвердился после
+disconnect/504, последующий bootstrap + current GET видит карту.
+Permit не освобождается раньше завершения всей работы, к которой запрос
+присоединился: его `execute`, общего single-flight расчёта и protected
+commit, если он начат. Завершение сокета или отменённого `execute` само по
+себе не является сигналом release.
+
+В M1-6 для отменённого waiter разрешён консервативный release: ждать
+завершения всех resolver leaders, активных на момент отмены. Поэтому
+посторонний leader может задержать освобождение permit; точный per-request
+release не обещается. Отправленные SQLite и catalog executor futures, которые
+могут пережить отмену await, удерживаются отдельно: общий
+`ApplicationRuntime.drain()` охватывает resolver leaders, но не эти futures.
+При пяти удерживаемых permits шестой build получает
+`503 BUILD_CAPACITY_EXHAUSTED`, пока общий расчёт жив.
 
 Для M1-6 Lead выбрал вариант C: если принятая build-задача не получила terminal
 outcome к 30-секундному deadline, процесс атомарно закрывает admission и
@@ -577,6 +600,8 @@ permit; незавершённые запросы обрываются, а со�
 через bootstrap и `GET /charts/current`. Target state — вариант A: расчёт
 переносится в отдельный calculation worker, запущенный в отдельном process,
 который можно завершить и заменить без перезапуска HTTP process.
+30 секунд ограничивают время до перехода здорового процесса в unhealthy,
+а не обещают фактическое освобождение permit или момент внешнего restart.
 
 ## 10. Client IP и trusted proxy
 
@@ -782,9 +807,10 @@ POST поверх существующей карты загружает N, со
 
 ### AS-HTTP-17 — две вкладки
 
-Обе вкладки читают N. B rebuild-ит N+1. A продолжает локально показывать N,
-пока bootstrap + GET current не вернут N+1. Поздний явный POST A начинает с
-fresh load N+1; client-displayed N не является CAS precondition.
+Обе вкладки первоначально читают N. B rebuild-ит N+1. Серверная проверка:
+поздний явный POST A делает fresh load N+1 и использует эту версию как CAS
+expected; отображаемый вкладкой N не является серверным precondition.
+Обновление экрана A проверяется в [приёмке UI M1-7](../ui_ux/requirements.md#13-приёмка).
 
 ### AS-HTTP-18 — concurrent intents и AlreadyApplied
 
@@ -795,17 +821,23 @@ AlreadyApplied, разные — Committed и Superseded. AlreadyApplied respons
 ### AS-HTTP-19 — recovery после неопределённого build outcome
 
 Для `STATE_COMMIT_FAILED` lost acknowledgement проверяется в двух вариантах:
-commit состоялся и не состоялся. Ответ сохраняет `retryable=true`, но клиент
-после `Retry-After: 1` сначала делает GET current; автоматического второго POST
-нет. Явный повтор после сверки доказывает fresh load/expected и допускает новое
-увеличение version.
+commit состоялся и не состоялся. Сервер возвращает `retryable=true` и
+`Retry-After: 1`; один принятый HTTP POST вызывает `execute` ровно один раз.
+После отдельного GET current явный новый POST доказывает fresh load/expected
+и допускает новое увеличение version. Порядок действий клиента и отсутствие
+автоматического второго POST проверяются в
+[приёмке UI M1-7](../ui_ux/requirements.md#13-приёмка).
 
-Для `BUILD_TIMEOUT` проверяются `retryable=false`, `Retry-After: 5`, отсутствие
-`Set-Cookie` и отсутствие повторного POST до supervisor restart. В одном тесте
-commit успевает подтвердиться до завершения старого process, и current после
-restart видит карту; в другом commit не происходит, current остаётся empty и
-разрешает человеку явный новый POST. Старый process не сообщает terminal task
-или освобождение permit. Original expected между HTTP requests не переносится.
+Для `BUILD_TIMEOUT` серверная проверка включает `retryable=false`,
+`Retry-After: 5`, отсутствие `Set-Cookie` и ровно один `execute` для
+принятого POST. В одном тесте commit успевает подтвердиться до завершения
+старого process, и current после restart видит карту; в другом commit не
+происходит и current остаётся empty. Restart проверяется двумя app/runtime
+instances с пустым process-local cache поверх одного реального SQLite-файла
+сессий. Старый process не сообщает terminal task или освобождение permit.
+Original expected между HTTP requests не переносится. Отсутствие
+автоматического повторного POST и условие явного повтора проверяются в
+[приёмке UI M1-7](../ui_ux/requirements.md#13-приёмка).
 
 ### AS-HTTP-20 — session потеряна на build
 
@@ -838,9 +870,16 @@ Fake ASGI receive не отдаёт следующий body chunk: через 5 
 
 Disconnect до commit отменяет без мутации. Disconnect после старта protected
 commit не теряет inner task; после подтверждения bootstrap + current GET видят
-карту. Permit освобождён только после terminal task. Если retained task
-достигает 30-секундного deadline, применяется тот же unhealthy/supervisor
-restart flow C, после чего current становится authoritative.
+карту. Два принятых запроса, присоединившиеся к одному single-flight leader,
+удерживают два permit. Если один waiter отменён, его permit остаётся занятым,
+пока общий расчёт жив. При пяти занятых permit шестой build получает
+`503 BUILD_CAPACITY_EXHAUSTED`; после завершения удерживаемой работы и
+фактического release следующий build допускается. Посторонний resolver leader
+может задержать release отменённого запроса. Отдельные barrier-проверки
+доказывают удержание SQLite/catalog executor futures после отмены await.
+Если retained work достигает 30-секундного deadline, применяется тот же
+unhealthy/supervisor restart flow C, после чего current становится
+authoritative; старый process не сообщает фиктивного release.
 
 ### AS-HTTP-25 — reaper
 
@@ -868,7 +907,12 @@ recovery, 5 для dependency/504 и 30 для shutdown.
 
 Golden artifact проверяет точный whitelist и порядок points/houses/aspects.
 Новый unknown engine field/point не появляется. Dangling aspect reference даёт
-500. Cosmogram invariant проверяет все null-поля и устойчивые аспекты.
+500. Golden фиксирует точный словарь и регистр 12 `sign`, `AngleDTO` со
+строго четырьмя полями, строковые `aspects[].from/to` и только разрешённые
+реально опубликованные ID. Ссылка на другую chart, `dsc/ic` как endpoint
+аспекта и dangling ID дают безопасный 500. На границе округления `dsc/ic`
+сохраняют `degree/minute` исходных `asc/mc` и сдвигают знак на шесть.
+Cosmogram invariant проверяет все null-поля и устойчивые аспекты.
 
 ### AS-HTTP-29 — routes, HEAD, OPTIONS и production schema
 
@@ -898,40 +942,45 @@ application/session/catalog tests, `tests/test_module_boundaries.py`, затем
 
 | ID            | Тип                              | Состояние/решение                                                                                                                                                                | Статус                                                                   |
 | ------------- | -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
-| FIND-HTTP-001 | projection gap                   | расширить чистый `session_view` birth projection без I/O                                                                                                                         | Analysis proposal; Developer review и Lead scope approval                |
-| FIND-HTTP-002 | accepted M1 limitation           | current birth place содержит только id/display name                                                                                                                              | Lead approval                                                            |
-| FIND-HTTP-003 | proxy decision                   | точный алгоритм предложен в §10                                                                                                                                                  | Developer security review                                                |
+| FIND-HTTP-001 | projection gap | расширить чистый `session_view` birth projection без I/O | Lead включил в M1-6; Developer реализует и проверяет |
+| FIND-HTTP-002 | accepted M1 limitation           | current birth place содержит только id/display name                                                                                                                              | принято Lead 2026-09-30 |
+| FIND-HTTP-003 | proxy decision                   | точный алгоритм предложен в §10                                                                                                                                                  | Developer review выполнен; принято Lead; реализация впереди |
 | FIND-HTTP-004 | lifecycle decision               | для M1-6 выбран fail-fast restart process; target state — отдельный calculation worker/process                                                                                   | решение Lead; Developer предоставляет implementation evidence            |
-| FIND-HTTP-005 | deployment limitation            | process-local counters, один worker/CalculationVersion                                                                                                                           | Lead approval                                                            |
+| FIND-HTTP-005 | deployment limitation            | process-local counters, один worker/CalculationVersion                                                                                                                           | принято Lead 2026-09-30 |
 | FIND-HTTP-006 | UI alignment                     | UI синхронизирован с separate current GET и whitelist                                                                                                                            | resolved in analysis draft                                               |
 | FIND-HTTP-007 | former build projection blocker  | build DTO больше не требует birth view; current GET является явной операцией                                                                                                     | resolved by ADR-0040 revision                                            |
 | FIND-HTTP-008 | deferred public API              | reset/delete endpoint отсутствует в M1-6                                                                                                                                         | explicit scope; future change                                            |
 | FIND-HTTP-009 | native timeout risk              | вариант C ограничивает ущерб restart всего process; вариант A изолирует расчёт в target state                                                                                    | решение выбрано; acceptance блокируется до deterministic evidence        |
-| FIND-HTTP-010 | provenance                       | ADR-0039 восстановлен из reflog commit `cf16d41`; точный файл ADR-0040 не найден, текст восстановлен                                                                             | Lead проверяет формулировку до commit                                    |
-| FIND-HTTP-011 | retry semantics                  | `retryable` определён как transient + code-specific policy; `STATE_COMMIT_FAILED=true` требует current GET, `BUILD_TIMEOUT=false`, cookie unchanged; §9.2 и AS-HTTP-19 дополнены | resolved in analysis; Lead confirms DP-HTTP-01                           |
-| FIND-HTTP-012 | ADR provenance                   | реестр сохраняет исходный вариант C от 24.09; ADR-0040 содержит ревизию 29.09 C → D после ADR-0041                                                                               | revision recorded; Lead verifies wording before commit                   |
+| FIND-HTTP-010 | provenance                       | ADR-0039 восстановлен из reflog commit `cf16d41`; точный файл ADR-0040 не найден, текст восстановлен                                                                             | формулировка согласована Lead 2026-09-30 |
+| FIND-HTTP-011 | retry semantics                  | `retryable` определён как transient + code-specific policy; `STATE_COMMIT_FAILED=true` требует current GET, `BUILD_TIMEOUT=false`, cookie unchanged; §9.2 и AS-HTTP-19 дополнены | контракт принят в DP-HTTP-01; реализация впереди |
+| FIND-HTTP-012 | ADR provenance                   | реестр сохраняет исходный вариант C от 24.09; ADR-0040 содержит ревизию 29.09 C → D после ADR-0041                                                                               | ревизия согласована Lead 2026-09-30 |
 | FIND-HTTP-013 | acceptance gap                   | AS-HTTP-29 проверяет ignored spoofed XFF и разные bucket для двух untrusted peer                                                                                                 | resolved in analysis                                                     |
 | FIND-HTTP-014 | contract gap                     | любой присутствующий Origin проверяется у всех business endpoint, включая GET; health исключён                                                                                   | resolved in §4.4                                                         |
 | FIND-HTTP-015 | text/diagram mismatch            | absent/invalid/duplicate cookie гасится и при отказе bootstrap creation; missing остаётся без cookie                                                                             | resolved in §5 and AS-HTTP-04                                            |
 | FIND-HTTP-016 | Retry-After values               | rolling 429 вычисляется; body/capacity/commit = 1, dependency/504 = 5, shutdown = 30                                                                                             | resolved in §4.4; Developer verifies implementation                      |
-| FIND-HTTP-017 | proposed M1 risk acceptance, low | отдельного live-cookie read limiter нет; controlled single-worker, общий proxy IP-limit обязателен до public M1-12                                                               | Analysis proposal; Lead approval                                         |
-| FIND-HTTP-018 | deployment boundary              | health доступны только internal reverse proxy/orchestrator; public proxy не маршрутизирует `/health/*`                                                                           | Analysis proposal; Developer/Lead review; ACL/manifest in M1-12          |
-| FIND-HTTP-019 | scope/estimate                   | Analysis предлагает pure `session_view` expansion и базовую оценку development 4 дня / testing 2 дня                                                                             | open; Developer оценивает выбранный вариант C, Lead решает scope и сроки |
-| FIND-HTTP-020 | process gate                     | Lead-owned change plan сохраняет старый ADR-0040 path, исходный scope и оценку; Analysis вернул plan/Gantt к входному commit                                                     | open; Lead синхронизирует plan/Gantt отдельным commit до merge           |
+| FIND-HTTP-017 | accepted M1 risk, low | отдельного live-cookie read limiter нет; controlled single-worker, общий proxy IP-limit обязателен до public M1-12                                                               | принято Lead 2026-09-30; proxy limit перед public M1-12 |
+| FIND-HTTP-018 | deployment boundary              | health доступны только internal reverse proxy/orchestrator; public proxy не маршрутизирует `/health/*`                                                                           | Developer review выполнен; принято Lead; ACL/manifest в M1-12 |
+| FIND-HTTP-019 | scope/estimate | чистая birth-проекция `session_view` входит в M1-6; исходная оценка 0,5+1,5+1+1=4 дня сохранена | решение Lead 2026-09-30; реализация и проверка впереди |
+| FIND-HTTP-020 | process gate | старый ADR-0040 path исправлен; scope расширен; Gantt сохраняет подтверждённую исходную оценку | Lead-owned правки в рабочем плане подготовлены; интеграция в `change/*` ожидается |
+| FIND-HTTP-021 | Development Finding | нижняя граница permit при shared leader, точные AngleDTO/aspect IDs, разделение серверных и UI-доказательств AS-HTTP-17/19 | направления согласованы владельцем change; контракт уточнён в §7.2/§9.3 и AS-HTTP-17/19/24/28; S0 и исполняемое evidence ещё требуются |
 
 ### 15.1. Классификация после review PR #37 от 2026-09-30
 
 - Для FIND-HTTP-004/009 Lead выбрал вариант C в M1-6 и вариант A как target
   state. Выбор больше не блокирует начало реализации; acceptance блокируется до
   deterministic evidence fail-fast, health и supervisor restart.
-- FIND-HTTP-011, 013–016 исправлены в контракте и передаются Developer/Tester
-  на проверку; FIND-HTTP-017/018 получили явные предложения M1/deployment boundaries и требуют Lead approval.
-- FIND-HTTP-001/019 остаются процессным gate: Analysis подготовил proposal,
-  Developer оценивает выбранный вариант C, Lead принимает решение о scope и
-  сроках. Lead также сверяет ADR-0040 по FIND-HTTP-010/012.
-- FIND-HTTP-020 фиксирует границу роли: Analysis исключил change plan/Gantt из
-  своего diff; до merge Lead отдельным commit синхронизирует scope, ADR links,
-  решения DP-HTTP-02/04 и календарную оценку.
+- FIND-HTTP-011, 013–016 исправлены в контракте и согласованы Lead; реализация
+  и тестовая проверка впереди. FIND-HTTP-017/018 приняты как границы M1/deployment.
+- FIND-HTTP-001/019 закрыты решением Lead от 2026-09-30: чистая birth-проекция
+  входит в M1-6, исходная оценка Gantt сохраняется. Developer проверяет
+  реализуемость выбранного варианта C; новые findings оформляются отдельно.
+  Формулировка ADR-0040 по FIND-HTTP-010/012 согласована Lead.
+- FIND-HTTP-020 остаётся процессным gate: изменения Lead-owned change plan
+  подготовлены на текущей ветке, Gantt сохраняет подтверждённую оценку;
+  документ должен вернуться в `change/*` по процессу ролей.
+- FIND-HTTP-021 подтверждён пользователем: §7.2/§9.3 и AS-HTTP-17/19/24/28
+  фиксируют контракт, UI M1-7 получает клиентские проверки; техническое
+  доказательство S0 и deterministic tests ещё требуются.
 
 ### 15.2. Решение по FIND-HTTP-009 / DP-HTTP-04
 
@@ -968,11 +1017,11 @@ never-finishing fake operation; старый process не сообщает ос�
 shutdown не закрывает runtime под активным commit; fake supervisor restart для
 варианта C и kill/replace worker для target state A возвращают build capacity.
 
-Документ остаётся Functional Analyst proposal до review Developer/Tester и
-финального approval Lead. DP-HTTP-02 согласован всеми ролями, а для DP-HTTP-04
-Lead выбрал вариант C в M1-6 и вариант A как target state. Расширение scope
-`session_view` и базовая оценка 4/2 дня остаются предложениями Analysis в этом
-документе и PR #37. Analysis не изменяет Lead-owned change plan и Gantt.
+Содержательные решения документа согласованы Lead 2026-09-30. Для DP-HTTP-04
+в M1-6 выбран вариант C, а A оставлен target state; реализация и
+детерминированные lifecycle-тесты ещё требуются. Чистая birth-проекция
+`session_view` входит в M1-6, исходная оценка Gantt 0,5+1,5+1+1=4 дня сохранена.
+Предложение Analysis о 4 днях Development и 2 днях Testing не принято.
 
 ## 16. Sequence diagrams
 

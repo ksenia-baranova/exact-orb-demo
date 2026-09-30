@@ -88,16 +88,23 @@ else transport-valid request
             note over API, Orch
             Accepted task remains registered.
             Protected commit is retained and awaited.
-            Permit is not released at socket loss.
+            Each accepted request retains its own permit.
+            A cancelled single-flight waiter keeps its permit
+            while the joined leader remains active.
+            M1-6 may wait for all leaders in the cancellation snapshot;
+            unrelated leaders can delay release.
+            SQLite/catalog executor futures are retained separately.
+            Socket loss or cancelled execute does not release permit.
             M1-6 option C: at 30s watchdog marks process unhealthy;
             health becomes 503 and external supervisor restarts process.
+            The deadline does not promise actual permit release.
             Target state A moves calculation to a dedicated worker process.
             end note
         end
 
         API -> Log : if terminal before restart:
 http_message send AdmissionControl.release
-        API -> Admission : release only after terminal task
+        API -> Admission : release after retained leader/commit/leaf work
         Admission --> API : released
         API -> Log : http_message receive AdmissionReleased
     end
