@@ -1,13 +1,14 @@
 # exact-orb — требования к HTTP API и Session Middleware
 
-- **Статус:** проект Functional Analyst обновлён после второго раунда review:
-  FIND-HTTP-011…018 исправлены либо получили явное предложение ниже;
-  FIND-HTTP-004/009 остаются lifecycle blocker, FIND-HTTP-019 ожидает решения
-  Lead о scope и оценке. Затем нужны review Developer/Tester и approval Lead.
+- **Статус:** проект Functional Analyst обновлён после review PR #37:
+  DP-HTTP-02 согласован всеми ролями; для DP-HTTP-04 Lead выбрал вариант C
+  в M1-6 и вариант A как target state. FIND-HTTP-019 ожидает решения Lead о
+  scope и оценке; FIND-HTTP-020 — синхронизации Lead-owned plan/Gantt. Затем
+  нужны review Developer/Tester и остальные approval Lead.
 - **Change:** `change/http-api-and-session-middleware`, roadmap M1-6.
 - **Входной commit анализа:** `27ae072e5e99cea72f7575cd35ef45ca3eeb829e`.
 - **Рабочая ветка:** `analysis/http-api-and-session-middleware`.
-- **Дата:** 2026-09-29.
+- **Дата:** 2026-09-30.
 
 Документ определяет наблюдаемый HTTP-контракт для анонимной сессии, чтения
 текущей карты, поиска места и построения натальной карты. Он не выбирает
@@ -36,28 +37,28 @@
   `ApplicationOrchestrator`, `ApplicationResult`, `PlaceSearch` и
   `application/session_view` на входном commit.
 
-Исторические `prompts/**` и открытые UI-предложения не переопределяют ADR и
-реализованные component contracts.
-
 ## 2. Область и endpoint
 
-| Метод и URL | Назначение | Успех | Координация |
-|---|---|---|---|
-| `POST /session/bootstrap` | создать либо восстановить анонимную сессию; без карты | `200 SessionBootstrapDTO` | transport → `ContextService.create/load` |
-| `GET /charts/current` | прочитать текущую сохранённую карту | `200 SessionViewDTO` | transport → `ContextService.load` → `session_view` |
-| `GET /places?query=…&limit=10` | подсказки населённых пунктов | `200 PlaceSuggestionsDTO` | transport → `PlaceSearch.search` |
-| `POST /charts/natal` | первое построение либо явное перестроение текущей карты | `200 BuildChartResponseDTO` | transport → admission → `ApplicationOrchestrator` |
-| `GET /health/live` | внутренний liveness процесса | `200` | transport only |
-| `GET /health/ready` | внутренняя готовность принимать бизнес-запросы | `200` или `503` | transport lifecycle state |
+| Метод и URL                    | Назначение                                              | Успех                       | Координация                                        |
+| ------------------------------ | ------------------------------------------------------- | --------------------------- | -------------------------------------------------- |
+| `POST /session/bootstrap`      | создать либо восстановить анонимную сессию; без карты   | `200 SessionBootstrapDTO`   | transport → `ContextService.create/load`           |
+| `GET /charts/current`          | прочитать текущую сохранённую карту                     | `200 SessionViewDTO`        | transport → `ContextService.load` → `session_view` |
+| `GET /places?query=…&limit=10` | подсказки населённых пунктов                            | `200 PlaceSuggestionsDTO`   | transport → `PlaceSearch.search`                   |
+| `POST /charts/natal`           | первое построение либо явное перестроение текущей карты | `200 BuildChartResponseDTO` | transport → admission → `ApplicationOrchestrator`  |
+| `GET /health/live`             | внутренний liveness процесса                            | `200`                       | transport only                                     |
+| `GET /health/ready`            | внутренняя готовность принимать бизнес-запросы          | `200` или `503`             | transport lifecycle state                          |
 
 В M1-6 также входят cookie middleware, строгая HTTP-валидация, mapping typed
 outcomes, admission, deadline, reaper, startup/shutdown и transport
 observability.
 
-В M1-6 не входят UI, SSE, LLM, интерпретации, durable jobs, polling build,
-аккаунты, публичное развёртывание и resumable `run_id`. Endpoint reset и
-удаления сессии тоже не входят: `DeleteMyDataCommand`, aggregate `reset/delete`
-и гашение cookie остаются действующим component contract ADR-0009, но их
+В M1-6 не входят UI, SSE, LLM, интерпретации, durable jobs и polling build.
+Transport не выдаёт клиенту `run_id`, не предоставляет endpoint состояния
+build и не позволяет возобновить получение ответа после разрыва соединения:
+`RunContext.run_id` остаётся только внутренним correlation ID для журналов.
+Аккаунты и публичное развёртывание также не входят. Endpoint reset и удаления
+сессии тоже не входят: `DeleteMyDataCommand`, aggregate `reset/delete` и
+гашение cookie остаются действующим component contract ADR-0009, но их
 публичные URL и authorization/confirmation flow определяются отдельным change.
 
 Архитектурные границы:
@@ -73,14 +74,14 @@ observability.
 
 ## 3. Decision points и значения по умолчанию
 
-| ID | Предложение Functional Analyst | Статус |
-|---|---|---|
-| DP-HTTP-01 | четыре business endpoint и два health endpoint из §2; DTO и mapping ниже | готово к review/approval; разделение bootstrap/current принято ADR-0040 |
-| DP-HTTP-02 | session create 300/час на IP; build 20/час и 100/24ч на session, 300/час и 1500/24ч на IP; place search 120/мин на IP; 5 active build | требуется Developer review и Lead approval |
-| DP-HTTP-03 | доверять только `X-Forwarded-For`/`X-Forwarded-Proto` от peer из CIDR allowlist; алгоритм §10 | предложение закрывает прежнюю неоднозначность; требуется security review Developer и approval Lead |
-| DP-HTTP-04 | body receive 5 с, build response deadline 30 с, shutdown grace 30 с; task ownership §9 и §11 | требуется доказать реализацией и deterministic tests до approval |
-| DP-HTTP-05 | четыре HTTP sequence и синхронизация session 001–003/006 | проект обновлён; требуется Lead approval |
-| DP-HTTP-06 | расширить чистую `session_view` только проекцией birth из готового snapshot | предложение Analysis; ожидает Developer review и решения Lead о расширении scope |
+| ID         | Предложение Functional Analyst                                                                                                        | Статус                                                                                                             |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| DP-HTTP-01 | четыре business endpoint и два health endpoint из §2; DTO и mapping ниже                                                              | готово к review/approval; разделение bootstrap/current принято ADR-0040                                            |
+| DP-HTTP-02 | session create 300/час на IP; build 20/час и 100/24ч на session, 300/час и 1500/24ч на IP; place search 120/мин на IP; 5 active build | согласовано всеми ролями; принято Lead в review PR #37                                                             |
+| DP-HTTP-03 | доверять только `X-Forwarded-For`/`X-Forwarded-Proto` от peer из CIDR allowlist; алгоритм §10                                         | предложение закрывает прежнюю неоднозначность; требуется security review Developer и approval Lead                 |
+| DP-HTTP-04 | body receive 5 с, build response deadline 30 с, shutdown grace 30 с; task ownership §9 и §11                                          | решение Lead: M1-6 — вариант C, target state — вариант A; Developer подтверждает реализацией и deterministic tests |
+| DP-HTTP-05 | четыре HTTP sequence и синхронизация session 001–003/006                                                                              | проект обновлён; требуется Lead approval                                                                           |
+| DP-HTTP-06 | расширить чистую `session_view` только проекцией birth из готового snapshot                                                           | предложение Analysis; ожидает Developer review и решения Lead о расширении scope                                   |
 
 Build IP-limit пересчитан для общего NAT/CGNAT. Демо на 10 человек по пять
 построений даёт 50 запросов; прежний предел 60/час оставлял 10 запросов на
@@ -164,15 +165,15 @@ endpoint не проходят Origin-проверку. Credentialed CORS вкл
 `429` и `500`. `Retry-After` — целое число секунд со следующими точными
 правилами:
 
-| Условие | `Retry-After` | Разрешённое следующее действие |
-|---|---:|---|
-| rolling-window `429` | ceil до первого момента, когда все исчерпанные bucket снова допускают запрос, минимум 1 | повторить исходный запрос после задержки |
-| `408 BODY_RECEIVE_TIMEOUT` | 1 | повторить исходный запрос: admission ещё не было |
-| `503 BUILD_CAPACITY_EXHAUSTED` | 1 | повторить исходный POST после задержки |
-| `503 SERVICE_SHUTTING_DOWN` | 30 | повторить исходный запрос после перезапуска |
-| retryable storage/catalog/dependency `503`, включая `SESSION_CREATE_FAILED` и `STATE_READ_FAILED` | 5 | повторить безопасную операцию; для POST — только если code-specific policy не требует сверки |
-| `503 STATE_COMMIT_FAILED` | 1 | только `GET /charts/current`, исходный POST автоматически не повторять |
-| `504 BUILD_TIMEOUT` | 5 | только `GET /charts/current`; это задержка до сверки, не до повтора POST |
+| Условие                                                                                           |                                                                           `Retry-After` | Разрешённое следующее действие                                                               |
+| ------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------: | -------------------------------------------------------------------------------------------- |
+| rolling-window `429`                                                                              | ceil до первого момента, когда все исчерпанные bucket снова допускают запрос, минимум 1 | повторить исходный запрос после задержки                                                     |
+| `408 BODY_RECEIVE_TIMEOUT`                                                                        |                                                                                       1 | повторить исходный запрос: admission ещё не было                                             |
+| `503 BUILD_CAPACITY_EXHAUSTED`                                                                    |                                                                                       1 | повторить исходный POST после задержки                                                       |
+| `503 SERVICE_SHUTTING_DOWN`                                                                       |                                                                                      30 | повторить исходный запрос после перезапуска                                                  |
+| retryable storage/catalog/dependency `503`, включая `SESSION_CREATE_FAILED` и `STATE_READ_FAILED` |                                                                                       5 | повторить безопасную операцию; для POST — только если code-specific policy не требует сверки |
+| `503 STATE_COMMIT_FAILED`                                                                         |                                                                                       1 | только `GET /charts/current`, исходный POST автоматически не повторять                       |
+| `504 BUILD_TIMEOUT`                                                                               |                                                                                       5 | только `GET /charts/current`; это задержка до сверки, не до повтора POST                     |
 
 Одна секунда для capacity не создаёт серверную очередь и даёт ближайшему
 освободившемуся permit принять запрос; пять секунд предотвращают hot loop при
@@ -227,15 +228,15 @@ Sliding TTL store — 7 дней, hard TTL — 30 дней. Cookie Max-Age не 
 {"status":"ready","state_version":0}
 ```
 
-| Условие | Действие и результат |
-|---|---|
-| cookie отсутствует/invalid/duplicate | session-create limit по client IP → fresh ID → insert-only `ContextService.create`; `200 ready` и новая cookie |
-| live cookie | `ContextService.load`; вернуть только `state_version`, не вызывать `session_view`; `200 ready` и renew cookie |
-| `SessionAbsent` | clear old cookie → creation admission → fresh ID/create; `200 ready` и один новый `Set-Cookie` |
-| `StateReadFailed` | `503 STATE_READ_FAILED`; cookie unchanged; create запрещён |
-| три последовательных `SessionIdConflict` | `503 SESSION_CREATE_FAILED`, detail `SESSION_ID_COLLISION_RETRY_EXHAUSTED`; чужие записи не читать |
-| `StateCommitFailed` create | `503 SESSION_CREATE_FAILED` с safe storage detail; новая cookie не выдаётся |
-| creation limit | `429 SESSION_CREATE_RATE_LIMITED`; `Retry-After`; create/ID generation не выполняются |
+| Условие                                  | Действие и результат                                                                                           |
+| ---------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| cookie отсутствует/invalid/duplicate     | session-create limit по client IP → fresh ID → insert-only `ContextService.create`; `200 ready` и новая cookie |
+| live cookie                              | `ContextService.load`; вернуть только `state_version`, не вызывать `session_view`; `200 ready` и renew cookie  |
+| `SessionAbsent`                          | clear old cookie → creation admission → fresh ID/create; `200 ready` и один новый `Set-Cookie`                 |
+| `StateReadFailed`                        | `503 STATE_READ_FAILED`; cookie unchanged; create запрещён                                                     |
+| три последовательных `SessionIdConflict` | `503 SESSION_CREATE_FAILED`, detail `SESSION_ID_COLLISION_RETRY_EXHAUSTED`; чужие записи не читать             |
+| `StateCommitFailed` create               | `503 SESSION_CREATE_FAILED` с safe storage detail; новая cookie не выдаётся                                    |
+| creation limit                           | `429 SESSION_CREATE_RATE_LIMITED`; `Retry-After`; create/ID generation не выполняются                          |
 
 Creation quota расходуется один раз на HTTP-запрос, а не на каждую внутреннюю
 collision attempt. Успешный restore live cookie quota не расходует.
@@ -251,15 +252,15 @@ Orchestrator, resolver, cache, engine или `session_view`.
 
 Endpoint требует ровно одну синтаксически пригодную cookie.
 
-| Исход | HTTP | Cookie | Тело |
-|---|---:|---|---|
-| live empty snapshot | 200 | renew | `SessionViewDTO empty` |
-| valid stored chart | 200 | renew | `chart_ready`, `chart_stale` true/false |
-| safe decode/projector refusal | 200 | renew | `chart_unavailable` с birth, без internal reason |
-| `SessionAbsent` | 409 | clear | `SESSION_EXPIRED` или `SESSION_NOT_FOUND` |
-| `StateReadFailed` | 503 | unchanged | typed storage error |
-| invalid/missing/duplicate cookie | 409 | clear if present | `SESSION_REQUIRED` |
-| unexpected projector failure | 500 | renew after successful load | `INTERNAL_FAILURE` |
+| Исход                            | HTTP | Cookie                      | Тело                                             |
+| -------------------------------- | ---: | --------------------------- | ------------------------------------------------ |
+| live empty snapshot              |  200 | renew                       | `SessionViewDTO empty`                           |
+| valid stored chart               |  200 | renew                       | `chart_ready`, `chart_stale` true/false          |
+| safe decode/projector refusal    |  200 | renew                       | `chart_unavailable` с birth, без internal reason |
+| `SessionAbsent`                  |  409 | clear                       | `SESSION_EXPIRED` или `SESSION_NOT_FOUND`        |
+| `StateReadFailed`                |  503 | unchanged                   | typed storage error                              |
+| invalid/missing/duplicate cookie |  409 | clear if present            | `SESSION_REQUIRED`                               |
+| unexpected projector failure     |  500 | renew after successful load | `INTERNAL_FAILURE`                               |
 
 `ContextService.load` выполняет read-and-renew. Затем чистый `session_view`
 декодирует `StoredChart` с сохранённой `CalculationVersion`; изменение текущей
@@ -275,14 +276,14 @@ state не меняется.
 `query` обязателен и передаётся один раз. `limit` по умолчанию 10 и следует
 грамматике §4.2. Cookie не читается и не обновляется.
 
-| Исход | HTTP | Тело |
-|---|---:|---|
-| suggestions, включая пустой список | 200 | `{ "items": [...] }` |
-| `InvalidPlaceQuery(code)` | 422 | compact error `INVALID_PLACE_QUERY` + component detail |
-| raw query >512 | 422 | `INVALID_REQUEST`, `QUERY_TOO_LONG` |
-| invalid/missing limit/query grammar | 422 | `INVALID_REQUEST`, `LIMIT_INVALID`/`QUERY_REQUIRED` |
-| catalog unavailable | 503 | `PLACE_CATALOG_UNAVAILABLE` |
-| IP limit | 429 | `PLACE_SEARCH_RATE_LIMITED` + `Retry-After` |
+| Исход                               | HTTP | Тело                                                   |
+| ----------------------------------- | ---: | ------------------------------------------------------ |
+| suggestions, включая пустой список  |  200 | `{ "items": [...] }`                                   |
+| `InvalidPlaceQuery(code)`           |  422 | compact error `INVALID_PLACE_QUERY` + component detail |
+| raw query >512                      |  422 | `INVALID_REQUEST`, `QUERY_TOO_LONG`                    |
+| invalid/missing limit/query grammar |  422 | `INVALID_REQUEST`, `LIMIT_INVALID`/`QUERY_REQUIRED`    |
+| catalog unavailable                 |  503 | `PLACE_CATALOG_UNAVAILABLE`                            |
+| IP limit                            |  429 | `PLACE_SEARCH_RATE_LIMITED` + `Retry-After`            |
 
 Публичный item содержит только `place_id`, `display_name`, `admin1_name`,
 `country_code`; координаты и `tz_id` не публикуются. Пустой результат — 200.
@@ -341,13 +342,14 @@ deployment запрещён до отдельного решения. Это о�
 основание отдавать потенциально несохранённый artifact.
 
 Если response deadline истёк, transport отвечает `504 BUILD_TIMEOUT` и не
-запускает второй execute. Принятая application task остаётся в task registry;
-capacity permit освобождается только после её terminal outcome. Если начался
-защищённый commit, его inner task удерживается и ожидается по действующему
-Orchestrator contract. Developer обязан задать bounded timeouts leaf-операций;
-обёртка `wait_for` вокруг неотменяемого native/worker вызова без lifecycle
-ownership не считается решением. Невозможность доказать bounded termination
-является blocker DP-HTTP-04.
+запускает второй execute. До restart принятая application task остаётся в task
+registry, а capacity permit не объявляется освобождённым. Если начался
+защищённый commit, его inner task не отсоединяется от ownership. По выбранному
+для M1-6 варианту C процесс закрывает admission, становится unhealthy и
+перезапускается внешним supervisor; target state A переносит расчёт в отдельный
+worker process. Bounded timeouts leaf-операций применяются там, где они
+поддерживаются, но `wait_for` вокруг неотменяемого native вызова сам по себе не
+считается lifecycle ownership.
 
 ## 7. Публичные DTO и projector
 
@@ -389,16 +391,16 @@ Build success не требует birth projection: committed artifact и versio
 Projector использует явный whitelist; `model_dump()` внутреннего artifact
 запрещён.
 
-| Поле | Контракт |
-|---|---|
-| `chart_identity` | opaque `calculation_key` |
-| `kind` | `natal` или `cosmogram` |
-| `zodiac` | `tropical` в M1 |
-| `house_system` | код для natal; `null` для cosmogram |
-| `points[]` | `id`, `longitude`, `sign`, `degree`, `minute`, `house`, `retrograde` |
-| `angles` | `asc`, `mc`, `vertex`, `dsc`, `ic`; `null` для cosmogram |
-| `houses[]` | `number`, `cusp_longitude`, `sign`, `degree`, `minute`; `null` для cosmogram |
-| `aspects[]` | `from`, `to`, `type`, `orb`, `category` |
+| Поле             | Контракт                                                                     |
+| ---------------- | ---------------------------------------------------------------------------- |
+| `chart_identity` | opaque `calculation_key`                                                     |
+| `kind`           | `natal` или `cosmogram`                                                      |
+| `zodiac`         | `tropical` в M1                                                              |
+| `house_system`   | код для natal; `null` для cosmogram                                          |
+| `points[]`       | `id`, `longitude`, `sign`, `degree`, `minute`, `house`, `retrograde`         |
+| `angles`         | `asc`, `mc`, `vertex`, `dsc`, `ic`; `null` для cosmogram                     |
+| `houses[]`       | `number`, `cusp_longitude`, `sign`, `degree`, `minute`; `null` для cosmogram |
+| `aspects[]`      | `from`, `to`, `type`, `orb`, `category`                                      |
 
 Порядок points фиксирован:
 `sun`, `moon`, `mercury`, `venus`, `mars`, `jupiter`, `saturn`, `uranus`,
@@ -446,20 +448,20 @@ code-specific сверка из §9.2. Поэтому жёсткое
 
 ### 8.1. `ApplicationResult` build
 
-| Result | HTTP | Cookie | Публичный результат |
-|---|---:|---|---|
-| `ApplicationCommitted` | 200 | renew | `chart_ready` + committed artifact |
-| `ApplicationAlreadyApplied` | 200 | renew | `already_applied`; без artifact; затем GET current |
-| `ApplicationInputRequired` | 422 | renew | application code/message/version/issues |
-| retryable resolution failure | 503 | renew | safe application fields |
-| non-retryable resolution failure | 500 | renew | safe application fields |
-| `EPHEMERIS_UNAVAILABLE` | 503 | renew | safe application fields |
-| other calculation failure | 500 | renew | safe application fields |
-| `ApplicationSessionAbsent` | 409 | clear | session code/reason |
-| `ApplicationStateReadFailure` | 503 | unchanged | storage code/detail |
-| `ApplicationStateCommitFailure` | 503 | renew | `STATE_COMMIT_FAILED`; outcome unknown |
-| `ApplicationSuperseded` | 409 | renew | `RESULT_SUPERSEDED`, actual version |
-| any `ApplicationInternalFailure` | 500 | according to load state | public `INTERNAL_FAILURE` only |
+| Result                           | HTTP | Cookie                  | Публичный результат                                |
+| -------------------------------- | ---: | ----------------------- | -------------------------------------------------- |
+| `ApplicationCommitted`           |  200 | renew                   | `chart_ready` + committed artifact                 |
+| `ApplicationAlreadyApplied`      |  200 | renew                   | `already_applied`; без artifact; затем GET current |
+| `ApplicationInputRequired`       |  422 | renew                   | application code/message/version/issues            |
+| retryable resolution failure     |  503 | renew                   | safe application fields                            |
+| non-retryable resolution failure |  500 | renew                   | safe application fields                            |
+| `EPHEMERIS_UNAVAILABLE`          |  503 | renew                   | safe application fields                            |
+| other calculation failure        |  500 | renew                   | safe application fields                            |
+| `ApplicationSessionAbsent`       |  409 | clear                   | session code/reason                                |
+| `ApplicationStateReadFailure`    |  503 | unchanged               | storage code/detail                                |
+| `ApplicationStateCommitFailure`  |  503 | renew                   | `STATE_COMMIT_FAILED`; outcome unknown             |
+| `ApplicationSuperseded`          |  409 | renew                   | `RESULT_SUPERSEDED`, actual version                |
+| any `ApplicationInternalFailure` |  500 | according to load state | public `INTERNAL_FAILURE` only                     |
 
 `HANDLER_NOT_REGISTERED`, application internal subtype, traceback и internal
 detail остаются только в журнале. Правило сохранения application fields не
@@ -469,26 +471,26 @@ detail остаются только в журнале. Правило сохр�
 
 ### 8.2. Transport/admission errors
 
-| HTTP | `code` | `detail_code` | `user_message` | retryable |
-|---:|---|---|---|---:|
-| 400 | `FORWARDED_HEADER_INVALID` | null | `Некорректные данные доверенного прокси.` | false |
-| 403 | `ORIGIN_NOT_ALLOWED` | null | `Источник запроса не разрешён.` | false |
-| 404 | `NOT_FOUND` | null | `Адрес не найден.` | false |
-| 405 | `METHOD_NOT_ALLOWED` | null | `Метод запроса не поддерживается.` | false |
-| 408 | `REQUEST_TIMEOUT` | `BODY_RECEIVE_TIMEOUT` | `Не удалось получить запрос вовремя.` | true |
-| 409 | `SESSION_REQUIRED` | null | `Сначала откройте или восстановите сессию.` | false |
-| 413 | `REQUEST_TOO_LARGE` | null | `Запрос превышает допустимый размер.` | false |
-| 415 | `UNSUPPORTED_MEDIA_TYPE` | null | `Отправьте запрос в формате JSON UTF-8.` | false |
-| 422 | `INVALID_REQUEST` | stable validation detail or null | `Проверьте формат запроса и значения полей.` | false |
-| 429 | `SESSION_CREATE_RATE_LIMITED` | `IP_HOURLY_LIMIT` | `Слишком много новых сессий. Попробуйте позже.` | true |
-| 429 | `BUILD_SESSION_RATE_LIMITED` | `SESSION_HOURLY_LIMIT` или `SESSION_DAILY_LIMIT` | `Лимит построений для этой сессии исчерпан.` | true |
-| 429 | `BUILD_IP_RATE_LIMITED` | `IP_HOURLY_LIMIT` или `IP_DAILY_LIMIT` | `Слишком много построений из этой сети. Попробуйте позже.` | true |
-| 429 | `PLACE_SEARCH_RATE_LIMITED` | `IP_MINUTE_LIMIT` | `Слишком много запросов поиска. Попробуйте позже.` | true |
-| 500 | `INTERNAL_FAILURE` | null | `Произошла внутренняя ошибка.` | false |
-| 503 | `BUILD_CAPACITY_EXHAUSTED` | null | `Все слоты расчёта заняты. Попробуйте позже.` | true |
-| 503 | `SESSION_CREATE_FAILED` | storage code или collision exhausted | `Не удалось создать сессию. Попробуйте ещё раз.` | true |
-| 503 | `SERVICE_SHUTTING_DOWN` | null | `Сервис перезапускается. Попробуйте ещё раз.` | true |
-| 504 | `BUILD_TIMEOUT` | `OPERATION_DEADLINE_EXCEEDED` | `Расчёт не завершился вовремя. Проверьте текущую карту.` | false |
+| HTTP | `code`                        | `detail_code`                                    | `user_message`                                             | retryable |
+| ---: | ----------------------------- | ------------------------------------------------ | ---------------------------------------------------------- | --------: |
+|  400 | `FORWARDED_HEADER_INVALID`    | null                                             | `Некорректные данные доверенного прокси.`                  |     false |
+|  403 | `ORIGIN_NOT_ALLOWED`          | null                                             | `Источник запроса не разрешён.`                            |     false |
+|  404 | `NOT_FOUND`                   | null                                             | `Адрес не найден.`                                         |     false |
+|  405 | `METHOD_NOT_ALLOWED`          | null                                             | `Метод запроса не поддерживается.`                         |     false |
+|  408 | `REQUEST_TIMEOUT`             | `BODY_RECEIVE_TIMEOUT`                           | `Не удалось получить запрос вовремя.`                      |      true |
+|  409 | `SESSION_REQUIRED`            | null                                             | `Сначала откройте или восстановите сессию.`                |     false |
+|  413 | `REQUEST_TOO_LARGE`           | null                                             | `Запрос превышает допустимый размер.`                      |     false |
+|  415 | `UNSUPPORTED_MEDIA_TYPE`      | null                                             | `Отправьте запрос в формате JSON UTF-8.`                   |     false |
+|  422 | `INVALID_REQUEST`             | stable validation detail or null                 | `Проверьте формат запроса и значения полей.`               |     false |
+|  429 | `SESSION_CREATE_RATE_LIMITED` | `IP_HOURLY_LIMIT`                                | `Слишком много новых сессий. Попробуйте позже.`            |      true |
+|  429 | `BUILD_SESSION_RATE_LIMITED`  | `SESSION_HOURLY_LIMIT` или `SESSION_DAILY_LIMIT` | `Лимит построений для этой сессии исчерпан.`               |      true |
+|  429 | `BUILD_IP_RATE_LIMITED`       | `IP_HOURLY_LIMIT` или `IP_DAILY_LIMIT`           | `Слишком много построений из этой сети. Попробуйте позже.` |      true |
+|  429 | `PLACE_SEARCH_RATE_LIMITED`   | `IP_MINUTE_LIMIT`                                | `Слишком много запросов поиска. Попробуйте позже.`         |      true |
+|  500 | `INTERNAL_FAILURE`            | null                                             | `Произошла внутренняя ошибка.`                             |     false |
+|  503 | `BUILD_CAPACITY_EXHAUSTED`    | null                                             | `Все слоты расчёта заняты. Попробуйте позже.`              |      true |
+|  503 | `SESSION_CREATE_FAILED`       | storage code или collision exhausted             | `Не удалось создать сессию. Попробуйте ещё раз.`           |      true |
+|  503 | `SERVICE_SHUTTING_DOWN`       | null                                             | `Сервис перезапускается. Попробуйте ещё раз.`              |      true |
+|  504 | `BUILD_TIMEOUT`               | `OPERATION_DEADLINE_EXCEEDED`                    | `Расчёт не завершился вовремя. Проверьте текущую карту.`   |     false |
 
 Admission errors не имеют `state_version/issues`; все содержат полный ErrorDTO,
 `Retry-After` по §4.4, `Cache-Control: no-store`, `X-Request-ID`.
@@ -501,13 +503,13 @@ clear. Его `retryable=false` запрещает повтор POST; `Retry-Aft
 
 ### 9.1. Лимиты
 
-| Scope | Window/capacity | Code |
-|---|---:|---|
-| session create / client IP | 300 за скользящий час | `SESSION_CREATE_RATE_LIMITED` |
-| build / session | 20 за час; 100 за 24 часа | `BUILD_SESSION_RATE_LIMITED` |
-| build / client IP | 300 за час; 1500 за 24 часа | `BUILD_IP_RATE_LIMITED` |
-| active build / process | 5 | `BUILD_CAPACITY_EXHAUSTED` |
-| place search / client IP | 120 за минуту | `PLACE_SEARCH_RATE_LIMITED` |
+| Scope                      |             Window/capacity | Code                          |
+| -------------------------- | --------------------------: | ----------------------------- |
+| session create / client IP |       300 за скользящий час | `SESSION_CREATE_RATE_LIMITED` |
+| build / session            |   20 за час; 100 за 24 часа | `BUILD_SESSION_RATE_LIMITED`  |
+| build / client IP          | 300 за час; 1500 за 24 часа | `BUILD_IP_RATE_LIMITED`       |
+| active build / process     |                           5 | `BUILD_CAPACITY_EXHAUSTED`    |
+| place search / client IP   |               120 за минуту | `PLACE_SEARCH_RATE_LIMITED`   |
 
 Transport-invalid запрос quota не расходует. Build session/IP windows и
 capacity резервируются атомарно; capacity refusal не расходует rate window.
@@ -539,25 +541,25 @@ Orchestrator может выполнить один exact retry save внутр�
 Он сохраняет application `retryable=true`, но code-specific recovery — только
 `GET /charts/current` после `Retry-After: 1`; автоматического POST нет.
 
-`BUILD_TIMEOUT` означает, что transport deadline истёк, а принятая задача может
-ещё выполняться. Он возвращает `retryable=false`, `Retry-After: 5` и unchanged
-cookie. После задержки клиент делает только `GET /charts/current`:
+`BUILD_TIMEOUT` означает, что transport deadline истёк и запускается выбранный
+для M1-6 fail-fast flow C. Ответ содержит `retryable=false`, `Retry-After: 5` и
+unchanged cookie. До завершения supervisor restart клиент не повторяет POST;
+business request может получить 503. После восстановления readiness клиент
+выполняет bootstrap и только затем `GET /charts/current`:
 
 - current birth соответствует отправленному intent — показать сохранённую
   карту и считать действие завершённым;
 - current отличается — показать актуальную карту/конфликт;
-- current empty/старый после `STATE_COMMIT_FAILED` — предложить человеку явный
-  повтор POST;
-- current empty/старый после `BUILD_TIMEOUT` не доказывает неуспех, пока
-  retained task могла продолжаться; показать «результат уточняется» и не
-  предлагать повтор POST.
+- current empty/старый после restart означает, что старый process больше не
+  владеет задачей; можно предложить человеку явный новый POST.
 
-Новый POST после завершённой сверки является новым `execute`: он делает свежий
-load и использует новую expected version. Если предыдущий commit всё-таки
-состоялся, повтор может записать то же намерение ещё раз и увеличить
-`state_version`; обещание «original expected» между HTTP-запросами не
-переносится. Невозможность безопасно установить terminal outcome после 504 без
-status endpoint остаётся частью blocker FIND-HTTP-004/009.
+Для `STATE_COMMIT_FAILED` recovery остаётся прежним: current проверяется после
+`Retry-After: 1`; empty/старый current допускает только явный новый POST.
+Каждый новый POST делает свежий load и использует новую expected version. Если
+предыдущий commit всё-таки состоялся, повтор может записать то же намерение ещё
+раз и увеличить `state_version`; обещание «original expected» между
+HTTP-запросами не переносится. Отсутствие status endpoint принято как M1
+ограничение варианта C; target state A изолирует ownership в worker process.
 
 ### 9.3. Disconnect и timeout
 
@@ -566,6 +568,15 @@ Disconnect не откатывает admission quota. До commit операци
 подтвердился после disconnect/504, последующий bootstrap + current GET видит
 карту. Permit освобождается только после terminal application task, а не в
 момент потери сокета.
+
+Для M1-6 Lead выбрал вариант C: если принятая build-задача не получила terminal
+outcome к 30-секундному deadline, процесс атомарно закрывает admission и
+переходит в unhealthy. Оба health endpoint возвращают 503, а внешний supervisor
+перезапускает весь web process. Старый процесс не сообщает ложное освобождение
+permit; незавершённые запросы обрываются, а состояние после restart проверяется
+через bootstrap и `GET /charts/current`. Target state — вариант A: расчёт
+переносится в отдельный calculation worker, запущенный в отдельном process,
+который можно завершить и заменить без перезапуска HTTP process.
 
 ## 10. Client IP и trusted proxy
 
@@ -597,10 +608,12 @@ deadline, interval, каталога мест, SQLite/runtime composition или
 CalculationVersion завершает startup; уже открытые ресурсы закрываются в
 обратном порядке.
 
-`GET /health/live` возвращает 200, пока event loop обслуживает запрос.
-`GET /health/ready` возвращает 200 только после успешной сборки runtime,
-открытия PlaceSearch и запуска reaper ownership; с начала shutdown — 503.
-Health не читает SQLite/каталог на каждый вызов и не принимает cookie.
+`GET /health/live` возвращает 200, пока event loop обслуживает запрос и
+fail-fast watchdog не перевёл process в unhealthy. После такого перехода live
+возвращает 503 до перезапуска внешним supervisor. `GET /health/ready` возвращает
+200 только после успешной сборки runtime, открытия PlaceSearch и запуска reaper
+ownership; с начала shutdown либо unhealthy — 503. Health не читает
+SQLite/каталог на каждый вызов и не принимает cookie.
 
 Оба endpoint служат только reverse proxy/orchestrator на loopback либо
 внутренней сети. Публичный proxy не маршрутизирует `/health/*`; внешний запрос
@@ -627,9 +640,12 @@ monotonic clock. Следующий run планируется от заверш
 6. после нулевого active count вызывается `ApplicationRuntime.aclose()`;
 7. внешний `SqlitePlaceCatalog`/executor закрывается последним.
 
-Если bounded completion protected/native task не доказан, lifecycle
-implementation не проходит gate DP-HTTP-04. Нельзя молча освободить permit,
-оставив неучтённую работу, либо подавить cancellation/error.
+Если по истечении shutdown grace остаётся protected/native task без terminal
+outcome, применяется выбранный для M1-6 вариант C: process становится unhealthy,
+`ApplicationRuntime.aclose()` под активной задачей не вызывается, внешний
+supervisor завершает и перезапускает process. Нельзя молча освободить permit,
+оставив неучтённую работу, либо подавить cancellation/error. Developer обязан
+доказать этот порядок детерминированными тестами до acceptance DP-HTTP-04.
 
 ### 11.4. Routing, HEAD/OPTIONS и schema UI
 
@@ -644,16 +660,16 @@ implementation не проходит gate DP-HTTP-04. Нельзя молча о
 
 ## 12. Наблюдаемость
 
-| Event | Level | Обязательные поля |
-|---|---|---|
-| `http_request_started` | INFO | request_id, method, route template |
-| `http_message` send/receive | INFO | request_id, run_id для build, peer, operation, message_type; без payload |
-| `http_admission_rejected` | INFO | request/run ID, class, scope, public code, detail, retry_after |
-| `http_cookie_replaced` | INFO | request ID, reason; без cookie/session ID |
-| `chart_unavailable` | ERROR | request ID, safe_reason; без payload/birth/session ID |
-| `http_request_finished` | INFO/WARNING | IDs, outcome, HTTP status если отправлен, public code, duration_ms |
-| `session_reaper_started/finished` | INFO/WARNING | reaper_run_id, schedule, deleted_count либо safe error, duration |
-| `http_shutdown_started/finished` | INFO | active count, outcome, duration |
+| Event                             | Level        | Обязательные поля                                                        |
+| --------------------------------- | ------------ | ------------------------------------------------------------------------ |
+| `http_request_started`            | INFO         | request_id, method, route template                                       |
+| `http_message` send/receive       | INFO         | request_id, run_id для build, peer, operation, message_type; без payload |
+| `http_admission_rejected`         | INFO         | request/run ID, class, scope, public code, detail, retry_after           |
+| `http_cookie_replaced`            | INFO         | request ID, reason; без cookie/session ID                                |
+| `chart_unavailable`               | ERROR        | request ID, safe_reason; без payload/birth/session ID                    |
+| `http_request_finished`           | INFO/WARNING | IDs, outcome, HTTP status если отправлен, public code, duration_ms       |
+| `session_reaper_started/finished` | INFO/WARNING | reaper_run_id, schedule, deleted_count либо safe error, duration         |
+| `http_shutdown_started/finished`  | INFO         | active count, outcome, duration                                          |
 
 `http_message` покрывает фактические переходы: bootstrap ↔ create/load;
 current chart ↔ load и → session_view; places ↔ search; build ↔ admission и
@@ -785,11 +801,11 @@ commit состоялся и не состоялся. Ответ сохраня�
 увеличение version.
 
 Для `BUILD_TIMEOUT` проверяются `retryable=false`, `Retry-After: 5`, отсутствие
-`Set-Cookie` и отсутствие любого повторного POST. Retained task завершается
-через управляемый barrier; после подтверждённого commit следующий GET current
-видит карту. Старый/empty current до terminal task оставляет статус
-«результат уточняется» и не разрешает повтор. Original expected между HTTP
-requests не переносится.
+`Set-Cookie` и отсутствие повторного POST до supervisor restart. В одном тесте
+commit успевает подтвердиться до завершения старого process, и current после
+restart видит карту; в другом commit не происходит, current остаётся empty и
+разрешает человеку явный новый POST. Старый process не сообщает terminal task
+или освобождение permit. Original expected между HTTP requests не переносится.
 
 ### AS-HTTP-20 — session потеряна на build
 
@@ -807,8 +823,10 @@ codes/details/Retry-After. Сценарий 10 sessions × 5 build с одним
 
 Пять barrier-controlled tasks удерживают permits; шестая получает быстрый 503
 с `Retry-After: 1` и не расходует rate. Never-finishing fake operation достигает
-504 с `retryable=false`, `Retry-After: 5` и unchanged cookie; task
-cancel/ownership и permit завершаются детерминированно; новый запрос проходит.
+504 с `retryable=false`, `Retry-After: 5` и unchanged cookie, после чего process
+атомарно закрывает admission, а live/ready возвращают 503. Старый process не
+сообщает освобождение permit. Fake supervisor перезапускает process; новый
+build после restart проходит.
 
 ### AS-HTTP-23 — slow body
 
@@ -820,7 +838,9 @@ Fake ASGI receive не отдаёт следующий body chunk: через 5 
 
 Disconnect до commit отменяет без мутации. Disconnect после старта protected
 commit не теряет inner task; после подтверждения bootstrap + current GET видят
-карту. Permit освобождён только после terminal task.
+карту. Permit освобождён только после terminal task. Если retained task
+достигает 30-секундного deadline, применяется тот же unhealthy/supervisor
+restart flow C, после чего current становится authoritative.
 
 ### AS-HTTP-25 — reaper
 
@@ -832,8 +852,10 @@ overlap через barrier, продолжение после одного typed
 
 Каждая invalid setting и обязательная dependency failure завершает startup и
 закрывает уже открытые resources. Ready становится 200 только после полной
-сборки и 503 до/во время shutdown. Internal proxy видит health, публичный route
-не опубликован. Active request/commit ordering проверяется events/barriers.
+сборки и 503 до/во время shutdown. Overdue build по варианту C переводит оба
+health endpoint в 503; fake supervisor restart создаёт новый healthy process.
+Internal proxy видит health, публичный route не опубликован. Active
+request/commit ordering проверяется events/barriers.
 
 ### AS-HTTP-27 — обязательные headers
 
@@ -874,39 +896,44 @@ application/session/catalog tests, `tests/test_module_boundaries.py`, затем
 
 ## 15. Findings и ограничения
 
-| ID | Тип | Состояние/решение | Статус |
-|---|---|---|---|
-| FIND-HTTP-001 | projection gap | расширить чистый `session_view` birth projection без I/O | Analysis proposal; Developer review и Lead scope approval |
-| FIND-HTTP-002 | accepted M1 limitation | current birth place содержит только id/display name | Lead approval |
-| FIND-HTTP-003 | proxy decision | точный алгоритм предложен в §10 | Developer security review |
-| FIND-HTTP-004 | lifecycle blocker | доказать bounded leaf operations и task ownership §9/11 | blocks lifecycle code |
-| FIND-HTTP-005 | deployment limitation | process-local counters, один worker/CalculationVersion | Lead approval |
-| FIND-HTTP-006 | UI alignment | UI синхронизирован с separate current GET и whitelist | resolved in analysis draft |
-| FIND-HTTP-007 | former build projection blocker | build DTO больше не требует birth view; current GET является явной операцией | resolved by ADR-0040 revision |
-| FIND-HTTP-008 | deferred public API | reset/delete endpoint отсутствует в M1-6 | explicit scope; future change |
-| FIND-HTTP-009 | native timeout risk | неотменяемый native call требует доказанного bounded ownership/recovery; варианты решения — §15.2 | Developer/Lead blocker DP-HTTP-04 |
-| FIND-HTTP-010 | provenance | ADR-0039 восстановлен из reflog commit `cf16d41`; точный файл ADR-0040 не найден, текст восстановлен | Lead проверяет формулировку до commit |
-| FIND-HTTP-011 | retry semantics | `retryable` определён как transient + code-specific policy; `STATE_COMMIT_FAILED=true` требует current GET, `BUILD_TIMEOUT=false`, cookie unchanged; §9.2 и AS-HTTP-19 дополнены | resolved in analysis; Lead confirms DP-HTTP-01 |
-| FIND-HTTP-012 | ADR provenance | реестр сохраняет исходный вариант C от 24.09; ADR-0040 содержит ревизию 29.09 C → D после ADR-0041 | revision recorded; Lead verifies wording before commit |
-| FIND-HTTP-013 | acceptance gap | AS-HTTP-29 проверяет ignored spoofed XFF и разные bucket для двух untrusted peer | resolved in analysis |
-| FIND-HTTP-014 | contract gap | любой присутствующий Origin проверяется у всех business endpoint, включая GET; health исключён | resolved in §4.4 |
-| FIND-HTTP-015 | text/diagram mismatch | absent/invalid/duplicate cookie гасится и при отказе bootstrap creation; missing остаётся без cookie | resolved in §5 and AS-HTTP-04 |
-| FIND-HTTP-016 | Retry-After values | rolling 429 вычисляется; body/capacity/commit = 1, dependency/504 = 5, shutdown = 30 | resolved in §4.4; Developer verifies implementation |
-| FIND-HTTP-017 | proposed M1 risk acceptance, low | отдельного live-cookie read limiter нет; controlled single-worker, общий proxy IP-limit обязателен до public M1-12 | Analysis proposal; Lead approval |
-| FIND-HTTP-018 | deployment boundary | health доступны только internal reverse proxy/orchestrator; public proxy не маршрутизирует `/health/*` | Analysis proposal; Developer/Lead review; ACL/manifest in M1-12 |
-| FIND-HTTP-019 | scope/estimate | Analysis предлагает pure `session_view` expansion и базовую оценку development 4 дня / testing 2 дня | open; Developer уточняет DP-HTTP-04, Lead решает scope и оценку |
+| ID            | Тип                              | Состояние/решение                                                                                                                                                                | Статус                                                                   |
+| ------------- | -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| FIND-HTTP-001 | projection gap                   | расширить чистый `session_view` birth projection без I/O                                                                                                                         | Analysis proposal; Developer review и Lead scope approval                |
+| FIND-HTTP-002 | accepted M1 limitation           | current birth place содержит только id/display name                                                                                                                              | Lead approval                                                            |
+| FIND-HTTP-003 | proxy decision                   | точный алгоритм предложен в §10                                                                                                                                                  | Developer security review                                                |
+| FIND-HTTP-004 | lifecycle decision               | для M1-6 выбран fail-fast restart process; target state — отдельный calculation worker/process                                                                                   | решение Lead; Developer предоставляет implementation evidence            |
+| FIND-HTTP-005 | deployment limitation            | process-local counters, один worker/CalculationVersion                                                                                                                           | Lead approval                                                            |
+| FIND-HTTP-006 | UI alignment                     | UI синхронизирован с separate current GET и whitelist                                                                                                                            | resolved in analysis draft                                               |
+| FIND-HTTP-007 | former build projection blocker  | build DTO больше не требует birth view; current GET является явной операцией                                                                                                     | resolved by ADR-0040 revision                                            |
+| FIND-HTTP-008 | deferred public API              | reset/delete endpoint отсутствует в M1-6                                                                                                                                         | explicit scope; future change                                            |
+| FIND-HTTP-009 | native timeout risk              | вариант C ограничивает ущерб restart всего process; вариант A изолирует расчёт в target state                                                                                    | решение выбрано; acceptance блокируется до deterministic evidence        |
+| FIND-HTTP-010 | provenance                       | ADR-0039 восстановлен из reflog commit `cf16d41`; точный файл ADR-0040 не найден, текст восстановлен                                                                             | Lead проверяет формулировку до commit                                    |
+| FIND-HTTP-011 | retry semantics                  | `retryable` определён как transient + code-specific policy; `STATE_COMMIT_FAILED=true` требует current GET, `BUILD_TIMEOUT=false`, cookie unchanged; §9.2 и AS-HTTP-19 дополнены | resolved in analysis; Lead confirms DP-HTTP-01                           |
+| FIND-HTTP-012 | ADR provenance                   | реестр сохраняет исходный вариант C от 24.09; ADR-0040 содержит ревизию 29.09 C → D после ADR-0041                                                                               | revision recorded; Lead verifies wording before commit                   |
+| FIND-HTTP-013 | acceptance gap                   | AS-HTTP-29 проверяет ignored spoofed XFF и разные bucket для двух untrusted peer                                                                                                 | resolved in analysis                                                     |
+| FIND-HTTP-014 | contract gap                     | любой присутствующий Origin проверяется у всех business endpoint, включая GET; health исключён                                                                                   | resolved in §4.4                                                         |
+| FIND-HTTP-015 | text/diagram mismatch            | absent/invalid/duplicate cookie гасится и при отказе bootstrap creation; missing остаётся без cookie                                                                             | resolved in §5 and AS-HTTP-04                                            |
+| FIND-HTTP-016 | Retry-After values               | rolling 429 вычисляется; body/capacity/commit = 1, dependency/504 = 5, shutdown = 30                                                                                             | resolved in §4.4; Developer verifies implementation                      |
+| FIND-HTTP-017 | proposed M1 risk acceptance, low | отдельного live-cookie read limiter нет; controlled single-worker, общий proxy IP-limit обязателен до public M1-12                                                               | Analysis proposal; Lead approval                                         |
+| FIND-HTTP-018 | deployment boundary              | health доступны только internal reverse proxy/orchestrator; public proxy не маршрутизирует `/health/*`                                                                           | Analysis proposal; Developer/Lead review; ACL/manifest in M1-12          |
+| FIND-HTTP-019 | scope/estimate                   | Analysis предлагает pure `session_view` expansion и базовую оценку development 4 дня / testing 2 дня                                                                             | open; Developer оценивает выбранный вариант C, Lead решает scope и сроки |
+| FIND-HTTP-020 | process gate                     | Lead-owned change plan сохраняет старый ADR-0040 path, исходный scope и оценку; Analysis вернул plan/Gantt к входному commit                                                     | open; Lead синхронизирует plan/Gantt отдельным commit до merge           |
 
-### 15.1. Классификация review 2026-09-29 (второй раунд)
+### 15.1. Классификация после review PR #37 от 2026-09-30
 
-- Блокирует переход к lifecycle implementation: FIND-HTTP-004/009; до выбора
-  варианта из §15.2 безопасный terminal outcome после 504 не доказан.
+- Для FIND-HTTP-004/009 Lead выбрал вариант C в M1-6 и вариант A как target
+  state. Выбор больше не блокирует начало реализации; acceptance блокируется до
+  deterministic evidence fail-fast, health и supervisor restart.
 - FIND-HTTP-011, 013–016 исправлены в контракте и передаются Developer/Tester
   на проверку; FIND-HTTP-017/018 получили явные предложения M1/deployment boundaries и требуют Lead approval.
 - FIND-HTTP-001/019 остаются процессным gate: Analysis подготовил proposal,
-  Developer уточняет влияние DP-HTTP-04, Lead принимает решение о scope и сроках.
-  Lead до commit также сверяет ADR-0040 по FIND-HTTP-010/012.
+  Developer оценивает выбранный вариант C, Lead принимает решение о scope и
+  сроках. Lead также сверяет ADR-0040 по FIND-HTTP-010/012.
+- FIND-HTTP-020 фиксирует границу роли: Analysis исключил change plan/Gantt из
+  своего diff; до merge Lead отдельным commit синхронизирует scope, ADR links,
+  решения DP-HTTP-02/04 и календарную оценку.
 
-### 15.2. Варианты закрытия FIND-HTTP-009 / DP-HTTP-04
+### 15.2. Решение по FIND-HTTP-009 / DP-HTTP-04
 
 Суть: у каждой принятой задачи build должна быть доказанная верхняя граница
 времени жизни. `asyncio` отменяет только в точках `await`; нативный вызов
@@ -925,25 +952,27 @@ application/session/catalog tests, `tests/test_module_boundaries.py`, затем
 3. **Shutdown при protected commit.** Застрявший commit нельзя отменить без
    риска неопределённого агрегата; бесконечное ожидание ведёт к SIGKILL.
 
-Варианты для Developer (выбор утверждает Lead):
+Lead зафиксировал в review PR #37: для M1-6 применяется вариант C, а
+target state использует вариант A. Остальные варианты сохранены как история
+рассмотренных альтернатив.
 
-| Вариант | Суть | Цена |
-|---|---|---|
-| A. Отдельный процесс/воркер расчёта | зависший воркер убивается и перезапускается; поток API не блокируется | IPC и сериализация `ChartArtifact`, новая точка отказа |
-| B. Bounded leaf-операции | таймауты на открытие эфемерид, SQLite busy timeout и т. п.; доказательство, что сам расчёт ограничен | работает только там, где у leaf есть таймаут; нужен анализ каждого вызова |
-| C. Fail-fast рестарт процесса | задача дольше N секунд → процесс unhealthy → рестарт по liveness | теряются все активные запросы; нужен внешний supervisor |
-| D. Принятая деградация | ADR фиксирует допустимость деградации до рестарта + alert и runbook | риск остаётся; требует явного решения Lead |
+| Вариант                                 | Суть                                                                                                 | Цена                                                                      | Статус                  |
+| --------------------------------------- | ---------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- | ----------------------- |
+| A. Отдельный calculation worker/process | зависший worker завершается и заменяется; HTTP process продолжает работу                             | IPC и сериализация `ChartArtifact`, новая точка отказа                    | target state после M1-6 |
+| B. Bounded leaf-операции                | таймауты на открытие эфемерид, SQLite busy timeout и т. п.; доказательство, что сам расчёт ограничен | работает только там, где у leaf есть таймаут; нужен анализ каждого вызова | не выбран               |
+| C. Fail-fast restart web process        | build без terminal outcome к 30 секундам → unhealthy → restart по health внешним supervisor          | теряются все активные запросы; нужен внешний supervisor                   | выбран для M1-6         |
+| D. Принятая деградация                  | ADR фиксирует допустимость деградации до restart + alert и runbook                                   | риск остаётся до ручного restart                                          | не выбран               |
 
-Независимо от варианта нужны детерминированные тесты без `sleep`:
-never-finishing fake operation; permit не освобождается раньше terminal
-outcome; shutdown не закрывает runtime под активным commit; после рестарта или
-kill воркера новый build проходит.
+Для выбранной эволюции нужны детерминированные тесты без `sleep`:
+never-finishing fake operation; старый process не сообщает освобождение permit;
+shutdown не закрывает runtime под активным commit; fake supervisor restart для
+варианта C и kill/replace worker для target state A возвращают build capacity.
 
 Документ остаётся Functional Analyst proposal до review Developer/Tester и
-финального approval Lead. Предложения расширить scope `session_view` и принять
-базовую оценку 4/2 дня записаны в change plan, но Lead их ещё не утверждал.
-Численные admission limits и технический вариант bounded timeout/shutdown также
-не утверждены.
+финального approval Lead. DP-HTTP-02 согласован всеми ролями, а для DP-HTTP-04
+Lead выбрал вариант C в M1-6 и вариант A как target state. Расширение scope
+`session_view` и базовая оценка 4/2 дня остаются предложениями Analysis в этом
+документе и PR #37. Analysis не изменяет Lead-owned change plan и Gantt.
 
 ## 16. Sequence diagrams
 

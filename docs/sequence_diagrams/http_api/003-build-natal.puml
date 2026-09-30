@@ -89,10 +89,14 @@ else transport-valid request
             Accepted task remains registered.
             Protected commit is retained and awaited.
             Permit is not released at socket loss.
+            M1-6 option C: at 30s watchdog marks process unhealthy;
+            health becomes 503 and external supervisor restarts process.
+            Target state A moves calculation to a dedicated worker process.
             end note
         end
 
-        API -> Log : http_message send AdmissionControl.release
+        API -> Log : if terminal before restart:
+http_message send AdmissionControl.release
         API -> Admission : release only after terminal task
         Admission --> API : released
         API -> Log : http_message receive AdmissionReleased
@@ -105,7 +109,8 @@ note over API, Store
 POST покрывает first build и explicit rebuild.
 После STATE_COMMIT_FAILED или BUILD_TIMEOUT клиент делает
 GET /charts/current, а не автоматический повтор POST.
-Старый current после 504 не доказывает terminal failure.
+До supervisor restart current не доказывает terminal failure;
+после restart current является authoritative.
 Новый разрешённый POST всегда делает fresh load.
 end note
 

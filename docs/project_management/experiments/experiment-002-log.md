@@ -47,6 +47,8 @@ Requirements, планы и подробные технические обосн
 | 2026-09-29            | Functional Analyst | Закрыты замечания второго review | рабочее дерево `analysis/*`, без commit                 | Определены retry/recovery, Origin GET, cookie action, Retry-After, spoofed XFF, health exposure и low-risk read boundary |
 | 2026-09-30            | Reviewer / owner | Найдена процессная ошибка атрибуции | рабочее дерево `analysis/*`, без commit                    | Предложения Analysis были ошибочно записаны как решения Lead |
 | 2026-09-30            | Functional Analyst | Исправлена атрибуция scope и оценки | рабочее дерево `analysis/*`, без commit                  | Ошибочная атрибуция удалена; FIND-HTTP-019 снова открыт до решения Lead |
+| 2026-09-30            | Lead | Проведён review PR #37                  | пять inline comments и процессное замечание                    | DP-HTTP-02 согласован всеми ролями; для M1-6 выбран вариант C, target state — A; Lead-owned plan/Gantt возвращены владельцу |
+| 2026-09-30            | Functional Analyst | Выполнены замечания review PR #37 | рабочее дерево `analysis/*`, без commit                     | Уточнён resumable scope, выровнены таблицы, синхронизированы fail-fast requirements/AS/diagram; изменения plan/Gantt исключены |
 
 Подготовка Lead: 0,5 чд. Фактическое время Analysis агентом не измерялось.
 
@@ -56,6 +58,8 @@ Requirements, планы и подробные технические обосн
 |---------------|------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------|-------------------------------------------------------------------|
 | LEAD-HTTP-001 | 2026-09-28 | В change входят HTTP API сессии, поиска мест и построения натальной карты, запуск и остановка приложения, ограничения расчётных запросов и наблюдаемость | M1-6 roadmap и действующие требования           | [change plan](../change_plans/http-api-and-session-middleware.md) |
 | LEAD-HTTP-002 | 2026-09-29 | Начальная рабочая оценка: подготовка — 0.5 дня, Analysis — 1.5 дня, разработка — 1 день, тестирование — 1 день                                           | Решение setup-этапа; Analysis предложил пересмотр, решения Lead ещё нет | [Gantt](../change_plans/http-api-and-session-middleware.puml) |
+| LEAD-HTTP-003 | 2026-09-30 | Численные admission limits DP-HTTP-02 согласованы всеми ролями                                                                           | [inline comment PR #37](https://github.com/ksenia-baranova/exact-orb-demo/pull/37#discussion_r4143352523) | [HTTP requirements](../../requirements/http_api.md#3-decision-points-и-значения-по-умолчанию) |
+| LEAD-HTTP-004 | 2026-09-30 | Для M1-6 выбран вариант C — fail-fast restart web process; target state — отдельный calculation worker/process (вариант A)                | [inline comment PR #37](https://github.com/ksenia-baranova/exact-orb-demo/pull/37#discussion_r4143470793) | [HTTP requirements §15.2](../../requirements/http_api.md#152-решение-по-find-http-009--dp-http-04) |
 
 ## 4. Передача между ролями
 
@@ -73,12 +77,12 @@ Requirements, планы и подробные технические обосн
 | FIND-HTTP-001 | Finding | `session_view` не публикует весь BirthViewDTO | Developer / Lead | proposal Analysis; Developer review и решение Lead по scope |
 | FIND-HTTP-002 | Limitation | session не хранит admin1/country для restore | Lead | принять суженный M1 DTO |
 | FIND-HTTP-003 | Decision | client IP/trusted proxy | Developer / Lead | algorithm предложен; security review |
-| FIND-HTTP-004 | Blocker | bounded deadline/shutdown task ownership | Developer / Lead | открыт; блокирует lifecycle code |
+| FIND-HTTP-004 | Decision | bounded deadline/shutdown task ownership | Developer / Lead | Lead выбрал C для M1-6 и A для target state; требуется implementation evidence |
 | FIND-HTTP-005 | Limitation | limiter process-local; один worker/version | Lead | ожидает approval |
 | FIND-HTTP-006 | UI alignment | split flow и ChartDTO расходились с UI docs | Functional Analyst | исправлено в draft |
 | FIND-HTTP-007 | Former blocker | build result не содержит birth projection | Functional Analyst | закрыто ADR-0040 revision: birth читает current GET |
 | FIND-HTTP-008 | Scope | reset/delete endpoint отсутствует | Lead | явно deferred; component contract сохранён |
-| FIND-HTTP-009 | Blocker | неотменяемый native call может пережить HTTP timeout | Developer / Lead | требуется bounded ownership/recovery evidence |
+| FIND-HTTP-009 | Risk | неотменяемый native call может пережить HTTP timeout | Developer / Lead | решение C/A принято; acceptance ждёт deterministic evidence |
 | FIND-HTTP-010 | Provenance | ADR-0039 recovered from reflog commit; exact ADR-0040 file unavailable | Lead | проверить восстановленную формулировку до commit |
 | FIND-HTTP-011 | Retry semantics | transient flag отделён от same-request retry; 504=false, unchanged cookie, current recovery | Functional Analyst / Lead | исправлено; approval DP-HTTP-01 |
 | FIND-HTTP-012 | Provenance | реестр 24.09 сохраняет C; ADR-0040 имеет отдельную ревизию 29.09 C → D после ADR-0041 | Lead | строка добавлена; сверить до commit |
@@ -88,10 +92,12 @@ Requirements, планы и подробные технические обосн
 | FIND-HTTP-016 | Contract gap | exact `Retry-After` | FA / Developer | значения заданы в §4.4; Developer review |
 | FIND-HTTP-017 | Risk, low | чтение по живой cookie не лимитируется | Lead | Analysis предлагает принять для controlled M1; approval Lead |
 | FIND-HTTP-018 | Deployment | экспозиция health endpoint | Developer / Lead | Analysis предлагает internal-only; Developer/Lead review |
-| FIND-HTTP-019 | Scope/estimate | `session_view` и оценка | Developer / Lead | открыт; Analysis предлагает scope и 4/2 дня, Developer уточняет DP-HTTP-04 |
+| FIND-HTTP-019 | Scope/estimate | `session_view` и оценка | Developer / Lead | открыт; Analysis предлагает scope и 4/2 дня, Developer оценивает выбранный вариант C |
+| FIND-HTTP-020 | Process gate | Lead-owned plan/Gantt исключены из Analysis diff; plan содержит старый ADR path/scope/estimate | Lead | отдельный Lead commit обязателен до merge |
 
-Открытые решения перечислены в разделе 7
-[change plan](../change_plans/http-api-and-session-middleware.md).
+Текущие предложения и решения перечислены в разделе 15
+[HTTP requirements](../../requirements/http_api.md#15-findings-и-ограничения).
+Lead-owned change plan и Gantt Analysis не изменяет.
 
 ## 6. Проверки и evidence
 
@@ -109,6 +115,7 @@ Requirements, планы и подробные технические обосн
 | 2026-09-29 | Чистота документационного diff | `git diff --check`                                                        | exit code 0; whitespace errors не найдены                   | Не проверяет смысл контрактов |
 | 2026-09-29 | Исправления второго review | локальный Python validator: changed files, links, fences, JSON, AS/FIND IDs, PlantUML/Gantt blocks; `git diff --check` | `OK existing_changed_files=37` + 1 deleted path; `text_files=37 json_blocks=5 scenarios=29`; exit code 0 | Статическая проверка; не исполняет приложение и не рендерит PlantUML |
 | 2026-09-30 | Процессная атрибуция scope и оценки | локальный Python validator; `rg` по фиктивным Lead ID и прежней формулировке варианта A; `git diff --check` | `OK status_paths=38 existing=37 deleted=1 json_blocks=5 scenarios=29 findings=19`; совпадений нет; exit code 0 | Статическая проверка; решение Lead и выбор Developer по-прежнему требуются |
+| 2026-09-30 | Замечания review PR #37 | Conversation + 5 inline comments; локальный Python validator; `git diff <base> --name-status`; `git diff --check` | `OK working_paths=5 pr_paths=35 json_blocks=5 scenarios=29 findings=20 tables=13 lead_decisions=4`; plan/Gantt отсутствуют в PR diff; exit code 0 | Статическая проверка; старый ADR path в Lead-owned plan зафиксирован FIND-HTTP-020 |
 | 2026-09-29 | Доступность рендера PlantUML   | `Get-Command java`; `Get-Command plantuml`; поиск `*plantuml*.jar`          | Java, PlantUML command и jar отсутствуют                    | Диаграммы не отрендерены |
 | 2026-09-29 | Автоматизированные тесты       | не запускались                                                              | документационные изменения не затрагивают исполняемый код | Поведение приложения не проверялось                                    |
 
@@ -118,22 +125,24 @@ Requirements, планы и подробные технические обосн
 |-------------------------------------|---------:|
 | Завершённые передачи между ролями   |        1 |
 | Передачи, возвращённые на доработку |        1 |
-| Зафиксированные решения Lead        |        2 |
+| Зафиксированные решения Lead        |        4 |
 | Возвраты к Analysis                 |        1 |
-| Раунды review Analysis              |        2 |
-| Открытые blocking findings          |        3 |
+| Раунды review Analysis              |        3 |
+| Открытые blocking findings          |        2 |
 
 ## 8. Следующий шаг
 
-**Lead** до commit сверяет восстановленную формулировку ADR-0040 по
-FIND-HTTP-010/012. После уточнения Developer по DP-HTTP-04 Lead отдельно решает
-DP-HTTP-06/FIND-HTTP-019: включать ли `session_view` в scope и принимать ли
-базовую оценку Analysis 4/2 дня.
+**Lead** сверяет восстановленную формулировку ADR-0040 по
+FIND-HTTP-010/012 и отдельно решает DP-HTTP-06/FIND-HTTP-019: включать ли
+`session_view` в scope и принимать ли базовую оценку Analysis 4/2 дня. Изменения
+change plan и Gantt Lead выполняет собственной ролью после этих решений;
+FIND-HTTP-020 блокирует merge до исправления старого ADR path и синхронизации
+scope/оценки.
 
-**Developer** проверяет trusted-proxy algorithm, admission limits, exact
-`Retry-After` и выбирает вариант A–D для lifecycle blocker FIND-HTTP-004/009 с
-планом детерминированных тестов. Выбор Developer ещё не сделан.
+**Developer** оценивает и реализует выбранный для M1-6 вариант C, проектирует
+target state A, проверяет trusted-proxy algorithm и exact `Retry-After`, затем
+предоставляет план детерминированных lifecycle-тестов. DP-HTTP-02 согласован.
 
-**Tester** проверяет AS-HTTP-01…29, включая spoofed XFF и неизвестный outcome
-503/504. Analysis PR может быть принят в `change/*` после evidence по
-DP-HTTP-04, решения Lead по DP-HTTP-06 и остальных approval DP-HTTP-01…05.
+**Tester** проверяет AS-HTTP-01…29, включая spoofed XFF, unknown outcome и
+fail-fast supervisor restart. Analysis PR может быть принят в `change/*` после
+Developer/Tester review, решения Lead по DP-HTTP-06 и остальных approval.
