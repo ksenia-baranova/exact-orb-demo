@@ -89,6 +89,17 @@ async def bootstrap(request: Request) -> JSONResponse:
         reason = loaded.reason
 
     clear_old = reason != "missing"
+    rejection = await request.app.state.admission.reserve_session_create(
+        client_ip=prepared.client_ip,
+    )
+    if rejection is not None:
+        return _error(
+            request_id=prepared.request_id,
+            code=rejection.code, detail_code=rejection.detail_code,
+            message="Слишком много новых сессий. Попробуйте позже.",
+            status=rejection.status_code, retryable=True,
+            retry_after=rejection.retry_after, clear_cookie=clear_old,
+        )
     for _ in range(3):
         session_id = new_session_id()
         created = await context.create(session_id)

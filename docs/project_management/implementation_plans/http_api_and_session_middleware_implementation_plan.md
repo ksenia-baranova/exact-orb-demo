@@ -523,3 +523,48 @@ fixture-файлов и проверяет реальный поиск `МОСК
 Полный pytest запускался вне sandbox из-за воспроизводимого ограничения
 доступа к системному pytest temp. Сетевые/платные smoke-тесты и PlantUML
 rendering не запускались. Коммит, push и PR не создавались.
+
+## 19. Исполнение промта 10 — process-local admission (2026-10-01)
+
+Добавлен process-local `AdmissionController` с неизменяемыми production defaults
+§9.1 и тестовой инъекцией малой policy через существующий G0-шов. Все окна
+считаются от `scheduler.now()`; событие истекает включительно на границе
+окна. При каждом admission истёкшие события и пустые buckets удаляются.
+Отказ rate/capacity не добавляет событий. Для build одна критическая секция
+сначала оценивает четыре rate bucket, выбирает самый поздний момент допуска
+с приоритетом session → IP и сутки → час при равенстве, затем проверяет пять
+process permits и только после допуска резервирует все четыре окна и один
+явный `BuildPermit`. Permit освобождается только вызовом его владельца;
+обычный terminal owner подключит промт 11, а cancellation/retained work — 12.
+
+После transport validation `POST /session/bootstrap` расходует одну creation
+квоту на запрос, который создаёт новую сессию, независимо от внутренних
+collision attempts; live-cookie restore не расходует её. При отказе 429
+сохранено гашение старой invalid/expired cookie. `GET /places` теперь
+резервирует IP quota до `PlaceSearch.search` и выдаёт typed 429 без обращения
+к каталогу. Коды, detail, сообщения и вычисленный `Retry-After` следуют §8.2
+и §9.1. Публичные component API, требования, ADR и sequence diagrams не
+изменялись: новые операции уже описаны там. Persistent limiter, multi-worker
+coordination и пользовательский/env override не добавлены.
+
+Добавлены чистые детерминированные тесты: пять удерживаемых permits и шестой
+отказ, приоритет rate, отсутствие расхода quota при capacity refusal,
+атомарная конкуренция за последний слот, доминирующий IP daily bucket,
+очистка истёкших buckets и отказ в середине окна без сдвига границы для
+creation/place. Численные production defaults проверяет существующий тест.
+
+| Команда | Фактический результат |
+| --- | --- |
+| `python -m pytest tests/http_api/test_admission.py tests/http_api/test_build_admission.py -q -k "test_admission or production_admission_defaults or pure_limiter_window_arithmetic" --tb=short -p no:cacheprovider` | 7 passed, 27 deselected после последних двух pure cases |
+| `python -m pytest tests/http_api/test_session.py tests/http_api/test_build_admission.py tests/http_api/test_lifecycle.py -q -k "creation_rolling_hour_limit or collision_attempts_consume_one or absent_cookie_is_cleared_even_when_bootstrap_creation_fails or place_and_creation_ip_windows or malformed_trusted_forwarding_stops_before_catalog_and_quota or trusted_chain_and_mapped_ipv6_share_canonical_ip_bucket or untrusted_spoofed_forwarding_uses_each_direct_peer_bucket" --tb=short -p no:cacheprovider` | 15 passed, 104 deselected: creation/place quota и proxy-IP precedence |
+| `python -m pytest tests/http_api/test_build_admission.py tests/http_api/test_lifecycle.py tests/http_api/test_session.py tests/http_api/test_place_dto.py -q -k "production_admission_defaults or pure_limiter_window_arithmetic or place_and_creation_ip_windows or invalid_admission_limit_fails_before_resources_open or malformed_trusted_forwarding_stops_before_catalog_and_quota or trusted_chain_and_mapped_ipv6_share_canonical_ip_bucket or untrusted_spoofed_forwarding_uses_each_direct_peer_bucket or creation_rolling_hour_limit or collision_attempts_consume_one or absent_cookie_is_cleared_even_when_bootstrap_creation_fails or places_success_and_empty or places_uses_real_sqlite_search or place_limit_boundaries or invalid_limit_grammar or missing_duplicate_or_extra_query_parameter or raw_query_length or place_component_outcomes" --tb=short -p no:cacheprovider` | 38 passed, 149 deselected: затронутые маршруты и прежний поиск |
+| `python -m pytest tests/http_api/test_request_boundary.py tests/test_module_boundaries.py tests/http_api/test_admission.py tests/http_api/test_build_admission.py tests/http_api/test_lifecycle.py -q -k "not test_build_admission and not test_lifecycle" --tb=short -p no:cacheprovider` | 97 passed, 84 deselected: boundary, module rules и pure admission до последних двух cases |
+| `python -m pytest tests/http_api/test_session.py -q --tb=short -p no:cacheprovider` | 33 passed, 2 failed: только `http_cookie_replaced` и `chart_unavailable` logging промта 13 |
+| `python -m pytest -q --tb=no -p no:cacheprovider` | 2851 passed, 73 failed до последних двух pure cases: RED будущих build/terminal release (11), shutdown/deadline (12), logging/schema (13) и известный tzdata logging test |
+| `python -m compileall -q src/exact_orb/http_api tests/http_api/test_admission.py`; `git diff --check` | exit 0; Git предупредил только о будущей LF → CRLF нормализации working copy |
+
+Широкий mixed-прогон route/lifecycle также дал 169 passed, 16 failed, 32
+deselected: отказы относятся к отсутствующему build route и будущим
+shutdown/schema/logging проверкам. Полный pytest запускался вне sandbox из-за
+системного pytest temp. Сетевые/платные smoke-тесты и PlantUML rendering не
+запускались. Коммит, push и PR не создавались.

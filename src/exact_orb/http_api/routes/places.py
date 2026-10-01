@@ -20,15 +20,15 @@ router = APIRouter()
 
 def _place_error(
     request_id: str, *, code: str, detail_code: str | None,
-    message: str, status: int, retryable: bool,
+    message: str, status: int, retryable: bool, retry_after: int | None = None,
 ) -> JSONResponse:
     dto = ErrorDTO(
         code=code, detail_code=detail_code,
         user_message=message, retryable=retryable,
     )
     headers = response_headers(request_id)
-    if retryable:
-        headers["Retry-After"] = "5"
+    if retry_after is not None:
+        headers["Retry-After"] = str(retry_after)
     return JSONResponse(dto.model_dump(mode="json"), status_code=status, headers=headers)
 
 
@@ -43,6 +43,17 @@ async def places(request: Request) -> JSONResponse:
 
     query = prepared.query
     assert query is not None
+    rejection = await request.app.state.admission.reserve_place_search(
+        client_ip=prepared.client_ip,
+    )
+    if rejection is not None:
+        return _place_error(
+            prepared.request_id, code=rejection.code,
+            detail_code=rejection.detail_code,
+            message="Слишком много запросов поиска. Попробуйте позже.",
+            status=rejection.status_code, retryable=True,
+            retry_after=rejection.retry_after,
+        )
     try:
         result = await request.app.state.catalog.search(query.query, limit=query.limit)
     except PlaceCatalogUnavailableError:
@@ -50,7 +61,7 @@ async def places(request: Request) -> JSONResponse:
             prepared.request_id, code="PLACE_CATALOG_UNAVAILABLE",
             detail_code=None,
             message="Каталог мест временно недоступен. Попробуйте ещё раз.",
-            status=503, retryable=True,
+            status=503, retryable=True, retry_after=5,
         )
 
     if isinstance(result, InvalidPlaceQuery):

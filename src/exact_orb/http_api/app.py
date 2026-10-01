@@ -23,6 +23,7 @@ from fastapi.exceptions import RequestValidationError
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.responses import Response
 
+from exact_orb.http_api.admission import AdmissionController, DEFAULT_POLICY
 from exact_orb.http_api.request_boundary import (
     BoundaryRejection, ClientDisconnected, RequestBoundary, error_response,
 )
@@ -306,6 +307,10 @@ def create_app(
     app.state.scheduler = scheduler
     app.state.utc_clock = utc_clock
     app.state.limiter_policy = limiter_policy
+    app.state.admission = AdmissionController(
+        policy=DEFAULT_POLICY if limiter_policy is None else limiter_policy,
+        now=scheduler.now,
+    )
     app.state.lifecycle_phase = LifecyclePhase.STARTING
     app.state.request_boundary = RequestBoundary(
         allowed_origins=config.allowed_origins,
