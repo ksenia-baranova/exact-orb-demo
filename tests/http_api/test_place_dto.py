@@ -3,9 +3,11 @@
 from __future__ import annotations
 
 import asyncio
+from concurrent.futures import ThreadPoolExecutor
 from datetime import date, time
 import json
 from pathlib import Path
+import runpy
 from uuid import UUID
 
 import pytest
@@ -24,6 +26,7 @@ from exact_orb.application.failure_policy import describe_failure
 from exact_orb.application.handlers.build_natal import BuildNatalHandler
 from exact_orb.application.orchestrator import ApplicationOrchestrator
 from exact_orb.application.session_view import ChartReadySessionView, session_view
+from exact_orb.birth.adapters.sqlite import SqlitePlaceCatalog
 from exact_orb.birth.places import (
     InvalidPlaceQuery,
     PlaceCatalogUnavailableError,
@@ -81,6 +84,36 @@ async def test_places_success_and_empty_have_exact_whitelist_without_session_acc
         assert empty.json() == {"items": []}
         assert catalog.calls == [("Москва", 10), ("Без совпадений", 10)]
     assert context.load_calls == context.create_calls == []
+    runtime.assert_no_calculation()
+
+
+async def test_places_uses_real_sqlite_search_and_ignores_invalid_session_cookie(
+    tmp_path: Path, app_client, runtime: RuntimeSpy, context: ScriptedContext,
+) -> None:
+    tests_root = Path(__file__).resolve().parents[1]
+    fixtures = tests_root / "fixtures" / "place_catalog"
+    build = runpy.run_path(str(tests_root.parent / "scripts" / "build_place_catalog.py"))["build"]
+    db_path = tmp_path / "places.sqlite"
+    build(
+        cities_path=fixtures / "cities1000.txt",
+        admin1_path=fixtures / "admin1CodesASCII.txt",
+        alternate_names_path=fixtures / "alternateNamesV2.txt",
+        out_path=db_path,
+    )
+    with ThreadPoolExecutor(max_workers=1) as executor:
+        catalog = await SqlitePlaceCatalog.open(db_path, executor=executor)
+        async with app_client(runtime, catalog=catalog) as client:
+            response = await client.get(
+                "/places", params={"query": "МОСКВА"},
+                headers={"Cookie": "__Host-exact_orb_session=invalid"},
+            )
+            assert response.status_code == 200
+            assert response.json() == {"items": [{
+                "place_id": "524901", "display_name": "Москва",
+                "admin1_name": "Москва", "country_code": "RU",
+            }]}
+            assert response.headers.get_list("set-cookie") == []
+    assert context.create_calls == context.load_calls == context.save_calls == []
     runtime.assert_no_calculation()
 
 

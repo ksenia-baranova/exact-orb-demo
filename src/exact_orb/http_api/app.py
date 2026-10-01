@@ -26,6 +26,7 @@ from starlette.responses import Response
 from exact_orb.http_api.request_boundary import (
     BoundaryRejection, ClientDisconnected, RequestBoundary, error_response,
 )
+from exact_orb.http_api.routes.places import router as places_router
 from exact_orb.http_api.routes.session import router as session_router
 
 
@@ -370,5 +371,6 @@ def create_app(
         return health_response(200 if app.state.lifecycle_phase == LifecyclePhase.READY else 503)
 
     app.include_router(session_router)
+    app.include_router(places_router)
 
     return app

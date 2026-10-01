@@ -489,3 +489,37 @@ Creation admission и события `http_cookie_replaced`/`chart_unavailable`
 | `python -m compileall -q src/exact_orb/http_api tests/http_api/test_session.py tests/http_api/test_request_boundary.py`; `git diff --check` | exit 0; Git предупредил только о будущей LF → CRLF нормализации working copy |
 
 Сетевые/платные smoke-тесты не запускались. Коммит, push и PR не создавались.
+
+## 18. Исполнение промта 09 — поиск мест (2026-10-01)
+
+Добавлен `GET /places`. Маршрут использует существующий request boundary для
+проверки `query` и `limit`, вызывает `PlaceSearch.search` ровно один раз и
+сериализует только четыре публичных поля каждого найденного места через
+`project_places`. `InvalidPlaceQuery` отображается в safe 422 с кодом
+компонента, `PlaceCatalogUnavailableError` — в 503 с `Retry-After: 5`;
+неожиданные ошибки проходят через общий safe 500 обработчик приложения.
+Маршрут не читает session cookie и не обращается к session/context,
+orchestrator или `lookup` каталога. При пустом результате возвращается
+`200 {"items": []}`.
+
+Новый интеграционный тест собирает временный SQLite-каталог из существующих
+fixture-файлов и проверяет реальный поиск `МОСКВА`, точную форму DTO и
+игнорирование невалидной session cookie. Существующие тесты с управляемым
+каталогом проверяют единственность поиска, границы query/limit, пустой ответ,
+типизированные ошибки и отсутствие побочных вызовов. Контракты §4.2, §6.3,
+§7 и §8 не менялись, поэтому requirements, ADR и sequence diagram не
+редактировались. IP admission `/places` остаётся за промтом 10, журнальные
+события — за промтом 13.
+
+| Команда | Фактический результат |
+| --- | --- |
+| `python -m pytest tests/http_api/test_place_dto.py -q -k "places_success_and_empty or places_uses_real_sqlite_search or place_limit_boundaries or invalid_limit_grammar or missing_duplicate_or_extra_query_parameter or raw_query_length or place_component_outcomes or wrong_origin_blocks_current_and_places" --tb=short -p no:cacheprovider` | 21 passed, 47 deselected |
+| `python -m pytest tests/http_api/test_request_boundary.py tests/test_module_boundaries.py -q --tb=short -p no:cacheprovider` | 94 passed |
+| `python -m pytest tests/http_api/test_lifecycle.py -q -k "malformed_trusted_forwarding_stops_before_catalog_and_quota" --tb=short -p no:cacheprovider` | 8 passed, 47 deselected |
+| `python -m pytest tests/test_place_catalog_search.py tests/http_api/test_request_boundary.py tests/test_module_boundaries.py -q --tb=short -p no:cacheprovider` | 112 passed вне sandbox; первая попытка внутри sandbox дала 94 passed, 18 errors из-за `PermissionError` на системный pytest temp |
+| `python -m pytest tests/http_api/test_place_dto.py -q --tb=short -p no:cacheprovider` | 36 passed, 32 failed: остаются проверки будущего `POST /charts/natal` (промт 11) |
+| `python -m pytest -q --tb=no -p no:cacheprovider` | 2839 passed, 82 failed: ожидаемые RED будущих admission/build/shutdown/logging и известный `test_tzdata_version_mismatch_warns_once_and_allows_open` |
+
+Полный pytest запускался вне sandbox из-за воспроизводимого ограничения
+доступа к системному pytest temp. Сетевые/платные smoke-тесты и PlantUML
+rendering не запускались. Коммит, push и PR не создавались.
