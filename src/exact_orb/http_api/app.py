@@ -27,6 +27,7 @@ from exact_orb.http_api.admission import AdmissionController, DEFAULT_POLICY
 from exact_orb.http_api.request_boundary import (
     BoundaryRejection, ClientDisconnected, RequestBoundary, error_response,
 )
+from exact_orb.http_api.routes.build import router as build_router
 from exact_orb.http_api.routes.places import router as places_router
 from exact_orb.http_api.routes.session import router as session_router
 
@@ -311,6 +312,7 @@ def create_app(
         policy=DEFAULT_POLICY if limiter_policy is None else limiter_policy,
         now=scheduler.now,
     )
+    app.state.build_owners = set()
     app.state.lifecycle_phase = LifecyclePhase.STARTING
     app.state.request_boundary = RequestBoundary(
         allowed_origins=config.allowed_origins,
@@ -377,5 +379,6 @@ def create_app(
 
     app.include_router(session_router)
     app.include_router(places_router)
+    app.include_router(build_router)
 
     return app

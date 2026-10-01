@@ -5,7 +5,7 @@ from __future__ import annotations
 import asyncio
 from contextlib import asynccontextmanager
 from dataclasses import FrozenInstanceError, dataclass, replace
-from datetime import date, time
+from datetime import date, time, timedelta
 from typing import Any
 
 import pytest
@@ -238,6 +238,13 @@ async def test_explicit_rebuild_uses_fresh_version_and_does_not_echo_old_chart_o
                                      "chart": expected_chart}
             assert observed.save_expected == [0, 1]
             assert len(orchestrator.calls) == 2
+            for response, (_, called_session, run) in zip(
+                (first, second), orchestrator.calls, strict=True,
+            ):
+                assert called_session == SESSION_ID
+                assert str(run.run_id) == response.headers["X-Request-ID"]
+                assert run.started_at == utc_clock()
+                assert run.deadline == run.started_at + timedelta(seconds=30)
             bad = await client.post("/charts/natal", json={**_build(), "birth_date": "bad"},
                                     headers={"Cookie": COOKIE})
             assert bad.status_code == 422

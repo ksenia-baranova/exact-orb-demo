@@ -103,7 +103,6 @@ def real_orchestrator(runtime: RuntimeSpy, utc_clock, *,
             if isinstance(result, ResolvedBirthData) and birth_input.place_id != "524901":
                 return result.model_copy(update={
                     "canonical_place": f"Тестовое место {birth_input.place_id}",
-                    "latitude": result.latitude + 0.01,
                 })
             return result
 

@@ -568,3 +568,41 @@ deselected: отказы относятся к отсутствующему buil
 shutdown/schema/logging проверкам. Полный pytest запускался вне sandbox из-за
 системного pytest temp. Сетевые/платные smoke-тесты и PlantUML rendering не
 запускались. Коммит, push и PR не создавались.
+
+## 20. Исполнение промта 11 — build endpoint (2026-10-01)
+
+Добавлен `POST /charts/natal`: после существующих boundary-проверок и атомарного
+build admission маршрут создаёт задачу-владельца одного вызова
+`ApplicationOrchestrator.execute`. Для каждого допущенного запроса строится
+`BuildNatalCommand` и один `RunContext` с `run_id=request_id`, UTC-временем и
+deadline через 30 секунд. Задача удерживается приложением независимо от
+отправки ответа и освобождает свой `BuildPermit` после обычного terminal
+outcome, до проекции HTTP-ответа. Отмена, retained leaf, response deadline и
+shutdown остаются в границах промта 12.
+
+Реализован полный §8.1 mapping `ApplicationResult`: подтверждённый chart
+проецируется по whitelist; `AlreadyApplied` не публикует артефакт; typed
+ошибки сохраняют утверждённые поля, статус, cookie policy и `Retry-After`;
+internal/неожиданная ошибка даёт safe `INTERNAL_FAILURE`. Build не читает
+session state на transport-слое и не повторяет POST после неопределённого
+commit. Отказы boundary/cookie происходят до admission и orchestrator.
+
+При открытии маршрута обнаружена ошибка тестового stub: для другого `place_id`
+он менял широту, но возвращал артефакт исходного расчётного входа, что
+корректно отклоняется `BuildNatalSuccess`. Fixture теперь различает намерение
+каноническим именем места, не нарушая согласованность расчётных данных и
+артефакта. Существующий интеграционный тест дополнен проверкой session ID,
+request/run correlation, UTC started_at и deadline. Действующие requirements,
+ADR и sequence diagram уже описывали этот поток и не менялись.
+
+| Команда | Фактический результат |
+| --- | --- |
+| `python -m pytest tests/http_api/test_place_dto.py -q --tb=short -p no:cacheprovider` | 68 passed |
+| `python -m pytest tests/http_api/test_build_admission.py -q -k "not timeout and not disconnect" --tb=short -p no:cacheprovider` | 26 passed, 3 deselected после исправления fixture; первый прогон выявил 3 ошибки несогласованного stub |
+| `python -m pytest tests/http_api/test_lifecycle.py -q -k "route_method_head_options or required_headers_matrix or local_schema_flag" --tb=short -p no:cacheprovider` | 11 passed, 2 failed, 42 deselected: schema response относится к 13, response timeout — к 12 |
+| `python -m pytest tests/http_api/test_place_dto.py tests/http_api/test_build_admission.py tests/http_api/test_session.py tests/http_api/test_request_boundary.py tests/http_api/test_admission.py tests/test_module_boundaries.py -q -k "not timeout and not disconnect and not http_cookie_replaced and not chart_unavailable" --tb=short -p no:cacheprovider` | 221 passed, 2 failed, 8 deselected: оба сбоя — события журналов `http_cookie_replaced`/`chart_unavailable` промта 13 |
+| `python -m pytest -q --tb=no -p no:cacheprovider` | 2907 passed, 19 failed: 14 timeout/disconnect/shutdown (12; один требует также логи 13), 4 schema/logging (13) и известный отдельно проходящий `test_tzdata_version_mismatch_warns_once_and_allows_open` |
+| `python -m compileall -q src/exact_orb/http_api tests/http_api/build_support.py tests/http_api/test_build_admission.py`; `git diff --check` | exit 0; Git предупредил только о будущей LF → CRLF нормализации working copy |
+
+Сетевые/платные smoke-тесты и PlantUML rendering не запускались. Коммит,
+push и PR не создавались.
