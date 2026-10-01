@@ -256,3 +256,42 @@ test-only RED-срезе не запускались. Tester review исполн
 исключённых аспектов в валидных артефактах. Тесты app-поведения останутся
 непроверенными до реализации HTTP transport. Полный `pytest`, связанные
 component suites и PlantUML rendering в промте 04a не запускались.
+
+## 12. Промт 05 — app lifespan, reaper и health (2026-10-01)
+
+Создан `src/exact_orb/http_api/app.py` с согласованной G0 точкой
+`create_app(settings, runtime_factory, catalog_factory, utc_clock, scheduler,
+limiter_policy=None)`. Настройки и тестовая limiter policy проверяются до
+открытия ресурсов; async/sync фабрики открывают сначала внешний каталог, затем
+один process-local runtime. Lifespan закрывает runtime и каталог в обратном
+порядке также при ошибке startup. Health читает только lifecycle phase;
+readiness переходит в 503 с начала shutdown, live — при unhealthy. Reaper
+ожидает абсолютный monotonic deadline через внедрённый scheduler, планирует
+новый запуск от завершения предыдущего, переживает ошибки run и удерживает
+ресурсы до завершения активного run при shutdown. HTTPS origin с wildcard или
+пробелом отвергается до открытия ресурсов. Добавлены прямые зависимости
+FastAPI и uvicorn; `httpx` уже был объявлен как dev dependency в 04a.
+
+Настройки и lifespan помещены в `app.py` вместе с app factory: в этом срезе
+они не образуют отдельный сервисный слой. Для детерминированного shutdown
+test fixture ожидает явный lifecycle signal перед проверкой 503. Добавлены
+узкие тесты health-состояний и async-фабрик. Бизнес-маршруты, request boundary,
+projector и admission остаются задачами промтов 06–12; общий тест health +
+`/places` поэтому ещё RED, хотя health-only срез GREEN.
+
+| Команда | Фактический результат |
+| --- | --- |
+| `python -m pytest tests/http_api/test_lifecycle.py -q -k "health_tracks_startup_shutdown or async_runtime_factory_reuses_open_catalog or reaper_waits_from_completion or invalid_settings_fail_before_any_resource_opens or runtime_startup_failure_closes_previously_opened_catalog or missing_calculation_version_fails_startup_and_closes_resources or catalog_startup_failure_never_opens_runtime or invalid_admission_limit_fails_before_resources_open" -p no:cacheprovider` | 17 passed, 37 deselected после уточнения HTTPS origin |
+| `python -m pytest tests/application/test_application_bootstrap.py tests/application/test_application_bootstrap_integration.py tests/test_place_catalog_sqlite.py tests/test_place_catalog_search.py tests/test_module_boundaries.py -q --tb=short -p no:cacheprovider` | 123 passed вне sandbox. Внутри sandbox 39 setup errors из-за `PermissionError` временного каталога pytest; попытка `--basetemp` в рабочем дереве дала ту же ошибку доступа |
+| `python -m pytest -q --tb=no -p no:cacheprovider` | 2681 passed, 170 failed: 169 ожидаемых RED будущих HTTP-срезов и один `test_tzdata_version_mismatch_warns_once_and_allows_open` |
+| `python -m pytest -q --tb=short -p no:cacheprovider --ignore=tests/http_api` | 2655 passed, 1 failed: тот же tzdata test; logger в worker пишет в закрытый stream, поэтому `caplog` видит 0 записей. Ошибка воспроизводится без HTTP-тестов |
+| `python -m pytest tests/test_place_catalog_sqlite.py::test_tzdata_version_mismatch_warns_once_and_allows_open -q --tb=short -p no:cacheprovider` | 1 passed отдельно |
+| `python -m compileall -q src/exact_orb/http_api tests/http_api/test_lifecycle.py`; `git diff --check` | exit 0; Git предупредил о нормализации LF → CRLF в working copy теста |
+
+Проверки с `tmp_path` выполнены вне ограниченной песочницы после ошибки её
+доступа к каталогу pytest. Сетевые/платные smoke-тесты, PlantUML rendering и
+реальный HTTPS listener не запускались. Полный прогон выполнен до последней
+узкой правки, разрешающей пустой Origin allowlist, дополнительной health
+assertion и строгой проверки HTTPS origin; после них повторены целевые 17
+тестов и diff check. На момент завершения промта 05 коммит, push и PR не
+создавались; коммит готовится по отдельному запросу пользователя.

@@ -279,6 +279,7 @@ async def test_reaper_waits_from_completion_survives_failures_and_shutdown_waits
         await scheduler.advance(900)
         await asyncio.wait_for(runtime.wait_calls(4), timeout=GUARD)
         shutdown = asyncio.create_task(lifespan.__aexit__(None, None, None))
+        await asyncio.wait_for(app.state.shutdown_started.wait(), timeout=GUARD)
         assert (await _raw(app, "GET", "/health/ready"))[0] == 503
         assert not runtime.closed
         assert not catalog.closed
@@ -313,6 +314,8 @@ async def test_reaper_waits_from_completion_survives_failures_and_shutdown_waits
 @pytest.mark.parametrize("changes", (
     {"public_origin": "http://testserver"},
     {"allowed_origins": ("*",)},
+    {"allowed_origins": ("https://*",)},
+    {"public_origin": "https://bad host"},
     {"trusted_proxy_cidrs": ("not-a-cidr",)},
     {"body_timeout_seconds": 0},
     {"build_timeout_seconds": 0},
@@ -397,6 +400,38 @@ async def test_runtime_startup_failure_closes_previously_opened_catalog(
     assert catalog.closed
 
 
+async def test_async_runtime_factory_reuses_open_catalog_and_closes_in_reverse_order(
+    utc_clock, scheduler
+) -> None:
+    from exact_orb.http_api.app import create_app
+
+    events: list[str] = []
+    catalog = CloseSpyCatalog(events)
+    runtime = CloseSpyRuntime(ScriptedContext(utc_clock), events)
+
+    async def make_catalog() -> object:
+        events.append("catalog.open")
+        return catalog
+
+    async def make_runtime() -> object:
+        assert events == ["catalog.open"]
+        events.append("runtime.open")
+        return runtime
+
+    app = create_app(
+        settings=http_settings(), runtime_factory=make_runtime,
+        catalog_factory=make_catalog, utc_clock=utc_clock,
+        scheduler=scheduler,
+    )
+    async with app.router.lifespan_context(app):
+        assert app.state.catalog is catalog
+        assert app.state.runtime is runtime
+        assert (await _raw(app, "GET", "/health/ready"))[0] == 200
+    assert events == [
+        "catalog.open", "runtime.open", "runtime.close", "catalog.close",
+    ]
+
+
 async def test_missing_calculation_version_fails_startup_and_closes_resources(
     utc_clock, scheduler
 ) -> None:
@@ -461,6 +496,42 @@ async def test_invalid_admission_limit_fails_before_resources_open(
         async with app.router.lifespan_context(app):
             pytest.fail("startup accepted zero build capacity")
     assert opened == []
+
+
+async def test_health_tracks_startup_shutdown_and_does_not_touch_dependencies(
+    app_client, runtime: RuntimeSpy, context: ScriptedContext
+) -> None:
+    from exact_orb.http_api.app import LifecyclePhase
+
+    catalog = ScriptedCatalog()
+    async with app_client(runtime, catalog=catalog) as client:
+        for path in ("/health/live", "/health/ready"):
+            get = await client.get(path)
+            head = await client.head(path)
+            assert get.status_code == head.status_code == 200
+            assert get.headers["Cache-Control"] == head.headers["Cache-Control"] == "no-store"
+            assert UUID(get.headers["X-Request-ID"])
+            assert UUID(head.headers["X-Request-ID"])
+            assert head.content == b""
+        assert catalog.calls == []
+        assert context.load_calls == context.create_calls == []
+        client.asgi_app.state.lifecycle_phase = LifecyclePhase.UNHEALTHY
+        assert (await client.get("/health/live")).status_code == 503
+        assert (await client.get("/health/ready")).status_code == 503
+    assert runtime.closed and catalog.closed
+
+    stopping = RuntimeSpy(context)
+    stopping_catalog = ScriptedCatalog()
+    async with app_client(stopping, catalog=stopping_catalog,
+                          during_shutdown=True) as client:
+        assert (await client.get("/health/live")).status_code == 200
+        ready = await client.get("/health/ready")
+        head = await client.head("/health/ready")
+        assert ready.status_code == head.status_code == 503
+        assert head.content == b""
+        assert UUID(ready.headers["X-Request-ID"])
+        assert stopping_catalog.calls == []
+        assert context.load_calls == context.create_calls == []
 
 
 async def test_health_ready_and_shutdown_gate_have_real_business_control(
