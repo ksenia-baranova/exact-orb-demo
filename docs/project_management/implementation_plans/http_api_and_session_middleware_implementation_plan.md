@@ -240,8 +240,8 @@ test-only RED-срезе не запускались. Tester review исполн
 `active_bucket_count` оставлен только как вспомогательная проверка очистки
 внутреннего хранилища, не как публичный G0 API. Текстовый формат логов и имя
 логгера также не закреплены в G0. Прямой dev dependency на `httpx` добавлен.
-Трактовка регистра в `charset=UTF-8` остаётся отдельным вопросом публичной
-грамматики §4.2; этот промт её не изменял.
+На момент 04a трактовка регистра в `charset=UTF-8` оставалась отдельным
+вопросом публичной грамматики §4.2; решение и проверка записаны в §13.
 
 | Команда | Фактический результат |
 | --- | --- |
@@ -295,3 +295,43 @@ projector и admission остаются задачами промтов 06–12;
 assertion и строгой проверки HTTPS origin; после них повторены целевые 17
 тестов и diff check. На момент завершения промта 05 коммит, push и PR не
 создавались; коммит готовится по отдельному запросу пользователя.
+
+## 13. Промт 06 — raw request boundary и trusted proxy (2026-10-01)
+
+В `proxy.py` добавлена проверка исходного ASGI peer и сырых XFF/XFP только
+для trusted peer: дубликаты, malformed chain и отсутствие untrusted hop дают
+`400`, а поля от untrusted peer игнорируются. IPv4, IPv6 и mapped IPv6
+нормализуются до ключа лимитера. В `request_boundary.py` порядок проверок
+совпадает с §4.1: lifecycle → IP/proxy → Origin → POST media/encoding →
+body deadline/size → JSON/query schema → raw Cookie. Body deadline
+отсчитывается от первого ASGI body event общим scheduler `now()/wait_until`;
+отказы имеют safe transport fields, no-store и server `X-Request-ID`.
+`app.py` создаёт общий boundary, но production business routes до промтов
+08/09/11 не регистрируются. Проверки идут через test-only `/_probe/*`
+routes, которые фиксируют отсутствие component call при раннем отказе.
+
+По прямому уточнению пользователя непустой trusted CIDR allowlist сам
+включает proxy mode; отдельного флага нет. Пустой список означает direct
+mode. Также `charset=UTF-8` принимается без учёта регистра. Оба уточнения
+внесены в §4.2/§10 `http_api.md`; отдельный ADR не требуется, поскольку они
+конкретизируют уже принятые правила без смены решения. Диаграммы не
+изображают регистр charset или переключатель proxy mode, поэтому не менялись.
+
+| Команда | Фактический результат |
+| --- | --- |
+| `python -m pytest tests/http_api/test_request_boundary.py -q -p no:cacheprovider` | 42 passed, включая nested JSON regression после последней правки |
+| `python -m pytest tests/http_api/test_lifecycle.py -q -k "health_tracks_startup_shutdown or async_runtime_factory_reuses_open_catalog or reaper_waits_from_completion or invalid_settings_fail_before_any_resource_opens or runtime_startup_failure_closes_previously_opened_catalog or missing_calculation_version_fails_startup_and_closes_resources or catalog_startup_failure_never_opens_runtime or invalid_admission_limit_fails_before_resources_open" -p no:cacheprovider` | 17 passed, 37 deselected до последней правки JSON parser |
+| `python -m pytest tests/test_module_boundaries.py -q -p no:cacheprovider` | 45 passed до последней правки JSON parser |
+| `python -m pytest tests/http_api -q --tb=no -p no:cacheprovider` | 69 passed, 169 failed до последнего nested JSON regression; ожидаемый RED для будущих business routes/projectors/admission/task registry/logging |
+| `python -m pytest -q --tb=no -p no:cacheprovider` | 2725 passed, 170 failed после последней правки: 169 ожидаемых HTTP RED и один `test_tzdata_version_mismatch_warns_once_and_allows_open` |
+| `python -m pytest tests/test_place_catalog_sqlite.py::test_tzdata_version_mismatch_warns_once_and_allows_open -q --tb=short -p no:cacheprovider` | 1 passed отдельно; в полном прогоне остаётся прежний конфликт logger/caplog, описанный в §12 |
+| `python -m compileall -q src/exact_orb/http_api tests/http_api/test_request_boundary.py`; `git diff --check` | exit 0; Git предупредил только о нормализации LF → CRLF в working copy |
+
+Полная таблица 404/405/Allow для production routes, build admission и
+component mapping станет проверяемой после промтов 08/09/11; projector DTO —
+после 07, журнальные события — после 13. Поддерживаемый HTTPS launch path
+с отключённым встроенным Uvicorn proxy-header rewrite остаётся в промте 13,
+где расположен runbook. Тесты с `tmp_path` выполнены вне sandbox из-за
+воспроизводимого `PermissionError` внутри него. Сетевые/платные smoke-тесты,
+PlantUML rendering и реальный HTTPS listener не запускались. Коммит, push и
+PR этим промтом не разрешены.

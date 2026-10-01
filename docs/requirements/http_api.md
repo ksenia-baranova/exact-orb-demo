@@ -120,8 +120,10 @@ Bootstrap не требует cookie: отсутствие, одно непри�
 ### 4.2. Формат и строгая грамматика
 
 - JSON и ответы используют UTF-8. POST принимает только
-  `application/json` с отсутствующим charset либо `charset=utf-8`; любой
-  `Content-Encoding` запрещён.
+  `application/json` с отсутствующим charset либо `charset=utf-8`; имя
+  параметра и значение кодировки сравниваются без учёта регистра, поэтому
+  `charset=UTF-8` также допустим. Другие параметры и любой
+  `Content-Encoding` запрещены.
 - Неизвестные JSON-поля и query parameters отклоняются. Числа, boolean и
   массивы не преобразуются в строки.
 - `birth_date` — ровно `YYYY-MM-DD`; несуществующая календарная дата вроде
@@ -653,7 +655,10 @@ permit; незавершённые запросы обрываются, а со�
 
 Direct mode: client IP равен ASGI peer; forwarding headers игнорируются.
 
-Proxy mode включается только с непустым CIDR allowlist trusted peers:
+Непустой CIDR allowlist trusted peers включает proxy mode; отдельного флага
+режима нет. Пустой allowlist означает direct mode.
+
+В proxy mode:
 
 1. если непосредственный peer не trusted, все forwarding headers игнорируются;
 2. от trusted peer принимаются ровно по одному `X-Forwarded-For` и
@@ -666,7 +671,7 @@ Proxy mode включается только с непустым CIDR allowlist 
    `400 FORWARDED_HEADER_INVALID` до admission;
 6. IPv4, IPv6 и IPv4-mapped IPv6 приводятся к канонической форме до bucket key.
 
-Приложение не стартует, если proxy mode включён без allowlist/origin HTTPS.
+Приложение проверяет CIDR allowlist и HTTPS origin до открытия ресурсов.
 Raw IP и forwarding chain не пишутся на INFO; допускается keyed digest для
 метрик только после отдельного privacy решения.
 

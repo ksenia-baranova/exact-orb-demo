@@ -21,6 +21,8 @@ from uuid import uuid4
 from fastapi import FastAPI
 from starlette.responses import Response
 
+from exact_orb.http_api.request_boundary import RequestBoundary
+
 
 _LOG = logging.getLogger("exact_orb.http_api")
 _T = TypeVar("_T")
@@ -284,6 +286,15 @@ def create_app(
     app.state.utc_clock = utc_clock
     app.state.limiter_policy = limiter_policy
     app.state.lifecycle_phase = LifecyclePhase.STARTING
+    app.state.request_boundary = RequestBoundary(
+        allowed_origins=config.allowed_origins,
+        public_origin=config.public_origin,
+        trusted_proxy_cidrs=config.trusted_proxy_cidrs,
+        body_timeout_seconds=config.body_timeout_seconds,
+        max_body_bytes=config.max_body_bytes,
+        scheduler=scheduler,
+        is_ready=lambda: app.state.lifecycle_phase == LifecyclePhase.READY,
+    )
 
     def health_response(status: int) -> Response:
         return Response(

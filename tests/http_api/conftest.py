@@ -246,6 +246,7 @@ def raw_asgi():
         body: bytes = b"",
         chunks: list[dict[str, Any]] | None = None,
         peer: tuple[str, int] = ("127.0.0.1", 12345),
+        query: bytes = b"",
     ) -> list[dict[str, Any]]:
         incoming = deque(chunks if chunks is not None else
                          [{"type": "http.request", "body": body, "more_body": False}])
@@ -269,7 +270,7 @@ def raw_asgi():
                 "method": method,
                 "path": path,
                 "raw_path": path.encode("ascii"),
-                "query_string": b"",
+                "query_string": query,
                 "root_path": "",
                 "headers": headers or [],
                 "client": peer,
