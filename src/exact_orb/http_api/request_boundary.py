@@ -19,6 +19,7 @@ from uuid import uuid4
 from starlette.requests import Request
 from starlette.responses import JSONResponse
 
+from exact_orb.http_api.dto import ErrorDTO, IssueDTO
 from exact_orb.http_api.proxy import InvalidForwardedHeaders, client_ip, trusted_networks
 
 
@@ -101,21 +102,22 @@ def response_headers(request_id: str) -> dict[str, str]:
 
 
 def error_response(rejection: BoundaryRejection) -> JSONResponse:
-    """Render only approved transport fields until the shared DTO projector lands."""
+    """Render approved transport fields through the shared public ErrorDTO."""
 
     if rejection.request_id is None:
         raise ValueError("a boundary rejection must have a server request_id")
     status, message, retryable, retry_after = _ERRORS[rejection.code]
-    payload: dict[str, Any] = {
+    fields: dict[str, Any] = {
         "code": rejection.code,
         "detail_code": rejection.detail_code,
         "user_message": message,
         "retryable": retryable,
     }
     if rejection.issue_fields:
-        payload["issues"] = [
-            {"field": field, "code": "INVALID"} for field in rejection.issue_fields
-        ]
+        fields["issues"] = tuple(
+            IssueDTO(field=field, code="INVALID") for field in rejection.issue_fields
+        )
+    payload = ErrorDTO(**fields).model_dump(mode="json")
     headers = response_headers(rejection.request_id)
     if retry_after is not None:
         headers["Retry-After"] = str(retry_after)

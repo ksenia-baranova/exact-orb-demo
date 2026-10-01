@@ -335,3 +335,44 @@ component mapping станет проверяемой после промтов 
 воспроизводимого `PermissionError` внутри него. Сетевые/платные smoke-тесты,
 PlantUML rendering и реальный HTTPS listener не запускались. Коммит, push и
 PR этим промтом не разрешены.
+
+## 14. Промт 07 — чистая birth projection и публичные DTO (2026-10-01)
+
+`application/session_view.py` дополнен неизменяемой `SessionBirthView` из
+`birth_input` и `birth_resolved` одного `SessionSnapshot`. Она содержит
+сохранённые дату, время, place ID, имя места, timezone, offset, флаг
+неизвестного времени и порядок warning source/code без внутреннего message.
+Проверка StoredChart, empty/ready/unavailable, stale и отсутствие I/O
+сохранены. Старые поля application view оставлены, поскольку уже входят в
+используемый компонентный результат.
+
+В `http_api/dto.py` созданы типизированные формы §7 с запретом лишних полей;
+`projectors.py` строит их явным whitelist. Chart projection фиксирует порядок
+16 point ID, сортировку домов и сохранённый порядок аспектов, не публикует
+unknown engine fields/points и excluded aspects. Aspect endpoint обязан
+ссылаться на опубликованный point или допустимый natal angle; чужой chart,
+`dsc/ic` и dangling ID дают `ChartProjectionError`. `dsc/ic` строятся из
+сохранённых asc/mc longitude и sign_index с копированием degree/minute.
+Birth projection скрывает noon anchor, offset неизвестного времени, raw warning
+message и все warning codes вне allowlist; рассинхронизация time_unknown и
+точности времени даёт `BirthProjectionError`. Эти типизированные ошибки
+предназначены для safe 500 с renew cookie в маршруте 08. Общий request
+boundary теперь сериализует ранние transport-отказы через `ErrorDTO`.
+
+Контракт §7 и HTTP sequence 004 уже задают эти правила, поэтому requirements,
+ADR и диаграммы в этом промте не менялись. Четыре HTTP golden-теста
+`GET /charts/current` остаются RED до маршрута 08; тот же DTO проверен
+четырьмя pure golden-тестами без transport.
+
+| Команда | Фактический результат |
+| --- | --- |
+| `python -m pytest tests/http_api/test_request_boundary.py tests/http_api/test_projectors.py tests/application/test_session_view.py tests/test_module_boundaries.py -q --tb=short -p no:cacheprovider` | 132 passed после добавления real Snapshot regression, до финального ErrorDTO test |
+| `python -m pytest tests/application/test_session_view.py tests/application/test_stored_chart_build.py tests/http_api/test_projectors.py tests/http_api/test_request_boundary.py tests/test_module_boundaries.py -q --tb=short -p no:cacheprovider` | 141 passed после всех code/test правок |
+| `python -m pytest -q --tb=no -p no:cacheprovider` | 2750 passed, 160 failed: 159 ожидаемых RED будущих HTTP routes/admission/lifecycle/logging и один `test_tzdata_version_mismatch_warns_once_and_allows_open` |
+| `python -m pytest tests/test_place_catalog_sqlite.py::test_tzdata_version_mismatch_warns_once_and_allows_open -q --tb=short -p no:cacheprovider` | 1 passed отдельно |
+| `python -m compileall -q src/exact_orb/application/session_view.py src/exact_orb/http_api tests/application/test_session_view.py tests/http_api/test_projectors.py`; `git diff --check` | exit 0; Git предупредил только о нормализации LF → CRLF в working copy |
+
+Полный pytest запущен вне sandbox: внутри него `tmp_path` ранее давал
+`PermissionError`. Отдельный tzdata-тест в промте 06 прошёл, а при полном
+прогоне по-прежнему конфликтует с logger/caplog (§12). Сетевые/платные smoke-тесты и
+PlantUML rendering не запускались. Коммит, push и PR не создавались.

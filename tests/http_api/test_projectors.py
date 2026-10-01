@@ -7,10 +7,16 @@ from datetime import date, time
 from pathlib import Path
 
 import pytest
+from pydantic import ValidationError
 
 from exact_orb.application.commands import BuildNatalCommand
 from exact_orb.application.handlers.build_natal import BuildNatalHandler
 from exact_orb.application.results import BuildNatalSuccess
+from exact_orb.application.session_view import (
+    ChartReadySessionView, ChartUnavailableSessionView, EmptySessionView,
+    SessionBirthView, SessionBirthWarning,
+)
+from exact_orb.birth.places import PlaceSuggestion, PlaceSuggestions
 from exact_orb.birth.types import BirthInput, ResolvedBirthData
 from exact_orb.calculation.codec import (
     ChartArtifactDecodeError,
@@ -30,6 +36,9 @@ from tests.http_api.conftest import NOW
 GOLDEN = json.loads(
     (Path(__file__).parent / "golden" / "chart_dto.json").read_text(encoding="utf-8")
 )
+SESSION_GOLDEN = json.loads(
+    (Path(__file__).parent / "golden" / "session_view.json").read_text(encoding="utf-8")
+)
 POINT_IDS = (
     "sun", "moon", "mercury", "venus", "mars", "jupiter", "saturn", "uranus",
     "neptune", "pluto", "chiron", "true_node", "south_node", "mean_apog",
@@ -46,6 +55,155 @@ def _project(artifact):
 
     result = project_chart(artifact)
     return result.model_dump(mode="json") if hasattr(result, "model_dump") else result
+
+
+@pytest.mark.parametrize("known,unavailable", (
+    (True, False), (True, True), (False, False), (False, True),
+))
+def test_session_view_dto_matches_birth_golden_without_private_warnings(
+    known: bool, unavailable: bool,
+) -> None:
+    from exact_orb.http_api.projectors import project_session_view
+
+    birth_input = BirthInput(
+        birth_date=date(1960 if known else 1990, 9, 2),
+        birth_time=time(14, 30) if known else None,
+        place_id="524901",
+    )
+    birth = SessionBirthView(
+        birth_date=birth_input.birth_date,
+        birth_time=birth_input.birth_time,
+        place_id=birth_input.place_id,
+        canonical_place="Moscow",
+        tz_id="Europe/Moscow",
+        utc_offset_seconds=14400,
+        time_unknown=not known,
+        warnings=(
+            SessionBirthWarning(source="time", code="pre_1970_offset_unverified"),
+            SessionBirthWarning(source="time", code="noon_anchor_adjusted"),
+            SessionBirthWarning(source="place", code="future_private_code"),
+        ) if known else (SessionBirthWarning(source="time", code="noon_anchor_ambiguous"),),
+    )
+    if unavailable:
+        view = ChartUnavailableSessionView(
+            state_version=1, birth_input=birth_input, canonical_place="Moscow",
+            birth=birth, safe_reason="UNSUPPORTED_PAYLOAD_FORMAT",
+        )
+    else:
+        view = ChartReadySessionView(
+            state_version=1, birth_input=birth_input, canonical_place="Moscow",
+            birth=birth, artifact=natal_sample() if known else cosmogram_sample(),
+            chart_stale=False,
+        )
+
+    result = project_session_view(view).model_dump(mode="json")
+    if not unavailable:
+        assert result["chart"] == GOLDEN["natal" if known else "cosmogram"]
+        result["chart"] = "<ChartDTO>"
+    key = ("known" if known else "unknown") + ("_unavailable" if unavailable else "_ready")
+    assert result == SESSION_GOLDEN[key]
+    assert "noon_anchor" not in json.dumps(result)
+    assert "private" not in json.dumps(result)
+
+
+def test_empty_session_dto_has_explicit_nulls() -> None:
+    from exact_orb.http_api.projectors import project_session_view
+
+    assert project_session_view(EmptySessionView(state_version=0)).model_dump(mode="json") == (
+        SESSION_GOLDEN["empty"]
+    )
+
+
+@pytest.mark.parametrize("birth_time,time_unknown", (
+    (None, False), (time(14, 30), True), (time(14, 30, 1), False),
+    (time(14, 30, 0, 1), False),
+))
+def test_invalid_saved_birth_fails_with_typed_error_and_valid_control(
+    birth_time: time | None, time_unknown: bool,
+) -> None:
+    from exact_orb.http_api.projectors import BirthProjectionError, project_birth
+
+    base = SessionBirthView(
+        birth_date=date(1990, 9, 2), birth_time=time(14, 30), place_id="524901",
+        canonical_place="Moscow", tz_id="Europe/Moscow", utc_offset_seconds=10800,
+        time_unknown=False, warnings=(),
+    )
+    invalid = SessionBirthView(
+        birth_date=base.birth_date, birth_time=birth_time, place_id=base.place_id,
+        canonical_place=base.canonical_place, tz_id=base.tz_id,
+        utc_offset_seconds=base.utc_offset_seconds, time_unknown=time_unknown,
+        warnings=base.warnings,
+    )
+    with pytest.raises(BirthProjectionError):
+        project_birth(invalid)
+    assert project_birth(base).birth_time == "14:30"
+
+
+def test_other_public_dtos_keep_exact_fields() -> None:
+    from exact_orb.http_api.projectors import (
+        internal_failure, project_bootstrap, project_build_already_applied,
+        project_build_ready, project_places,
+    )
+
+    suggestions = PlaceSuggestions(items=(PlaceSuggestion(
+        place_id="524901", display_name="Moscow", admin1_name=None,
+        country_code="RU",
+    ),))
+    assert project_places(suggestions).model_dump(mode="json") == {
+        "items": [{"place_id": "524901", "display_name": "Moscow",
+                   "admin1_name": None, "country_code": "RU"}]
+    }
+    assert project_bootstrap(3).model_dump(mode="json") == {
+        "status": "ready", "state_version": 3,
+    }
+    assert project_build_ready(3, natal_sample()).model_dump(mode="json") == {
+        "status": "chart_ready", "state_version": 3, "chart": GOLDEN["natal"],
+    }
+    assert project_build_already_applied(3).model_dump(mode="json") == {
+        "status": "already_applied", "state_version": 3,
+    }
+    safe = internal_failure().model_dump(mode="json")
+    assert safe == {
+        "code": "INTERNAL_FAILURE", "detail_code": None,
+        "user_message": "Произошла внутренняя ошибка.",
+        "retryable": False,
+    }
+
+
+def test_aspect_dto_schema_has_exact_public_from_to_fields() -> None:
+    from exact_orb.http_api.dto import AspectDTO
+
+    schema = AspectDTO.model_json_schema(mode="serialization")
+    assert set(schema["properties"]) == {"from", "to", "type", "orb", "category"}
+    assert set(schema["required"]) == set(schema["properties"])
+    assert schema["additionalProperties"] is False
+
+
+def test_error_dto_preserves_safe_issue_constraints_and_rejects_internal_fields() -> None:
+    from exact_orb.http_api.dto import ErrorDTO, IssueDTO
+
+    result = ErrorDTO(
+        code="INPUT_REQUIRED", detail_code=None,
+        user_message="Проверьте введённые данные и исправьте отмеченные поля.",
+        retryable=False, state_version=0,
+        issues=(IssueDTO(
+            field="birth.date", code="UNSUPPORTED",
+            constraints={"min": "1800-01-01", "max": "2399-12-31"},
+        ),),
+    )
+    assert result.model_dump(mode="json") == {
+        "code": "INPUT_REQUIRED", "detail_code": None,
+        "user_message": "Проверьте введённые данные и исправьте отмеченные поля.",
+        "retryable": False, "state_version": 0,
+        "issues": [{"field": "birth.date", "code": "UNSUPPORTED",
+                    "constraints": {"min": "1800-01-01", "max": "2399-12-31"}}],
+    }
+    with pytest.raises(ValidationError):
+        ErrorDTO(
+            code="INTERNAL_FAILURE", detail_code=None,
+            user_message="Произошла внутренняя ошибка.", retryable=False,
+            internal_trace="private",
+        )
 
 
 @pytest.mark.parametrize("kind,sample", (("natal", natal_sample), ("cosmogram", cosmogram_sample)))
@@ -157,6 +315,24 @@ def test_invalid_aspect_owner_or_endpoint_is_refused_with_valid_control(
     with pytest.raises(ChartProjectionError):
         project_chart(altered)
     assert _project(original) == GOLDEN["natal"]
+
+
+def test_cosmogram_aspect_cannot_reference_a_time_dependent_angle() -> None:
+    from exact_orb.http_api.projectors import ChartProjectionError, project_chart
+
+    original = cosmogram_sample()
+    aspect = original.chart.aspects[0]
+    invalid = original.model_copy(update={
+        "chart": original.chart.model_copy(update={
+            "aspects": (aspect.model_copy(update={
+                "to_point": aspect.to_point.model_copy(update={"body": "asc"}),
+            }),),
+        }),
+    })
+
+    with pytest.raises(ChartProjectionError):
+        project_chart(invalid)
+    assert _project(original) == GOLDEN["cosmogram"]
 
 
 def test_opposite_angles_copy_saved_minutes_at_rounding_boundary() -> None:
