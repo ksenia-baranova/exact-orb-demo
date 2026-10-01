@@ -178,6 +178,7 @@ def app_client(utc_clock: UtcClock, scheduler: ManualScheduler):
         catalog: object | None = None,
         during_shutdown: bool = False,
         trusted_proxy_cidrs: tuple[str, ...] = (),
+        limiter_policy: object | None = None,
     ) -> AsyncIterator[httpx.AsyncClient]:
         # Import only when the fixture is used: collection and pure unit slices
         # remain independent of the as-yet absent transport package.
@@ -194,7 +195,7 @@ def app_client(utc_clock: UtcClock, scheduler: ManualScheduler):
             catalog_factory=lambda: catalog if catalog is not None else ForbiddenCatalog(),
             utc_clock=utc_clock,
             scheduler=scheduler,
-            limiter_policy=None,
+            limiter_policy=limiter_policy,
         )
         lifespan = app.router.lifespan_context(app)
         await lifespan.__aenter__()
