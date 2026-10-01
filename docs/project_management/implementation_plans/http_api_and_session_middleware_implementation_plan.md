@@ -1,7 +1,7 @@
 # M1-6 — HTTP API and Session Middleware: implementation plan
 
 **Дата:** 2026-09-30. **Ветка:** dev/http-api-and-session-middleware от f11275c.
-**Статус:** draft Developer; получен Tester review Analysis/test design с вердиктом «принять с доработками»; gate Analysis → Development не закрыт, к промту 01 переходить нельзя; код и автоматизированные HTTP-проверки не выполнялись.
+**Статус:** тестовые промты 01–04 и поправки 04a подготовлены в `dev/http-api-and-session-middleware`. Production HTTP-код ещё отсутствует. Исторический Tester review Analysis/test design описан ниже; обязательный формальный Tester review пользователь отменил отдельным указанием.
 **Оценка:** действующий Gantt не меняется: Lead 0,5, Analysis 1,5, Development 1, Testing 1 рабочего дня; всего 4.
 
 Четыре дня — сохранённая Lead календарная оценка, а не оценка Developer по 13 промтам. **Предварительная оценка Developer для review: минимум 4 дня разработки и 2 дня тестирования** (с учётом четырёх маршрутов, DTO, admission, cancellation/ownership, watchdog, локального HTTPS и 29 acceptance scenarios); вместе с Lead 0,5 и Analysis 1,5 это минимум 8 рабочих дней. Это не изменение Gantt. Нижняя граница предполагает, что ранний S0 не потребует нового публичного component API, отдельного worker или переработки ownership. После S0 Developer уточняет оценку и передаёт Lead расхождение с действующим 1+1 и влияние на критический путь. Только Lead меняет Gantt отдельным решением; прежние 4 дня не выдаются за технически подтверждённый срок.
@@ -57,13 +57,14 @@ ADR-0040 пересмотрел свой исторический вариант
 | Промт | Срез | Зависит от | Сценарии / критерий |
 | --- | --- | --- | --- |
 | S0 | Ранний read-only spike по cancellation, shared leader и leaf futures | Входной код | Доказать нижнюю границу удержания permit через snapshot активных leaders и остальные retained work; уточнить техническую оценку |
-| G0 | Уточнить публичные DTO, admission и [контракт тестовой фикстуры](http_api_and_session_middleware_g0.md) | Входные модели и требования; параллельно S0 | §7.1/§9.1 и FIND-HTTP-022 внесены в `http_api.md`; app factory/client/runtime и общий scheduler для body, watchdog и reaper определены до тестов; требуется review Tester |
-| Gate A — Analysis → Development | Закрыть замечания Tester review и проверить весь §14 HTTP requirements | S0, G0 | Reviewer дал «принять с доработками», не approval; четыре блокера T-A1…T-A4 закрыты, затем зафиксированы Developer/Tester/Lead approvals; до этого промты 01–13 не запускать |
+| G0 | Уточнить публичные DTO, admission и [контракт тестовой фикстуры](http_api_and_session_middleware_g0.md) | Входные модели и требования; параллельно S0 | §7.1/§9.1 и FIND-HTTP-022 внесены в `http_api.md`; app factory/client/runtime и общий scheduler для body, watchdog и reaper определены до тестов; обязательный review Tester позднее отменён пользователем |
+| Gate A — Analysis → Development | Исторический review Analysis/test design и §14 HTTP requirements | S0, G0 | Первоначальный формальный порядок описан в §7; пользователь прямо разрешил 01–04 и отменил обязательный Tester review. Фактические результаты тестов и ограничения — в §10–11 |
 | [01](../../../prompts/2026-09-30/http-api-and-session-middleware/01-contract-tests-session.md) | Контрактные тесты сессии и current | Gate A, G0 | AS-HTTP-01…07 и BirthViewDTO golden для обоих chart statuses; restore без расчёта |
 | [02](../../../prompts/2026-09-30/http-api-and-session-middleware/02-contract-tests-place-dto.md) | Контрактные тесты place, validation, DTO | 01, G0 | AS-HTTP-08…15, 28; whitelist и ошибки |
 | [03](../../../prompts/2026-09-30/http-api-and-session-middleware/03-contract-tests-build-admission.md) | Контрактные тесты build, recovery, admission | 01–02 и S0/AS-HTTP-24 через Gate A | AS-HTTP-16…22; races, limits, unknown outcome |
 | [04](../../../prompts/2026-09-30/http-api-and-session-middleware/04-contract-tests-lifecycle.md) | Контрактные тесты receive, lifecycle, routes и logs | 01–03 и S0/AS-HTTP-24 через Gate A | AS-HTTP-23…27, 29; disconnect, watchdog, reaper |
-| Gate T | Tester сверяет requirements, AS-HTTP-01…29, тесты и positive controls | 01–04 | Формальный review и feedback до production code; test-only commit только по разрешению пользователя |
+| [04a](../../../prompts/2026-09-30/http-api-and-session-middleware/04a-review-corrections.md) | Поправки RED-тестов после независимого ревью другой моделью | 01–04 | Устранить ложные RED и слабые доказательства до production code; результаты записать ниже |
+| Gate T | Самопроверка requirements, AS-HTTP-01…29, тестов и positive controls | 01–04, 04a | Замечания независимого ревью другой моделью обработаны в 04a; формальный Tester review отменён прямым указанием пользователя; test-only commit только по разрешению пользователя |
 | [05](../../../prompts/2026-09-30/http-api-and-session-middleware/05-app-lifespan.md) | App factory, settings, startup, reaper, health | T | Typed startup failure, ownership resources |
 | [06](../../../prompts/2026-09-30/http-api-and-session-middleware/06-request-boundary.md) | Raw peer/proxy, route, Origin, body/query validation | 05 | Приоритет ошибок, security и 5-секундный receive |
 | [07](../../../prompts/2026-09-30/http-api-and-session-middleware/07-projectors.md) | Birth projection, ChartDTO, ErrorDTO и schema | 05 | Exact whitelist, unknown-time offset, no I/O |
@@ -86,7 +87,7 @@ G0 до тестов фиксирует test seam: публичная точка
 
 Gate A отделён от тестового Gate T: перед промтом 01 сверить §14 `http_api.md`, review Developer и Tester по Analysis, согласование DP-HTTP-01…06 Lead, точные DTO/OpenAPI schemas и diagrams, а также вывод S0 по отсутствию бесконечно занятого permit. Получен Tester review требований и тест-дизайна, **не** ещё не написанных тестов: вердикт «принять с доработками», четыре блокера T-A1…T-A4 ниже. Пользователь подтвердил решения и контракт FIND-HTTP-021 внесён в требования; это не является доказательством исправления cancellation seam или прохождения исполняемых проверок. FIND-HTTP-020 ждёт интеграции Lead-owned правок в `change/*`. Нельзя выдавать review тестов 01–04 после Gate A за review Analysis; при существенном контрактном или архитектурном вопросе вернуться на analysis/decision stage по Experiment 002.
 
-Промты 01–04 создают тесты раньше production code по Experiment 002 §13.1. Они должны иметь реальные положительные контроли; отсутствие transport ожидаемо делает их неуспешными, пропуск/skip не считается доказательством. Протокол предусматривает отдельный test-only commit и короткий review Tester до промта 05. AGENTS.md запрещает коммит без отдельного указания пользователя: при выполнении остановиться именно перед коммитом либо получить явное изменение порядка от оператора, записанное в журнале. Создание этого плана не разрешает commit, branch, push или PR.
+Промты 01–04 создают тесты раньше production code по Experiment 002 §13.1. Они должны иметь реальные положительные контроли; отсутствие transport ожидаемо делает их неуспешными, пропуск/skip не считается доказательством. Первоначальный протокол предусматривал отдельный test-only commit и короткий review Tester до промта 05; пользователь отменил обязательный review и отдельным сообщением запросил коммит после 04a. Создание самого плана не разрешает commit, branch, push или PR.
 
 Промты 05–12 проверяют зелёные тесты уже реализованной части своего среза; интеграционные тесты, зависящие от следующих промтов, перечисляются как ожидаемо красные. Routes bootstrap и places можно проверить после 08–09, но AS-HTTP-07/21 и их полная приёмка ждут подключения creation/place IP admission в 10. После каждого среза проверить уже реализованные пути, не переписывать contract tests ради прохождения. Промт 13 запускает целевые → связанные application/session/catalog и module-boundary → полный pytest. Платные и сетевые smoke-тесты не запускать.
 
@@ -103,9 +104,9 @@ Gate A отделён от тестового Gate T: перед промтом 
 
 ## 6. Gates, риски и приёмка плана
 
-- **Перед промтом 01 — Gate A:** S0 доказал безопасный консервативный release и уточнил оценку Developer; G0 в [отдельной карточке](http_api_and_session_middleware_g0.md) зафиксировал app factory, HTTPS ASGI-клиент, raw cookie/peer, runtime/catalog injection, UTC clock, общий scheduler для body/watchdog/reaper и DTO/OpenAPI assertions. Утверждённые пользователем §9.3/AS-HTTP-24, §7.1/§9.1/FIND-HTTP-022, DTO и разделение AS-HTTP-17/19 внесены в требования и UI-приёмку, build sequence обновлена. Для закрытия Gate A ещё нужны доказательство cancellation seam, review Tester по исправленному тест-дизайну и условия §14; интеграция документов в `change/*` остаётся процессной задачей. Техническая проверка §9.3/AS-HTTP-24 зависит от S0; DTO и admission от S0 не зависят.
+- **Перед промтом 01 — Gate A:** S0 доказал безопасный консервативный release и уточнил оценку Developer; G0 в [отдельной карточке](http_api_and_session_middleware_g0.md) зафиксировал app factory, HTTPS ASGI-клиент, raw cookie/peer, runtime/catalog injection, UTC clock, общий scheduler для body/watchdog/reaper и DTO/OpenAPI assertions. Утверждённые пользователем §9.3/AS-HTTP-24, §7.1/§9.1/FIND-HTTP-022, DTO и разделение AS-HTTP-17/19 внесены в требования и UI-приёмку, build sequence обновлена. Доказательство cancellation seam, условия §14 и интеграция документов в `change/*` остаются предметом фактической проверки; обязательный review Tester пользователь отменил. Техническая проверка §9.3/AS-HTTP-24 зависит от S0; DTO и admission от S0 не зависят.
 - **Перед промтом 02:** golden tests используют уже утверждённые типы DTO; никаких новых форм публичного JSON в промте не выбирать.
-- **Перед production code — Gate T:** после 01–04 Tester отдельно проверяет контрактные тесты, positive controls и таблицу `test → AS/требование → ожидаемая причина RED → промт GREEN`. Одинаковое падение всех тестов на fixture setup не считается достаточным RED evidence. Это не заменяет Gate A. Test-only commit требует отдельного указания пользователя; отсутствие review исполняемых тестов не изображать как завершённое.
+- **Перед production code — Gate T:** после 01–04 и поправок 04a сверить контрактные тесты, positive controls и таблицу `test → AS/требование → ожидаемая причина RED → промт GREEN`. Одинаковое падение всех тестов на fixture setup не считается достаточным RED evidence. Пользователь отменил обязательный формальный Tester review; результаты независимого ревью другой моделью и фактические поправки фиксируются в §11. Test-only commit требует отдельного указания пользователя.
 - **Перед acceptance DP-HTTP-04:** доказать тестами disconnect при живом shielded leader, blocked leaf future, protected commit, 30-секундный watchdog и shutdown без преждевременного close/permit release.
 - **Перед Development PR:** целевые `python -m pytest tests/http_api -q`, связанные `python -m pytest tests/application tests/session tests/test_place_catalog_sqlite.py tests/test_place_catalog_search.py tests/test_place_search_contracts.py tests/test_birth_places.py tests/test_birth_resolver.py tests/test_module_boundaries.py -q`, затем `python -m pytest -q`; `git diff --check` и проверка новых файлов, ссылок и изменённых diagrams. Реальный список команд и результатов записать в журнале. PlantUML rendering не объявлять выполненным без запуска.
 - **Локальный runbook в промте 13:** Caddy завершает HTTPS с сертификатом mkcert и передаёт XFF/XFP; Uvicorn запускается с выключенным встроенным proxy-header rewrite и ровно одним web process. Указать проверенную команду, установленную комбинацию версий FastAPI/uvicorn/httpx, проверку числа web process и health через internal route. При unhealthy без внешнего supervisor описать сохранение логов, принудительное завершение старого PID, запуск нового процесса и сверку current; не выдавать 503 за автоматически восстановимое состояние.
@@ -180,9 +181,11 @@ session перед IP, сутки перед часом. Ни отказ 429, н
 
 | Тест / набор | AS и требование | Ожидаемая причина RED сейчас | GREEN-промт |
 | --- | --- | --- | --- |
-| `test_first_bootstrap_then_empty_current_has_exact_cookie_and_no_calculation` | 01; §5, §6.1–6.2, §12 | Нет app factory/routes; позже до 13 остаётся `http_cookie_replaced(missing)` | 05, 08, 10, 13 |
+| `test_first_bootstrap_then_empty_current_has_exact_cookie_and_no_calculation` | 01; §5, §6.1–6.2 | Нет app factory/routes | 05, 08, 10 |
+| `test_bootstrap_logs_cookie_replacement_after_success` | 01; §12 | Нет app; отдельное событие после успешного create | 13 |
 | `test_restart_uses_same_sqlite_file_with_new_runtime_and_empty_cache` | 02; §6.1–6.2, ADR-0041 | Нет app factory/routes; SQLite harness и два отдельных runtime готовы | 05, 07–08 |
-| `test_current_projects_stale_unavailable_or_empty_without_mutation` | 03; §6.2 | Нет app/current projector; ERROR-событие остаётся до 13 | 07–08, 13 |
+| `test_current_projects_stale_unavailable_or_empty_without_mutation` | 03; §6.2 | Нет app/current projector | 07–08 |
+| `test_unavailable_current_emits_error_event` | 03; §12 | Нет app; отдельное ERROR-событие при unavailable | 13 |
 | `test_structural_sqlite_chart_corruption_is_503_not_unavailable` | 03; §6.2 | Нет app/current mapping; реальный SQLite повреждается удалением child row | 05, 08 |
 | `test_absent_current_clears_cookie_and_bootstrap_replaces_it` | 04; §5, §6.1–6.2 | Нет cookie/current/bootstrap routes | 06, 08 |
 | `test_state_read_failure_preserves_cookie_and_never_creates_session` | 04; §5, §6.1–6.2 | Нет typed error mapping/routes | 08 |
@@ -217,3 +220,39 @@ session перед IP, сутки перед часом. Ни отказ 429, н
 
 Полный `pytest`, связанные component suites и PlantUML rendering на этом
 test-only RED-срезе не запускались. Tester review исполняемых тестов не проведён.
+
+## 11. Промт 04a — поправки после ревью другой моделью (2026-10-01)
+
+Пользователь передал замечания к исполняемым тестам 01–04, подготовленные
+**другой моделью**. Developer сверил их с текущим кодом и `http_api.md`, затем
+выполнил [поправочный промт 04a](../../../prompts/2026-09-30/http-api-and-session-middleware/04a-review-corrections.md).
+Это не формальное Tester approval; обязательный Tester review пользователь
+ранее отменил.
+
+| Область | Исправление и проверяемое требование |
+| --- | --- |
+| AS-HTTP-16/18, §7.1 | Разные `place_id` дают разные resolved-намерения в real SQLite CAS; build сравнивает полный `ChartDTO` с projector и current GET. Пример §6.4 помечен сокращённым |
+| AS-HTTP-05/24 | Повторяющиеся Cookie передаются парным headers; добавлен invalid/duplicate build с позитивным контролем; для retained permit используется работа, переживающая отмену, без требования финального ответа после disconnect |
+| G0, AS-HTTP-25/26 | Общие девять настроек во всех app fixtures, исходные фабрики без аргументов; GET shutdown тесты проверяют ожидание futures без неподтверждённого запрета ответа после disconnect; начальный срок reaper уточнён |
+| AS-HTTP-01/03/21 | Логовые проверки вынесены в отдельные тесты; отказ на `t=3` не должен сдвигать допуск на `t=7`; два конкурентных POST борются за один слот; renew/clear cookie проверяются по значению и атрибутам |
+| AS-HTTP-09/28 и ошибки | Повторный `query` уточнён как `QUERY_REQUIRED`; nonempty `excluded_aspects` проверяются на полном валидном артефакте без изменения golden; projector/startup тесты ждут типизированные исключения; helpers вынесены из тест-модулей |
+
+`active_bucket_count` оставлен только как вспомогательная проверка очистки
+внутреннего хранилища, не как публичный G0 API. Текстовый формат логов и имя
+логгера также не закреплены в G0. Прямой dev dependency на `httpx` добавлен.
+Трактовка регистра в `charset=UTF-8` остаётся отдельным вопросом публичной
+грамматики §4.2; этот промт её не изменял.
+
+| Команда | Фактический результат |
+| --- | --- |
+| `python -m compileall -q tests/http_api` | exit 0 |
+| `python -m pytest tests/http_api/test_session.py::test_chart_fixture_has_distinct_ready_and_unavailable_pure_views tests/http_api/test_session.py::test_scheduler_is_manually_advanced_without_wall_time tests/http_api/test_session.py::test_sqlite_restart_harness_preserves_chart_without_http tests/http_api/test_build_admission.py::test_window_oracle_is_inclusive_and_selects_latest_bucket_with_ties tests/http_api/test_build_admission.py::test_recovery_result_samples_are_real_typed_application_models tests/http_api/test_build_admission.py::test_real_sqlite_orchestrator_fixture_commits_without_http tests/http_api/test_lifecycle.py::test_scheduler_control_has_exact_deadline_and_no_wall_clock -q -p no:cacheprovider` | 7 passed |
+| `python -m pytest tests/http_api -q --tb=no -p no:cacheprovider` | 11 passed, 182 failed: ожидаемый RED до появления `exact_orb.http_api` |
+| `$lines = python -m pytest tests/http_api -q --tb=line -p no:cacheprovider 2>&1; $lines \| Select-String '^E   ' \| Group-Object -Property Line \| Select-Object Count,Name` | 182 раза `ModuleNotFoundError: No module named 'exact_orb.http_api'`, других типов ошибок нет |
+| `git diff --check` | exit 0; Git сообщил только о нормализации LF → CRLF в working copy |
+
+Независимый запуск `cosmogram_sample()` и
+`cosmogram_with_excluded_aspects()` подтвердил соответственно 0 и 20
+исключённых аспектов в валидных артефактах. Тесты app-поведения останутся
+непроверенными до реализации HTTP transport. Полный `pytest`, связанные
+component suites и PlantUML rendering в промте 04a не запускались.

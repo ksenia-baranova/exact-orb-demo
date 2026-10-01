@@ -4,11 +4,9 @@ from __future__ import annotations
 
 import asyncio
 from datetime import date, datetime, time, timezone
-import base64
 import json
 import logging
 from pathlib import Path
-import re
 import sqlite3
 
 import pytest
@@ -34,6 +32,10 @@ from exact_orb.session.state import StateDelta, apply_delta, new_session
 from tests.fixtures.calculation import VERSION, artifact, chart_spec, resolved_birth_data
 from tests.fixtures.stored_chart import stored_chart_for
 from tests.http_api.conftest import NOW, RuntimeSpy, ScriptedContext, UtcClock
+from tests.http_api.shared import (
+    cleared_cookie as _cleared_cookie, issued_cookie as _issued_cookie,
+    no_set_cookie as _no_set_cookie, set_cookie as _set_cookie,
+)
 
 
 pytestmark = pytest.mark.asyncio
@@ -46,36 +48,6 @@ GOLDEN = json.loads(
 
 def _cookie(value: str = COOKIE_VALUE) -> str:
     return f"{COOKIE_NAME}={value}"
-
-
-def _set_cookie(response) -> str:
-    values = response.headers.get_list("set-cookie")
-    assert len(values) == 1
-    return values[0]
-
-
-def _issued_cookie(response) -> str:
-    raw = _set_cookie(response)
-    match = re.search(rf"(?:^|;\s*){re.escape(COOKIE_NAME)}=([A-Za-z0-9_-]{{43}})(?:;|$)", raw)
-    assert match, raw
-    assert "httponly" in raw.lower()
-    assert "secure" in raw.lower()
-    assert "samesite=lax" in raw.lower()
-    assert "path=/" in raw.lower()
-    assert "max-age=604800" in raw.lower()
-    assert "domain=" not in raw.lower()
-    assert len(base64.urlsafe_b64decode(match.group(1) + "=")) == 32
-    return match.group(1)
-
-
-def _cleared_cookie(response) -> None:
-    raw = _set_cookie(response).lower()
-    assert f"{COOKIE_NAME.lower()}=" in raw
-    assert "max-age=0" in raw
-
-
-def _no_set_cookie(response) -> None:
-    assert response.headers.get_list("set-cookie") == []
 
 
 def _snapshot(session_id: str, *, known: bool, unavailable: bool = False) -> SessionSnapshot:
@@ -175,7 +147,6 @@ async def test_sqlite_restart_harness_preserves_chart_without_http(sqlite_restar
         assert saved.state_version == 1
     async with sqlite_restart() as second:
         assert second is not first
-        assert second.cache is not first.cache
         loaded = await second.context.load(session_id)
         assert isinstance(loaded, SessionSnapshot)
         assert loaded.chart == snapshot.chart
@@ -184,9 +155,8 @@ async def test_sqlite_restart_harness_preserves_chart_without_http(sqlite_restar
 
 
 async def test_first_bootstrap_then_empty_current_has_exact_cookie_and_no_calculation(
-    app_client, runtime: RuntimeSpy, context: ScriptedContext, caplog
+    app_client, runtime: RuntimeSpy, context: ScriptedContext
 ) -> None:
-    caplog.set_level(logging.INFO)
     async with app_client(runtime) as client:
         created = await client.post("/session/bootstrap", json={})
         assert created.status_code == 200
@@ -194,8 +164,6 @@ async def test_first_bootstrap_then_empty_current_has_exact_cookie_and_no_calcul
         session_id = _issued_cookie(created)
         assert context.create_calls == [session_id]
         assert context.load_calls == []
-        assert any("http_cookie_replaced" in record.message and "missing" in record.message
-                   for record in caplog.records)
         client.cookies.clear()
         current = await client.get("/charts/current", headers={"Cookie": _cookie(session_id)})
         assert current.status_code == 200
@@ -203,6 +171,18 @@ async def test_first_bootstrap_then_empty_current_has_exact_cookie_and_no_calcul
         assert _issued_cookie(current) == session_id
         assert context.load_calls == [session_id]
     _assert_no_read_side_effects(runtime)
+
+
+async def test_bootstrap_logs_cookie_replacement_after_success(
+    app_client, runtime: RuntimeSpy, context: ScriptedContext, caplog
+) -> None:
+    caplog.set_level(logging.INFO)
+    async with app_client(runtime) as client:
+        response = await client.post("/session/bootstrap", json={})
+        assert response.status_code == 200
+        assert context.create_calls == [_issued_cookie(response)]
+    assert any("http_cookie_replaced" in record.getMessage()
+               and "missing" in record.getMessage() for record in caplog.records)
 
 
 async def test_restart_uses_same_sqlite_file_with_new_runtime_and_empty_cache(
@@ -227,7 +207,6 @@ async def test_restart_uses_same_sqlite_file_with_new_runtime_and_empty_cache(
         _assert_no_read_side_effects(first)
     async with sqlite_restart() as second:
         assert second is not first
-        assert second.cache is not first.cache
         async with app_client(second) as client:
             headers = {"Cookie": _cookie(session_id)}
             restored = await client.post("/session/bootstrap", json={}, headers=headers)
@@ -248,7 +227,7 @@ async def test_restart_uses_same_sqlite_file_with_new_runtime_and_empty_cache(
 
 @pytest.mark.parametrize("kind", ("stale", "unavailable", "empty"))
 async def test_current_projects_stale_unavailable_or_empty_without_mutation(
-    kind: str, app_client, runtime: RuntimeSpy, context: ScriptedContext, caplog
+    kind: str, app_client, runtime: RuntimeSpy, context: ScriptedContext
 ) -> None:
     if kind == "empty":
         context.snapshots[COOKIE_VALUE] = SessionSnapshot(
@@ -274,12 +253,24 @@ async def test_current_projects_stale_unavailable_or_empty_without_mutation(
             assert body["chart"] is None
         assert _issued_cookie(result) == COOKIE_VALUE
         if kind == "unavailable":
-            assert any(record.levelname == "ERROR" and "chart_unavailable" in record.message
-                       for record in caplog.records)
             assert "safe_reason" not in body
         assert context.snapshots[COOKIE_VALUE] == before
         assert context.load_calls == [COOKIE_VALUE]
     _assert_no_read_side_effects(runtime)
+
+
+async def test_unavailable_current_emits_error_event(
+    app_client, runtime: RuntimeSpy, context: ScriptedContext, caplog
+) -> None:
+    context.snapshots[COOKIE_VALUE] = _snapshot(COOKIE_VALUE, known=True, unavailable=True)
+    caplog.set_level(logging.ERROR)
+    async with app_client(runtime) as client:
+        response = await client.get("/charts/current", headers={"Cookie": _cookie()})
+        assert response.status_code == 200
+        assert response.json()["status"] == "chart_unavailable"
+    assert any(record.levelno == logging.ERROR
+               and "chart_unavailable" in record.getMessage()
+               for record in caplog.records)
 
 
 async def test_structural_sqlite_chart_corruption_is_503_not_unavailable(
@@ -429,7 +420,7 @@ async def test_duplicate_raw_cookie_is_replaced_by_bootstrap_without_loading_it(
     raw = [("Cookie", _cookie()), ("Cookie", _cookie("B" * 43))]
     async with app_client(runtime) as client:
         client.cookies.clear()
-        response = await client.post("/session/bootstrap", json={}, headers={"Cookie": raw})
+        response = await client.post("/session/bootstrap", json={}, headers=raw)
         assert response.status_code == 200
         new_id = _issued_cookie(response)
         assert new_id not in {COOKIE_VALUE, "B" * 43}

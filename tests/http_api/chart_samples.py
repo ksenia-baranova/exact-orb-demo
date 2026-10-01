@@ -49,3 +49,11 @@ def cosmogram_sample() -> ChartArtifact:
         "spec": base.spec,
         "chart": chart,
     })
+
+
+def cosmogram_with_excluded_aspects() -> ChartArtifact:
+    """The validated full fixture retains real unstable relations."""
+    chart = _base("cosmogram")
+    assert chart.chart.time_uncertainty is not None
+    assert chart.chart.time_uncertainty.excluded_aspects
+    return chart

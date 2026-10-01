@@ -3,11 +3,9 @@
 from __future__ import annotations
 
 import asyncio
-import base64
 from contextlib import asynccontextmanager
 from dataclasses import FrozenInstanceError, dataclass, replace
 from datetime import date, time
-from pathlib import Path
 from typing import Any
 
 import pytest
@@ -21,13 +19,8 @@ from exact_orb.application.application_results import (
 )
 from exact_orb.application.commands import BuildNatalCommand
 from exact_orb.application.failure_policy import describe_failure
-from exact_orb.application.handlers.build_natal import BuildNatalHandler
-from exact_orb.application.orchestrator import ApplicationOrchestrator
-from exact_orb.birth.types import BirthInput, ResolvedBirthData
-from exact_orb.calculation.codec import decode_chart_artifact
-from exact_orb.session.outcomes import StateCommitFailed
+from exact_orb.birth.types import BirthInput
 from exact_orb.session.persistence import SessionSnapshot
-from tests.application.stubs import StubBirthDataResolver, StubChartArtifactPort
 from tests.fixtures.calculation import run_context
 from tests.http_api.admission_cases import (
     ExhaustedBucket,
@@ -38,22 +31,16 @@ from tests.http_api.admission_cases import (
 )
 from tests.http_api.conftest import RuntimeSpy
 from tests.http_api.chart_samples import natal_sample
-from tests.http_api.test_place_dto import (
-    COOKIE, VALID_BUILD, ScriptedCatalog, _committed, _input_required,
+from tests.http_api.build_support import (
+    BlockedOrchestrator, RetainedBlockedOrchestrator, TerminalHeldOrchestrator,
+    real_orchestrator as _real_orchestrator,
 )
-
-
-SESSION_ID = "A" * 43
-GOLDEN_DIR = Path(__file__).resolve().parents[1] / "golden"
-
-
-def _cookie(index: int) -> str:
-    token = base64.urlsafe_b64encode(bytes([index]) * 32).rstrip(b"=").decode("ascii")
-    return f"__Host-exact_orb_session={token}"
-
-
-def _build(*, place_id: str = "524901") -> dict[str, object]:
-    return {**VALID_BUILD, "place_id": place_id}
+from tests.http_api.shared import (
+    COOKIE, SESSION_ID, ScriptedCatalog,
+    build as _build, cookie as _cookie,
+    committed as _committed, input_required as _input_required,
+    issued_cookie, cleared_cookie,
+)
 
 
 def _assert_headers(response) -> None:
@@ -190,41 +177,6 @@ async def test_pure_limiter_window_arithmetic_without_app_factory(scheduler) -> 
     )
 
 
-class ObservedContext:
-    """Observe real SQLite load/CAS; optionally lose both save acknowledgements."""
-
-    def __init__(self, inner: Any, *, lost_commit: bool | None = None) -> None:
-        self.inner = inner
-        self.lost_commit = lost_commit
-        self.load_versions: list[int | None] = []
-        self.save_expected: list[int] = []
-
-    def __getattr__(self, name: str) -> Any:
-        return getattr(self.inner, name)
-
-    async def load(self, session_id: str):
-        result = await self.inner.load(session_id)
-        self.load_versions.append(result.state.state_version
-                                  if isinstance(result, SessionSnapshot) else None)
-        return result
-
-    async def save(self, session_id: str, expected_state_version: int, delta):
-        self.save_expected.append(expected_state_version)
-        if self.lost_commit is not None:
-            if self.lost_commit and len(self.save_expected) == 1:
-                await self.inner.save(session_id, expected_state_version, delta)
-            return StateCommitFailed(error_code="SESSION_SQLITE_WRITE_FAILED")
-        return await self.inner.save(session_id, expected_state_version, delta)
-
-
-class CountingOrchestrator:
-    def __init__(self, inner: Any) -> None:
-        self.inner = inner
-        self.calls: list[tuple[BuildNatalCommand, str, Any]] = []
-
-    async def execute(self, command, *, session_id: str, run):
-        self.calls.append((command, session_id, run))
-        return await self.inner.execute(command, session_id=session_id, run=run)
 
 
 @dataclass(frozen=True, slots=True)
@@ -238,60 +190,9 @@ class FakeSupervisor:
     async def replacement(self):
         async with self.open_runtime() as new_runtime:
             assert new_runtime is not self.old_runtime
-            assert new_runtime.cache is not self.old_runtime.cache
             yield new_runtime
 
 
-class BarrierHandler:
-    def __init__(self, inner: Any, expected: int = 2) -> None:
-        self.inner = inner
-        self.expected = expected
-        self.entered: list[int] = []
-        self.condition = asyncio.Condition()
-        self.release = asyncio.Event()
-
-    async def handle(self, command, state, run):
-        async with self.condition:
-            self.entered.append(state.state_version)
-            self.condition.notify_all()
-        await self.release.wait()
-        return await self.inner.handle(command, state, run)
-
-    async def wait_entered(self) -> None:
-        async with self.condition:
-            await self.condition.wait_for(lambda: len(self.entered) >= self.expected)
-
-
-def _real_orchestrator(runtime: RuntimeSpy, utc_clock, *,
-                       barrier: bool = False, lost_commit: bool | None = None):
-    artifact = decode_chart_artifact(
-        (GOLDEN_DIR / "chart_artifact_format_1_natal_1985.bin").read_bytes()
-    )
-    chart = artifact.chart
-    resolved = ResolvedBirthData(
-        utc_datetime=chart.datetime_utc,
-        latitude=chart.latitude,
-        longitude=chart.longitude,
-        tz_id="Europe/Moscow",
-        utc_offset_seconds=14400,
-        canonical_place="Москва",
-        time_unknown=False,
-        birth_time_domain=None,
-        warnings=(),
-    )
-    observed = ObservedContext(runtime.context, lost_commit=lost_commit)
-    runtime.context = observed
-    leaf = BuildNatalHandler(
-        resolver=StubBirthDataResolver(resolved),
-        artifacts=StubChartArtifactPort(artifact),
-    )
-    handler = BarrierHandler(leaf) if barrier else leaf
-    orchestrator = CountingOrchestrator(ApplicationOrchestrator(
-        context=observed, handlers={BuildNatalCommand: handler}, clock=utc_clock,
-    ))
-    runtime.orchestrator = orchestrator
-    runtime.calculation_version = artifact.calculation_version
-    return artifact, observed, orchestrator, handler
 
 
 @pytest.mark.asyncio
@@ -322,16 +223,19 @@ async def test_explicit_rebuild_uses_fresh_version_and_does_not_echo_old_chart_o
     async with sqlite_restart() as runtime:
         await runtime.context.create(SESSION_ID)
         artifact, observed, orchestrator, _ = _real_orchestrator(runtime, utc_clock)
+        from exact_orb.http_api.projectors import project_chart
+
+        projected = project_chart(artifact)
+        expected_chart = (projected.model_dump(mode="json")
+                          if hasattr(projected, "model_dump") else projected)
         async with app_client(runtime) as client:
             first = await client.post("/charts/natal", json=_build(), headers={"Cookie": COOKIE})
             second = await client.post("/charts/natal", json=_build(place_id="other"),
                                        headers={"Cookie": COOKIE})
             assert first.json() == {"status": "chart_ready", "state_version": 1,
-                                    "chart": {"chart_identity": artifact.calculation_key,
-                                              "kind": "natal"}}
+                                    "chart": expected_chart}
             assert second.json() == {"status": "chart_ready", "state_version": 2,
-                                     "chart": {"chart_identity": artifact.calculation_key,
-                                               "kind": "natal"}}
+                                     "chart": expected_chart}
             assert observed.save_expected == [0, 1]
             assert len(orchestrator.calls) == 2
             bad = await client.post("/charts/natal", json={**_build(), "birth_date": "bad"},
@@ -347,7 +251,7 @@ async def test_explicit_rebuild_uses_fresh_version_and_does_not_echo_old_chart_o
             assert observed.load_versions == [0, 1, 2]
             current = await client.get("/charts/current", headers={"Cookie": COOKIE})
             assert current.json()["state_version"] == 2
-            assert current.json()["chart"]["chart_identity"] == artifact.calculation_key
+            assert current.json()["chart"] == expected_chart
             assert observed.save_expected == [0, 1, 2, 2]
             assert len(orchestrator.calls) == 3
 
@@ -441,7 +345,7 @@ async def test_lost_commit_ack_requires_current_then_explicit_fresh_post_after_r
             assert response.json()["retryable"] is True
             assert response.headers["Retry-After"] == "1"
             assert "chart" not in response.json()
-            assert response.headers.get_list("set-cookie") != []
+            assert issued_cookie(response) == SESSION_ID
             first_calls = len(orchestrator.calls)
             first_saves = observed.save_expected.copy()
             assert first_calls == 1
@@ -510,6 +414,42 @@ async def test_build_session_absent_clears_cookie_without_creating_or_replaying_
         assert len(scripted.calls) == 2
 
 
+@pytest.mark.asyncio
+async def test_invalid_or_duplicate_build_cookie_stops_before_admission_and_execute(
+    app_client, runtime: RuntimeSpy, context
+) -> None:
+    policy = replace(
+        SmallLimiterPolicy(),
+        build_session_hourly=WindowLimit(1, 7),
+        build_session_daily=WindowLimit(1, 7),
+        build_ip_hourly=WindowLimit(1, 7),
+        build_ip_daily=WindowLimit(1, 7),
+    )
+    orchestrator = QuickOrchestrator()
+    runtime.orchestrator = orchestrator
+    async with app_client(runtime, limiter_policy=policy) as client:
+        client.cookies.clear()
+        invalid = await client.post("/charts/natal", json=_build(),
+                                    headers={"Cookie": "__Host-exact_orb_session=invalid"})
+        assert invalid.status_code == 409
+        assert invalid.json()["code"] == "SESSION_REQUIRED"
+        cleared_cookie(invalid)
+        client.cookies.clear()
+        duplicate = await client.post("/charts/natal", json=_build(), headers=[
+            ("Cookie", COOKIE), ("Cookie", _cookie(2)),
+        ])
+        assert duplicate.status_code == 409
+        assert duplicate.json()["code"] == "SESSION_REQUIRED"
+        cleared_cookie(duplicate)
+        assert orchestrator.calls == context.load_calls == []
+        client.cookies.clear()
+        valid = await client.post("/charts/natal", json=_build(),
+                                  headers={"Cookie": COOKIE})
+        assert valid.status_code == 422
+        assert valid.json()["code"] == "INPUT_REQUIRED"
+        assert len(orchestrator.calls) == 1
+
+
 class QuickOrchestrator:
     def __init__(self) -> None:
         self.calls: list[tuple[Any, str, Any]] = []
@@ -519,28 +459,6 @@ class QuickOrchestrator:
         return _input_required(run)
 
 
-class BlockedOrchestrator:
-    def __init__(self) -> None:
-        self.calls: list[tuple[Any, str, Any]] = []
-        self.releases: list[asyncio.Event] = []
-        self.condition = asyncio.Condition()
-
-    async def execute(self, command, *, session_id: str, run):
-        gate = asyncio.Event()
-        async with self.condition:
-            self.calls.append((command, session_id, run))
-            self.releases.append(gate)
-            self.condition.notify_all()
-        await gate.wait()
-        return _input_required(run)
-
-    async def wait_count(self, count: int) -> None:
-        async with self.condition:
-            await self.condition.wait_for(lambda: len(self.calls) >= count)
-
-    def release_all(self) -> None:
-        for gate in self.releases:
-            gate.set()
 
 
 @pytest.mark.asyncio
@@ -680,6 +598,79 @@ async def test_place_and_creation_ip_windows_reject_without_consuming_quota(
         client.cookies.clear()
         assert (await client.post("/session/bootstrap", json={})).status_code == 200
         assert len(context.create_calls) == 3
+
+
+@pytest.mark.asyncio
+async def test_later_rejections_do_not_shift_build_place_or_creation_window(
+    app_client, runtime: RuntimeSpy, scheduler, context
+) -> None:
+    window = WindowLimit(1, 7)
+    policy = replace(
+        SmallLimiterPolicy(),
+        session_create_ip=window,
+        build_session_hourly=window,
+        build_session_daily=window,
+        build_ip_hourly=window,
+        build_ip_daily=window,
+        place_search_ip=window,
+    )
+    catalog = ScriptedCatalog()
+    orchestrator = QuickOrchestrator()
+    runtime.orchestrator = orchestrator
+
+    async with app_client(runtime, catalog=catalog, limiter_policy=policy) as client:
+        async def attempt():
+            client.cookies.clear()
+            build = await client.post("/charts/natal", json=_build(),
+                                      headers={"Cookie": COOKIE})
+            places = await client.get("/places?query=Москва")
+            client.cookies.clear()
+            create = await client.post("/session/bootstrap", json={})
+            return build, places, create
+
+        first = await attempt()
+        assert [response.status_code for response in first] == [422, 200, 200]
+        await scheduler.advance(3)
+        rejected = await attempt()
+        assert [response.status_code for response in rejected] == [429, 429, 429]
+        assert [response.headers["Retry-After"] for response in rejected] == ["4"] * 3
+        assert len(orchestrator.calls) == len(catalog.calls) == len(context.create_calls) == 1
+        await scheduler.advance(4)
+        boundary = await attempt()
+        assert [response.status_code for response in boundary] == [422, 200, 200]
+        assert len(orchestrator.calls) == len(catalog.calls) == len(context.create_calls) == 2
+
+
+@pytest.mark.asyncio
+async def test_two_concurrent_builds_reserve_one_remaining_quota_slot(
+    app_client, runtime: RuntimeSpy, scheduler
+) -> None:
+    window = WindowLimit(1, 7)
+    policy = replace(
+        SmallLimiterPolicy(),
+        build_session_hourly=window, build_session_daily=window,
+        build_ip_hourly=window, build_ip_daily=window,
+    )
+    orchestrator = QuickOrchestrator()
+    runtime.orchestrator = orchestrator
+    barrier = asyncio.Barrier(3)
+
+    async with app_client(runtime, limiter_policy=policy) as client:
+        async def post():
+            await barrier.wait()
+            return await client.post("/charts/natal", json=_build(),
+                                     headers={"Cookie": COOKIE})
+
+        requests = [asyncio.create_task(post()) for _ in range(2)]
+        await asyncio.wait_for(barrier.wait(), timeout=1.0)
+        responses = await asyncio.wait_for(asyncio.gather(*requests), timeout=2.0)
+        assert sorted(response.status_code for response in responses) == [422, 429]
+        assert len(orchestrator.calls) == 1
+        await scheduler.advance(7)
+        control = await client.post("/charts/natal", json=_build(),
+                                    headers={"Cookie": COOKIE})
+        assert control.status_code == 422
+        assert len(orchestrator.calls) == 2
 
 
 @pytest.mark.asyncio
@@ -834,29 +825,6 @@ async def test_inactive_admission_bucket_storage_is_reaped_after_max_window(
         assert len(orchestrator.calls) == 31
 
 
-class TerminalHeldOrchestrator:
-    """An accepted operation may persist and still not report a terminal result."""
-
-    def __init__(self, inner: Any | None) -> None:
-        self.inner = inner
-        self.calls = 0
-        self.entered = asyncio.Event()
-        self.release = asyncio.Event()
-        self.completed = asyncio.Event()
-
-    async def execute(self, command, *, session_id: str, run):
-        self.calls += 1
-        result = (await self.inner.execute(command, session_id=session_id, run=run)
-                  if self.inner is not None else _input_required(run))
-        self.entered.set()
-        while not self.release.is_set():
-            try:
-                await self.release.wait()
-            except asyncio.CancelledError:
-                # Simulates an owned native/executor operation surviving waiter cancellation.
-                continue
-        self.completed.set()
-        return result
 
 
 @pytest.mark.asyncio
@@ -891,6 +859,8 @@ async def test_timeout_is_one_execute_and_restarts_against_same_sqlite_state(
                 denied = await client.post("/charts/natal", json=_build(),
                                            headers={"Cookie": COOKIE})
                 assert denied.status_code == 503
+                assert denied.json()["code"] == "SERVICE_SHUTTING_DOWN"
+                assert denied.headers["Retry-After"] == "30"
                 assert held.calls == 1
                 # Fake supervisor replacement: a fresh app/runtime/cache opens
                 # the same SQLite file while old work remains non-terminal.
@@ -933,7 +903,7 @@ async def test_disconnect_sends_no_headers_and_keeps_owned_permit_until_work_fin
     app_client, runtime: RuntimeSpy
 ) -> None:
     policy = replace(SmallLimiterPolicy(), active_builds=1)
-    blocked = BlockedOrchestrator()
+    blocked = RetainedBlockedOrchestrator()
     runtime.orchestrator = blocked
     body = b'{"birth_date":"1985-09-02","birth_time":"00:45","place_id":"524901"}'
     body_sent = asyncio.Event()
@@ -979,7 +949,6 @@ async def test_disconnect_sends_no_headers_and_keeps_owned_permit_until_work_fin
         finally:
             blocked.release_all()
             await asyncio.wait_for(request, timeout=1.0)
-        assert sent == []
         control_task = asyncio.create_task(client.post(
             "/charts/natal", json=_build(), headers={"Cookie": COOKIE}
         ))

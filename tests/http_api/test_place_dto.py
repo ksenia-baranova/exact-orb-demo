@@ -3,11 +3,9 @@
 from __future__ import annotations
 
 import asyncio
-from collections import deque
 from datetime import date, time
 import json
 from pathlib import Path
-from typing import Callable
 from uuid import UUID
 
 import pytest
@@ -40,65 +38,16 @@ from exact_orb.session.state import StateDelta, StoredChart, apply_delta, new_se
 from tests.application.stubs import StubBirthDataResolver, StubChartArtifactPort
 from tests.http_api.chart_samples import natal_sample
 from tests.http_api.conftest import NOW, RuntimeSpy, ScriptedContext
+from tests.http_api.shared import (
+    COOKIE, VALID_BUILD, PUBLIC_ITEM, ScriptedCatalog, ScriptedOrchestrator,
+    application_failure as _application_failure,
+    committed as _committed, input_required as _input_required,
+    issued_cookie,
+)
 
 
 pytestmark = pytest.mark.asyncio
-COOKIE = "__Host-exact_orb_session=" + "A" * 43
 SENSITIVE = "private-internal-detail-55.7558"
-VALID_BUILD = {"birth_date": "1985-09-02", "birth_time": "00:45", "place_id": "524901"}
-PUBLIC_ITEM = {
-    "place_id": "524901",
-    "display_name": "Москва, Россия",
-    "admin1_name": "Москва",
-    "country_code": "RU",
-}
-
-
-class ScriptedCatalog:
-    def __init__(self) -> None:
-        self.calls: list[tuple[str, int]] = []
-        self.results: deque[object] = deque()
-        self.closed = False
-
-    async def search(self, query: str, *, limit: int = 10):
-        self.calls.append((query, limit))
-        if self.results:
-            result = self.results.popleft()
-            if isinstance(result, BaseException):
-                raise result
-            return result
-        if query == "Москва":
-            return PlaceSuggestions(items=(PlaceSuggestion(**PUBLIC_ITEM),))
-        return PlaceSuggestions(items=())
-
-    async def aclose(self) -> None:
-        self.closed = True
-
-
-class ScriptedOrchestrator:
-    def __init__(self, result_factory: Callable | None = None) -> None:
-        self.calls: list[tuple[object, str, object]] = []
-        self.result_factory = result_factory or _committed
-        self.results: deque[Callable] = deque()
-
-    async def execute(self, command, *, session_id: str, run):
-        self.calls.append((command, session_id, run))
-        factory = self.results.popleft() if self.results else self.result_factory
-        return factory(run)
-
-
-def _committed(run):
-    return ApplicationCommitted(run_id=run.run_id, state_version=1, artifact=natal_sample())
-
-
-def _input_required(run, *, field: str = "birth.place", code: str = "INVALID",
-                    constraints: dict | None = None):
-    return ApplicationInputRequired(
-        run_id=run.run_id,
-        state_version=0,
-        issues=(Issue(field=field, code=code, constraints=constraints),),
-        user_message=describe_failure(kind="input_required").user_message,
-    )
 
 
 def _headers(response) -> None:
@@ -554,7 +503,7 @@ async def test_calendar_valid_domain_dates_reach_application_as_typed_issues(
         assert len(orchestrator.calls) == 2
 
 
-async def test_valid_ephemeris_boundary_dates_reach_real_resolver_after_schema(
+async def test_valid_ephemeris_boundary_dates_reach_stub_resolver_after_schema(
     app_client, sqlite_restart, utc_clock
 ) -> None:
     resolver = StubBirthDataResolver(InputRequired(
@@ -612,53 +561,8 @@ async def test_input_required_keeps_typed_issues_and_renews_cookie(
         assert response.json()["state_version"] == 0
         assert response.json()["issues"][0]["field"] == field
         assert response.json()["issues"][0]["code"] == code
-        assert response.headers.get_list("set-cookie") != []
+        assert issued_cookie(response) == COOKIE.split("=", 1)[1]
         assert len(orchestrator.calls) == 1
-
-
-def _application_failure(kind: str, run):
-    if kind in {"resolution_retryable", "resolution_terminal"}:
-        retryable = kind == "resolution_retryable"
-        detail = "PLACE_CATALOG_UNAVAILABLE" if retryable else "TIMEZONE_DATA_INVALID"
-        reaction = describe_failure(
-            kind="resolution_unavailable", error_code=detail, retryable=retryable
-        )
-        return ApplicationResolutionFailure(
-            run_id=run.run_id, state_version=0, detail_code=detail,
-            user_message=reaction.user_message, retryable=retryable,
-        )
-    if kind in {"ephemeris", "calculation_terminal"}:
-        detail = "EPHEMERIS_UNAVAILABLE" if kind == "ephemeris" else "HOUSES_DEGENERATE"
-        reaction = describe_failure(kind="calculation_failed", error_code=detail)
-        return ApplicationCalculationFailure(
-            run_id=run.run_id, state_version=0, detail_code=detail,
-            user_message=reaction.user_message, retryable=reaction.retryable,
-        )
-    if kind == "read":
-        detail = "SESSION_SQLITE_READ_FAILED"
-        reaction = describe_failure(kind="state_read_failed", error_code=detail)
-        return ApplicationStateReadFailure(
-            run_id=run.run_id, detail_code=detail, user_message=reaction.user_message
-        )
-    if kind == "commit":
-        detail = "SESSION_SQLITE_WRITE_FAILED"
-        reaction = describe_failure(kind="state_commit_failed", error_code=detail)
-        return ApplicationStateCommitFailure(
-            run_id=run.run_id, detail_code=detail, user_message=reaction.user_message
-        )
-    if kind in {"unregistered", "internal_loaded"}:
-        if kind == "unregistered":
-            return ApplicationInternalFailure(
-                run_id=run.run_id, handler_status="NOT_STARTED",
-                context_status="NOT_ACCESSED", code="HANDLER_NOT_REGISTERED",
-                user_message=describe_failure(kind="handler_not_registered").user_message,
-            )
-        return ApplicationInternalFailure(
-            run_id=run.run_id, handler_status="UNEXPECTED_FAILURE",
-            context_status="LOADED", code="INTERNAL_FAILURE", state_version=0,
-            user_message=describe_failure(kind="internal_failure").user_message,
-        )
-    raise AssertionError(kind)
 
 
 @pytest.mark.parametrize("kind,status,public_code,detail,retryable,cookie", (
@@ -687,7 +591,10 @@ async def test_application_typed_failures_keep_allowed_fields_and_cookie_policy(
         )
         assert body["user_message"] == _application_failure(kind, orchestrator.calls[0][2]).user_message
         assert all(name not in body for name in ("orch_status", "handler_status", "context_status", "run_id"))
-        assert (response.headers.get_list("set-cookie") != []) == (cookie == "renew")
+        if cookie == "renew":
+            assert issued_cookie(response) == COOKIE.split("=", 1)[1]
+        else:
+            assert response.headers.get_list("set-cookie") == []
         _headers(response)
         control = await client.post("/charts/natal", json=VALID_BUILD,
                                     headers={"Cookie": COOKIE})

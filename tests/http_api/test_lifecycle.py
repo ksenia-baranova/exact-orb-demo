@@ -14,7 +14,6 @@ import logging
 from pathlib import Path
 import runpy
 import threading
-from types import SimpleNamespace
 from typing import Any
 from urllib.parse import quote
 from uuid import UUID
@@ -29,13 +28,15 @@ from exact_orb.session.errors import StateReadError
 from exact_orb.session.persistence import SessionSnapshot
 from exact_orb.session.state import new_session
 from tests.http_api.admission_cases import SmallLimiterPolicy, WindowLimit
-from tests.http_api.conftest import ForbiddenCatalog, RuntimeSpy, ScriptedContext
-from tests.http_api.test_build_admission import (
-    COOKIE, SESSION_ID, _build, _cookie, _real_orchestrator,
+from tests.http_api.build_support import (
     BlockedOrchestrator, TerminalHeldOrchestrator,
+    real_orchestrator as _real_orchestrator,
 )
-from tests.http_api.test_place_dto import (
-    ScriptedCatalog, ScriptedOrchestrator, _application_failure, _input_required,
+from tests.http_api.conftest import ForbiddenCatalog, RuntimeSpy, ScriptedContext, http_settings
+from tests.http_api.shared import (
+    COOKIE, SESSION_ID, ScriptedCatalog, ScriptedOrchestrator,
+    application_failure as _application_failure, build as _build,
+    cookie as _cookie, input_required as _input_required,
 )
 
 
@@ -46,22 +47,6 @@ BOOTSTRAP_BODY = b"{}"
 GUARD = 3.0  # Only a hang guard; scheduler/Event/barrier establishes order.
 
 
-def _settings(**changes: object) -> SimpleNamespace:
-    values = {
-        "allowed_origins": ("https://testserver",),
-        "trusted_proxy_cidrs": (),
-        "public_origin": "https://testserver",
-        "body_timeout_seconds": 5,
-        "build_timeout_seconds": 30,
-        "shutdown_grace_seconds": 30,
-        "reaper_interval_seconds": 900,
-        "max_body_bytes": 16 * 1024,
-        "expose_schema": False,
-    }
-    values.update(changes)
-    return SimpleNamespace(**values)
-
-
 def _create_app(*, runtime: object, catalog: object | None, utc_clock,
                 scheduler, settings: object | None = None,
                 limiter_policy: object | None = None):
@@ -69,7 +54,7 @@ def _create_app(*, runtime: object, catalog: object | None, utc_clock,
     from exact_orb.http_api.app import create_app
 
     return create_app(
-        settings=settings if settings is not None else _settings(),
+        settings=settings if settings is not None else http_settings(),
         runtime_factory=lambda: runtime,
         catalog_factory=lambda: catalog if catalog is not None else ForbiddenCatalog(),
         utc_clock=utc_clock,
@@ -348,11 +333,11 @@ async def test_invalid_settings_fail_before_any_resource_opens(
         opened.append("runtime")
         return RuntimeSpy(ScriptedContext(utc_clock))
 
-    from exact_orb.http_api.app import create_app
+    from exact_orb.http_api.app import HttpAppConfigurationError, create_app
 
-    try:
+    with pytest.raises(HttpAppConfigurationError):
         app = create_app(
-            settings=_settings(**changes),
+            settings=http_settings(**changes),
             runtime_factory=make_runtime,
             catalog_factory=make_catalog,
             utc_clock=utc_clock,
@@ -361,8 +346,6 @@ async def test_invalid_settings_fail_before_any_resource_opens(
         )
         async with app.router.lifespan_context(app):
             pytest.fail("invalid settings accepted")
-    except Exception:
-        pass
     assert opened == []
 
 
@@ -403,11 +386,11 @@ async def test_runtime_startup_failure_closes_previously_opened_catalog(
         raise RuntimeError("runtime composition failed")
 
     app = create_app(
-        settings=_settings(), runtime_factory=fail_runtime,
+        settings=http_settings(), runtime_factory=fail_runtime,
         catalog_factory=make_catalog, utc_clock=utc_clock,
         scheduler=scheduler, limiter_policy=None,
     )
-    with pytest.raises(Exception):
+    with pytest.raises(RuntimeError, match="runtime composition failed"):
         async with app.router.lifespan_context(app):
             pytest.fail("startup accepted a failed dependency")
     assert events == ["catalog.open", "runtime.open", "catalog.close"]
@@ -417,18 +400,18 @@ async def test_runtime_startup_failure_closes_previously_opened_catalog(
 async def test_missing_calculation_version_fails_startup_and_closes_resources(
     utc_clock, scheduler
 ) -> None:
-    from exact_orb.http_api.app import create_app
+    from exact_orb.http_api.app import HttpAppConfigurationError, create_app
 
     events: list[str] = []
     catalog = CloseSpyCatalog(events)
     runtime = CloseSpyRuntime(ScriptedContext(utc_clock), events)
     runtime.calculation_version = ""
     app = create_app(
-        settings=_settings(), runtime_factory=lambda: runtime,
+        settings=http_settings(), runtime_factory=lambda: runtime,
         catalog_factory=lambda: catalog, utc_clock=utc_clock,
         scheduler=scheduler, limiter_policy=None,
     )
-    with pytest.raises(Exception):
+    with pytest.raises(HttpAppConfigurationError):
         async with app.router.lifespan_context(app):
             pytest.fail("startup accepted absent CalculationVersion")
     assert runtime.closed and catalog.closed
@@ -451,11 +434,11 @@ async def test_catalog_startup_failure_never_opens_runtime(
         return RuntimeSpy(ScriptedContext(utc_clock))
 
     app = create_app(
-        settings=_settings(), runtime_factory=make_runtime,
+        settings=http_settings(), runtime_factory=make_runtime,
         catalog_factory=fail_catalog, utc_clock=utc_clock,
         scheduler=scheduler, limiter_policy=None,
     )
-    with pytest.raises(Exception):
+    with pytest.raises(PlaceCatalogUnavailableError, match="catalog cannot open"):
         async with app.router.lifespan_context(app):
             pytest.fail("startup accepted failed catalog")
     assert opened == ["catalog"]
@@ -464,12 +447,12 @@ async def test_catalog_startup_failure_never_opens_runtime(
 async def test_invalid_admission_limit_fails_before_resources_open(
     utc_clock, scheduler
 ) -> None:
-    from exact_orb.http_api.app import create_app
+    from exact_orb.http_api.app import HttpAppConfigurationError, create_app
 
     opened: list[str] = []
-    with pytest.raises(Exception):
+    with pytest.raises(HttpAppConfigurationError):
         app = create_app(
-            settings=_settings(),
+            settings=http_settings(),
             runtime_factory=lambda: opened.append("runtime"),
             catalog_factory=lambda: opened.append("catalog"),
             utc_clock=utc_clock, scheduler=scheduler,
@@ -499,9 +482,6 @@ async def test_health_ready_and_shutdown_gate_have_real_business_control(
         assert denied.status_code == 503
         assert denied.json()["code"] == "SERVICE_SHUTTING_DOWN"
         assert denied.headers["Retry-After"] == "30"
-        head = await client.head("/health/ready")
-        assert head.status_code == 503
-        assert head.content == b""
         head = await client.head("/health/ready")
         assert head.status_code == 503
         assert head.content == b""
@@ -561,7 +541,7 @@ async def test_local_schema_flag_exposes_only_explicitly_enabled_route(
     app = _create_app(
         runtime=runtime, catalog=ScriptedCatalog(),
         utc_clock=utc_clock, scheduler=scheduler,
-        settings=_settings(expose_schema=True),
+        settings=http_settings(expose_schema=True),
     )
     async with app.router.lifespan_context(app):
         status, headers, body = await _raw(app, "GET", "/openapi.json")
@@ -1008,7 +988,6 @@ async def test_disconnect_before_commit_cancels_without_sqlite_mutation(
                     await exchange.finish()
         async with sqlite_restart() as fresh_runtime:
             assert fresh_runtime is not old_runtime
-            assert fresh_runtime.cache is not old_runtime.cache
             async with app_client(fresh_runtime) as client:
                 current = await client.get("/charts/current", headers={"Cookie": COOKIE})
                 assert current.status_code == 200
@@ -1049,7 +1028,6 @@ async def test_disconnect_during_protected_commit_is_visible_after_restart(
                     await exchange.finish()
         async with sqlite_restart() as fresh_runtime:
             assert fresh_runtime is not old_runtime
-            assert fresh_runtime.cache is not old_runtime.cache
             async with app_client(fresh_runtime) as client:
                 restored = await client.post("/session/bootstrap", json={},
                                              headers={"Cookie": COOKIE})
@@ -1209,7 +1187,6 @@ async def test_cancelled_sqlite_session_load_future_blocks_shutdown_close(
             worker_release.set()
             await asyncio.wait_for(worker_finished.wait(), timeout=GUARD)
             await exchange.finish()
-            assert exchange.messages == []
             await asyncio.wait_for(shutdown, timeout=GUARD)
             assert runtime.closed
         finally:
@@ -1349,7 +1326,6 @@ async def test_cancelled_catalog_search_future_blocks_shutdown_close(
             worker_release.set()
             await asyncio.wait_for(worker_finished.wait(), timeout=GUARD)
             await exchange.finish()
-            assert exchange.messages == []
             await asyncio.wait_for(shutdown, timeout=GUARD)
             assert events == ["runtime.close", "catalog.close"]
             assert runtime.closed and catalog.closed

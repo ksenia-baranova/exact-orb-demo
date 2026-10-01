@@ -16,6 +16,22 @@
 immutable policy разрешена только в тестах. Конкретные внутренние типы
 фабрик и модулей уточняются в промте 05 без изменения этих точек инъекции.
 
+Общий тестовый построитель `http_settings(**changes)` в `tests/http_api/conftest.py`
+передаёт всем app-сценариям одинаковые значения: `allowed_origins=("https://testserver",)`,
+`trusted_proxy_cidrs=()`, `public_origin="https://testserver"`,
+`body_timeout_seconds=5`, `build_timeout_seconds=30`,
+`shutdown_grace_seconds=30`, `reaper_interval_seconds=900`,
+`max_body_bytes=16 * 1024`, `expose_schema=False`. Отдельные тесты меняют
+только явно названные поля. Это тестовые значения, не новый набор
+production defaults. Недопустимые app settings и limiter policy дают
+типизированный `HttpAppConfigurationError(ValueError)` до открытия ресурсов;
+исключение из вызываемой фабрики после cleanup сохраняет свой тип.
+
+Чистый ChartDTO projector при нарушении ссылочной целостности аспекта выдаёт
+`ChartProjectionError(ValueError)`; HTTP boundary превращает его в безопасный
+`500 INTERNAL_FAILURE`. Это тестовый контракт ошибки projector, не новое
+публичное поле ответа.
+
 `tests/http_api/conftest.py` предоставляет fixture для фабрики приложения,
 HTTPS ASGI-клиента, raw ASGI receive/peer/headers, UTC clock, управляемого
 monotonic scheduler и отдельного persistent SQLite restart harness. Импорт

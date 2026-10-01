@@ -26,6 +26,22 @@ from tests.fixtures.calculation import VERSION
 NOW = datetime(2026, 9, 30, 12, 0, tzinfo=timezone.utc)
 
 
+def http_settings(**changes: object) -> SimpleNamespace:
+    values = {
+        "allowed_origins": ("https://testserver",),
+        "trusted_proxy_cidrs": (),
+        "public_origin": "https://testserver",
+        "body_timeout_seconds": 5,
+        "build_timeout_seconds": 30,
+        "shutdown_grace_seconds": 30,
+        "reaper_interval_seconds": 900,
+        "max_body_bytes": 16 * 1024,
+        "expose_schema": False,
+    }
+    values.update(changes)
+    return SimpleNamespace(**values)
+
+
 class UtcClock:
     def __init__(self) -> None:
         self.value = NOW
@@ -184,11 +200,7 @@ def app_client(utc_clock: UtcClock, scheduler: ManualScheduler):
         # remain independent of the as-yet absent transport package.
         from exact_orb.http_api.app import create_app
 
-        settings = SimpleNamespace(
-            allowed_origins=("https://testserver",),
-            trusted_proxy_cidrs=trusted_proxy_cidrs,
-            public_origin="https://testserver",
-        )
+        settings = http_settings(trusted_proxy_cidrs=trusted_proxy_cidrs)
         app = create_app(
             settings=settings,
             runtime_factory=lambda: runtime,

@@ -21,7 +21,9 @@ from exact_orb.engine.ephemeris.types import ZodiacPosition
 from exact_orb.session.state import new_session
 from tests.application.stubs import StubBirthDataResolver, StubChartArtifactPort
 from tests.fixtures.calculation import run_context
-from tests.http_api.chart_samples import cosmogram_sample, natal_sample
+from tests.http_api.chart_samples import (
+    cosmogram_sample, cosmogram_with_excluded_aspects, natal_sample,
+)
 from tests.http_api.conftest import NOW
 
 
@@ -66,6 +68,19 @@ def test_chart_dto_exact_golden_and_no_internal_fields(kind: str, sample) -> Non
     )
     rendered = json.dumps(result)
     assert all(f'"{field}"' not in rendered for field in forbidden)
+
+
+def test_cosmogram_excluded_aspects_remain_private() -> None:
+    artifact = cosmogram_with_excluded_aspects()
+    excluded = artifact.chart.time_uncertainty.excluded_aspects
+    assert excluded
+    result = _project(artifact)
+    rendered_pairs = {frozenset((item["from"], item["to"]))
+                      for item in result["aspects"]}
+    for aspect in excluded:
+        pair = frozenset((aspect.from_point.body, aspect.to_point.body))
+        assert pair not in rendered_pairs
+    assert "excluded_aspects" not in json.dumps(result)
 
 
 def test_all_published_point_ids_have_fixed_order_and_12_sign_dictionary() -> None:
@@ -137,7 +152,9 @@ def test_invalid_aspect_owner_or_endpoint_is_refused_with_valid_control(
 
     from exact_orb.http_api.projectors import project_chart
 
-    with pytest.raises(Exception):
+    from exact_orb.http_api.projectors import ChartProjectionError
+
+    with pytest.raises(ChartProjectionError):
         project_chart(altered)
     assert _project(original) == GOLDEN["natal"]
 
