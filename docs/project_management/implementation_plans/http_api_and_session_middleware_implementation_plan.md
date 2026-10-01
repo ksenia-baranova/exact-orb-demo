@@ -170,3 +170,50 @@ session перед IP, сутки перед часом. Ни отказ 429, н
 неизвестном времени, не раскрывает noon anchor; дату/время/id берёт из
 `birth_input`, resolved имя/timezone из `birth_resolved`. Эти решения не зависят
 от S0. G0 и промты 01/03/07/10 задают проверки до реализации.
+
+## 10. Промт 01 — test-only RED evidence (2026-10-01)
+
+Добавлены `tests/http_api/conftest.py`, `test_session.py` и golden
+`golden/session_view.json`. Production-код HTTP не менялся. Прямое поручение
+пользователя выполнить промт 01 позволило подготовить тесты при открытом Gate A;
+формальный Gate A, G0 review и Gate T этим не объявляются закрытыми.
+
+| Тест / набор | AS и требование | Ожидаемая причина RED сейчас | GREEN-промт |
+| --- | --- | --- | --- |
+| `test_first_bootstrap_then_empty_current_has_exact_cookie_and_no_calculation` | 01; §5, §6.1–6.2, §12 | Нет app factory/routes; позже до 13 остаётся `http_cookie_replaced(missing)` | 05, 08, 10, 13 |
+| `test_restart_uses_same_sqlite_file_with_new_runtime_and_empty_cache` | 02; §6.1–6.2, ADR-0041 | Нет app factory/routes; SQLite harness и два отдельных runtime готовы | 05, 07–08 |
+| `test_current_projects_stale_unavailable_or_empty_without_mutation` | 03; §6.2 | Нет app/current projector; ERROR-событие остаётся до 13 | 07–08, 13 |
+| `test_structural_sqlite_chart_corruption_is_503_not_unavailable` | 03; §6.2 | Нет app/current mapping; реальный SQLite повреждается удалением child row | 05, 08 |
+| `test_absent_current_clears_cookie_and_bootstrap_replaces_it` | 04; §5, §6.1–6.2 | Нет cookie/current/bootstrap routes | 06, 08 |
+| `test_state_read_failure_preserves_cookie_and_never_creates_session` | 04; §5, §6.1–6.2 | Нет typed error mapping/routes | 08 |
+| `test_absent_cookie_is_cleared_even_when_bootstrap_creation_fails` | 04; §5, §6.1 | Нет creation route/admission; старую cookie требуется погасить при 429/503 | 08, 10 |
+| `test_missing_invalid_or_duplicate_cookie_requires_session_for_current` | 05; §4.1, §5 | Нет raw cookie validation/current route | 06, 08 |
+| `test_duplicate_raw_cookie_is_replaced_by_bootstrap_without_loading_it`, `test_invalid_cookie_bootstrap_creates_fresh_id_without_load` | 05; §4.1, §5 | Нет raw cookie validation/bootstrap route | 06, 08 |
+| `test_live_bootstrap_does_not_project_unavailable_chart` | 01, 03; §6.1–6.2 | Нет bootstrap/current routes; bootstrap должен возвращать только liveness/version | 08 |
+| `test_three_id_conflicts_stop_without_foreign_load_or_fourth_id`, `test_create_storage_failure_does_not_issue_cookie_and_success_is_control` | 06; §6.1 | Нет insert-only creation/retry mapping | 08 |
+| `test_creation_rolling_hour_limit_restore_and_exact_expiry_boundary` | 07; §6.1, §9.1 | Нет create limiter; monotonic boundary задаётся вручную | 10 |
+| `test_collision_attempts_consume_one_creation_quota_for_http_request` | 06–07; §6.1, §9.1 | Нет retry/create limiter; две collision внутри 300-го HTTP-запроса не должны тратить отдельные quota | 08, 10 |
+| `test_session_view_birth_golden_exact_whitelist` | 28; §7.1 | Нет чистой birth projection и HTTP DTO; ChartDTO полностью фиксируется промтом 02 | 07–08; ChartDTO — 02/07 |
+| `test_invalid_saved_birth_projection_is_safe_500_with_renew_and_success_control` | 28; §6.2, §7.1 | Нет projector и safe 500 mapping | 07–08 |
+
+Независимые `test_chart_fixture_has_distinct_ready_and_unavailable_pure_views`,
+`test_scheduler_is_manually_advanced_without_wall_time` и
+`test_sqlite_restart_harness_preserves_chart_without_http` подтверждают
+входные snapshots, единый управляемый scheduler и реальное сохранение карты
+через два последовательных SQLite runtime без HTTP.
+Все app-зависимые тесты импортируют `create_app` внутри fixture; одинаковый
+`ModuleNotFoundError` сейчас является только признаком отсутствующего transport,
+а не доказательством HTTP-поведения. Тесты содержат отдельные позитивные
+контроли и перечисленные выше наблюдаемые assertions для будущего GREEN.
+
+Фактические проверки на 2026-10-01:
+
+| Команда | Результат |
+| --- | --- |
+| `python -m pytest tests/http_api/test_session.py::test_chart_fixture_has_distinct_ready_and_unavailable_pure_views tests/http_api/test_session.py::test_scheduler_is_manually_advanced_without_wall_time tests/http_api/test_session.py::test_sqlite_restart_harness_preserves_chart_without_http -q -p no:cacheprovider` | 3 passed |
+| `python -m pytest tests/http_api/test_session.py -q --tb=no -p no:cacheprovider` | 3 passed, 28 failed (ожидаемый RED: transport package отсутствует; отдельный запуск с `--tb=line` показал `ModuleNotFoundError: No module named 'exact_orb.http_api'` у app-зависимых тестов) |
+| `python -m compileall -q tests/http_api` | exit 0 |
+| `git diff --check` | exit 0; Git предупредил о штатной нормализации LF → CRLF в working copy плана |
+
+Полный `pytest`, связанные component suites и PlantUML rendering на этом
+test-only RED-срезе не запускались. Tester review исполняемых тестов не проведён.

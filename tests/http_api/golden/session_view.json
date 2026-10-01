@@ -1,0 +1,69 @@
+{
+  "empty": {
+    "status": "empty",
+    "state_version": 0,
+    "birth": null,
+    "chart": null,
+    "chart_stale": null
+  },
+  "known_ready": {
+    "status": "chart_ready",
+    "state_version": 1,
+    "birth": {
+      "birth_date": "1960-09-02",
+      "birth_time": "14:30",
+      "place": {"place_id": "524901", "display_name": "Moscow"},
+      "tz_id": "Europe/Moscow",
+      "utc_offset_seconds": 14400,
+      "time_unknown": false,
+      "warnings": [{"source": "time", "code": "pre_1970_offset_unverified"}]
+    },
+    "chart": "<ChartDTO>",
+    "chart_stale": false
+  },
+  "known_unavailable": {
+    "status": "chart_unavailable",
+    "state_version": 1,
+    "birth": {
+      "birth_date": "1960-09-02",
+      "birth_time": "14:30",
+      "place": {"place_id": "524901", "display_name": "Moscow"},
+      "tz_id": "Europe/Moscow",
+      "utc_offset_seconds": 14400,
+      "time_unknown": false,
+      "warnings": [{"source": "time", "code": "pre_1970_offset_unverified"}]
+    },
+    "chart": null,
+    "chart_stale": null
+  },
+  "unknown_ready": {
+    "status": "chart_ready",
+    "state_version": 1,
+    "birth": {
+      "birth_date": "1990-09-02",
+      "birth_time": null,
+      "place": {"place_id": "524901", "display_name": "Moscow"},
+      "tz_id": "Europe/Moscow",
+      "utc_offset_seconds": null,
+      "time_unknown": true,
+      "warnings": []
+    },
+    "chart": "<ChartDTO>",
+    "chart_stale": false
+  },
+  "unknown_unavailable": {
+    "status": "chart_unavailable",
+    "state_version": 1,
+    "birth": {
+      "birth_date": "1990-09-02",
+      "birth_time": null,
+      "place": {"place_id": "524901", "display_name": "Moscow"},
+      "tz_id": "Europe/Moscow",
+      "utc_offset_seconds": null,
+      "time_unknown": true,
+      "warnings": []
+    },
+    "chart": null,
+    "chart_stale": null
+  }
+}
