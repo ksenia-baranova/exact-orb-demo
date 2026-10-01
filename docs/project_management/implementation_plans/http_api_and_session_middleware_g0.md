@@ -1,6 +1,6 @@
 # G0 — контракт тестового шва HTTP API
 
-**Статус:** проект решения Developer для review Tester; Gate A не закрыт.
+**Статус:** действующий тестовый шов; уточнён промтом 07a после независимого ревью другой моделью. Обязательный Tester review отменён пользователем.
 **Ветка:** `dev/http-api-and-session-middleware`.
 **Основание:** [implementation plan](http_api_and_session_middleware_implementation_plan.md) §4,
 [HTTP requirements](../../requirements/http_api.md) §7.1, §9.1, §13.
@@ -10,11 +10,13 @@
 Публичная точка сборки — `exact_orb.http_api.app.create_app`. Для тестового
 шва её вызывают с именованными параметрами `settings`, `runtime_factory`,
 `catalog_factory`, `utc_clock`, `scheduler`, `limiter_policy=None`. Фабрики
-без аргументов возвращают готовые runtime и каталог при входе в lifespan;
-`runtime_factory` может замыкать открытый каталог. Отсутствующая
+вызываются при входе в lifespan: `catalog_factory() -> catalog | Awaitable[catalog]`,
+затем `runtime_factory(catalog) -> runtime | Awaitable[runtime]`. В runtime
+передаётся тот же открытый каталог, который используют HTTP-маршруты;
+владельцем его закрытия остаётся lifespan. Отсутствующая
 `limiter_policy` означает утверждённые production defaults §9.1; переданная
-immutable policy разрешена только в тестах. Конкретные внутренние типы
-фабрик и модулей уточняются в промте 05 без изменения этих точек инъекции.
+immutable policy разрешена только в тестах. Сигнатура runtime factory
+уточнена после независимого ревью промтов 05–07; компонентные API не менялись.
 
 Общий тестовый построитель `http_settings(**changes)` в `tests/http_api/conftest.py`
 передаёт всем app-сценариям одинаковые значения: `allowed_origins=("https://testserver",)`,
@@ -76,8 +78,9 @@ golden не меняются. Промт 03 фиксирует порядок о
 
 ## Условие завершения G0
 
-Tester сверяет этот тестовый шов с контрактом, таблицу причин RED, независимые
-unit-срезы и позитивные контроли. Одинаковый setup failure app-зависимых
+Исторически Tester должен был сверить этот тестовый шов с контрактом, таблицу
+причин RED, независимые unit-срезы и позитивные контроли; обязательный review
+пользователь отменил. Одинаковый setup failure app-зависимых
 тестов до промта 05 не считается достаточным RED evidence.
-Результат review и закрытие G0 записываются в журнале change; наличие этой
-карточки само по себе не закрывает Gate A и не доказывает реализацию.
+Фактические изменения и проверки G0 записываются в implementation plan;
+наличие этой карточки само по себе не доказывает реализацию.

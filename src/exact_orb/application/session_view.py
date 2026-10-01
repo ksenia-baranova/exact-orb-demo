@@ -44,7 +44,11 @@ class SessionBirthWarning:
 
 @dataclass(frozen=True, slots=True)
 class SessionBirthView:
-    """Birth facts from one saved snapshot, without transport types or I/O."""
+    """Saved birth facts from one snapshot, without transport types or I/O.
+
+    For unknown time, the saved offset belongs to the technical noon anchor;
+    the public HTTP projector suppresses it.
+    """
 
     birth_date: date
     birth_time: time | None

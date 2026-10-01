@@ -31,6 +31,7 @@ from exact_orb.session.persistence import SessionSnapshot
 from exact_orb.session.state import StateDelta, apply_delta, new_session
 from tests.fixtures.calculation import VERSION, artifact, chart_spec, resolved_birth_data
 from tests.fixtures.stored_chart import stored_chart_for
+from tests.http_api.chart_samples import natal_sample
 from tests.http_api.conftest import NOW, RuntimeSpy, ScriptedContext, UtcClock
 from tests.http_api.shared import (
     cleared_cookie as _cleared_cookie, issued_cookie as _issued_cookie,
@@ -79,6 +80,16 @@ def _snapshot(session_id: str, *, known: bool, unavailable: bool = False) -> Ses
         })
         spec = chart_spec(chart_kind="cosmogram")
     chart = artifact(spec=spec, resolved=resolved)
+    if known:
+        # The generic calculation fixture omits houses and angles. A ready
+        # natal HTTP chart needs the public fields supplied by a validated sample.
+        sample = natal_sample().chart
+        chart = artifact(
+            spec=spec, resolved=resolved,
+            chart=chart.chart.model_copy(update={
+                "angles": sample.angles, "cusps": sample.cusps,
+            }),
+        )
     stored = stored_chart_for(chart)
     if unavailable:
         stored = stored.model_copy(update={"payload_format": 99})
@@ -444,6 +455,27 @@ async def test_invalid_cookie_bootstrap_creates_fresh_id_without_load(
     _assert_no_read_side_effects(runtime)
 
 
+@pytest.mark.parametrize("header", (
+    _cookie("invalid"), f"{_cookie()}; {_cookie('B' * 43)}",
+))
+async def test_bootstrap_create_failure_clears_invalid_or_duplicate_cookie(
+    header: str, app_client, runtime: RuntimeSpy, context: ScriptedContext,
+) -> None:
+    context.create_results.append(StateCommitFailed(error_code="SESSION_SQLITE_WRITE_FAILED"))
+    async with app_client(runtime) as client:
+        failed = await client.post("/session/bootstrap", json={}, headers={"Cookie": header})
+        assert failed.status_code == 503
+        assert failed.json()["code"] == "SESSION_CREATE_FAILED"
+        _cleared_cookie(failed)
+        assert len(context.create_calls) == 1
+        assert context.load_calls == []
+        client.cookies.clear()
+        succeeded = await client.post("/session/bootstrap", json={})
+        assert succeeded.status_code == 200
+        assert _issued_cookie(succeeded) == context.create_calls[-1]
+    _assert_no_read_side_effects(runtime)
+
+
 async def test_live_bootstrap_does_not_project_unavailable_chart(
     app_client, runtime: RuntimeSpy, context: ScriptedContext
 ) -> None:
@@ -572,7 +604,7 @@ async def test_session_view_birth_golden_exact_whitelist(
 
 @pytest.mark.parametrize("defect", ("unknown_flag", "nonzero_seconds"))
 async def test_invalid_saved_birth_projection_is_safe_500_with_renew_and_success_control(
-    defect: str, app_client, runtime: RuntimeSpy, context: ScriptedContext
+    defect: str, app_client, runtime: RuntimeSpy, context: ScriptedContext, caplog
 ) -> None:
     valid = _snapshot(COOKIE_VALUE, known=True)
     bad_birth = valid.state.birth_input.model_copy(update={
@@ -586,6 +618,11 @@ async def test_invalid_saved_birth_projection_is_safe_500_with_renew_and_success
         assert failed.json()["code"] == "INTERNAL_FAILURE"
         assert failed.json()["retryable"] is False
         assert _issued_cookie(failed) == COOKIE_VALUE
+        assert any(
+            "http_unhandled_exception" in record.getMessage()
+            and f"request_id={failed.headers['X-Request-ID']}" in record.getMessage()
+            for record in caplog.records
+        )
         context.snapshots[COOKIE_VALUE] = valid
         successful = await client.get("/charts/current", headers={"Cookie": _cookie()})
         assert successful.status_code == 200

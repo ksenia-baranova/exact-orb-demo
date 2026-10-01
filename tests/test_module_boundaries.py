@@ -1496,6 +1496,35 @@ def test_application_build_natal_declares_no_forbidden_direct_imports() -> None:
     )
 
 
+def test_http_api_and_application_keep_direct_import_boundaries() -> None:
+    """HTTP avoids leaf adapters; application never imports the HTTP transport."""
+
+    http_files = sorted((PACKAGE_ROOT / "http_api").rglob("*.py"))
+    application_files = sorted((PACKAGE_ROOT / "application").rglob("*.py"))
+    assert http_files and application_files
+    assert "exact_orb.engine.ephemeris.types" in _declared_imports(
+        PACKAGE_ROOT / "http_api" / "projectors.py"
+    ), "positive control: projector imports the allowed ephemeris value types"
+
+    http_forbidden = (
+        "exact_orb.swiss_backend", "exact_orb.session.adapters",
+        "exact_orb.birth.adapters",
+    )
+    violations = sorted(
+        f"{_module_name(path)} -> {imported}"
+        for path in http_files
+        for imported in _declared_imports(path)
+        if any(_violates(imported, forbidden) for forbidden in http_forbidden)
+    )
+    violations.extend(sorted(
+        f"{_module_name(path)} -> {imported}"
+        for path in application_files
+        for imported in _declared_imports(path)
+        if _violates(imported, "exact_orb.http_api")
+    ))
+    assert not violations, "Запрещённые прямые импорты:\n" + "\n".join(violations)
+
+
 def test_application_results_declares_allowed_calculation_types_import() -> None:
     """The result contract intentionally embeds the runtime ChartArtifact type."""
 

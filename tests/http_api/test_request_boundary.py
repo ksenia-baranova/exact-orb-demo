@@ -46,7 +46,7 @@ def probe(utc_clock, scheduler):
         runtime = RuntimeSpy(ScriptedContext(utc_clock))
         app = create_app(
             settings=http_settings(trusted_proxy_cidrs=trusted_proxy_cidrs),
-            runtime_factory=lambda: runtime,
+            runtime_factory=lambda opened_catalog: runtime,
             catalog_factory=ForbiddenCatalog,
             utc_clock=utc_clock,
             scheduler=scheduler,
@@ -76,6 +76,23 @@ def probe(utc_clock, scheduler):
         app.add_api_route("/_probe/places", route(query_kind="places"),
                           methods=["GET"], include_in_schema=False)
         app.add_api_route("/_probe/current", route(cookie_mode="required"),
+                          methods=["GET"], include_in_schema=False)
+
+        async def crash(_request: Request):
+            raise RuntimeError("private failure detail")
+
+        async def crash_after_prepare(request: Request):
+            prepared = await app.state.request_boundary.prepare(request)
+            passed.append(prepared)
+            raise RuntimeError("private late failure detail")
+
+        async def framework_validation(value: int):
+            return {"value": value}
+
+        app.add_api_route("/_probe/crash", crash, methods=["GET"], include_in_schema=False)
+        app.add_api_route("/_probe/crash-after-prepare", crash_after_prepare,
+                          methods=["GET"], include_in_schema=False)
+        app.add_api_route("/_probe/validation", framework_validation,
                           methods=["GET"], include_in_schema=False)
 
         lifespan = app.router.lifespan_context(app)
@@ -108,9 +125,21 @@ async def test_matched_route_uses_server_id_and_resolves_before_boundary(probe) 
         head = await client.head("/_probe/build")
         options = await client.options("/_probe/build")
         assert unknown.status_code == 404
+        assert unknown.json() == {
+            "code": "NOT_FOUND", "detail_code": None,
+            "user_message": "Адрес не найден.", "retryable": False,
+        }
+        assert unknown.headers["Cache-Control"] == "no-store"
+        assert UUID(unknown.headers["X-Request-ID"])
         for response in (wrong_method, head, options):
             assert response.status_code == 405
             assert response.headers["Allow"] == "POST"
+            assert response.headers["Cache-Control"] == "no-store"
+            assert UUID(response.headers["X-Request-ID"])
+        assert wrong_method.json() == {
+            "code": "METHOD_NOT_ALLOWED", "detail_code": None,
+            "user_message": "Метод запроса не поддерживается.", "retryable": False,
+        }
         assert head.content == b""
         assert passed == []
 
@@ -126,6 +155,117 @@ async def test_matched_route_uses_server_id_and_resolves_before_boundary(probe) 
         assert len(passed) == 1
         assert passed[0].body.place_id == "524901"
         assert app.state.request_boundary is not None
+
+
+async def test_unhandled_and_framework_validation_errors_are_safe_with_positive_control(probe) -> None:
+    async with probe() as (_app, client, passed):
+        crashed = await client.get("/_probe/crash")
+        assert crashed.status_code == 500
+        assert crashed.json() == {
+            "code": "INTERNAL_FAILURE", "detail_code": None,
+            "user_message": "Произошла внутренняя ошибка.", "retryable": False,
+        }
+        assert "private failure detail" not in crashed.text
+        invalid = await client.get("/_probe/validation?value=secret")
+        assert invalid.status_code == 422
+        assert invalid.json()["code"] == "INVALID_REQUEST"
+        assert "detail" not in invalid.json()
+        assert "secret" not in invalid.text
+        for response in (crashed, invalid):
+            assert response.headers["Cache-Control"] == "no-store"
+            assert UUID(response.headers["X-Request-ID"])
+        control = await client.get("/_probe/validation?value=7")
+        assert control.status_code == 200
+        assert control.json() == {"value": 7}
+        assert passed == []
+
+
+async def test_late_500_keeps_prepared_request_id_in_response_and_log(probe, caplog) -> None:
+    async with probe() as (_app, client, passed):
+        response = await client.get("/_probe/crash-after-prepare")
+        assert response.status_code == 500
+        assert response.json()["code"] == "INTERNAL_FAILURE"
+        assert len(passed) == 1
+        request_id = passed[0].request_id
+        assert response.headers["X-Request-ID"] == request_id
+        assert any(
+            "http_unhandled_exception" in record.getMessage()
+            and f"request_id={request_id}" in record.getMessage()
+            for record in caplog.records
+        )
+
+
+async def test_post_query_is_rejected_before_cookie_and_positive_body_is_accepted(
+    probe, raw_asgi,
+) -> None:
+    async with probe() as (app, _client, passed):
+        bad = await raw_asgi(
+            app, method="POST", path="/_probe/build", query=b"x=1",
+            headers=[(b"content-type", b"application/json"),
+                     (b"cookie", b"__Host-exact_orb_session=bad")], body=_BUILD,
+        )
+        status, headers, payload = _sent(bad)
+        assert status == 422
+        assert payload["code"] == "INVALID_REQUEST"
+        assert headers["cache-control"] == "no-store"
+        assert passed == []
+        control = await raw_asgi(
+            app, method="POST", path="/_probe/build",
+            headers=list(_POST_HEADERS), body=_BUILD,
+        )
+        assert _sent(control)[0] == 200
+        assert len(passed) == 1
+
+
+@pytest.mark.parametrize("chunks", (
+    [{"type": "http.disconnect"}],
+    [{"type": "http.request", "body": b"{", "more_body": True},
+     {"type": "http.disconnect"}],
+))
+async def test_client_disconnect_does_not_cancel_request_task_or_send_response(
+    chunks, probe, raw_asgi,
+) -> None:
+    async with probe() as (app, _client, passed):
+        sent = await asyncio.wait_for(raw_asgi(
+            app, method="POST", path="/_probe/bootstrap",
+            headers=[(b"content-type", b"application/json")], chunks=chunks,
+        ), timeout=_GUARD)
+        assert sent == []
+        assert asyncio.current_task().cancelling() == 0
+        assert passed == []
+        control = await raw_asgi(
+            app, method="POST", path="/_probe/bootstrap",
+            headers=[(b"content-type", b"application/json")], body=b"{}",
+        )
+        assert _sent(control)[0] == 200
+        assert len(passed) == 1
+
+
+async def test_required_session_invalid_or_duplicate_cookie_is_cleared(probe, raw_asgi) -> None:
+    async with probe() as (app, _client, passed):
+        for headers in (
+            [(b"cookie", b"__Host-exact_orb_session=bad")],
+            [(b"cookie", _COOKIE), (b"cookie", _COOKIE)],
+        ):
+            sent = await raw_asgi(
+                app, method="GET", path="/_probe/current", headers=headers,
+            )
+            status, response_headers, payload = _sent(sent)
+            assert status == 409
+            assert payload["code"] == "SESSION_REQUIRED"
+            cookie = response_headers["set-cookie"].lower()
+            assert "__host-exact_orb_session=" in cookie
+            assert "max-age=0" in cookie
+            assert "secure" in cookie and "httponly" in cookie
+            assert "samesite=lax" in cookie and "path=/" in cookie
+            assert "domain=" not in cookie
+        assert passed == []
+        control = await raw_asgi(
+            app, method="GET", path="/_probe/current",
+            headers=[(b"cookie", _COOKIE)],
+        )
+        assert _sent(control)[0] == 200
+        assert len(passed) == 1
 
 
 @pytest.mark.parametrize("case,status,code", (

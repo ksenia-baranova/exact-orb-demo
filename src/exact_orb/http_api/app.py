@@ -18,10 +18,15 @@ from typing import Any, Protocol, TypeVar
 from urllib.parse import urlsplit
 from uuid import uuid4
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.exceptions import RequestValidationError
+from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.responses import Response
 
-from exact_orb.http_api.request_boundary import RequestBoundary
+from exact_orb.http_api.request_boundary import (
+    BoundaryRejection, ClientDisconnected, RequestBoundary, error_response,
+)
+from exact_orb.http_api.routes.session import router as session_router
 
 
 _LOG = logging.getLogger("exact_orb.http_api")
@@ -55,6 +60,13 @@ class LifecyclePhase(str, Enum):
     SHUTTING_DOWN = "shutting_down"
     UNHEALTHY = "unhealthy"
     STOPPED = "stopped"
+
+
+class _DisconnectedResponse(Response):
+    """Finish the ASGI call after a peer disconnect without sending a response."""
+
+    async def __call__(self, scope: Any, receive: Any, send: Any) -> None:
+        return None
 
 
 @dataclass(frozen=True, slots=True)
@@ -219,7 +231,7 @@ async def _reaper(
 def create_app(
     *,
     settings: object,
-    runtime_factory: Callable[[], Any],
+    runtime_factory: Callable[[Any], Any],
     catalog_factory: Callable[[], Any],
     utc_clock: Callable[[], datetime],
     scheduler: Scheduler,
@@ -241,7 +253,7 @@ def create_app(
         async with AsyncExitStack() as resources:
             catalog = await _open(catalog_factory)
             resources.push_async_callback(catalog.aclose)
-            runtime = await _open(runtime_factory)
+            runtime = await _open(lambda: runtime_factory(catalog))
             resources.push_async_callback(runtime.aclose)
             if not isinstance(getattr(runtime, "calculation_version", None), str) or not runtime.calculation_version:
                 raise HttpAppConfigurationError("runtime requires CalculationVersion")
@@ -271,7 +283,15 @@ def create_app(
                 app.state.shutdown_started.set()
                 _LOG.info("http_shutdown_started")
                 stop_reaper.set()
-                await reaper_task
+                try:
+                    await reaper_task
+                except Exception as exc:
+                    # The task failure was observed by mark_reaper_failure while
+                    # READY; shutdown still has to release its owned resources.
+                    _LOG.warning(
+                        "session_reaper_shutdown_join_failed safe_error=%s",
+                        type(exc).__name__,
+                    )
         app.state.lifecycle_phase = LifecyclePhase.STOPPED
         _LOG.info("http_shutdown_finished outcome=resources_released")
 
@@ -296,6 +316,45 @@ def create_app(
         is_ready=lambda: app.state.lifecycle_phase == LifecyclePhase.READY,
     )
 
+    def request_id_for(request: Request) -> str:
+        request_id = getattr(request.state, "request_id", None)
+        if request_id is None:
+            request_id = str(uuid4())
+            request.state.request_id = request_id
+        return request_id
+
+    def safe_error(request: Request, code: str) -> Response:
+        rejection = BoundaryRejection(code)
+        rejection.request_id = request_id_for(request)
+        return error_response(rejection)
+
+    @app.exception_handler(StarletteHTTPException)
+    async def http_exception(request: Request, exc: StarletteHTTPException) -> Response:
+        if exc.status_code == 404:
+            return safe_error(request, "NOT_FOUND")
+        if exc.status_code == 405:
+            response = safe_error(request, "METHOD_NOT_ALLOWED")
+            for name, value in (exc.headers or {}).items():
+                if name.lower() == "allow":
+                    response.headers["Allow"] = value
+                    break
+            return response
+        return safe_error(request, "INTERNAL_FAILURE")
+
+    @app.exception_handler(RequestValidationError)
+    async def request_validation_exception(request: Request, _exc: RequestValidationError) -> Response:
+        return safe_error(request, "INVALID_REQUEST")
+
+    @app.exception_handler(ClientDisconnected)
+    async def client_disconnected(_request: Request, _exc: ClientDisconnected) -> Response:
+        return _DisconnectedResponse()
+
+    @app.exception_handler(Exception)
+    async def unexpected_exception(request: Request, exc: Exception) -> Response:
+        request_id = request_id_for(request)
+        _LOG.error("http_unhandled_exception request_id=%s safe_error=%s", request_id, type(exc).__name__)
+        return safe_error(request, "INTERNAL_FAILURE")
+
     def health_response(status: int) -> Response:
         return Response(
             status_code=status,
@@ -309,5 +368,7 @@ def create_app(
     @app.api_route("/health/ready", methods=["GET", "HEAD"], include_in_schema=False)
     async def ready() -> Response:
         return health_response(200 if app.state.lifecycle_phase == LifecyclePhase.READY else 503)
+
+    app.include_router(session_router)
 
     return app

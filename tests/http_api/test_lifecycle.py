@@ -55,7 +55,7 @@ def _create_app(*, runtime: object, catalog: object | None, utc_clock,
 
     return create_app(
         settings=settings if settings is not None else http_settings(),
-        runtime_factory=lambda: runtime,
+        runtime_factory=lambda opened_catalog: runtime,
         catalog_factory=lambda: catalog if catalog is not None else ForbiddenCatalog(),
         utc_clock=utc_clock,
         scheduler=scheduler,
@@ -311,6 +311,62 @@ async def test_reaper_waits_from_completion_survives_failures_and_shutdown_waits
             await asyncio.wait_for(shutdown, timeout=GUARD)
 
 
+async def test_reaper_scheduler_failure_does_not_abort_shutdown_cleanup(
+    utc_clock, caplog,
+) -> None:
+    class FailingScheduler:
+        def __init__(self) -> None:
+            self.entered = asyncio.Event()
+            self.release = asyncio.Event()
+
+        def now(self) -> float:
+            return 0.0
+
+        async def wait_until(self, deadline: float) -> None:
+            self.entered.set()
+            await self.release.wait()
+            raise RuntimeError("private scheduler failure")
+
+    class FailureSignal(logging.Handler):
+        def __init__(self) -> None:
+            super().__init__()
+            self.reached = asyncio.Event()
+
+        def emit(self, record: logging.LogRecord) -> None:
+            if record.getMessage().startswith("session_reaper_task_failed "):
+                self.reached.set()
+
+    from exact_orb.http_api.app import LifecyclePhase
+
+    scheduler = FailingScheduler()
+    runtime = RuntimeSpy(ScriptedContext(utc_clock))
+    catalog = ScriptedCatalog()
+    app = _create_app(runtime=runtime, catalog=catalog,
+                      utc_clock=utc_clock, scheduler=scheduler)
+    logger = logging.getLogger("exact_orb.http_api")
+    signal = FailureSignal()
+    logger.addHandler(signal)
+    caplog.set_level(logging.INFO, logger="exact_orb.http_api")
+    lifespan = app.router.lifespan_context(app)
+    try:
+        await lifespan.__aenter__()
+        await asyncio.wait_for(scheduler.entered.wait(), timeout=GUARD)
+        scheduler.release.set()
+        await asyncio.wait_for(signal.reached.wait(), timeout=GUARD)
+        await asyncio.wait_for(lifespan.__aexit__(None, None, None), timeout=GUARD)
+        assert app.state.lifecycle_phase == LifecyclePhase.STOPPED
+        assert runtime.closed and catalog.closed
+        messages = [record.getMessage() for record in caplog.records]
+        assert any(message.startswith("session_reaper_shutdown_join_failed ")
+                   for message in messages)
+        assert any(message == "http_shutdown_finished outcome=resources_released"
+                   for message in messages)
+        assert all("private scheduler failure" not in message for message in messages)
+    finally:
+        scheduler.release.set()
+        logger.removeHandler(signal)
+
+
 @pytest.mark.parametrize("changes", (
     {"public_origin": "http://testserver"},
     {"allowed_origins": ("*",)},
@@ -332,7 +388,7 @@ async def test_invalid_settings_fail_before_any_resource_opens(
         opened.append("catalog")
         return ForbiddenCatalog()
 
-    def make_runtime() -> object:
+    def make_runtime(opened_catalog: object) -> object:
         opened.append("runtime")
         return RuntimeSpy(ScriptedContext(utc_clock))
 
@@ -384,7 +440,8 @@ async def test_runtime_startup_failure_closes_previously_opened_catalog(
         events.append("catalog.open")
         return catalog
 
-    def fail_runtime() -> object:
+    def fail_runtime(opened_catalog: object) -> object:
+        assert opened_catalog is catalog
         events.append("runtime.open")
         raise RuntimeError("runtime composition failed")
 
@@ -413,7 +470,8 @@ async def test_async_runtime_factory_reuses_open_catalog_and_closes_in_reverse_o
         events.append("catalog.open")
         return catalog
 
-    async def make_runtime() -> object:
+    async def make_runtime(opened_catalog: object) -> object:
+        assert opened_catalog is catalog
         assert events == ["catalog.open"]
         events.append("runtime.open")
         return runtime
@@ -442,7 +500,7 @@ async def test_missing_calculation_version_fails_startup_and_closes_resources(
     runtime = CloseSpyRuntime(ScriptedContext(utc_clock), events)
     runtime.calculation_version = ""
     app = create_app(
-        settings=http_settings(), runtime_factory=lambda: runtime,
+        settings=http_settings(), runtime_factory=lambda opened_catalog: runtime,
         catalog_factory=lambda: catalog, utc_clock=utc_clock,
         scheduler=scheduler, limiter_policy=None,
     )
@@ -464,7 +522,7 @@ async def test_catalog_startup_failure_never_opens_runtime(
         opened.append("catalog")
         raise PlaceCatalogUnavailableError("catalog cannot open")
 
-    def make_runtime() -> object:
+    def make_runtime(opened_catalog: object) -> object:
         opened.append("runtime")
         return RuntimeSpy(ScriptedContext(utc_clock))
 
@@ -488,7 +546,7 @@ async def test_invalid_admission_limit_fails_before_resources_open(
     with pytest.raises(HttpAppConfigurationError):
         app = create_app(
             settings=http_settings(),
-            runtime_factory=lambda: opened.append("runtime"),
+            runtime_factory=lambda opened_catalog: opened.append("runtime"),
             catalog_factory=lambda: opened.append("catalog"),
             utc_clock=utc_clock, scheduler=scheduler,
             limiter_policy=replace(SmallLimiterPolicy(), active_builds=0),
@@ -1132,10 +1190,21 @@ async def test_two_waiters_one_real_leader_keep_separate_permits_after_disconnec
         PLACES_PATH, _BlockingNatalCalculator, _settings as runtime_settings,
     )
 
+    class ClosableLocalCatalog:
+        def __init__(self) -> None:
+            self.inner = LocalPlaceCatalog.from_file(PLACES_PATH)
+
+        async def lookup(self, place_id: str):
+            return await self.inner.lookup(place_id)
+
+        async def aclose(self) -> None:
+            return None
+
+    catalog = ClosableLocalCatalog()
     calculator = _BlockingNatalCalculator(asyncio.get_running_loop())
     runtime = await build_application_runtime(
         settings=runtime_settings(tmp_path, db_name="shared-leader-http.sqlite3"),
-        places=LocalPlaceCatalog.from_file(PLACES_PATH),
+        places=catalog,
         clock=utc_clock,
         natal_calculator=calculator,
     )
@@ -1156,7 +1225,7 @@ async def test_two_waiters_one_real_leader_keep_separate_permits_after_disconnec
     tasks: list[asyncio.Task[Any]] = []
     exchange: RawConversation | None = None
     try:
-        async with app_client(runtime, limiter_policy=policy) as client:
+        async with app_client(runtime, catalog=catalog, limiter_policy=policy) as client:
             tasks.append(asyncio.create_task(client.post(
                 "/charts/natal", json=_build(),
                 headers={"Cookie": _cookie(1)},

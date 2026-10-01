@@ -68,11 +68,12 @@ ADR-0040 пересмотрел свой исторический вариант
 | [05](../../../prompts/2026-09-30/http-api-and-session-middleware/05-app-lifespan.md) | App factory, settings, startup, reaper, health | T | Typed startup failure, ownership resources |
 | [06](../../../prompts/2026-09-30/http-api-and-session-middleware/06-request-boundary.md) | Raw peer/proxy, route, Origin, body/query validation | 05 | Приоритет ошибок, security и 5-секундный receive |
 | [07](../../../prompts/2026-09-30/http-api-and-session-middleware/07-projectors.md) | Birth projection, ChartDTO, ErrorDTO и schema | 05 | Exact whitelist, unknown-time offset, no I/O |
-| [08](../../../prompts/2026-09-30/http-api-and-session-middleware/08-session-endpoints.md) | Cookie, bootstrap, current GET | 06–07 для route; 10 для rate; 13 для логов | Create/restore/read failure без Orchestrator; creation IP-limit подключён в 10, события 01/03 — в 13 |
+| [07a](../../../prompts/2026-09-30/http-api-and-session-middleware/07a-review-corrections-05-07.md) | Поправки после ревью 05–07 другой моделью | 05–07 | Явная передача каталога, safe errors, disconnect, POST query, reaper shutdown и границы импортов |
+| [08](../../../prompts/2026-09-30/http-api-and-session-middleware/08-session-endpoints.md) | Cookie, bootstrap, current GET | 06–07a для route; 10 для rate; 13 для логов | Create/restore/read failure без Orchestrator; creation IP-limit подключён в 10, события 01/03 — в 13 |
 | [09](../../../prompts/2026-09-30/http-api-and-session-middleware/09-place-endpoint.md) | Place search endpoint | 06–07 для route; 10 для rate | Нет session access; typed outcomes и safe 500; place IP-limit подключён в 10 |
 | [10](../../../prompts/2026-09-30/http-api-and-session-middleware/10-admission.md) | Sliding limits и capacity; интеграция в готовые routes 08–09 | 06 и route-срезы 08–09 | Creation/place IP-limit, build reservation, доминирующий bucket §9.1; полный AS-HTTP-21 после обычного release в 11 |
 | [11](../../../prompts/2026-09-30/http-api-and-session-middleware/11-build-endpoint.md) | Build endpoint, обычный owner terminal/release и mapping | 07–08, 10 | Один execute, release permit при terminal outcome, AS-HTTP-12 и последовательные build; cancellation в 12 |
-| [12](../../../prompts/2026-09-30/http-api-and-session-middleware/12-deadline-shutdown.md) | Task registry всех принятых requests, disconnect, watchdog/shutdown | S0, 05, 10–11 | Build permit/leader ownership, все активные request/leaf до close, fail-fast restart |
+| [12](../../../prompts/2026-09-30/http-api-and-session-middleware/12-deadline-shutdown.md) | Task registry всех принятых requests, disconnect, watchdog/shutdown | S0, 05, 10–11 | Build permit/leader ownership, все активные request/leaf и зависший active reaper до close, fail-fast restart |
 | [13](../../../prompts/2026-09-30/http-api-and-session-middleware/13-integration-handoff.md) | Logs, Caddy/mkcert HTTPS path, OpenAPI и полная приёмка | 05–12 | AS-HTTP-01…29, один web process, ручной restart без supervisor, module boundaries, pytest, evidence |
 
 S0 исследует cancellation до первого промта: перечислить точки отмены `execute`, shielded calculation leader, protected commit, SQLite и catalog executor futures; для каждой указать наблюдаемый terminal signal, владельца permit и допустимость `runtime.aclose()`. Для двух waiters одного leader каждый принятый запрос имеет свой permit. При отмене одного waiter проверить консервативный вариант: после завершения `execute` взять snapshot всех активных resolver leaders и удержать permit до их terminal outcome; unrelated leader вправе задержать release. Доказать, что snapshot не пропускает собственный leader при гонке отмены, и отдельно учесть protected commit и оставшиеся executor futures. `runtime.drain()` разрешён как кандидат на этот общий snapshot, но не выдаётся за точный per-request signal. Сверить existing cancelled-waiter test и перечислить недостающие доказательства для 04/12; в read-only S0 production и тестовый код не менять. Результат — записка в плане/журнале с безопасным release condition, тестовыми условиями и влиянием на оценку. Если нижнюю границу нельзя обеспечить без изменения публичного API или границ, оформить Development Finding и не объявлять Gate A пройденным. Не переносить решение в промт 12.
@@ -376,3 +377,115 @@ ADR и диаграммы в этом промте не менялись. Чет
 `PermissionError`. Отдельный tzdata-тест в промте 06 прошёл, а при полном
 прогоне по-прежнему конфликтует с logger/caplog (§12). Сетевые/платные smoke-тесты и
 PlantUML rendering не запускались. Коммит, push и PR не создавались.
+
+## 15. Уточнение G0 после независимого ревью промтов 05–07 (2026-10-01)
+
+Другая модель указала, что открытый HTTP lifespan каталог не передаётся
+`runtime_factory()` явно. Пользователь выбрал вариант A: после
+`catalog_factory()` lifespan вызывает `runtime_factory(catalog)` с тем же
+экземпляром. Карточка G0 и тесты композиции обновлены. В частности,
+`test_async_runtime_factory_reuses_open_catalog_and_closes_in_reverse_order`
+проверяет identity аргумента, а тест двух waiters теперь использует один
+каталог и для реального runtime, и для приложения. Владение и порядок
+закрытия ресурсов остаются у lifespan; `build_application_runtime(places=...)`
+сохраняет существующий компонентный API. Исторический промт 04a не менялся.
+
+Остальные замечания этого ревью рассмотрены отдельно перед промтом 08:
+общие JSON-обработчики 404/405/500, отдельный сигнал disconnect и проверка
+query у POST относятся к transport boundary; сбой scheduler/reaper и
+ограниченное shutdown ожидание требуют согласования с §11.1–11.3 и промтом 12.
+
+| Команда | Фактический результат |
+| --- | --- |
+| `python -m pytest tests/http_api/test_lifecycle.py -q -k "health_tracks_startup_shutdown or async_runtime_factory_reuses_open_catalog or reaper_waits_from_completion or invalid_settings_fail_before_any_resource_opens or runtime_startup_failure_closes_previously_opened_catalog or missing_calculation_version_fails_startup_and_closes_resources or catalog_startup_failure_never_opens_runtime or invalid_admission_limit_fails_before_resources_open" --tb=short -p no:cacheprovider` | 17 passed, 37 deselected |
+| `python -m pytest tests/http_api/test_request_boundary.py -q --tb=short -p no:cacheprovider` | 42 passed |
+| `python -m pytest tests/http_api/test_request_boundary.py tests/http_api/test_lifecycle.py -q --tb=short -p no:cacheprovider` | 60 passed, 36 failed: lifecycle-тесты будущих HTTP routes/admission/shutdown/logging остаются RED |
+
+## 16. Промт 07a — поправки после ревью другой моделью (2026-10-01)
+
+Независимое ревью промтов 05–07 другой моделью передано пользователем.
+Пользователь выбрал вариант A передачи каталога; поправочный
+[промт 07a](../../../prompts/2026-09-30/http-api-and-session-middleware/07a-review-corrections-05-07.md)
+сохранён отдельно от исторических промтов 05–07 и исполнен перед 08.
+
+Общий app handler теперь выдаёт safe `ErrorDTO` и обязательные headers для
+404/405/500, сохраняет `Allow` у 405, отображает framework
+`RequestValidationError` в safe 422. Disconnect во время body receive имеет
+отдельный `ClientDisconnected`, не подделывает task cancellation и завершает
+ASGI вызов без ответа. POST с непустым query отклоняется до cookie/admission.
+`error_response` гасит invalid/duplicate required-session cookie со всеми
+`__Host-` атрибутами. Ошибка reaper task наблюдается и логируется, но больше
+не прерывает штатную очистку при shutdown; после освобождения ресурсов
+lifespan переходит в `STOPPED` и пишет terminal event. AST-тест закрепил
+прямые границы импортов HTTP/application. Docstring `SessionBirthView`
+уточняет технический noon-anchor offset неизвестного времени.
+
+Непосредственные маршруты 08–11 обязаны принимать `Request`, использовать
+подготовленное тело без повторного framework parse и сериализовать `ErrorDTO`
+через `JSONResponse(dto.model_dump(mode="json"))`; transport handler служит
+страховкой от framework validation. Новые business routes здесь не создавались.
+
+**Открыто для Analysis:** §11.1 описывает live 503 после fail-fast watchdog,
+а текущий callback также переводит процесс в unhealthy при падении scheduler
+reaper. Политика health в 07a не менялась. Зависший active `reap_expired`
+сейчас может задержать shutdown до завершения leaf; согласованный grace и
+fail-fast для reaper необходимо реализовать в промте 12, без отдельного
+произвольного timeout. Код/Retry-After для business-запроса в unhealthy,
+обязательность отсутствующего `birth_time` и отсутствие ASGI peer не
+переопределялись. Одиночный flaky tzdata logging test остаётся известным
+ограничением до итогового промта 13.
+
+| Команда | Фактический результат |
+| --- | --- |
+| `python -m pytest tests/http_api/test_request_boundary.py tests/http_api/test_projectors.py tests/application/test_session_view.py tests/application/test_stored_chart_build.py tests/test_module_boundaries.py -q --tb=short -p no:cacheprovider` | 147 passed |
+| `python -m pytest tests/http_api/test_lifecycle.py -q -k "health_tracks_startup_shutdown or async_runtime_factory_reuses_open_catalog or reaper_waits_from_completion or reaper_scheduler_failure_does_not_abort_shutdown_cleanup or invalid_settings_fail_before_any_resource_opens or runtime_startup_failure_closes_previously_opened_catalog or missing_calculation_version_fails_startup_and_closes_resources or catalog_startup_failure_never_opens_runtime or invalid_admission_limit_fails_before_resources_open" --tb=short -p no:cacheprovider` | 18 passed, 37 deselected |
+| `python -m pytest -q --tb=no -p no:cacheprovider` | 2757 passed, 160 failed: 159 ожидаемых RED следующих HTTP routes/admission/lifecycle/logging, один `test_tzdata_version_mismatch_warns_once_and_allows_open` |
+| `python -m pytest tests/http_api/test_request_boundary.py::test_post_query_is_rejected_before_cookie_and_positive_body_is_accepted -q --tb=short -p no:cacheprovider` | 1 passed после усиления проверки приоритета query перед cookie |
+| `git diff --check`; проверка ссылки плана на промт 07a через `Test-Path` | exit 0; `True` (Git сообщил только о будущей LF → CRLF нормализации working copy) |
+
+Сетевые/платные smoke-тесты и PlantUML rendering не запускались. Коммит,
+push и PR не создавались.
+
+## 17. Исполнение промта 08 — cookie, bootstrap, current (2026-10-01)
+
+Реализованы `POST /session/bootstrap` и `GET /charts/current`. Cookie создаётся
+из 32 случайных байтов и выдаётся/гасится с атрибутами §5. Bootstrap вызывает
+только `ContextService.create/load`, ограничивает collision retries тремя и
+возвращает `SessionBootstrapDTO`; current вызывает `ContextService.load`,
+чистый `session_view` и явный DTO projector. `SessionAbsent`,
+`StateReadFailed`, create failure и unexpected projection failure отображаются
+с действиями над cookie из §5–8. Тестовый natal snapshot дополнен валидными
+углами/домами: прежний generic artifact имел пустые `angles` и не мог быть
+публичной `chart_ready` картой по §7.2. Проверка отказа create с invalid и
+duplicate cookie добавлена с успешным контролем.
+
+Перед исполнением пользователь передал дополнительное замечание по 500 после
+`prepare`: новый ID в общем обработчике нарушал корреляцию ответа и
+`http_unhandled_exception`. `prepare` теперь записывает ID в `request.state`,
+а обработчики ошибок берут его оттуда; до `prepare` они создают и сохраняют
+один новый ID. Регрессии проверяют равенство ID в ответе и журнале после
+позднего исключения и ошибки проекции current. Для 500 тестовый
+`httpx.ASGITransport` использует `raise_app_exceptions=False`, поскольку
+Starlette ServerErrorMiddleware повторно поднимает исключение после отправки
+ответа. Это учтено при исполнении 08, исторический текст промта не менялся.
+
+Creation admission и события `http_cookie_replaced`/`chart_unavailable`
+оставлены промтам 10 и 13 по их назначению. Пять соответствующих проверок
+`test_session.py` остаются RED: `test_bootstrap_logs_cookie_replacement_after_success`,
+`test_unavailable_current_emits_error_event`,
+`test_absent_cookie_is_cleared_even_when_bootstrap_creation_fails[rate]`,
+`test_creation_rolling_hour_limit_restore_and_exact_expiry_boundary`,
+`test_collision_attempts_consume_one_creation_quota_for_http_request`.
+
+| Команда | Фактический результат |
+| --- | --- |
+| `python -m pytest tests/http_api/test_session.py -q --tb=short -p no:cacheprovider` | 30 passed, 5 failed; все пять отказов перечислены выше |
+| `python -m pytest tests/http_api/test_session.py -q -k "not bootstrap_logs_cookie_replacement_after_success and not unavailable_current_emits_error_event and not creation_rolling_hour_limit_restore_and_exact_expiry_boundary and not collision_attempts_consume_one_creation_quota_for_http_request and not absent_cookie_is_cleared_even_when_bootstrap_creation_fails" --tb=short -p no:cacheprovider` | 29 passed, 6 deselected после всех правок |
+| `python -m pytest tests/http_api/test_session.py tests/http_api/test_request_boundary.py tests/http_api/test_projectors.py tests/application/test_session_view.py tests/application/test_stored_chart_build.py tests/test_module_boundaries.py -q -k "not bootstrap_logs_cookie_replacement_after_success and not unavailable_current_emits_error_event and not creation_rolling_hour_limit_restore_and_exact_expiry_boundary and not collision_attempts_consume_one_creation_quota_for_http_request and not absent_cookie_is_cleared_even_when_bootstrap_creation_fails" --tb=short -p no:cacheprovider` | 177 passed, 6 deselected при проверке перед коммитом |
+| `python -m pytest tests/http_api/test_request_boundary.py -q --tb=short -p no:cacheprovider` | 48 passed |
+| `python -m pytest tests/http_api/test_place_dto.py -q --tb=short -p no:cacheprovider` | 15 passed, 52 failed: отсутствуют routes 09/11 и их mapping/admission |
+| `python -m pytest -q --tb=no -p no:cacheprovider` | 2805 passed, 115 failed: ожидаемые RED будущих HTTP-срезов, пять проверок 08 и известный `test_tzdata_version_mismatch_warns_once_and_allows_open` |
+| `python -m pytest tests/test_place_catalog_sqlite.py::test_tzdata_version_mismatch_warns_once_and_allows_open -q --tb=short -p no:cacheprovider` | 1 passed отдельно вне sandbox; первая попытка внутри sandbox дала `PermissionError` на системный pytest temp |
+| `python -m compileall -q src/exact_orb/http_api tests/http_api/test_session.py tests/http_api/test_request_boundary.py`; `git diff --check` | exit 0; Git предупредил только о будущей LF → CRLF нормализации working copy |
+
+Сетевые/платные smoke-тесты не запускались. Коммит, push и PR не создавались.

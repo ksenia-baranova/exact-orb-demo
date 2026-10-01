@@ -19,17 +19,19 @@ from uuid import uuid4
 from starlette.requests import Request
 from starlette.responses import JSONResponse
 
+from exact_orb.http_api.cookie import COOKIE_NAME, clear_session_cookie
 from exact_orb.http_api.dto import ErrorDTO, IssueDTO
 from exact_orb.http_api.proxy import InvalidForwardedHeaders, client_ip, trusted_networks
 
 
-_COOKIE_NAME = "__Host-exact_orb_session"
 _COOKIE_VALUE = re.compile(r"[A-Za-z0-9_-]{43}\Z", re.ASCII)
 _DATE = re.compile(r"[0-9]{4}-[0-9]{2}-[0-9]{2}\Z", re.ASCII)
 _TIME = re.compile(r"(?:[01][0-9]|2[0-3]):[0-5][0-9]\Z", re.ASCII)
 _LIMIT = re.compile(r"(?:[1-9]|1[0-9]|20)\Z", re.ASCII)
 
 _ERRORS: dict[str, tuple[int, str, bool, int | None]] = {
+    "NOT_FOUND": (404, "Адрес не найден.", False, None),
+    "METHOD_NOT_ALLOWED": (405, "Метод запроса не поддерживается.", False, None),
     "SERVICE_SHUTTING_DOWN": (503, "Сервис перезапускается. Попробуйте ещё раз.", True, 30),
     "FORWARDED_HEADER_INVALID": (400, "Некорректные данные доверенного прокси.", False, None),
     "ORIGIN_NOT_ALLOWED": (403, "Источник запроса не разрешён.", False, None),
@@ -38,6 +40,7 @@ _ERRORS: dict[str, tuple[int, str, bool, int | None]] = {
     "REQUEST_TOO_LARGE": (413, "Запрос превышает допустимый размер.", False, None),
     "INVALID_REQUEST": (422, "Проверьте формат запроса и значения полей.", False, None),
     "SESSION_REQUIRED": (409, "Сначала откройте или восстановите сессию.", False, None),
+    "INTERNAL_FAILURE": (500, "Произошла внутренняя ошибка.", False, None),
 }
 
 
@@ -66,6 +69,10 @@ class BoundaryRejection(Exception):
     @property
     def retry_after(self) -> int | None:
         return _ERRORS[self.code][3]
+
+
+class ClientDisconnected(Exception):
+    """The peer closed during body receive; the request task was not cancelled."""
 
 
 @dataclass(frozen=True, slots=True)
@@ -121,7 +128,10 @@ def error_response(rejection: BoundaryRejection) -> JSONResponse:
     headers = response_headers(rejection.request_id)
     if retry_after is not None:
         headers["Retry-After"] = str(retry_after)
-    return JSONResponse(payload, status_code=status, headers=headers)
+    response = JSONResponse(payload, status_code=status, headers=headers)
+    if rejection.clear_cookie:
+        clear_session_cookie(response)
+    return response
 
 
 def _raw_header_values(scope: Mapping[str, Any], name: bytes) -> list[bytes]:
@@ -137,10 +147,10 @@ def session_cookie(scope: Mapping[str, Any]) -> SessionCookie:
         for raw_part in header.decode("latin1").split(";"):
             part = raw_part.strip()
             if "=" not in part:
-                malformed |= part == _COOKIE_NAME
+                malformed |= part == COOKIE_NAME
                 continue
             name, value = part.split("=", 1)
-            if name.strip() == _COOKIE_NAME:
+            if name.strip() == COOKIE_NAME:
                 matches.append(value)
     if len(matches) > 1:
         return SessionCookie("duplicate")
@@ -194,7 +204,7 @@ async def _receive_body(
 ) -> bytes:
     first = await receive()
     if first["type"] == "http.disconnect":
-        raise asyncio.CancelledError
+        raise ClientDisconnected
     if first["type"] != "http.request":
         raise BoundaryRejection("INVALID_REQUEST", issue_fields=("request.body",))
     deadline = scheduler.now() + timeout_seconds
@@ -218,7 +228,7 @@ async def _receive_body(
                 raise BoundaryRejection("REQUEST_TIMEOUT", detail_code="BODY_RECEIVE_TIMEOUT")
             message = incoming.result()
             if message["type"] == "http.disconnect":
-                raise asyncio.CancelledError
+                raise ClientDisconnected
             if message["type"] != "http.request":
                 raise BoundaryRejection("INVALID_REQUEST", issue_fields=("request.body",))
         finally:
@@ -341,6 +351,7 @@ class RequestBoundary:
         cookie_mode: Literal["ignore", "optional", "required"] = "ignore",
     ) -> PreparedRequest:
         request_id = str(uuid4())
+        request.state.request_id = request_id
         try:
             if not self._is_ready():
                 raise BoundaryRejection("SERVICE_SHUTTING_DOWN")
@@ -364,6 +375,8 @@ class RequestBoundary:
                     payload = _bootstrap_body(payload)
                 elif body_kind == "build":
                     payload = _build_body(payload)
+                if request.scope.get("query_string", b""):
+                    raise BoundaryRejection("INVALID_REQUEST")
             elif query_kind == "places":
                 query = _places_query(request.scope.get("query_string", b""))
             elif request.scope.get("query_string", b""):

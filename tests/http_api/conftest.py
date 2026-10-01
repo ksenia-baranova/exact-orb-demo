@@ -203,7 +203,7 @@ def app_client(utc_clock: UtcClock, scheduler: ManualScheduler):
         settings = http_settings(trusted_proxy_cidrs=trusted_proxy_cidrs)
         app = create_app(
             settings=settings,
-            runtime_factory=lambda: runtime,
+            runtime_factory=lambda opened_catalog: runtime,
             catalog_factory=lambda: catalog if catalog is not None else ForbiddenCatalog(),
             utc_clock=utc_clock,
             scheduler=scheduler,
