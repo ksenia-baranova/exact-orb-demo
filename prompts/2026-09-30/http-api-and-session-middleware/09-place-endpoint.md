@@ -11,7 +11,7 @@
 
 Реализуй GET /places с обязательным query, raw query length до нормализации, строгим limit 1..20 и default 10. Вызови PlaceSearch.search ровно один раз; PlaceSuggestions, InvalidPlaceQuery и PlaceCatalogUnavailableError переведи в §6.3/§8 ответы. Projector публикует только place_id, display_name, admin1_name, country_code. Не повторяй нормализацию в transport и не выполняй lookup для suggestions.
 
-Подключи place IP window после промта 10; до него не объявляй AS-HTTP-21 полностью прошедшим. Добавь негативный контроль отсутствия cookie/session/Orchestrator и позитивный реальный вызов search.
+Неожиданная ошибка search даёт safe `500 INTERNAL_FAILURE` по AS-HTTP-10. Place IP window подключает только промт 10; до него limiter assertions AS-HTTP-21 остаются RED. Добавь негативный контроль отсутствия cookie/session/Orchestrator и позитивный реальный вызов search.
 
 ## Приёмка
 

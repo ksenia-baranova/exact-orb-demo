@@ -370,14 +370,38 @@ type BuildChartResponseDTO =
   | { status: "already_applied"; state_version: number };
 ```
 
-`BirthViewDTO` содержит `birth_date`, `birth_time`,
-`place {place_id, display_name}`, `tz_id`, `utc_offset_seconds`,
-`time_unknown`, `warnings[{source, code}]`. При неизвестном времени offset
-технического noon anchor не публикуется как пользовательское точное время.
+```ts
+type BirthViewDTO = {
+  birth_date: string; // YYYY-MM-DD из birth_input
+  birth_time: string | null; // HH:MM из birth_input; null ⇔ time_unknown
+  place: { place_id: string; display_name: string };
+  tz_id: string;
+  utc_offset_seconds: number | null; // null ⇔ time_unknown
+  time_unknown: boolean;
+  warnings: { source: "place" | "time"; code: string }[];
+};
+```
+
+`place_id` берётся из `birth_input`, `display_name` — из
+`birth_resolved.canonical_place`. `tz_id` публикуется всегда. При
+`time_unknown=true` поля `birth_time` и `utc_offset_seconds` равны JSON `null`:
+смещение и UTC-момент технического noon anchor не публикуются ни в одном поле.
+При известном времени `birth_time` имеет формат `HH:MM`, а
+`utc_offset_seconds` содержит сохранённое целое смещение. Это одинаково для
+`chart_ready` и `chart_unavailable`.
+
+Предупреждения сохраняют порядок resolver и публикуются только по allowlist:
+`pre_1970_offset_unverified` с `source="time"` публикуется;
+`noon_anchor_adjusted`, `noon_anchor_ambiguous` и неизвестные коды не
+публикуются. Внутренние тексты предупреждений не входят в DTO. Несовпадение
+`time_unknown` с условием `birth_input.birth_time is None` либо ненулевые
+секунды/микросекунды сохранённого времени — unexpected projector failure:
+`500 INTERNAL_FAILURE` с renew cookie по §6.2.
 
 `session_view` на входном commit не публикует весь этот набор. Решением Lead
 по DP-HTTP-06/FIND-HTTP-019 в M1-6 включена только чистая application projection
-из уже загруженного `state.birth_resolved`; новых I/O, application ports и
+из `state.birth_input` и `state.birth_resolved` одного уже загруженного
+snapshot; новых I/O, application ports и
 transport типов в application layer нет.
 Build success не требует birth projection: committed artifact и version уже
 есть в `ApplicationResult`, а полная восстановленная форма читается через
@@ -523,7 +547,24 @@ clear. Его `retryable=false` запрещает повтор POST; `Retry-Aft
 | place search / client IP   |               120 за минуту | `PLACE_SEARCH_RATE_LIMITED`   |
 
 Transport-invalid запрос quota не расходует. Build session/IP windows и
-capacity резервируются атомарно; capacity refusal не расходует rate window.
+capacity резервируются атомарно. После проверки cookie transport в одной
+критической секции без мутации оценивает четыре build rate bucket
+(session/IP × 1 час/24 часа) и capacity:
+
+1. Если исчерпан хотя бы один rate bucket, ответ `429`; ни bucket, ни permit не
+   расходуется. Публичные code и `detail_code` берутся по доминирующему bucket:
+   его следующий момент допуска позже остальных исчерпанных bucket. При равном
+   моменте session раньше IP, а окно 24 часа раньше часового. `Retry-After`
+   соответствует этому самому позднему моменту по §4.4.
+2. Если rate допускает запрос, но заняты все пять permits, ответ
+   `503 BUILD_CAPACITY_EXHAUSTED` с `Retry-After: 1`; rate не расходуется.
+3. Иначе одна атомарная операция увеличивает все четыре bucket и резервирует
+   один permit.
+
+В `http_admission_rejected` записываются `class=rate|capacity`, scope и
+detail доминирующего bucket при rate-отказе и `retry_after`; список всех
+исчерпанных bucket в компактный INFO не добавляется. У создания сессии и
+поиска мест по одному bucket; отказ admission квоту не расходует.
 После admission учитываются cache hit, `INPUT_REQUIRED`, typed failure,
 Superseded, timeout и disconnect. Creation collision attempts считаются одним
 запросом. Окна используют injected monotonic clock, boundary inclusive для
@@ -849,7 +890,14 @@ Absent при load/commit даёт соответствующий 409 и clear c
 Boundary tests всех session/IP hourly/daily windows и place window проверяют
 codes/details/Retry-After. Сценарий 10 sessions × 5 build с одним IP проходит;
 300 hourly IP build проходят, 301-й отклоняется. Rejected request не входит
-в Orchestrator.
+в Orchestrator. При одновременно исчерпанных часовом session и суточном IP
+bucket с разными моментами допуска ответ `BUILD_IP_RATE_LIMITED` /
+`IP_DAILY_LIMIT`, а `Retry-After` указывает поздний IP-момент. При равенстве
+моментов выбирается session, а внутри одного scope — 24-часовое окно. Если
+rate и capacity исчерпаны одновременно, ответ 429; ни один bucket/permit не
+меняется. Ровно в момент допуска запрос проходит и расходует все четыре
+bucket и один permit. Отдельный случай свободного rate и занятой capacity
+проверяется в AS-HTTP-22.
 
 ### AS-HTTP-22 — capacity и deadline
 
@@ -913,6 +961,14 @@ Golden artifact проверяет точный whitelist и порядок poin
 аспекта и dangling ID дают безопасный 500. На границе округления `dsc/ic`
 сохраняют `degree/minute` исходных `asc/mc` и сдвигают знак на шесть.
 Cosmogram invariant проверяет все null-поля и устойчивые аспекты.
+Golden `SessionViewDTO` для `chart_ready` и `chart_unavailable` проверяет
+точный whitelist `BirthViewDTO` в двух состояниях: известное время `HH:MM`,
+сохранённый числовой offset и разрешённый `pre_1970_offset_unverified` для
+старой даты; неизвестное время с `birth_time=null`,
+`utc_offset_seconds=null`, сохранённым `tz_id` и без `noon_anchor_*`.
+Рассинхронизация `time_unknown`/`birth_input.birth_time` и ненулевые секунды
+сохранённого времени дают safe 500 с renew cookie; рядом есть успешный
+контроль. Новые внутренние поля и warning codes не появляются в JSON.
 
 ### AS-HTTP-29 — routes, HEAD, OPTIONS и production schema
 
@@ -963,6 +1019,7 @@ application/session/catalog tests, `tests/test_module_boundaries.py`, затем
 | FIND-HTTP-019 | scope/estimate | чистая birth-проекция `session_view` входит в M1-6; исходная оценка 0,5+1,5+1+1=4 дня сохранена | решение Lead 2026-09-30; реализация и проверка впереди |
 | FIND-HTTP-020 | process gate | старый ADR-0040 path исправлен; scope расширен; Gantt сохраняет подтверждённую исходную оценку | Lead-owned правки в рабочем плане подготовлены; интеграция в `change/*` ожидается |
 | FIND-HTTP-021 | Development Finding | нижняя граница permit при shared leader, точные AngleDTO/aspect IDs, разделение серверных и UI-доказательств AS-HTTP-17/19 | направления согласованы владельцем change; контракт уточнён в §7.2/§9.3 и AS-HTTP-17/19/24/28; S0 и исполняемое evidence ещё требуются |
+| FIND-HTTP-022 | Development Finding | приоритет одновременных rate/capacity отказов и точная форма BirthViewDTO при неизвестном времени | согласовано пользователем; контракт уточнён в §7.1/§9.1 и AS-HTTP-21/28; golden и исполняемое evidence ещё требуются |
 
 ### 15.1. Классификация после review PR #37 от 2026-09-30
 
@@ -981,6 +1038,9 @@ application/session/catalog tests, `tests/test_module_boundaries.py`, затем
 - FIND-HTTP-021 подтверждён пользователем: §7.2/§9.3 и AS-HTTP-17/19/24/28
   фиксируют контракт, UI M1-7 получает клиентские проверки; техническое
   доказательство S0 и deterministic tests ещё требуются.
+- FIND-HTTP-022 подтверждён пользователем: §9.1 выбирает доминирующий
+  исчерпанный rate bucket до capacity, §7.1 скрывает offset noon anchor и
+  задаёт чистую birth-проекцию; AS-HTTP-21/28 требуют отдельного evidence.
 
 ### 15.2. Решение по FIND-HTTP-009 / DP-HTTP-04
 

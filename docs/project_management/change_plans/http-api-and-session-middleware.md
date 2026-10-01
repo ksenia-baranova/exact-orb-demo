@@ -1,6 +1,6 @@
 # Change plan: HTTP API and Session Middleware
 
-- **Статус:** Analysis PR #37 принят в `change/*`; решения DP-HTTP-01…06 и FIND-HTTP-021 подтверждены. Developer подготовил implementation plan и промты в `c7e794a`; Gate A и реализация впереди.
+- **Статус:** Analysis PR #37 принят в `change/*`; решения DP-HTTP-01…06 и уточнения FIND-HTTP-021/022 подтверждены пользователем. Developer подготовил implementation plan и промты на `dev/*`; Gate A и реализация впереди.
 - **Change:** `change/http-api-and-session-middleware`.
 - **Roadmap:** M1-6, `feat/http-api-and-session-middleware`.
 - **Исходный `main`:** `e337f5107d7a3092983f1d920aac45040c2df6ed`.
@@ -107,11 +107,11 @@ Request.
 | ID         | Вопрос                                                                                             | Кто готовит решение                                            | Статус |
 |------------|----------------------------------------------------------------------------------------------------|----------------------------------------------------------------|--------|
 | DP-HTTP-01 | Endpoint, DTO, ошибки и HTTP-статусы — [§2–8](../../requirements/http_api.md) | Functional Analyst; review Developer/Tester; Lead approval | согласовано Lead 2026-09-30; implementation schema впереди |
-| DP-HTTP-02 | Численные session/IP limits и 5 active build — [§9.1](../../requirements/http_api.md#91-лимиты) | Functional Analyst и Developer; Lead | согласовано всеми ролями, решение Lead в review PR #37 |
+| DP-HTTP-02 | Численные session/IP limits и 5 active build — [§9.1](../../requirements/http_api.md#91-лимиты) | Functional Analyst и Developer; Lead | численные значения согласованы Lead в review PR #37; приоритет одновременных отказов уточнён FIND-HTTP-022, реализация впереди |
 | DP-HTTP-03 | Trusted proxy/client IP algorithm — [§10](../../requirements/http_api.md#10-client-ip-и-trusted-proxy) | Developer security review; Lead approval | Developer review выполнен; согласовано Lead 2026-09-30; код впереди |
 | DP-HTTP-04 | Deadline, shutdown и ownership задач — [§9, §11](../../requirements/http_api.md) | Developer; Lead | C для M1-6 и A как target state согласованы; нижняя граница permit при shared leader подтверждена через FIND-HTTP-021; S0 и implementation evidence ожидаются |
 | DP-HTTP-05 | Четыре HTTP sequence и синхронизация session diagrams — [§16](../../requirements/http_api.md#16-sequence-diagrams) | Functional Analyst; Lead approval | согласовано Lead 2026-09-30; сверка с реализацией впереди |
-| DP-HTTP-06 | Чистая birth projection в `session_view` — [§7.1](../../requirements/http_api.md#71-основные-формы) | Developer review; Lead scope approval | scope согласован Lead; Developer подтвердил реализуемость; код и тесты впереди |
+| DP-HTTP-06 | Чистая birth projection в `session_view` — [§7.1](../../requirements/http_api.md#71-основные-формы) | Developer review; Lead scope approval | scope согласован Lead; форма BirthViewDTO уточнена FIND-HTTP-022; код и тесты впереди |
 
 ## 8. Условия перехода между этапами
 
@@ -156,7 +156,8 @@ Request.
 ## 9. Текущее состояние
 
 - Подготовка Lead принята в `change/*` через PR #36. Analysis PR #37 принят в `change/*` с merge commit `f11275c`.
-- Developer работает в `dev/http-api-and-session-middleware`; implementation plan и код ещё не подготовлены в рамках этого обновления. Testing не начат.
+- Developer работает в `dev/http-api-and-session-middleware`; [implementation plan](../implementation_plans/http_api_and_session_middleware_implementation_plan.md), G0 и промты 01–13 подготовлены, но Gate A не закрыт. Production code и исполняемые `tests/http_api/` не созданы; Testing не начат.
 - DP-HTTP-01…06 согласованы Lead 2026-09-30; для DP-HTTP-04 выбран вариант C в M1-6 и A как target state. Developer review выполнен; implementation evidence и формальный Tester review впереди.
 - FIND-HTTP-019 закрыт решением Lead: чистая birth-проекция включена, исходная оценка Gantt оставлена. Для FIND-HTTP-020 старый путь ADR и scope исправлены в этом плане; изменения Lead-owned документа ещё предстоит вернуть в `change/*` по процессу ролей.
+- FIND-HTTP-022 уточняет публичный контракт §7.1/§9.1: offset неизвестного времени равен `null`, а при одновременном исчерпании лимитов доминирует наиболее поздний rate bucket. Подтверждено пользователем; проверка Tester по G0 и implementation evidence впереди.
 - Финальный статус не присвоен.

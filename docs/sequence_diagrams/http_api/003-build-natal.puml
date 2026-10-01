@@ -35,6 +35,13 @@ else cookie missing / invalid / duplicated
 else transport-valid request
     API -> Log : http_message send AdmissionControl.reserve
     API -> Admission : reserve(session_id, client_ip, calculation)
+    note right of Admission
+    Evaluate four rate buckets before capacity without mutation.
+    Dominant exhausted bucket has latest next-admission time;
+    ties: session before IP, 24h before 1h.
+    Rate rejection is 429; capacity rejection is 503.
+    Neither rejection consumes quota or permit.
+    end note
 
     alt rate/capacity rejected
         Admission --> API : rejected(code, detail, retry_after)

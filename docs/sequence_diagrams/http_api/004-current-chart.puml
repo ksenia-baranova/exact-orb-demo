@@ -35,6 +35,12 @@ else valid cookie
         API -> Log : http_message receive SessionSnapshot
         API -> Log : http_message send session_view
         API -> View : session_view(snapshot, current calculation version)
+        note right of View
+        BirthViewDTO uses birth_input and birth_resolved
+        from this snapshot, with no additional I/O.
+        If time_unknown: birth_time and utc_offset_seconds
+        are null; noon anchor and its warnings are hidden.
+        end note
 
         alt empty
             View --> API : EmptySessionView

@@ -11,8 +11,8 @@
 
 Реализуй __Host-exact_orb_session из 32 случайных байт, точные cookie attributes и проверку ровно одного значения в сырых заголовках. POST /session/bootstrap принимает только {}, делает create или ContextService.load без session_view; три collision attempts максимум. GET /charts/current делает ContextService.load, затем чистый session_view, без Orchestrator и пересчёта. Отрази SessionAbsent, StateReadFailed, corrupt StoredChart, structural aggregate failure и unexpected projector failure точными HTTP/cookie действиями §5–8.
 
-Creation admission из промта 10 пока не подменяй заглушкой: реализуй интеграцию после 10 либо держи соответствующие тесты честно красными. Не создавай transport session cache и не передавай session_id вне cookie.
+Creation admission подключает только промт 10. Здесь не подменяй его заглушкой и держи соответствующие тесты RED до 10. Логовые assertions `http_cookie_replaced(missing)` и ERROR `chart_unavailable` остаются RED до 13. Не создавай transport session cache и не передавай session_id вне cookie.
 
 ## Приёмка
 
-AS-HTTP-01…07 зелёные после интеграции 10; до неё перечисли единственные ожидаемые rate failures. Positive restore доказывает отсутствие resolver/cache/engine, failed read не создаёт новую session. Проверь raw Set-Cookie/clear/unchanged и точные команды тестов.
+Маршрутные и cookie части AS-HTTP-01…07 зелёные; creation rate ждёт промт 10, события AS-HTTP-01/03 — промт 13. Перечисли эти RED assertions явно. Positive restore доказывает отсутствие resolver/cache/engine, failed read не создаёт новую session. Проверь raw Set-Cookie/clear/unchanged и точные команды тестов.
