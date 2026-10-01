@@ -700,14 +700,18 @@ monotonic clock. Следующий run планируется от заверш
 1. atomic flag закрывает admission; readiness становится 503;
 2. новые business requests получают `SERVICE_SHUTTING_DOWN`;
 3. reaper wait/task останавливается и ожидается;
-4. task registry ждёт принятые requests до 30 секунд;
+4. task registry ждёт до 30 секунд все принятые business requests, включая
+   bootstrap, current, places и build, а также отправленные ими SQLite/catalog
+   executor futures, которые могут пережить отмену ожидающего await;
 5. по grace expiry отменяются задачи, которые не начали protected commit;
    commit tasks сохраняют ownership и ожидаются по Orchestrator contract;
-6. после нулевого active count вызывается `ApplicationRuntime.aclose()`;
+6. после нулевого active count requests и retained futures вызывается
+   `ApplicationRuntime.aclose()`;
 7. внешний `SqlitePlaceCatalog`/executor закрывается последним.
 
-Если по истечении shutdown grace остаётся protected/native task без terminal
-outcome, применяется выбранный для M1-6 вариант C: process становится unhealthy,
+Если по истечении shutdown grace остаётся protected/native task или
+SQLite/catalog executor future без terminal outcome, применяется выбранный для
+M1-6 вариант C: process становится unhealthy,
 `ApplicationRuntime.aclose()` под активной задачей не вызывается, внешний
 supervisor завершает и перезапускает process. Нельзя молча освободить permit,
 оставив неучтённую работу, либо подавить cancellation/error. Developer обязан
