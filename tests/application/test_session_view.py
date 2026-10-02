@@ -15,7 +15,9 @@ from exact_orb.application.session_view import (
     EmptySessionView,
     session_view,
 )
-from exact_orb.birth.types import BirthInput, ResolvedBirthData
+from exact_orb.birth.types import (
+    BirthInput, BirthTimeDomain, ResolvedBirthData, ResolutionWarning, UtcMinuteRange,
+)
 from exact_orb.calculation.spec import ChartSpec
 from exact_orb.calculation.types import ChartArtifact
 from exact_orb.session.persistence import SessionSnapshot
@@ -25,6 +27,7 @@ from tests.fixtures.calculation import (
     OTHER_VERSION,
     VERSION,
     artifact,
+    chart_spec,
     resolved_birth_data,
 )
 from tests.fixtures.stored_chart import stored_chart_for
@@ -41,12 +44,13 @@ def _snapshot(
     stored: StoredChart | None = None,
     spec: ChartSpec | None = None,
     resolved: ResolvedBirthData | None = None,
+    birth_input: BirthInput = BIRTH_INPUT,
 ) -> SessionSnapshot:
     stored = stored if stored is not None else stored_chart_for(chart)
     state = apply_delta(
         new_session("session-view", now=BASE_UTC),
         StateDelta(
-            birth_input=BIRTH_INPUT,
+            birth_input=birth_input,
             birth_resolved=resolved if resolved is not None else resolved_birth_data(),
             base_chart_spec=spec if spec is not None else chart.spec,
             base_chart_payload=stored,
@@ -86,6 +90,75 @@ def test_valid_stored_chart_is_restored_without_changing_snapshot(
     assert result.artifact is not original
     assert result.chart_stale is stale
     assert snapshot == before
+
+
+def test_birth_projection_uses_saved_input_and_resolved_facts_without_messages() -> None:
+    resolved = resolved_birth_data().model_copy(update={
+        "warnings": (
+            ResolutionWarning(
+                source="time", code="pre_1970_offset_unverified", message="private time text"
+            ),
+            ResolutionWarning(
+                source="place", code="future_code", message="private place text"
+            ),
+        ),
+    })
+    snapshot = _snapshot(artifact(), resolved=resolved)
+    before = snapshot.model_copy(deep=True)
+
+    result = session_view(snapshot, VERSION)
+
+    assert isinstance(result, ChartReadySessionView)
+    assert (
+        result.birth.birth_date, result.birth.birth_time, result.birth.place_id,
+        result.birth.canonical_place, result.birth.tz_id,
+        result.birth.utc_offset_seconds, result.birth.time_unknown,
+    ) == (
+        BIRTH_INPUT.birth_date, BIRTH_INPUT.birth_time, BIRTH_INPUT.place_id,
+        "Moscow", "Europe/Moscow", 10800, False,
+    )
+    assert [(item.source, item.code) for item in result.birth.warnings] == [
+        ("time", "pre_1970_offset_unverified"), ("place", "future_code")
+    ]
+    assert all(not hasattr(item, "message") for item in result.birth.warnings)
+    assert snapshot == before
+
+
+def test_unknown_time_birth_projection_survives_ready_and_unavailable_views() -> None:
+    birth = BirthInput(birth_date=date(1990, 9, 2), birth_time=None, place_id="524901")
+    domain = BirthTimeDomain(ranges=(UtcMinuteRange(first_utc=BASE_UTC, count=1),))
+    resolved = resolved_birth_data().model_copy(update={
+        "time_unknown": True,
+        "birth_time_domain": domain,
+        "warnings": (
+            ResolutionWarning(source="time", code="noon_anchor_ambiguous", message="private"),
+        ),
+    })
+    spec = chart_spec(chart_kind="cosmogram")
+    chart = artifact(spec=spec, resolved=resolved)
+    ready_snapshot = _snapshot(chart, resolved=resolved, birth_input=birth)
+    bad_stored = stored_chart_for(chart).model_copy(update={"payload_format": 99})
+    unavailable_snapshot = _snapshot(
+        chart, stored=bad_stored, resolved=resolved, birth_input=birth,
+    )
+    before_ready = ready_snapshot.model_copy(deep=True)
+    before_unavailable = unavailable_snapshot.model_copy(deep=True)
+
+    ready = session_view(ready_snapshot, OTHER_VERSION)
+    unavailable = session_view(unavailable_snapshot, OTHER_VERSION)
+
+    assert isinstance(ready, ChartReadySessionView)
+    assert isinstance(unavailable, ChartUnavailableSessionView)
+    assert ready.chart_stale is True
+    assert unavailable.safe_reason == "UNSUPPORTED_PAYLOAD_FORMAT"
+    assert ready.birth == unavailable.birth
+    assert ready.birth.birth_time is None
+    assert ready.birth.time_unknown is True
+    assert [(item.source, item.code) for item in ready.birth.warnings] == [
+        ("time", "noon_anchor_ambiguous")
+    ]
+    assert ready_snapshot == before_ready
+    assert unavailable_snapshot == before_unavailable
 
 
 @pytest.mark.parametrize(

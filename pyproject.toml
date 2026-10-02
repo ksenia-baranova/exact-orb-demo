@@ -8,14 +8,17 @@ version = "0.1.0"
 description = "Deterministic astrological calculations."
 requires-python = ">=3.11"
 dependencies = [
+    "fastapi>=0.115,<1",
     "litellm>=1.97",
     "pydantic>=2",
     "pysweph>=2.10.3.4",
     "tzdata",
+    "uvicorn>=0.30,<1",
 ]
 
 [project.optional-dependencies]
 dev = [
+    "httpx>=0.28,<0.29",
     "hypothesis>=6",
     "pytest>=8",
     "pytest-asyncio",

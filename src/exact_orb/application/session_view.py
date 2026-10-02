@@ -3,9 +3,10 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from datetime import date, time
 from typing import Literal, TypeAlias
 
-from exact_orb.birth.types import BirthInput
+from exact_orb.birth.types import BirthInput, ResolvedBirthData
 from exact_orb.calculation.chart_contract import calculation_input_from_chart
 from exact_orb.calculation.codec import (
     SUPPORTED_CHART_ARTIFACT_PAYLOAD_FORMATS,
@@ -36,10 +37,35 @@ class EmptySessionView:
 
 
 @dataclass(frozen=True, slots=True)
+class SessionBirthWarning:
+    source: Literal["place", "time"]
+    code: str
+
+
+@dataclass(frozen=True, slots=True)
+class SessionBirthView:
+    """Saved birth facts from one snapshot, without transport types or I/O.
+
+    For unknown time, the saved offset belongs to the technical noon anchor;
+    the public HTTP projector suppresses it.
+    """
+
+    birth_date: date
+    birth_time: time | None
+    place_id: str
+    canonical_place: str
+    tz_id: str
+    utc_offset_seconds: int
+    time_unknown: bool
+    warnings: tuple[SessionBirthWarning, ...]
+
+
+@dataclass(frozen=True, slots=True)
 class ChartReadySessionView:
     state_version: int
     birth_input: BirthInput
     canonical_place: str
+    birth: SessionBirthView
     artifact: ChartArtifact
     chart_stale: bool
     status: Literal["chart_ready"] = field(default="chart_ready", init=False)
@@ -50,6 +76,7 @@ class ChartUnavailableSessionView:
     state_version: int
     birth_input: BirthInput
     canonical_place: str
+    birth: SessionBirthView
     safe_reason: SafeReason
     status: Literal["chart_unavailable"] = field(default="chart_unavailable", init=False)
 
@@ -59,6 +86,22 @@ SessionView: TypeAlias = (
 )
 
 
+def _birth_view(birth_input: BirthInput, resolved: ResolvedBirthData) -> SessionBirthView:
+    return SessionBirthView(
+        birth_date=birth_input.birth_date,
+        birth_time=birth_input.birth_time,
+        place_id=birth_input.place_id,
+        canonical_place=resolved.canonical_place,
+        tz_id=resolved.tz_id,
+        utc_offset_seconds=resolved.utc_offset_seconds,
+        time_unknown=resolved.time_unknown,
+        warnings=tuple(
+            SessionBirthWarning(source=warning.source, code=warning.code)
+            for warning in resolved.warnings
+        ),
+    )
+
+
 def _unavailable(snapshot: SessionSnapshot, reason: SafeReason) -> ChartUnavailableSessionView:
     state = snapshot.state
     assert state.birth_input is not None and state.birth_resolved is not None
@@ -66,6 +109,7 @@ def _unavailable(snapshot: SessionSnapshot, reason: SafeReason) -> ChartUnavaila
         state_version=state.state_version,
         birth_input=state.birth_input,
         canonical_place=state.birth_resolved.canonical_place,
+        birth=_birth_view(state.birth_input, state.birth_resolved),
         safe_reason=reason,
     )
 
@@ -109,6 +153,7 @@ def session_view(snapshot: SessionSnapshot, current_calculation_version: str) ->
         state_version=state.state_version,
         birth_input=state.birth_input,
         canonical_place=state.birth_resolved.canonical_place,
+        birth=_birth_view(state.birth_input, state.birth_resolved),
         artifact=artifact,
         chart_stale=artifact.calculation_version != current_calculation_version,
     )
@@ -118,6 +163,8 @@ __all__ = [
     "ChartReadySessionView",
     "ChartUnavailableSessionView",
     "EmptySessionView",
+    "SessionBirthView",
+    "SessionBirthWarning",
     "SafeReason",
     "SessionView",
     "session_view",

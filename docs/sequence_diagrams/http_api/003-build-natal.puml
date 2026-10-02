@@ -35,6 +35,13 @@ else cookie missing / invalid / duplicated
 else transport-valid request
     API -> Log : http_message send AdmissionControl.reserve
     API -> Admission : reserve(session_id, client_ip, calculation)
+    note right of Admission
+    Evaluate four rate buckets before capacity without mutation.
+    Dominant exhausted bucket has latest next-admission time;
+    ties: session before IP, 24h before 1h.
+    Rate rejection is 429; capacity rejection is 503.
+    Neither rejection consumes quota or permit.
+    end note
 
     alt rate/capacity rejected
         Admission --> API : rejected(code, detail, retry_after)
@@ -67,6 +74,10 @@ else transport-valid request
         alt execute returned typed result
             Orch --> API : ApplicationResult
             API -> Log : http_message receive ApplicationResult
+            API -> Log : http_message send AdmissionControl.release
+            API -> Admission : release after terminal execute
+            Admission --> API : released
+            API -> Log : http_message receive AdmissionReleased
 
             alt Committed
                 API --> Client : 200 chart_ready + committed ChartDTO; renew
@@ -83,27 +94,46 @@ else transport-valid request
             else internal failure
                 API --> Client : 500 INTERNAL_FAILURE; internal code hidden
             end
-        else response deadline / disconnect
+        else response deadline
             API --> Client : 504 BUILD_TIMEOUT; retryable=false; Retry-After:5\nno Set-Cookie (unchanged) if connection exists
             note over API, Orch
+            Once watchdog fires, this 504 wins even if owner reaches
+            terminal outcome before the route waiter resumes.
             Accepted task remains registered.
             Protected commit is retained and awaited.
-            Permit is not released at socket loss.
+            Each accepted request retains its own permit.
+            A cancelled single-flight waiter keeps its permit
+            while the joined leader remains active.
+            M1-6 may wait for all leaders in the cancellation snapshot;
+            unrelated leaders can delay release.
+            SQLite/catalog executor futures are retained separately.
+            Socket loss or cancelled execute does not release permit.
             M1-6 option C: at 30s watchdog marks process unhealthy;
             health becomes 503 and external supervisor restarts process.
+            The deadline does not promise actual permit release.
             Target state A moves calculation to a dedicated worker process.
             end note
+        else client disconnect
+            API -> Orch : cancel execute before commit; retain protected work
+            Orch --> API : terminal after retained work/snapshot
+            API -> Log : http_message send AdmissionControl.release
+            API -> Admission : release after terminal retained work
+            Admission --> API : released
+            API -> Log : http_message receive AdmissionReleased
+            note over Client, API : No HTTP response is sent after disconnect.
         end
 
-        API -> Log : if terminal before restart:
-http_message send AdmissionControl.release
-        API -> Admission : release only after terminal task
-        Admission --> API : released
-        API -> Log : http_message receive AdmissionReleased
     end
 end
 
 API -> Log : http_request_finished(status, code, duration)
+
+opt response deadline: owner reaches terminal before restart
+    API -> Log : http_message send AdmissionControl.release
+    API -> Admission : release after retained leader/commit/leaf work
+    Admission --> API : released
+    API -> Log : http_message receive AdmissionReleased
+end
 
 note over API, Store
 POST покрывает first build и explicit rebuild.

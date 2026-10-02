@@ -25,13 +25,17 @@ else present Origin rejected for business GET
 else raw query > 512 / duplicate / invalid limit grammar
     API --> Client : 422 QUERY_TOO_LONG / LIMIT_INVALID
 else place quota rejected
+    API -> Log : http_message send AdmissionControl.reserve
     API -> Limit : reserve(client_ip, place_search)
     Limit --> API : rejected(retry_after)
+    API -> Log : http_message receive AdmissionRejection
     API -> Log : http_admission_rejected(scope=ip)
     API --> Client : 429 PLACE_SEARCH_RATE_LIMITED + computed Retry-After
 else request admitted
+    API -> Log : http_message send AdmissionControl.reserve
     API -> Limit : reserve(client_ip, place_search)
     Limit --> API : admitted
+    API -> Log : http_message receive AdmissionGranted
     API -> Log : http_message send PlaceSearch.search
     API -> Search : search(query, limit)
 
