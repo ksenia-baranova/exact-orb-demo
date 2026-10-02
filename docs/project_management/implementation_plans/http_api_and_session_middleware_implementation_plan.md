@@ -1,7 +1,7 @@
 # M1-6 — HTTP API and Session Middleware: implementation plan
 
 **Дата:** 2026-09-30. **Ветка:** dev/http-api-and-session-middleware от f11275c.
-**Статус на 2026-10-02:** промты 01–13 и поправки 04a/07a/13a/13a.1 исполнены в `dev/http-api-and-session-middleware`; полный pytest зелёный (2951 passed, §25.1). Вопросы Analysis/Lead из §25 открыты. Исторический Tester review Analysis/test design описан ниже; обязательный формальный Tester review пользователь отменил отдельным указанием.
+**Статус на 2026-10-02:** промты 01–13 и поправки 04a/07a/13a/13a.1/13b исполнены в `dev/http-api-and-session-middleware`; полный pytest зелёный (2952 passed, §26). Вопросы сроков non-build и охвата §12 закрыты FIND-HTTP-023/024; процессный FIND-HTTP-020 и переход к Testing остаются открытыми. Исторический Tester review Analysis/test design описан ниже; обязательный формальный Tester review пользователь отменил отдельным указанием.
 **Оценка:** действующий Gantt не меняется: Lead 0,5, Analysis 1,5, Development 1, Testing 1 рабочего дня; всего 4.
 
 Четыре дня — сохранённая Lead календарная оценка, а не оценка Developer по 13 промтам. **Предварительная оценка Developer для review: минимум 4 дня разработки и 2 дня тестирования** (с учётом четырёх маршрутов, DTO, admission, cancellation/ownership, watchdog, локального HTTPS и 29 acceptance scenarios); вместе с Lead 0,5 и Analysis 1,5 это минимум 8 рабочих дней. Это не изменение Gantt. Нижняя граница предполагает, что ранний S0 не потребует нового публичного component API, отдельного worker или переработки ownership. После S0 Developer уточняет оценку и передаёт Lead расхождение с действующим 1+1 и влияние на критический путь. Только Lead меняет Gantt отдельным решением; прежние 4 дня не выдаются за технически подтверждённый срок.
@@ -77,6 +77,7 @@ ADR-0040 пересмотрел свой исторический вариант
 | [13](../../../prompts/2026-09-30/http-api-and-session-middleware/13-integration-handoff.md) | Logs, Caddy/mkcert HTTPS path, OpenAPI и полная приёмка | 05–12 | AS-HTTP-01…29, один web process, ручной restart без supervisor, module boundaries, pytest, evidence |
 | [13a](../../../prompts/2026-09-30/http-api-and-session-middleware/13a-review-corrections-12-13.md) | Поправки после независимого ревью реализации 12–13 другой моделью | 12–13, `7de962a` | Shutdown после grace, внешний fail-fast termination, локальный INFO-журнал, watchdog race, полный pytest; частично принятые вопросы — §24 |
 | [13a.1](../../../prompts/2026-09-30/http-api-and-session-middleware/13a1-shutdown-checkpoint-regression.md) | Регрессии shutdown checkpoint после дополнительного ревью другой моделью | 13a | Отмена build owner без active leader; конечность ожидания завершённых, но зарегистрированных задач — §25.1 |
+| [13b](../../../prompts/2026-09-30/http-api-and-session-middleware/13b-nonbuild-and-event-scope-decisions.md) | Решения владельца change по non-build срокам и событиям после ревью другой моделью | 13a.1 | FIND-HTTP-023/024, условия M1-12, локальный proxy timeout и тест охвата событий — §26 |
 
 S0 исследует cancellation до первого промта: перечислить точки отмены `execute`, shielded calculation leader, protected commit, SQLite и catalog executor futures; для каждой указать наблюдаемый terminal signal, владельца permit и допустимость `runtime.aclose()`. Для двух waiters одного leader каждый принятый запрос имеет свой permit. При отмене одного waiter проверить консервативный вариант: после завершения `execute` взять snapshot всех активных resolver leaders и удержать permit до их terminal outcome; unrelated leader вправе задержать release. Доказать, что snapshot не пропускает собственный leader при гонке отмены, и отдельно учесть protected commit и оставшиеся executor futures. `runtime.drain()` разрешён как кандидат на этот общий snapshot, но не выдаётся за точный per-request signal. Сверить existing cancelled-waiter test и перечислить недостающие доказательства для 04/12; в read-only S0 production и тестовый код не менять. Результат — записка в плане/журнале с безопасным release condition, тестовыми условиями и влиянием на оценку. Если нижнюю границу нельзя обеспечить без изменения публичного API или границ, оформить Development Finding и не объявлять Gate A пройденным. Не переносить решение в промт 12.
 
@@ -853,3 +854,46 @@ runtime и каталог сохраняются открытыми до вне�
 
 Реальный HTTPS/Caddy, сетевые и платные smoke и PlantUML rendering не
 выполнялись. Коммит, push и PR не создавались этим промтом.
+
+## 26. Исполнение промта 13b — non-build сроки и охват событий (2026-10-02)
+
+По запросу пользователя исполнен [промт 13b](../../../prompts/2026-09-30/http-api-and-session-middleware/13b-nonbuild-and-event-scope-decisions.md)
+после замечания ревью другой моделью. Владелец change принял два решения:
+FIND-HTTP-023 — в M1-6 application watchdog есть только у build; зависший
+bootstrap/current/places сам по себе оставляет health 200. FIND-HTTP-024 —
+request events §12 относятся только к совпавшим business-маршрутам;
+unmatched 404/405, health и local schema сохраняют `X-Request-ID`, но не
+создают request events. Требования §9.3, §12, §14 и датированная классификация
+§15.3 уточнены. Новый тест проверяет отсутствие событий у 404/405/health и
+позитивный контроль успешного `/places`.
+
+Локальный Caddyfile получил `response_header_timeout 35s`; runbook описывает
+proxy timeout, диагностику непарного start по `request_id` в ротируемом
+журнале и ручное восстановление одного процесса. Синтаксис сверен с
+[документацией Caddy](https://caddyserver.com/docs/caddyfile/directives/reverse_proxy).
+35 секунд **не гарантируют** приход `504 BUILD_TIMEOUT` приложения раньше
+proxy timeout: таймер Caddy начинается после отправки upstream-запроса, а
+application watchdog — после boundary и admission. Созданный прокси ответ
+не является `ErrorDTO` приложения.
+
+В Lead-owned [change plan](../change_plans/http-api-and-session-middleware.md)
+как решение владельца change перенесены четыре условия M1-12: watchdog для
+всех business requests; supervisor по live 503 с принудительным завершением
+старого PID после shutdown grace и запаса; session SQLite только на локальной
+ФС; мониторинг непарных request start старше 30 секунд. Устаревший статус
+разработки в change plan обновлён. FIND-HTTP-020 остаётся процессным gate до
+возврата правок в `change/*`; сам переход «Разработка → тестирование» не
+объявлен выполненным. Изменены `http_api.md`, change plan, локальные Caddyfile
+и runbook, один тест в `test_lifecycle.py`, этот план и новый промт. Файлы
+production code в `src/` не менялись.
+
+| Проверка | Фактический результат |
+| --- | --- |
+| `python -m pytest tests/http_api/test_lifecycle.py -q -k request_events_cover_only_matched_business_routes --tb=short -p no:cacheprovider` | 1 passed, 66 deselected |
+| `python -m pytest tests/http_api -q --tb=short -p no:cacheprovider` | 292 passed |
+| `python -m pytest -q --tb=short -p no:cacheprovider` | 2952 passed |
+| `git diff --check`; `git diff --name-only -- src`; `Test-Path` для новых относительных ссылок plan/prompts/change plan/runbook | без ошибок; `src/` без изменений; все проверенные цели существуют |
+
+`caddy` в окружении не найден; `caddy validate`, реальный HTTPS/Caddy запуск,
+сетевые и платные smoke не выполнялись. Коммит, push и PR этим промтом не
+создавались.

@@ -666,6 +666,39 @@ async def test_route_method_head_options_and_hidden_schema_are_exact(
     assert context.load_calls == context.create_calls == []
 
 
+async def test_request_events_cover_only_matched_business_routes(
+    app_client, runtime: RuntimeSpy, caplog,
+) -> None:
+    caplog.set_level(logging.INFO, logger="exact_orb.http_api")
+    catalog = ScriptedCatalog()
+    async with app_client(runtime, catalog=catalog) as client:
+        outside = (
+            await client.get("/nope"),
+            await client.get("/session/bootstrap"),
+            await client.get("/health/ready"),
+        )
+        assert [response.status_code for response in outside] == [404, 405, 200]
+        place = await client.get("/places", params={"query": "Москва"})
+        assert place.status_code == 200
+        assert catalog.calls == [("Москва", 10)]
+
+    outside_ids = {response.headers["X-Request-ID"] for response in outside}
+    place_id = place.headers["X-Request-ID"]
+    assert len(outside_ids | {place_id}) == 4
+    assert all(UUID(request_id) for request_id in outside_ids | {place_id})
+    events = [record.getMessage() for record in caplog.records
+              if record.name == "exact_orb.http_api"
+              and record.getMessage().startswith((
+                  "http_request_started ", "http_request_finished ",
+              ))]
+    assert all(not any(f"request_id={request_id}" in event for event in events)
+               for request_id in outside_ids)
+    assert sum(event.startswith("http_request_started ")
+               and f"request_id={place_id}" in event for event in events) == 1
+    assert sum(event.startswith("http_request_finished ")
+               and f"request_id={place_id}" in event for event in events) == 1
+
+
 async def test_local_schema_flag_exposes_only_explicitly_enabled_route(
     runtime: RuntimeSpy, utc_clock, scheduler
 ) -> None:

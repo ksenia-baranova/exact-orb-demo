@@ -661,6 +661,13 @@ permit; незавершённые запросы обрываются, а со�
 owner завершился до обработки HTTP waiter. Подтверждённый результат клиент
 проверяет через bootstrap и current после перезапуска.
 
+В M1-6 этот 30-секундный watchdog действует только для `POST /charts/natal`.
+У bootstrap, current и places нет срока исполнения: зависший `ContextService`
+или `PlaceSearch` удерживает запрос и executor, но сам по себе не переводит
+процесс в unhealthy. Пока нет иной причины для unhealthy или shutdown,
+`/health/*` остаются 200. Это принятое ограничение FIND-HTTP-023;
+автоматическое обнаружение относится к M1-12.
+
 ## 10. Client IP и trusted proxy
 
 Direct mode: client IP равен ASGI peer; forwarding headers игнорируются.
@@ -777,7 +784,14 @@ result. Existing application/component events сохраняются.
 
 INFO не содержит body, query text, cookie, session ID, IP, birth data или
 ChartDTO. `http_request_finished` имеет INFO для 2xx/4xx, WARNING для 5xx,
-timeout, unexpected exception и cancellation; terminal event ровно один.
+timeout, unexpected exception и cancellation; terminal event ровно один для
+каждого совпавшего business-маршрута (bootstrap, current, places, build).
+`http_request_started`, `http_message`, `http_admission_rejected`,
+`http_cookie_replaced`, `chart_unavailable` и `http_request_finished`
+ограничены этими маршрутами. Ответы unmatched 404/405, `/health/*` и локального
+`/openapi.json` содержат `X-Request-ID`, но request events не пишут: route
+resolution происходит до цепочки §4.1. Переход процесса в unhealthy или
+shutdown отражают отдельные события watchdog, reaper failure и shutdown.
 
 ## 13. Acceptance scenarios
 
@@ -1024,7 +1038,9 @@ trusted `X-Forwarded-For` → 400 до cookie/admission; корректная ц
 - Lead утвердил DP-HTTP-01…06 и численные значения DP-HTTP-02/04.
 - OpenAPI фиксирует exact schemas, extra forbid и response variants.
 - HTTP и session diagrams согласованы с документом.
-- Не остаётся blocker, позволяющий admitted task держать capacity бесконечно.
+- Для build нет blocker, позволяющего admitted task держать calculation
+  capacity бесконечно без перехода в unhealthy. Отсутствие срока для non-build
+  запросов отдельно принято как ограничение FIND-HTTP-023.
 
 После реализации запускаются target HTTP tests, связанные
 application/session/catalog tests, `tests/test_module_boundaries.py`, затем
@@ -1056,6 +1072,8 @@ application/session/catalog tests, `tests/test_module_boundaries.py`, затем
 | FIND-HTTP-020 | process gate | старый ADR-0040 path исправлен; scope расширен; Gantt сохраняет подтверждённую исходную оценку | Lead-owned правки в рабочем плане подготовлены; интеграция в `change/*` ожидается |
 | FIND-HTTP-021 | Development Finding | нижняя граница permit при shared leader, точные AngleDTO/aspect IDs, разделение серверных и UI-доказательств AS-HTTP-17/19 | направления согласованы владельцем change; контракт уточнён в §7.2/§9.3 и AS-HTTP-17/19/24/28; S0 и исполняемое evidence ещё требуются |
 | FIND-HTTP-022 | Development Finding | приоритет одновременных rate/capacity отказов и точная форма BirthViewDTO при неизвестном времени | согласовано пользователем; контракт уточнён в §7.1/§9.1 и AS-HTTP-21/28; golden и исполняемое evidence ещё требуются |
+| FIND-HTTP-023 | accepted M1 limitation | bootstrap/current/places без watchdog: зависший leaf удерживает запрос и executor, health остаётся 200 при отсутствии иных причин unhealthy | принято владельцем change 2026-10-02; автоматическое обнаружение — условие M1-12 |
+| FIND-HTTP-024 | contract clarification | request events §12 относятся к совпавшим business-маршрутам; unmatched 404/405, health и local schema имеют `X-Request-ID` без request events | принято владельцем change 2026-10-02; `route=unmatched` без raw path — кандидат M1-12 |
 
 ### 15.1. Классификация после review PR #37 от 2026-09-30
 
@@ -1118,6 +1136,15 @@ shutdown не закрывает runtime под активным commit; fake su
 детерминированные lifecycle-тесты ещё требуются. Чистая birth-проекция
 `session_view` входит в M1-6, исходная оценка Gantt 0,5+1,5+1+1=4 дня сохранена.
 Предложение Analysis о 4 днях Development и 2 днях Testing не принято.
+
+### 15.3. Решения владельца change от 2026-10-02
+
+- FIND-HTTP-023 принимает отсутствие non-build deadline в M1-6. Условия
+  автоматического обнаружения и остановки перенесены в M1-12; локальный
+  proxy timeout даёт отдельный от ответа приложения результат.
+- FIND-HTTP-024 уточняет область уже реализованных событий §12. Расширение
+  request events на unmatched 404/405 с одним terminal event и
+  `route=unmatched`, без сырого path, рассматривается только в M1-12.
 
 ## 16. Sequence diagrams
 

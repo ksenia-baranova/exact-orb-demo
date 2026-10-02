@@ -1,6 +1,6 @@
 # Change plan: HTTP API and Session Middleware
 
-- **Статус:** Analysis PR #37 принят в `change/*`; решения DP-HTTP-01…06 и уточнения FIND-HTTP-021/022 подтверждены пользователем. Developer подготовил implementation plan и промты на `dev/*`; Gate A и реализация впереди.
+- **Статус на 2026-10-02:** Analysis PR #37 принят в `change/*`; решения DP-HTTP-01…06 и FIND-HTTP-021/022 подтверждены пользователем. Developer реализовал HTTP API и поправки 04a/07a/13a/13a.1/13b в `dev/*`; владелец change принял уточнения FIND-HTTP-023/024. Возврат Lead-owned правок в `change/*` по FIND-HTTP-020 и переход «Разработка → тестирование» ещё не выполнены.
 - **Change:** `change/http-api-and-session-middleware`.
 - **Roadmap:** M1-6, `feat/http-api-and-session-middleware`.
 - **Исходный `main`:** `e337f5107d7a3092983f1d920aac45040c2df6ed`.
@@ -52,6 +52,28 @@ HTTP-слой принимает запросы, вызывает существ
   анализ не обнаружит подтверждённую необходимость.
 - Отдельные инфраструктурные работы. Если они понадобятся, Lead дополнит границы change и назначит отдельную работу.
 
+### Условия M1-12, перенесённые из M1-6
+
+Решение владельца change от 2026-10-02 по FIND-HTTP-023/024: M1-6 принимает
+отсутствие application watchdog для bootstrap/current/places и ограниченный
+охват request events. Перед публичным M1-12 требуется:
+
+1. Scheduler-based watchdog для всех принятых business-запросов, переводящий
+   процесс в unhealthy при превышении срока без изменения публичных ответов.
+2. Supervisor, который реагирует на `503` от внутреннего `/health/live`,
+   останавливает старый process через SIGTERM и, если он не завершился в
+   пределах shutdown grace 30 секунд плюс запас, принудительно завершает его
+   через SIGKILL до запуска нового. Один `HEALTHCHECK` или `Restart=always`
+   без реакции на health недостаточен.
+3. Размещение SQLite-базы сессий на локальной файловой системе; NFS и SMB для
+   неё запрещены. Это согласуется с [ограничением SQLite WAL](https://www.sqlite.org/wal.html).
+4. Мониторинг журнала, сигнализирующий о `http_request_started` без парного
+   `http_request_finished` старше 30 секунд. Сигнал требует диагностики и
+   учёта route/deadline, поскольку сам по себе не доказывает вечное зависание.
+
+Это запись решения в Lead-owned плане на ветке Developer. Процессный
+FIND-HTTP-020 остаётся открытым до возврата правки в `change/*`.
+
 ## 4. Принятые входные артефакты
 
 Первая рабочая роль получает состояние `change/*` после принятия подготовительного PR. Источниками требований являются
@@ -95,7 +117,7 @@ HTTP-слой принимает запросы, вызывает существ
 |----------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------|---------------------------------|
 | Подготовка Lead — `lead/http-api-and-session-middleware` | протокол, change plan, журнал и список входных артефактов | PR #36 принят в `change/*` |
 | Анализ — `analysis/http-api-and-session-middleware` | HTTP requirements, 29 acceptance scenarios и sequence diagrams | PR #37 принят в `change/*`; решения Lead согласованы; формальный Tester review не записан |
-| Разработка — `dev/http-api-and-session-middleware` | implementation plan, код, автоматизированные тесты и review | draft implementation plan и 13 промтов в `c7e794a`; Gate A, код и тесты впереди |
+| Разработка — `dev/http-api-and-session-middleware` | implementation plan, код, автоматизированные тесты и review | HTTP API и поправки через 13b реализованы; полный pytest зелёный, переход к тестированию ещё не оформлен |
 | Тестирование — `test/http-api-and-session-middleware`    | ручная и исследовательская проверка, необходимые regression tests и evidence                                          | ожидает завершения разработки   |
 | Финальная приёмка Lead                                   | решение о готовности change к merge в `main` или возврат на доработку                                                 | ожидает завершения тестирования |
 
@@ -156,8 +178,8 @@ Request.
 ## 9. Текущее состояние
 
 - Подготовка Lead принята в `change/*` через PR #36. Analysis PR #37 принят в `change/*` с merge commit `f11275c`.
-- Developer работает в `dev/http-api-and-session-middleware`; [implementation plan](../implementation_plans/http_api_and_session_middleware_implementation_plan.md), G0 и промты 01–13 подготовлены, но Gate A не закрыт. Production code и исполняемые `tests/http_api/` не созданы; Testing не начат.
-- DP-HTTP-01…06 согласованы Lead 2026-09-30; для DP-HTTP-04 выбран вариант C в M1-6 и A как target state. Developer review выполнен; implementation evidence и формальный Tester review впереди.
+- Developer работает в `dev/http-api-and-session-middleware`; [implementation plan](../implementation_plans/http_api_and_session_middleware_implementation_plan.md), production code, `tests/http_api/` и поправки 04a/07a/13a/13a.1/13b созданы. Реализация прошла полный pytest (2952 passed после 13b); formal Tester review пользователь отменил. Этап Testing ещё не начат.
+- DP-HTTP-01…06 согласованы Lead 2026-09-30; для DP-HTTP-04 выбран вариант C в M1-6 и A как target state. Доказательства Developer записаны в implementation plan; FIND-HTTP-023/024 приняты владельцем change 2026-10-02 и уточняют локальное ограничение и охват событий.
 - FIND-HTTP-019 закрыт решением Lead: чистая birth-проекция включена, исходная оценка Gantt оставлена. Для FIND-HTTP-020 старый путь ADR и scope исправлены в этом плане; изменения Lead-owned документа ещё предстоит вернуть в `change/*` по процессу ролей.
-- FIND-HTTP-022 уточняет публичный контракт §7.1/§9.1: offset неизвестного времени равен `null`, а при одновременном исчерпании лимитов доминирует наиболее поздний rate bucket. Подтверждено пользователем; проверка Tester по G0 и implementation evidence впереди.
+- FIND-HTTP-022 уточняет публичный контракт §7.1/§9.1: offset неизвестного времени равен `null`, а при одновременном исчерпании лимитов доминирует наиболее поздний rate bucket. Подтверждено пользователем; автоматизированное evidence записано в implementation plan.
 - Финальный статус не присвоен.

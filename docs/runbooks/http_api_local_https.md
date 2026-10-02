@@ -71,6 +71,14 @@ Get-CimInstance Win32_Process -Filter "ProcessId = $($webPids[0])" |
 Raw ASGI peer остаётся адресом Caddy, поскольку Uvicorn запущен с
 `--no-proxy-headers`.
 
+Локальный Caddy ждёт заголовки ответа от Uvicorn не более 35 секунд после
+отправки upstream-запроса. Это ограничение прокси для зависшего запроса,
+а не watchdog приложения. Его часы начинаются раньше 30-секундного build
+watchdog, который запускается после проверок и admission, поэтому 35 секунд
+не гарантируют, что `504 BUILD_TIMEOUT` приложения всегда придёт первым.
+Ответ, созданный самим Caddy при timeout, не является `ErrorDTO` приложения
+и может не содержать `X-Request-ID`.
+
 [Logging configuration](http_api_local_logging.json) устанавливает INFO для
 всего `exact_orb`. События уровня INFO и выше пишутся в
 `logs/http-api/local.log` в корне репозитория, с ротацией по 10 MiB и пятью
@@ -103,6 +111,33 @@ process. Конкретный supervisor и ACL относятся к M1-12. С�
 сохранённый birth intent и chart с исходным запросом; новый `POST /charts/natal`
 возможен только как явное действие пользователя после этой сверки. Нельзя
 автоматически повторять POST или считать 503 автоматическим восстановлением.
+
+## Зависший non-build запрос
+
+В M1-6 у bootstrap, current и places нет application watchdog. Возможный
+признак зависшего запроса: клиент получил ошибку от прокси без
+`X-Request-ID` (её статус зависит от версии и причины; возможен 504) или
+продолжает ждать ответ, а прямые проверки
+`http://127.0.0.1:8000/health/live` и `/health/ready` дают 200. Публичный
+Caddy закрывает `/health/*` ответом 404, поэтому проверяйте внутренний
+Uvicorn listener. Proxy 504 не равен `504 BUILD_TIMEOUT` приложения.
+
+В `logs/http-api/local.log*` найдите `http_request_started` и проверьте,
+появился ли `http_request_finished` с тем же `request_id`. Например, подставьте
+UUID из строки начала и сравните timestamp записей:
+
+```powershell
+$requestId = '<UUID из http_request_started>'
+Select-String -Path 'logs/http-api/local.log*' -SimpleMatch "request_id=$requestId"
+```
+
+Начало без завершения старше 30 секунд — сигнал для диагностики, но одна
+непарная запись сама по себе не доказывает постоянное зависание. Сохраните
+журнал, включая архивы, и PID Uvicorn. Для восстановления примените тот же
+порядок, что при fail-fast: `Stop-Process -Id <PID> -Force`, убедитесь, что
+listener `127.0.0.1:8000` исчез, запустите ровно один новый процесс, затем
+выполните bootstrap и current для сверки состояния. Не запускайте второй
+Uvicorn рядом с зависшим процессом.
 
 ## Проверенное и ограничение стенда
 
