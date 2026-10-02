@@ -1,7 +1,7 @@
 # M1-6 — HTTP API and Session Middleware: implementation plan
 
 **Дата:** 2026-09-30. **Ветка:** dev/http-api-and-session-middleware от f11275c.
-**Статус на 2026-10-02:** промты 01–13 и поправки 04a/07a/13a исполнены в `dev/http-api-and-session-middleware`; полный pytest зелёный (2949 passed, §25). Вопросы Analysis/Lead из §25 открыты. Исторический Tester review Analysis/test design описан ниже; обязательный формальный Tester review пользователь отменил отдельным указанием.
+**Статус на 2026-10-02:** промты 01–13 и поправки 04a/07a/13a/13a.1 исполнены в `dev/http-api-and-session-middleware`; полный pytest зелёный (2951 passed, §25.1). Вопросы Analysis/Lead из §25 открыты. Исторический Tester review Analysis/test design описан ниже; обязательный формальный Tester review пользователь отменил отдельным указанием.
 **Оценка:** действующий Gantt не меняется: Lead 0,5, Analysis 1,5, Development 1, Testing 1 рабочего дня; всего 4.
 
 Четыре дня — сохранённая Lead календарная оценка, а не оценка Developer по 13 промтам. **Предварительная оценка Developer для review: минимум 4 дня разработки и 2 дня тестирования** (с учётом четырёх маршрутов, DTO, admission, cancellation/ownership, watchdog, локального HTTPS и 29 acceptance scenarios); вместе с Lead 0,5 и Analysis 1,5 это минимум 8 рабочих дней. Это не изменение Gantt. Нижняя граница предполагает, что ранний S0 не потребует нового публичного component API, отдельного worker или переработки ownership. После S0 Developer уточняет оценку и передаёт Lead расхождение с действующим 1+1 и влияние на критический путь. Только Lead меняет Gantt отдельным решением; прежние 4 дня не выдаются за технически подтверждённый срок.
@@ -76,6 +76,7 @@ ADR-0040 пересмотрел свой исторический вариант
 | [12](../../../prompts/2026-09-30/http-api-and-session-middleware/12-deadline-shutdown.md) | Task registry всех принятых requests, disconnect, watchdog/shutdown | S0, 05, 10–11 | Build permit/leader ownership, все активные request/leaf и зависший active reaper до close, fail-fast restart; уточнение приёмки после 11 — §21 |
 | [13](../../../prompts/2026-09-30/http-api-and-session-middleware/13-integration-handoff.md) | Logs, Caddy/mkcert HTTPS path, OpenAPI и полная приёмка | 05–12 | AS-HTTP-01…29, один web process, ручной restart без supervisor, module boundaries, pytest, evidence |
 | [13a](../../../prompts/2026-09-30/http-api-and-session-middleware/13a-review-corrections-12-13.md) | Поправки после независимого ревью реализации 12–13 другой моделью | 12–13, `7de962a` | Shutdown после grace, внешний fail-fast termination, локальный INFO-журнал, watchdog race, полный pytest; частично принятые вопросы — §24 |
+| [13a.1](../../../prompts/2026-09-30/http-api-and-session-middleware/13a1-shutdown-checkpoint-regression.md) | Регрессии shutdown checkpoint после дополнительного ревью другой моделью | 13a | Отмена build owner без active leader; конечность ожидания завершённых, но зарегистрированных задач — §25.1 |
 
 S0 исследует cancellation до первого промта: перечислить точки отмены `execute`, shielded calculation leader, protected commit, SQLite и catalog executor futures; для каждой указать наблюдаемый terminal signal, владельца permit и допустимость `runtime.aclose()`. Для двух waiters одного leader каждый принятый запрос имеет свой permit. При отмене одного waiter проверить консервативный вариант: после завершения `execute` взять snapshot всех активных resolver leaders и удержать permit до их terminal outcome; unrelated leader вправе задержать release. Доказать, что snapshot не пропускает собственный leader при гонке отмены, и отдельно учесть protected commit и оставшиеся executor futures. `runtime.drain()` разрешён как кандидат на этот общий snapshot, но не выдаётся за точный per-request signal. Сверить existing cancelled-waiter test и перечислить недостающие доказательства для 04/12; в read-only S0 production и тестовый код не менять. Результат — записка в плане/журнале с безопасным release condition, тестовыми условиями и влиянием на оценку. Если нижнюю границу нельзя обеспечить без изменения публичного API или границ, оформить Development Finding и не объявлять Gate A пройденным. Не переносить решение в промт 12.
 
@@ -820,3 +821,35 @@ resolution до pipeline, поэтому новые события сейчас 
 
 Формальный Tester review ранее отменён пользователем. Реальный HTTPS/Caddy,
 сетевые и платные smoke, PlantUML rendering, commit, push и PR не выполнялись.
+
+## 25.1. Поправка shutdown checkpoint после дополнительного ревью другой моделью (2026-10-02)
+
+По запросу пользователя подготовлен и исполнен [промт 13a.1](../../../prompts/2026-09-30/http-api-and-session-middleware/13a1-shutdown-checkpoint-regression.md).
+Основание — замечания ревью другой моделью к конечному checkpoint после 13a:
+фиксированное число event-loop проходов не подтверждено тестом для отменённого
+на grace build owner без живого resolver leader; ветка с завершёнными, но ещё
+зарегистрированными tasks может ждать продвижения scheduler без конца.
+
+**Результат.** Первый новый тест подтвердил существующий путь: отменяемый
+`execute` успевает стартовать, после grace owner завершается, permit
+освобождается, и только затем закрываются runtime и каталог. У запроса одна
+terminal запись с исходным `request_id`. Production код этого пути не менялся.
+Второй тест воспроизвёл бесконечный цикл на завершённой записи registry при
+ручном scheduler (до исправления: `TimeoutError` после hang guard). Теперь
+`_wait_for_quiescence` даёт queued callbacks один event-loop checkpoint,
+сравнивает registry и при отсутствии продвижения возвращает fail-fast;
+изменяющаяся цепочка done callbacks тоже ограничена восемью проходами.
+Тест подтверждает, что shutdown завершается без продвижения scheduler,
+runtime и каталог сохраняются открытыми до внешней остановки. Публичный
+контракт §11.3 и порядок на sequence diagrams не менялись. После grace
+по-прежнему нет дополнительного wall-clock срока; длинный или зависший leaf
+может закончиться fail-fast.
+
+| Проверка | Фактический результат |
+| --- | --- |
+| `python -m pytest tests/http_api/test_lifecycle.py -q -k "shutdown_grace_cancelled_build_owner_releases_permit_before_close or shutdown_done_registry_entry_cannot_wait_for_unadvanced_clock" --tb=short -p no:cacheprovider` | До исправления: 1 passed, 1 failed (`TimeoutError` на stale registry); после исправления: 2 passed, 64 deselected |
+| `python -m pytest tests/http_api -q --tb=short -p no:cacheprovider` | 291 passed |
+| `python -m pytest -q --tb=short -p no:cacheprovider` | 2951 passed |
+
+Реальный HTTPS/Caddy, сетевые и платные smoke и PlantUML rendering не
+выполнялись. Коммит, push и PR не создавались этим промтом.

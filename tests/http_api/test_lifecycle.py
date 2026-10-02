@@ -1294,6 +1294,113 @@ async def test_shutdown_grace_cancelable_place_request_closes_in_order(
             await retained.aclose()
 
 
+async def test_shutdown_grace_cancelled_build_owner_releases_permit_before_close(
+    utc_clock, scheduler, caplog,
+) -> None:
+    from exact_orb.http_api.app import LifecyclePhase
+
+    caplog.set_level(logging.INFO, logger="exact_orb.http_api")
+    events: list[str] = []
+    runtime = CloseSpyRuntime(ScriptedContext(utc_clock), events)
+    catalog = CloseSpyCatalog(events)
+    blocked = BlockedOrchestrator()
+    runtime.orchestrator = blocked
+    app = _create_app(
+        runtime=runtime, catalog=catalog, utc_clock=utc_clock, scheduler=scheduler,
+        settings=http_settings(shutdown_grace_seconds=20),
+    )
+    lifespan = app.router.lifespan_context(app)
+    await lifespan.__aenter__()
+    exchange = RawConversation(app, _scope(
+        "POST", "/charts/natal", headers=[
+            (b"content-type", b"application/json"),
+            (b"cookie", COOKIE.encode("ascii")),
+        ],
+    ))
+    exchange.start()
+    exchange.put_body(BODY, more=False)
+    shutdown: asyncio.Task[object] | None = None
+    try:
+        await asyncio.wait_for(blocked.wait_count(1), timeout=GUARD)
+        assert app.state.admission.active_build_count == 1
+        shutdown = asyncio.create_task(lifespan.__aexit__(None, None, None))
+        await asyncio.wait_for(app.state.shutdown_started.wait(), timeout=GUARD)
+        await asyncio.wait_for(scheduler.wait_registered(20), timeout=GUARD)
+        assert not runtime.close_entered.is_set()
+        await scheduler.advance(20)
+        await asyncio.wait_for(shutdown, timeout=GUARD)
+
+        assert app.state.lifecycle_phase == LifecyclePhase.STOPPED
+        assert app.state.admission.active_build_count == 0
+        assert events == ["runtime.close", "catalog.close"]
+        assert len(blocked.calls) == 1
+        assert exchange.task is not None
+        await asyncio.wait_for(
+            asyncio.gather(exchange.task, return_exceptions=True), timeout=GUARD,
+        )
+        starts = [record for record in caplog.records
+                  if record.getMessage().startswith("http_request_started ")]
+        terminals = [record for record in caplog.records
+                     if record.getMessage().startswith("http_request_finished ")]
+        assert len(starts) == len(terminals) == 1
+        request_id = starts[0].getMessage().split("request_id=", 1)[1].split()[0]
+        assert f"request_id={request_id}" in terminals[0].getMessage()
+        assert "outcome=cancelled" in terminals[0].getMessage()
+    finally:
+        blocked.release_all()
+        if exchange.task is not None and not exchange.task.done():
+            await asyncio.wait_for(
+                asyncio.gather(exchange.task, return_exceptions=True), timeout=GUARD,
+            )
+        if shutdown is None:
+            await lifespan.__aexit__(None, None, None)
+        elif not shutdown.done():
+            await asyncio.wait_for(shutdown, timeout=GUARD)
+        retained = getattr(app.state, "retained_resources", None)
+        if retained is not None:
+            await retained.aclose()
+
+
+async def test_shutdown_done_registry_entry_cannot_wait_for_unadvanced_clock(
+    utc_clock, scheduler,
+) -> None:
+    from exact_orb.http_api.app import LifecyclePhase
+
+    events: list[str] = []
+    runtime = CloseSpyRuntime(ScriptedContext(utc_clock), events)
+    catalog = CloseSpyCatalog(events)
+    app = _create_app(
+        runtime=runtime, catalog=catalog, utc_clock=utc_clock, scheduler=scheduler,
+        settings=http_settings(shutdown_grace_seconds=20),
+    )
+    lifespan = app.router.lifespan_context(app)
+    await lifespan.__aenter__()
+
+    async def completed_request() -> None:
+        return None
+
+    stale = asyncio.create_task(completed_request())
+    await stale
+    # Reproduces a done callback that failed to clear its lifecycle registry.
+    app.state.active_requests.add(stale)
+    shutdown = asyncio.create_task(lifespan.__aexit__(None, None, None))
+    try:
+        await asyncio.wait_for(shutdown, timeout=GUARD)
+        assert scheduler.now() == 0
+        assert app.state.lifecycle_phase == LifecyclePhase.UNHEALTHY
+        assert events == []
+        assert not runtime.closed and not catalog.closed
+        assert getattr(app.state, "retained_resources", None) is not None
+    finally:
+        app.state.active_requests.discard(stale)
+        if not shutdown.done():
+            await scheduler.advance(20)
+            await asyncio.wait_for(shutdown, timeout=GUARD)
+        retained = getattr(app.state, "retained_resources", None)
+        if retained is not None:
+            await retained.aclose()
+
+
 async def test_build_owner_cancelled_before_first_step_releases_permit(
     utc_clock, scheduler, monkeypatch
 ) -> None:

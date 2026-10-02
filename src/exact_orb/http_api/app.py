@@ -238,6 +238,7 @@ async def _wait_for_quiescence(
 ) -> bool:
     """Wait for every accepted task and active reaper within shutdown grace."""
 
+    done_only_passes = 0
     while True:
         registered = _registered_tasks(app, reaper)
         if not registered:
@@ -245,11 +246,19 @@ async def _wait_for_quiescence(
         active = {task for task in registered if not task.done()}
         if not active:
             # A completed owner may still have a scheduled callback that
-            # registers its permit-release task.
+            # registers its permit-release task. A stale registry entry must
+            # not spin forever if the scheduler clock is not advancing.
             await asyncio.sleep(0)
+            updated = _registered_tasks(app, reaper)
+            if updated == registered:
+                return False
+            done_only_passes += 1
+            if done_only_passes >= 8:
+                return False
             if scheduler.now() >= deadline:
                 return False
             continue
+        done_only_passes = 0
         joined = asyncio.gather(
             *(asyncio.shield(task) for task in active), return_exceptions=True,
         )
