@@ -97,6 +97,8 @@ else transport-valid request
         else response deadline
             API --> Client : 504 BUILD_TIMEOUT; retryable=false; Retry-After:5\nno Set-Cookie (unchanged) if connection exists
             note over API, Orch
+            Once watchdog fires, this 504 wins even if owner reaches
+            terminal outcome before the route waiter resumes.
             Accepted task remains registered.
             Protected commit is retained and awaited.
             Each accepted request retains its own permit.

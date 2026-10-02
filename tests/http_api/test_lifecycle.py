@@ -997,6 +997,70 @@ async def test_5xx_timeout_and_disconnect_have_one_warning_terminal_each(
     assert terminal[0].levelno == logging.WARNING
 
 
+@pytest.mark.parametrize("deadline_first", (False, True))
+async def test_watchdog_wins_after_firing_even_if_owner_is_done_at_waiter_resume(
+    deadline_first: bool, app_client, runtime: RuntimeSpy, scheduler,
+    monkeypatch, caplog,
+) -> None:
+    from exact_orb.http_api.routes import build as build_module
+
+    caplog.set_level(logging.INFO, logger="exact_orb.http_api")
+    held = TerminalHeldOrchestrator(None)
+    runtime.orchestrator = held
+    route_wait_ready = asyncio.Event()
+    resume_route = asyncio.Event()
+    original_wait = asyncio.wait
+
+    async def wait_with_delayed_route_resume(tasks, *, return_when):
+        done, pending = await original_wait(tasks, return_when=return_when)
+        if (deadline_first and len(tasks) == 3
+                and any(task.get_name().startswith("exact_orb_build_")
+                        for task in tasks)):
+            route_wait_ready.set()
+            await resume_route.wait()
+            return {task for task in tasks if task.done()}, {
+                task for task in tasks if not task.done()
+            }
+        return done, pending
+
+    with monkeypatch.context() as patcher:
+        patcher.setattr(build_module.asyncio, "wait", wait_with_delayed_route_resume)
+        async with app_client(runtime, catalog=ScriptedCatalog()) as client:
+            request = asyncio.create_task(client.post(
+                "/charts/natal", json=_build(), headers={"Cookie": COOKIE},
+            ))
+            try:
+                await asyncio.wait_for(held.entered.wait(), timeout=GUARD)
+                if deadline_first:
+                    await asyncio.wait_for(scheduler.wait_registered(30), timeout=GUARD)
+                    await scheduler.advance(30)
+                    await asyncio.wait_for(route_wait_ready.wait(), timeout=GUARD)
+                    assert (await client.get("/health/live")).status_code == 503
+                    owner = next(iter(client.asgi_app.state.build_owners))
+                    held.release.set()
+                    await asyncio.wait_for(owner, timeout=GUARD)
+                    resume_route.set()
+                else:
+                    held.release.set()
+                response = await asyncio.wait_for(request, timeout=GUARD)
+                assert response.status_code == (504 if deadline_first else 422)
+                assert (await client.get("/health/live")).status_code == (
+                    503 if deadline_first else 200
+                )
+                if deadline_first:
+                    assert response.json()["code"] == "BUILD_TIMEOUT"
+                    assert response.headers["Retry-After"] == "5"
+                    assert response.headers.get_list("set-cookie") == []
+                terminals = _http_records(caplog, response.headers["X-Request-ID"])
+                assert sum(record.getMessage().startswith("http_request_finished ")
+                           for record in terminals) == 1
+            finally:
+                held.release.set()
+                resume_route.set()
+                if not request.done():
+                    await asyncio.wait_for(request, timeout=GUARD)
+
+
 class BlockingContext(ScriptedContext):
     def __init__(self, clock, operation: str) -> None:
         super().__init__(clock)
@@ -1027,6 +1091,49 @@ class BlockingCatalog(CloseSpyCatalog):
         self.entered.set()
         await self.release.wait()
         return await super().search(query, limit=limit)
+
+
+@pytest.mark.parametrize("route", ("bootstrap", "current", "places"))
+async def test_nonbuild_pending_leaf_has_no_deadline_or_health_probe(
+    route: str, utc_clock, scheduler,
+) -> None:
+    events: list[str] = []
+    context = BlockingContext(utc_clock, "create" if route == "bootstrap" else "load")
+    context.snapshots[SESSION_ID] = SessionSnapshot(
+        state=new_session(SESSION_ID, now=utc_clock()), dialog=(), chart=None,
+    )
+    runtime = CloseSpyRuntime(context, events)
+    catalog = BlockingCatalog(events)
+    app = _create_app(runtime=runtime, catalog=catalog,
+                      utc_clock=utc_clock, scheduler=scheduler)
+    lifespan = app.router.lifespan_context(app)
+    await lifespan.__aenter__()
+    if route == "bootstrap":
+        scope = _scope("POST", "/session/bootstrap",
+                       headers=[(b"content-type", b"application/json")])
+    elif route == "current":
+        scope = _scope("GET", "/charts/current", headers=[
+            (b"cookie", COOKIE.encode("ascii"))])
+    else:
+        scope = _scope("GET", "/places", query=b"query=Moscow")
+    exchange = RawConversation(app, scope)
+    exchange.start()
+    exchange.put_body(BOOTSTRAP_BODY if route == "bootstrap" else b"", more=False)
+    blocker = catalog if route == "places" else context
+    try:
+        await asyncio.wait_for(blocker.entered.wait(), timeout=GUARD)
+        await scheduler.advance(31)
+        assert exchange.task is not None and not exchange.task.done()
+        assert (await _raw(app, "GET", "/health/live"))[0] == 200
+        assert (await _raw(app, "GET", "/health/ready"))[0] == 200
+        blocker.release.set()
+        await exchange.finish()
+        assert _response(exchange.messages)[0] == 200
+    finally:
+        blocker.release.set()
+        if exchange.task is not None and not exchange.task.done():
+            await exchange.finish()
+        await lifespan.__aexit__(None, None, None)
 
 
 @pytest.mark.parametrize("route", ("bootstrap", "current", "places"))
@@ -1126,6 +1233,58 @@ async def test_shutdown_grace_fail_fast_preserves_active_build_and_open_resource
         await asyncio.wait_for(
             asyncio.gather(exchange.task, return_exceptions=True), timeout=GUARD,
         )
+        if shutdown is None:
+            await lifespan.__aexit__(None, None, None)
+        elif not shutdown.done():
+            await asyncio.wait_for(shutdown, timeout=GUARD)
+        retained = getattr(app.state, "retained_resources", None)
+        if retained is not None:
+            await retained.aclose()
+
+
+async def test_shutdown_grace_cancelable_place_request_closes_in_order(
+    utc_clock, scheduler, caplog,
+) -> None:
+    from exact_orb.http_api.app import LifecyclePhase
+
+    caplog.set_level(logging.INFO, logger="exact_orb.http_api")
+    events: list[str] = []
+    runtime = CloseSpyRuntime(ScriptedContext(utc_clock), events)
+    catalog = BlockingCatalog(events)
+    app = _create_app(
+        runtime=runtime, catalog=catalog, utc_clock=utc_clock, scheduler=scheduler,
+        settings=http_settings(shutdown_grace_seconds=20),
+    )
+    lifespan = app.router.lifespan_context(app)
+    await lifespan.__aenter__()
+    exchange = RawConversation(app, _scope("GET", "/places", query=b"query=Moscow"))
+    exchange.start()
+    shutdown: asyncio.Task[object] | None = None
+    try:
+        await asyncio.wait_for(catalog.entered.wait(), timeout=GUARD)
+        shutdown = asyncio.create_task(lifespan.__aexit__(None, None, None))
+        await asyncio.wait_for(app.state.shutdown_started.wait(), timeout=GUARD)
+        await asyncio.wait_for(scheduler.wait_registered(20), timeout=GUARD)
+        await scheduler.advance(20)
+        await asyncio.wait_for(shutdown, timeout=GUARD)
+        assert app.state.lifecycle_phase == LifecyclePhase.STOPPED
+        assert events == ["runtime.close", "catalog.close"]
+        assert exchange.task is not None and exchange.task.done()
+        terminals = [record for record in caplog.records
+                     if record.getMessage().startswith("http_request_finished ")]
+        starts = [record for record in caplog.records
+                  if record.getMessage().startswith("http_request_started ")]
+        assert len(starts) == 1
+        assert len(terminals) == 1
+        started_id = starts[0].getMessage().split("request_id=", 1)[1].split()[0]
+        assert f"request_id={started_id}" in terminals[0].getMessage()
+        assert "outcome=cancelled" in terminals[0].getMessage()
+    finally:
+        catalog.release.set()
+        if exchange.task is not None:
+            await asyncio.wait_for(
+                asyncio.gather(exchange.task, return_exceptions=True), timeout=GUARD,
+            )
         if shutdown is None:
             await lifespan.__aexit__(None, None, None)
         elif not shutdown.done():
@@ -1473,6 +1632,55 @@ async def test_cancelled_sqlite_session_load_future_blocks_shutdown_close(
             current = await client.get("/charts/current", headers={"Cookie": COOKIE})
             assert current.status_code == 200
             assert current.json()["status"] == "empty"
+
+
+async def test_disconnected_bootstrap_can_persist_without_delivered_cookie(
+    app_client, sqlite_restart, monkeypatch,
+) -> None:
+    loop = asyncio.get_running_loop()
+    worker_entered = asyncio.Event()
+    worker_release = threading.Event()
+    created_ids: list[str] = []
+    real_create = session_sqlite._sync_create
+
+    def held_create(backend: object, session_id: str, now: object) -> object:
+        created_ids.append(session_id)
+        loop.call_soon_threadsafe(worker_entered.set)
+        assert worker_release.wait(timeout=5)
+        return real_create(backend, session_id, now)
+
+    monkeypatch.setattr(session_sqlite, "_sync_create", held_create)
+    exchange: RawConversation | None = None
+    try:
+        async with sqlite_restart() as runtime:
+            async with app_client(runtime, limiter_policy=SmallLimiterPolicy(
+                session_create_ip=WindowLimit(1, 11),
+            )) as client:
+                exchange = RawConversation(client.asgi_app, _scope(
+                    "POST", "/session/bootstrap",
+                    headers=[(b"content-type", b"application/json")],
+                ))
+                exchange.start()
+                exchange.put_body(BOOTSTRAP_BODY, more=False)
+                await asyncio.wait_for(worker_entered.wait(), timeout=GUARD)
+                exchange.disconnect()
+                await asyncio.wait_for(exchange.disconnected.wait(), timeout=GUARD)
+                worker_release.set()
+                await exchange.finish()
+                assert exchange.messages == []
+                assert len(created_ids) == 1
+
+                denied = await client.post("/session/bootstrap", json={})
+                assert denied.status_code == 429
+                assert denied.json()["code"] == "SESSION_CREATE_RATE_LIMITED"
+            async with sqlite_restart() as fresh_runtime:
+                loaded = await fresh_runtime.context.load(created_ids[0])
+                assert isinstance(loaded, SessionSnapshot)
+                assert loaded.state.state_version == 0
+    finally:
+        worker_release.set()
+        if exchange is not None and exchange.task is not None and not exchange.task.done():
+            await exchange.finish()
 
 
 def _build_catalog_db(tmp_path: Path) -> Path:

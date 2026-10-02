@@ -19,6 +19,7 @@ generated artifact не входит в Git. Каталог читается б�
 $repoRoot = (Get-Location).Path
 $localDir = Join-Path $env:LOCALAPPDATA 'exact-orb-http'
 New-Item -ItemType Directory -Force -Path $localDir | Out-Null
+New-Item -ItemType Directory -Force -Path 'logs/http-api' | Out-Null
 $env:EXACT_ORB_LOCAL_CERT = Join-Path $localDir 'exact-orb.localhost.pem'
 $env:EXACT_ORB_LOCAL_KEY = Join-Path $localDir 'exact-orb.localhost-key.pem'
 mkcert -install
@@ -42,7 +43,7 @@ $env:WEB_CONCURRENCY = '1'
 В первом терминале запустите Uvicorn без reload и без его proxy-header rewrite:
 
 ```powershell
-python -m uvicorn exact_orb.http_server:create_local_app --factory --app-dir src --host 127.0.0.1 --port 8000 --workers 1 --no-proxy-headers --lifespan on --no-access-log
+python -m uvicorn exact_orb.http_server:create_local_app --factory --app-dir src --host 127.0.0.1 --port 8000 --workers 1 --no-proxy-headers --lifespan on --no-access-log --log-config docs/runbooks/http_api_local_logging.json
 ```
 
 Во втором терминале с теми же `EXACT_ORB_LOCAL_CERT` и
@@ -70,14 +71,32 @@ Get-CimInstance Win32_Process -Filter "ProcessId = $($webPids[0])" |
 Raw ASGI peer остаётся адресом Caddy, поскольку Uvicorn запущен с
 `--no-proxy-headers`.
 
-## После 504 или unhealthy без supervisor
+[Logging configuration](http_api_local_logging.json) устанавливает INFO для
+всего `exact_orb`. События уровня INFO и выше пишутся в
+`logs/http-api/local.log` в корне репозитория, с ротацией по 10 MiB и пятью
+архивными файлами. DEBUG полного component payload для HTTP-процесса
+отключён. Серверные события Uvicorn идут в stderr. Перед принудительной
+остановкой скопируйте `logs/http-api/local.log*` в отдельный каталог
+диагностики и сохраните вывод терминала. При штатном выходе Python закрывает
+logging handlers через `logging.shutdown()`; принудительная остановка этого
+не гарантирует, поэтому копирование делается заранее.
+
+## После 504, unhealthy или fail-fast shutdown без supervisor
 
 `504 BUILD_TIMEOUT` переводит прежний web process в unhealthy; оба health
-endpoint возвращают 503. Сохраните диагностический журнал и PID, принудительно
-завершите **старый** Uvicorn process (`Stop-Process -Id <PID> -Force`), затем
+endpoint возвращают 503. Тот же порядок требуется при
+`http_shutdown_finished outcome=fail_fast` во время обычной остановки:
+retained native/executor работа может не позволить Uvicorn завершиться самому.
+Сохраните диагностический журнал и PID, принудительно завершите **старый**
+Uvicorn process (`Stop-Process -Id <PID> -Force`), затем
 убедитесь, что listener на `127.0.0.1:8000` исчез. Только после этого
 запустите один новый process той же командой. Повторное открытие Caddy не
 создаёт новую application runtime.
+
+В deployment внешний supervisor обязан после grace сохранить доступную
+диагностику, принудительно завершить старый PID и запустить один новый web
+process. Конкретный supervisor и ACL относятся к M1-12. Сохранение ресурсов
+через `pop_all()` само по себе не завершает процесс.
 
 После нового ready восстановите существующую cookie через
 `POST /session/bootstrap` и выполните `GET /charts/current`. Сравните
@@ -87,11 +106,15 @@ endpoint возвращают 503. Сохраните диагностическ
 
 ## Проверенное и ограничение стенда
 
-На рабочем Python проверены `FastAPI 0.121.2`, `Uvicorn 0.38.0`,
-`httpx 0.28.1` и наличие опций `--factory`, `--workers`,
+На рабочем Python проверены `FastAPI 0.121.2`, `Starlette 0.49.3`,
+`Pydantic 2.12.4`, `Uvicorn 0.38.0`, `httpx 0.28.1` и наличие опций `--factory`, `--workers`,
 `--no-proxy-headers`, `--lifespan`. Запуск Caddy, mkcert и сетевой smoke в
 этом окружении не проверены: их исполняемые файлы отсутствуют. Синтаксис
 конфигурации основан на [reverse_proxy](https://caddyserver.com/docs/caddyfile/directives/reverse_proxy),
 [tls](https://caddyserver.com/docs/caddyfile/directives/tls),
 [bind](https://caddyserver.com/docs/caddyfile/directives/bind) и
 [mkcert](https://github.com/FiloSottile/mkcert).
+В `pyproject.toml` есть верхние границы FastAPI/Uvicorn `<1` и httpx `<0.29`,
+но нет lock-файла. Для M1-12 требуется решение о pin/lock при deployment;
+локально приведены только фактически проверенные версии. Loopback CIDR
+доверяет только локальному Caddy; production trusted proxy и ACL относятся к M1-12.

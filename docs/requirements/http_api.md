@@ -78,7 +78,7 @@ build и не позволяет возобновить получение от�
 | DP-HTTP-01 | четыре business endpoint и два health endpoint из §2; DTO и mapping ниже                                                              | согласовано Lead 2026-09-30; точные схемы фиксируются при реализации |
 | DP-HTTP-02 | session create 300/час на IP; build 20/час и 100/24ч на session, 300/час и 1500/24ч на IP; place search 120/мин на IP; 5 active build | согласовано всеми ролями; принято Lead в review PR #37                                                             |
 | DP-HTTP-03 | доверять только `X-Forwarded-For`/`X-Forwarded-Proto` от peer из CIDR allowlist; алгоритм §10                                         | Developer review выполнен; согласовано Lead 2026-09-30; исходный ASGI peer обязателен |
-| DP-HTTP-04 | body receive 5 с, build response deadline 30 с, shutdown grace 30 с; task ownership §9 и §11                                          | решение Lead: M1-6 — вариант C, target state — вариант A; Developer подтверждает реализацией и deterministic tests |
+| DP-HTTP-04 | body receive 5 с, build response deadline 30 с, shutdown grace 30 с; после grace только конечный event loop checkpoint без дополнительного срока; task ownership §9 и §11 | решение Lead: M1-6 — вариант C, target state — вариант A; Developer подтверждает реализацией и deterministic tests |
 | DP-HTTP-05 | четыре HTTP sequence и синхронизация session 001–003/006                                                                              | согласовано Lead 2026-09-30; реализация и сверка журналов впереди |
 | DP-HTTP-06 | расширить чистую `session_view` только проекцией birth из готового snapshot | scope согласован Lead; Developer подтвердил реализуемость; код и тесты впереди |
 
@@ -96,8 +96,9 @@ creation quota и пять active build. Это конфигурация кон�
 Для совпавшего route проверки выполняются строго в следующем порядке:
 
 1. присвоить server `request_id`, записать `http_request_started`;
-2. проверить lifecycle gate: во время shutdown business endpoint получает
-   `503 SERVICE_SHUTTING_DOWN`; health endpoint обрабатывается отдельно;
+2. проверить lifecycle gate: во время shutdown или в unhealthy состоянии
+   business endpoint получает `503 SERVICE_SHUTTING_DOWN` с
+   `Retry-After: 30`; health endpoint обрабатывается отдельно;
 3. определить client IP и проверить trusted forwarding headers — `400`;
 4. проверить `Origin` — `403 ORIGIN_NOT_ALLOWED`;
 5. для POST проверить `Content-Encoding`, media type и charset — `415`;
@@ -128,6 +129,8 @@ Bootstrap не требует cookie: отсутствие, одно непри�
   массивы не преобразуются в строки.
 - `birth_date` — ровно `YYYY-MM-DD`; несуществующая календарная дата вроде
   `1990-02-30` является schema `422 INVALID_REQUEST` с field `birth.date`.
+  OpenAPI request schema показывает лексическую форму; существование даты
+  проверяет `RequestBoundary` при обработке запроса.
 - Будущая дата и дата вне настроенного диапазона эфемерид синтаксически
   валидны, доходят до `BirthDataResolver` и возвращаются как
   `422 INPUT_REQUIRED`, issue `birth.date/UNSUPPORTED` с `min/max`.
@@ -626,6 +629,9 @@ Disconnect не откатывает admission quota. Каждый принят�
 собственный permit. До commit операция отменяется; после старта protected commit
 inner task удерживается и ожидается. Если commit подтвердился после
 disconnect/504, последующий bootstrap + current GET видит карту.
+При disconnect во время bootstrap create отправленная SQLite-запись может
+завершиться после ухода клиента: cookie тогда не доставлена, quota создания
+остаётся израсходованной, а запись удаляет обычный session reaper по TTL.
 Permit не освобождается раньше завершения всей работы, к которой запрос
 присоединился: его `execute`, общего single-flight расчёта и protected
 commit, если он начат. Завершение сокета или отменённого `execute` само по
@@ -650,6 +656,10 @@ permit; незавершённые запросы обрываются, а со�
 который можно завершить и заменить без перезапуска HTTP process.
 30 секунд ограничивают время до перехода здорового процесса в unhealthy,
 а не обещают фактическое освобождение permit или момент внешнего restart.
+Если watchdog уже зафиксировал истечение deadline, доступное соединение
+получает `504 BUILD_TIMEOUT`, `Retry-After: 5` и без `Set-Cookie`, даже если
+owner завершился до обработки HTTP waiter. Подтверждённый результат клиент
+проверяет через bootstrap и current после перезапуска.
 
 ## 10. Client IP и trusted proxy
 
@@ -719,11 +729,20 @@ monotonic clock. Следующий run планируется от заверш
    `ApplicationRuntime.aclose()`;
 7. внешний `SqlitePlaceCatalog`/executor закрывается последним.
 
+После grace отменённым задачам дают один конечный checkpoint event loop без
+нового таймера или продления 30 секунд. Ресурсы закрываются, только если к
+концу checkpoint все owners и retained futures завершены. Отменённый build
+owner может ждать `runtime.drain()` дольше checkpoint; в этом случае
+применяется fail-fast, а permit не объявляется освобождённым.
+
 Если по истечении shutdown grace остаётся protected/native task или
 SQLite/catalog executor future без terminal outcome, применяется выбранный для
 M1-6 вариант C: process становится unhealthy,
 `ApplicationRuntime.aclose()` под активной задачей не вызывается, внешний
-supervisor завершает и перезапускает process. Нельзя молча освободить permit,
+supervisor принудительно завершает старый PID после сохранения доступной
+диагностики и только затем запускает один новый web process. Обычный выход
+Uvicorn с retained native/executor работой не гарантирует завершение
+process. Нельзя молча освободить permit,
 оставив неучтённую работу, либо подавить cancellation/error. Developer обязан
 доказать этот порядок детерминированными тестами до acceptance DP-HTTP-04.
 

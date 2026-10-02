@@ -4,11 +4,18 @@ from __future__ import annotations
 
 from dataclasses import replace
 import logging
+import os
+from pathlib import Path
+import subprocess
+import sys
 
 import httpx
 import pytest
+from pydantic import ValidationError
 
 from exact_orb import http_server
+from exact_orb.http_api.dto import BuildNatalRequestDTO
+from exact_orb.http_api.request_boundary import BoundaryRejection, _build_body
 from tests.http_api.admission_cases import SmallLimiterPolicy, WindowLimit
 from tests.http_api.conftest import RuntimeSpy, ScriptedContext
 from tests.http_api.shared import ScriptedCatalog
@@ -23,8 +30,78 @@ LOCAL_ENV = {
 }
 
 
+def test_local_logging_config_records_package_info_without_debug_payload(tmp_path: Path) -> None:
+    repo = Path(__file__).resolve().parents[2]
+    config = repo / "docs/runbooks/http_api_local_logging.json"
+    (tmp_path / "logs/http-api").mkdir(parents=True)
+    source = """
+import json
+import logging
+import logging.config
+from pathlib import Path
+import sys
+from exact_orb.http_api.operation_logging import request_started, message
+
+logging.config.dictConfig(json.loads(Path(sys.argv[1]).read_text(encoding='utf-8')))
+request_started('request-1', 'GET', '/places', run_id=None)
+message('request-1', direction='send', peer='PlaceSearch', operation='search', message_type='Call')
+logging.getLogger('exact_orb.application.handlers.build_natal').info('public_component_transition')
+logging.getLogger('exact_orb.application.handlers.build_natal').debug('private_birth_payload')
+logging.getLogger('exact_orb.http_api').info(
+    'http_request_finished request_id=request-1 outcome=success status=200')
+logging.getLogger('exact_orb.http_api').info(
+    'http_shutdown_finished outcome=fail_fast active_count=1 duration_ms=30000')
+"""
+    environment = os.environ.copy()
+    environment["PYTHONPATH"] = str(repo / "src") + os.pathsep + environment.get("PYTHONPATH", "")
+    completed = subprocess.run(
+        [sys.executable, "-c", source, str(config)], cwd=tmp_path,
+        env=environment, capture_output=True, text=True, check=False,
+    )
+    assert completed.returncode == 0, completed.stderr
+    log = (tmp_path / "logs/http-api/local.log").read_text(encoding="utf-8")
+    for event in (
+        "http_request_started", "http_message", "public_component_transition",
+        "http_request_finished", "http_shutdown_finished outcome=fail_fast",
+    ):
+        assert event in log
+    assert "private_birth_payload" not in log
+
+
 def _response_schema(operation: dict, status: int) -> dict:
     return operation["responses"][str(status)]["content"]["application/json"]["schema"]
+
+
+@pytest.mark.parametrize("payload,accepted", (
+    ({"birth_date": "2024-02-29", "birth_time": None, "place_id": "A"}, True),
+    ({"birth_date": "2024-02-29", "birth_time": "23:59", "place_id": "A" * 128}, True),
+    ({"birth_date": "2024-02-29", "birth_time": "24:00", "place_id": "A"}, False),
+    ({"birth_date": "2024-02-29", "birth_time": None, "place_id": ""}, False),
+    ({"birth_date": "2024-02-29", "birth_time": None, "place_id": "A" * 129}, False),
+    ({"birth_date": "2024-02-29", "place_id": "A"}, False),
+    ({"birth_date": "2024-02-29", "birth_time": None, "place_id": "A", "extra": 1}, False),
+))
+def test_openapi_build_shape_and_runtime_boundary_share_structural_grammar(
+    payload: dict, accepted: bool,
+) -> None:
+    try:
+        BuildNatalRequestDTO.model_validate(payload)
+        schema_accepts = True
+    except ValidationError:
+        schema_accepts = False
+    try:
+        _build_body(payload)
+        runtime_accepts = True
+    except BoundaryRejection:
+        runtime_accepts = False
+    assert schema_accepts is runtime_accepts is accepted
+
+
+def test_calendar_reality_is_runtime_validation_beyond_openapi_shape() -> None:
+    payload = {"birth_date": "2026-02-31", "birth_time": None, "place_id": "A"}
+    assert BuildNatalRequestDTO.model_validate(payload).birth_date == "2026-02-31"
+    with pytest.raises(BoundaryRejection):
+        _build_body(payload)
 
 
 def test_openapi_exact_public_shapes_and_response_variants() -> None:

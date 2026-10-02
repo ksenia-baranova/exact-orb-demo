@@ -239,15 +239,17 @@ async def _wait_for_quiescence(
     """Wait for every accepted task and active reaper within shutdown grace."""
 
     while True:
-        active = {
-            task for task in (
-                *app.state.active_requests, *app.state.build_owners,
-                *app.state.build_watchdogs, reaper,
-            )
-            if not task.done()
-        }
-        if not active:
+        registered = _registered_tasks(app, reaper)
+        if not registered:
             return True
+        active = {task for task in registered if not task.done()}
+        if not active:
+            # A completed owner may still have a scheduled callback that
+            # registers its permit-release task.
+            await asyncio.sleep(0)
+            if scheduler.now() >= deadline:
+                return False
+            continue
         joined = asyncio.gather(
             *(asyncio.shield(task) for task in active), return_exceptions=True,
         )
@@ -268,6 +270,27 @@ async def _wait_for_quiescence(
             if not joined.done():
                 joined.cancel()
                 await asyncio.gather(joined, return_exceptions=True)
+
+
+def _registered_tasks(app: FastAPI, reaper: asyncio.Task[None]) -> set[asyncio.Task[Any]]:
+    tasks = {
+        *app.state.active_requests, *app.state.build_owners,
+        *app.state.build_watchdogs,
+    }
+    if not reaper.done():
+        tasks.add(reaper)
+    return tasks
+
+
+async def _post_cancel_checkpoint(app: FastAPI, reaper: asyncio.Task[None]) -> bool:
+    """Drain only ready cancellation callbacks, with no new wall-clock grace."""
+
+    rounds = 8 * max(1, len(_registered_tasks(app, reaper)))
+    for _ in range(rounds):
+        await asyncio.sleep(0)
+        if not _registered_tasks(app, reaper):
+            return True
+    return not _registered_tasks(app, reaper)
 
 
 def _active_count(app: FastAPI, reaper: asyncio.Task[None]) -> int:
@@ -345,6 +368,11 @@ def create_app(
                 released_resources = await _wait_for_quiescence(
                     app, reaper_task, scheduler=scheduler, deadline=deadline,
                 )
+                if not released_resources:
+                    for task in (*app.state.active_requests, *app.state.build_owners):
+                        if not task.done():
+                            task.cancel()
+                    released_resources = await _post_cancel_checkpoint(app, reaper_task)
                 if released_resources:
                     try:
                         await reaper_task
@@ -355,9 +383,6 @@ def create_app(
                         )
                 else:
                     app.state.lifecycle_phase = LifecyclePhase.UNHEALTHY
-                    for task in (*app.state.active_requests, *app.state.build_owners):
-                        if not task.done():
-                            task.cancel()
                     app.state.retained_resources = resources.pop_all()
                     _LOG.info(
                         "http_shutdown_finished outcome=fail_fast active_count=%s duration_ms=%s",

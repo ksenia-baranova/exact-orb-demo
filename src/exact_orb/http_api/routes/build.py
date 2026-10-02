@@ -322,6 +322,15 @@ async def build(request: Request) -> JSONResponse:
             except asyncio.CancelledError:
                 pass
             raise ClientDisconnected
+        # The watchdog may have marked the process unhealthy before this
+        # waiter resumes, even when the owner is now also terminal.
+        if watchdog.done() and watchdog.result():
+            return _failure(
+                prepared.request_id, code="BUILD_TIMEOUT",
+                detail_code="OPERATION_DEADLINE_EXCEEDED",
+                message="Расчёт не завершился вовремя. Проверьте текущую карту.",
+                retryable=False, status=504, retry_after=5,
+            )
         if owner in done or (watchdog in done and not watchdog.result()):
             try:
                 result = owner.result()

@@ -1,7 +1,7 @@
 # M1-6 — HTTP API and Session Middleware: implementation plan
 
 **Дата:** 2026-09-30. **Ветка:** dev/http-api-and-session-middleware от f11275c.
-**Статус:** тестовые промты 01–04 и поправки 04a подготовлены в `dev/http-api-and-session-middleware`. Production HTTP-код ещё отсутствует. Исторический Tester review Analysis/test design описан ниже; обязательный формальный Tester review пользователь отменил отдельным указанием.
+**Статус на 2026-10-02:** промты 01–13 и поправки 04a/07a/13a исполнены в `dev/http-api-and-session-middleware`; полный pytest зелёный (2949 passed, §25). Вопросы Analysis/Lead из §25 открыты. Исторический Tester review Analysis/test design описан ниже; обязательный формальный Tester review пользователь отменил отдельным указанием.
 **Оценка:** действующий Gantt не меняется: Lead 0,5, Analysis 1,5, Development 1, Testing 1 рабочего дня; всего 4.
 
 Четыре дня — сохранённая Lead календарная оценка, а не оценка Developer по 13 промтам. **Предварительная оценка Developer для review: минимум 4 дня разработки и 2 дня тестирования** (с учётом четырёх маршрутов, DTO, admission, cancellation/ownership, watchdog, локального HTTPS и 29 acceptance scenarios); вместе с Lead 0,5 и Analysis 1,5 это минимум 8 рабочих дней. Это не изменение Gantt. Нижняя граница предполагает, что ранний S0 не потребует нового публичного component API, отдельного worker или переработки ownership. После S0 Developer уточняет оценку и передаёт Lead расхождение с действующим 1+1 и влияние на критический путь. Только Lead меняет Gantt отдельным решением; прежние 4 дня не выдаются за технически подтверждённый срок.
@@ -75,6 +75,7 @@ ADR-0040 пересмотрел свой исторический вариант
 | [11](../../../prompts/2026-09-30/http-api-and-session-middleware/11-build-endpoint.md) | Build endpoint, обычный owner terminal/release и mapping | 07–08, 10 | Один execute, release permit при terminal outcome, AS-HTTP-12 и последовательные build; cancellation в 12 |
 | [12](../../../prompts/2026-09-30/http-api-and-session-middleware/12-deadline-shutdown.md) | Task registry всех принятых requests, disconnect, watchdog/shutdown | S0, 05, 10–11 | Build permit/leader ownership, все активные request/leaf и зависший active reaper до close, fail-fast restart; уточнение приёмки после 11 — §21 |
 | [13](../../../prompts/2026-09-30/http-api-and-session-middleware/13-integration-handoff.md) | Logs, Caddy/mkcert HTTPS path, OpenAPI и полная приёмка | 05–12 | AS-HTTP-01…29, один web process, ручной restart без supervisor, module boundaries, pytest, evidence |
+| [13a](../../../prompts/2026-09-30/http-api-and-session-middleware/13a-review-corrections-12-13.md) | Поправки после независимого ревью реализации 12–13 другой моделью | 12–13, `7de962a` | Shutdown после grace, внешний fail-fast termination, локальный INFO-журнал, watchdog race, полный pytest; частично принятые вопросы — §24 |
 
 S0 исследует cancellation до первого промта: перечислить точки отмены `execute`, shielded calculation leader, protected commit, SQLite и catalog executor futures; для каждой указать наблюдаемый terminal signal, владельца permit и допустимость `runtime.aclose()`. Для двух waiters одного leader каждый принятый запрос имеет свой permit. При отмене одного waiter проверить консервативный вариант: после завершения `execute` взять snapshot всех активных resolver leaders и удержать permit до их terminal outcome; unrelated leader вправе задержать release. Доказать, что snapshot не пропускает собственный leader при гонке отмены, и отдельно учесть protected commit и оставшиеся executor futures. `runtime.drain()` разрешён как кандидат на этот общий snapshot, но не выдаётся за точный per-request signal. Сверить existing cancelled-waiter test и перечислить недостающие доказательства для 04/12; в read-only S0 production и тестовый код не менять. Результат — записка в плане/журнале с безопасным release condition, тестовыми условиями и влиянием на оценку. Если нижнюю границу нельзя обеспечить без изменения публичного API или границ, оформить Development Finding и не объявлять Gate A пройденным. Не переносить решение в промт 12.
 
@@ -725,3 +726,97 @@ AS-HTTP-01…29 имеют исполняемое покрытие; оконча
 зелёный из-за указанной независимой от HTTP изоляции логгера. Формальный
 Tester review ранее отменён пользователем. Платные/сетевые smoke-тесты,
 реальный HTTPS запуск, PlantUML rendering, commit, push и PR не выполнялись.
+
+## 24. Подготовлен промт 13a после ревью другой моделью (2026-10-02)
+
+После коммита `7de962a` другая модель проверила реализацию 12–13 и передала
+замечания. Developer сверил их с текущим кодом, `http_api.md` §4.1/§9.3/
+§11.3/§12, change plan и тестами, не меняя production code. По прямому
+запросу пользователя создан [поправочный промт 13a](../../../prompts/2026-09-30/http-api-and-session-middleware/13a-review-corrections-12-13.md).
+Промт **подготовлен, но не исполнен**; результаты §23 и незелёный полный
+`pytest` остаются фактическим состоянием.
+
+Подтверждённые поправки: после shutdown grace код отменяет задачи и сразу
+переходит к fail-fast, не проверяя, завершилась ли отменяемая работа перед
+`aclose()`; нормальное завершение OS process с retained native/executor
+работой не гарантировано, а runbook описывает принудительное завершение
+только после 504; локальный `create_local_app` не настраивает запись INFO
+HTTP-событий; возможен порядок, при котором watchdog уже сделал process
+unhealthy, а позднее завершившийся owner получает обычный ответ; полный
+`pytest` имеет известный зависящий от порядка сбой изоляции CLI logger и
+не закрывает gate «Разработка → тестирование». Промт требует исправить эти
+сценарии с deterministic tests и сохранить внешний ownership принудительного
+завершения process: `os._exit` внутри HTTP-приложения не выбран.
+
+Частично принятые вопросы оставлены с явной проверкой/решением до изменения
+контракта: non-build зависание и возможный deadline; `uncancel()` только при
+воспроизводимом сбое; persisted bootstrap record без доставленной cookie;
+применение существующего `SERVICE_SHUTTING_DOWN` к unhealthy; область §12
+для 404/405; OpenAPI/runtime parity; локальный loopback trusted proxy и
+воспроизводимость версий без lock-файла. Non-build deadline и область
+HTTP lifecycle events требуют решения Analysis/Lead, если меняют публичное
+поведение. Число SQLite workers, зависимость, ACL/manifest и уровни событий
+не меняются автоматически. Формальный Tester review остаётся отменённым
+прямым указанием пользователя; живой HTTPS/Caddy smoke в §23 не заявлен.
+
+Проверки исполнения 13a, изменение requirements/sequence и новый Git commit
+пока не выполнялись. Для этой записи ожидается только проверка ссылок и
+`git diff --check`.
+
+## 25. Исполнение промта 13a после ревью другой моделью (2026-10-02)
+
+По запросу пользователя исполнен [промт 13a](../../../prompts/2026-09-30/http-api-and-session-middleware/13a-review-corrections-12-13.md).
+Уточнения пользователя перед исполнением закреплены явно: после shutdown
+grace нет дополнительного wall-clock срока, только конечный checkpoint
+event loop; локальный HTTP process пишет INFO для всего `exact_orb`, без
+DEBUG payload; сработавший watchdog имеет приоритет над поздним owner outcome
+и отвечает `504 BUILD_TIMEOUT`, `Retry-After: 5`, без `Set-Cookie`.
+
+**Исправлено и доказано.** Shutdown отменяет оставшиеся request/build owner
+tasks после grace, даёт их terminal callbacks конечный checkpoint и повторно
+считает зарегистрированных владельцев перед `runtime.aclose()`. Мгновенно
+отменяемый `/places` закрывает runtime, затем каталог; живой retained leaf
+остаётся fail-fast без преждевременного close. Runbook требует от внешнего
+supervisor после сохранения диагностики принудительно завершить старый PID
+для любого fail-fast и только затем запускать новый. Локальный Uvicorn
+получил [logging config](../../runbooks/http_api_local_logging.json) с INFO
+на всём `exact_orb`, диагностическим `logs/http-api/local.log`, ротацией
+10 MiB/5 файлов и stderr для Uvicorn. Изолированный test проверяет запись
+HTTP-событий и отсутствие DEBUG payload. Гонка watchdog/owner покрыта двумя
+управляемыми порядками; diagram 003 и `http_api.md` синхронизированы.
+CLI-тесты теперь восстанавливают handlers, level, propagate и logging state;
+последующий catalog warning захватывается без ослабления проверки.
+
+**Частично принятые замечания.** Управляемые зависшие bootstrap/current/places
+после 31 с оставляют health 200: non-build deadline в M1-6 отсутствует.
+`sqlite_max_workers=1` остаётся локальным ограничением; повышение числа
+workers не устраняет зависание. Inspection `track_request`/`observe_disconnect`
+не выявил следующего `TaskGroup`/`asyncio.timeout` в той же отменённой задаче,
+для которого нужен `uncancel()`; без воспроизведения код не менялся. Реальная
+SQLite подтвердила persisted bootstrap record после disconnect без доставленной
+cookie и уже потраченную quota; запись удаляется штатным TTL reaper, что
+уточнено в §9.3. Существующий unhealthy ответ уточнён как
+`503 SERVICE_SHUTTING_DOWN`, `Retry-After: 30`. Проверка общих структурных
+build inputs для OpenAPI DTO и boundary проходит; календарная реальность
+остаётся runtime validation и описана отдельно. Локальные проверенные версии:
+FastAPI 0.121.2, Starlette 0.49.3, Pydantic 2.12.4, Uvicorn 0.38.0,
+httpx 0.28.1. Loopback trusted proxy зафиксирован как граница локального
+стенда; lock-файла пока нет.
+
+**Открыто для Analysis/Lead.** Нужно либо принять отсутствие non-build deadline
+в M1-6, либо определить scheduler-based deadline вместе с ownership submitted
+futures и unhealthy правилом. Нужно определить, относятся ли terminal events
+§12 также к unmatched 404/405, health и schema routes: §4.1 ставит route
+resolution до pipeline, поэтому новые события сейчас не добавлены. Для M1-12
+нужны deployment ACL/trusted proxy и решение о pin/lock зависимостей. Эти
+вопросы не скрывают зелёный тестовый результат и не объявлены закрытыми.
+
+| Проверка | Фактический результат |
+| --- | --- |
+| `python -m pytest tests/http_api -q --tb=short -p no:cacheprovider` | 289 passed |
+| `python -m pytest tests/application tests/session tests/test_place_catalog_sqlite.py tests/test_place_catalog_search.py tests/test_place_catalog_builder.py tests/test_module_boundaries.py tests/test_logging.py -q --tb=short -p no:cacheprovider` | 1672 passed вне sandbox; первый запуск в sandbox: 1629 passed, 43 setup errors из-за запрета доступа к `%TEMP%/pytest-of-KateUser` |
+| `python -m pytest -q --tb=short -p no:cacheprovider` | 2949 passed вне sandbox, повторно на окончательной версии теста |
+| `git diff --check`; `python -m json.tool docs/runbooks/http_api_local_logging.json`; проверка относительных ссылок plan/runbook и одного парного блока `@startuml`/`@enduml` | без ошибок; PlantUML не рендерился |
+
+Формальный Tester review ранее отменён пользователем. Реальный HTTPS/Caddy,
+сетевые и платные smoke, PlantUML rendering, commit, push и PR не выполнялись.
