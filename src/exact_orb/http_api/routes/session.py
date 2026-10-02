@@ -12,6 +12,7 @@ from exact_orb.http_api.cookie import (
     clear_session_cookie, issue_session_cookie, new_session_id,
 )
 from exact_orb.http_api.dto import ErrorDTO
+from exact_orb.http_api.ownership import observe_disconnect, track_request
 from exact_orb.http_api.projectors import project_bootstrap, project_session_view
 from exact_orb.http_api.request_boundary import (
     BoundaryRejection, error_response, response_headers,
@@ -63,6 +64,7 @@ def _read_failed(request_id: str, failure: StateReadFailed) -> JSONResponse:
 
 
 @router.post("/session/bootstrap")
+@track_request
 async def bootstrap(request: Request) -> JSONResponse:
     try:
         prepared = await request.app.state.request_boundary.prepare(
@@ -71,6 +73,7 @@ async def bootstrap(request: Request) -> JSONResponse:
     except BoundaryRejection as rejected:
         return error_response(rejected)
 
+    observe_disconnect(request)
     context = request.app.state.runtime.context
     cookie = prepared.cookie
     reason = cookie.status
@@ -126,6 +129,7 @@ async def bootstrap(request: Request) -> JSONResponse:
 
 
 @router.get("/charts/current")
+@track_request
 async def current(request: Request) -> JSONResponse:
     try:
         prepared = await request.app.state.request_boundary.prepare(
@@ -134,6 +138,7 @@ async def current(request: Request) -> JSONResponse:
     except BoundaryRejection as rejected:
         return error_response(rejected)
 
+    observe_disconnect(request)
     session_id = prepared.cookie.value
     assert session_id is not None
     loaded = await request.app.state.runtime.context.load(session_id)

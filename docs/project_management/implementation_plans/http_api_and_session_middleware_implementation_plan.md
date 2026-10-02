@@ -73,7 +73,7 @@ ADR-0040 пересмотрел свой исторический вариант
 | [09](../../../prompts/2026-09-30/http-api-and-session-middleware/09-place-endpoint.md) | Place search endpoint | 06–07 для route; 10 для rate | Нет session access; typed outcomes и safe 500; place IP-limit подключён в 10 |
 | [10](../../../prompts/2026-09-30/http-api-and-session-middleware/10-admission.md) | Sliding limits и capacity; интеграция в готовые routes 08–09 | 06 и route-срезы 08–09 | Creation/place IP-limit, build reservation, доминирующий bucket §9.1; полный AS-HTTP-21 после обычного release в 11 |
 | [11](../../../prompts/2026-09-30/http-api-and-session-middleware/11-build-endpoint.md) | Build endpoint, обычный owner terminal/release и mapping | 07–08, 10 | Один execute, release permit при terminal outcome, AS-HTTP-12 и последовательные build; cancellation в 12 |
-| [12](../../../prompts/2026-09-30/http-api-and-session-middleware/12-deadline-shutdown.md) | Task registry всех принятых requests, disconnect, watchdog/shutdown | S0, 05, 10–11 | Build permit/leader ownership, все активные request/leaf и зависший active reaper до close, fail-fast restart |
+| [12](../../../prompts/2026-09-30/http-api-and-session-middleware/12-deadline-shutdown.md) | Task registry всех принятых requests, disconnect, watchdog/shutdown | S0, 05, 10–11 | Build permit/leader ownership, все активные request/leaf и зависший active reaper до close, fail-fast restart; уточнение приёмки после 11 — §21 |
 | [13](../../../prompts/2026-09-30/http-api-and-session-middleware/13-integration-handoff.md) | Logs, Caddy/mkcert HTTPS path, OpenAPI и полная приёмка | 05–12 | AS-HTTP-01…29, один web process, ручной restart без supervisor, module boundaries, pytest, evidence |
 
 S0 исследует cancellation до первого промта: перечислить точки отмены `execute`, shielded calculation leader, protected commit, SQLite и catalog executor futures; для каждой указать наблюдаемый terminal signal, владельца permit и допустимость `runtime.aclose()`. Для двух waiters одного leader каждый принятый запрос имеет свой permit. При отмене одного waiter проверить консервативный вариант: после завершения `execute` взять snapshot всех активных resolver leaders и удержать permit до их terminal outcome; unrelated leader вправе задержать release. Доказать, что snapshot не пропускает собственный leader при гонке отмены, и отдельно учесть protected commit и оставшиеся executor futures. `runtime.drain()` разрешён как кандидат на этот общий snapshot, но не выдаётся за точный per-request signal. Сверить existing cancelled-waiter test и перечислить недостающие доказательства для 04/12; в read-only S0 production и тестовый код не менять. Результат — записка в плане/журнале с безопасным release condition, тестовыми условиями и влиянием на оценку. Если нижнюю границу нельзя обеспечить без изменения публичного API или границ, оформить Development Finding и не объявлять Gate A пройденным. Не переносить решение в промт 12.
@@ -606,3 +606,75 @@ ADR и sequence diagram уже описывали этот поток и не м
 
 Сетевые/платные smoke-тесты и PlantUML rendering не запускались. Коммит,
 push и PR не создавались.
+
+## 21. Уточнение приёмки промта 12 после ревью промта 11 (2026-10-01)
+
+В текущем `routes/build.py` отмена самого owner task завершает его без
+`BuildPermit.release()`. Обычный HTTP waiter защищён `asyncio.shield`, поэтому
+штатные сценарии промта 11 проходят, но этот путь станет активным при
+disconnect/shutdown промта 12. Текущий lifespan также ещё не ждёт
+`build_owners` и закрывает runtime во время возможного `execute`.
+
+Приёмка 12 должна отдельно доказать оба перехода управляемыми `Event`/barrier
+и fake scheduler:
+
+1. При отмене принятого build owner permit остаётся занятым до terminal
+   outcome его `execute`, snapshot активных resolver leaders, protected commit
+   и переживших отмену SQLite/catalog executor futures по правилу S0. После
+   завершения всей удерживаемой работы owner освобождает permit ровно один раз;
+   следующий build допускается. Ни release в `finally` при ещё живом leaf,
+   ни постоянная потеря permit не удовлетворяют контракту. При превышении
+   deadline процесс переходит в fail-fast, не объявляя permit свободным.
+2. Shutdown при активном build owner, а также отдельно при каждом принятом
+   bootstrap/current/places, не вызывает `runtime.aclose()` и закрытие
+   каталога до terminal outcome соответствующих owners и surviving futures.
+   Проверка должна наблюдать порядок событий закрытия, включая protected
+   commit; при незавершённой работе после grace действует fail-fast без
+   закрытия занятого executor.
+
+Это уточнение уже принятой §9.3/§11.3 семантики и промта 12; публичные
+requirements, ADR и исторический файл промта не меняются. Исполнение 12 и
+его тесты зафиксированы в §22.
+
+## 22. Исполнение промта 12 — ownership, deadline и shutdown (2026-10-01)
+
+Все business route tasks регистрируются до boundary validation. После полного
+чтения тела GET/bootstrap наблюдают `http.disconnect`: waiter отменяется, но
+отправленный SQLite/catalog executor future удерживается до terminal outcome.
+Внутренний seam в обоих SQLite adapters ждёт submitted future даже после
+повторной отмены и только затем пробрасывает `CancelledError`; закрытие runtime
+и каталога не обгоняет native работу. Build имеет отдельные owner, watchdog и
+disconnect listener. Watchdog считает 30 секунд через injected scheduler и
+переводит процесс в unhealthy независимо от ответа клиенту; доступное
+соединение получает `504 BUILD_TIMEOUT` с `Retry-After: 5`, без изменения
+cookie. Disconnect до commit отменяет execute, а отменённый owner ждёт
+`runtime.drain()` snapshot resolver leaders и удерживает свой permit до
+завершения snapshot. Protected commit и executor futures удерживаются
+Orchestrator/adapter seam. Отмена owner до первого шага coroutine освобождает
+permit через registry: никакая leaf работа тогда ещё не начата.
+
+Shutdown закрывает admission, останавливает reaper и ждёт активные request,
+build owner и watchdog задачи до grace deadline. При нулевой активности
+`runtime.aclose()` и затем каталог закрываются в обычном обратном порядке.
+Если работа пережила grace, процесс становится unhealthy; сохранённый
+`AsyncExitStack` не закрывает занятые runtime/executor, и внешний supervisor
+должен завершить и заменить процесс. Этот внешний restart не выполняет само
+HTTP-приложение. Существующие fake-supervisor тесты подтверждают recovery на
+той же SQLite базе для pre-commit cancellation и protected commit после
+restart; новый fail-fast тест фиксирует сохранение ресурсов при зависшем build.
+Действующие §9.3/§11.3 requirements и build sequence уже описывают эту
+семантику, поэтому они не менялись.
+
+| Команда | Фактический результат |
+| --- | --- |
+| `python -m pytest tests/http_api/test_lifecycle.py -q -k build_owner_cancelled_before_first_step_releases_permit --tb=short -p no:cacheprovider` | 1 passed, 56 deselected |
+| `python -m pytest tests/http_api -q --tb=short --show-capture=no -p no:cacheprovider` | 265 passed, 5 failed: OpenAPI/schema response и HTTP logging из промта 13 |
+| `python -m pytest tests/test_module_boundaries.py -q --tb=short --show-capture=no -p no:cacheprovider` | 46 passed |
+| `python -m pytest tests/session/test_sqlite.py tests/test_place_catalog_sqlite.py tests/application/test_application_bootstrap_integration.py -q --tb=short --show-capture=no -p no:cacheprovider` | 295 passed; вне sandbox из-за системного pytest temp |
+| `python -m pytest -q --tb=short --show-capture=no -p no:cacheprovider` | 2923 passed, 6 failed: 5 schema/logging из промта 13 и известный зависящий от порядка запуска `test_tzdata_version_mismatch_warns_once_and_allows_open`; вне sandbox из-за системного pytest temp |
+| `python -m pytest tests/test_place_catalog_sqlite.py -q -k tzdata_version_mismatch_warns_once_and_allows_open --tb=short -p no:cacheprovider` | 1 passed, 28 deselected; вне sandbox |
+| `python -m compileall -q src/exact_orb/http_api src/exact_orb/session/adapters/sqlite.py src/exact_orb/birth/adapters/sqlite.py tests/http_api/test_lifecycle.py tests/http_api/test_build_admission.py` | exit 0 |
+| `git diff --check` | exit 0; Git предупредил только о будущей LF → CRLF нормализации working copy |
+
+Формальный Tester review ранее отменён пользователем. Платные/сетевые smoke-тесты и
+PlantUML rendering не запускались. Push и PR не создавались.

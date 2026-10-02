@@ -9,6 +9,7 @@ from exact_orb.birth.places import (
     InvalidPlaceQuery, PlaceCatalogUnavailableError, PlaceSuggestions,
 )
 from exact_orb.http_api.dto import ErrorDTO
+from exact_orb.http_api.ownership import observe_disconnect, track_request
 from exact_orb.http_api.projectors import project_places
 from exact_orb.http_api.request_boundary import (
     BoundaryRejection, error_response, response_headers,
@@ -33,6 +34,7 @@ def _place_error(
 
 
 @router.get("/places")
+@track_request
 async def places(request: Request) -> JSONResponse:
     try:
         prepared = await request.app.state.request_boundary.prepare(
@@ -41,6 +43,7 @@ async def places(request: Request) -> JSONResponse:
     except BoundaryRejection as rejected:
         return error_response(rejected)
 
+    observe_disconnect(request)
     query = prepared.query
     assert query is not None
     rejection = await request.app.state.admission.reserve_place_search(

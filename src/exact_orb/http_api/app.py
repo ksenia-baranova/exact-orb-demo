@@ -231,6 +231,44 @@ async def _reaper(
             )
 
 
+async def _wait_for_quiescence(
+    app: FastAPI, reaper: asyncio.Task[None], *, scheduler: Scheduler,
+    deadline: float,
+) -> bool:
+    """Wait for every accepted task and active reaper within shutdown grace."""
+
+    while True:
+        active = {
+            task for task in (
+                *app.state.active_requests, *app.state.build_owners,
+                *app.state.build_watchdogs, reaper,
+            )
+            if not task.done()
+        }
+        if not active:
+            return True
+        joined = asyncio.gather(
+            *(asyncio.shield(task) for task in active), return_exceptions=True,
+        )
+        timer = asyncio.create_task(scheduler.wait_until(deadline))
+        try:
+            done, _ = await asyncio.wait({joined, timer}, return_when=asyncio.FIRST_COMPLETED)
+            if joined in done:
+                continue
+            timer.result()
+            return False
+        except Exception as exc:
+            _LOG.error("http_shutdown_wait_failed safe_error=%s", type(exc).__name__)
+            return False
+        finally:
+            if not timer.done():
+                timer.cancel()
+                await asyncio.gather(timer, return_exceptions=True)
+            if not joined.done():
+                joined.cancel()
+                await asyncio.gather(joined, return_exceptions=True)
+
+
 def create_app(
     *,
     settings: object,
@@ -278,25 +316,39 @@ def create_app(
                     _LOG.error("session_reaper_task_failed safe_error=%s", type(error).__name__)
 
             reaper_task.add_done_callback(mark_reaper_failure)
+            app.state.reaper_task = reaper_task
             app.state.lifecycle_phase = LifecyclePhase.READY
+            released_resources = True
             try:
                 yield
             finally:
-                app.state.lifecycle_phase = LifecyclePhase.SHUTTING_DOWN
+                if app.state.lifecycle_phase != LifecyclePhase.UNHEALTHY:
+                    app.state.lifecycle_phase = LifecyclePhase.SHUTTING_DOWN
                 app.state.shutdown_started.set()
                 _LOG.info("http_shutdown_started")
                 stop_reaper.set()
-                try:
-                    await reaper_task
-                except Exception as exc:
-                    # The task failure was observed by mark_reaper_failure while
-                    # READY; shutdown still has to release its owned resources.
-                    _LOG.warning(
-                        "session_reaper_shutdown_join_failed safe_error=%s",
-                        type(exc).__name__,
-                    )
-        app.state.lifecycle_phase = LifecyclePhase.STOPPED
-        _LOG.info("http_shutdown_finished outcome=resources_released")
+                deadline = scheduler.now() + config.shutdown_grace_seconds
+                released_resources = await _wait_for_quiescence(
+                    app, reaper_task, scheduler=scheduler, deadline=deadline,
+                )
+                if released_resources:
+                    try:
+                        await reaper_task
+                    except Exception as exc:
+                        _LOG.warning(
+                            "session_reaper_shutdown_join_failed safe_error=%s",
+                            type(exc).__name__,
+                        )
+                else:
+                    app.state.lifecycle_phase = LifecyclePhase.UNHEALTHY
+                    for task in (*app.state.active_requests, *app.state.build_owners):
+                        if not task.done():
+                            task.cancel()
+                    app.state.retained_resources = resources.pop_all()
+                    _LOG.error("http_shutdown_finished outcome=fail_fast")
+        if released_resources:
+            app.state.lifecycle_phase = LifecyclePhase.STOPPED
+            _LOG.info("http_shutdown_finished outcome=resources_released")
 
     app = FastAPI(
         lifespan=lifespan,
@@ -313,6 +365,8 @@ def create_app(
         now=scheduler.now,
     )
     app.state.build_owners = set()
+    app.state.build_watchdogs = set()
+    app.state.active_requests = set()
     app.state.lifecycle_phase = LifecyclePhase.STARTING
     app.state.request_boundary = RequestBoundary(
         allowed_origins=config.allowed_origins,
@@ -323,6 +377,12 @@ def create_app(
         scheduler=scheduler,
         is_ready=lambda: app.state.lifecycle_phase == LifecyclePhase.READY,
     )
+
+    def mark_build_timeout() -> None:
+        if app.state.lifecycle_phase not in {LifecyclePhase.UNHEALTHY, LifecyclePhase.STOPPED}:
+            app.state.lifecycle_phase = LifecyclePhase.UNHEALTHY
+
+    app.state.mark_build_timeout = mark_build_timeout
 
     def request_id_for(request: Request) -> str:
         request_id = getattr(request.state, "request_id", None)

@@ -22,9 +22,10 @@ from exact_orb.birth.types import BirthInput
 from exact_orb.http_api.admission import AdmissionRejection, BuildPermit
 from exact_orb.http_api.cookie import clear_session_cookie, issue_session_cookie
 from exact_orb.http_api.dto import ErrorDTO, IssueDTO
+from exact_orb.http_api.ownership import track_request
 from exact_orb.http_api.projectors import project_build_already_applied, project_build_ready
 from exact_orb.http_api.request_boundary import (
-    BoundaryRejection, BuildPayload, error_response, response_headers,
+    BoundaryRejection, BuildPayload, ClientDisconnected, error_response, response_headers,
 )
 from exact_orb.run_context import RunContext
 
@@ -36,6 +37,39 @@ _ADMISSION_MESSAGES = {
     "BUILD_IP_RATE_LIMITED": "Слишком много построений из этой сети. Попробуйте позже.",
     "BUILD_CAPACITY_EXHAUSTED": "Все слоты расчёта заняты. Попробуйте позже.",
 }
+
+
+async def _await_terminal(task: asyncio.Task[Any]) -> Any:
+    """Keep a retained owner operation referenced through repeated cancellation."""
+
+    while True:
+        try:
+            return await asyncio.shield(task)
+        except asyncio.CancelledError:
+            if task.done():
+                return task.result()
+
+
+async def _watch_owner(app: Any, owner: asyncio.Task[Any], deadline: float) -> bool:
+    timer = asyncio.create_task(app.state.scheduler.wait_until(deadline))
+    try:
+        done, _ = await asyncio.wait({owner, timer}, return_when=asyncio.FIRST_COMPLETED)
+        if owner in done:
+            return False
+        timer.result()
+        app.state.mark_build_timeout()
+        return True
+    finally:
+        if not timer.done():
+            timer.cancel()
+            await asyncio.gather(timer, return_exceptions=True)
+
+
+async def _listen_disconnect(request: Request) -> None:
+    while True:
+        message = await request.receive()
+        if message["type"] == "http.disconnect":
+            return
 
 
 def _json(dto: Any, request_id: str, *, status: int = 200,
@@ -79,10 +113,11 @@ def _internal(request_id: str, *, session_id: str | None = None) -> JSONResponse
 
 async def _execute_owned(
     app: Any, *, permit: BuildPermit, payload: BuildPayload,
-    session_id: str, request_id: str,
+    session_id: str, request_id: str, started_execution: asyncio.Event,
 ) -> ApplicationResult | None:
     """Own a permit until one accepted execute reaches an ordinary terminal result."""
 
+    started_execution.set()
     try:
         started = app.state.utc_clock()
         run = RunContext(
@@ -96,16 +131,30 @@ async def _execute_owned(
         result = await app.state.runtime.orchestrator.execute(
             command, session_id=session_id, run=run,
         )
-    except asyncio.CancelledError:
-        # Cancellation and retained leaf ownership are completed in prompt 12.
-        raise
+    except asyncio.CancelledError as cancelled:
+        # execute owns protected commit and submitted executor futures; the
+        # runtime snapshot additionally owns any shielded single-flight leader.
+        try:
+            drain = asyncio.create_task(app.state.runtime.drain())
+            await _await_terminal(drain)
+        except Exception as exc:
+            app.state.mark_build_timeout()
+            _LOG.error(
+                "http_build_drain_failed request_id=%s safe_error=%s",
+                request_id, type(exc).__name__,
+            )
+            raise cancelled
+        release = asyncio.create_task(permit.release())
+        await _await_terminal(release)
+        raise cancelled
     except Exception as exc:
         _LOG.error(
             "http_unhandled_exception request_id=%s safe_error=%s",
             request_id, type(exc).__name__,
         )
         result = None
-    await permit.release()
+    release = asyncio.create_task(permit.release())
+    await _await_terminal(release)
     return result
 
 
@@ -171,6 +220,7 @@ def _map_result(result: ApplicationResult | None, *, request_id: str,
 
 
 @router.post("/charts/natal")
+@track_request
 async def build(request: Request) -> JSONResponse:
     try:
         prepared = await request.app.state.request_boundary.prepare(
@@ -193,15 +243,30 @@ async def build(request: Request) -> JSONResponse:
             status=admission.status_code, retry_after=admission.retry_after,
         )
 
+    started_execution = asyncio.Event()
     owner = asyncio.create_task(_execute_owned(
         request.app, permit=admission, payload=payload,
         session_id=session_id, request_id=prepared.request_id,
+        started_execution=started_execution,
     ), name=f"exact_orb_build_{prepared.request_id}")
     owners: set[asyncio.Task[Any]] = request.app.state.build_owners
     owners.add(owner)
+    watchdog = asyncio.create_task(_watch_owner(
+        request.app, owner,
+        request.app.state.scheduler.now() + request.app.state.settings.build_timeout_seconds,
+    ))
+    watchdogs: set[asyncio.Task[Any]] = request.app.state.build_watchdogs
+    watchdogs.add(watchdog)
 
     def forget_owner(task: asyncio.Task[Any]) -> None:
         owners.discard(task)
+        if task.cancelled() and not started_execution.is_set():
+            # A task cancelled before its first coroutine step never enters
+            # _execute_owned, so no leaf work exists and the permit is ours.
+            release = asyncio.create_task(admission.release())
+            owners.add(release)
+            release.add_done_callback(owners.discard)
+            return
         if not task.cancelled():
             error = task.exception()
             if error is not None:
@@ -211,12 +276,43 @@ async def build(request: Request) -> JSONResponse:
                 )
 
     owner.add_done_callback(forget_owner)
-    result = await asyncio.shield(owner)
+    watchdog.add_done_callback(watchdogs.discard)
+    disconnect = asyncio.create_task(_listen_disconnect(request))
     try:
-        return _map_result(result, request_id=prepared.request_id, session_id=session_id)
+        done, _ = await asyncio.wait(
+            {owner, watchdog, disconnect}, return_when=asyncio.FIRST_COMPLETED,
+        )
+        if disconnect in done:
+            disconnect.result()
+            owner.cancel()
+            try:
+                await asyncio.shield(owner)
+            except asyncio.CancelledError:
+                pass
+            raise ClientDisconnected
+        if owner in done or (watchdog in done and not watchdog.result()):
+            try:
+                result = owner.result()
+            except asyncio.CancelledError:
+                raise ClientDisconnected from None
+            return _map_result(result, request_id=prepared.request_id, session_id=session_id)
+        return _failure(
+            prepared.request_id, code="BUILD_TIMEOUT",
+            detail_code="OPERATION_DEADLINE_EXCEEDED",
+            message="Расчёт не завершился вовремя. Проверьте текущую карту.",
+            retryable=False, status=504, retry_after=5,
+        )
+    except asyncio.CancelledError:
+        owner.cancel()
+        raise
+    except ClientDisconnected:
+        raise
     except Exception as exc:
         _LOG.error(
             "http_unhandled_exception request_id=%s safe_error=%s",
             prepared.request_id, type(exc).__name__,
         )
         return _internal(prepared.request_id, session_id=session_id)
+    finally:
+        disconnect.cancel()
+        await asyncio.gather(disconnect, return_exceptions=True)

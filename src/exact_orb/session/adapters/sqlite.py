@@ -163,6 +163,30 @@ class _WalNotConfirmed(Exception):
     """Initialization could not confirm the persistent WAL journal mode."""
 
 
+async def _await_submitted(future: asyncio.Future[Any], *, operation: str) -> Any:
+    """Do not lose a submitted SQLite worker when its waiter is cancelled."""
+
+    try:
+        return await asyncio.shield(future)
+    except asyncio.CancelledError as cancelled:
+        while not future.done():
+            try:
+                await asyncio.shield(future)
+            except asyncio.CancelledError:
+                continue
+            except Exception:
+                break
+        if not future.cancelled():
+            try:
+                future.result()
+            except Exception as exc:
+                _LOGGER.warning(
+                    "cancelled_executor_work_failed operation=%s safe_error=%s",
+                    operation, type(exc).__name__,
+                )
+        raise cancelled
+
+
 @dataclass(frozen=True, slots=True)
 class _SqliteBackend:
     db_path: Path
@@ -172,7 +196,8 @@ class _SqliteBackend:
 
     async def run(self, operation: Callable[..., Any], /, *args: Any) -> Any:
         loop = asyncio.get_running_loop()
-        return await loop.run_in_executor(self.executor, operation, self, *args)
+        submitted = loop.run_in_executor(self.executor, operation, self, *args)
+        return await _await_submitted(submitted, operation=operation.__name__)
 
 
 _T = TypeVar("_T")

@@ -964,3 +964,56 @@ async def test_disconnect_sends_no_headers_and_keeps_owned_permit_until_work_fin
         control = await asyncio.wait_for(control_task, timeout=1.0)
         assert control.status_code == 422
         assert len(blocked.calls) == 2
+
+
+@pytest.mark.asyncio
+async def test_cancelled_owner_releases_once_after_runtime_leader_snapshot(
+    app_client, context
+) -> None:
+    class DrainingRuntime(RuntimeSpy):
+        def __init__(self) -> None:
+            super().__init__(context)
+            self.drain_entered = asyncio.Event()
+            self.drain_release = asyncio.Event()
+
+        async def drain(self) -> None:
+            self.drain_entered.set()
+            await self.drain_release.wait()
+
+    runtime = DrainingRuntime()
+    blocked = BlockedOrchestrator()
+    runtime.orchestrator = blocked
+    policy = replace(SmallLimiterPolicy(), active_builds=1)
+    async with app_client(runtime, limiter_policy=policy) as client:
+        first = asyncio.create_task(client.post(
+            "/charts/natal", json=_build(), headers={"Cookie": COOKIE},
+        ))
+        try:
+            await asyncio.wait_for(blocked.wait_count(1), timeout=1.0)
+            app = client.asgi_app
+            assert len(app.state.build_owners) == 1
+            owner = next(iter(app.state.build_owners))
+            owner.cancel()
+            await asyncio.wait_for(runtime.drain_entered.wait(), timeout=1.0)
+            assert app.state.admission.active_build_count == 1
+            denied = await client.post(
+                "/charts/natal", json=_build(), headers={"Cookie": COOKIE},
+            )
+            assert denied.status_code == 503
+            assert denied.json()["code"] == "BUILD_CAPACITY_EXHAUSTED"
+
+            runtime.drain_release.set()
+            await asyncio.wait_for(asyncio.gather(owner, return_exceptions=True), timeout=1.0)
+            assert app.state.admission.active_build_count == 0
+            control_task = asyncio.create_task(client.post(
+                "/charts/natal", json=_build(), headers={"Cookie": COOKIE},
+            ))
+            await asyncio.wait_for(blocked.wait_count(2), timeout=1.0)
+            blocked.releases[1].set()
+            control = await asyncio.wait_for(control_task, timeout=1.0)
+            assert control.status_code == 422
+            assert app.state.admission.active_build_count == 0
+        finally:
+            runtime.drain_release.set()
+            blocked.release_all()
+            await asyncio.gather(first, return_exceptions=True)

@@ -1050,6 +1050,7 @@ async def test_shutdown_waits_accepted_nonbuild_request_before_runtime_and_catal
     try:
         await asyncio.wait_for(blocker.entered.wait(), timeout=GUARD)
         shutdown = asyncio.create_task(lifespan.__aexit__(None, None, None))
+        await asyncio.wait_for(app.state.shutdown_started.wait(), timeout=GUARD)
         ready = await _raw(app, "GET", "/health/ready")
         assert ready[0] == 503
         assert not shutdown.done()
@@ -1067,6 +1068,107 @@ async def test_shutdown_waits_accepted_nonbuild_request_before_runtime_and_catal
             await lifespan.__aexit__(None, None, None)
         elif not shutdown.done():
             await asyncio.wait_for(shutdown, timeout=GUARD)
+
+
+async def test_shutdown_grace_fail_fast_preserves_active_build_and_open_resources(
+    utc_clock, scheduler
+) -> None:
+    from exact_orb.http_api.app import LifecyclePhase
+
+    events: list[str] = []
+    runtime = CloseSpyRuntime(ScriptedContext(utc_clock), events)
+    catalog = CloseSpyCatalog(events)
+    held = TerminalHeldOrchestrator(None)
+    runtime.orchestrator = held
+    app = _create_app(
+        runtime=runtime, catalog=catalog, utc_clock=utc_clock, scheduler=scheduler,
+        settings=http_settings(shutdown_grace_seconds=20),
+    )
+    lifespan = app.router.lifespan_context(app)
+    await lifespan.__aenter__()
+    exchange = RawConversation(app, _scope(
+        "POST", "/charts/natal", headers=[
+            (b"content-type", b"application/json"),
+            (b"cookie", COOKIE.encode("ascii")),
+        ],
+    ))
+    exchange.start()
+    exchange.put_body(BODY, more=False)
+    shutdown: asyncio.Task[object] | None = None
+    try:
+        await asyncio.wait_for(held.entered.wait(), timeout=GUARD)
+        shutdown = asyncio.create_task(lifespan.__aexit__(None, None, None))
+        await asyncio.wait_for(app.state.shutdown_started.wait(), timeout=GUARD)
+        await asyncio.wait_for(scheduler.wait_registered(20), timeout=GUARD)
+        assert app.state.admission.active_build_count == 1
+        assert not runtime.close_entered.is_set()
+        await scheduler.advance(20)
+        await asyncio.wait_for(shutdown, timeout=GUARD)
+        assert app.state.lifecycle_phase == LifecyclePhase.UNHEALTHY
+        assert (await _raw(app, "GET", "/health/live"))[0] == 503
+        assert app.state.admission.active_build_count == 1
+        assert not runtime.closed and not catalog.closed
+        assert events == []
+    finally:
+        held.release.set()
+        assert exchange.task is not None
+        await asyncio.wait_for(
+            asyncio.gather(exchange.task, return_exceptions=True), timeout=GUARD,
+        )
+        if shutdown is None:
+            await lifespan.__aexit__(None, None, None)
+        elif not shutdown.done():
+            await asyncio.wait_for(shutdown, timeout=GUARD)
+        retained = getattr(app.state, "retained_resources", None)
+        if retained is not None:
+            await retained.aclose()
+
+
+async def test_build_owner_cancelled_before_first_step_releases_permit(
+    utc_clock, scheduler, monkeypatch
+) -> None:
+    runtime = RuntimeSpy(ScriptedContext(utc_clock))
+    catalog = ScriptedCatalog()
+    app = _create_app(runtime=runtime, catalog=catalog,
+                      utc_clock=utc_clock, scheduler=scheduler)
+    lifespan = app.router.lifespan_context(app)
+    await lifespan.__aenter__()
+    exchange = RawConversation(app, _scope(
+        "POST", "/charts/natal", headers=[
+            (b"content-type", b"application/json"),
+            (b"cookie", COOKIE.encode("ascii")),
+        ],
+    ))
+    original_create_task = asyncio.create_task
+
+    def cancel_new_owner(coroutine, *, name=None):
+        task = original_create_task(coroutine, name=name)
+        if name is not None and name.startswith("exact_orb_build_"):
+            task.cancel()
+        return task
+
+    try:
+        with monkeypatch.context() as patcher:
+            patcher.setattr(asyncio, "create_task", cancel_new_owner)
+            exchange.start()
+            exchange.put_body(BODY, more=False)
+            await exchange.finish()
+        assert exchange.messages == []
+        assert runtime.orchestrator.calls == []
+        await asyncio.wait_for(
+            asyncio.gather(*app.state.build_owners, return_exceptions=True),
+            timeout=GUARD,
+        )
+        assert app.state.admission.active_build_count == 0
+        runtime.orchestrator = ScriptedOrchestrator(_input_required)
+        accepted = await _raw(app, "POST", "/charts/natal", body=BODY, headers=[
+            (b"content-type", b"application/json"),
+            (b"cookie", COOKIE.encode("ascii")),
+        ])
+        assert accepted[0] == 422
+        assert len(runtime.orchestrator.calls) == 1
+    finally:
+        await lifespan.__aexit__(None, None, None)
 
 
 class SaveBarrier:
@@ -1186,9 +1288,11 @@ async def test_two_waiters_one_real_leader_keep_separate_permits_after_disconnec
 ) -> None:
     from exact_orb.application.bootstrap import build_application_runtime
     from exact_orb.birth.places import LocalPlaceCatalog
+    from exact_orb.calculation.codec import decode_chart_artifact
     from tests.application.test_application_bootstrap_integration import (
         PLACES_PATH, _BlockingNatalCalculator, _settings as runtime_settings,
     )
+    from tests.http_api.build_support import GOLDEN_DIR
 
     class ClosableLocalCatalog:
         def __init__(self) -> None:
@@ -1201,7 +1305,20 @@ async def test_two_waiters_one_real_leader_keep_separate_permits_after_disconnec
             return None
 
     catalog = ClosableLocalCatalog()
-    calculator = _BlockingNatalCalculator(asyncio.get_running_loop())
+    golden_chart = decode_chart_artifact(
+        (GOLDEN_DIR / "chart_artifact_format_1_natal_1985.bin").read_bytes()
+    ).chart
+
+    class ProjectableCalculator(_BlockingNatalCalculator):
+        def __call__(self, birth_datetime, latitude, longitude, **kwargs):
+            super().__call__(birth_datetime, latitude, longitude, **kwargs)
+            return golden_chart.model_copy(update={
+                "datetime_utc": birth_datetime,
+                "latitude": latitude,
+                "longitude": longitude,
+            })
+
+    calculator = ProjectableCalculator(asyncio.get_running_loop())
     runtime = await build_application_runtime(
         settings=runtime_settings(tmp_path, db_name="shared-leader-http.sqlite3"),
         places=catalog,
@@ -1264,7 +1381,7 @@ async def test_two_waiters_one_real_leader_keep_separate_permits_after_disconnec
             results = await asyncio.wait_for(asyncio.gather(*tasks), timeout=GUARD)
             assert all(result.status_code == 200 for result in results)
             assert calculator.finished.is_set()
-            assert runtime.artifacts.misses == 1
+            assert runtime.artifacts.misses == 5  # Each waiter missed; one leader calculated.
             after_release = await client.post(
                 "/charts/natal", json=_build(),
                 headers={"Cookie": _cookie(7)},
@@ -1320,6 +1437,7 @@ async def test_cancelled_sqlite_session_load_future_blocks_shutdown_close(
             exchange.disconnect()
             await asyncio.wait_for(exchange.disconnected.wait(), timeout=GUARD)
             shutdown = asyncio.create_task(lifespan.__aexit__(None, None, None))
+            await asyncio.wait_for(app.state.shutdown_started.wait(), timeout=GUARD)
             assert (await _raw(app, "GET", "/health/ready"))[0] == 503
             assert not runtime.close_entered.is_set()
             assert not worker_finished.is_set()
@@ -1394,24 +1512,6 @@ class RuntimeOwner:
         self.closed = True
 
 
-class MessageSignal(logging.Handler):
-    def __init__(self, operation: str, expected: int) -> None:
-        super().__init__()
-        self.operation = operation
-        self.expected = expected
-        self.count = 0
-        self.reached = asyncio.Event()
-
-    def emit(self, record: logging.LogRecord) -> None:
-        message = record.getMessage()
-        if (message.startswith("http_message ")
-                and "direction=send" in message
-                and f"operation={self.operation}" in message):
-            self.count += 1
-            if self.count >= self.expected:
-                self.reached.set()
-
-
 async def test_cancelled_catalog_search_future_blocks_shutdown_close(
     tmp_path: Path, utc_clock, scheduler, monkeypatch
 ) -> None:
@@ -1458,6 +1558,7 @@ async def test_cancelled_catalog_search_future_blocks_shutdown_close(
             exchange.disconnect()
             await asyncio.wait_for(exchange.disconnected.wait(), timeout=GUARD)
             shutdown = asyncio.create_task(lifespan.__aexit__(None, None, None))
+            await asyncio.wait_for(app.state.shutdown_started.wait(), timeout=GUARD)
             assert (await _raw(app, "GET", "/health/ready"))[0] == 503
             assert not worker_finished.is_set()
             assert not runtime.close_entered.is_set()
@@ -1514,6 +1615,20 @@ async def test_cancelled_catalog_lookup_keeps_five_permits_and_shutdown_owner(
         for number in range(1, 7):
             await real_runtime.context.create(_cookie(number).split("=", 1)[1])
         runtime = RuntimeOwner(real_runtime, events)
+        class CountingExecute:
+            def __init__(self, inner: object) -> None:
+                self.inner = inner
+                self.calls = 0
+                self.reached = asyncio.Event()
+
+            async def execute(self, command, *, session_id, run):
+                self.calls += 1
+                if self.calls == 5:
+                    self.reached.set()
+                return await self.inner.execute(command, session_id=session_id, run=run)
+
+        counted = CountingExecute(real_runtime.orchestrator)
+        runtime.orchestrator = counted
         monkeypatch.setattr(place_sqlite, "_sync_lookup", held_lookup)
         permissive = WindowLimit(100, 3600)
         policy = replace(
@@ -1522,11 +1637,6 @@ async def test_cancelled_catalog_lookup_keeps_five_permits_and_shutdown_owner(
             build_ip_hourly=permissive, build_ip_daily=permissive,
             active_builds=5,
         )
-        logger = logging.getLogger("exact_orb.http_api")
-        signal = MessageSignal("execute", 5)
-        logger.addHandler(signal)
-        logger_level = logger.level
-        logger.setLevel(logging.INFO)
         try:
             app = _create_app(runtime=runtime, catalog=catalog,
                               utc_clock=utc_clock, scheduler=scheduler,
@@ -1535,8 +1645,6 @@ async def test_cancelled_catalog_lookup_keeps_five_permits_and_shutdown_owner(
             await lifespan.__aenter__()
         except BaseException:
             worker_release.set()
-            logger.removeHandler(signal)
-            logger.setLevel(logger_level)
             await runtime.aclose()
             await catalog.aclose()
             raise
@@ -1565,7 +1673,8 @@ async def test_cancelled_catalog_lookup_keeps_five_permits_and_shutdown_owner(
                 other.put_body(json.dumps(_build(place_id="99999999")).encode("utf-8"),
                                more=False)
                 tasks.append(other.task)
-            await asyncio.wait_for(signal.reached.wait(), timeout=GUARD)
+            await asyncio.wait_for(counted.reached.wait(), timeout=GUARD)
+            assert counted.calls == 5
             exchange.disconnect()
             await asyncio.wait_for(exchange.disconnected.wait(), timeout=GUARD)
             denied = await _raw(
@@ -1579,6 +1688,7 @@ async def test_cancelled_catalog_lookup_keeps_five_permits_and_shutdown_owner(
             assert denied[1]["retry-after"] == "1"
             assert not worker_finished.is_set()
             shutdown = asyncio.create_task(lifespan.__aexit__(None, None, None))
+            await asyncio.wait_for(app.state.shutdown_started.wait(), timeout=GUARD)
             assert (await _raw(app, "GET", "/health/ready"))[0] == 503
             assert not runtime.close_entered.is_set()
             assert not catalog.close_entered.is_set()
@@ -1593,8 +1703,6 @@ async def test_cancelled_catalog_lookup_keeps_five_permits_and_shutdown_owner(
             assert runtime.closed and catalog.closed
         finally:
             worker_release.set()
-            logger.removeHandler(signal)
-            logger.setLevel(logger_level)
             if shutdown is None:
                 await lifespan.__aexit__(None, None, None)
             elif not shutdown.done():
