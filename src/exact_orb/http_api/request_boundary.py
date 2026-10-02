@@ -350,7 +350,7 @@ class RequestBoundary:
         query_kind: Literal["none", "places"] = "none",
         cookie_mode: Literal["ignore", "optional", "required"] = "ignore",
     ) -> PreparedRequest:
-        request_id = str(uuid4())
+        request_id = getattr(request.state, "request_id", None) or str(uuid4())
         request.state.request_id = request_id
         try:
             if not self._is_ready():

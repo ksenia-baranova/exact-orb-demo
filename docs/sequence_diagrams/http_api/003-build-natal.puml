@@ -74,6 +74,10 @@ else transport-valid request
         alt execute returned typed result
             Orch --> API : ApplicationResult
             API -> Log : http_message receive ApplicationResult
+            API -> Log : http_message send AdmissionControl.release
+            API -> Admission : release after terminal execute
+            Admission --> API : released
+            API -> Log : http_message receive AdmissionReleased
 
             alt Committed
                 API --> Client : 200 chart_ready + committed ChartDTO; renew
@@ -90,7 +94,7 @@ else transport-valid request
             else internal failure
                 API --> Client : 500 INTERNAL_FAILURE; internal code hidden
             end
-        else response deadline / disconnect
+        else response deadline
             API --> Client : 504 BUILD_TIMEOUT; retryable=false; Retry-After:5\nno Set-Cookie (unchanged) if connection exists
             note over API, Orch
             Accepted task remains registered.
@@ -107,17 +111,27 @@ else transport-valid request
             The deadline does not promise actual permit release.
             Target state A moves calculation to a dedicated worker process.
             end note
+        else client disconnect
+            API -> Orch : cancel execute before commit; retain protected work
+            Orch --> API : terminal after retained work/snapshot
+            API -> Log : http_message send AdmissionControl.release
+            API -> Admission : release after terminal retained work
+            Admission --> API : released
+            API -> Log : http_message receive AdmissionReleased
+            note over Client, API : No HTTP response is sent after disconnect.
         end
 
-        API -> Log : if terminal before restart:
-http_message send AdmissionControl.release
-        API -> Admission : release after retained leader/commit/leaf work
-        Admission --> API : released
-        API -> Log : http_message receive AdmissionReleased
     end
 end
 
 API -> Log : http_request_finished(status, code, duration)
+
+opt response deadline: owner reaches terminal before restart
+    API -> Log : http_message send AdmissionControl.release
+    API -> Admission : release after retained leader/commit/leaf work
+    Admission --> API : released
+    API -> Log : http_message receive AdmissionReleased
+end
 
 note over API, Store
 POST покрывает first build и explicit rebuild.

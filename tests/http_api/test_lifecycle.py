@@ -359,7 +359,9 @@ async def test_reaper_scheduler_failure_does_not_abort_shutdown_cleanup(
         messages = [record.getMessage() for record in caplog.records]
         assert any(message.startswith("session_reaper_shutdown_join_failed ")
                    for message in messages)
-        assert any(message == "http_shutdown_finished outcome=resources_released"
+        assert any(message.startswith(
+            "http_shutdown_finished outcome=resources_released active_count=0 duration_ms="
+        )
                    for message in messages)
         assert all("private scheduler failure" not in message for message in messages)
     finally:
@@ -904,13 +906,19 @@ async def test_four_http_sequences_emit_ordered_messages_and_one_safe_terminal(
         places[1]["x-request-id"], build.headers["X-Request-ID"],
     ]
     assert len(set(ids)) == 4
-    for request_id in ids:
+    for request_id, method, route in zip(
+        ids,
+        ("POST", "GET", "GET", "POST"),
+        ("/session/bootstrap", "/charts/current", "/places", "/charts/natal"),
+    ):
         records = _http_records(caplog, request_id)
         starts = [r for r in records if r.getMessage().startswith("http_request_started ")]
         terminals = [r for r in records
                      if r.getMessage().startswith("http_request_finished ")]
         assert len(starts) == len(terminals) == 1
         assert starts[0].levelno == terminals[0].levelno == logging.INFO
+        assert f"method={method}" in starts[0].getMessage()
+        assert f"route={route}" in starts[0].getMessage()
         assert caplog.records.index(starts[0]) < caplog.records.index(terminals[0])
     _assert_exchange(_http_records(caplog, ids[0]), "create", "SessionCreated")
     _assert_exchange(_http_records(caplog, ids[1]), "load", "SessionSnapshot")
@@ -919,6 +927,9 @@ async def test_four_http_sequences_emit_ordered_messages_and_one_safe_terminal(
     _assert_exchange(_http_records(caplog, ids[3]), "reserve", "AdmissionPermit")
     _assert_exchange(_http_records(caplog, ids[3]), "execute", "ApplicationInputRequired")
     _assert_exchange(_http_records(caplog, ids[3]), "release", "AdmissionReleased")
+    assert all(f"run_id={ids[3]}" in record.getMessage()
+               for record in _http_records(caplog, ids[3])
+               if record.getMessage().startswith("http_message "))
     info = "\n".join(record.getMessage() for record in caplog.records
                      if record.name.startswith("exact_orb.http_api")
                      and record.levelno == logging.INFO)

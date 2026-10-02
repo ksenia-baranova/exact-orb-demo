@@ -678,3 +678,50 @@ restart; новый fail-fast тест фиксирует сохранение �
 
 Формальный Tester review ранее отменён пользователем. Платные/сетевые smoke-тесты и
 PlantUML rendering не запускались. Push и PR не создавались.
+
+## 23. Исполнение промта 13 — интеграция, наблюдаемость и локальный запуск (2026-10-02)
+
+Сверены HTTP sequence 001–004 и session 001–003/006 с реальными границами
+`ContextService`, `AdmissionControl`, `PlaceSearch`, `session_view` и
+`ApplicationOrchestrator`. Теперь transport пишет коррелированные
+`http_request_started`, `http_message` send/receive,
+`http_admission_rejected`, `http_cookie_replaced`, `chart_unavailable` и
+`http_request_finished`. Для build один `request_id` служит `run_id` при
+вызове orchestrator; `request_id` создаётся до boundary, поэтому сохраняется
+и при необработанной ошибке. INFO-события содержат только тип сообщения,
+peer, operation и безопасные идентификаторы/исходы без payload, cookie,
+session ID, IP и birth data. Shutdown события получили число активных задач и
+длительность. Диаграммы HTTP 001–003 уточнены в местах admission и release;
+session 001–003/006 и HTTP 004 не требовали изменения.
+
+`app.openapi()` теперь показывает точные схемы POST, query-параметры и
+варианты 200/ошибок. Маршруты по-прежнему принимают только `Request`, а
+ответы сериализуются из DTO через `model_dump`, так что FastAPI не читает тело
+повторно и не добавляет nullable поля. В production `/docs`, `/redoc` и
+`/openapi.json` не регистрируются. При локальном флаге доступен только
+`/openapi.json` с `Cache-Control: no-store` и `X-Request-ID`.
+
+[Локальный runbook](../../runbooks/http_api_local_https.md) и
+[Caddyfile](../../runbooks/http_api_local.Caddyfile) описывают TLS через
+mkcert/Caddy, один Uvicorn process, loopback-only upstream и health,
+`--no-proxy-headers`, проверку PID и ручную замену unhealthy process после
+сохранения диагностики. Явный `exact_orb.http_server:create_local_app`
+собирает один каталог и передаёт его в runtime. Реальный сетевой старт,
+синтаксическая проверка Caddy и выпуск сертификата не выполнялись: Caddy и
+mkcert в окружении отсутствуют; внешний supervisor и production ACL/manifest
+остаются вне M1-6. Проверены установленные FastAPI 0.121.2, Uvicorn 0.38.0,
+httpx 0.28.1 и опции Uvicorn `--factory`, `--workers`,
+`--no-proxy-headers`, `--lifespan`. Команда запуска зафиксирована в runbook.
+
+| Команда | Фактический результат |
+| --- | --- |
+| `python -m pytest tests/http_api -q --tb=short --show-capture=no -p no:cacheprovider` | 273 passed |
+| `python -m pytest tests/application/test_application_bootstrap_integration.py tests/application/test_build_natal_logging.py tests/application/test_orchestrator_logging.py tests/session/test_sqlite.py tests/test_place_catalog_sqlite.py tests/test_logging.py tests/test_module_boundaries.py -q --tb=short --show-capture=no -p no:cacheprovider` | 568 passed; вне sandbox из-за системного pytest temp |
+| `python -m pytest -q --tb=short --show-capture=no -p no:cacheprovider` | 2931 passed, 1 failed; вне sandbox. Единственный сбой — `test_tzdata_version_mismatch_warns_once_and_allows_open`, существовавший до 13 и проходящий отдельно |
+| `python -m pytest tests/test_logging.py::test_cli_writes_general_and_debug_logs tests/test_place_catalog_sqlite.py::test_tzdata_version_mismatch_warns_once_and_allows_open -q --tb=short --show-capture=no -p no:cacheprovider` | 1 passed, 1 failed: изолированно воспроизведена зависимость от порядка. CLI оставляет `exact_orb` с `propagate=False`, а тест каталога ожидает запись через root `caplog` |
+| Проверка пяти JSON-примеров `http_api.md`, баланса восьми PlantUML blocks, пяти локальных ссылок runbook и `git diff --check` | JSON 5/5, PlantUML blocks 8/8, ссылки 5/5, diff check exit 0; rendering PlantUML не запускался |
+
+AS-HTTP-01…29 имеют исполняемое покрытие; окончательный полный pytest не
+зелёный из-за указанной независимой от HTTP изоляции логгера. Формальный
+Tester review ранее отменён пользователем. Платные/сетевые smoke-тесты,
+реальный HTTPS запуск, PlantUML rendering, commit, push и PR не выполнялись.

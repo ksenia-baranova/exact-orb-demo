@@ -8,7 +8,8 @@ from starlette.responses import JSONResponse
 from exact_orb.birth.places import (
     InvalidPlaceQuery, PlaceCatalogUnavailableError, PlaceSuggestions,
 )
-from exact_orb.http_api.dto import ErrorDTO
+from exact_orb.http_api.dto import ErrorDTO, PlaceSuggestionsDTO
+from exact_orb.http_api.operation_logging import admission_rejected, exchange
 from exact_orb.http_api.ownership import observe_disconnect, track_request
 from exact_orb.http_api.projectors import project_places
 from exact_orb.http_api.request_boundary import (
@@ -33,7 +34,18 @@ def _place_error(
     return JSONResponse(dto.model_dump(mode="json"), status_code=status, headers=headers)
 
 
-@router.get("/places")
+@router.get(
+    "/places", response_model=PlaceSuggestionsDTO,
+    responses={status: {"model": ErrorDTO} for status in (
+        400, 403, 422, 429, 500, 503,
+    )},
+    openapi_extra={"parameters": [
+        {"name": "query", "in": "query", "required": True,
+         "schema": {"type": "string", "maxLength": 512}},
+        {"name": "limit", "in": "query", "required": False,
+         "schema": {"type": "string", "pattern": r"^(?:[1-9]|1[0-9]|20)$", "default": "10"}},
+    ]},
+)
 @track_request
 async def places(request: Request) -> JSONResponse:
     try:
@@ -46,10 +58,18 @@ async def places(request: Request) -> JSONResponse:
     observe_disconnect(request)
     query = prepared.query
     assert query is not None
-    rejection = await request.app.state.admission.reserve_place_search(
-        client_ip=prepared.client_ip,
+    rejection = await exchange(
+        prepared.request_id, peer="AdmissionControl", operation="reserve",
+        call=lambda: request.app.state.admission.reserve_place_search(
+            client_ip=prepared.client_ip,
+        ), none_result_type="AdmissionGranted",
     )
     if rejection is not None:
+        admission_rejected(
+            prepared.request_id, run_id=None, kind=rejection.kind,
+            scope=rejection.scope, code=rejection.code,
+            detail_code=rejection.detail_code, retry_after=rejection.retry_after,
+        )
         return _place_error(
             prepared.request_id, code=rejection.code,
             detail_code=rejection.detail_code,
@@ -58,7 +78,12 @@ async def places(request: Request) -> JSONResponse:
             retry_after=rejection.retry_after,
         )
     try:
-        result = await request.app.state.catalog.search(query.query, limit=query.limit)
+        result = await exchange(
+            prepared.request_id, peer="PlaceSearch", operation="search",
+            call=lambda: request.app.state.catalog.search(
+                query.query, limit=query.limit,
+            ),
+        )
     except PlaceCatalogUnavailableError:
         return _place_error(
             prepared.request_id, code="PLACE_CATALOG_UNAVAILABLE",

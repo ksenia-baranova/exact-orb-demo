@@ -6,11 +6,13 @@ import asyncio
 from collections.abc import Awaitable, Callable
 from functools import wraps
 from typing import Any, TypeVar
+from uuid import uuid4
 
 from fastapi import Request
 # FastAPI resolves postponed annotations of wrapped routes in this module.
 from starlette.responses import JSONResponse
 
+from exact_orb.http_api.operation_logging import request_finished, request_started
 from exact_orb.http_api.request_boundary import ClientDisconnected
 
 
@@ -25,12 +27,42 @@ def track_request(handler: Callable[[Request], Awaitable[_T]]) -> Callable[[Requ
         task = asyncio.current_task()
         assert task is not None
         active: set[asyncio.Task[Any]] = request.app.state.active_requests
+        request_id = str(uuid4())
+        request.state.request_id = request_id
+        route = getattr(request.scope.get("route"), "path", "unknown")
+        run_id = request_id if route == "/charts/natal" else None
+        started_at = request.app.state.scheduler.now()
         active.add(task)
+        request_started(request_id, request.method, route, run_id=run_id)
         try:
-            return await handler(request)
+            response = await handler(request)
+            request_finished(
+                request_id, run_id=run_id, started_at=started_at,
+                now=request.app.state.scheduler.now(), response=response,
+            )
+            return response
+        except ClientDisconnected:
+            request_finished(
+                request_id, run_id=run_id, started_at=started_at,
+                now=request.app.state.scheduler.now(), outcome="disconnected",
+            )
+            raise
         except asyncio.CancelledError:
-            if getattr(request.state, "peer_disconnected", False):
+            peer_disconnected = getattr(request.state, "peer_disconnected", False)
+            request_finished(
+                request_id, run_id=run_id, started_at=started_at,
+                now=request.app.state.scheduler.now(),
+                outcome="disconnected" if peer_disconnected else "cancelled",
+            )
+            if peer_disconnected:
                 raise ClientDisconnected from None
+            raise
+        except Exception:
+            request_finished(
+                request_id, run_id=run_id, started_at=started_at,
+                now=request.app.state.scheduler.now(), outcome="failed",
+                status_code=500, public_code="INTERNAL_FAILURE",
+            )
             raise
         finally:
             observer = getattr(request.state, "disconnect_observer", None)

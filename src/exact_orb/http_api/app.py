@@ -21,11 +21,12 @@ from uuid import uuid4
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from starlette.exceptions import HTTPException as StarletteHTTPException
-from starlette.responses import Response
+from starlette.responses import JSONResponse, Response
 
 from exact_orb.http_api.admission import AdmissionController, DEFAULT_POLICY
 from exact_orb.http_api.request_boundary import (
     BoundaryRejection, ClientDisconnected, RequestBoundary, error_response,
+    response_headers,
 )
 from exact_orb.http_api.routes.build import router as build_router
 from exact_orb.http_api.routes.places import router as places_router
@@ -269,6 +270,15 @@ async def _wait_for_quiescence(
                 await asyncio.gather(joined, return_exceptions=True)
 
 
+def _active_count(app: FastAPI, reaper: asyncio.Task[None]) -> int:
+    return len({
+        task for task in (
+            *app.state.active_requests, *app.state.build_owners,
+            *app.state.build_watchdogs, reaper,
+        ) if not task.done()
+    })
+
+
 def create_app(
     *,
     settings: object,
@@ -322,10 +332,14 @@ def create_app(
             try:
                 yield
             finally:
+                shutdown_at = scheduler.now()
                 if app.state.lifecycle_phase != LifecyclePhase.UNHEALTHY:
                     app.state.lifecycle_phase = LifecyclePhase.SHUTTING_DOWN
                 app.state.shutdown_started.set()
-                _LOG.info("http_shutdown_started")
+                _LOG.info(
+                    "http_shutdown_started active_count=%s",
+                    _active_count(app, reaper_task),
+                )
                 stop_reaper.set()
                 deadline = scheduler.now() + config.shutdown_grace_seconds
                 released_resources = await _wait_for_quiescence(
@@ -345,16 +359,23 @@ def create_app(
                         if not task.done():
                             task.cancel()
                     app.state.retained_resources = resources.pop_all()
-                    _LOG.error("http_shutdown_finished outcome=fail_fast")
+                    _LOG.info(
+                        "http_shutdown_finished outcome=fail_fast active_count=%s duration_ms=%s",
+                        _active_count(app, reaper_task),
+                        max(0, round((scheduler.now() - shutdown_at) * 1000)),
+                    )
         if released_resources:
             app.state.lifecycle_phase = LifecyclePhase.STOPPED
-            _LOG.info("http_shutdown_finished outcome=resources_released")
+            _LOG.info(
+                "http_shutdown_finished outcome=resources_released active_count=0 duration_ms=%s",
+                max(0, round((scheduler.now() - shutdown_at) * 1000)),
+            )
 
     app = FastAPI(
         lifespan=lifespan,
         docs_url=None,
         redoc_url=None,
-        openapi_url="/openapi.json" if config.expose_schema else None,
+        openapi_url=None,
     )
     app.state.settings = config
     app.state.scheduler = scheduler
@@ -436,6 +457,11 @@ def create_app(
     @app.api_route("/health/ready", methods=["GET", "HEAD"], include_in_schema=False)
     async def ready() -> Response:
         return health_response(200 if app.state.lifecycle_phase == LifecyclePhase.READY else 503)
+
+    if config.expose_schema:
+        @app.get("/openapi.json", include_in_schema=False)
+        async def local_schema() -> JSONResponse:
+            return JSONResponse(app.openapi(), headers=response_headers(str(uuid4())))
 
     app.include_router(session_router)
     app.include_router(places_router)

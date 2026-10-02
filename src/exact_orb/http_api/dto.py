@@ -26,6 +26,16 @@ class PublicDTO(BaseModel):
         return super().model_dump(*args, **kwargs)
 
 
+class SessionBootstrapRequestDTO(PublicDTO):
+    """OpenAPI shape; raw body validation stays in RequestBoundary."""
+
+
+class BuildNatalRequestDTO(PublicDTO):
+    birth_date: str = Field(pattern=r"^[0-9]{4}-[0-9]{2}-[0-9]{2}$")
+    birth_time: str | None = Field(pattern=r"^(?:[01][0-9]|2[0-3]):[0-5][0-9]$")
+    place_id: str = Field(min_length=1, max_length=128)
+
+
 class BirthPlaceDTO(PublicDTO):
     place_id: str
     display_name: str
@@ -188,8 +198,8 @@ class ErrorDTO(PublicDTO):
 
 __all__ = [
     "AngleDTO", "AnglesDTO", "AspectDTO", "BirthViewDTO", "BuildAlreadyAppliedDTO",
-    "BuildChartResponseDTO", "BuildReadyDTO", "ChartDTO", "ErrorDTO", "HouseDTO",
+    "BuildChartResponseDTO", "BuildNatalRequestDTO", "BuildReadyDTO", "ChartDTO", "ErrorDTO", "HouseDTO",
     "IssueDTO", "PlaceSuggestionDTO", "PlaceSuggestionsDTO", "PointDTO",
-    "SessionBootstrapDTO", "SessionEmptyDTO", "SessionReadyDTO", "SessionUnavailableDTO",
+    "SessionBootstrapDTO", "SessionBootstrapRequestDTO", "SessionEmptyDTO", "SessionReadyDTO", "SessionUnavailableDTO",
     "SessionViewDTO",
 ]

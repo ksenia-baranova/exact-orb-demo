@@ -21,7 +21,8 @@ from exact_orb.application.commands import BuildNatalCommand
 from exact_orb.birth.types import BirthInput
 from exact_orb.http_api.admission import AdmissionRejection, BuildPermit
 from exact_orb.http_api.cookie import clear_session_cookie, issue_session_cookie
-from exact_orb.http_api.dto import ErrorDTO, IssueDTO
+from exact_orb.http_api.dto import BuildChartResponseDTO, BuildNatalRequestDTO, ErrorDTO, IssueDTO
+from exact_orb.http_api.operation_logging import admission_rejected, exchange
 from exact_orb.http_api.ownership import track_request
 from exact_orb.http_api.projectors import project_build_already_applied, project_build_ready
 from exact_orb.http_api.request_boundary import (
@@ -70,6 +71,14 @@ async def _listen_disconnect(request: Request) -> None:
         message = await request.receive()
         if message["type"] == "http.disconnect":
             return
+
+
+async def _release_permit(permit: BuildPermit, request_id: str) -> None:
+    await exchange(
+        request_id, peer="AdmissionControl", operation="release",
+        call=permit.release, run_id=request_id,
+        result_type="AdmissionReleased",
+    )
 
 
 def _json(dto: Any, request_id: str, *, status: int = 200,
@@ -128,8 +137,11 @@ async def _execute_owned(
             birth_date=payload.birth_date, birth_time=payload.birth_time,
             place_id=payload.place_id,
         ))
-        result = await app.state.runtime.orchestrator.execute(
-            command, session_id=session_id, run=run,
+        result = await exchange(
+            request_id, peer="ApplicationOrchestrator", operation="execute",
+            call=lambda: app.state.runtime.orchestrator.execute(
+                command, session_id=session_id, run=run,
+            ), run_id=request_id,
         )
     except asyncio.CancelledError as cancelled:
         # execute owns protected commit and submitted executor futures; the
@@ -144,7 +156,7 @@ async def _execute_owned(
                 request_id, type(exc).__name__,
             )
             raise cancelled
-        release = asyncio.create_task(permit.release())
+        release = asyncio.create_task(_release_permit(permit, request_id))
         await _await_terminal(release)
         raise cancelled
     except Exception as exc:
@@ -153,7 +165,7 @@ async def _execute_owned(
             request_id, type(exc).__name__,
         )
         result = None
-    release = asyncio.create_task(permit.release())
+    release = asyncio.create_task(_release_permit(permit, request_id))
     await _await_terminal(release)
     return result
 
@@ -219,7 +231,15 @@ def _map_result(result: ApplicationResult | None, *, request_id: str,
     return _internal(request_id)
 
 
-@router.post("/charts/natal")
+@router.post(
+    "/charts/natal", response_model=BuildChartResponseDTO,
+    responses={status: {"model": ErrorDTO} for status in (
+        400, 403, 408, 409, 413, 415, 422, 429, 500, 503, 504,
+    )},
+    openapi_extra={"requestBody": {"required": True, "content": {
+        "application/json": {"schema": BuildNatalRequestDTO.model_json_schema()},
+    }}},
+)
 @track_request
 async def build(request: Request) -> JSONResponse:
     try:
@@ -232,10 +252,22 @@ async def build(request: Request) -> JSONResponse:
     session_id = prepared.cookie.value
     payload = prepared.body
     assert session_id is not None and isinstance(payload, BuildPayload)
-    admission = await request.app.state.admission.reserve_build(
-        session_id=session_id, client_ip=prepared.client_ip,
+    admission = await exchange(
+        prepared.request_id, peer="AdmissionControl", operation="reserve",
+        call=lambda: request.app.state.admission.reserve_build(
+            session_id=session_id, client_ip=prepared.client_ip,
+        ), run_id=prepared.request_id,
+        result_type=lambda value: (
+            "AdmissionRejected" if isinstance(value, AdmissionRejection)
+            else "AdmissionPermit"
+        ),
     )
     if isinstance(admission, AdmissionRejection):
+        admission_rejected(
+            prepared.request_id, run_id=prepared.request_id,
+            kind=admission.kind, scope=admission.scope, code=admission.code,
+            detail_code=admission.detail_code, retry_after=admission.retry_after,
+        )
         return _failure(
             prepared.request_id, code=admission.code,
             detail_code=admission.detail_code,
@@ -263,7 +295,7 @@ async def build(request: Request) -> JSONResponse:
         if task.cancelled() and not started_execution.is_set():
             # A task cancelled before its first coroutine step never enters
             # _execute_owned, so no leaf work exists and the permit is ours.
-            release = asyncio.create_task(admission.release())
+            release = asyncio.create_task(_release_permit(admission, prepared.request_id))
             owners.add(release)
             release.add_done_callback(owners.discard)
             return

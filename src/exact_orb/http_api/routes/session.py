@@ -7,11 +7,16 @@ import logging
 from fastapi import APIRouter, Request
 from starlette.responses import JSONResponse
 
-from exact_orb.application.session_view import session_view
+from exact_orb.application.session_view import ChartUnavailableSessionView, session_view
 from exact_orb.http_api.cookie import (
     clear_session_cookie, issue_session_cookie, new_session_id,
 )
-from exact_orb.http_api.dto import ErrorDTO
+from exact_orb.http_api.dto import (
+    ErrorDTO, SessionBootstrapDTO, SessionBootstrapRequestDTO, SessionViewDTO,
+)
+from exact_orb.http_api.operation_logging import (
+    admission_rejected, chart_unavailable, cookie_replaced, exchange, message,
+)
 from exact_orb.http_api.ownership import observe_disconnect, track_request
 from exact_orb.http_api.projectors import project_bootstrap, project_session_view
 from exact_orb.http_api.request_boundary import (
@@ -63,7 +68,15 @@ def _read_failed(request_id: str, failure: StateReadFailed) -> JSONResponse:
     )
 
 
-@router.post("/session/bootstrap")
+@router.post(
+    "/session/bootstrap", response_model=SessionBootstrapDTO,
+    responses={status: {"model": ErrorDTO} for status in (
+        400, 403, 408, 413, 415, 422, 429, 500, 503,
+    )},
+    openapi_extra={"requestBody": {"required": True, "content": {
+        "application/json": {"schema": SessionBootstrapRequestDTO.model_json_schema()},
+    }}},
+)
 @track_request
 async def bootstrap(request: Request) -> JSONResponse:
     try:
@@ -79,7 +92,10 @@ async def bootstrap(request: Request) -> JSONResponse:
     reason = cookie.status
     if cookie.status == "valid":
         assert cookie.value is not None
-        loaded = await context.load(cookie.value)
+        loaded = await exchange(
+            prepared.request_id, peer="ContextService", operation="load",
+            call=lambda: context.load(cookie.value),
+        )
         if isinstance(loaded, SessionSnapshot):
             return _success(
                 project_bootstrap(loaded.state.state_version),
@@ -92,10 +108,19 @@ async def bootstrap(request: Request) -> JSONResponse:
         reason = loaded.reason
 
     clear_old = reason != "missing"
-    rejection = await request.app.state.admission.reserve_session_create(
-        client_ip=prepared.client_ip,
+    rejection = await exchange(
+        prepared.request_id, peer="AdmissionControl", operation="reserve",
+        call=lambda: request.app.state.admission.reserve_session_create(
+            client_ip=prepared.client_ip,
+        ),
+        none_result_type="AdmissionGranted",
     )
     if rejection is not None:
+        admission_rejected(
+            prepared.request_id, run_id=None, kind=rejection.kind,
+            scope=rejection.scope, code=rejection.code,
+            detail_code=rejection.detail_code, retry_after=rejection.retry_after,
+        )
         return _error(
             request_id=prepared.request_id,
             code=rejection.code, detail_code=rejection.detail_code,
@@ -105,8 +130,12 @@ async def bootstrap(request: Request) -> JSONResponse:
         )
     for _ in range(3):
         session_id = new_session_id()
-        created = await context.create(session_id)
+        created = await exchange(
+            prepared.request_id, peer="ContextService", operation="create",
+            call=lambda: context.create(session_id),
+        )
         if isinstance(created, SessionCreated):
+            cookie_replaced(prepared.request_id, reason)
             return _success(
                 project_bootstrap(created.state.state_version),
                 prepared.request_id, session_id,
@@ -128,7 +157,12 @@ async def bootstrap(request: Request) -> JSONResponse:
     )
 
 
-@router.get("/charts/current")
+@router.get(
+    "/charts/current", response_model=SessionViewDTO,
+    responses={status: {"model": ErrorDTO} for status in (
+        400, 403, 409, 422, 500, 503,
+    )},
+)
 @track_request
 async def current(request: Request) -> JSONResponse:
     try:
@@ -141,7 +175,10 @@ async def current(request: Request) -> JSONResponse:
     observe_disconnect(request)
     session_id = prepared.cookie.value
     assert session_id is not None
-    loaded = await request.app.state.runtime.context.load(session_id)
+    loaded = await exchange(
+        prepared.request_id, peer="ContextService", operation="load",
+        call=lambda: request.app.state.runtime.context.load(session_id),
+    )
     if isinstance(loaded, SessionAbsent):
         return _error(
             request_id=prepared.request_id,
@@ -157,9 +194,20 @@ async def current(request: Request) -> JSONResponse:
         raise TypeError("unexpected session load outcome")
 
     try:
-        dto = project_session_view(session_view(
+        message(
+            prepared.request_id, direction="send", peer="session_view",
+            operation="session_view", message_type="Call",
+        )
+        view = session_view(
             loaded, request.app.state.runtime.calculation_version,
-        ))
+        )
+        message(
+            prepared.request_id, direction="receive", peer="session_view",
+            operation="session_view", message_type=type(view).__name__,
+        )
+        dto = project_session_view(view)
+        if isinstance(view, ChartUnavailableSessionView):
+            chart_unavailable(prepared.request_id, view.safe_reason)
     except Exception as exc:
         _LOG.error(
             "http_unhandled_exception request_id=%s safe_error=%s",
