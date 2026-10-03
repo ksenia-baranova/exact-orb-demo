@@ -422,20 +422,23 @@ async def test_place_id_code_point_boundaries_and_positive_build_path(
         assert context.load_calls == context.save_calls == []
 
 
-@pytest.mark.parametrize("field,value,expected_field", (
-    ("birth_date", "1990-02-30", "birth.date"),
-    ("birth_date", "1990-9-2", "birth.date"),
-    ("birth_time", "14:30:00", "birth.time"),
-    ("birth_time", "14:30+03:00", "birth.time"),
-    ("state_version", 0, "request.state_version"),
+@pytest.mark.parametrize("overrides,expected_field", (
+    ({"birth_date": "1990-02-30"}, "birth.date"),
+    ({"birth_date": "1990-9-2"}, "birth.date"),
+    ({"birth_time": "14:30:00"}, "birth.time"),
+    ({"birth_time": "14:30+03:00"}, "birth.time"),
+    # AS-HTTP-12/13: combined malformed inputs are rejected before execution.
+    pytest.param({"birth_date": "1990-02-30", "birth_time": "24:00"},
+                 "birth.date", id="invalid-date-and-time"),
+    ({"state_version": 0}, "request.state_version"),
 ))
 async def test_build_schema_rejects_malformed_or_extra_fields_before_orchestrator(
-    field: str, value: object, expected_field: str,
+    overrides: dict[str, object], expected_field: str,
     app_client, runtime: RuntimeSpy, context: ScriptedContext
 ) -> None:
     orchestrator = ScriptedOrchestrator(lambda run: _input_required(run))
     runtime.orchestrator = orchestrator
-    body = {**VALID_BUILD, field: value}
+    body = {**VALID_BUILD, **overrides}
     async with app_client(runtime) as client:
         rejected = await client.post("/charts/natal", json=body, headers={"Cookie": COOKIE})
         assert rejected.status_code == 422

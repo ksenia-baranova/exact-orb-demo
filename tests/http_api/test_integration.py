@@ -30,7 +30,7 @@ LOCAL_ENV = {
 }
 
 
-def test_local_logging_config_records_package_info_without_debug_payload(tmp_path: Path) -> None:
+def test_local_logging_config_records_package_info_and_debug_payload(tmp_path: Path) -> None:
     repo = Path(__file__).resolve().parents[2]
     config = repo / "docs/runbooks/http_api_local_logging.json"
     (tmp_path / "logs/http-api").mkdir(parents=True)
@@ -65,7 +65,7 @@ logging.getLogger('exact_orb.http_api').info(
         "http_request_finished", "http_shutdown_finished outcome=fail_fast",
     ):
         assert event in log
-    assert "private_birth_payload" not in log
+    assert "private_birth_payload" in log
 
 
 def _response_schema(operation: dict, status: int) -> dict:

@@ -79,11 +79,20 @@ watchdog, который запускается после проверок и a
 Ответ, созданный самим Caddy при timeout, не является `ErrorDTO` приложения
 и может не содержать `X-Request-ID`.
 
-[Logging configuration](http_api_local_logging.json) устанавливает INFO для
-всего `exact_orb`. События уровня INFO и выше пишутся в
+[Logging configuration](http_api_local_logging.json) устанавливает DEBUG для
+`exact_orb` на **локальном** стенде. События пишутся в
 `logs/http-api/local.log` в корне репозитория, с ротацией по 10 MiB и пятью
-архивными файлами. DEBUG полного component payload для HTTP-процесса
-отключён. Серверные события Uvicorn идут в stderr. Перед принудительной
+архивными файлами. После `POST /charts/natal` найдите по `run_id`
+`component_message direction=out operation=build_natal` с полной картой в
+`BuildNatalSuccess`. DEBUG-события с `operation=context_save` показывают
+вызов и итог сохранения, а `session_sqlite_cas_committed` подтверждает
+успешный атомарный commit `session_states` и `session_charts`: он содержит
+`state_version`, `chart_action` и `calculation_key`. У SQLite-события нет
+`run_id`; сопоставьте его с build по `calculation_key` и версии. Бинарный
+`StoredChart.payload` в DEBUG не выводится согласно ADR-0041. На конфликте,
+откате или неподтверждённом commit событие `session_sqlite_cas_committed` не
+пишется. Удалённый M1-профиль сохраняет effective INFO по ADR-0034.
+Серверные события Uvicorn идут в stderr. Перед принудительной
 остановкой скопируйте `logs/http-api/local.log*` в отдельный каталог
 диагностики и сохраните вывод терминала. При штатном выходе Python закрывает
 logging handlers через `logging.shutdown()`; принудительная остановка этого

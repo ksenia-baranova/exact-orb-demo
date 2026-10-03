@@ -978,12 +978,24 @@ def _sync_compare_and_set(
             )
         return _TransactionResult(next_state.state_version)
 
-    return _run_immediate(
+    result = _run_immediate(
         backend,
         operation,
         error_type=StateWriteError,
         default_code=_WRITE_FAILED,
     )
+    if type(result) is int:
+        chart = delta.base_chart_payload
+        _LOGGER.debug(
+            "session_sqlite_cas_committed session_id=%s state_version=%d "
+            "state_table=session_states chart_table=session_charts "
+            "chart_action=%s calculation_key=%s",
+            session_id,
+            result,
+            "delete" if chart is None else "upsert",
+            "-" if chart is None else chart.calculation_key,
+        )
+    return result
 
 
 def _sync_dialog_read(
