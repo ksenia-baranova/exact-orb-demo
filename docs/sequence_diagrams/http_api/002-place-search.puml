@@ -1,0 +1,66 @@
+@startuml
+title exact-orb — HTTP place search: grammar, IP limit и typed outcomes
+
+autonumber
+hide footbox
+skinparam shadowing false
+skinparam responseMessageBelowArrow true
+
+actor "Клиент" as Client
+boundary "GET /places" as API
+control "Place search limiter" as Limit
+control "PlaceSearch" as Search
+database "places.sqlite" as DB
+collections "Журнал" as Log
+
+Client -> API : GET /places?query=Москва&limit=10
+API -> Log : http_request_started(request_id, route)
+
+alt service shutting down
+    API --> Client : 503 SERVICE_SHUTTING_DOWN + Retry-After:30
+else trusted forwarding invalid
+    API --> Client : 400 FORWARDED_HEADER_INVALID
+else present Origin rejected for business GET
+    API --> Client : 403 ORIGIN_NOT_ALLOWED
+else raw query > 512 / duplicate / invalid limit grammar
+    API --> Client : 422 QUERY_TOO_LONG / LIMIT_INVALID
+else place quota rejected
+    API -> Log : http_message send AdmissionControl.reserve
+    API -> Limit : reserve(client_ip, place_search)
+    Limit --> API : rejected(retry_after)
+    API -> Log : http_message receive AdmissionRejection
+    API -> Log : http_admission_rejected(scope=ip)
+    API --> Client : 429 PLACE_SEARCH_RATE_LIMITED + computed Retry-After
+else request admitted
+    API -> Log : http_message send AdmissionControl.reserve
+    API -> Limit : reserve(client_ip, place_search)
+    Limit --> API : admitted
+    API -> Log : http_message receive AdmissionGranted
+    API -> Log : http_message send PlaceSearch.search
+    API -> Search : search(query, limit)
+
+    alt suggestions, включая пустой список
+        Search -> DB : indexed prefix query
+        DB --> Search : rows
+        Search --> API : PlaceSuggestions(items)
+        API -> Log : http_message receive PlaceSuggestions
+        API --> Client : 200 {items:[...]}
+    else InvalidPlaceQuery
+        Search --> API : InvalidPlaceQuery(code)
+        API -> Log : http_message receive InvalidPlaceQuery
+        API --> Client : 422 INVALID_PLACE_QUERY + detail_code
+    else catalog unavailable
+        Search --> API : PlaceCatalogUnavailableError
+        API --> Client : 503 PLACE_CATALOG_UNAVAILABLE + Retry-After:5
+    end
+end
+
+API -> Log : http_request_finished(status, code, duration)
+
+note over API, DB
+Cookie/session/Orchestrator не затрагиваются.
+limit принимает только 1..20 без sign и leading zero.
+Все ответы получают no-store и X-Request-ID.
+end note
+
+@enduml

@@ -1,0 +1,118 @@
+@startuml
+title exact-orb — HTTP bootstrap: session lifecycle без текущей карты
+
+autonumber
+hide footbox
+skinparam shadowing false
+skinparam responseMessageBelowArrow true
+
+actor "Клиент" as Client
+boundary "POST /session/bootstrap" as API
+control "Session create limiter" as Limit
+control "ContextService" as Context
+database "SessionPersistence" as Store
+collections "Журнал" as Log
+
+Client -> API : POST {} + optional cookie
+API -> Log : http_request_started(request_id, route)
+
+alt service shutting down
+    API --> Client : 503 SERVICE_SHUTTING_DOWN\nRetry-After: 30
+else trusted forwarding invalid
+    API --> Client : 400 FORWARDED_HEADER_INVALID
+else Origin rejected
+    API --> Client : 403 ORIGIN_NOT_ALLOWED
+else media type / encoding rejected
+    API --> Client : 415 UNSUPPORTED_MEDIA_TYPE
+else body too slow / too large
+    API --> Client : 408 REQUEST_TIMEOUT + Retry-After:1\n/ 413 REQUEST_TOO_LARGE
+else JSON/schema rejected
+    API --> Client : 422 INVALID_REQUEST
+else transport-valid request
+    API -> API : parse cookie cardinality and syntax
+
+    alt one live-looking cookie
+        API -> Log : http_message send ContextService.load
+        API -> Context : load(cookie session_id)
+        Context -> Store : touch(session_id, now)
+
+        alt SessionSnapshot
+            Store --> Context : SessionSnapshot(state_version=N)
+            Context --> API : SessionSnapshot
+            API -> Log : http_message receive SessionSnapshot
+            API --> Client : 200 {status:ready,state_version:N}\nrenew cookie
+        else SessionAbsent(expired/not_found)
+            Store --> Context : SessionAbsent(reason)
+            Context --> API : SessionAbsent
+            API -> Log : http_message receive SessionAbsent
+            API -> Log : http_message send AdmissionControl.reserve
+            API -> Limit : reserve(client_ip, session_create)
+            Limit --> API : admitted / rejected
+            API -> Log : http_message receive AdmissionGranted / AdmissionRejection
+
+            alt creation admitted
+                loop не более 3 fresh ID
+                    API -> API : generate fresh ID
+                    API -> Log : http_message send ContextService.create
+                    API -> Context : create(fresh_id)
+                    Context -> Store : insert-only create
+                    Store --> Context : SessionCreated / SessionIdConflict / failure
+                    Context --> API : typed outcome
+                    API -> Log : http_message receive create outcome
+                end
+                alt SessionCreated
+                    API -> Log : http_cookie_replaced(reason)
+                    API --> Client : 200 ready + one new cookie
+                else create failed / 3 collisions
+                    API --> Client : 503 SESSION_CREATE_FAILED; Retry-After: 5\nold cookie cleared
+                end
+            else creation rate limited
+                API -> Log : http_admission_rejected(class=rate, scope=ip)
+                API --> Client : 429 SESSION_CREATE_RATE_LIMITED\n+ computed Retry-After; old cookie cleared
+            end
+        else StateReadFailed
+            Store --> Context : persistence failure
+            Context --> API : StateReadFailed(error_code)
+            API -> Log : http_message receive StateReadFailed
+            API --> Client : 503 STATE_READ_FAILED; Retry-After: 5\ncookie unchanged
+        end
+
+    else cookie missing / invalid / duplicated
+        API -> Log : http_message send AdmissionControl.reserve
+        API -> Limit : reserve(client_ip, session_create)
+        Limit --> API : admitted / rejected
+        API -> Log : http_message receive AdmissionGranted / AdmissionRejection
+
+        alt creation admitted
+            loop не более 3 fresh ID
+                API -> API : generate fresh ID
+                API -> Log : http_message send ContextService.create
+                API -> Context : create(fresh_id)
+                Context -> Store : insert-only create
+                Store --> Context : SessionCreated / SessionIdConflict / failure
+                Context --> API : typed outcome
+                API -> Log : http_message receive create outcome
+            end
+            alt SessionCreated
+                API -> Log : http_cookie_replaced(missing|invalid|duplicate)
+                API --> Client : 200 ready + one new cookie
+            else create failed / 3 collisions
+                API --> Client : 503 SESSION_CREATE_FAILED; Retry-After: 5\nclear invalid/duplicate
+            end
+        else creation rate limited
+            API -> Log : http_admission_rejected(class=rate, scope=ip)
+            API --> Client : 429 SESSION_CREATE_RATE_LIMITED + computed Retry-After
+        end
+    end
+end
+
+API -> Log : http_request_finished(status, code, duration)
+
+note over API, Store
+Bootstrap возвращает только liveness + state_version.
+Он не вызывает session_view, Orchestrator,
+resolver, cache или engine и не отдаёт карту.
+StateReadFailed является outcome load, а не SessionAbsent.
+end note
+
+@enduml

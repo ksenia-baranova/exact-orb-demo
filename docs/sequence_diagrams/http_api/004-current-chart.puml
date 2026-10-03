@@ -1,0 +1,84 @@
+@startuml
+title exact-orb — GET current chart: отдельное чтение сохранённой карты
+
+autonumber
+hide footbox
+skinparam shadowing false
+skinparam responseMessageBelowArrow true
+
+actor "Клиент" as Client
+boundary "GET /charts/current" as API
+control "ContextService" as Context
+database "SessionPersistence" as Store
+control "application/session_view" as View
+collections "Журнал" as Log
+
+Client -> API : GET + session cookie
+API -> Log : http_request_started(request_id, route)
+
+alt service shutting down
+    API --> Client : 503 SERVICE_SHUTTING_DOWN; Retry-After:30
+else trusted forwarding invalid
+    API --> Client : 400 FORWARDED_HEADER_INVALID
+else present Origin rejected for business GET
+    API --> Client : 403 ORIGIN_NOT_ALLOWED
+else cookie missing / invalid / duplicated
+    API --> Client : 409 SESSION_REQUIRED; clear if present
+else valid cookie
+    API -> Log : http_message send ContextService.load
+    API -> Context : load(session_id)
+    Context -> Store : touch(session_id, now)
+
+    alt SessionSnapshot
+        Store --> Context : SessionSnapshot(state, dialog, chart)
+        Context --> API : SessionSnapshot
+        API -> Log : http_message receive SessionSnapshot
+        API -> Log : http_message send session_view
+        API -> View : session_view(snapshot, current calculation version)
+        note right of View
+        BirthViewDTO uses birth_input and birth_resolved
+        from this snapshot, with no additional I/O.
+        If time_unknown: birth_time and utc_offset_seconds
+        are null; noon anchor and its warnings are hidden.
+        end note
+
+        alt empty
+            View --> API : EmptySessionView
+            API -> Log : http_message receive EmptySessionView
+            API --> Client : 200 empty; renew cookie
+        else chart_ready
+            View --> API : ChartReadySessionView(stale true|false)
+            API -> Log : http_message receive ChartReadySessionView
+            API --> Client : 200 chart_ready + ChartDTO; renew cookie
+        else chart_unavailable
+            View --> API : ChartUnavailableSessionView(safe_reason)
+            API -> Log : http_message receive ChartUnavailableSessionView
+            API -> Log : ERROR chart_unavailable(safe_reason)
+            API --> Client : 200 chart_unavailable + birth; renew cookie
+        else unexpected projector failure
+            View --> API : exception
+            API --> Client : 500 INTERNAL_FAILURE; renew cookie
+        end
+
+    else SessionAbsent
+        Store --> Context : SessionAbsent(reason)
+        Context --> API : SessionAbsent
+        API -> Log : http_message receive SessionAbsent
+        API --> Client : 409 SESSION_EXPIRED|SESSION_NOT_FOUND; clear cookie
+    else StateReadFailed
+        Store --> Context : persistence failure
+        Context --> API : StateReadFailed(error_code)
+        API -> Log : http_message receive StateReadFailed
+        API --> Client : 503 STATE_READ_FAILED; Retry-After:5\ncookie unchanged
+    end
+end
+
+API -> Log : http_request_finished(status, code, duration)
+
+note over API, View
+Endpoint не создаёт session и не вызывает Orchestrator,
+resolver, calculation cache или engine.
+Structural aggregate corruption остаётся StateReadFailed.
+end note
+
+@enduml

@@ -133,7 +133,7 @@ FE --> User : карта не меняется;\nактивной остаётс
 note over Context, Store
 Конфликт не меняет ни state, ни session_charts.
 AlreadyApplied при равном намерении также
-не переписывает карту победителя (ADR-0040).
+не переписывает карту победителя (ADR-0041).
 end note
 
 note over Store

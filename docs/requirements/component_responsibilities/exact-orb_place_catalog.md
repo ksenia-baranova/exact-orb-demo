@@ -275,10 +275,13 @@ distribution `tzdata`. Metadata не включает mtime, время сбор
 Воспроизводимость означает логическое равенство строк, их нормативного порядка
 и metadata; байтовое равенство SQLite-файлов не является контрактом.
 
-Raw-дампы и готовая база не входят в Python wheel и не коммитятся. Каталог
-доставляется как read-only слой или том deployment-окружения. Атрибуция
-GeoNames обязательна в пользовательском интерфейсе; точная редакция лицензии
-проверяется перед релизом.
+Raw-дампы и готовая база не входят в Python wheel. Проверенный снимок
+`data/places.sqlite` версионируется в Git для локального HTTP-стенда и
+интеграционных проверок; его SHA-256, metadata и атрибуция приведены в
+[`data/README.md`](../../../data/README.md). Deployment M1-12 доставляет
+каталог как read-only слой или том. GeoNames Gazetteer extract опубликован по
+[CC BY 4.0](https://download.geonames.org/export/dump/readme.txt);
+атрибуция GeoNames обязательна в пользовательском интерфейсе.
 
 ### 2.6. Локальная сборка
 
@@ -522,6 +525,10 @@ lifespan прекращает приём запросов и дожидаетс�
 ## 4. Сценарий 1 — endpoint поиска мест
 
 ### 4.1. HTTP-контракт
+
+Transport validation, IP rate limit и корреляция запроса для M1-6 описаны в
+[проекте требований HTTP API](../http_api.md). Таблица typed outcomes ниже
+остаётся исходным контрактом `PlaceSearch` и не зависит от session lifecycle.
 
 Целевой M1-6 endpoint:
 

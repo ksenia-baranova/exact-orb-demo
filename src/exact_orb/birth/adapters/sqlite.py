@@ -27,6 +27,30 @@ from exact_orb.birth.places import (
 
 _LOGGER = logging.getLogger(__name__)
 
+
+async def _await_submitted(future: asyncio.Future[Any], *, operation: str) -> Any:
+    """Keep a submitted catalog worker owned across waiter cancellation."""
+
+    try:
+        return await asyncio.shield(future)
+    except asyncio.CancelledError as cancelled:
+        while not future.done():
+            try:
+                await asyncio.shield(future)
+            except asyncio.CancelledError:
+                continue
+            except Exception:
+                break
+        if not future.cancelled():
+            try:
+                future.result()
+            except Exception as exc:
+                _LOGGER.warning(
+                    "cancelled_executor_work_failed operation=%s safe_error=%s",
+                    operation, type(exc).__name__,
+                )
+        raise cancelled
+
 _SCHEMA_VERSION = 1
 _MAX_PLACE_ID_LENGTH = 32
 _MAX_SEARCH_LIMIT = 20
@@ -156,7 +180,7 @@ class SqlitePlaceCatalog:
             ) from exc
 
         try:
-            return await search_future
+            return await _await_submitted(search_future, operation="search")
         except asyncio.CancelledError:
             raise
         except sqlite3.Error as exc:
@@ -185,7 +209,7 @@ class SqlitePlaceCatalog:
             ) from exc
 
         try:
-            return await lookup_future
+            return await _await_submitted(lookup_future, operation="lookup")
         except asyncio.CancelledError:
             raise
         except sqlite3.Error as exc:

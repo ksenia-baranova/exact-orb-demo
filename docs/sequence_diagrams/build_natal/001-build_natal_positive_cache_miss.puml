@@ -227,7 +227,7 @@ note over Artifacts, Cache
 Кэш можно очистить: сохранённый после commit
 StoredChart восстанавливает карту без расчёта.
 ChartSpec и ResolvedBirthData нужны для явного
-нового построения (ADR-0040, И-12).
+нового построения (ADR-0041, И-12).
 end note
 
 

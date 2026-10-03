@@ -7,12 +7,14 @@ import json
 import logging
 from pathlib import Path
 import re
+from typing import Callable, Iterator
 import uuid
 
 import pytest
 
 from exact_orb import cli
 from exact_orb import component_logging
+from exact_orb import logging_setup
 from exact_orb.component_logging import log_component_message
 from exact_orb.logging_setup import (
     LOG_FILE_NAME_FORMAT,
@@ -36,6 +38,29 @@ class IncrementingClock:
         value = self.current
         self.current += timedelta(seconds=1)
         return value
+
+
+@pytest.fixture
+def restore_cli_logging() -> Iterator[Callable[[], None]]:
+    """CLI tests run in pytest's process; restore their package logger state."""
+
+    logger = logging.getLogger("exact_orb")
+    before_handlers = tuple(logger.handlers)
+    before_level = logger.level
+    before_propagate = logger.propagate
+    before_state = logging_setup._STATE
+    def restore() -> None:
+        for handler in tuple(logger.handlers):
+            if handler not in before_handlers:
+                logger.removeHandler(handler)
+                handler.close()
+        logger.handlers[:] = before_handlers
+        logger.setLevel(before_level)
+        logger.propagate = before_propagate
+        logging_setup._STATE = before_state
+
+    yield restore
+    restore()
 
 
 def test_session_filter_attaches_session_and_component_context() -> None:
@@ -248,7 +273,10 @@ def test_utc_size_rotating_handler_uses_utc_file_names_without_suffixes() -> Non
     assert names[0] == datetime(2026, 8, 17, 11, 32, 45, tzinfo=UTC).strftime(LOG_FILE_NAME_FORMAT)
 
 
-def test_cli_writes_general_and_debug_logs(monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]) -> None:
+def test_cli_writes_general_and_debug_logs(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str],
+    restore_cli_logging: Callable[[], None],
+) -> None:
     log_dir = _workspace_log_dir("cli-success")
     monkeypatch.setenv("EXACT_ORB_LOG_DIR", str(log_dir))
     monkeypatch.setenv("EXACT_ORB_LOG_LEVEL", "DEBUG")
@@ -276,7 +304,10 @@ def test_cli_writes_general_and_debug_logs(monkeypatch: pytest.MonkeyPatch, caps
     assert "cli_response format=human text=НАТАЛЬНАЯ КАРТА" in debug
 
 
-def test_cli_logs_traceback_for_bad_input(monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]) -> None:
+def test_cli_logs_traceback_for_bad_input(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str],
+    restore_cli_logging: Callable[[], None],
+) -> None:
     log_dir = _workspace_log_dir("cli-error")
     monkeypatch.setenv("EXACT_ORB_LOG_DIR", str(log_dir))
     monkeypatch.setenv("EXACT_ORB_LOG_LEVEL", "DEBUG")
@@ -296,6 +327,7 @@ def test_cli_logs_traceback_for_bad_input(monkeypatch: pytest.MonkeyPatch, capsy
 def test_cli_degrades_to_stderr_when_file_log_is_unavailable(
     monkeypatch: pytest.MonkeyPatch,
     capsys: pytest.CaptureFixture[str],
+    restore_cli_logging: Callable[[], None],
 ) -> None:
     blocked = _workspace_log_dir("fallback") / "not_a_directory"
     blocked.write_text("not a directory", encoding="utf-8")
@@ -308,6 +340,24 @@ def test_cli_degrades_to_stderr_when_file_log_is_unavailable(
     assert "НАТАЛЬНАЯ КАРТА" in captured.out
     assert captured.err.count("file logging unavailable") == 1
     assert "component=logging_setup" in captured.err
+
+
+def test_cli_logging_restore_allows_later_package_warning_capture(
+    monkeypatch: pytest.MonkeyPatch,
+    caplog: pytest.LogCaptureFixture,
+    restore_cli_logging: Callable[[], None],
+) -> None:
+    package = logging.getLogger("exact_orb")
+    before = (tuple(package.handlers), package.level, package.propagate)
+    monkeypatch.setenv("EXACT_ORB_LOG_DIR", str(_workspace_log_dir("cli-isolation")))
+    with pytest.raises(SystemExit):
+        cli.main(["мусор"])
+    assert package.propagate is False
+    restore_cli_logging()
+    assert (tuple(package.handlers), package.level, package.propagate) == before
+    caplog.set_level(logging.WARNING, logger="exact_orb.birth.adapters.sqlite")
+    logging.getLogger("exact_orb.birth.adapters.sqlite").warning("later_catalog_warning")
+    assert any(record.getMessage() == "later_catalog_warning" for record in caplog.records)
 
 
 def _header_context(stream_name: str) -> str:

@@ -1,0 +1,45 @@
+{
+  "natal": {
+    "chart_identity": "eo:calc:v2:471780444330e2d9108e7ae97652bb4a47d3142ffc14cb238a587a6002df8eee",
+    "kind": "natal",
+    "zodiac": "tropical",
+    "house_system": "P",
+    "points": [
+      {"id": "sun", "longitude": 159.34074778029736, "sign": "Virgo", "degree": 9, "minute": 20, "house": 4, "retrograde": false},
+      {"id": "moon", "longitude": 7.664949064158727, "sign": "Aries", "degree": 7, "minute": 39, "house": 11, "retrograde": false},
+      {"id": "mercury", "longitude": 142.09770491769441, "sign": "Leo", "degree": 22, "minute": 5, "house": 3, "retrograde": false}
+    ],
+    "angles": {
+      "asc": {"longitude": 98.10571461295291, "sign": "Cancer", "degree": 8, "minute": 6},
+      "mc": {"longitude": 327.62940719926064, "sign": "Aquarius", "degree": 27, "minute": 37},
+      "vertex": {"longitude": 229.73871832539606, "sign": "Scorpio", "degree": 19, "minute": 44},
+      "dsc": {"longitude": 278.1057146129529, "sign": "Capricorn", "degree": 8, "minute": 6},
+      "ic": {"longitude": 147.62940719926064, "sign": "Leo", "degree": 27, "minute": 37}
+    },
+    "houses": [
+      {"number": 1, "cusp_longitude": 98.10571461295291, "sign": "Cancer", "degree": 8, "minute": 6},
+      {"number": 2, "cusp_longitude": 111.86113073362736, "sign": "Cancer", "degree": 21, "minute": 51},
+      {"number": 3, "cusp_longitude": 127.21128222848128, "sign": "Leo", "degree": 7, "minute": 12}
+    ],
+    "aspects": [
+      {"from": "moon", "to": "asc", "type": "square", "orb": 0.4407655487941611, "category": "exact"},
+      {"from": "sun", "to": "asc", "type": "sextile", "orb": 1.2350331673444543, "category": "working"},
+      {"from": "mercury", "to": "vertex", "type": "square", "orb": 2.358986592298379, "category": "working"}
+    ]
+  },
+  "cosmogram": {
+    "chart_identity": "eo:calc:v2:4c52e4cba142fe93852fa1498d9e770e85c94ca5d4466f551f214ccb870afcf7",
+    "kind": "cosmogram",
+    "zodiac": "tropical",
+    "house_system": null,
+    "points": [
+      {"id": "uranus", "longitude": 254.00767962503068, "sign": "Sagittarius", "degree": 14, "minute": 0, "house": null, "retrograde": false},
+      {"id": "chiron", "longitude": 74.45583944094797, "sign": "Gemini", "degree": 14, "minute": 27, "house": null, "retrograde": false}
+    ],
+    "angles": null,
+    "houses": null,
+    "aspects": [
+      {"from": "uranus", "to": "chiron", "type": "opposition", "orb": 0.45438143185427293, "category": "exact"}
+    ]
+  }
+}

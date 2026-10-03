@@ -10,6 +10,7 @@ from datetime import UTC, date, datetime, time, timedelta, timezone
 import inspect
 import itertools
 import json
+import logging
 import os
 from pathlib import Path
 import sqlite3
@@ -3119,8 +3120,10 @@ async def test_commit_exception_is_unknown_without_retry_or_readback(
 
 async def test_chart_write_failure_rolls_back_parent_and_retry_commits_pair(
     tmp_path: Path,
+    caplog: pytest.LogCaptureFixture,
 ) -> None:
     path = tmp_path / "chart-write-rollback.sqlite3"
+    caplog.set_level(logging.DEBUG, logger="exact_orb.session.adapters.sqlite")
     async with _opened(path) as (persistence, _):
         await create_session(persistence, "atomic")
         before = _fetchone(
@@ -3143,6 +3146,10 @@ async def test_chart_write_failure_rolls_back_parent_and_retry_commits_pair(
             "WHERE session_id = 'atomic'",
         ) == before
         assert _fetchall(path, "SELECT session_id FROM session_charts") == []
+        assert not any(
+            record.getMessage().startswith("session_sqlite_cas_committed ")
+            for record in caplog.records
+        )
 
         _execute(path, "DROP TRIGGER reject_chart")
         assert await persistence.sessions.compare_and_set("atomic", 0, DELTA, now=NOW) == 1
@@ -3150,13 +3157,25 @@ async def test_chart_write_failure_rolls_back_parent_and_retry_commits_pair(
         assert isinstance(snapshot, SessionSnapshot)
         assert snapshot.state.state_version == 1
         assert snapshot.chart == CHART
+        committed = [
+            record for record in caplog.records
+            if record.getMessage().startswith("session_sqlite_cas_committed ")
+        ]
+        assert len(committed) == 1
+        assert committed[0].levelno == logging.DEBUG
+        assert "state_version=1" in committed[0].getMessage()
+        assert "state_table=session_states chart_table=session_charts" in committed[0].getMessage()
+        assert "chart_action=upsert" in committed[0].getMessage()
+        assert f"calculation_key={CHART.calculation_key}" in committed[0].getMessage()
 
 
 async def test_lost_chart_commit_acknowledgement_preserves_pair_and_retry_winner(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
+    caplog: pytest.LogCaptureFixture,
 ) -> None:
     path = tmp_path / "chart-commit-unknown.sqlite3"
+    caplog.set_level(logging.DEBUG, logger="exact_orb.session.adapters.sqlite")
     CommitThenRaiseConnection.enabled = False
     CommitThenRaiseConnection.commits_that_raised = 0
     monkeypatch.setattr(sqlite_adapter, "_CONNECTION_FACTORY", _commit_fault_factory)
@@ -3172,6 +3191,10 @@ async def test_lost_chart_commit_acknowledgement_preserves_pair_and_retry_winner
             )
         assert caught.value.error_code == COMMIT_UNKNOWN
         assert CommitThenRaiseConnection.commits_that_raised == 1
+        assert not any(
+            record.getMessage().startswith("session_sqlite_cas_committed ")
+            for record in caplog.records
+        )
         CommitThenRaiseConnection.enabled = False
         assert _fetchone(
             path,
