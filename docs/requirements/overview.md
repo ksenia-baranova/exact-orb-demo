@@ -1,6 +1,6 @@
 # Архитектура exact-orb
 
-Статус документа: рабочий, версия 2.7 (2026-09-22).
+Статус документа: рабочий, версия 2.8 (2026-10-03).
 Заменяет версию 1.0, описывавшую систему как чистый веб-чат.
 Область: прикладной и агентский слои, их расчётные контракты и хранение данных.
 
@@ -29,6 +29,10 @@ builder, `PlaceSearch`, `SqlitePlaceCatalog`, индексированные sea
 Ревизия 2026-09-26: ADR-0041 меняет целевое восстановление уже построенной
 карты: она хранится в агрегате сессии как `StoredChart`. Реализация вынесена
 в отдельную ветку до M1-6; статус текущего кода приведён в §2.1.
+
+Ревизия 2026-10-03: HTTP API и Session Middleware M1-6 вошли в `main` через
+PR #40 и прошли автоматические и локальные HTTPS-проверки; Tester evidence
+остаётся `PARTIAL`, формальный итог приёмки M1-6 не записан.
 
 Документ описывает принятую архитектуру; наличие требования не означает
 наличия реализации. Текущая готовность приведена в §2.1. Подробные контракты
@@ -113,19 +117,19 @@ application-срез ограничен натальной картой и ко�
 
 ### 2.1 Текущая готовность
 
-Сверено повторно 2026-09-27. Подробные реестры application core и runtime
+Сверено повторно 2026-10-03. Подробные реестры application core и runtime
 composition — в [плане ApplicationOrchestrator](../project_management/implementation_plans/application_orchestrator_implementation_plan.md)
 и [плане bootstrap composition](../project_management/implementation_plans/bootstrap_composition_implementation_plan.md).
 
 | Область | Реализовано | Остаётся |
 |---|---|---|
 | Standalone CLI и ядро | natal, cosmogram, transit | развитие техник; CLI не является HTTP-приложением |
-| Build Natal | `BuildNatalCommand`, `BuildNatalHandler`, `BuildNatalOutcome`, `ApplicationOrchestrator`, внешний `ApplicationResult`, CAS commit/retry/cancellation, lifecycle logging, минимальная composition, process-local `ApplicationRuntime`, атомарное сохранение `StoredChart` и сквозная приёмка после рестарта | HTTP mapping, client monotonicity X1, admission X2 и deployment policy |
-| Резолв и артефакты | `PlaceSearch`, `PlaceCatalog`, JSONL test adapter, GeoNames SQLite builder, `SqlitePlaceCatalog`, индексированные search/lookup, lifecycle/startup validation, historical TZ, resolver, spec, key v2, version, engine, codec, InMemory cache, artifact resolver и сквозная catalog/application приёмка | HTTP/lifespan wiring M1-6, UI autocomplete M1-7 и доставка `places.sqlite` M1-12 |
-| Сессия | contracts, `ContextService`, InMemory и SQLite adapters, TTL/CAS, `StoredChart`, согласованный snapshot, чистая `session_view`, runtime-owned SQLite executor и one-shot reaper | подключение к HTTP/session lifecycle и периодическое расписание reaper |
-| Клиент и HTTP API | — | форма, renderer, middleware, JSON/SSE endpoints |
+| Build Natal | `BuildNatalCommand`, `BuildNatalHandler`, `BuildNatalOutcome`, `ApplicationOrchestrator`, внешний `ApplicationResult`, CAS commit/retry/cancellation, lifecycle logging, минимальная composition, process-local `ApplicationRuntime`, атомарное сохранение `StoredChart` и сквозная приёмка после рестарта; HTTP mapping M1-6 | client monotonicity X1, degraded load profile X2 с реализованным admission и финальная приёмка M1-6 |
+| Резолв и артефакты | `PlaceSearch`, `PlaceCatalog`, JSONL test adapter, GeoNames SQLite builder, `SqlitePlaceCatalog`, индексированные search/lookup, lifecycle/startup validation, historical TZ, resolver, spec, key v2, version, engine, codec, InMemory cache, artifact resolver, catalog/application приёмка и HTTP/lifespan wiring M1-6; снимок `data/places.sqlite` версионируется для локального стенда | UI autocomplete M1-7 и production-доставка read-only каталога M1-12 |
+| Сессия | contracts, `ContextService`, InMemory и SQLite adapters, TTL/CAS, `StoredChart`, согласованный snapshot, чистая `session_view`, runtime-owned SQLite executor и one-shot reaper; HTTP/session lifecycle и периодический reaper M1-6 | проверка браузерной cookie policy и финальная приёмка M1-6 |
+| Клиент и HTTP API | FastAPI M1-6: анонимная cookie, bootstrap/current, поиск мест, Build API, admission, request lifecycle и локальный HTTPS-прогон с обходом дефекта стенда | Tester findings и финальная приёмка M1-6; форма, renderer, Selection/Message API и SSE в следующих этапах |
 | Agent Runtime | интерфейсы, реестры, синхронный `NatalTool`; `orchestration.Orchestrator` — каркас | interpretation handlers, целевой runtime, async Tool, общий путь через артефакты |
-| Интерпретация и допуск | contracts/каркас интерпретации, LLM Gateway transport | `InterpretationService`, recipes, cache, streaming, guards, capabilities, policy и admission |
+| Интерпретация и допуск | contracts/каркас интерпретации, LLM Gateway transport; HTTP admission M1-6 | `InterpretationService`, recipes, cache, streaming, guards, capabilities и policy для интерпретации |
 | Research Corpus | модели, whitelist-проекция, append-only port и InMemory adapter | SQLite adapter и application producer wiring |
 
 Статус относится к компонентам в текущем checkout, а не к готовности
@@ -154,10 +158,12 @@ Typed input boundary → ApplicationOrchestrator → route by type(command) → 
 
 Успешная пользовательская операция требует подтверждённого commit либо
 `AlreadyApplied`. Успешный расчёт сам по себе этого не доказывает.
-Этот поток подтверждён прямыми application/integration-тестами. HTTP JSON,
-cookie/session bootstrap и UI ещё не реализованы;
+Этот поток подтверждён прямыми application/integration-тестами. HTTP JSON и
+cookie/session bootstrap реализованы в M1-6; UI ещё не реализован, а финальная
+приёмка HTTP change остаётся открытой;
 [Build Natal sequence diagrams](../sequence_diagrams/build_natal/README.md)
-явно отделяют реализованный application core от целевого transport/client.
+отделяют application core от transport/client; реализация HTTP M1-6 описана в
+[HTTP requirements](http_api.md) и [HTTP sequences](../sequence_diagrams/http_api/README.md).
 Точный контракт первого use case зафиксирован в
 [требованиях ApplicationOrchestrator](component_responsibilities/exact-orb_application_orchestrator_requirements.md).
 
@@ -365,7 +371,8 @@ preset-действия, чат при наличии capability. Переклю
 **CLI (`cli.py`)** — параллельная ветка прямого расчёта, минующая агентский стек.
 Инструмент разработчика; natal/cosmogram/transit доступны без HTTP и сессии.
 Его локальная диагностика относится к исключению §4.12.
-**Статус:** CLI реализован; HTTP API и Session Middleware не реализованы.
+**Статус:** CLI реализован; HTTP API и Session Middleware вошли в `main` через
+PR #40, Tester evidence `PARTIAL`, формальный итог приёмки не записан.
 
 ### 4.3 Координация
 
@@ -449,7 +456,7 @@ test-adapter над JSONL fixture. Форма передаёт выбранны�
 **PlaceSearch** — реализованный отдельный async-порт подсказок. Он не расширяет
 `PlaceCatalog` и не проходит через `ApplicationOrchestrator`.
 `SqlitePlaceCatalog` реализует оба порта над одним read-only выпуском данных:
-будущий endpoint поиска получает ограниченные подсказки, а
+реализованный `GET /places` получает ограниченные подсказки, а
 `BirthDataResolver` повторно проверяет выбранный недоверенный `place_id`.
 Контракты, ограничения и приёмка зафиксированы в
 [требованиях каталога мест](component_responsibilities/exact-orb_place_catalog.md).
@@ -461,8 +468,8 @@ test-adapter над JSONL fixture. Форма передаёт выбранны�
 При неизвестном времени birth/timezone-слой формирует `BirthTimeDomain` из
 всех валидных минут локальной даты; расчётный слой получает готовый UTC-домен
 и не резолвит timezone повторно (ADR-0032).
-**Статус:** catalog core M1-5 реализован и принят; HTTP wiring и UI остаются
-M1-6/M1-7.
+**Статус:** catalog core M1-5 реализован и принят; HTTP wiring M1-6 вошёл в
+`main` через PR #40, UI autocomplete остаётся M1-7.
 [Контракты резолва](component_responsibilities/exact-orb_birth_data_resolution.md),
 [контракты каталога мест](component_responsibilities/exact-orb_place_catalog.md).
 
@@ -569,8 +576,8 @@ cache miss → hit через публичную runtime-границу реал
 по существу это защита от повторного списания при двойном клике и refresh,
 а не экономия.
 **Статус:** расчётные spec/input/key/version, engine, codec, cache и resolver
-реализованы; process runtime wiring также реализован. Interpretation Cache и
-подключение runtime к HTTP lifecycle не реализованы.
+реализованы; process runtime wiring и подключение runtime к HTTP lifecycle M1-6
+также реализованы. Interpretation Cache ещё не реализован.
 [Требования к артефактам](component_responsibilities/exact-orb_chart_artifacts.md).
 
 ### 4.10 Расчёт — EngineService
@@ -738,13 +745,13 @@ SQLite и application producer wiring отложены; утверждение �
 
 ### 5.2 Целевые контракты
 
-Эта таблица описывает требования к ещё не реализованным потокам. Существующий
+Эта таблица разделяет реализованный HTTP DTO M1-6 и требования к будущим потокам. Существующий
 `intent.types.InterpretationPlan` имеет раннюю форму с `required_tools`,
 `data_selectors`, `prompt_recipe` и пока не соответствует целевой строке ниже.
 
 | Контракт | Граница | Ключевое |
 |---|---|---|
-| Transport DTO | Form ↔ HTTP API | отображение ввода/карты и типизированных исходов; HTTP-слой ещё не реализован |
+| Transport DTO | Form ↔ HTTP API | публичные DTO сессии, места и карты реализованы в M1-6; отображение через Web UI остаётся следующим этапом |
 | `ApplicationResult` | ApplicationOrchestrator → API | результат всей операции после commit: успех, `AlreadyApplied`, `Superseded`, отсутствие сессии или типизированный отказ |
 | `UnderstandingResult` | IntentService → Handler | `contract_fields`, `interpretation_query` |
 | `GuardVerdict` | InputGuard → Admission / Policy | `decision`, `reasons`, `rules` |
@@ -762,8 +769,9 @@ SQLite и application producer wiring отложены; утверждение �
 ## 6. Транспорт и стриминг
 
 Целевой транспорт по ADR-0012: операции без LLM — обычный request/response,
-операции с генерацией — SSE. HTTP endpoints и streaming Gateway ещё не
-реализованы; готовый `BuildNatalHandler` сам HTTP-ответ не формирует.
+операции с генерацией — SSE. HTTP endpoints M1-6 для сессии, поиска мест и
+построения карты реализованы; Selection/Message API и streaming Gateway ещё
+не реализованы. `BuildNatalHandler` сам HTTP-ответ не формирует.
 
 События: `status`, `input_required`, `token`, `done`, `error`.
 Событие `clarification` из версии 1.0 переименовано в `input_required` вслед
@@ -876,8 +884,9 @@ key v2 по ADR-0032, единая strength-система ADR-0033 и норм�
 на epsilon-границе. Обязательный import-boundary тест `BuildNatalHandler`
 интегрирован в M1-4. LLM Gateway предоставляет синхронный transport.
 
-**M1. Первый сценарий с UI на удалённом сервере.** Остаются: FastAPI и Session
-Middleware, HTTP wiring готового каталога; первый UI с autocomplete; условия и
+**M1. Первый сценарий с UI на удалённом сервере.** FastAPI, Session Middleware
+и HTTP wiring каталога вошли в `main` через PR #40; остаются формальная
+приёмка M1-6, первый UI с autocomplete, условия и
 presentation checkbox по ADR-0034; отображение
 рассчитанной карты; серверный INFO-profile, деплой и браузерная приёмка.
 Build-путь не требует LLM или Agent Runtime.

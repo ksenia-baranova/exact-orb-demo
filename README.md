@@ -204,8 +204,8 @@ LLM используется как инструмент анализа и ис�
 | Interpretation / agent orchestration | Пока только каркас |
 | Application Orchestrator | **Реализован; принят на реальном стеке** |
 | Application composition | **Process-local runtime реализован и принят**: resolver, cache, engine, SQLite, `CalculationVersion`, `ContextService` и Orchestrator |
-| Каталог мест | **M1-5 core реализован и принят**: deterministic SQLite builder, `PlaceSearch`, search/lookup и интеграция с `BirthDataResolver`; HTTP/UI/deployment остаются M1-6/M1-7/M1-12 |
-| Публичный HTTP API | Пока не реализован |
+| Каталог мест | **M1-5 core реализован и принят**: deterministic SQLite builder, `PlaceSearch`, search/lookup и интеграция с `BirthDataResolver`; HTTP search и lifespan wiring вошли в `main` с M1-6 через PR #40, browser autocomplete и production-доставка остаются M1-7/M1-12 |
+| Публичный HTTP API | **Реализован и включён в `main` через PR #40; приёмка открыта**: FastAPI, анонимная session cookie, bootstrap/current, поиск мест, Build API, admission и lifecycle; [Tester evidence](docs/testing/http-api-and-session-middleware/tester.md#findings-ограничения-и-handoff) остаётся `PARTIAL`, формальный итог M1-6 не записан |
 | Web UI | Пока не реализован |
 
 Важно различать два уровня готовности. Низкоуровневый движок уже содержит расчёт
@@ -461,15 +461,15 @@ Builder и runtime search используют один объект `normalize_
 raw-символы Unicode category `Cc` отклоняются, затем выполняются NFKC,
 whitespace folding, `casefold()` и `ё → е`. Лимит 200 code points проверяется
 у итогового ключа, а наличие searchable-символа определяется
-`str.isalnum()`. Ограничение размера HTTP query/body до нормализации относится
-к будущей transport-композиции M1-6.
+`str.isalnum()`. Ограничение размера HTTP query/body до нормализации реализовано
+на transport-границе M1-6.
 
 Нормативный контракт описан в
 [`exact-orb_place_catalog.md`](docs/requirements/component_responsibilities/exact-orb_place_catalog.md),
 а реализованные и целевые потоки разделены в
 [`docs/sequence_diagrams/place_catalog/README.md`](docs/sequence_diagrams/place_catalog/README.md).
-HTTP endpoint/lifespan wiring остаются M1-6, browser autocomplete — M1-7,
-доставка `places.sqlite` — M1-12.
+HTTP endpoint/lifespan wiring реализованы в M1-6 и вошли в `main`; browser
+autocomplete остаётся M1-7, production-доставка `places.sqlite` — M1-12.
 
 ### Детерминированный расчёт
 
@@ -961,7 +961,7 @@ Mock, удовлетворяющий интерфейсу, полезен для
 | **Нет CI.** Тесты запускаются локально; кроссплатформенная воспроизводимость golden-эталонов не подтверждена | открыто |
 | **`NatalTool` идёт мимо `ChartArtifactResolver`.** `tools/natal_tool.py` вызывает `calculate_natal()` напрямую, поэтому agent-facing путь и application-путь дают разные calculation keys | известный долг, M3-1 roadmap |
 | **Движок читает процессную конфигурацию.** `engine/charts/natal.py` импортирует `exact_orb.config` — противоречит инварианту изоляции движка | известный долг №1 |
-| **CLI не проходит через application-слой** | application-слой реализован, но CLI пока остаётся прямым входом в calculation engine; подключение CLI/FastAPI к Orchestrator — отдельная интеграционная работа |
+| **CLI не проходит через application-слой** | CLI пока остаётся прямым входом в calculation engine; маршрут Build API уже вызывает `ApplicationOrchestrator` в M1-6, подключение CLI — отдельная работа |
 
 ---
 
@@ -1080,10 +1080,9 @@ ContextService.save
 application result
 ```
 
-После commit результата этот flow подключается к FastAPI; уже реализованный
-catalog core получает HTTP/lifespan wiring и browser autocomplete, затем форма
-связывается с таблицами фактов и SVG-колесом карты. Готовность M1 проверяется
-через браузер на удалённом сервере.
+В M1-6 этот flow и catalog core подключены к FastAPI. Далее browser
+autocomplete и форма связываются с таблицами фактов и SVG-колесом карты.
+Готовность M1 проверяется через браузер на удалённом сервере.
 
 Следующая веха даёт первую интерпретацию коротким путём:
 
