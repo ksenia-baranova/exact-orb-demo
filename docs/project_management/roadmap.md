@@ -1,6 +1,6 @@
 # exact-orb — дорожная карта
 
-Статус документа: рабочий, версия 3.8 (2026-09-25).
+Статус документа: рабочий, версия 3.9 (2026-10-03).
 Объединяет milestone-план версии 3.0 с фактической историей выполненных работ
 и заменяет версии 2.x, планировавшие работу блоками A–J от расчётного фундамента.
 
@@ -30,6 +30,9 @@ composition M1-5.1 между каталогом и FastAPI, не переотк
 `BuildNatalHandler` закреплена regression-тестом без изменения самого handler.
 Ревизия 3.8 добавляет M1-8.1 — отдельную ветку переноса UI/UX-прототипа в
 основной код. Оценка и календарное окно этой ветки пока не определены.
+Ревизия 3.9 фиксирует реализацию HTTP API M1-6 и merge PR #40 в `main`:
+автоматические проверки и локальный HTTPS-прогон выполнены, но Tester evidence
+остаётся `PARTIAL`, формальный итог приёмки не записан.
 
 ---
 
@@ -37,7 +40,7 @@ composition M1-5.1 между каталогом и FastAPI, не переотк
 
 | Веха | Результат | Оценка оставшейся работы |
 |---|---|---:|
-| **M1** | Первый сценарий с UI работает на удалённом сервере | 17 рабочих дней после выполнения M1-4 и M1-5 + M1-8.1 без оценки |
+| **M1** | Первый сценарий с UI работает на удалённом сервере | baseline 3.8: 17 рабочих дней после M1-4 и M1-5 + M1-8.1 без оценки; остаток после M1-6 не пересчитан |
 | **M2** | Интерпретация коротким путём: handler → InterpretationService → Gateway | 12.5 рабочего дня + 10–20 дней содержания |
 | **M3** | Agent Runtime и известный остаток | 36 рабочих дней, предварительно |
 
@@ -53,7 +56,7 @@ Baseline v3.2 оценивал M1-2 + M1-3 как 2 рабочих дня до 1
 process runtime composition; этап выполнен 21.09. Версия 3.5 добавила ещё
 2 дня к M1-5 после детализации каталога; после выполнения M1-4 и M1-5
 оставшийся M1 по этому baseline равен 17 рабочим дням. Новая M1-8.1 в оценку
-не включена.
+не включена. После реализации M1-6 текущая оценка остатка не утверждалась.
 Оценка M3 имеет меньшую точность: транзиты, несколько систем домов,
 соляр и синастрия требуют отдельного уточнения требований.
 
@@ -96,9 +99,9 @@ Application Orchestrator по коммитам `a12daf4` → `e688592` и README
 | Область | Остаток / статус | Этап |
 |---|---|---|
 | Build Natal | В `main` до переноса 23.09 отсутствовал отдельный import-boundary regression-тест handler по §10.1; закрыт коммитом `0828c26` | M1-4 выполнен |
-| Application integration вне core | Process runtime подключён; FastAPI, client mapping и admission/degraded profile ещё не подключены к реализованному Orchestrator | M1-6, M1-10, M1-12; X1/X2 application-плана |
-| Каталог в пользовательском сценарии | Catalog core M1-5 выполнен: GeoNames builder, SQLite search/lookup, lifecycle и application acceptance; остаются HTTP/lifespan wiring, browser autocomplete и доставка generated артефакта | M1-6, M1-7, M1-12 |
-| Пользовательский сценарий | FastAPI, middleware, первый UI, Chart Renderer, реализация условий использования, CI, удалённый запуск и приёмка | M1-6–M1-15; решение для M1-9 уже принято в ADR-0034 |
+| Application integration вне core | Process runtime и FastAPI с HTTP mapping, session middleware и admission вошли в `main`; тестирование M1-6 частичное, client monotonicity и degraded load profile остаются открытыми | приёмка M1-6, M1-10, M1-12; X1/X2 application-плана |
+| Каталог в пользовательском сценарии | Catalog core M1-5 выполнен; HTTP search/lifespan wiring реализованы в M1-6, проверенный `data/places.sqlite` хранится в Git для локального стенда; остаются browser autocomplete и production-доставка | приёмка M1-6, M1-7, M1-12 |
+| Пользовательский сценарий | FastAPI и middleware вошли в `main` через PR #40; остаются формальное закрытие M1-6, первый UI, Chart Renderer, условия использования, CI и удалённый запуск | M1-6–M1-15; решение для M1-9 уже принято в ADR-0034 |
 | Интерпретация | Handler, `InterpretationService`, DataSelector, первый рецепт, guards, budget и подключение к готовому Gateway | M2 |
 | Agent-слой | Runtime, async Tool, переименование agent-пакета и общий артефактный путь вместо прямого расчёта `NatalTool` | M3 |
 | Research | SQLite P5b и application producer wiring | M3 |
@@ -275,23 +278,23 @@ JSON-сериализация не выполняются. Локальный DE
 | M1-5 | `feat/place-catalog` | **Выполнено 22.09:** по [требованиям каталога мест](../requirements/component_responsibilities/exact-orb_place_catalog.md) и [implementation plan](implementation_plans/place_catalog_implementation_plan.md) реализованы GeoNames SQLite builder, отдельные `PlaceSearch.search(text)` и `PlaceCatalog.lookup(place_id)` одного leaf-adapter, русские подписи мест/admin1, индексный поиск, lifecycle/executor, startup validation, module boundaries и сквозная приёмка; полный local-data build принят | план 4; факт 21–22.09 |
 | M1-5.1 | `chore/bootstrap-composition` | **Выполнено 21.09:** process-local `ApplicationRuntime` собирает реальные resolver/cache/engine, SQLite session persistence, `ContextService`, существующий `build_application_orchestrator`, фактическую `CalculationVersion`, owned executors и one-shot reaper. Сквозные cache miss → hit и cancelled-waiter shutdown приняты; `PlaceCatalog` внедряется извне | план 2; факт 21.09 |
 | M1-5.2 | `feat/session-stored-chart` | **Компонентная приёмка выполнена 27.09:** промты 01–08 реализованы; `StoredChart` атомарно сохраняется с состоянием в InMemory/SQLite, миграция v2 и lifecycle проверены, `session_view` восстанавливает карту после нового runtime с пустым кэшем. Полный локальный `pytest`: 2649 passed. Публичный HTTP bootstrap и cookie — M1-6; подробный [журнал](implementation_plans/session_stored_chart_implementation_plan.md#8-статус-журнал-свидетельств-и-передача-в-m1-6) | оценка открыта; факт 27.09 |
-| M1-6 | `feat/http-api-and-session-middleware` | Вторая ветка: FastAPI и lifespan потребляют готовый `ApplicationRuntime` и сборщик представления сессии из M1-5.2; Session Middleware (`HttpOnly` / `Secure` / `SameSite` cookie → анонимный `session_id`); bootstrap, Build API, endpoint поиска мест; прекращение приёма и ожидание request tasks, включая отменённые; периодический запуск runtime reaper | 2 (пересмотреть после M1-5.2) |
+| M1-6 | `feat/http-api-and-session-middleware` | **Реализовано и включено в `main` через PR #40; формальная приёмка не записана:** FastAPI/lifespan, анонимная cookie, bootstrap/current, Build API, поиск мест, admission, shutdown и reaper. Полный локальный `pytest` на каталожном commit `cd42c5d`: 2953 passed; [Tester](../testing/http-api-and-session-middleware/tester.md) выполнил M-01…M-14 через HTTPS с обходом `FIND-TEST-HTTP-001`, evidence `PARTIAL`. Открытые findings требуют решения | исходный план 2; факт и остаток не пересчитаны |
 | M1-7 | `feat/ui-birth-form-and-facts` | Форма ввода с автодополнением места; вывод фактов таблицами — планеты, дома, аспекты, конфигурации, сила, особые градусы. Содержательный эквивалент human-readable CLI | 2 |
 | M1-8 | `feat/ui-chart-wheel` | Chart Renderer: SVG-колесо — знаки, дома и углы, планеты и производные точки, линии аспектов по категориям. Отрисовочные решения фиксируются ADR: что делать при скучивании планет, как показывать ретроградность, какие аспекты рисовать | 5 |
 | M1-8.1 | `feat/ui-chart-wheel-imolementation` | Перенос [чернового web-прототипа](../ui_ux/web-prototype.html) и экранов Э1–Э7 в основной UI-код: собрать пользовательский поток из формы и фактов M1-7, SVG-колеса M1-8 и реальных ответов API. Демо-значения прототипа не становятся расчётными данными; чат Э8–Э9 остаётся в M2-7 | оценка открыта |
 | M1-9 | `feat/terms-of-use` | Страница «Условия использования сервиса» по §3.2; неотмеченный по умолчанию checkbox блокирует отправку расчёта до подтверждения ознакомления; ссылка на исходный код (AGPL §13). Отметка не сохраняется и не объявляется юридическим согласием | 1 |
 | M1-10 | `chore/bench-concurrency` | `p50/p95/p99` для натала и космограммы при 1, 2, 5 и 10 одновременных расчётах (ADR-0012). Идёт **до** деплоя: определяет конфигурацию воркеров и может отменить целый блок отложенных решений — или потребовать его немедленно | 1 |
 | M1-11 | `chore/ci-pipeline` | GitHub Actions: `pytest` на Linux. Закрывает известное ограничение «нет CI» и впервые проверяет переносимость golden-эталонов на другую ОС | 0.5 |
-| M1-12 | `chore/deploy-environment` | Эфемериды, `tzdata`, каталог мест, конфигурация; production fail-fast при `EphemerisStatus.mode != "files"`; effective `INFO` и проверяемый guard от случайного `DEBUG` для удалённого стенда по ADR-0034 | 1 |
+| M1-12 | `chore/deploy-environment` | Эфемериды, `tzdata`, read-only доставка уже версионированного для локального стенда каталога мест, конфигурация; production fail-fast при `EphemerisStatus.mode != "files"`; effective `INFO` и проверяемый guard от случайного `DEBUG` для удалённого стенда по ADR-0034 | 1 |
 | M1-13 | `chore/deploy-server` | Деплой, reverse proxy, TLS, автозапуск. Заметная ссылка на исходный код в интерфейсе (AGPL §13) | 2 |
 | M1-14 | `test/scenario-acceptance` | Сквозная приёмка по [`negative corner scenarios`](../requirements/build_chart/exact_orb_negative_corner_scenarios.md) плюс контрольный кейс: 02.09.1990 Москва → UTC+4, локальные 14:30 = 10:30 UTC | 1.5 |
 | M1-15 | `fix/first-release-issues` | Фиксы по итогам приёмки | 1 |
 
 **Итого оценённый M1 по baseline v3.7 — 26 рабочих дней.** К baseline v3.2 добавлены
-2 дня M1-5.1 и 2 дня к M1-5; после фактического выполнения M1-1–M1-3,
-M1-4, M1-5 и M1-5.1 осталось 17
-оценённых рабочих дней: M1-6–M1-15. M1-5.2 добавлена сверх baseline без
-оценки и не входит в эти суммы. Перерасход Orchestrator уже сдвинул
+2 дня M1-5.1 и 2 дня к M1-5; на момент baseline после фактического выполнения
+M1-1–M1-3, M1-4, M1-5 и M1-5.1 оставалось 17 оценённых рабочих дней:
+M1-6–M1-15. Эта цифра не пересчитана после реализации M1-6. M1-5.2 добавлена
+сверх baseline без оценки и не входит в эти суммы. Перерасход Orchestrator уже сдвинул
 календарный baseline, но не является основанием автоматически резать
 оставшиеся проверки или переносить acceptance в «потом».
 

@@ -1,11 +1,11 @@
 # Change plan: HTTP API and Session Middleware
 
-- **Статус на 2026-10-02:** Analysis PR #37 принят в `change/*`; решения DP-HTTP-01…06 и FIND-HTTP-021/022 подтверждены пользователем. Developer реализовал HTTP API и поправки 04a/07a/13a/13a.1/13b в `dev/*`; владелец change принял уточнения FIND-HTTP-023/024. Возврат Lead-owned правок в `change/*` по FIND-HTTP-020 и переход «Разработка → тестирование» ещё не выполнены.
+- **Статус на 2026-10-03:** Analysis PR #37 и Developer PR #38 приняты в `change/*`; HTTP API M1-6 вошёл в `main` через PR #40 (`e0e3047`). Локальный полный `pytest` прошёл. Tester выполнил автоматическую сверку и M-01…M-14 через локальный HTTPS с обходом дефекта стенда; evidence `PARTIAL`, рекомендация — `NOT READY FOR FINAL ACCEPTANCE`. Формальный итог Lead не записан; `FIND-TEST-HTTP-001/002` и процессное закрытие `FIND-HTTP-020` остаются открытыми.
 - **Change:** `change/http-api-and-session-middleware`.
 - **Roadmap:** M1-6, `feat/http-api-and-session-middleware`.
 - **Исходный `main`:** `e337f5107d7a3092983f1d920aac45040c2df6ed`.
 - **Стартовый commit `change/*`:** `acc0a7671d52676e0e230e76497d59f769ec4fa8`.
-- **Текущая ветка:** `dev/http-api-and-session-middleware` от merge commit Analysis PR #37 `f11275c1306bf227544b10321151371852e24b28`.
+- **Ветка интеграции:** `change/http-api-and-session-middleware`; Development PR #38 принят merge commit `5df58a0`.
 - **Владелец плана:** Technical Change Lead.
 - **Календарный план:** [http-api-and-session-middleware.puml](http-api-and-session-middleware.puml). Lead подтвердил исходную оценку: подготовка 0,5 дня, Analysis 1,5 дня, Development 1 день, Testing 1 день; всего 4 рабочих дня.
 
@@ -71,8 +71,9 @@ HTTP-слой принимает запросы, вызывает существ
    `http_request_finished` старше 30 секунд. Сигнал требует диагностики и
    учёта route/deadline, поскольку сам по себе не доказывает вечное зависание.
 
-Это запись решения в Lead-owned плане на ветке Developer. Процессный
-FIND-HTTP-020 остаётся открытым до возврата правки в `change/*`.
+Решение было записано в Lead-owned плане на ветке Developer и вернулось в
+`change/*` через PR #38. Процессное закрытие FIND-HTTP-020 владельцем change
+ещё не зафиксировано.
 
 ## 4. Принятые входные артефакты
 
@@ -117,9 +118,9 @@ FIND-HTTP-020 остаётся открытым до возврата правк
 |----------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------|---------------------------------|
 | Подготовка Lead — `lead/http-api-and-session-middleware` | протокол, change plan, журнал и список входных артефактов | PR #36 принят в `change/*` |
 | Анализ — `analysis/http-api-and-session-middleware` | HTTP requirements, 29 acceptance scenarios и sequence diagrams | PR #37 принят в `change/*`; решения Lead согласованы; формальный Tester review не записан |
-| Разработка — `dev/http-api-and-session-middleware` | implementation plan, код, автоматизированные тесты и review | HTTP API и поправки через 13b реализованы; полный pytest зелёный, переход к тестированию ещё не оформлен |
-| Тестирование — `test/http-api-and-session-middleware`    | ручная и исследовательская проверка, необходимые regression tests и evidence                                          | ожидает завершения разработки   |
-| Финальная приёмка Lead                                   | решение о готовности change к merge в `main` или возврат на доработку                                                 | ожидает завершения тестирования |
+| Разработка — `dev/http-api-and-session-middleware` | implementation plan, код, автоматизированные тесты и review | PR #38 принят в `change/*`; полный локальный `pytest` на каталожном commit `cd42c5d`: 2953 passed; процессное закрытие FIND-HTTP-020 не записано |
+| Тестирование — `test/http-api-and-session-middleware`    | ручная и исследовательская проверка, необходимые regression tests и evidence                                          | начато; [Tester evidence](../../testing/http-api-and-session-middleware/tester.md) `PARTIAL`, M-01…M-14 PASS с обходом дефекта; blocker `FIND-TEST-HTTP-001` открыт |
+| Финальная приёмка Lead                                   | решение о готовности change к merge в `main` или возврат на доработку                                                 | PR #40 уже в `main`; формальное решение Lead не записано, Tester рекомендует `NOT READY FOR FINAL ACCEPTANCE` |
 
 Каждая роль начинает работу от актуального состояния `change/*`. Результат роли возвращается в `change/*` через Pull
 Request.
@@ -178,8 +179,8 @@ Request.
 ## 9. Текущее состояние
 
 - Подготовка Lead принята в `change/*` через PR #36. Analysis PR #37 принят в `change/*` с merge commit `f11275c`.
-- Developer работает в `dev/http-api-and-session-middleware`; [implementation plan](../implementation_plans/http_api_and_session_middleware_implementation_plan.md), production code, `tests/http_api/` и поправки 04a/07a/13a/13a.1/13b созданы. Реализация прошла полный pytest (2952 passed после 13b); formal Tester review пользователь отменил. Этап Testing ещё не начат.
+- Developer PR #38 принят в `change/*` (`5df58a0`): [implementation plan](../implementation_plans/http_api_and_session_middleware_implementation_plan.md), production code, `tests/http_api/` и поправки 04a/07a/13a/13a.1/13b интегрированы. На `cd42c5d` полный локальный pytest прошёл (2953 passed). Этап Testing начат: [Tester report](../../testing/http-api-and-session-middleware/tester.md) фиксирует автоматическую сверку и M-01…M-14 через Caddy/mkcert HTTPS с источника `127.0.0.2`; обычный localhost-путь остаётся заблокирован `FIND-TEST-HTTP-001`.
 - DP-HTTP-01…06 согласованы Lead 2026-09-30; для DP-HTTP-04 выбран вариант C в M1-6 и A как target state. Доказательства Developer записаны в implementation plan; FIND-HTTP-023/024 приняты владельцем change 2026-10-02 и уточняют локальное ограничение и охват событий.
-- FIND-HTTP-019 закрыт решением Lead: чистая birth-проекция включена, исходная оценка Gantt оставлена. Для FIND-HTTP-020 старый путь ADR и scope исправлены в этом плане; изменения Lead-owned документа ещё предстоит вернуть в `change/*` по процессу ролей.
+- FIND-HTTP-019 закрыт решением Lead: чистая birth-проекция включена, исходная оценка Gantt оставлена. Исправления старого пути ADR и scope по FIND-HTTP-020 находятся в `change/*` после PR #38; явное процессное закрытие этого finding владельцем change ещё не записано.
 - FIND-HTTP-022 уточняет публичный контракт §7.1/§9.1: offset неизвестного времени равен `null`, а при одновременном исчерпании лимитов доминирует наиболее поздний rate bucket. Подтверждено пользователем; автоматизированное evidence записано в implementation plan.
-- Финальный статус не присвоен.
+- PR #40 влит в `main` (`e0e3047`). Tester рекомендует `NOT READY FOR FINAL ACCEPTANCE` до закрытия `FIND-TEST-HTTP-001`, повторного обычного localhost/Postman-прогона и решения по `FIND-TEST-HTTP-002`; `FIND-TEST-HTTP-004` остаётся открытым UX/requirement gap. Формальный итог Lead не записан.
