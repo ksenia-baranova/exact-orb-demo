@@ -7,8 +7,12 @@
 - **Тип эксперимента:** организационная модель AI-assisted разработки enterprise-приложения
 - **Предыдущий эксперимент:** Experiment 001 — атомарные промты и порядок «тест раньше кода»
 
-Текущий запуск: [change plan](../project_management/change_plans/http-api-and-session-middleware.md)
-и [журнал](../project_management/experiments/experiment-002-log.md).
+Текущий запуск: [change plan](../../project_management/change_plans/http-api-and-session-middleware.md)
+и [журнал](../../project_management/experiments/experiment-002-log.md).
+
+> Этот документ сохраняет постановку и evidence Experiment 002. Текущие правила метода вынесены в
+> [Development approach](../development-approach.md), [Change development process](../process.md) и
+> [Roles and ownership](../roles.md). При расхождении эксперимент не переопределяет действующий процесс.
 
 ---
 

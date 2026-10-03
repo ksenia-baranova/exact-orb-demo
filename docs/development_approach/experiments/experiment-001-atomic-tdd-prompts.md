@@ -34,13 +34,13 @@ ApplicationResult
 
 | Документ | Путь |
 |---|---|
-| План реализации, 36 карточек, матрица приёмки, журнал выполнения | [`../project_management/implementation_plans/application_orchestrator_implementation_plan.md`](../project_management/implementation_plans/application_orchestrator_implementation_plan.md) |
-| Требования R3.2 | [`../requirements/component_responsibilities/exact-orb_application_orchestrator_requirements.md`](../requirements/component_responsibilities/exact-orb_application_orchestrator_requirements.md) |
-| ADR-0006, решение о компоненте | [`../requirements/decisions/0006-application-orchestrator.md`](../requirements/decisions/0006-application-orchestrator.md) |
-| Ручное ревью, с которого начался пересмотр границ | [`problems_detected_by_human/003-application-orchestrator-spec-review-exposed-responsibility-boundary-defects.md`](problems_detected_by_human/003-application-orchestrator-spec-review-exposed-responsibility-boundary-defects.md) |
-| Диаграмма отмены commit | [`../sequence_diagrams/build_natal/009-build_natal_commit_cancellation.puml`](../sequence_diagrams/build_natal/009-build_natal_commit_cancellation.puml) |
-| Диаграмма observability | [`../sequence_diagrams/build_natal/010-build_natal_application_observability.puml`](../sequence_diagrams/build_natal/010-build_natal_application_observability.puml) |
-| Код | [`../../src/exact_orb/application/`](../../src/exact_orb/application/) |
+| План реализации, 36 карточек, матрица приёмки, журнал выполнения | [`../../project_management/implementation_plans/application_orchestrator_implementation_plan.md`](../../project_management/implementation_plans/application_orchestrator_implementation_plan.md) |
+| Требования R3.2 | [`../../requirements/component_responsibilities/exact-orb_application_orchestrator_requirements.md`](../../requirements/component_responsibilities/exact-orb_application_orchestrator_requirements.md) |
+| ADR-0006, решение о компоненте | [`../../requirements/decisions/0006-application-orchestrator.md`](../../requirements/decisions/0006-application-orchestrator.md) |
+| Ручное ревью, с которого начался пересмотр границ | [`../problems_detected_by_human/003-application-orchestrator-spec-review-exposed-responsibility-boundary-defects.md`](../problems_detected_by_human/003-application-orchestrator-spec-review-exposed-responsibility-boundary-defects.md) |
+| Диаграмма отмены commit | [`../../sequence_diagrams/build_natal/009-build_natal_commit_cancellation.puml`](../../sequence_diagrams/build_natal/009-build_natal_commit_cancellation.puml) |
+| Диаграмма observability | [`../../sequence_diagrams/build_natal/010-build_natal_application_observability.puml`](../../sequence_diagrams/build_natal/010-build_natal_application_observability.puml) |
+| Код | [`../../../src/exact_orb/application/`](../../../src/exact_orb/application/) |
 
 План реализации — ключевой документ эксперимента: именно он задаёт порядок работ, зависимости карточек, закрываемые критерии приёмки, разрешённые к изменению файлы, запреты и критерий готовности. Текущие статусы карточек и журнал выполнения — в его разделе 1.3.
 
