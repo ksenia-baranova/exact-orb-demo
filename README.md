@@ -153,8 +153,8 @@ LLM используется как инструмент анализа и ис�
 определяет допустимое поведение в спорных сценариях, утверждает спецификацию и принимает
 итоговую реализацию.
 
-Полное описание процесса:
-[`docs/development_approach/spec-driven-development.md`](docs/development_approach/spec-driven-development.md)
+Описание метода, процесса и ролей:
+[`docs/development_approach/README.md`](docs/development_approach/README.md)
 
 ---
 
@@ -794,33 +794,35 @@ executable check
 Рабочий цикл:
 
 ```text
-проблема
+потребность пользователя
    ↓
-исследование требований / архитектуры
+Functional Analysis: requirements + scenarios
    ↓
-выявление развилок
+единый реестр вопросов и решений DP-*
    ↓
-decision table
+Developer / Tester consultation и estimates
    ↓
-решение владельца
+решения владельцев + согласованный Change Plan
    ↓
-ADR + requirements + diagrams
+bounded prompts + implementation
    ↓
-bounded implementation prompt
+Developer checks + independent testing
    ↓
-implementation
+перенос принятого контракта в requirements/current/
    ↓
-component / contract / integration tests
-   ↓
-review на контрпримеры
-   ↓
-deterministic acceptance
-   ↓
-human acceptance
+final acceptance + подтверждённый merge
 ```
 
-Полное описание:
-[`docs/development_approach/spec-driven-development.md`](docs/development_approach/spec-driven-development.md)
+Актуальная методология разделена по назначению:
+
+- [принципы метода](docs/development_approach/development-approach.md);
+- [процесс выполнения change](docs/development_approach/process.md);
+- [роли и ownership](docs/development_approach/roles.md);
+- [шаблоны артефактов](docs/development_approach/artifacts/README.md);
+- [инструкции ролей](docs/development_approach/skills/README.md).
+
+Для каждой роли действует один канонический файл `SKILL.md`. В частности, инструкция Change Manager находится в
+[`docs/development_approach/skills/change-manager/SKILL.md`](docs/development_approach/skills/change-manager/SKILL.md).
 
 ### Human decision ownership
 
@@ -966,14 +968,24 @@ Mock, удовлетворяющий интерфейсу, полезен для
 ## Документация
 
 Архитектурные решения и requirements хранятся рядом с кодом намеренно.
+Правила размещения requirements поддерживают чистовую редакцию и отдельную дельту каждого change. Существующие
+тематические документы переносятся в новую структуру постепенно, когда их затрагивает change.
 
 | Документ | Назначение |
 |---|---|
-| [`docs/development_approach/spec-driven-development.md`](docs/development_approach/spec-driven-development.md) | Процесс AI-assisted specification-driven development |
+| [`docs/development_approach/README.md`](docs/development_approach/README.md) | Навигация по методологии разработки |
+| [`docs/development_approach/development-approach.md`](docs/development_approach/development-approach.md) | Основные принципы AI-assisted development |
+| [`docs/development_approach/process.md`](docs/development_approach/process.md) | Role-based процесс выполнения change |
+| [`docs/development_approach/roles.md`](docs/development_approach/roles.md) | Роли, ownership и handoff |
+| [`docs/development_approach/artifacts/README.md`](docs/development_approach/artifacts/README.md) | Шаблоны требований, планов, промтов, findings и evidence по ролям |
+| [`docs/development_approach/skills/README.md`](docs/development_approach/skills/README.md) | Канонические draft skills Change Manager, Analyst, Developer и Tester |
 | [`docs/development_approach/problems_detected_by_human/`](docs/development_approach/problems_detected_by_human/) | Разборы дефектов, найденных человеком |
+| [`docs/requirements/README.md`](docs/requirements/README.md) | Размещение требований, форматы `DELTA`/`FULL` и перенос принятого change в чистовую редакцию |
+| [`docs/requirements/current/`](docs/requirements/current/) | Каталог консолидированных чистовых требований; наполняется по мере миграции тематических документов |
+| [`docs/requirements/changes/`](docs/requirements/changes/) | Требования, сценарии и analysis конкретного change |
 | [`docs/requirements/decisions/README.md`](docs/requirements/decisions/README.md) | Реестр ADR |
-| [`docs/requirements/overview.md`](docs/requirements/overview.md) | Общие требования и системные invariants |
-| [`docs/requirements/scenarios.md`](docs/requirements/scenarios.md) | Пользовательские сценарии |
+| [`docs/requirements/overview.md`](docs/requirements/overview.md) | Действующие общие требования и системные invariants до их явного переноса в `current/` |
+| [`docs/requirements/scenarios.md`](docs/requirements/scenarios.md) | Действующие пользовательские сценарии до их явного переноса в `current/` |
 | [`docs/requirements/component_responsibilities/`](docs/requirements/component_responsibilities/) | Responsibilities и контракты компонентов |
 | [`docs/requirements/component_responsibilities/exact-orb_place_catalog.md`](docs/requirements/component_responsibilities/exact-orb_place_catalog.md) | Контракты builder, search/lookup, нормализации и lifecycle каталога мест |
 | [`docs/requirements/handlers/`](docs/requirements/handlers/) | Требования к application handlers |
@@ -1027,9 +1039,13 @@ src/exact_orb/
 docs/
 ├── architecture/          диаграммы и service seams
 ├── benchmarks/            замеры
-├── development_approach/  метод и разборы дефектов
-├── project_management/    roadmap
-├── requirements/          overview, scenarios, ADR, компоненты, handlers
+├── development_approach/  принципы, процесс, роли, шаблоны, skills и evidence экспериментов
+├── project_management/    roadmap, change plans и реестры решений DP-*
+├── requirements/
+│   ├── current/           консолидированный контракт после принятия change
+│   ├── changes/           DELTA/FULL, scenarios и analysis по change
+│   ├── decisions/         действующие ADR
+│   └── ...                тематические требования периода постепенной миграции
 └── sequence_diagrams/     сценарии в PlantUML
 
 prompts/               история implementation tasks
