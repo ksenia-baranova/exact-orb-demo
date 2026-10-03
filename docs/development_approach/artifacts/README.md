@@ -14,6 +14,10 @@
 | Developer | [Implementation Plan с estimate, Development Finding и Handoff](developer.md); [промт с пояснениями, примерами и выбором подхода к разработке](developer-prompt.md) |
 | Tester | [Testability Review, Test Plan, Defect, Acceptance Evidence](tester.md) |
 
+Для нового change оба шаблона Change Manager заполняют разделы одного
+`docs/project_management/change_plans/<change-id>/artifacts.md`; отдельные файлы brief,
+реестра, плана или приёмки не создаются.
+
 ## Правила использования
 
 1. Копируй только нужный шаблон, а не весь файл.
