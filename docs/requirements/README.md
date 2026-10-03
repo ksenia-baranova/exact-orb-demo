@@ -13,7 +13,7 @@
 | Findings и handoff Analyst | `docs/requirements/changes/<change-id>/analysis.md` | Аналитические замечания, передача работы и evidence переноса в чистовую редакцию. |
 | Sequence diagrams | `docs/sequence_diagrams/<область>/` | Behavioral/API и технические последовательности с сохранением ownership ролей. |
 | ADR | `docs/requirements/decisions/` | Архитектурные решения по действующим правилам реестра ADR. |
-| Реестр решений change | `docs/project_management/change_plans/<change-id>-decisions.md` | Единственная запись вопроса, вариантов, рекомендаций и решения владельца. |
+| Артефакты Manager и реестр решений change | `docs/project_management/change_plans/<change-id>/artifacts.md` | Разделы brief, единого реестра `DP-*`, заданий ролям, Change Plan и итоговой приёмки; вопросы и решения хранятся только в строках реестра. Исторические change сохраняют опубликованные пути. |
 
 В [каталоге шаблонов](../development_approach/artifacts/README.md) хранятся формы документов. Заполненные артефакты
 размещаются по таблице. В requirements остаются ссылки на диаграммы, ADR и строки `DP-*`; отдельные копии этих артефактов

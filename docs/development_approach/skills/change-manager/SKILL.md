@@ -7,11 +7,22 @@ description: "Вести change в exact-orb от пользовательско
 
 Сохраняй единую связь между пользовательским намерением, строками решений, ролевым evidence и delivery status change.
 
+## Размещение артефактов Manager
+
+Для каждого нового change веди **один файл** `docs/project_management/change_plans/<change-id>/artifacts.md`.
+В нём находятся отдельные разделы Draft Change Brief, единого реестра `DP-*`, заданий ролям,
+Change Plan с календарём/Gantt и Final Acceptance. Создавай раздел по мере готовности его evidence;
+отсутствующий результат роли не заменяй заполнителем или предположением. Не создавай рядом отдельные
+`<change-id>-brief.md`, `<change-id>-decisions.md`, `<change-id>-role-tasks.md` или
+`<change-id>.md`. Ссылки из ролевых документов ведут на этот файл, нужный раздел и baseline commit.
+Исторические change с уже опубликованными путями не перемещай без отдельной задачи.
+
 ## Сначала установи baseline
 
 1. Проверь repository root, worktree, branch, `HEAD`, base `change/*` и рабочее дерево.
 2. Прочитай `AGENTS.md`, `docs/development_approach/development-approach.md`, `process.md` и `roles.md`.
-3. Прочитай действующие Change Plan, requirements, единый реестр решений и role handoffs текущего change.
+3. Прочитай разделы Change Plan и единого реестра решений в `docs/project_management/change_plans/<change-id>/artifacts.md`,
+   requirements и role handoffs текущего change. Для исторического change используй его действующие пути.
 4. Найди связанные требования, ADR, component responsibilities, sequence diagrams, текущий код и tests; запиши фактически
    прочитанные пути в черновое описание изменения.
 5. Используй текущий `HEAD` интеграционной ветки `change/*` как общий исходный commit ролевых заданий.
@@ -48,17 +59,17 @@ prompt помогает восстановить контекст, но не с�
 ## Intake
 
 - Обсуждай с пользователем проблему, ожидаемый результат, ограничения и приоритет.
-- Создай Draft Change Brief по `docs/development_approach/artifacts/change-manager.md`.
-- Создай один реестр по `docs/development_approach/artifacts/decision-register.md`; неизвестные, требующие выбора,
-  сразу оформляй строками `DP-*`.
+- Создай раздел Draft Change Brief в `artifacts.md` по `docs/development_approach/artifacts/change-manager.md`.
+- В том же файле создай один раздел реестра по `docs/development_approach/artifacts/decision-register.md`;
+  неизвестные, требующие выбора, сразу оформляй строками `DP-*`.
 - Заполняй служебные поля сам; не проси пользователя переносить сведения в таблицы.
 - Не фиксируй точные сроки без оценок Developer и Tester.
 - Передай вопросы других ролей пользователю; не отвечай на неизвестное предположением.
 
 ## Координация ролей
 
-- Подготовь отдельные задания Analyst, Developer и Tester с общим input commit, входными путями, связанными `FIND/DP`,
-  ожидаемым artifact и completion condition.
+- Подготовь отдельные задания Analyst, Developer и Tester в разделе `artifacts.md` с общим input commit,
+  входными путями, связанными `FIND/DP`, ожидаемым artifact и completion condition.
 - При явном разрешении пользователя на делегирование запусти ролевых агентов; иначе передай готовые задания для
   отдельных задач.
 - Запроси у Analyst requirements, scenarios, findings и формулировки или обновления строк `DP-*`.
@@ -67,7 +78,8 @@ prompt помогает восстановить контекст, но не с�
 - Запроси у Developer оценку реализуемости, technical risks, bounded spikes, estimate, начальную часть Implementation Plan
   и технический вклад в нужные строки. Эта оценка входит в Implementation Plan и не оформляется отдельным документом.
 - Запроси у Tester testability, independent scenarios, test estimate и вклад в нужные строки.
-- Собери Change Plan только после результатов трёх ролей; отсутствующий role artifact не заменяй предположением.
+- Собери раздел Change Plan в том же `artifacts.md` только после результатов трёх ролей;
+  отсутствующий role artifact не заменяй предположением.
 - Разрешай параллельную независимую работу, если blocker локален.
 - Не редактируй role-owned artifact так, чтобы изменить его смысл.
 
@@ -84,9 +96,10 @@ prompt помогает восстановить контекст, но не с�
 
 ## Plan и Gantt
 
-- Обновляй Change Plan после Analysis и Developer/Tester consultations.
+- Обновляй раздел Change Plan в `artifacts.md` после Analysis и Developer/Tester consultations.
 - Используй оценки ролей; сохраняй range, confidence, assumptions и dependencies.
-- Gantt отражает согласованный план и не является источником технических оценок.
+- Календарь/Gantt помещай в раздел Change Plan того же файла; он отражает согласованный план
+  и не является источником технических оценок.
 - Plan ссылается на brief, requirements, handoffs и реестр; записывает только отличия и межролевые контрольные результаты.
 - Статус `READY_FOR_DEVELOPMENT` допустим, когда blocking `DP-*` имеют `ACCEPTED` с evidence и получены результаты
   Analyst, Developer и Tester.
@@ -97,6 +110,7 @@ prompt помогает восстановить контекст, но не с�
 
 Проверь delivered intent, role handoffs, actual checks, open limitations и baseline единого реестра. Не подменяй Tester и
 не объявляй непроведённую проверку успешной.
+Итоговую приёмку фиксируй отдельным разделом того же `artifacts.md` со ссылками на точные baselines и evidence.
 
 Потребуй карту переноса Analyst из `docs/requirements/changes/<change-id>/analysis.md`, подготовленную редакцию `current/`
 и сверку Tester на соответствующей версии. Проверь исключённые пункты и решения их владельцев. Финальный PR должен
