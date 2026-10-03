@@ -6,9 +6,10 @@ __pycache__/
 .hypothesis/
 pytest-cache-files-*/
 data/ephe/
-# Каталог мест — производный артефакт scripts/build_place_catalog.py,
-# восстанавливается из дампа GeoNames; в репозиторий не кладётся.
-data/
+# В Git входит только проверенный снимок каталога мест; прочие generated data игнорируются.
+/data/*
+!/data/places.sqlite
+!/data/README.md
 # Локальные исходные дампы GeoNames для сборки places.sqlite.
 /cities/
 logs/

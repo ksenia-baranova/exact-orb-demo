@@ -443,10 +443,13 @@ Catalog core M1-5 реализован как один process-local read-only S
 экземпляр `SqlitePlaceCatalog` и один неизменяемый выпуск `places.sqlite`,
 поэтому ID из подсказки разрешим тем же каталогом в пределах process lifecycle.
 
-Каталог собирается локальным deterministic builder-ом из `cities1000.txt`,
-`admin1CodesASCII.txt` и `alternateNamesV2.txt`. Raw GeoNames dumps и
-производный `data/places.sqlite` не входят в Git или Python wheel. Builder
-фиксирует checksums, параметры фильтрации, schema version и версию `tzdata`.
+Каталог собирается deterministic builder-ом из `cities1000.txt`,
+`admin1CodesASCII.txt` и `alternateNamesV2.txt`. Проверенный снимок
+`data/places.sqlite` хранится в Git для локального стенда и
+интеграционных проверок; исходные GeoNames dumps и база не входят в Python
+wheel. Builder фиксирует checksums, параметры фильтрации, schema version и
+версию `tzdata`. Атрибуция и параметры выпуска указаны в
+[описании снимка](data/README.md).
 
 `SqlitePlaceCatalog` открывает выпуск read-only на caller-owned
 `ThreadPoolExecutor(max_workers=1)` и до serving проверяет schema, metadata,

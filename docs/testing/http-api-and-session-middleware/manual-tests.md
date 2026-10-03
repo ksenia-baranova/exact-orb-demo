@@ -18,22 +18,17 @@
    Test-Path .\ephe
    ```
 
-   Для прогона нужны Caddy, mkcert, `ephe` и каталог мест. В исходном checkout инструменты и `data/places.sqlite` отсутствовали; первый прогон 2026-10-02 использовал каталог из `tests/fixtures/place_catalog` в `%LOCALAPPDATA%\exact-orb-http-manual\places-fixture.sqlite` (5 мест, 13 имён). Для M-12…M-14 полный ранее собранный GeoNames-каталог скопирован из `C:\Users\KateUser\PycharmProjects\exact-orb-recovered\data\places.sqlite` в игнорируемый Git путь этой ветки `data/places.sqlite` (16 329 мест, 36 648 имён; SHA-256 `afa097af657805c420449393b1e3c561c6c3170a3a1084b0189386a37abba0dd`). Caddy v2.11.6 и mkcert v1.4.4 установлены через winget. Winget установил исполняемые файлы в `%LOCALAPPDATA%\Microsoft\WinGet\Packages`; в текущем PowerShell `Get-Command` их ещё не находит, поэтому команды ниже разрешают путь сами. Инструкции установки: [Caddy](https://caddyserver.com/docs/install), [mkcert](https://github.com/FiloSottile/mkcert).
-3. Если Python-зависимости не установлены, установите проект из этой рабочей копии: `python -m pip install -e '.[dev]'`. Если каталога мест нет, сначала получите три локальных GeoNames-файла и выполните [сборку каталога](../../requirements/component_responsibilities/exact-orb_place_catalog.md#26-локальная-сборка):
+   Для прогона нужны Caddy, mkcert, `ephe` и каталог мест. В исходном checkout инструменты и `data/places.sqlite` отсутствовали; первый прогон 2026-10-02 использовал каталог из `tests/fixtures/place_catalog` в `%LOCALAPPDATA%\exact-orb-http-manual\places-fixture.sqlite` (5 мест, 13 имён). Для M-12…M-14 полный ранее собранный GeoNames-каталог скопировали из `C:\Users\KateUser\PycharmProjects\exact-orb-recovered\data\places.sqlite` в `data/places.sqlite` этой ветки (16 329 мест, 36 648 имён; SHA-256 `afa097af657805c420449393b1e3c561c6c3170a3a1084b0189386a37abba0dd`). В текущей ревизии этот же снимок входит в Git. Caddy v2.11.6 и mkcert v1.4.4 установлены через winget. Winget установил исполняемые файлы в `%LOCALAPPDATA%\Microsoft\WinGet\Packages`; в текущем PowerShell `Get-Command` их ещё не находит, поэтому команды ниже разрешают путь сами. Инструкции установки: [Caddy](https://caddyserver.com/docs/install), [mkcert](https://github.com/FiloSottile/mkcert).
+3. Если Python-зависимости не установлены, установите проект из этой рабочей копии: `python -m pip install -e '.[dev]'`. Каталог приходит вместе с checkout; проверьте его SHA-256 по [описанию снимка](../../../data/README.md):
+
+   ```powershell
+   (Get-FileHash .\data\places.sqlite -Algorithm SHA256).Hash
+   ```
+
+   Для нового выпуска получите три локальных GeoNames-файла и выполните [сборку каталога](../../requirements/component_responsibilities/exact-orb_place_catalog.md#26-локальная-сборка):
 
    ```powershell
    python scripts/build_place_catalog.py --cities cities/cities1000.txt --admin1 cities/admin1CodesASCII.txt --alternate-names cities/alternateNamesV2.txt --out data/places.sqlite
-   ```
-
-   На текущем локальном компьютере готовый полный артефакт можно подключить без повторной сборки:
-
-   ```powershell
-   $catalogSource = 'C:\Users\KateUser\PycharmProjects\exact-orb-recovered\data\places.sqlite'
-   if (-not (Test-Path .\data\places.sqlite)) {
-       New-Item -ItemType Directory -Force -Path data | Out-Null
-       Copy-Item -LiteralPath $catalogSource -Destination .\data\places.sqlite
-   }
-   (Get-FileHash .\data\places.sqlite -Algorithm SHA256).Hash
    ```
 
    Для M-12…M-14 ожидается SHA-256 `AFA097AF657805C420449393B1E3C561C6C3170A3A1084B0189386A37ABBA0DD`; если хэш иной, зафиксируйте версию каталога и пересмотрите ожидаемые имена этих data-specific проверок.

@@ -10,9 +10,11 @@
 ## Подготовка
 
 Установите зависимости проекта, Caddy и mkcert. Запускайте команды из корня
-репозитория в PowerShell. `data/places.sqlite` должен быть заранее собран из
-локальных GeoNames-файлов по [инструкции каталога](../requirements/component_responsibilities/exact-orb_place_catalog.md);
-generated artifact не входит в Git. Каталог читается без записи. Для сессий
+репозитория в PowerShell. Проверенный `data/places.sqlite` приходит с checkout;
+для нового выпуска его можно пересобрать из локальных GeoNames-файлов по
+[инструкции каталога](../requirements/component_responsibilities/exact-orb_place_catalog.md).
+Параметры снимка и атрибуция указаны в [data/README.md](../../data/README.md).
+Каталог читается без записи. Для сессий
 укажите отдельный файловый SQLite path в существующем каталоге.
 
 ```powershell
