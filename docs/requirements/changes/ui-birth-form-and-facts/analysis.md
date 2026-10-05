@@ -1,158 +1,119 @@
 # Functional Analysis: ui-birth-form-and-facts
 
-**Статус G1:** READY FOR REVIEW, без разрешения разработки или приёмки build. **Роль:** Functional Analyst.
-**Вход:** `change/ui-birth-form-and-facts` и `origin/change/ui-birth-form-and-facts` @ `652bd73405db0a0611e98e81af6f3f668dd429f6`, merge manager PR #42 (удалённый HEAD отдельно проверен `git ls-remote` 2026-10-04). Рабочая ветка `analysis/ui-birth-form-and-facts` создана от этого commit. Прежний `956a0d3` внутри manager brief — исторический baseline подготовки, не фактический вход роли.
-**Нормативная база:** `docs/requirements/http_api.md` §§4–9, 13; названные в [requirements.md](requirements.md) component requirements и ADR @ входном commit. **Реестр:** `docs/project_management/change_plans/ui-birth-form-and-facts/artifacts.md#decision-register` @ входном commit, с Analyst-рекомендациями текущей analysis-ветки; только `DP-UI-01/03` уже имеют решение владельца.
-**Артефакты:** [requirements.md](requirements.md) (`FULL` новая UI область + предлагаемая `DELTA` HTTP), [scenarios.md](scenarios.md) (AS-UI-01…20), этот документ. Ссылки относятся к совместно версионируемым файлам ветки Analysis; до approval они предназначены для review, а не для реализации по утверждённой версии.
+**Статус:** REVIEW REVISION; это позиция Functional Analyst, не разрешение на разработку или изменение ADR. **Входной commit:** `652bd73405db0a0611e98e81af6f3f668dd429f6` — фактический local/tracking/remote HEAD `change/ui-birth-form-and-facts` после manager PR #42 на 2026-10-04. Ветка роли — `analysis/ui-birth-form-and-facts`.
+**Артефакты:** [requirements.md](requirements.md) и [scenarios.md](scenarios.md) (AS-UI-01…21). **Реестр решений:** `docs/project_management/change_plans/ui-birth-form-and-facts/artifacts.md#decision-register`; действующие `DP-UI-01/03` приняты, `DP-UI-02/04/05` открыты в последней проверенной редакции реестра. Комментарии владельца в [PR #43](https://github.com/ksenia-baranova/exact-orb-demo/pull/43) задают направление review, но Manager ещё не синхронизировал их с реестром.
+**Нормативный baseline:** `docs/requirements/http_api.md` §§4–9, 13; component requirements и ADR, перечисленные в [requirements.md](requirements.md), действующий код и тесты на входном commit. Макеты содержат демонстрационные числа и не являются oracle.
 
-## Кратко для Change Manager
+## Вывод для Manager и владельца
 
-Цель `DP-UI-01` достижима только после публикации отсутствующих конфигураций, силы и особых градусов в типизированном `ChartDTO`. Действующие POST и current должны передавать одинаковые факты, иначе восстановление показывает меньше, чем первый build. Предлагаемый минимальный публичный срез и `null`/`[]` подробно изложены в REQ-API-UI-01…03; решение остаётся за владельцем `DP-UI-02` после Developer/Tester consultation.
+Владелец [сузил M1-7](https://github.com/ksenia-baranova/exact-orb-demo/pull/43#discussion_r4179357890) до **трёх публичных групп: точки, дома, аспекты**. Они уже входят в `ChartDTO`, который возвращается после committed POST и при восстановленном GET current. Новых endpoint, расчёта в браузере и расширения публичного DTO для этого объёма не требуется. Внутренний движок уже рассчитывает конфигурации и силу, в том числе degree flags; их отсутствие в текущем публичном DTO не следует путать с отсутствием расчёта. Прежнее предложение `REQ-API-UI-01…03` о публикации трёх дополнительных групп снято с объёма M1-7. До допуска Developer Manager должен привести принятый шестигрупповой `DP-UI-01`, открытый `DP-UI-02`, roadmap и задания ролям к новому решению владельца. Analyst не меняет записи других ролей.
 
-Действующий ADR-0034 уже требует снятый по умолчанию presentation checkbox перед отправкой build, а roadmap ставит страницу условий в M1-9 после M1-7. Результат «работающая форма с реальным POST» не может быть принят в M1-7 при простом пропуске checkbox. В review PR #43 владелец указал желаемую альтернативу: заранее отметить checkbox и показать страницу после первого расчёта. Для неё нужны явная ревизия ADR-0034 с Technical Reviewer и обновление `DP-UI-04`; до этого действует прежний gate. Имя и CTA чата из макета не входят в текущий POST; `DP-UI-05` остаётся за пользователем. Остальные M1-6 findings, включая `FIND-TEST-HTTP-001`, этим анализом не переоткрываются.
+Владелец уточнил целевой порядок для **закрытого стенда**: checkbox исходно снят; POST возможен после **ручной** отметки и до готовности страницы условий; страницу нужно поставить до распространения ссылки другим людям. Это ответ владельца от 2026-10-05 на прямой вопрос после [комментариев 1](https://github.com/ksenia-baranova/exact-orb-demo/pull/43#discussion_r4179344108) и [2](https://github.com/ksenia-baranova/exact-orb-demo/pull/43#discussion_r4179370676). Он устраняет двусмысленность «отжатую/не отжатый» в пользу снятого состояния и ручного действия. Целевой порядок **противоречит действующему ADR-0034 §2**, который требует доступную страницу до UI build. Нужны явная ревизия ADR с Technical Reviewer и запись владельца в `DP-UI-04`; до этого действует текущий gate. AS-UI-20 проверяет действующий контракт, AS-UI-21 описывает условный закрытый этап после ревизии. Отметка остаётся presentation gate, а не юридическим согласием.
 
-**Блокирующие до `READY_FOR_DEVELOPMENT`:** `DP-UI-02`, `DP-UI-04`, `DP-UI-05` по manager register. **Неблокирующие:** отложенный `DP-UI-03` (`admin1_name` остаётся), известное browser evidence ограничение локального proxy. **Запрос Developer:** feasibility новой whitelist-проекции, безопасная ссылочная целостность и действующий web/HTTPS стек; диапазон 2 дней с допущениями. **Запрос Tester:** независимые negative/boundary cases и проверяемость POST/current parity, браузерного cookie flow и 360 px; диапазон 2 дней с допущениями.
+**Блокирующие вопросы для G2:** (1) Manager оформляет изменение `DP-UI-01/02` и roadmap для трёх групп; (2) владелец и Technical Reviewer согласуют ревизию ADR-0034, Manager фиксирует `DP-UI-04`; (3) владелец закрывает `DP-UI-05` по имени и кнопке. `admin1_name` остаётся по `DP-UI-03` с экранной подписью «регион». Утверждённой стоимости и даты Developer/Tester пока нет.
 
-**Вывод о бюджете:** 1 рабочий день реалистичен как целевой бюджет на первичный G1 draft при готовом пакете manager; он не покрывает ожидание решений `DP-UI-02/04/05`, согласование точной схемы с Developer/Tester, возможную ревизию ADR и чистовой перенос после реализации. Для полного Analysis до утверждённого контракта и последующей сверки чистовой редакции нужен ориентир **1,5–2,5 рабочих дня собственной работы Analyst**, confidence medium; календарное ожидание владельцев отдельно. Сокращать шесть групп ради 1 дня нельзя.
+**Бюджет Analysis:** исходный целевой 1 рабочий день был достаточен для первичного G1 draft при готовом пакете чтения. Review, смена scope, ADR-ревизия и чистовой перенос требуют отдельного времени Analyst; прежняя оценка 1,5–2,5 дня собственной работы остаётся ориентиром, а не обещанным сроком. Календарное ожидание решений владельца и Manager отдельно.
 
-## Сложность и сроки: информация владельцу для G2
+## Сложность реализации и срок
 
-Оценка ниже — **вывод Functional Analyst по текущему baseline, не estimate Developer/Tester и не изменение плана Manager**. В репозитории есть действующий FastAPI с `bootstrap`, `places`, `build`, `current`, но нет production браузерного UI: `docs/ui_ux/README.md` прямо называет `web-prototype.html` демонстрацией с вымышленными данными, а `http_api/app.py` подключает только API routers. Поэтому утверждённые 2 рабочих дня Development — цель с высоким риском превышения, пока Developer не покажет способ поставки UI и разбиение работ. Из имеющихся фактов нельзя честно вывести новую точную дату.
+В репозитории есть FastAPI `bootstrap`, `places`, `build`, `current`, но нет production браузерного экрана: `docs/ui_ux/README.md` называет `web-prototype.html` демонстрацией, а `src/exact_orb/http_api/app.py` подключает API routers. Владелец [увеличил целевой бюджет Development до 4 рабочих дней](https://github.com/ksenia-baranova/exact-orb-demo/pull/43#discussion_r4179346983). Это **владелецкий target**, не estimate Developer и не изменение Manager-owned плана. Сужение до трёх групп убирает публичную DTO-дельту, но не устраняет работу по форме, сессии, поиску, recovery и адаптивному экрану.
 
-| Драйвер | Почему влияет на срок | Наименьшая подтверждённая граница работы / нужная проверка |
+| Драйвер | Минимальная работа в M1-7 | Нужная оценка/evidence |
 |---|---|---|
-| Публичные факты `DP-UI-02` | Текущий `ChartDTO` и whitelist projector публикуют точки, дома и аспекты, но не конфигурации, силу и флаги. Нужны типы, ссылочная целостность, натал/космограмма и одинаковый POST/current. | Рекомендация Analysis — расширить существующий `ChartDTO` и общий projector. Отдельный endpoint добавит ещё один contract/flow и проверки; его стоимость должен сопоставить Developer. Шесть групп остаются scope `DP-UI-01`. |
-| Реальный браузерный экран | Демо-прототип не подключён к API; потребуются форма, cookie flow, выбор `place_id`, шесть групп, ошибки/recovery, доступность и 360 px. | Поставить минимальный рабочий экран формы и таблиц M1-7, без SVG-колеса M1-8, полного переноса прототипа M1-8.1, чата M2 и дополнительных CLI-блоков. Developer должен указать стек и точки интеграции, Tester — browser evidence. |
-| Условия `DP-UI-04` | ADR-0034 требует страницу и снятую отметку до POST, roadmap относит самостоятельную страницу к M1-9. | Перенос необходимой части M1-9 в M1-7 меняет распределение, но не обязан дублировать её в M1-9; вариант ожидания M1-9 отложит приёмку build; изменение ADR требует отдельного решения и проверки, его экономия времени не доказана. |
-| Имя и будущие CTA `DP-UI-05` | Новый ввод/хранение имени либо неработающий чат расширяют UI и тесты без поддержки текущего POST. | Для минимального M1-7 Analysis рекомендует только действующие поля build и CTA карты; выбор остаётся за владельцем. |
+| Браузерная интеграция | Подключить реальную страницу к существующим API и cookie flow; отделить bootstrap от current и committed от `already_applied`. | Developer указывает стек, work items, диапазон, confidence и критический путь; Tester проверяет HTTPS/browser evidence. |
+| Форма и место | Дата → место → время; GET начиная с трёх букв, debounce, актуальный ответ, фиксация `place_id`, известное/неизвестное время. | Проверить выбор клавиатурой и мышью, ошибочный и пустой поиск, запрет POST без ID. |
+| Факты и восстановление | Три группы из текущего `ChartDTO`, `ДД°ММ′`, natal/cosmogram, empty/stale/unavailable, две вкладки и неопределённый исход build. | Tester связывает POST/current по `chart_identity`, проверяет ошибки и 360 px; никакого нового API блока. |
+| Gate условий | Текущий ADR требует страницу до POST; предложенный закрытый этап меняет порядок. | Решение `DP-UI-04` и ревизия ADR предшествуют acceptance условного AS-UI-21. |
+| Имя и действия | POST принимает только три поля; имя и чат в макете не поддерживаются этим контрактом. | `DP-UI-05` фиксирует финальный состав; не добавлять неработающую кнопку чата. |
 
-**Запрос на техническую консультацию:** Developer до обещания двух дней указывает для каждого драйвера work items, диапазон, confidence, assumptions и критический путь; при необходимости проводит ограниченный feasibility spike на соединение браузерного экрана с API и новую projection. Tester отдельно оценивает объём независимой приёмки. Manager сопоставляет эти оценки с целевыми 1/2/2 днями и выбранным `DP-UI-04`: перенос gate на M1-9 меняет дату приёмки M1-7, даже если код формы сделан раньше. Ускорение за счёт исключения подтверждённых трёх групп не допускается без нового решения владельца об изменении `DP-UI-01`.
+**Подписанная рекомендация Functional Analyst — 2026-10-05:** планировать M1-7 как минимальный работающий путь формы и трёх таблиц на текущем API. Developer оценивает 4-дневный target по перечисленным work items и отдельно указывает риск браузерной интеграции/ADR gate; Tester независимо оценивает приёмку. Manager сопоставляет оценки с планом. Колесо остаётся M1-8, полный перенос прототипа — M1-8.1, чат — M2. Новые группы и стихии требуют отдельного будущего scope/контракта; заранее можно продумать их место в макете, без пустых секций в работающем M1-7.
 
-## Уточнение по поиску места из review
+## Уточнение поиска и текста действий
 
-В [r4178096178](https://github.com/ksenia-baranova/exact-orb-demo/pull/43#discussion_r4178096178) и [r4178749793](https://github.com/ksenia-baranova/exact-orb-demo/pull/43#discussion_r4178749793) владелец спросил, отправляется ли GET с первой буквы и с каждым новым префиксом. Действующий API допускает односимвольный запрос и ищет по префиксу; точный порог запуска браузерного поиска действующими требованиями не утверждён. **Вариант A:** с первого непустого символа после debounce — ранние подсказки, потенциально больше запросов к общему IP-limit 120/мин. **Вариант B:** с двух символов после debounce — меньше запросов, позже появляются подсказки. Разница реализации невелика относительно четырёх драйверов выше; рекомендация Analysis — A при подтверждении UI/UX и Developer по нагрузке. До подтверждения REQ-UI-02 и AS-UI-02 требуют актуальный префикс, отсутствие поздних устаревших ответов и выбор `place_id`, но не делают первую букву обязательной. Это UX-уточнение не является принятым `DP-UI-*` и не задерживает техническую консультацию по `DP-UI-02`.
+По [r4179366994](https://github.com/ksenia-baranova/exact-orb-demo/pull/43#discussion_r4179366994) GET начинается после **третьего введённого символа** и повторяется для изменённого префикса длиной не менее трёх символов после debounce. Для 1–2 символов UI не делает GET, хотя API их принимает; поздний ответ на старый префикс не заменяет актуальные подсказки. REQ-UI-02 и AS-UI-02 содержат проверяемую последовательность.
 
-## Подтверждённые факты и предлагаемая граница
+В [r4179362074](https://github.com/ksenia-baranova/exact-orb-demo/pull/43#discussion_r4179362074) владелец спросил о CTA. **CTA = Call to Action, видимая кнопка или призыв к действию** (например, «Построить карту», «Пересчитать»). Это не client agreement и не checkbox условий. В требованиях далее используется «кнопка действия»; окончательный текст и вопрос имени остаются в `DP-UI-05`.
 
-| Вид | Утверждение | Источник @ входном commit |
+## Трассировка и наблюдаемое поведение
+
+| Требования | Источник | Сценарии | Sequence / проверка |
+|---|---|---|---|
+| REQ-UI-01, 08 | HTTP §§6.1–6.2; ADR-0040/0041 | AS-UI-01, 10, 11 | `http_api/001`, `004`; `session/002`; нет browser restore evidence |
+| REQ-UI-02 | HTTP §§6.3–6.4; place catalog; решение о трёх буквах | AS-UI-02, 04–06, 18 | `http_api/002`; `place_catalog/001`; нет browser selection evidence |
+| REQ-UI-03, 09 | HTTP §§4, 8–9; ADR-0034/0040/0041 | AS-UI-03, 06, 12–14, 16, 17, 20, 21 | `http_api/003`, `004`; `session/006`; gate AS-UI-21 условен |
+| REQ-UI-04–06 | HTTP §7.2; ADR-0029/0030/0032 | AS-UI-07–09, 15, 16 | `http_api/003`, `004`; текущие `test_projectors.py` без браузерных таблиц |
+| REQ-UI-07, 10 | UI/UX draft и owner review | AS-UI-02, 19 | Место будущих секций только в макете; browser/mobile evidence ожидается |
+
+1. **Вход и восстановление:** браузер → `POST /session/bootstrap {}` → `ContextService.load/create` → `ready`; браузер → `GET /charts/current` → `ContextService.load` → `session_view` → `empty/ready/stale/unavailable`. Чтение не вызывает engine/cache и не пересчитывает карту.
+2. **Поиск и выбор:** после трёх символов → `GET /places` → admission → `PlaceSearch.search` → подсказки → локальный выбор `place_id`. Cookie не требуется; сборка использует ID, а не строку.
+3. **Build:** после действующего gate → transport validation/cookie/admission → `ApplicationOrchestrator.execute(run_id=request_id)` → `ContextService.load` → `BuildNatalHandler.handle` → resolver → artifact/to_stored → `ContextService.save` → committed `ChartDTO`. `already_applied` требует отдельный current GET.
+4. **Recovery:** `RESULT_SUPERSEDED`/`already_applied` → current; `SESSION_* 409` → bootstrap → current; `STATE_COMMIT_FAILED` → current после `Retry-After`; `BUILD_TIMEOUT` → readiness/restart → bootstrap → current после `Retry-After`. Автоматического второго POST нет.
+
+Существующие sequence diagrams `docs/sequence_diagrams/http_api/001`…`004`, `place_catalog/001`, `session/002/006` описывают серверный путь; новая публичная схема и её изменение в диаграммах для M1-7 не предлагаются. Существенные переходы должны наблюдаться как связанные `http_message send/receive` или terminal/error с request/run ID по действующим ADR логирования; полного payload на INFO не требуется. UI-действия подтверждаются browser evidence, не каждым нажатием в серверном журнале.
+
+## Findings Intake и рекомендации к решениям
+
+### FIND-UI-001. В публичном DTO нет трёх ранее подтверждённых групп
+
+**Type:** requirement gap после прежнего шестигруппового `DP-UI-01`. **Severity/impact:** blocking для согласованности scope и передачи Developer, но не требует новой схемы для трёх групп. **Owner:** Manager для синхронизации scope, владелец для решений `DP-UI-01/02`. **Status:** OPEN до обновления реестра; после этого не блокирует сокращённый M1-7.
+
+`http_api.md` §7.2 и whitelist projector публикуют точки, дома и аспекты; внутренний artifact содержит конфигурации/силу/флаги, но не отдаёт их UI. Прежний G1 предложил DTO-дельту, потому что тогда действовал шестигрупповой scope. Новый [комментарий владельца](https://github.com/ksenia-baranova/exact-orb-demo/pull/43#discussion_r4179357890) выбирает три группы и исключает дельту из M1-7. **Рекомендация Functional Analyst:** Manager обновляет `DP-UI-01/02`, roadmap и роли; Developer использует только текущий `ChartDTO`; будущие группы получают отдельное решение с POST/current parity. **Закрытие:** записанный owner scope и синхронизированный план; не объявлять finding закрытым по одному комментарию.
+
+### FIND-UI-002. ADR-0034 опережает страницу условий M1-9
+
+**Type:** нормативный конфликт. **Severity/impact:** blocking для реального POST на закрытом этапе без страницы. **Owner:** владелец (`DP-UI-04`), Technical Reviewer (ADR), Manager (план). **Status:** OPEN.
+
+ADR-0034 §2 требует доступную страницу и снятую по умолчанию отметку до UI build; roadmap относит страницу к M1-9. В review сначала прозвучало «отжатую», затем «не отжатый», а в прямом ответе 2026-10-05 владелец уточнил: checkbox снят, POST после ручной отметки, страница до распространения ссылки. **Рекомендация Functional Analyst:** явно пересмотреть ADR-0034 и `DP-UI-04` до реализации/приёмки условного закрытого потока; проверить оба gate-сценария AS-UI-20/21 согласно принятому порядку. Analyst не меняет ADR и не считает ответ владельца формальной заменой ADR. **Закрытие:** ревизия ADR, запись реестра и evidence, что UI соответствует принятому этапу.
+
+### FIND-UI-003. Макеты содержат неподтверждённые поля, кнопки и числа
+
+**Type:** draft/source conflict. **Severity/impact:** blocking для окончательного состава формы; ложное обещание чата или дополнительное поле нарушит проверяемый UI/API flow. **Owner:** владелец (`DP-UI-05`), UI/UX для макета. **Status:** OPEN.
+
+Р1 ставит время перед местом и содержит имя/чат; Э4 показывает offset и лунный диапазон при неизвестном времени; Р5/Э7 содержат демо-цифры. `ui_ux/decisions.md` использует устаревшие `ChartDTO/issues`. Владелец [подтвердил](https://github.com/ksenia-baranova/exact-orb-demo/pull/43#discussion_r4178774177) порядок дата → место → время. **Рекомендация Functional Analyst:** сохранить только действующие POST поля, пересобрать макет по выбранному порядку, исключить обещание чата и числовые примеры как данные пользователя; объяснить CTA как кнопку действия. **Закрытие:** решение `DP-UI-05`, обновлённый макет и проверка реального UI.
+
+### FIND-UI-004. Черновик UI и будущие группы
+
+**Type:** scope/visual gap. **Severity/impact:** blocking для согласованной визуальной приёмки M1-7, без требования нового HTTP блока. **Owner:** Manager для scope, UI/UX для композиции, Analyst для требований. **Status:** OPEN до синхронизации решения.
+
+Первоначальный `ui_ux/requirements.md` описывал только точки, дома, аспекты и стихии, тогда как старый `DP-UI-01` требовал шесть групп. Владелец теперь [отказался от шести в M1-7](https://github.com/ksenia-baranova/exact-orb-demo/pull/43#discussion_r4179357890), но [просит продумать размещение будущих блоков](https://github.com/ksenia-baranova/exact-orb-demo/pull/43#discussion_r4179374962). **Рекомендация Functional Analyst:** REQ-UI-07 оставляет в макете место после аспектов без пустых работающих таблиц и без обещания будущего контракта. **Закрытие:** согласованный трёхгрупповой scope в реестре, адаптированный UI/UX-макет и browser evidence трёх групп.
+
+### Подписанные рекомендации к открытым решениям
+
+| Решение | Рекомендация Functional Analyst, 2026-10-05 | Владелец и статус |
 |---|---|---|
-| Принято владельцем | Шесть групп M1-7; прежний `admin1_name` без переименования | `DP-UI-01/03` в едином реестре |
-| Нормативный факт | Bootstrap отделён от current; POST committed и GET restored используют `ChartDTO`; `already_applied` без chart | `http_api.md` §§6–7; ADR-0040/0041; `routes/session.py`, `routes/build.py` |
-| Нормативный факт | Неизвестное время даёт cosmogram без домов/углов/силы; аспекты и конфигурации устойчивы по ADR-0032 | ADR-0008/0032; `engine/charts/natal.py`; golden cosmogram fixture |
-| Нормативный факт | Текущий projector исключает configurations/strength; `degree_in_sign` не входит в PointDTO, но `longitude` входит | `http_api.md` §7.2; `dto.py`, `projectors.py`, `test_projectors.py` |
-| Нормативный факт | ADR-0034 требует checkbox до UI build; страница условий стоит M1-9 | ADR-0034 §§2–3; `roadmap.md` M1-7/M1-9 |
-| Предложение Analysis | Типизированные `configurations`, `strength`, `special_degrees` с одинаковой POST/current семантикой | REQ-API-UI-01…03, ожидает `DP-UI-02` |
-| Неизвестное | Утверждённый текст условий/место в M1-7, окончательные имя и CTA, техническая стоимость полного UI | `DP-UI-04/05`, консультации Developer/Tester |
+| `DP-UI-02` | После сокращения `DP-UI-01` не добавлять в M1-7 endpoint или поля для конфигураций/силы/особых градусов; применить существующий `ChartDTO` с одинаковой семантикой committed POST и restored GET. Возврат остальных групп решать отдельным scope и публичным контрактом. | Владелец публичной семантики; Manager обновляет реестр. OPEN до записи. |
+| `DP-UI-04` | Для закрытого этапа предложить ревизию ADR-0034: снятый по умолчанию checkbox, ручная отметка до POST, страница до распространения ссылки. До ревизии соблюдать нынешнюю страницу и gate; Tester готовит оба сценария. | Владелец и Technical Reviewer согласуют ADR, Manager фиксирует решение. OPEN. |
+| `DP-UI-05` | В M1-7 оставить дату, место, время и кнопки «Построить карту»/recovery; имя и кнопку чата не показывать без нового решения. `CTA` в старом макете означает кнопку действия, а не соглашение. | Владелец состава формы; UI/UX обновляет макет. OPEN. |
 
-## Трассировка требования → источник → сценарий → sequence → проверка
+**Подпись:** Functional Analyst (`analysis/ui-birth-form-and-facts`), 2026-10-05. Эти строки являются рекомендациями, а не заменой реестра или решения владельца.
 
-| Требования | Источник | Сценарии | Существующий sequence | Evidence / gap |
-|---|---|---|---|---|
-| REQ-UI-01, 08 | HTTP §§6.1–6.2; ADR-0040/0041 | AS-UI-01, 10, 11 | `http_api/001`, `004`; `session/002` | `tests/http_api/test_session.py`; browser UI отсутствует |
-| REQ-UI-02 | HTTP §§6.3–6.4; place catalog; ADR-0008 | AS-UI-02, 04–06, 18 | `http_api/002`; `place_catalog/001` | `test_place_dto.py`; нет UI selection evidence |
-| REQ-UI-03, 09 | HTTP §§4, 8–9; ADR-0040/0041 | AS-UI-03, 06, 12–14, 16, 17 | `http_api/003`, `004`; `session/006` | `test_integration.py`, `test_session.py`; UI recovery отсутствует |
-| REQ-UI-04, 05 | HTTP §7.2; ADR-0029/0030; `zodiac_position` | AS-UI-07–09, 15 | `http_api/003`, `004` | `test_projectors.py` покрывает текущий DTO; нет табличного UI |
-| REQ-UI-06 | ADR-0031/0032; `Configuration` | AS-UI-07–09, 15 | `http_api/003`, `004` | golden artifacts имеют фигуры; публичного блока нет — FIND-UI-001 |
-| REQ-UI-07 | `NatalStrength`, `DegreeFlag`, CLI formatter | AS-UI-07–09, 15 | `http_api/003`, `004` | golden natal имеет силу/flags; публичных блоков нет — FIND-UI-001 |
-| REQ-UI-10 | `ui_ux` draft и макеты | AS-UI-02, 19 | пользователь → `http_api/001`…`004` | browser/mobile evidence требуется Tester |
-| REQ-API-UI-01…03 | HTTP §7.2 + whitelist projector | AS-UI-07–11, 15, 16 | `http_api/003`, `004` | новая схема/тесты ожидают `DP-UI-02` и Developer |
+## Диспозиция замечаний PR #43
 
-## Поведенческие/API последовательности и журнал
+Проверены review и все доступные inline threads. «Исправлено» означает изменение Analyst-документов; статус thread в GitHub и утверждение владельца этим не меняются.
 
-1. **Вход/restore:** browser → `POST bootstrap {}` → `ContextService.load/create` → `ready`; browser → `GET current` → `ContextService.load` → `session_view` → `empty/ready/stale/unavailable`. На INFO: начало/итог каждого HTTP request, пары `http_message` у фактических переходов; safe unavailable дополнительно ERROR без payload. Ни bootstrap, ни current не обращаются к engine/cache.
-2. **Поиск/выбор:** ввод → `GET /places` → admission → `PlaceSearch.search` → suggestions → локальный выбор `place_id`. Парные `http_message` для admission и search; запрос не читает cookie. Следующий build использует выбранный ID, а не строку.
-3. **Build:** действие пользователя после gate → transport validation/cookie/admission → `ApplicationOrchestrator.execute(run_id=request_id)` → `ContextService.load` → `BuildNatalHandler.handle` → resolver → artifact/to_stored → `ContextService.save` → committed `ChartDTO`. В журнале существенны send/receive или terminal/error каждого перехода, не только start/finish. Первая ошибка до CAS не должна выглядеть как commit.
-4. **Recovery:** `already_applied`/`RESULT_SUPERSEDED` → current; `SESSION_* 409` → bootstrap → current; `STATE_COMMIT_FAILED` → current после 1 s; `BUILD_TIMEOUT` → readiness/restart → bootstrap → current после 5 s. Ни один путь не создаёт auto POST. Логи отдельного GET имеют новый request ID; связать пользовательский intent можно по сохраняемым ответам/`chart_identity`, но не требовать публикации полного payload на INFO.
+| Комментарий | Диспозиция Functional Analyst |
+|---|---|
+| [r4178058956](https://github.com/ksenia-baranova/exact-orb-demo/pull/43#discussion_r4178058956), [r4178086032](https://github.com/ksenia-baranova/exact-orb-demo/pull/43#discussion_r4178086032) | В REQ-UI-01 и AS-UI-11 разложены bootstrap/current, `chart_unavailable` и отсутствие карты. |
+| [r4178096178](https://github.com/ksenia-baranova/exact-orb-demo/pull/43#discussion_r4178096178), [r4178749793](https://github.com/ksenia-baranova/exact-orb-demo/pull/43#discussion_r4178749793), [r4179366994](https://github.com/ksenia-baranova/exact-orb-demo/pull/43#discussion_r4179366994) | Порог подтверждён: три буквы. REQ-UI-02 и AS-UI-02 проверяют каждый новый префикс, debounce и поздний ответ. |
+| [r4178129262](https://github.com/ksenia-baranova/exact-orb-demo/pull/43#discussion_r4178129262) | `already_applied` показан как POST 200 без `chart` с отдельным GET. |
+| [r4178731223](https://github.com/ksenia-baranova/exact-orb-demo/pull/43#discussion_r4178731223) | Словарь будущих DTO-полей был подготовлен в `6187fd5`; owner сократил scope, поэтому DTO-дельта из текущих requirements снята и остаётся только в истории. |
+| [r4178758579](https://github.com/ksenia-baranova/exact-orb-demo/pull/43#discussion_r4178758579) | AS-UI-20 сохраняет действующий ADR gate и объясняет значение checkbox. |
+| [r4178769729](https://github.com/ksenia-baranova/exact-orb-demo/pull/43#discussion_r4178769729), [r4179344108](https://github.com/ksenia-baranova/exact-orb-demo/pull/43#discussion_r4179344108), [r4179370676](https://github.com/ksenia-baranova/exact-orb-demo/pull/43#discussion_r4179370676) | После прямого уточнения 2026-10-05 условный закрытый путь описан в REQ-UI-03/AS-UI-21: checkbox снят, POST после ручной отметки, страница до распространения ссылки; требуется ревизия ADR и `DP-UI-04`. |
+| [r4178774177](https://github.com/ksenia-baranova/exact-orb-demo/pull/43#discussion_r4178774177) | Порядок дата → место → время есть в REQ-UI-02; изменение визуального файла у UI/UX. |
+| [r4178776260](https://github.com/ksenia-baranova/exact-orb-demo/pull/43#discussion_r4178776260), [r4179357890](https://github.com/ksenia-baranova/exact-orb-demo/pull/43#discussion_r4179357890), [r4179374962](https://github.com/ksenia-baranova/exact-orb-demo/pull/43#discussion_r4179374962) | Более позднее решение сужает M1-7 до трёх групп; REQ-UI-04…07 и AS-UI-07…09/19 обновлены, для будущих групп оставлена композиционная возможность. Manager синхронизирует прежний `DP-UI-01/02`. |
+| [r4179346983](https://github.com/ksenia-baranova/exact-orb-demo/pull/43#discussion_r4179346983) | Четыре дня указаны как target владельца, ожидает оценки Developer и обновления плана Manager. |
+| [r4179362074](https://github.com/ksenia-baranova/exact-orb-demo/pull/43#discussion_r4179362074) | CTA расшифровано как Call to Action, кнопка действия; это не соглашение клиента. |
 
-Это функциональная привязка к существующим `docs/sequence_diagrams/http_api/001`…`004`, `place_catalog/001` и `session/002/006`; внутренний порядок middleware/ownership остаётся Developer. После выбора `DP-UI-02` обновляются действующие диаграммы `003`/`004` в части новой проекции. В этом G1 дельта меняет только будущий состав ChartDTO, не действующую последовательность HTTP/сессии.
+Замечание пользователя к первому diff о смешении операций документа и действий пользователя учтено: в [requirements.md](requirements.md) документный `ADD` отделён от таблиц «действие → запрос/ответ → экран», рядом есть ссылки на [сценарии](scenarios.md). Ответы в GitHub и разрешение threads требуют отдельной коммуникации в review; таблица не выдаёт их за выполненные.
 
-## Findings Intake: полная диспозиция
+## Карта переноса и handoff
 
-### FIND-UI-001. Три подтверждённые группы отсутствуют в публичном DTO
-
-**Type:** requirement gap. **Detected by:** Manager intake, подтверждено Functional Analyst. **Owner:** пользователь (`DP-UI-02` — семантика), Developer (реализация после gate). **Status:** OPEN. **Blocks:** полный M1-7 contract и `READY_FOR_DEVELOPMENT`.
-
-- **Где найдено:** `roadmap.md` M1-7 и принятое `DP-UI-01`; `http_api.md` §7.2 явно исключает strength/configurations; `dto.py`/`projectors.py` публикуют только четыре массива/блока, `test_projectors.py` закрепляет whitelist.
-- **Пример:** golden natal 1985 содержит 6 конфигураций, `strength` и 31 degree flag, но `project_chart()` их не возвращает. Браузер с текущим API не покажет три группы и не должен читать внутренний artifact.
-- **Почему контракт недостаточен:** неизвестны публичная вложенность, порядок, разрешение ссылок, `null`/`[]`, особые градусы и равенство двух HTTP путей.
-- **Влияние:** невозможна шестигрупповая приёмка; оценка Development 2 дня без схемы недостоверна. Нельзя подменить реальный результат вычислением в UI.
-- **Дальше:** решение `DP-UI-02` после консультаций; Developer уточняет типизированную projection и tests POST/current, Tester проверяет parity/negative controls.
-- **Условие закрытия:** accepted строка реестра, актуальный HTTP контракт, реализация, тесты и browser evidence всех шести групп на одном tested commit. **Closure evidence:** ожидается.
-
-### FIND-UI-002. ADR-0034 опережает roadmap M1-9
-
-**Type:** conflict/process gate. **Detected by:** Manager intake, подтверждено Functional Analyst. **Owner:** пользователь (`DP-UI-04`), Technical Reviewer при ревизии ADR. **Status:** OPEN. **Blocks:** отправку UI build и её финальную приёмку.
-
-- **Где найдено:** ADR-0034 §§2–3 требует отдельную страницу условий и неотмеченный checkbox до POST; `roadmap.md` назначает страницу/checkbox M1-9, после работающей формы M1-7. На Э1 есть иной текст «согласия», который не является утверждённым условием ADR.
-- **Пример:** пользователь нажимает «Построить карту» в M1-7 без доступной страницы условий или с заранее отмеченным/юридически названным checkbox — UI нарушает действующий ADR.
-- **Комментарий владельца на review:** [PR #43, r4178769729](https://github.com/ksenia-baranova/exact-orb-demo/pull/43#discussion_r4178769729) выбирает желаемую последовательность: отложить страницу до первого расчёта и заранее отметить checkbox. Это явное продуктовое намерение владельца, но оно противоречит ADR-0034 §2 и само по себе не заменяет принятое ADR. Пока Technical Reviewer/владелец не оформят явную ревизию ADR и Manager не обновит `DP-UI-04`, требования и AS-UI-20 сохраняют действующий gate; отправка build остаётся блокированной.
-- **Почему контракт недостаточен:** комментарий владельца указывает желаемый staging, но Manager-owned реестр и действующий ADR не обновлены. Без явной ревизии ADR нельзя считать заранее отмеченный checkbox и позднюю страницу разрешённым build-flow. Presentation gate не является доказательством юридического согласия и не сохраняется в M1.
-- **Влияние:** полный happy path и браузерный тест заблокированы; перенос работ изменит сроки/scope. Нельзя принять безусловную отправку как временную реализацию.
-- **Дальше:** Manager фиксирует комментарий владельца в `DP-UI-04` и организует согласование ревизии ADR-0034 с Technical Reviewer; Developer оценивает staging, Tester — проверяемость нового gate после утверждения.
-- **Условие закрытия:** запись решения владельца в реестре, явная ADR revision с нужным содержанием/порядком страницы и проверяемый тест согласованного gate перед POST. **Closure evidence:** комментарий PR есть; реестр, ADR и тест ожидаются.
-
-### FIND-UI-003. Макеты включают неподтверждённые поля, CTA и числа
-
-**Type:** draft/source conflict. **Detected by:** Manager intake, подтверждено Functional Analyst визуальной сверкой. **Owner:** пользователь (`DP-UI-05`), Analyst — синхронизация требований после решения. **Status:** OPEN. **Blocks:** финальный состав формы, но не анализ действующего API.
-
-- **Где найдено:** Р1 ставит время перед местом и содержит имя/чат; Р2/Э3 содержат колесо и CTA M2; Э4 показывает offset и диапазон Луны без публичного источника; `render_review.md` отмечает предметные ошибки Р1/Р2; Р5/Э7 содержат демо-цифры. `ui_ux/decisions.md` использует устаревшие `ChartDTO` и `issues`.
-- **Пример:** имя из Э1 добавлено к POST, который запрещает extra fields → 422; Э4 показывает «UTC+4» при `birth_time:null`, хотя `BirthViewDTO.utc_offset_seconds=null`.
-- **Почему контракт недостаточен:** без решения пользователь может воспринять неработающий чат/имя как обещание. Композиция макета сама не устанавливает публичный API.
-- **Влияние:** ложное UI обещание, некорректный request, неверные факты при неизвестном времени. Визуальная приёмка должна отделять данные от оформления.
-- **Дальше:** `DP-UI-05`; убрать неутверждённые действия из G1-предложения, сохранить композицию/палитру/ритм для Tester. Действующий `IssueDTO` — `field/code/candidates?/constraints?`.
-- **Комментарий владельца на review:** [PR #43, r4178774177](https://github.com/ksenia-baranova/exact-orb-demo/pull/43#discussion_r4178774177) подтверждает порядок дата → место → время и поручает переделать макет. REQ-UI-02 уже следует этому порядку; изменение визуального файла остаётся у UI/UX-владельца. Вопрос имени и CTA в `DP-UI-05` этим комментарием не решён.
-- **Условие закрытия:** решение владельца о поле имени/CTA и проверенный UI без недействующих действий/демо-фактов. **Closure evidence:** ожидается.
-
-### FIND-UI-004. Черновик UI не описывает полный набор таблиц
-
-**Type:** missing requirement. **Detected by:** Manager intake, подтверждено Functional Analyst. **Owner:** Functional Analyst для текста; пользователь/Developer для открытого `DP-UI-02`. **Status:** IN REVIEW. **Blocks:** тестируемый scope M1-7 до review.
-
-- **Где найдено:** `ui_ux/requirements.md` §6 описывает planets/houses/aspects и отдельные стихии, но не структуру конфигураций, силы и special degrees; CLI показывает текущие расчётные блоки; `ChartDTO` их не публикует.
-- **Пример:** chart с бисекстилем и флагом Меркурия получает только первые три таблицы, хотя `DP-UI-01` подтвердил шесть.
-- **Почему контракт недостаточен:** отсутствуют применимость к cosmogram, порядок, пустые состояния, значения позиции и проверка восстановленного GET.
-- **Влияние:** Developer/Tester могли бы считать три секции готовым M1-7. Требования REQ-UI-04…07 и AS-UI-07…09 закрывают аналитический пробел для review, но публичная схема ещё не принята.
-- **Дальше:** review Analysis, решение `DP-UI-02`, реализация и независимая проверка. Дополнительные CLI-блоки (интерцепции, управители, баланс, фаза, рецепции) не становятся scope без решения.
-- **Комментарий владельца на review:** [PR #43, r4178776260](https://github.com/ksenia-baranova/exact-orb-demo/pull/43#discussion_r4178776260) подтверждает адаптацию макета к принятому объёму из шести групп. Обновлённый макет и browser evidence ещё не представлены; finding не закрыт.
-- **Условие закрытия:** утверждённые requirements/scenarios с шестью группами и verified acceptance; сейчас только G1 draft. **Closure evidence:** ожидается.
-
-## Визуальный материал и осознанные расхождения
-
-Р1: форма, контраст и основной CTA полезны; порядок дата → место → время подтверждён владельцем в PR #43, а переделка макета ещё предстоит. Имя/чат остаются вопросом `DP-UI-05`; текст юридического согласия и предварительно отмеченный checkbox противоречат действующему ADR-0034 до его явной ревизии. Р2: использовать только пропорции и палитру; колесо M1-8, числовые и геометрические ошибки `render_review.md` не копировать. Р5/Э7: ритм секций и строки фактов применимы, но шесть групп требуют дополнения; «Стихии» и демонстрационные значения не oracle. Э1/Э2: полезны состояния выбора двух Кировсков, стрелки/Enter, ошибка невыбранного места; семантика checkbox берётся из действующего ADR-0034. Э3/Э4: карточка результата допустима, но чат/колесо вне M1-7, UTC offset и лунный диапазон Э4 при неизвестном времени исключены. Э5/Э6: stale и unavailable хорошо различены, однако факты только из `current`. Э7: на 360 px секции и строки не теряют данные; исходные цифры не проверочный эталон.
-
-## Диспозиция review PR #43 от 2026-10-04
-
-Проверены [общий review](https://github.com/ksenia-baranova/exact-orb-demo/pull/43#pullrequestreview-5407511699) и все десять inline threads, включая их текущий unresolved state. Ответы и разрешение threads в GitHub не выполнялись; таблица фиксирует результат Analysis и границу другого владельца.
-
-| Комментарий | Диспозиция | Изменение или оставшийся gate |
+| Объект | Действие после утверждения и поставки | Сейчас |
 |---|---|---|
-| [r4178058956](https://github.com/ksenia-baranova/exact-orb-demo/pull/43#discussion_r4178058956) | исправлено | REQ-UI-01 и AS-UI-11 называют конкретные safe причины `chart_unavailable` и отличают их от stale/`STATE_READ_FAILED`. |
-| [r4178086032](https://github.com/ksenia-baranova/exact-orb-demo/pull/43#discussion_r4178086032) | исправлено | REQ-UI-01 прямо указывает, когда UI показывает факты и почему `state_version` bootstrap не заменяет `chart.chart_identity`. |
-| [r4178096178](https://github.com/ksenia-baranova/exact-orb-demo/pull/43#discussion_r4178096178), [r4178749793](https://github.com/ksenia-baranova/exact-orb-demo/pull/43#discussion_r4178749793) | нужен ответ владельца/UX | API допускает односимвольный префикс, но комментарии спрашивают о пороге UI, а не утверждают его. REQ-UI-02 и AS-UI-02 больше не объявляют первую букву принятой; варианты, рекомендация и влияние на нагрузку приведены выше. |
-| [r4178129262](https://github.com/ksenia-baranova/exact-orb-demo/pull/43#discussion_r4178129262) | исправлено | REQ-UI-03 показывает `already_applied` как тело `200` ответа на POST и отдельный последующий GET. |
-| [r4178731223](https://github.com/ksenia-baranova/exact-orb-demo/pull/43#discussion_r4178731223) | исправлено как предлагаемая дельта | REQ-API-UI-02 содержит словарь каждого нового атрибута: тип, назначение, русское имя и допустимые enum; утверждение схемы остаётся за `DP-UI-02`. |
-| [r4178758579](https://github.com/ksenia-baranova/exact-orb-demo/pull/43#discussion_r4178758579) | исправлено | Добавлен AS-UI-20 для неотмеченного checkbox условий. Он не объявляется юридическим согласием на персональные данные по ADR-0034. |
-| [r4178769729](https://github.com/ksenia-baranova/exact-orb-demo/pull/43#discussion_r4178769729) | нужно решение владельца в нормативном контуре | Желаемое владельцем поведение записано в FIND-UI-002; оно требует явной ревизии ADR-0034 и обновления Manager-owned `DP-UI-04` перед изменением gate. |
-| [r4178774177](https://github.com/ksenia-baranova/exact-orb-demo/pull/43#discussion_r4178774177) | учтено; UI/UX действие открыто | Порядок дата → место → время уже в REQ-UI-02; владелец подтвердил необходимость переделать макет. |
-| [r4178776260](https://github.com/ksenia-baranova/exact-orb-demo/pull/43#discussion_r4178776260) | учтено; UI/UX действие открыто | Владелец подтвердил адаптацию макета к шести группам; FIND-UI-004 остаётся в review до обновления макета и проверки. |
+| REQ-UI-01…10, AS-UI-01…21 | Перенести утверждённый UI scope в `docs/requirements/current/ui/birth-form-and-facts.md` и `scenarios.md` после сверки Tester. | Review PR #43; AS-UI-21 условен до ADR/DP-UI-04. |
+| HTTP `ChartDTO` | Сохранить действующий `docs/requirements/http_api.md` §7.2 без дельты M1-7; ссылки в UI документах ведут к нему. | Новые блоки отложены за пределы M1-7, отдельное решение потребуется при возврате. |
+| ADR-0034 и Manager реестр | Владелец/Technical Reviewer оформляют ревизию ADR; Manager обновляет `DP-UI-01/02/04`, roadmap, сроки и задания. | Analyst не меняет эти файлы. |
 
-## Карта будущего переноса в current/
+Manager получает [requirements.md](requirements.md), [scenarios.md](scenarios.md), [analysis.md](analysis.md), входной `652bd734`, четыре findings, блокирующие решения и бюджетный вывод. Для Developer/Tester передаётся только review-версия; `READY_FOR_DEVELOPMENT`, approval и merge не заявляются.
 
-| ID | Исходный пункт @ `652bd734` | Действие после approval/поставки | Целевой чистовой пункт | Сейчас |
-|---|---|---|---|---|
-| REQ-UI-01…10, AS-UI-01…20 | новая UI область; `ui_ux/requirements.md` остаётся draft | FULL ADD, сохранить IDs | `current/ui/birth-form-and-facts.md`, `current/ui/scenarios.md` | review PR #43; ждёт решения DP-UI-04/05 и обновления макета |
-| REQ-API-UI-01…03 | `http_api.md` §§6.2, 6.4, 7.2, 13 | DELTA MODIFY/ADD без удаления иных HTTP обязательств | `current/http-api/chart-facts.md`, `current/http-api/scenarios.md`; синхронизировать прежний путь | ждёт DP-UI-02 и Developer/Tester evidence |
-| ADR-0034 | действующий ADR, не дельта Analyst | не переносить как новую семантику; возможную ревизию решает владелец | оставить ссылку на ADR | DP-UI-04 открыт |
-
-Чистовая редакция сейчас **не создана**: переносится только утверждённый и поставленный scope после сверки с целевой веткой и Tester; неутверждённые/непоставленные пункты остаются в change с ссылкой на решение. `docs/requirements/http_api.md` нельзя превращать в две противоречивые нормативные копии: при финализации Manager/Analyst согласуют миграцию прежнего пути по `docs/requirements/README.md`.
-
-## Передача G1 и проверки
-
-**Диспозиция review к REQ-UI-01 (2026-10-04): исправить.** Замечание о смешении документных `ADD/MODIFY` с действиями пользователя и неявном потоке открытия страницы принято. В [requirements.md](requirements.md#req-ui-01-первое-открытие-и-источник-состояния) тип изменения отделён от пользовательского действия; bootstrap, current и три варианта ответа разложены по шагам «запрос и ответ → состояние экрана». Тем же способом уточнены выбор места, build, restore и recovery; даны ссылки на соответствующие [сценарии приёмки](scenarios.md). Публичный контракт и статусы `DP-UI-02/04/05` этим review не менялись.
-
-Manager получает три ссылки в начале документа, input commit, `DP-UI-02/04/05`, четыре finding и бюджетный вывод. Developer и Tester получают для review текущий нормативный baseline плюс эту версию, затем точный commit утверждённой версии отдельно. [Draft PR #43](https://github.com/ksenia-baranova/exact-orb-demo/pull/43) существует; `READY_FOR_DEVELOPMENT`, approval и merge здесь не заявлены.
-
-**Выполнено на G1:** `git ls-remote origin refs/heads/change/ui-birth-form-and-facts` → входной SHA выше; `git diff --check` и `git diff 652bd73405db0a0611e98e81af6f3f668dd429f6 --check` → exit 0. Структурная проверка четырёх Markdown файлов: относительные ссылки существуют, таблицы и fences сбалансированы, JSON-примеры разбираются, 13 требований и 19 последовательных сценариев связаны, trailing whitespace не найден. G1 зафиксирован в `101d628f83a3cdda529dc925dfdde2e370fcc6af`; AS-UI-20 и эта диспозиция относятся к последующей review-редакции.
-
-**Проверки review-редакции:** `git diff --check` → exit 0; структурная проверка трёх Analyst Markdown файлов → 56 ссылок без ошибочных якорей, семь таблиц requirements и остальные таблицы согласованы, JSON разбирается, 13 требований и 20 последовательных сценариев, без trailing whitespace или незакрытых fences. Прямой вызов `normalize_place_query("К")` → `к`, `normalize_place_query("Ки")` → `ки`, что подтверждает допустимость односимвольного префикса. Исполняемое browser evidence будущего UI не заявляется.
-
-**Не выполнялось:** pytest, browser/HTTPS acceptance, PlantUML rendering — G1 меняет только документацию и не утверждает работоспособность будущего UI. Известный `FIND-TEST-HTTP-001` прежнего change учитывается при планировании браузерной проверки, не квалифицируется заново как defect M1-7.
+**Исторические проверки G1:** `git ls-remote origin refs/heads/change/ui-birth-form-and-facts` и `git diff --check` прошли для `101d628f83a3cdda529dc925dfdde2e370fcc6af`; тогда были 13 требований и 19 сценариев. Review-редакция в `6187fd5` добавила AS-UI-20. Проверки текущей редакции фиксируются в итоговом отчёте после запуска; pytest и browser/HTTPS acceptance для документной правки не подменяются текстом требования.
