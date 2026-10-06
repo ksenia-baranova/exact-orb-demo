@@ -2,7 +2,8 @@
 
 **Роль и дата:** Developer, 2026-10-06.
 **Ветка:** `dev/ui-birth-form-and-facts-review`.
-**Статус:** DOCUMENT REVIEW COMPLETE / OPEN FINDINGS; консультация G2 и Implementation Plan не завершены, разрешение на реализацию не выдаётся.
+**Статус первого review @ `b36b63d`:** DOCUMENT REVIEW COMPLETE / OPEN FINDINGS; исходное заключение и findings ниже сохраняются как история.
+**Текущий статус Developer:** REVALIDATED / FEASIBLE на `033217d`; три findings закрыты на уровне контрактов/baseline, [Implementation Plan](ui_birth_form_and_facts_implementation_plan.md) подготовлен для alignment. G3 не установлен; [повторная валидация](#повторная-валидация-2026-10-06) не является browser acceptance.
 **Технический вывод:** три группы реализуемы на существующем API; перед реализацией нужны синхронизированные требования и уточнение клиентского recovery.
 
 ## Проверенный baseline
@@ -96,3 +97,44 @@ FIND-DEV-UI-001 блокирует реализацию/приёмку экра�
 - Не запускались pytest, browser/HTTPS acceptance, рендер PlantUML и сетевые smoke tests. Оценка четырёхдневного target, полный Implementation Plan и G2/G3 остаются отдельной работой.
 
 **Handoff:** Manager и Analyst получают этот review commit через текущую Developer-ветку. Публикация в `change/*`, push, PR и коммуникация в другие задачи этим документом не подтверждаются.
+
+## Повторная валидация 2026-10-06
+
+**Вход:** `033217db41aed65d2cd6fadcc1cd1adc7c06d4c9`, фактический `change/ui-birth-form-and-facts` после PR #48. Developer-ветка обновлена fast-forward. **Реестр:** `artifacts.md` @ `64934fc33b8c04191e7a1b40a40d84b232d948f3`; **Analyst:** `ce25dd0bebf5eb3b6d41fe933d1809005e5779ab`, 10 REQ и 23 AS. Это отдельная проверка новой версии; исходные требования/статусы и ожидаемые действия первого review не переписываются задним числом.
+
+Проверены все закрытые DP-UI-01…09, диспозиции FIND-UI-001…005 и ответы на FIND-DEV-UI-001…003 / TEST-FIND-UI-001…003. В реестре присутствуют ACCEPTED и owner evidence; runtime/UI evidence различается явно. Ни один уже принятый выбор не открывается повторно только из-за отсутствия готового UI.
+
+| Решение | Сверенный перенос / техническое evidence | Developer conclusion |
+|---|---|---|
+| DP-UI-01 | REQ-UI-04–07, AS-UI-07–09/19; current ChartDTO и whitelist. | PASS CONTRACT: scope и публикация согласованы, новые API-блоки не нужны. |
+| DP-UI-02 | REQ-UI-04–06 / AS-UI-07–10/15, `project_chart`, golden/current tests. | PASS CONTRACT + BACKEND BASELINE: повторное использование подтверждено, отображение ещё предстоит. |
+| DP-UI-03 | REQ-UI-02, AS-UI-02/18, PlaceSuggestionDTO и place whitelist tests. | PASS CONTRACT: naming decision учтён без API alias; прежний долг сохраняется. |
+| DP-UI-04 | REQ-UI-03, AS-UI-03/20/21, ADR-0034, DEBT-UI-001. | PASS CONTRACT: закрытый gate и контроль долга разведены; UI evidence позже. |
+| DP-UI-05 | REQ-UI-03/10, AS-UI-22, позитивный контроль details нужной identity. | PASS CONTRACT: прежний missing-observable-flow устранён. |
+| DP-UI-06 | REQ-UI-02, AS-UI-02: контролируемый timer/late response и сброс ID. | PASS CONTRACT: client threshold не меняет грамматику/нормализацию backend. |
+| DP-UI-07 | Owner evidence реестра и отдельные estimates Developer/Tester. | PASS AS TARGET: target не объявлен estimate; [план](ui_birth_form_and_facts_implementation_plan.md#3-стоимость-уверенность-и-допущения) фиксирует отклонение и alignment. |
+| DP-UI-08 | REQ-UI-03 / AS-UI-20/21; снятие прежнего предложения в FIND-UI-002. | PASS CONTRACT: промежуточное предложение снято, долг не объявлен закрытым. |
+| DP-UI-09 | REQ-UI-09 / AS-UI-23, HTTP §§9.2–9.3; ветви commit/no commit/in progress/failed read и два server disconnect regression. | PASS CONTRACT: ответ на прежний открытый вопрос получен, accepted risk сохранён; browser evidence позже. |
+
+### Закрытие Developer findings
+
+| Finding | Новая диспозиция Developer | Evidence и граница |
+|---|---|---|
+| FIND-DEV-UI-001 | **RESOLVED IN CONTRACT** | REQ-UI-03/10 и AS-UI-22 @ `ce25dd0` соответствуют DP-UI-05; реализуемость на текущем DTO подтверждена. Отсутствие browser evidence не означает повторного открытия продуктового выбора. |
+| FIND-DEV-UI-002 | **RESOLVED IN CONTRACT — ACCEPTED RISK** | DP-UI-09 @ `64934fc` фиксирует owner choice/evidence; REQ-UI-09 и AS-UI-23 задают наблюдаемые исходы и негативный/позитивный контроль. Прежняя более консервативная рекомендация Developer не подменяет принятый выбор B. |
+| FIND-DEV-UI-003 | **RESOLVED FOR CONSULTATION BASELINE** | Manager PR #48 интегрирован в `033217d`; новый план задаёт отдельно нормативный вход, текущий реестр и Analyst package. Старые «ожидает записи» в снимке Analyst имеют явную диспозицию по новому реестру. Формальное утверждение пакета и G3 принадлежат Manager. |
+
+FIND-UI-001/004 проверены как resolved in scope, FIND-UI-002 — resolved for closed stage, FIND-UI-003 — resolved in requirements. Выбор FIND-UI-005 зарегистрирован DP-UI-09, поэтому ожидание регистрации на историческом Analyst commit выполнено. Developer не закрывает их future UI checks вместо Tester.
+
+Для TEST-FIND-UI-001/002 изменения Analyst достаточны для Developer-плана: AS-UI-22/23 наблюдаемы и воспроизводимы через leaf transport/timer и управляемый commit. Для TEST-FIND-UI-003 REQ-UI-04 / AS-UI-07 содержат oracle обычных/граничных значений и half-up; bounded Node spike подтвердил семь случаев, включая перенос через 60 минут и половину. **Статусы Tester findings не изменяются**: независимая повторная сверка Tester @ `ce25dd0` ещё требуется.
+
+### Evidence и handoff
+
+- `python -B -m pytest -p no:cacheprovider tests/http_api/test_projectors.py -q` — **27 passed in 0.69s**, exit 0.
+- `python -B -m pytest -p no:cacheprovider tests/http_api tests/test_module_boundaries.py -q` — **339 passed in 24.62s**, exit 0; включает обе реальные серверные ветви disconnect и защищённого commit. Эти числа не складываются в число уникальных тестов: projector tests входят во второй запуск.
+- Проверочный эксперимент `node --input-type=module -e ...` — **7 cases PASS**, exit 0; точная команда в [плане](ui_birth_form_and_facts_implementation_plan.md#7-проверки-выполненное-и-планируемое). Production helper/renderer не создан.
+- [Implementation Plan](ui_birth_form_and_facts_implementation_plan.md) содержит шесть work items, подход, зависимости, coverage gaps, промты, Developer estimate **5–8 дней / 40–64 часа**, confidence и G3 matrix.
+- Документальная проверка рабочего пакета `python -X utf8 -B -` — exit 0: 13 документов, 249 локальных ссылок/якорей, 44 таблицы; последовательность 10 REQ / 23 AS, 9 ACCEPTED DP и 6 промтов; арифметика оценки и границы ролевых изменений корректны. `git diff --check` — exit 0. Backend/code, Analyst/Tester, owner choices/status не изменены; index пустой.
+- Backend evidence не подтверждает UI/browser/mobile, чистовую редакцию или final acceptance. Полный pytest и исполнение промтов не выполнялись. На этапе planning документы были подготовлены в рабочем diff без поручения на публикацию; затем пользователь отдельно разрешил коммит и push в `change/ui-birth-form-and-facts`. Их фактический исход подтверждается Git evidence в handoff.
+
+**Developer recommendation:** нет незакрытой продуктовой развилки для этого плана; завершить независимую повторную сверку Tester, alignment estimates/зависимостей и formal G3 у Manager. Статус change самостоятельно не изменён.
