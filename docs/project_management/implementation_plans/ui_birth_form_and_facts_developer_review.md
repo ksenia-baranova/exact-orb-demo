@@ -3,8 +3,8 @@
 **Роль и дата:** Developer, 2026-10-06.
 **Ветка:** `dev/ui-birth-form-and-facts-review`.
 **Статус первого review @ `b36b63d`:** DOCUMENT REVIEW COMPLETE / OPEN FINDINGS; исходное заключение и findings ниже сохраняются как история.
-**Текущий статус Developer:** REVALIDATED / FEASIBLE на `033217d`; три findings закрыты на уровне контрактов/baseline, [Implementation Plan](ui_birth_form_and_facts_implementation_plan.md) подготовлен для alignment. G3 не установлен; [повторная валидация](#повторная-валидация-2026-10-06) не является browser acceptance.
-**Технический вывод:** три группы реализуемы на существующем API; перед реализацией нужны синхронизированные требования и уточнение клиентского recovery.
+**Текущий статус Developer:** REVALIDATED / FEASIBLE — авторская повторная сверка @ `082c6b9`, review baseline `033217d`; findings закрыты на уровне контрактов/baseline. [Implementation Plan](ui_birth_form_and_facts_implementation_plan.md) административно утверждён Manager 2026-10-07. Delivery status/G3 — [Manager-артефакт](../change_plans/ui-birth-form-and-facts/artifacts.md#change-brief); реализация NOT STARTED, browser acceptance NOT RUN.
+**Технический вывод:** три группы реализуемы на существующем API; контракт действий/recovery повторно сверён Developer и независимым Tester `0f6aa82`, blocking semantic gaps отсутствуют. Ниже сохранены историческое первое review и последующая авторская валидация.
 
 ## Проверенный baseline
 
@@ -18,7 +18,7 @@
 
 Merge обоих PR подтверждён Git ancestry и read-only GitHub metadata 2026-10-06. Это evidence интеграции документов, а не завершения G2/G3 или приёмки UI. Исходная версия реестра — `artifacts.md` @ `ad8892f`; в этом Developer diff дополнены только собственные рекомендации в DP-UI-02/04/05/08. Выбор владельца, статусы решений, Manager brief/roadmap и Analyst-документы не исправляются от имени других ролей. После интеграции Developer-коммита Manager фиксирует новый baseline реестра.
 
-## Вывод для Manager
+## Вывод для Manager: историческое первое review @ `b36b63d`
 
 Причина расхождений пакета — независимая интеграция Manager и Analyst документов без последующей сверки текущих статусов и переноса принятых решений в наблюдаемые требования/сценарии. Ниже разделены возвраты к владельцам документов и вопрос, для которого ещё нужен контракт. Существенные решения остаются в едином реестре; этот документ содержит Developer findings и условия их закрытия.
 
@@ -100,6 +100,8 @@ FIND-DEV-UI-001 блокирует реализацию/приёмку экра�
 
 ## Повторная валидация 2026-10-06
 
+**Административная диспозиция Manager — 2026-10-07:** Tester `0f6aa82` независимо подтвердил TESTABLE и контрактные диспозиции; G2/alignment и G3 завершены в Manager-артефакте. Авторский снимок Developer @ `082c6b9` ниже сохраняет прежние ожидания как историю, не текущие blockers.
+
 **Вход:** `033217db41aed65d2cd6fadcc1cd1adc7c06d4c9`, фактический `change/ui-birth-form-and-facts` после PR #48. Developer-ветка обновлена fast-forward. **Реестр:** `artifacts.md` @ `64934fc33b8c04191e7a1b40a40d84b232d948f3`; **Analyst:** `ce25dd0bebf5eb3b6d41fe933d1809005e5779ab`, 10 REQ и 23 AS. Это отдельная проверка новой версии; исходные требования/статусы и ожидаемые действия первого review не переписываются задним числом.
 
 Проверены все закрытые DP-UI-01…09, диспозиции FIND-UI-001…005 и ответы на FIND-DEV-UI-001…003 / TEST-FIND-UI-001…003. В реестре присутствуют ACCEPTED и owner evidence; runtime/UI evidence различается явно. Ни один уже принятый выбор не открывается повторно только из-за отсутствия готового UI.
@@ -137,4 +139,4 @@ FIND-UI-001/004 проверены как resolved in scope, FIND-UI-002 — res
 - Документальная проверка рабочего пакета `python -X utf8 -B -` — exit 0: 13 документов, 249 локальных ссылок/якорей, 44 таблицы; последовательность 10 REQ / 23 AS, 9 ACCEPTED DP и 6 промтов; арифметика оценки и границы ролевых изменений корректны. `git diff --check` — exit 0. Backend/code, Analyst/Tester, owner choices/status не изменены; index пустой.
 - Backend evidence не подтверждает UI/browser/mobile, чистовую редакцию или final acceptance. Полный pytest и исполнение промтов не выполнялись. На этапе planning документы были подготовлены в рабочем diff без поручения на публикацию; затем пользователь отдельно разрешил коммит и push в `change/ui-birth-form-and-facts`. Их фактический исход подтверждается Git evidence в handoff.
 
-**Developer recommendation:** нет незакрытой продуктовой развилки для этого плана; завершить независимую повторную сверку Tester, alignment estimates/зависимостей и formal G3 у Manager. Статус change самостоятельно не изменён.
+**Developer recommendation @ `082c6b9` — история:** продуктовых развилок нет; завершить Tester review/alignment и formal G3 у Manager. **Текущая диспозиция Manager:** эти консультации получены, budgets/plan утверждены, G3 подтверждён; собственный REVALIDATED/FEASIBLE Developer не подменяется implementation evidence.
