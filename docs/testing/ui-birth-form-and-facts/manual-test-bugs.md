@@ -10,13 +10,13 @@
 |---|---|---|---|---|---|
 | [TEST-FIND-UI-004](#test-find-ui-004) | Ввод `0045` не отображается как `00:45` | S3, PROPOSED Developer | P3, PROPOSED | Исправление включено в пакет DEV-UI-03 | NOT RUN после исправления |
 | [TEST-FIND-UI-005](#test-find-ui-005) | Допустимый `admin1_name:null` ломает всю выдачу мест | S2, PROPOSED Developer | P2, PROPOSED | FIXED PENDING RETEST, DEV-UI-07; найдено другой моделью, замечание №1 | NOT RUN после исправления |
-| [TEST-FIND-UI-006](#test-find-ui-006) | После неподтверждённого 5xx разрешён POST без сверки | S2, PROPOSED Developer | P2, PROPOSED | OPEN, DEV-UI-08; найдено другой моделью, замечание №2 | NOT RUN после исправления |
-| [TEST-FIND-UI-007](#test-find-ui-007) | Устаревшая карта получает recovery-статус `matched` | S3, PROPOSED Developer | P2, PROPOSED | OPEN, DEV-UI-08; найдено другой моделью, замечание №3 | NOT RUN после исправления |
-| [TEST-FIND-UI-008](#test-find-ui-008) | Нет объяснения повторного действия после восстановления сессии | S3, PROPOSED Developer | P3, PROPOSED | OPEN, DEV-UI-08; найдено другой моделью, замечание №4 | NOT RUN после исправления |
+| [TEST-FIND-UI-006](#test-find-ui-006) | После неподтверждённого 5xx разрешён POST без сверки | S2, PROPOSED Developer | P2, PROPOSED | FIXED PENDING RETEST, DEV-UI-08; найдено другой моделью, замечание №2 | NOT RUN после исправления |
+| [TEST-FIND-UI-007](#test-find-ui-007) | Устаревшая карта получает recovery-статус `matched` | S3, PROPOSED Developer | P2, PROPOSED | FIXED PENDING RETEST, DEV-UI-08; найдено другой моделью, замечание №3 | NOT RUN после исправления |
+| [TEST-FIND-UI-008](#test-find-ui-008) | Нет объяснения повторного действия после восстановления сессии | S3, PROPOSED Developer | P3, PROPOSED | FIXED PENDING RETEST, DEV-UI-08; найдено другой моделью, замечание №4 | NOT RUN после исправления |
 | [TEST-FIND-UI-009](#test-find-ui-009) | Ресурсы с постоянными URL не имеют явной политики кэша | S2, PROPOSED Developer | P2, PROPOSED | FIXED PENDING RETEST, DEV-UI-07; найдено другой моделью, замечание №5 | Смешение версий в браузере NOT RUN |
-| [TEST-FIND-UI-010](#test-find-ui-010) | После committed POST отсутствует сводка данных построенной карты | S3, PROPOSED Developer | P3, PROPOSED | OPEN, DEV-UI-08; найдено другой моделью, замечание №6 | NOT RUN после исправления |
+| [TEST-FIND-UI-010](#test-find-ui-010) | После committed POST отсутствует сводка данных построенной карты | S3, PROPOSED Developer | P3, PROPOSED | FIXED PENDING RETEST, DEV-UI-08; найдено другой моделью, замечание №6 | NOT RUN после исправления |
 | [TEST-FIND-UI-011](#test-find-ui-011) | Повреждённый успешный ответ вызывает исключение без сообщения UI | S2, PROPOSED Developer | P2, PROPOSED | FIXED PENDING RETEST, DEV-UI-07; найдено другой моделью, замечание №13 | NOT RUN после исправления |
-| [TEST-FIND-UI-012](#test-find-ui-012) | Фокус стирает подпись восстановленного места | S3, PROPOSED Developer | P3, PROPOSED | OPEN, DEV-UI-08; найдено другой моделью, замечание №14 | NOT RUN после исправления |
+| [TEST-FIND-UI-012](#test-find-ui-012) | Фокус стирает подпись восстановленного места | S3, PROPOSED Developer | P3, PROPOSED | FIXED PENDING RETEST, DEV-UI-08; найдено другой моделью, замечание №14 | NOT RUN после исправления |
 
 <a id="test-find-ui-004"></a>
 ## TEST-FIND-UI-004. Поле времени не поддерживает формат при вводе цифр
@@ -81,7 +81,7 @@
 
 **Происхождение:** найдено другой моделью. Имя/версия модели не сообщены. Владелец передал список из 16 замечаний и поручил Developer зарегистрировать принятые баги и подготовить промты. Исходный материал — вложение «Вставленный текст.txt» в текущем чате; ниже сохранены номера и самостоятельные воспроизводимые описания.
 **Baseline проверки:** `0d5d70acfc4f1f384b2c06970b35111b411c4fc4`, `dev/ui-birth-form-and-facts-review`. **Дата проверки:** 2026-10-07.
-**Ownership:** исправление — Developer; независимая проверка и окончательная severity — Tester; priority/delivery — Change Manager. После DEV-UI-07 записи 005/009/011 — FIXED PENDING RETEST; пять записей DEV-UI-08 остаются OPEN. Ручной retest исправлений NOT RUN.
+**Ownership:** исправление — Developer; независимая проверка и окончательная severity — Tester; priority/delivery — Change Manager. После DEV-UI-07/08 все восемь записей 005…012 — FIXED PENDING RETEST. Ручной retest исправлений NOT RUN; независимая приёмка не подтверждена.
 **Подтверждение:** Developer сверил код/approved requirements и воспроизвёл указанные ниже случаи на настоящих UI-модулях с существующими fixtures и листовыми fake network/clock/DOM. Команда `node --test --test-isolation=none tests/ui/*.test.mjs` при ревью дала 126 passed / 0 failed; эти зелёные тесты не покрывают найденные условия. Live HTTPS GET отдельно подтвердил №1 и заголовки ресурсов №5. Это не независимая Tester acceptance.
 **План исправления:** [DEV-UI-07/08 — найдено другой моделью](../../project_management/implementation_plans/ui_birth_form_and_facts_implementation_plan.md#external-model-bugs).
 **Предел scope:** зарегистрированы №1, 2, 3, 4, 5, 6, 13, 14 в уточнённой формулировке. №7, 11 не нарушают текущий контракт; №8–10 — предложения UX; №12 связан с уже принятым FIND-HTTP-023 и предложением клиентского таймаута; №15–16 — предложения очистки. Новыми багами они не объявляются.
@@ -100,31 +100,34 @@
 <a id="test-find-ui-006"></a>
 ## TEST-FIND-UI-006. Неподтверждённый 5xx не запускает сверку
 
-- **Источник:** найдено другой моделью, замечание №2. **Тип / оценка / blocks:** implementation defect восстановления; S2/P2 PROPOSED — возможен повтор build при неизвестном исходе первого сохранения; затронут gate recovery/error acceptance. **Статус:** OPEN. **Work item:** DEV-UI-08.
+- **Источник:** найдено другой моделью, замечание №2. **Тип / оценка / blocks:** implementation defect восстановления; S2/P2 PROPOSED — возможен повтор build при неизвестном исходе первого сохранения; затронут gate recovery/error acceptance. **Статус:** FIXED PENDING RETEST. **Work item:** DEV-UI-08.
 - **Контракт:** REQ-UI-09, AS-UI-14/23, DP-UI-09; [HTTP API §9](../../requirements/http_api.md). Применяется безопасная сверка неизвестного исхода, сохраняются кодовые политики известных ErrorDTO.
 - **Воспроизведение / actual:** открыть coordinator, вернуть на POST текстовые 502 и 504 либо `500 INTERNAL_FAILURE`. В контролируемом воспроизведении остались только bootstrap → current → POST, `recovery:null`, `canSubmit:true`. [session.test.mjs](../../../tests/ui/session.test.mjs), тест `text proxy error and incomplete success cannot masquerade as a committed chart`, также допускает второй POST после 502.
 - **Причина / expected:** [planRecovery](../../../src/exact_orb/http_api/ui/recovery.mjs) распознаёт четыре исхода и пропускает эти 5xx. POST с неопределённым результатом требует безопасного bootstrap/current до нового явного build; failed check блокирует build, успешный old/empty check сохраняет предупреждение о позднем завершении и ручной gate.
 - **Уточнение:** внутренний `COMMIT_FAILED` может отображаться сервером в публичный `500 INTERNAL_FAILURE`, но UI не получает `context_status`. Для такого 500 нужна консервативная сверка; нельзя определять стадию по cookie или публиковать внутренний контекст. Фактический поздний commit после 502 в live-стенде не воспроизводился.
 - **Регрессия / закрытие:** planned cases в `recovery.test.mjs`/`session.test.mjs` на 502/504 без ErrorDTO, неизвестный 5xx, 500 INTERNAL_FAILURE, failed/successful check; позитивные контроли известного 503 capacity и 504 BUILD_TIMEOUT. Проверить порядок запросов и отсутствие автоматического POST.
+- **Developer fix, 2026-10-07:** неизвестные 5xx и все публичные `500 INTERNAL_FAILURE` запускают bootstrap/current; до успешного чтения build заблокирован. Raw 504 не требует restart. Реальный Retry-After соблюдается, failed check сохраняет карту/черновик и не создаёт цикл повторов; old/empty получает предупреждение о позднем commit и только gated manual retry. Tests `unconfirmed … blocks POST until bootstrap/current …` (8), `unconfirmed 5xx respects real Retry-After …`, `mounted unknown 5xx failed at …` (2) и сохранённые known policies прошли. [Фактические проверки DEV-UI-08](../../project_management/implementation_plans/ui_birth_form_and_facts_implementation_plan.md#dev-ui-08-execution). Live proxy/late commit и независимый retest NOT RUN.
 
 <a id="test-find-ui-007"></a>
 ## TEST-FIND-UI-007. Recovery считает устаревшую карту совпавшим результатом
 
-- **Источник:** найдено другой моделью, замечание №3; принято частично. **Тип / оценка / blocks:** implementation defect статуса recovery; S3/P2 PROPOSED — сводка может создавать впечатление подтверждённого пересчёта; маркировка устаревания и действие пересчёта сохраняются. **Статус:** OPEN. **Work item:** DEV-UI-08.
+- **Источник:** найдено другой моделью, замечание №3; принято частично. **Тип / оценка / blocks:** implementation defect статуса recovery; S3/P2 PROPOSED — сводка может создавать впечатление подтверждённого пересчёта; маркировка устаревания и действие пересчёта сохраняются. **Статус:** FIXED PENDING RETEST. **Work item:** DEV-UI-08.
 - **Контракт:** REQ-UI-08/09, AS-UI-11/14/23, DP-UI-09.
 - **Воспроизведение / actual:** показать current с `chart_stale:true`; повторить то же намерение и потерять ответ POST; сверка вернула ту же устаревшую карту. `recoveredStatus` возвращает `matched`, сообщение «Текущая карта соответствует отправленным данным», повторная безопасная проверка скрывается.
 - **Причина / expected:** совпадение birth проверяется до устаревания. Старые факты остаются видны, но свежий результат не подтверждается; recovery объясняет это и допускает только разрешённые safe check/явный пересчёт.
 - **Уточнение:** сам `chart_identity === previousIdentity` не доказывает отсутствие свежего результата: ID — calculation key, а не уникальный ID попытки. Для `chart_stale:false` и совпавшего намерения одинаковый ID допустим; локальная версия bootstrap также не доказывает результат POST.
 - **Регрессия / закрытие:** planned stale+lost-response mounted/coordinator case и позитивный fresh same-identity case; проверить текст, старые факты, safe check и gate. Ручной recovery retest после исправления.
+- **Developer fix, 2026-10-07:** matching stale current получает локальный UI-статус `stale`, сохраняет факты, «Пересчитать» и safe recheck; сообщение не подтверждает свежий build. Fresh same-identity по-прежнему допускает matched. Два mounted cases `mounted matching stale/fresh current with unchanged identity preserves facts and honest recovery feedback` прошли; safe recheck действительно читает current без POST, ручной пересчёт — отдельное действие. [Evidence](../../project_management/implementation_plans/ui_birth_form_and_facts_implementation_plan.md#dev-ui-08-execution). Browser retest NOT RUN.
 
 <a id="test-find-ui-008"></a>
 ## TEST-FIND-UI-008. Восстановление сессии не объясняет отклонённый build
 
-- **Источник:** найдено другой моделью, замечание №4. **Тип / оценка / blocks:** дефект обратной связи; S3/P3 PROPOSED — требуется новое действие, причина пользователю не названа; основной build доступен. **Статус:** OPEN. **Work item:** DEV-UI-08.
+- **Источник:** найдено другой моделью, замечание №4. **Тип / оценка / blocks:** дефект обратной связи; S3/P3 PROPOSED — требуется новое действие, причина пользователю не названа; основной build доступен. **Статус:** FIXED PENDING RETEST. **Work item:** DEV-UI-08.
 - **Контракт:** REQ-UI-03/09/10, AS-UI-12/19.
 - **Воспроизведение / actual:** POST вернул 409 SESSION_EXPIRED/NOT_FOUND; bootstrap/current успешны и current пуст. `accept()` очищает исходную ошибку, экран сообщает только «Сохранённой карты пока нет». Черновик сохраняется, автоматического POST нет — эта часть правильна.
 - **Expected:** сообщить об обновлении сессии и необходимости нового явного нажатия; показать действительный current, сохранить дату/время/ID и ручной gate. При отказе safe read сохранить ошибку и блокировку.
 - **Регрессия / закрытие:** расширить существующие session-loss tests mounted assertions на видимое сообщение и один POST до отдельного нажатия; позитивный контроль успешного ручного build. Ручной retest после исправления.
+- **Developer fix, 2026-10-07:** только успешный current после session 409 показывает «Сессия обновлена», объясняет отклонённое построение и отдельное нажатие; следующий явный build снимает уведомление. При failed bootstrap/current нет ложного успеха; последующий safe recheck объясняет восстановление. Шесть `${SESSION_CODE} recovers ${empty/chart_ready} with visible new-action explanation and intact draft` и два `session-loss check failed at …` passed, draft/gate и один POST до явного действия сохранены. [Evidence](../../project_management/implementation_plans/ui_birth_form_and_facts_implementation_plan.md#dev-ui-08-execution). Ручной retest NOT RUN.
 
 <a id="test-find-ui-009"></a>
 ## TEST-FIND-UI-009. Обновление UI может смешивать версии ресурсов
@@ -139,11 +142,12 @@
 <a id="test-find-ui-010"></a>
 ## TEST-FIND-UI-010. Результат POST не имеет сводки данных рождения
 
-- **Источник:** найдено другой моделью, замечание №6; принято как дефект обратной связи. **Тип / оценка / blocks:** S3/P3 PROPOSED — у построенной карты отсутствует сводка; при последующем редактировании формы результат трудно связать с отправленными данными. **Статус:** OPEN. **Work item:** DEV-UI-08.
+- **Источник:** найдено другой моделью, замечание №6; принято как дефект обратной связи. **Тип / оценка / blocks:** S3/P3 PROPOSED — у построенной карты отсутствует сводка; при последующем редактировании формы результат трудно связать с отправленными данными. **Статус:** FIXED PENDING RETEST. **Work item:** DEV-UI-08.
 - **Контракт:** REQ-UI-03/08, AS-UI-03/04/10/22; [BuildReadyDTO и BirthViewDTO](../../../src/exact_orb/http_api/dto.py).
 - **Воспроизведение / actual:** после валидного committed POST coordinator принимает view с `birth:null`; в статусе отсутствуют дата, место и время. Контрольный пример подтвердил, что сама форма сохраняет эти данные. Неправильной схемой GET это не является: источник view — build.
 - **Expected:** показать отправленные дату, название места и время/явную неизвестность рядом с результатом, привязав их к неизменяемому снимку успешного запроса. Изменённый во время ожидания черновик не становится сводкой прежней карты. После GET источником сводки становится серверный birth.
 - **Уточнение / регрессия:** нельзя создавать полный BirthViewDTO из intent — tz_id/offset/warnings неизвестны. Не требуется новый GET только ради сводки. Planned known/unknown-time и draft-edit-during-build tests с настоящим mount/session; отдельный actual-current контроль already_applied/superseded. Ручной retest после исправления.
+- **Developer fix, 2026-10-07:** успешный POST сохраняет отдельную неизменяемую экранную сводку, связанную с chart_identity; дата/время/название взяты из отправленного снимка, не изменённого draft. Не создаются tz_id/offset/warnings, новый GET не добавлен. Current, already_applied и superseded читают actual birth. Cases `committed known/unknown time summary belongs to the submitted snapshot despite pending draft edits`, `a rejected later build keeps the summary …`, `foreground summary reads actual current birth …` и два прежних current-control tests passed. [Evidence](../../project_management/implementation_plans/ui_birth_form_and_facts_implementation_plan.md#dev-ui-08-execution). Browser retest NOT RUN.
 
 <a id="test-find-ui-011"></a>
 ## TEST-FIND-UI-011. Некорректный успешный ответ ломает отрисовку
@@ -158,8 +162,9 @@
 <a id="test-find-ui-012"></a>
 ## TEST-FIND-UI-012. Подпись восстановленного места исчезает при фокусе
 
-- **Источник:** найдено другой моделью, замечание №14. **Тип / оценка / blocks:** дефект отображения выбора; S3/P3 PROPOSED — исчезает подтверждение восстановления, но ID и основной build сохраняются. **Статус:** OPEN. **Work item:** DEV-UI-08.
+- **Источник:** найдено другой моделью, замечание №14. **Тип / оценка / blocks:** дефект отображения выбора; S3/P3 PROPOSED — исчезает подтверждение восстановления, но ID и основной build сохраняются. **Статус:** FIXED PENDING RETEST. **Work item:** DEV-UI-08.
 - **Контракт:** REQ-UI-02/08/10, AS-UI-02/10/19.
 - **Воспроизведение / actual:** открыть страницу с saved birth; появилась подпись «Сохранённое место: Moscow». Без редактирования сфокусировать поле места: `renderPlaces(idle)` стирает подпись. Контроль подтвердил, что form.place.place_id остался тем же.
 - **Причина / expected:** восстановление меняет form/DOM, но search state остаётся idle. Фокус/blur без редактирования сохраняют подпись и подтверждённый ID. Начало редактирования снимает выбор по прежнему правилу; регион/страна отсутствуют в BirthViewDTO и не выдумываются.
 - **Регрессия / закрытие:** planned mounted restore → focus → blur и restore → edit → select cases; после явного выбора новый ID используется в POST. Ручной retest после исправления.
+- **Developer fix, 2026-10-07:** idle search presentation сохраняет подтверждённое место из form при focus/blur; недоступные регион/страна не выдумываются. Edit по-прежнему снимает ID; поиск и явный выбор устанавливают новый ID, который уходит в POST. Три `restored ${chart_ready/chart_unavailable}/${time_unknown} place survives focus/blur then edit and explicit new selection` passed, дополнительных lookup при focus нет и undefined не отображается. [Evidence](../../project_management/implementation_plans/ui_birth_form_and_facts_implementation_plan.md#dev-ui-08-execution). Ручной retest NOT RUN.

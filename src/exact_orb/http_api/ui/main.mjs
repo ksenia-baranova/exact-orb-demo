@@ -85,11 +85,18 @@ export function mountBirthForm(document, { apiClient = api, clock } = {}) {
       message = view.chart_stale ? "Сохранённая карта устарела. Её можно явно пересчитать." : "Карта доступна.";
     }
     if (view?.status === "chart_unavailable") message = "Сохранённую карту не удалось открыть. Данные рождения сохранены; карту можно построить заново.";
-    if (view?.birth) message += ` Дата: ${view.birth.birth_date}. Место: ${view.birth.place.display_name}. ${view.birth.time_unknown ? "Точное время неизвестно." : `Время: ${view.birth.birth_time}.`}`;
     if (state.phase === "bootstrapping") message = "Открываем сессию…";
     if (state.phase === "reading") message = "Проверяем текущую карту…";
     if (state.phase === "building") message = "Строим карту…";
     if (state.recovery) message = state.recovery.message;
+    if (state.recovery && view?.chart_stale && state.recovery.status !== "stale") message += " Сохранённая карта устарела. Её можно явно пересчитать.";
+    if (state.sessionRenewed) message += " Сессия обновлена. Запрос построения был отклонён. Чтобы построить карту, нажмите кнопку ещё раз.";
+    // Current описывает actual birth; committed POST — снимок отправленных данных той же карты.
+    const summary = view?.birth ? { birthDate: view.birth.birth_date, birthTime: view.birth.birth_time,
+      placeName: view.birth.place.display_name } : state.source === "build"
+      && state.resultSummary?.chartIdentity === view?.chart?.chart_identity ? state.resultSummary : null;
+    if (summary) message += ` Дата: ${summary.birthDate}. Место: ${summary.placeName}. ${summary.birthTime === null
+      ? "Точное время неизвестно." : `Время: ${summary.birthTime}.`}`;
     sessionStatus.textContent = message;
     const original = state.recovery?.intent, draft = form.snapshot();
     submitted.hidden = !original;
@@ -163,6 +170,8 @@ export function mountBirthForm(document, { apiClient = api, clock } = {}) {
     if (state.status === "selected") {
       message = `Выбрано: ${state.selection.display_name}. Регион: ${state.selection.admin1_name || "—"}. Страна: ${state.selection.country_code}.`;
     }
+    const savedPlace = form.snapshot().place;
+    if (state.status === "idle" && savedPlace) message = `Сохранённое место: ${savedPlace.display_name}.`;
     if (state.status === "error") {
       message = state.error.message;
       if (state.retryInSeconds > 0) message += ` Повторить поиск можно через ${state.retryInSeconds} с.`;

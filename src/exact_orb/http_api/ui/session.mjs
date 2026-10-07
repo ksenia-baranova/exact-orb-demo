@@ -22,13 +22,16 @@ export function issueMessage(issue) {
 
 export function createSessionCoordinator({ apiClient, form, onChange, onRenderError, clock = browserClock } = {}) {
   let state = { phase: "idle", sessionReady: false, view: null, source: null, submittedIntent: null,
+    resultSummary: null, sessionRenewed: false,
     fieldIssues: {}, error: null, requiresReconciliation: false, requestId: null, recovery: null };
   let disposed = false, controller = null, retryAt = 0, retryTimer = null, pendingForeground = false;
   let submittedPlaceName = "";
+  let sessionRefreshPending = false;
   const busy = () => state.phase !== "idle";
   function snapshot() {
     const copy = structuredClone(state);
     if (copy.submittedIntent) Object.freeze(copy.submittedIntent);
+    if (copy.resultSummary) Object.freeze(copy.resultSummary);
     if (copy.recovery) {
       Object.freeze(copy.recovery.intent);
       copy.recovery.message = recoveryMessage(copy.recovery);
@@ -92,6 +95,14 @@ export function createSessionCoordinator({ apiClient, form, onChange, onRenderEr
   function accept(outcome, source) {
     state.view = structuredClone(outcome.body);
     state.source = source;
+    // Это экранная сводка конкретной committed карты, а не выдуманный BirthViewDTO.
+    state.resultSummary = source === "build" ? Object.freeze({ chartIdentity: state.view.chart.chart_identity,
+      birthDate: state.submittedIntent.birth_date, birthTime: state.submittedIntent.birth_time,
+      placeName: submittedPlaceName }) : null;
+    if (source === "current" && sessionRefreshPending) {
+      state.sessionRenewed = true;
+      sessionRefreshPending = false;
+    }
     state.requestId = outcome.requestId ?? null;
     state.error = null;
     state.fieldIssues = {};
@@ -187,6 +198,7 @@ export function createSessionCoordinator({ apiClient, form, onChange, onRenderEr
       if (!prepared.ok) { publish(); return false; }
       begin();
       state.recovery = null;
+      state.sessionRenewed = false;
       state.submittedIntent = Object.freeze({ ...prepared.intent });
       submittedPlaceName = form.snapshot().place.display_name;
       let accepted = false, rendered;
@@ -194,7 +206,10 @@ export function createSessionCoordinator({ apiClient, form, onChange, onRenderEr
         if (phase("building")) {
           const outcome = await call("buildNatal", state.submittedIntent);
           if (disposed) return false;
-          if (missingSession(outcome)) accepted = await bootstrapAndRead(false);
+          if (missingSession(outcome)) {
+            sessionRefreshPending = true;
+            accepted = await bootstrapAndRead(false);
+          }
           else if (outcome.kind === "http" && ((outcome.status === 200 && outcome.body?.status === "already_applied" && validVersion(outcome.body))
             || (outcome.status === 409 && outcome.body?.code === "RESULT_SUPERSEDED"))) accepted = await read(true);
           else if (outcome.kind === "http" && outcome.status === 200 && validBuild(outcome.body)) {

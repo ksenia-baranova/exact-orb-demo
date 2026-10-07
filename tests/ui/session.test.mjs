@@ -9,6 +9,77 @@ import { documentPort } from "./fixtures/dom.mjs";
 import { charts, views, place, placeWithoutRegion, ready, committed, response, failure, deferred, harness,
   bootstrapPath, currentPath, buildPath } from "./fixtures/session.mjs";
 
+function mountSession(h) {
+  const document = documentPort(), ui = mountBirthForm(document, { apiClient: h.apiClient, clock: h.clock });
+  const get = (id) => document.getElementById(id);
+  return { document, ui, get, submit: () => get("birth-form").emit("submit"),
+    gate(value) { get("terms-acknowledged").checked = value; get("terms-acknowledged").emit("change"); } };
+}
+
+// DEV-UI-08, TEST-FIND-UI-010; REQ-UI-03/08 / AS-UI-03/04/10/22.
+for (const unknown of [false, true]) {
+  test(`committed ${unknown ? "unknown" : "known"} time summary belongs to the submitted snapshot despite pending draft edits`, async () => {
+    const h = harness(); h.queue(currentPath, response(ready())); const m = mountSession(h); await m.ui.ready;
+    m.get("time-unknown").checked = unknown; m.get("time-unknown").emit("change"); m.gate(true);
+    const sent = m.ui.form.prepareSubmission().intent, sentPlace = m.get("birth-place").value;
+    const pending = deferred(); h.queue(buildPath, pending.promise); const submitting = m.submit();
+    m.get("birth-date").value = "1990-01-01"; m.get("birth-date").emit("input");
+    m.get("birth-time").value = "00:00"; m.get("birth-time").emit("input");
+    m.ui.form.selectPlace(placeWithoutRegion); const draft = m.ui.form.snapshot();
+    pending.resolve(response(committed(charts[unknown ? "cosmogram" : "natal"]))); await submitting;
+    const text = m.get("session-status").textContent;
+    assert.ok(text.includes(sent.birth_date)); assert.ok(text.includes(sentPlace));
+    assert.match(text, unknown ? /Точное время неизвестно/ : /Время: 14:30/);
+    assert.doesNotMatch(text, /1990-01-01|00:00|Гонконг|12:00|undefined/);
+    assert.deepEqual(m.ui.form.snapshot(), draft); assert.deepEqual(h.builds()[0].body, sent);
+    assert.equal(m.ui.session.snapshot().view.birth, null, "summary must not fabricate timezone/offset/warnings DTO");
+    assert.equal(h.calls.length, 3, "no extra GET just to build a summary");
+    // Сводка не меняется от последующих событий редактирования и caller snapshots.
+    m.get("birth-date").value = "2000-02-29"; m.get("birth-date").emit("input");
+    assert.equal(m.get("session-status").textContent, text); m.ui.dispose();
+  });
+}
+
+test("a rejected later build keeps the summary of the previously displayed committed chart", async () => {
+  const h = harness(); h.queue(currentPath, response(ready())); const m = mountSession(h); await m.ui.ready; m.gate(true);
+  await m.submit(); const shown = m.get("session-status").textContent;
+  m.get("birth-date").value = "1990-01-01"; m.get("birth-date").emit("input");
+  h.queue(buildPath, response(failure("INPUT_REQUIRED"), 422)); await m.submit();
+  assert.equal(m.get("session-status").textContent, shown);
+  assert.ok(shown.includes(ready().birth.birth_date)); assert.doesNotMatch(shown, /1990-01-01/);
+  assert.equal(h.builds().length, 2); m.ui.dispose();
+});
+
+test("foreground summary reads actual current birth instead of a previous successful build intent", async () => {
+  const h = harness(); h.queue(currentPath, response(ready())); const m = mountSession(h); await m.ui.ready; m.gate(true);
+  await m.submit(); const actual = ready(false, true); actual.birth.birth_date = "1990-01-01";
+  h.queue(currentPath, response(actual)); await m.document.defaultView.emit("online");
+  const text = m.get("session-status").textContent;
+  assert.match(text, /1990-01-01/); assert.match(text, /Точное время неизвестно/); assert.doesNotMatch(text, /1985-09-02|14:30/);
+  assert.equal(m.ui.session.snapshot().view.chart.chart_identity, actual.chart.chart_identity);
+  assert.equal(m.get("birth-date").value, ready().birth.birth_date); assert.equal(h.builds().length, 1); m.ui.dispose();
+});
+
+// TEST-FIND-UI-012; REQ-UI-02/08/10 / AS-UI-02/10/19: только edit снимает ID.
+for (const saved of [ready(), ready(false, true), views.known_unavailable]) {
+  test(`restored ${saved.status}/${saved.birth.time_unknown} place survives focus/blur then edit and explicit new selection`, async () => {
+    const h = harness(); h.queue(currentPath, response(saved)); const m = mountSession(h); await m.ui.ready;
+    const input = m.get("birth-place"), status = m.get("place-status"), label = status.textContent;
+    input.focus(); input.emit("focus"); assert.equal(status.textContent, label);
+    input.emit("blur"); assert.equal(status.textContent, label); assert.doesNotMatch(label, /undefined/);
+    assert.equal(m.ui.form.snapshot().place.place_id, saved.birth.place.place_id);
+    assert.equal(h.calls.length, 2, "focus/blur do not fetch missing catalogue metadata");
+    input.value = "Гонк"; input.emit("input");
+    assert.equal(m.ui.form.snapshot().place, null); assert.ok(!status.textContent.includes(saved.birth.place.display_name));
+    m.gate(true); await m.submit(); assert.equal(h.builds().length, 0);
+    h.queue("/places?query=" + encodeURIComponent("Гонк"), response({ items: [placeWithoutRegion] }));
+    await h.clock.advance(250); m.ui.places.select(0);
+    input.emit("focus"); input.emit("blur"); assert.match(status.textContent, /Гонконг/); assert.doesNotMatch(status.textContent, /undefined/);
+    await m.submit(); assert.equal(h.builds().length, 1); assert.equal(h.builds()[0].body.place_id, placeWithoutRegion.place_id);
+    m.ui.dispose();
+  });
+}
+
 // DEV-UI-07, REQ-UI-02/03/10, AS-UI-02/18/19/20; TEST-FIND-UI-005.
 test("mounted nullable-region selection renders a dash and sends only the selected ID after the gate", async () => {
   const h = harness(), document = documentPort();
@@ -265,29 +336,54 @@ test("date/place issues retain constraints; unknown fields and user_message have
 
 for (const result of ["already_applied", "RESULT_SUPERSEDED"]) {
   test(`${result} reads actual current and never treats the POST as a new chart`, async () => {
-    const h = harness(); await h.coordinator.open();
+    // TEST-FIND-UI-010; REQ-UI-08/09 / AS-UI-10/16: сводка actual birth, не intent проигравшего POST.
+    const h = harness(); h.queue(currentPath, response(ready())); const m = mountSession(h); await m.ui.ready; m.gate(true);
     const winner = ready(true); winner.chart.chart_identity = "persisted-winner";
+    winner.birth.birth_date = "1990-01-01"; winner.birth.birth_time = "00:00";
+    winner.birth.place.display_name = "Другое сохранённое место";
     h.queue(currentPath, response(winner));
     h.queue(buildPath, result === "already_applied" ? response({ status: result, state_version: 3 })
       : response(failure(result), 409));
-    assert.equal(await h.coordinator.submit(), true);
-    assert.deepEqual(h.coordinator.snapshot().view, winner);
+    await m.submit(); assert.deepEqual(m.ui.session.snapshot().view, winner);
+    assert.match(m.get("session-status").textContent, /1990-01-01.*Другое сохранённое место.*00:00/);
+    assert.doesNotMatch(m.get("session-status").textContent, /1985-09-02|14:30/);
+    assert.equal(m.get("birth-date").value, ready().birth.birth_date);
     assert.deepEqual(h.calls.map((call) => call.path), [bootstrapPath, currentPath, buildPath, currentPath]);
-    assert.equal(h.builds().length, 1);
+    assert.equal(h.builds().length, 1); m.ui.dispose();
   });
 }
 
 for (const code of ["SESSION_REQUIRED", "SESSION_EXPIRED", "SESSION_NOT_FOUND"]) {
-  test(`${code} recovers bootstrap/current with draft intact; a new POST needs a new action`, async () => {
-    const h = harness(); await h.coordinator.open(); const draft = h.form.snapshot();
+ for (const current of [views.empty, ready()]) {
+  test(`${code} recovers ${current.status} with visible new-action explanation and intact draft`, async () => {
+    // TEST-FIND-UI-008; REQ-UI-03/09/10 / AS-UI-12/19.
+    const h = harness(); h.queue(currentPath, response(ready())); const m = mountSession(h); await m.ui.ready; m.gate(true);
+    const draft = m.ui.form.snapshot(); h.queue(currentPath, response(current));
     h.queue(buildPath, response(failure(code), 409));
-    assert.equal(await h.coordinator.submit(), true);
+    await m.submit();
     assert.deepEqual(h.calls.map((call) => call.path), [bootstrapPath, currentPath, buildPath, bootstrapPath, currentPath]);
     assert.equal(h.builds().length, 1);
-    assert.deepEqual(h.coordinator.snapshot().view, views.empty);
-    assert.deepEqual(h.form.snapshot(), draft);
-    assert.equal(await h.coordinator.submit(), true);
-    assert.equal(h.builds().length, 2);
+    assert.deepEqual(m.ui.session.snapshot().view, current); assert.deepEqual(m.ui.form.snapshot(), draft);
+    assert.match(m.get("session-status").textContent, /Сессия обновлена.*построения.*отклонён.*нажмите/);
+    m.gate(false); await m.submit(); assert.equal(h.builds().length, 1);
+    m.gate(true); await m.submit(); assert.equal(h.builds().length, 2);
+    assert.doesNotMatch(m.get("session-status").textContent, /Сессия обновлена/); m.ui.dispose();
+  });
+ }
+}
+
+for (const failedAt of [bootstrapPath, currentPath]) {
+  test(`session-loss check failed at ${failedAt} never announces success and a later safe read explains the new action`, async () => {
+    const h = harness(), saved = ready(); h.queue(currentPath, response(saved)); const m = mountSession(h); await m.ui.ready; m.gate(true);
+    const draft = m.ui.form.snapshot();
+    h.queue(buildPath, response(failure("SESSION_EXPIRED"), 409)); h.queue(failedAt, response(failure("STATE_READ_FAILED"), 503));
+    await m.submit(); assert.deepEqual(m.ui.session.snapshot().view, saved); assert.deepEqual(m.ui.form.snapshot(), draft);
+    assert.doesNotMatch(m.get("session-status").textContent, /Сессия обновлена/);
+    assert.equal(m.get("form-error").hidden, false); assert.equal(m.get("build-button").disabled, true);
+    await m.submit(); assert.equal(h.builds().length, 1);
+    h.queue(currentPath, response(views.empty)); assert.equal(await m.ui.session.recheck(), true);
+    assert.match(m.get("session-status").textContent, /Сессия обновлена.*нажмите/);
+    assert.equal(h.builds().length, 1); m.ui.dispose();
   });
 }
 
@@ -338,11 +434,15 @@ for (const code of ["STATE_COMMIT_FAILED", "BUILD_TIMEOUT"]) {
 }
 
 test("text proxy error and incomplete success cannot masquerade as a committed chart", async () => {
+  // TEST-FIND-UI-006/011: 502 сначала сверяется, неполный 200 по-прежнему требует safe read.
   const h = harness(); h.queue(currentPath, response(ready())); await h.coordinator.open();
+  h.queue(currentPath, response(failure("STATE_READ_FAILED"), 503));
   h.queue(buildPath, new Response("Bad gateway", { status: 502 }), response({ status: "chart_ready", state_version: 2 }));
   assert.equal(await h.coordinator.submit(), false);
   assert.deepEqual(h.coordinator.snapshot().view, ready());
   assert.ok(h.coordinator.snapshot().error.message);
+  assert.equal(await h.coordinator.submit(), false); assert.equal(h.builds().length, 1);
+  h.queue(currentPath, response(ready())); assert.equal(await h.coordinator.recheck(), true);
   h.queue(currentPath, response(ready()));
   assert.equal(await h.coordinator.submit(), false);
   assert.deepEqual(h.coordinator.snapshot().view, ready());

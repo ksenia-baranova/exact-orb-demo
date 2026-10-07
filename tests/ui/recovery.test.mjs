@@ -20,6 +20,78 @@ function currentFor(input = intent(), identity = "chart-A", stateVersion = 1) {
 }
 const rejection = () => new Error("Response lost before HTTP status");
 
+// DEV-UI-08, TEST-FIND-UI-006; REQ-UI-09 / AS-UI-14/23, DP-UI-09.
+// Публичный 500 не раскрывает стадию; headers не доказывают исход commit.
+const unknownFailures = [
+  ["text 502", () => new Response("Bad gateway", { status: 502 })],
+  ["text 504", () => new Response("Gateway timeout", { status: 504 })],
+  ["empty 503", () => new Response(null, { status: 503 })],
+  ["malformed capacity DTO", () => response({ code: "BUILD_CAPACITY_EXHAUSTED" }, 503)],
+  ["unknown 503 code", () => response(failure("UNKNOWN_PROXY_FAILURE"), 503)],
+  ["unknown 599", () => response(failure("UNKNOWN_PROXY_FAILURE"), 599)],
+  ["internal 500", () => response(failure("INTERNAL_FAILURE"), 500)],
+  ["internal 500 with cookie", () => response(failure("INTERNAL_FAILURE"), 500,
+    { "Set-Cookie": "session=opaque; Secure; HttpOnly", "X-Request-ID": "internal-post" })],
+];
+for (const [name, makeFailure] of unknownFailures) {
+  test(`unconfirmed ${name} blocks POST until bootstrap/current and then permits only gated manual retry`, async () => {
+    const h = harness(), old = currentFor({ ...intent(), birth_date: "1970-01-01" }, "old");
+    h.queue(currentPath, response(old)); await h.coordinator.open(); const draft = h.form.snapshot();
+    const failed = makeFailure(), boot = deferred(), check = deferred();
+    const originalId = failed.headers.get("X-Request-ID");
+    h.queue(buildPath, failed); h.queue(bootstrapPath, boot.promise); h.queue(currentPath, check.promise);
+    const entered = h.entered(bootstrapPath), submitting = h.coordinator.submit();
+    assert.equal(await Promise.race([entered.then(() => true), submitting.then(() => false)]), true,
+      "unknown failure must actually enter safe reconciliation");
+    assert.equal(h.coordinator.snapshot().canSubmit, false);
+    assert.equal(await h.coordinator.submit(), false); assert.equal(h.builds().length, 1);
+    const readEntered = h.entered(currentPath);
+    boot.resolve(response({ status: "ready", state_version: 999 }, 200, { "X-Request-ID": "safe-bootstrap" }));
+    await readEntered;
+    assert.equal(h.coordinator.snapshot().canSubmit, false);
+    check.resolve(response(old, 200, { "X-Request-ID": "safe-current" })); await submitting;
+    const state = h.coordinator.snapshot();
+    assert.deepEqual(h.calls.slice(2).map((call) => call.path), [buildPath, bootstrapPath, currentPath]);
+    assert.equal(state.recovery.originalRequestId, originalId);
+    assert.equal(state.recovery.bootstrapRequestId, "safe-bootstrap");
+    assert.equal(state.recovery.checkRequestId, "safe-current");
+    assert.equal(state.recovery.restartConfirmed, false, "proxy timeout never confirms or demands server restart");
+    assert.equal(state.recovery.status, "old_or_empty");
+    assert.match(state.recovery.message, /предыдущий расчёт может завершиться позже/);
+    assert.deepEqual(state.view, old); assert.deepEqual(h.form.snapshot(), draft);
+    h.form.acknowledge(false); await h.coordinator.submit(); assert.equal(h.builds().length, 1);
+    h.form.acknowledge(true); assert.equal(await h.coordinator.submit(), true); assert.equal(h.builds().length, 2);
+  });
+}
+
+test("unconfirmed 5xx respects real Retry-After, checks once and keeps a failed check safe-read-only", async () => {
+  const h = harness(), old = currentFor(); h.queue(currentPath, response(old)); await h.coordinator.open();
+  const draft = h.form.snapshot();
+  h.queue(buildPath, new Response("Gateway timeout", { status: 504, headers: { "Retry-After": "2" } }));
+  h.queue(currentPath, response(failure("STATE_READ_FAILED"), 503)); await h.coordinator.submit();
+  assert.equal(h.coordinator.snapshot().requiresReconciliation, true);
+  assert.equal(h.calls.length, 3); await h.clock.advance(1999); assert.equal(h.calls.length, 3);
+  await h.clock.advance(1);
+  assert.deepEqual(h.calls.slice(3).map((call) => call.path), [bootstrapPath, currentPath]);
+  assert.equal(h.coordinator.snapshot().canSubmit, false); assert.equal(h.coordinator.snapshot().recovery.status, "check_failed");
+  assert.deepEqual(h.coordinator.snapshot().view, old); assert.deepEqual(h.form.snapshot(), draft);
+  await h.clock.advance(100000); assert.equal(h.calls.length, 5); assert.equal(await h.coordinator.submit(), false);
+  h.queue(currentPath, response(views.empty)); assert.equal(await h.coordinator.recheck(), true);
+  assert.match(h.coordinator.snapshot().recovery.message, /предыдущий расчёт может завершиться позже/);
+  assert.equal(h.builds().length, 1); assert.equal(await h.coordinator.submit(), true); assert.equal(h.builds().length, 2);
+});
+
+for (const [status, code] of [[503, "SERVICE_SHUTTING_DOWN"], [503, "STATE_READ_FAILED"],
+  [503, "RESOLUTION_UNAVAILABLE"], [503, "CALCULATION_FAILED"], [500, "RESOLUTION_UNAVAILABLE"], [500, "CALCULATION_FAILED"]]) {
+  test(`known ${status} ${code} remains an ordinary refusal with no automatic reconciliation or POST`, async () => {
+    const h = harness(); await h.coordinator.open();
+    h.queue(buildPath, response(failure(code), status, { "Retry-After": "2" })); await h.coordinator.submit();
+    assert.equal(h.coordinator.snapshot().error.code, code); assert.equal(h.calls.length, 3);
+    assert.equal(await h.coordinator.submit(), false); await h.clock.advance(2000);
+    assert.equal(h.calls.length, 3); assert.equal(await h.coordinator.submit(), true); assert.equal(h.builds().length, 2);
+  });
+}
+
 test("policy distinguishes received failures, missing headers and ordinary HTTP refusal", () => {
   const network = planRecovery({ kind: "network_error" }, intent(), null);
   assert.equal(network.kind, "network"); assert.equal(network.retryAfter, null);
@@ -293,6 +365,44 @@ function mountHarness(h) {
   const check = ui.session.snapshot;
   return { document, ui, get, check, submit: () => get("birth-form").emit("submit"),
     gate(value) { get("terms-acknowledged").checked = value; get("terms-acknowledged").emit("change"); } };
+}
+
+// TEST-FIND-UI-007; REQ-UI-08/09 / AS-UI-11/23. Identity — ключ расчёта, не попытки.
+for (const stale of [true, false]) {
+  test(`mounted matching ${stale ? "stale" : "fresh"} current with unchanged identity preserves facts and honest recovery feedback`, async () => {
+    const h = harness(), old = currentFor(); h.queue(currentPath, response(old));
+    const m = mountHarness(h); await m.ui.ready; m.gate(true);
+    const recovered = structuredClone(old); recovered.chart_stale = stale;
+    h.queue(buildPath, rejection()); h.queue(currentPath, response(recovered)); await m.submit();
+    assert.equal(m.check().recovery.status, stale ? "stale" : "matched");
+    assert.deepEqual(m.check().view.chart, old.chart); assert.equal(m.check().canSubmit, true);
+    const read = m.document.root.querySelectorAll("button").find((button) => button.textContent === "Повторить проверку карты");
+    assert.equal(read.hidden, !stale); assert.equal(h.builds().length, 1);
+    assert.equal(m.get("chart-facts").querySelectorAll("table").length, 4);
+    if (stale) {
+      assert.match(m.get("session-status").textContent, /устарела/);
+      assert.doesNotMatch(m.get("session-status").textContent, /Текущая карта соответствует/);
+      assert.equal(m.get("build-button").textContent, "Пересчитать");
+      h.queue(currentPath, response(old)); await read.click(); assert.equal(m.check().recovery.status, "matched");
+      assert.equal(h.builds().length, 1); await m.submit(); assert.equal(h.builds().length, 2);
+    } else assert.match(m.get("session-status").textContent, /Текущая карта соответствует/);
+    m.ui.dispose();
+  });
+}
+
+for (const failedAt of [bootstrapPath, currentPath]) {
+  test(`mounted unknown 5xx failed at ${failedAt} preserves facts and offers a working safe check`, async () => {
+    const h = harness(), old = currentFor(); h.queue(currentPath, response(old));
+    const m = mountHarness(h); await m.ui.ready; m.gate(true); const draft = m.ui.form.snapshot();
+    h.queue(buildPath, new Response("Bad gateway", { status: 502 }));
+    h.queue(failedAt, response(failure("STATE_READ_FAILED"), 503)); await m.submit();
+    assert.equal(m.get("build-button").disabled, true); assert.deepEqual(m.ui.form.snapshot(), draft);
+    assert.deepEqual(m.check().view, old); assert.equal(m.get("chart-facts").querySelectorAll("table").length, 4);
+    assert.match(m.get("session-status").textContent, /Не удалось проверить текущую карту/);
+    const read = m.document.root.querySelectorAll("button").find((button) => button.textContent === "Повторить проверку карты");
+    assert.equal(read.hidden, false); h.queue(currentPath, response(currentFor())); await read.click();
+    assert.equal(m.check().canSubmit, true); assert.equal(h.builds().length, 1); m.ui.dispose();
+  });
 }
 
 test("mounted lost-response warning keeps original intent visible; edits/gate never trigger a hidden POST", async () => {
