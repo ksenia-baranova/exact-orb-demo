@@ -3,6 +3,7 @@
 **Owner:** Developer. **Дата:** 2026-10-06. **Ветка:** `dev/ui-birth-form-and-facts-review`.
 **Status:** READY_FOR_DEVELOPMENT — административное утверждение Manager по поручению владельца 2026-10-07; DEV-UI-01 COMPLETE; DEV-UI-02 IMPLEMENTED / BROWSER CHECK PENDING, оба опубликованы в Developer-ветке @ `ef75d77`; DEV-UI-03/04 опубликованы в Developer-ветке @ `564186d` / `6d970f6`; DEV-UI-05 IMPLEMENTED / BROWSER CHECK PENDING, фактические проверки — в разделе 17; DEV-UI-06 PARTIAL / FULL REGRESSION FAILED: форма, HTTPS API и штатный browser build/details/reload проверены, оставшиеся browser criteria и independent Tester acceptance pending; полный regression gate FAILED по DEBT-CALC-001, G4/G5 не заявлены. Текущий delivery status/G3 — [Manager-артефакт](../change_plans/ui-birth-form-and-facts/artifacts.md#change-brief).
 **Technical assessment:** FEASIBLE; закрытые продуктовые решения повторно сверены, blocking semantic gaps Developer не обнаружены.
+**Дополнение по внешнему ревью (2026-10-07):** зарегистрированы восемь OPEN bugs TEST-FIND-UI-005…012 — **найдено другой моделью**. Подготовлены DEV-UI-07/08 и промты 07/08; исполнение NOT STARTED. Актуальные scope, зависимости, отдельная оценка и условия проверки — [раздел 21](#external-model-bugs).
 **Актуальная проверка локального стенда (2026-10-07):** отдельным исправлением прокси снят forwarding blocker штатного браузера; natal build/details/reload проверены. Исходный статус BLOCKED в журнале DEV-UI-06 описывает проверку до исправления. Полный regression gate остаётся FAILED по DEBT-CALC-001, G4/G5 не объявлены; см. [раздел 20](#local-proxy-fix).
 **Estimate Developer:** **5–8 рабочих дней / 40–64 человеко-часа**, один рабочий день = 8 часов. Уверенность средняя.
 **Бюджет владельца:** DP-UI-07 текущей Manager-редакции — Analysis 4 / Development 5 / Testing 5 дней. Estimate Developer 5–8 сохраняется; относительно budget Development 5 риск составляет до +3 дней. Это не обещание выполнить верхнюю границу за 5 дней.
@@ -707,3 +708,79 @@ HTTPS positive control теперь использует **обычный адр
 Снимок `logs/local-proxy-fix/browser-ready.png` и `browser-evidence.json` сохранены вместе с HTTPS manifest, request IDs и `sequence-events.log`. Эти файлы ignored: они доступны локально и не придут с Git pull. Стенд оставлен работающим; URL прежний. Для повторной ручной проверки использовать браузер или cookie-preserving Postman из обновлённого runbook, без source bind клиента к `127.0.0.2`.
 
 Это подтверждает исправление обычного localhost flow в текущем worktree. Browser cosmogram, все recovery/error/two-tab сценарии, повторная адаптивность длинных таблиц и независимая Tester acceptance в этой задаче не проверялись. Статус Tester FIND-TEST-HTTP-001 и финальные G4/G5 не закрывались от имени другой роли. DEBT-CALC-001 остаётся OPEN, полный pytest FAILED; расчётный тест не отключён. После проверок исполняемые файлы не менялись — дополнена только документация.
+
+<a id="external-model-bugs"></a>
+## 21. Исправления по ревью другой модели
+
+**Дата / комментарий:** 2026-10-07; **найдено другой моделью**. Владелец передал 16 замечаний, согласовал регистрацию принятых дефектов и подготовку одного или двух промтов. Подготовлены два; реализация, перезапуск, commit/push в этой задаче не поручены.
+**Baseline:** `0d5d70acfc4f1f384b2c06970b35111b411c4fc4`, `dev/ui-birth-form-and-facts-review`, входное дерево/index чистые. Это baseline ревью и будущих исправлений; исходные baselines DEV-UI-01…06 сохраняются.
+**Единый источник дефектов:** [реестр TEST-FIND-UI-005…012](../../testing/ui-birth-form-and-facts/manual-test-bugs.md#external-model-review). Оценки severity/priority предложены Developer; независимый retest и окончательная severity принадлежат Tester, priority/delivery — Manager.
+**Requirements/decisions:** нормативные источники раздела 1 @ `652bd734`; семантика approved REQ-UI-01…10 / AS-UI-01…23 @ `ce25dd0`; текущие документы и реестр DP-UI-01…09 прочитаны @ `0d5d70a`. Применимы DP-UI-01/03/05/09, ADR-0034/0039/0040/0041. Продуктовые требования, Gantt и принятые строки DP не переписываются; новые API/решения не вводятся этим дополнением.
+**Technical assessment:** FEASIBLE, средняя уверенность. Исправления используют текущий same-origin UI, существующие DTO и coordinator.
+
+### Состав и диспозиция
+
+| Баг / исходное замечание | Work item | Граница исправления |
+|---|---|---|
+| [TEST-FIND-UI-005](../../testing/ui-birth-form-and-facts/manual-test-bugs.md#test-find-ui-005) / №1 | DEV-UI-07 | Допустить регион null в корректной подсказке, сохранить политику повреждённой выдачи. |
+| [TEST-FIND-UI-006](../../testing/ui-birth-form-and-facts/manual-test-bugs.md#test-find-ui-006) / №2 | DEV-UI-08 | Сверять неизвестный исход 5xx до нового ручного POST; сохранить известные code-specific policies. |
+| [TEST-FIND-UI-007](../../testing/ui-birth-form-and-facts/manual-test-bugs.md#test-find-ui-007) / №3 | DEV-UI-08 | Устаревший current не подтверждает свежий результат; одинаковый ID свежей карты допустим. |
+| [TEST-FIND-UI-008](../../testing/ui-birth-form-and-facts/manual-test-bugs.md#test-find-ui-008) / №4 | DEV-UI-08 | Объяснить восстановление сессии и необходимость нового явного действия. |
+| [TEST-FIND-UI-009](../../testing/ui-birth-form-and-facts/manual-test-bugs.md#test-find-ui-009) / №5 | DEV-UI-07 | Явный no-cache для модулей/CSS с сохранением conditional delivery. |
+| [TEST-FIND-UI-010](../../testing/ui-birth-form-and-facts/manual-test-bugs.md#test-find-ui-010) / №6 | DEV-UI-08 | Сводка успешного intent отдельно от редактируемого черновика, без выдуманного полного birth DTO. |
+| [TEST-FIND-UI-011](../../testing/ui-birth-form-and-facts/manual-test-bugs.md#test-find-ui-011) / №13 | DEV-UI-07 | Проверка читаемого DTO до accept/render; видимая ошибка и safe recovery для повреждённого POST. |
+| [TEST-FIND-UI-012](../../testing/ui-birth-form-and-facts/manual-test-bugs.md#test-find-ui-012) / №14 | DEV-UI-08 | Сохранить подпись восстановленного места при focus/blur, снять ID только при редактировании. |
+
+### Дополнительная оценка Developer
+
+| Work item | Человеко-часы | Уверенность |
+|---|---:|---|
+| DEV-UI-07 — поиск, ресурсы и проверка ответов | 6–10 | Средняя: границы DTO и installed-wheel checks требуют регрессии. |
+| DEV-UI-08 — recovery и обратная связь | 6–10 | Средняя: сочетания stale/5xx/session-loss/draft требуют controlled scenarios. |
+| **Итого дополнение** | **12–20 часов / 1,5–2,5 рабочих дня по 8 часов** | Предварительная оценка, не фактическая стоимость. |
+
+Оценка относится только к восьми новым багам и Developer checks. Исходные 40–64 часа/5–8 дней не заменены; влияние на delivery/budget оценивает Manager. Предполагаются доступные Node/Python, исправный локальный HTTPS и переиспользование fixtures. Независимая Tester acceptance, DEBT-CALC-001, клиентский таймаут, новые ID точек, H:MM, CSP/nosniff и refactoring вне этих дефектов исключены. Главная неопределённость — достаточная проверка повреждённых DTO и browser cache/recovery evidence.
+
+<a id="dev-ui-07"></a>
+### DEV-UI-07. Допустимые места и проверенные UI-ответы
+
+- **Комментарий:** найдено другой моделью; TEST-FIND-UI-005/009/011, замечания №1/5/13. **Статус:** PLANNED / NOT STARTED; постановка PREPARED, автоматические regression cases исправления ещё не созданы.
+- **Промт:** [07-place-assets-and-response-guards.md](../../../prompts/2026-10-07/ui-birth-form-and-facts/07-place-assets-and-response-guards.md).
+- **Требования/scenarios:** REQ-UI-01/02/03/08/09/10; AS-UI-01/02/03/04/10/15/17/18/19/23; DP-UI-01/03/09. Источники и версии — baseline этого раздела.
+- **Подход:** тесты → реализация в одном промте. Доказанные nullable/invalid-body расхождения и непроверенные static headers дают чувствительные regression tests до правки.
+- **Components/files:** `ui/places.mjs`, `session.mjs`, `main.mjs`, `facts.mjs` и при необходимости один небольшой чистый UI-валидатор; `http_api/app.py` только доставка static headers; `tests/ui/{places,session,recovery,transport,facts}.test.mjs`, общие fixtures, `tests/http_api/test_ui_delivery.py`. DTO/backend calculations не меняются.
+- **Существующее покрытие / пробелы:** places tests проверяют обычные строки/выбор; delivery tests проверяют HTML no-store и wheel assets; session тест на неполный 200 не проверяет `points:null`. Добавить nullable mixed list/выбор, headers 200/304, mounted malformed POST/current с сохранением подтверждённого view и видимой ошибкой; позитивные natal/cosmogram.
+- **Behavior:** регион null отображается прочерком; модули/CSS требуют revalidation; некорректный DTO не доходит до renderer и не подтверждается как результат build. Для повреждённого 200 POST используется существующая unconfirmed-response recovery без auto POST.
+- **Наблюдаемость:** сохраняются status/body/request IDs, запросы сверки имеют отдельную корреляцию; серверные logging/sequence contracts не меняются. Сверить bootstrap/current/build и place-search с HTTP sequences 001–004.
+- **Dependencies / completion:** текущая реализация DEV-UI-01…05; DEV-UI-06 остаётся PARTIAL. Матрица и точные команды — в промте. После чувствительного RED и успешных target/related checks записать Developer evidence и FIXED PENDING RETEST; browser cache/recovery и независимую приёмку не объявлять выполненными без запуска.
+
+<a id="dev-ui-08"></a>
+### DEV-UI-08. Сверка неизвестного результата и понятные сообщения
+
+- **Комментарий:** найдено другой моделью; TEST-FIND-UI-006/007/008/010/012, замечания №2/3/4/6/14. **Статус:** PLANNED / NOT STARTED; постановка PREPARED.
+- **Промт:** [08-recovery-and-result-feedback.md](../../../prompts/2026-10-07/ui-birth-form-and-facts/08-recovery-and-result-feedback.md).
+- **Требования/scenarios:** REQ-UI-02/03/08/09/10; AS-UI-02/03/04/10/11/12/13/14/16/19/22/23; DP-UI-03/05/09; ADR-0034/0040/0041.
+- **Подход:** тесты → реализация. Сначала воспроизвести incorrect 5xx allowance, stale matched и три UI-feedback случая; tests должны показывать наблюдаемое поведение и порядок calls, не приватный алгоритм.
+- **Components/files:** `ui/recovery.mjs`, `session.mjs`, `main.mjs`, минимально `places.mjs`/`facts.mjs` если нужны для связанного presentation; `tests/ui/{recovery,session,places,facts,transport}.test.mjs` и существующие fixtures. HTTP DTO/cookies/admission/commit/key/version не меняются.
+- **Существующее покрытие / пробелы:** существующий 502 case разрешает повторный POST; relation tests не покрывают stale; session-loss tests не проверяют объяснение; mounted restore не проверяет подпись после focus/blur. Добавить cases из матрицы промта, переиспользовать текущие fakeClock/deferred/DOM и golden.
+- **Behavior:** неизвестный 5xx и INTERNAL_FAILURE требуют safe check; stale не подтверждает свежий build, fresh same-identity допускается; восстановление сессии объясняется; сводка карты читает снимок успешного запроса или серверный birth из current; подпись восстановленного места переживает focus/blur.
+- **Наблюдаемость:** порядок POST → bootstrap/current либо code-specific GET и отдельные request IDs проверяются calls/diagnostics; авто POST нет; поздний ответ/dispose не публикуют ложный результат. HTTP sequences 001/003/004 и действующие lifecycle события сохраняются.
+- **Dependencies / completion:** выполнить после DEV-UI-07, проверить его actual diff/guard behavior и оставить баги pending retest. Повторить target/related/full checks по промту и ручные сценарии; raw 504 не выдавать за BUILD_TIMEOUT, внутреннюю стадию 500 не угадывать.
+
+### Порядок, возвраты и статус подготовки
+
+Порядок дополнения: DEV-UI-07 → DEV-UI-08 → Developer handoff → независимый Tester retest. Пересечение session/main и проверки malformed response требуют последовательного исполнения. Подготовка этих промтов не запускает их и не закрывает TEST-FIND-UI-*.
+
+При противоречии approved REQ/AS или необходимости нового публичного исхода остановить только зависимую часть и вернуть семантику Analyst; scope/budget — Manager, architecture — Technical Reviewer. Пункт о консервативной сверке INTERNAL_FAILURE явно записан в промте, скрытая серверная стадия UI недоступна. Изменение расчётного поведения/DEBT-CALC-001 не входит в этот пакет.
+
+Фактические результаты прежнего ревью сохранены в bug registry: 126 UI tests passed, контролируемые воспроизведения и два live GET. Они не являются RED/GREEN будущих regression tests. Проверки текущей документальной подготовки и фактическое исполнение дополнения записываются ниже отдельными записями; G4/G5 и FAILED full regression из раздела 20 сохраняют свой статус.
+
+### Документальная подготовка — 2026-10-07
+
+**Результат:** восемь findings OPEN зарегистрированы с происхождением «найдено другой моделью» и уточнённой диспозицией; два новых промта 07/08 подготовлены и связаны с карточками. Изменены только настоящий Implementation Plan, bug registry и два новых Markdown-файла промтов.
+
+- Read-only проверка через `python -B -X utf8 -c` (inline validator в текущем чате): **PASS**, exit 0 — 53 локальные ссылки/якоря, парность Markdown fences, восемь уникальных findings, соответствие source/work item и два статуса PREPARED / NOT EXECUTED. Проверены новые разделы плана/реестра и оба новых промта; прежние разделы не переписывались.
+- `git diff --check`: **PASS**, exit 0.
+- Runtime/browser regression исправлений при подготовке документов: **NOT RUN**; исполняемые файлы и исторические промты 01…06 сохранены. Коммиты, push и перезапуск не выполнялись.
+
+Это завершает подготовку постановок; DEV-UI-07/08 остаются PLANNED / NOT STARTED, G4/G5 и Tester acceptance не изменены.
