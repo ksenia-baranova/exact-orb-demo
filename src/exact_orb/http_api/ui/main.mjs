@@ -2,12 +2,15 @@ import { createApiClient } from "./transport.mjs";
 import { createBirthForm, formatTimeInput } from "./form.mjs";
 import { createPlaceSearch } from "./places.mjs";
 import { createSessionCoordinator, issueMessage } from "./session.mjs";
+import { mountChartResult } from "./facts.mjs";
 
 // Загрузка модуля собирает клиент; запросы выполняются только при вызове его методов.
 export const api = createApiClient();
 
 export function mountBirthForm(document, { apiClient = api } = {}) {
   const element = document.getElementById("birth-form");
+  const result = mountChartResult(document);
+  element.after(result.element);
   const form = createBirthForm();
   const date = document.getElementById("birth-date");
   const place = document.getElementById("birth-place");
@@ -88,6 +91,7 @@ export function mountBirthForm(document, { apiClient = api } = {}) {
     element.setAttribute("aria-busy", String(state.busy));
     readAgain.hidden = !state.error || state.sessionReady || state.requiresReconciliation;
     readAgain.disabled = state.busy || state.retryInSeconds > 0;
+    result.update(view);
     renderErrors();
   }
 
@@ -199,7 +203,7 @@ export function mountBirthForm(document, { apiClient = api } = {}) {
     if (issueField) fields[issueField].focus();
   });
   const ready = session.open();
-  return Object.freeze({ form, places, session, ready });
+  return Object.freeze({ form, places, session, result, ready });
 }
 
 if (globalThis.document) mountBirthForm(globalThis.document);

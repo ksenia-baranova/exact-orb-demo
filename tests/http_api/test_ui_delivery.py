@@ -1,7 +1,7 @@
 """REQ-UI-01/10, AS-UI-01/19: доставка страницы; приёмка полного UI ещё впереди.
 
 Контракт: docs/requirements/changes/ui-birth-form-and-facts/requirements.md
-на ce25dd0; DEV-UI-01 не добавляет бизнес-операций или переходов сессии.
+на ce25dd0; DEV-UI-01/04 не добавляют бизнес-операций при доставке ресурсов.
 """
 
 from __future__ import annotations
@@ -19,6 +19,12 @@ import sys
 import pytest
 
 from tests.http_api.conftest import http_settings
+
+
+UI_RESOURCES = (
+    "index.html", "styles.css", "main.mjs", "transport.mjs", "form.mjs",
+    "places.mjs", "session.mjs", "facts.mjs",
+)
 
 
 class AssetReferences(HTMLParser):
@@ -54,7 +60,8 @@ async def test_page_and_its_modules_are_same_origin_package_resources(app_client
         assert parser.module_paths == ["/ui/main.mjs"]
         resource = files("exact_orb.http_api").joinpath("ui")
         assert page.content == resource.joinpath("index.html").read_bytes()
-        for path in (*parser.paths, "/ui/transport.mjs"):
+        for path in (*parser.paths, *("/ui/" + name for name in UI_RESOURCES
+                                     if name.endswith(".mjs") and name != "main.mjs")):
             asset = await client.get(path)
             assert asset.status_code == 200
             assert "Set-Cookie" not in asset.headers
@@ -78,10 +85,8 @@ async def test_page_and_its_modules_are_same_origin_package_resources(app_client
 async def test_assets_do_not_create_business_request_events(app_client, runtime, caplog) -> None:
     caplog.set_level(logging.INFO, logger="exact_orb.http_api")
     async with app_client(runtime) as client:
-        assert (await client.get("/")).status_code == 200
-        assert (await client.get("/ui/styles.css")).status_code == 200
-        assert (await client.get("/ui/main.mjs")).status_code == 200
-        assert (await client.get("/ui/transport.mjs")).status_code == 200
+        for name in UI_RESOURCES:
+            assert (await client.get("/" if name == "index.html" else "/ui/" + name)).status_code == 200
         assert not any(record.getMessage().startswith("http_request_") for record in caplog.records)
         control = await client.post("/session/bootstrap", json={})
         assert control.status_code == 200
@@ -124,7 +129,7 @@ async def test_ui_methods_do_not_intercept_business_or_health_routes(app_client,
 
 
 def test_installed_wheel_serves_assets_without_source_checkout(tmp_path: Path) -> None:
-    """DEV-UI-01: офлайн-сборка и установка; приложение импортируется из wheel."""
+    """DEV-UI-01/04: весь UI, включая reader, доставляется из wheel вне checkout."""
     repository = Path(__file__).resolve().parents[2]
     project = tmp_path / "project"
     project.mkdir()
@@ -161,7 +166,8 @@ import exact_orb.http_api.app as module
 
 assert Path(module.__file__).resolve().is_relative_to(Path(sys.argv[1]).resolve())
 resource = files("exact_orb.http_api").joinpath("ui")
-for name in ("index.html", "styles.css", "main.mjs", "transport.mjs"):
+names = json.loads(sys.argv[3])
+for name in names:
     assert resource.joinpath(name).read_bytes()
 settings = SimpleNamespace(**json.loads(sys.argv[2]))
 settings.allowed_origins = tuple(settings.allowed_origins)
@@ -172,19 +178,20 @@ app = module.create_app(settings=settings, runtime_factory=forbidden, catalog_fa
                         utc_clock=lambda: datetime.now(timezone.utc), scheduler=module.MonotonicScheduler())
 async def check():
     async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="https://testserver") as client:
-        for path, name in (("/", "index.html"), ("/ui/styles.css", "styles.css"),
-                           ("/ui/main.mjs", "main.mjs"), ("/ui/transport.mjs", "transport.mjs")):
+        for name in names:
+            path = "/" if name == "index.html" else "/ui/" + name
             response = await client.get(path)
             assert response.status_code == 200, (path, response.status_code)
             assert response.content == resource.joinpath(name).read_bytes()
             assert "Set-Cookie" not in response.headers
 asyncio.run(check())
-print("installed wheel: HTML, CSS and both modules delivered without checkout")
+print(f"installed wheel: {len(names)} UI resources delivered without checkout")
 '''
     env = dict(os.environ, PYTHONPATH=str(installed), PYTHONDONTWRITEBYTECODE="1")
     checked = subprocess.run(
-        [sys.executable, "-B", "-c", probe, str(installed), json.dumps(vars(http_settings()))],
+        [sys.executable, "-B", "-c", probe, str(installed), json.dumps(vars(http_settings())),
+         json.dumps(UI_RESOURCES)],
         cwd=tmp_path, env=env, capture_output=True, text=True, timeout=30,
     )
     assert checked.returncode == 0, checked.stdout + checked.stderr
-    assert "installed wheel: HTML, CSS and both modules delivered without checkout" in checked.stdout
+    assert f"installed wheel: {len(UI_RESOURCES)} UI resources delivered without checkout" in checked.stdout

@@ -8,6 +8,7 @@ import { createBirthForm } from "../../src/exact_orb/http_api/ui/form.mjs";
 import { createApiClient } from "../../src/exact_orb/http_api/ui/transport.mjs";
 import { createSessionCoordinator } from "../../src/exact_orb/http_api/ui/session.mjs";
 import { mountBirthForm } from "../../src/exact_orb/http_api/ui/main.mjs";
+import { documentPort } from "./fixtures/dom.mjs";
 
 const views = JSON.parse(readFileSync(new URL("../http_api/golden/session_view.json", import.meta.url), "utf8"));
 const charts = JSON.parse(readFileSync(new URL("../http_api/golden/chart_dto.json", import.meta.url), "utf8"));
@@ -296,31 +297,6 @@ test("dispose ignores a late network response without claiming server cancellati
   assert.equal(h.changes.length, count);
   assert.equal(await h.coordinator.submit(), false);
 });
-
-// Листовой DOM-порт проверяет wiring; он не является реальным браузером или evidence layout.
-function documentPort() {
-  const nodes = new Map();
-  function node(id = "") {
-    const listeners = new Map(), attributes = new Map();
-    return { id, value: "", checked: false, hidden: false, disabled: false, textContent: "", dataset: {}, children: [],
-      addEventListener(type, listener) { listeners.set(type, listener); },
-      emit(type) { return listeners.get(type)?.({ preventDefault() {} }); },
-      setAttribute(name, value) { attributes.set(name, value); },
-      getAttribute(name) { return attributes.get(name); },
-      removeAttribute(name) { attributes.delete(name); },
-      insertBefore(child) { this.children.push(child); if (child.id) nodes.set(child.id, child); },
-      querySelector() { return nodes.get("build-button"); },
-      replaceChildren(...items) { this.children = items; },
-      append(...items) { this.children.push(...items); },
-      focus() { document.activeElement = this; },
-      setSelectionRange(start, end, direction) { this.selectionStart = start; this.selectionEnd = end; this.selectionDirection = direction; },
-    };
-  }
-  for (const id of ["birth-form", "birth-date", "birth-place", "birth-time", "time-unknown", "terms-acknowledged",
-    "place-list", "place-status", "place-retry", "form-error", "date-error", "place-error", "time-error", "acknowledged-error", "build-button"]) nodes.set(id, node(id));
-  const document = { activeElement: null, getElementById: (id) => nodes.get(id), createElement: () => node() };
-  return document;
-}
 
 test("mounted form opens real coordinator, restores unavailable birth and requires a manual gate", async () => {
   const h = harness(), document = documentPort(); h.queue(currentPath, response(views.known_unavailable));
