@@ -8,6 +8,7 @@ from contextlib import AsyncExitStack, asynccontextmanager
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
+from importlib.resources import files
 import inspect
 from ipaddress import ip_network
 import logging
@@ -21,7 +22,8 @@ from uuid import uuid4
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from starlette.exceptions import HTTPException as StarletteHTTPException
-from starlette.responses import JSONResponse, Response
+from starlette.responses import FileResponse, JSONResponse, Response
+from starlette.staticfiles import StaticFiles
 
 from exact_orb.http_api.admission import AdmissionController, DEFAULT_POLICY
 from exact_orb.http_api.request_boundary import (
@@ -500,5 +502,17 @@ def create_app(
     app.include_router(session_router)
     app.include_router(places_router)
     app.include_router(build_router)
+
+    ui_directory = files("exact_orb.http_api").joinpath("ui")
+
+    @app.get("/", include_in_schema=False)
+    async def ui_page(request: Request) -> FileResponse:
+        return FileResponse(
+            str(ui_directory.joinpath("index.html")),
+            media_type="text/html",
+            headers=response_headers(request_id_for(request)),
+        )
+
+    app.mount("/ui", StaticFiles(directory=str(ui_directory)), name="ui")
 
     return app

@@ -1,7 +1,7 @@
 # Implementation Plan: ui-birth-form-and-facts
 
 **Owner:** Developer. **Дата:** 2026-10-06. **Ветка:** `dev/ui-birth-form-and-facts-review`.
-**Status:** READY_FOR_DEVELOPMENT — административное утверждение Manager по поручению владельца 2026-10-07; реализация NOT STARTED. Текущий delivery status/G3 — [Manager-артефакт](../change_plans/ui-birth-form-and-facts/artifacts.md#change-brief).
+**Status:** READY_FOR_DEVELOPMENT — административное утверждение Manager по поручению владельца 2026-10-07; DEV-UI-01 COMPLETE; DEV-UI-02 IMPLEMENTED / BROWSER CHECK PENDING; оба результата включены в пакет Developer для одного коммита, остальные задания NOT STARTED. Текущий delivery status/G3 — [Manager-артефакт](../change_plans/ui-birth-form-and-facts/artifacts.md#change-brief).
 **Technical assessment:** FEASIBLE; закрытые продуктовые решения повторно сверены, blocking semantic gaps Developer не обнаружены.
 **Estimate Developer:** **5–8 рабочих дней / 40–64 человеко-часа**, один рабочий день = 8 часов. Уверенность средняя.
 **Бюджет владельца:** DP-UI-07 текущей Manager-редакции — Analysis 4 / Development 5 / Testing 5 дней. Estimate Developer 5–8 сохраняется; относительно budget Development 5 риск составляет до +3 дней. Это не обещание выполнить верхнюю границу за 5 дней.
@@ -11,6 +11,8 @@
 | Источник | Версия и предел |
 |---|---|
 | Общий `change/ui-birth-form-and-facts` | `033217db41aed65d2cd6fadcc1cd1adc7c06d4c9`, получен из `ksenia-baranova/exact-orb-demo` 2026-10-06; Developer-ветка обновлена `git merge --ff-only FETCH_HEAD`. |
+| Baseline исполнения DEV-UI-01 | `082c6b9ac5c8b054c38de5f17bc673956ec058d8`, проверен новым fetch из `ksenia-baranova/exact-orb-demo`: `HEAD` = `FETCH_HEAD`, расхождение `0 0`. Нормативный контракт и версии REQ/AS/DP выше сохранились. Результат сохранён при обновлении ветки и входит в общий пакет DEV-UI-01/02. |
+| Baseline исполнения DEV-UI-02 | `6fc62b9c8813b5aadfd5150ca39033664f18b777`, PR #49/50 интегрируют Tester `0f6aa82` и утверждение Manager `e4f60fb`. Получен fetch и `git merge --ff-only FETCH_HEAD` 2026-10-07. Семантика REQ/AS @ `ce25dd0` и HTTP baseline сохранены; допуск G3 подтверждён Manager. Общий пакет DEV-UI-01/02 подготовлен поверх этого HEAD; сведения о подготовке коммита — в разделе 11. |
 | Нормативный baseline | [HTTP API](../../requirements/http_api.md) §§4–9, 11, 13; [каталог](../../requirements/component_responsibilities/exact-orb_place_catalog.md); [Build Natal](../../requirements/component_responsibilities/exact-orb_build_natal_components.md); [сессия](../../requirements/component_responsibilities/exact-orb_session_requirements.md); [stored chart](../../requirements/session/stored-chart-session-behavior.md); ADR-0008, 0029–0034, 0039–0041 @ `652bd73405db0a0611e98e81af6f3f668dd429f6`. Эти пути ещё не перенесены в `current/`. |
 | Требования и сценарии change | [requirements.md](../../requirements/changes/ui-birth-form-and-facts/requirements.md), [scenarios.md](../../requirements/changes/ui-birth-form-and-facts/scenarios.md), [analysis.md](../../requirements/changes/ui-birth-form-and-facts/analysis.md) — семантика `ce25dd0`, 10 REQ / 23 AS; APPROVED FOR DEVELOPMENT этой Manager-редакцией после повторной сверки обеих ролей. |
 | Единый реестр | [artifacts.md](../change_plans/ui-birth-form-and-facts/artifacts.md#decision-register), рабочая административная редакция поверх `2972e42`. DP-UI-01…09 ACCEPTED; опубликованный семантический выбор @ `64934fc`, Developer вклад `082c6b9`, Tester `0f6aa82`. Budget 4/5/5 и G3 утверждены Manager; точный commit статусов передаётся после сохранения/интеграции. |
@@ -85,11 +87,12 @@
 
 ## 5. Work items и подход
 
-Все файлы ниже — **планируемые**, кроме существующих `app.py`, `pyproject.toml`, HTTP tests и документов. Карточки утверждены для разработки этой Manager-редакцией; исполнение NOT STARTED. DRAFT/NOT EXECUTED внутри исходных промтов @ `082c6b9` сохраняется как историческое состояние подготовки; текущий допуск задаёт Manager G3, фактическое исполнение фиксируется в плане. В тестовых docstrings/comments сохраняются REQ/AS IDs и ссылки на Analyst baseline; при финализации ссылки сверяются с картой переноса Analyst.
+Карточки 03–06 и их файлы остаются **планируемыми**. DEV-UI-01 выполнен; код и автоматические проверки DEV-UI-02 готовы, реальная браузерная проверка остаётся pending. Факт исполнения записан в журнале Developer. Карточки утверждены Manager 2026-10-07; историческое DRAFT/NOT EXECUTED в промтах не переписывается. В тестовых docstrings/comments сохраняются REQ/AS IDs и ссылки на Analyst baseline; при финализации ссылки сверяются с картой переноса Analyst.
 
 <a id="dev-ui-01"></a>
 ### DEV-UI-01. Страница доставляется тем же приложением
 
+- **Статус исполнения:** COMPLETE; доставка страницы, транспорт, installed-wheel delivery, целевые/связанные/полные проверки и HTTPS smoke выполнены. См. [журнал](#9-журнал-исполнения-dev-ui-01). Это завершение work item, приёмка полного UI ещё впереди.
 - **REQ/AS:** REQ-UI-01, 10; AS-UI-01, 19. **DP:** 01/02. **Dependency:** G3 и проверенный Python/Node runtime.
 - **Файлы:** `src/exact_orb/http_api/app.py`, новые `ui/index.html`, `ui/styles.css`, `ui/main.mjs`, `ui/transport.mjs`; package-data в `pyproject.toml`; новый `tests/http_api/test_ui_delivery.py`, `tests/ui/transport.test.mjs`.
 - **Результат:** HTML/assets доступны в том же origin, fetch client различает status/code и network failure; существующие business routes/health/error mapping не меняются.
@@ -102,6 +105,7 @@
 <a id="dev-ui-02"></a>
 ### DEV-UI-02. Пользователь вводит данные и подтверждает место
 
+- **Статус исполнения:** IMPLEMENTED / BROWSER CHECK PENDING по поручению пользователя 2026-10-07. Node, HTTP, installed-wheel и полный pytest прошли; логика клавиатуры/выбора проверена на настоящем controller. Инструмент браузера отклонил локальный URL, поэтому реальный DOM/mouse/keyboard критерий не объявлен PASS. См. [журнал](#10-журнал-исполнения-dev-ui-02).
 - **REQ/AS:** REQ-UI-02, 03, 10; AS-UI-02, 04–06, 18, 20. **DP:** 03/04/06/08. **Dependency:** DEV-UI-01.
 - **Файлы:** новые `ui/form.mjs`, `ui/places.mjs`; `index.html`, `main.mjs`, `styles.css`; новые `tests/ui/form.test.mjs`, `tests/ui/places.test.mjs`.
 - **Результат:** дата → место → время, обязательный ID, явная неизвестность времени, local validation и manual gate; autocomplete от трёх символов, mouse/keyboard, late responses и сброс ID.
@@ -214,3 +218,112 @@ git diff --check
 Manager утвердил этот план/estimate/зависимости 2026-10-07 после Developer `082c6b9` и Tester `0f6aa82`. Tester подтвердил testability stack/23 AS и готовит независимую проверку после реализации. Analyst подготавливает чистовую редакцию/карту переноса до G5. Административное утверждение не меняет авторские estimates, технические choices или фактический runtime evidence.
 
 **История публикации:** Developer-пакет @ `082c6b9` опубликован по отдельному поручению владельца и включён в `change/*`; Tester review @ `0f6aa82` включён через PR #49 / `2972e42`. **Текущий допуск:** Manager G3 задан этой редакцией; её commit/merge ещё не подтверждены. После интеграции использовать фактический общий HEAD, обновлять журнал work items по выполнению. Исторические промты не редактируются; реализация в этом административном задании не выполнялась.
+
+## 9. Журнал исполнения DEV-UI-01
+
+**Основание:** отдельное поручение пользователя «Обновись из ветки change. Начни выполнение первого промта» от 2026-10-06. Оно разрешает исполнение DEV-UI-01 на проверенном `082c6b9`; наличие формального G3 этим журналом не утверждается. Manager status, Analyst/Tester artifacts, исторические промты и work items 02–06 не изменяются. Коммит, push и PR реализации не выполнялись.
+
+**Исполнение:** 2026-10-06–2026-10-07, COMPLETE в рабочем diff Developer-ветки. Ссылки на executable prompt и нормативные baselines сохранены в карточке. Следующий work item — DEV-UI-02.
+
+### Фактический результат
+
+- `GET /` отдаёт русскую стартовую страницу; CSS и ES modules доступны только под `/ui/`. Использованы `importlib.resources.files`, `FileResponse` и существующий `StaticFiles`. UI обслуживает тот же FastAPI/Uvicorn process; новый process для UI и новые dependencies не нужны. Root исключён из OpenAPI; catch-all не добавлен.
+- `transport.mjs` реализует четыре существующих операции: bootstrap, current, поиск мест и natal POST. Все запросы имеют `credentials: same-origin`, `cache: no-store`; JSON build содержит только `birth_date`, `birth_time`, `place_id`, включая явный `null`. Cookie и request ID client не конструирует; status/body/X-Request-ID/Retry-After возвращаются caller.
+- Полный HTTP-ответ, в том числе ErrorDTO и текстовая ошибка прокси, отличается от network rejection/обрыва body. При обрыве сохраняются уже полученные status/headers; автоматического повтора нет. AbortSignal задаёт caller, скрытого timer нет. Entry point собирает действующий client и сам запросов не отправляет.
+- Package-data содержит HTML/CSS/оба модуля. Офлайн packaging test копирует `src`/`pyproject.toml` во временную область, выполняет `pip wheel --no-deps --no-index --no-build-isolation`, затем `pip install --no-deps --no-index --target`. Новый Python process импортирует приложение из установленного wheel, проверяет четыре package resources и доставку через настоящие ASGI routes вне source checkout. Dependency downloads не выполняются; repo build/egg-info не создаются.
+- Стартовая страница пока содержит заголовок и описание. Форма, автоматический bootstrap/current, reader и recovery относятся к DEV-UI-02…05; готовность полного REQ-UI-01 и browser acceptance не заявлены.
+
+### Проверки на рабочем diff
+
+Окружение: Python 3.14.0, Node v24.19.0, FastAPI 0.121.2, httpx 0.28.1, setuptools 80.9.0, wheel 0.45.1; существующие Caddy/mkcert и локальный GeoNames snapshot. Подход «реализация → тесты» сохранён.
+
+| Команда / действие | Фактический результат |
+|---|---|
+| `git fetch https://github.com/ksenia-baranova/exact-orb-demo.git change/ui-birth-form-and-facts`; `git rev-list --left-right --count HEAD...FETCH_HEAD` | Exit 0; baseline `082c6b9`, расхождение `0 0`, merge не требовался. |
+| `node --test tests/ui/transport.test.mjs` | **10 passed**, exit 0. Первое sandbox выполнение остановилось на `spawn EPERM` до исполнения тестов; после разрешённого запуска вне sandbox проверки прошли. |
+| `python -B -m pytest -p no:cacheprovider tests/http_api/test_ui_delivery.py -q` | **7 passed in 9.82s**, exit 0, включая installed-wheel delivery. Первый sandbox запуск: 6 passed, packaging setup заблокирован `PermissionError` в системном temp pip; повтор вне sandbox прошёл. |
+| `python -B -m pytest -p no:cacheprovider tests/http_api tests/test_module_boundaries.py -q` | **346 passed in 55.80s**, exit 0. Сохранены exact OpenAPI shapes, business routing/health, lifecycle и import boundaries. Это расширенный связанный набор, включающий оба HTTP файла из промта. |
+| `python -B -m pytest -p no:cacheprovider -q` | **2960 passed in 452.07s (0:07:32)**, exit 0. Платные и сетевые LLM smoke-тесты не запускались. После реализации изменены только русские комментарии/docstrings и журнал; исполняемая логика сохранена. |
+| `git diff --check`; структурная проверка `python -X utf8 -B -` | Exit 0; scope ровно **9 файлов**, UTF-8/whitespace, **23 локальные ссылки плана**, **6 work items**. Исторические промты и чужие ролевые документы не затронуты; index пустой. |
+
+### Реальный HTTPS smoke
+
+Запущены скрытые task-owned Uvicorn/Caddy по существующему [runbook](../../runbooks/http_api_local_https.md), с отдельной временной session DB и сертификатом mkcert вне tracked files. TLS проверен через существующий root CA; `verify=False` не использовался. Клиент — `httpx` с `trust_env=False`, таймаутом 5 секунд и cookie jar. Новых natal POST не выполнялось.
+
+| Путь / позитивный контроль | Результат |
+|---|---|
+| Обычный localhost-клиент: `/`, `/ui/styles.css`, `/ui/main.mjs`, `/ui/transport.mjs` | **200**; HTML/CSS/JavaScript MIME, непустые тела, без Set-Cookie. Root request ID `02883e6b-0589-4eff-9842-db60d7affa31`. |
+| Public `/health/live`, `/health/ready` | **404** от Caddy; существующий ACL сохранён. |
+| Неизвестный путь; GET `/session/bootstrap` | **404 NOT_FOUND** / **405 METHOD_NOT_ALLOWED**, прежние safe errors. |
+| Обычный localhost POST bootstrap | **400 FORWARDED_HEADER_INVALID**, request ID `9f16073a-177c-496d-8f23-9f89a1d3d5d8`: воспроизведён уже известный FIND-TEST-HTTP-001. Это не новый finding и не исправлялось в DEV-UI-01. |
+| Контроль с исходным адресом `127.0.0.2`: явный bootstrap → current → поиск Москвы | **200 ready**, затем **200 empty** с той же cookie jar, затем **200 items** с `place_id=524901`. Request IDs: `b8256c6a-bf70-4ea2-b1f1-947e4b535c70`, `34747aac-6191-4f4c-95a1-a3fbe90cf41b`, `0685f19c-b59e-41f5-95f4-9c3e643773ea`. |
+| Внутренние `http://127.0.0.1:8000/health/live`, `/health/ready` | **200**, readiness/liveness сохранены. |
+
+В журнале сопоставлены четыре business request ID с парными `http_request_started/finished`; сохранены **20 событий** координации AdmissionControl/ContextService/session_view/PlaceCatalog для разрешённых операций. Asset delivery не создаёт application run; отдельный deterministic test подтверждает отсутствие business events с позитивным bootstrap control. Локальное evidence сохранено в ignored `logs/ui-dev-01-155e3406/https-evidence.json` и `business-events.log`; оно не является публикуемым acceptance artifact. После сохранения диагностики оба task-owned процесса остановлены (Uvicorn PID 32404, Caddy PID 17148); проверено их отсутствие. Временные сертификат/БД и диагностические файлы остаются только в ignored logs.
+
+**Предел:** Node/ASGI/TLS delivery проверены; DOM, keyboard, 360/768/1440 px, браузерная cookie jar, построение карты и полный пользовательский recovery в этом шаге не проверялись. HTTPS бизнес-контроль с `127.0.0.2` не подтверждает исправление обычного localhost flow. Caddy сообщил sandbox отказ записи своих autosave/storage файлов, но ручная конфигурация и проверенные TLS ответы работали; restart/autosave не проверялись. Browser acceptance и G4/G5 остаются будущими gates.
+
+## 10. Журнал исполнения DEV-UI-02
+
+**Дата:** 2026-10-07. **Основание:** прямое поручение пользователя «выполни второй промт». **Состояние:** IMPLEMENTED / BROWSER CHECK PENDING; полный completion реального browser пути и Tester acceptance не заявлены. Следующий производственный шаг — DEV-UI-03, подключение session/build coordinator; его выполнение этим журналом не начинается.
+
+### Baseline и сохранение предыдущей работы
+
+- Fetch обнаружил четыре новых административных commit поверх `082c6b9`: Tester PR #49 и Manager PR #50. Ветка fast-forward обновлена до `6fc62b9`; смысл требований и сценариев сохранён, G3 утверждён Manager. Другие роли и исторические промты в локальном diff не редактируются.
+- Перед обновлением только локальные изменения плана сохранены в отдельный stash и ignored `logs/ui-dev-02/plan-before-update.md`. Код первого шага не убирался из рабочего дерева. После fast-forward восстановлены его карточка, baseline и весь раздел 9 с фактическими проверками; административное утверждение нового плана сохранено. После проверки сохранности свой технический stash `7423f64` удалён; резервная копия остаётся. Stash другого пользователя `pre-pull-main-overlaps-2026-10-03` не затронут.
+- Работа выполняется на `dev/ui-birth-form-and-facts-review` поверх `6fc62b9`; исходный runtime/API diff DEV-UI-01 сохраняется. Коммит, push и PR реализации не создавались; index пустой.
+
+### Что реализовано
+
+- `form.mjs` хранит отдельный черновик и проверяет календарную `YYYY-MM-DD`, подтверждённый ID места, известное `HH:MM` либо явную неизвестность. `00:00`, `12:00`, `23:59` сохраняются строками. Пустое/некорректное время без отметки не становится неизвестным автоматически. Переключение неизвестности сохраняет дату, место и ранее введённое время; intent содержит `birth_time:null` только при явной отметке.
+- Presentation checkbox исходно снят и проверяется до выдачи intent. Значение не сохраняется и не сериализуется; frozen intent содержит ровно `{birth_date,birth_time,place_id}`. Локальная проверка даты не вводит отдельное ограничение диапазона или правило часового пояса браузера: окончательные domain/gap/fold ошибки остаются серверными.
+- `places.mjs` отправляет raw query от трёх введённых Unicode-символов после debounce **250 ms**; trim используется только для порога/пустого ввода. Нормализация NFKC/casefold/ранжирование остаются на сервере. Таймер и сеть заменяются только в тестовом листовом шве. Generation проверяется перед запуском и после ответа, отмена fetch не является единственной защитой. Сокращение/очистка, отменённый timer и старый response не подменяют актуальные варианты.
+- Выбор мышью либо ArrowUp/ArrowDown/Enter сохраняет конкретный `place_id`; Escape закрывает подсказки, стрелки могут открыть их снова. Редактирование сразу сбрасывает подтверждённый ID, даже если текст совпадает с прежним названием. Подписи содержат название, «Регион» (`admin1_name`) и страну (`country_code`); public key не переименован. Выбор не создаёт дополнительный GET или POST.
+- Пустой результат, некорректный query и временная недоступность различаются. `Retry-After` ограничивает следующий поиск; по истечении срока разрешается явный повтор, автоматического GET нет. Диагностические X-Request-ID/Retry-After доступны в состоянии поиска. Сокращение и повторный ввод во время cooldown сохраняют причину отказа и его заголовки.
+- `index.html`/`main.mjs`/`styles.css` связывают форму с настоящими controller/transport: дата → место → время, видимые labels, combobox/listbox, ошибки полей, live status, активная строка, различимый focus, карточка в палитре прототипа и адаптивные размеры. Серверные строки выводятся через `textContent`. Нет имени, координат, offset, секунд, колеса, будущих числовых секций, текста/страницы условий или имитации юридического согласия.
+- Submit после локальной проверки выдаёт DOM event `birth-intent` с неизменяемыми тремя полями. **HTTP POST построения пока не подключён**: это ответственность DEV-UI-03. Никакого ложного состояния «карта построена» или демонстрационных фактов в UI нет. Форма/поиск — реальные компоненты, пустые future handlers не добавлены.
+
+### Подход, RED и GREEN
+
+Подход TDD для manual gate и гонок: подготовлены настоящие modules/seams с базовым вводом и одиночным поиском, затем проверки наблюдаемого недостающего поведения. Ошибки импорта не учитывались как behavioral RED.
+
+1. `node --test tests/ui/form.test.mjs tests/ui/places.test.mjs` — **30 passed / 5 failed**, exit 1: неотмеченный gate ещё допускал intent; поздний Кир заменял Киро; три поздних ответа после сокращения/очистки показывали список вместо idle. Это реальные assertions на исполняемых компонентах, сеть/timer управляемые.
+2. После manual gate и post-await generation guard — **35 passed**, exit 0.
+3. Новый regression `node --test --test-name-pattern 'shortening and retyping during Retry' tests/ui/places.test.mjs` — **1 failed**, exit 1: очистка видимого error теряла причину всё ещё действующего Retry-After при новом вводе. Причина устранена на ответственном controller: cooldown metadata сохраняется, ниже порога ошибка скрывается, следующий запрос не выполняется до срока. Позитивный явный retry после expiry проходит.
+4. Итоговый Node набор ниже — **46 passed**: 36 новых form/place checks + 10 предыдущих transport checks. Последний GREEN использует поддержанный Node v24.19.0 `--test-isolation=none`: тесты запускаются в одном процессе внутри sandbox; production behavior и dependencies не меняются.
+
+### Фактические проверки
+
+| Команда / действие | Результат |
+|---|---|
+| `git fetch https://github.com/ksenia-baranova/exact-orb-demo.git change/ui-birth-form-and-facts`; `git merge --ff-only FETCH_HEAD` | Exit 0; `082c6b9` → `6fc62b9`, merge commit не создан, локальный runtime и журнал сохранены. |
+| `node --test --test-isolation=none tests/ui/form.test.mjs tests/ui/places.test.mjs tests/ui/transport.test.mjs` | **46 passed**, exit 0. |
+| `python -B -m pytest -p no:cacheprovider tests/test_place_search_contracts.py tests/http_api/test_place_dto.py -q` | **106 passed in 1.62s**, exit 0. |
+| `python -B -m pytest -p no:cacheprovider tests/http_api tests/test_module_boundaries.py -q` | **346 passed in 27.40s**, exit 0; API schema/routing/lifecycle/boundaries сохранены. |
+| `python -B -m pytest -p no:cacheprovider -q` | **2960 passed in 125.57s (0:02:05)**, exit 0. Платные/сетевые LLM smoke не запускались. |
+| `python -B logs/ui-dev-02/verify_installed_assets.py` | PASS: переиспользован offline installed-wheel test; **6 ресурсов**, включая новые form.mjs/places.mjs, доставлены через настоящее установленное ASGI-приложение вне source checkout. Никаких dependency downloads. Первый запуск helper имел ошибку пути импорта tests; после setup correction проверка выполнена успешно. |
+| `python -X utf8 -B -` — структурная проверка страницы | PASS: ровно пять подписанных inputs в нужном порядке, исходно снятые checkbox, ARIA targets/error references, существующие DOM selectors, text-only rendering. Это структурная проверка, не browser acceptance. |
+| `node logs/ui-dev-02/live_place_flow.mjs` | PASS: **6 HTTPS ресурсов**, public health 404; К/Ки не создают запроса, Кировск создаёт **1 GET**, выбор второго реального варианта и null/known intent проходят, **0 natal POST**. Native HTTPS leaf проверяет CA/hostname, IPv4 source `127.0.0.2`; fake timer управляет debounce. Начальный bind EINVAL был setup IPv6/IPv4 mismatch и исправлен `family:4` только в test helper. |
+| `git diff --check`; структурная проверка `python -X utf8 -B -` | Exit 0: **13 файлов** первого/второго промта и плана, пустой index, UTF-8/whitespace, **24 локальные ссылки**, 6 work items; исходный раздел 9 полностью сохранён, порядок 6 событий sequence 002 проверен. |
+
+### HTTPS, sequence и предел результата
+
+Позитивный HTTPS read использовал сохранённый mkcert certificate/root CA, существующие Uvicorn/Caddy и отдельную ignored session DB. `verify=False` не использовался. В реальном каталоге выбран второй Кировск: `place_id=705809`, регион «Луганская область», country_code `UA`; это данные DTO каталога без самостоятельной нормализации/переименования.
+
+GET request ID **`22c87fa0-f186-4d2b-bfe5-f894d11c4255`** сопоставлен с **6 событиями** `http_request_started`, AdmissionControl send/receive, PlaceSearch send/receive, `http_request_finished` — порядок соответствует HTTP sequence 002. Ни ContextService, ни ApplicationOrchestrator для поиска не вызывались. Запрет GET до порога подтверждён leaf counter рядом с успешным запросом; выбор и валидация не отправляли natal POST.
+
+Обычный localhost GET places по-прежнему даёт **400 FORWARDED_HEADER_INVALID**, request ID `f80a6923-8401-4ff4-af5b-1311ab47d710`; root доставляет форму с **200**. Это сохранённый FIND-TEST-HTTP-001 и согласованное пользователем ограничение. Позитивный Node/HTTPS контроль с `127.0.0.2` не выдаётся за исправление штатного browser localhost flow.
+
+**Браузерный блок:** инструмент `cua.getTab` отклонил открытие `https://exact-orb.localhost/` политикой доступа к URL (`Browser Use rejected this action due to browser security policy`, `requested URL protocol is not allowed`). Обход через другой browser/surface/raw protocol не выполнялся. Поэтому фактические DOM mouse/keyboard, screen-reader/focus, 360/768/1440 px и визуальное соответствие макету в этом проходе **NOT VERIFIED**. Node проверки controller и структура HTML не заменяют эту проверку. DEV-UI-02 не помечен полным COMPLETE до реального browser evidence.
+
+Локальные HTTP/packaging/sequence evidence и резервная копия предыдущего журнала находятся только в ignored `logs/ui-dev-02/`. HTTPS стенд оставлен для ручного просмотра формы: Uvicorn PID **21224**, Caddy PID **16216**, один application process обслуживает и UI, и API. Текущий этап готовит intent; actual build, восстановление сессии и отображение результата подключаются последующими заданиями.
+
+## 11. Подготовка коммита DEV-UI-01/02
+
+**Дата:** 2026-10-07. **Основание:** отдельное поручение пользователя «Готовь комит по двум промтам». Подготовлен один атомарный коммит в `dev/ui-birth-form-and-facts-review` поверх `6fc62b9c8813b5aadfd5150ca39033664f18b777`. Точный hash поставки определяется историей Git после сохранения; self-referential hash в документ не вносится.
+
+**Состав:** ровно **13 файлов**: `app.py` и `pyproject.toml`; шесть ресурсов `ui/index.html`, `styles.css`, `main.mjs`, `transport.mjs`, `form.mjs`, `places.mjs`; `tests/http_api/test_ui_delivery.py` и три `tests/ui/*.test.mjs`; этот Implementation Plan. Сертификаты, session DB и диагностические файлы остаются в ignored logs. Исторические промты и артефакты других ролей не включаются.
+
+Пакет сохраняет выполненные проверки раздела 10: **46 Node**, **106 place contracts/DTO**, **346 HTTP/boundaries**, **2960 full pytest**, installed-wheel delivery и HTTPS контроль. После этих проверок менялись только сведения о поставке в плане; исполняемый код и тесты не менялись. Перед коммитом проверяются staged scope и `git diff --cached --check`.
+
+Браузерный критерий DEV-UI-02 остаётся **PENDING**, известный FIND-TEST-HTTP-001 сохраняется, DEV-UI-03 не начат. Этот коммит не подтверждает независимую Tester acceptance. Записи разделов 9–10 об отсутствии коммита и пустом index относятся к моменту их выполнения. Push и PR в текущем поручении не выполняются.
