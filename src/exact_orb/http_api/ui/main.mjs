@@ -1,6 +1,7 @@
 import { createApiClient } from "./transport.mjs";
-import { createBirthForm } from "./form.mjs";
+import { createBirthForm, formatTimeInput } from "./form.mjs";
 import { createPlaceSearch } from "./places.mjs";
+import { createSessionCoordinator, issueMessage } from "./session.mjs";
 
 // Загрузка модуля собирает клиент; запросы выполняются только при вызове его методов.
 export const api = createApiClient();
@@ -18,22 +19,82 @@ export function mountBirthForm(document, { apiClient = api } = {}) {
   const retry = document.getElementById("place-retry");
   const overallError = document.getElementById("form-error");
   const fields = { date, place, time, acknowledged };
-  let places;
+  const build = element.querySelector('button[type="submit"]');
+  const sessionStatus = document.createElement("p");
+  sessionStatus.id = "session-status";
+  sessionStatus.className = "hint";
+  sessionStatus.setAttribute("role", "status");
+  sessionStatus.setAttribute("aria-live", "polite");
+  const readAgain = document.createElement("button");
+  readAgain.type = "button";
+  readAgain.className = "secondary-button";
+  readAgain.textContent = "Повторить проверку карты";
+  readAgain.hidden = true;
+  element.insertBefore(sessionStatus, overallError);
+  element.insertBefore(readAgain, overallError);
+  let places, session, sessionState;
+  let draftEdited = false, birthRestored = false;
 
   function renderErrors() {
     const draft = form.snapshot();
     for (const [name, input] of Object.entries(fields)) {
-      const message = draft.errors[name] ?? "";
+      const message = draft.errors[name] ?? sessionState?.fieldIssues[name]?.map(issueMessage).join(" ") ?? "";
       const error = document.getElementById(`${name}-error`);
       error.textContent = message;
       error.hidden = message === "";
       input.setAttribute("aria-invalid", String(Boolean(message
         || (name === "place" && places?.snapshot().error?.invalidInput))));
     }
-    overallError.hidden = Object.keys(draft.errors).length === 0;
-    overallError.textContent = overallError.hidden ? "" : "Проверьте отмеченные поля.";
+    let generalMessage = Object.keys(draft.errors).length ? "Проверьте отмеченные поля." : sessionState?.error?.message ?? "";
+    if (sessionState?.retryInSeconds > 0) generalMessage += ` Следующее действие доступно через ${sessionState.retryInSeconds} с.`;
+    overallError.hidden = generalMessage === "";
+    overallError.textContent = generalMessage;
     time.disabled = draft.timeUnknown;
     time.required = !draft.timeUnknown;
+  }
+
+  function renderSession(state) {
+    sessionState = state;
+    const view = state.view;
+    // Восстановление не затирает ввод, сделанный во время запроса или после него.
+    if (state.source === "current" && view?.birth && !draftEdited && !birthRestored) {
+      const birth = view.birth;
+      form.setDate(birth.birth_date);
+      form.setTime(birth.birth_time ?? "");
+      form.setUnknownTime(birth.time_unknown);
+      // BirthViewDTO содержит подтверждённый сервером ID; метаданные каталога не выдумываются.
+      form.selectPlace(birth.place);
+      date.value = birth.birth_date;
+      time.value = birth.birth_time ?? "";
+      unknown.checked = birth.time_unknown;
+      place.value = birth.place.display_name;
+      status.textContent = `Сохранённое место: ${birth.place.display_name}.`;
+      birthRestored = true;
+    }
+    let message = "";
+    if (view?.status === "empty") message = "Сохранённой карты пока нет.";
+    if (view?.status === "chart_ready") {
+      message = view.chart_stale ? "Сохранённая карта устарела. Её можно явно пересчитать." : "Карта доступна.";
+    }
+    if (view?.status === "chart_unavailable") message = "Сохранённую карту не удалось открыть. Данные рождения сохранены; карту можно построить заново.";
+    if (view?.birth) message += ` Дата: ${view.birth.birth_date}. Место: ${view.birth.place.display_name}. ${view.birth.time_unknown ? "Точное время неизвестно." : `Время: ${view.birth.birth_time}.`}`;
+    if (state.phase === "bootstrapping") message = "Открываем сессию…";
+    if (state.phase === "reading") message = "Проверяем текущую карту…";
+    if (state.phase === "building") message = "Строим карту…";
+    sessionStatus.textContent = message;
+    build.disabled = !state.canSubmit;
+    build.textContent = state.phase === "building" ? "Строим карту…" : view?.chart_stale ? "Пересчитать"
+      : view?.status === "chart_unavailable" ? "Построить заново" : "Построить карту";
+    element.setAttribute("aria-busy", String(state.busy));
+    readAgain.hidden = !state.error || state.sessionReady || state.requiresReconciliation;
+    readAgain.disabled = state.busy || state.retryInSeconds > 0;
+    renderErrors();
+  }
+
+  function edited(field) {
+    draftEdited = true;
+    session.clearFieldError(field);
+    renderErrors();
   }
 
   function renderPlaces(state) {
@@ -89,15 +150,28 @@ export function mountBirthForm(document, { apiClient = api } = {}) {
   time.value = "";
   unknown.checked = false;
   acknowledged.checked = false;
-  renderErrors();
-  date.addEventListener("input", () => { form.setDate(date.value); renderErrors(); });
-  time.addEventListener("input", () => { form.setTime(time.value); renderErrors(); });
-  unknown.addEventListener("change", () => { form.setUnknownTime(unknown.checked); renderErrors(); });
-  acknowledged.addEventListener("change", () => { form.acknowledge(acknowledged.checked); renderErrors(); });
+  session = createSessionCoordinator({ apiClient, form, onChange: renderSession });
+  renderSession(session.snapshot());
+  date.addEventListener("input", () => { form.setDate(date.value); edited("date"); });
+  time.addEventListener("input", () => {
+    const formatted = formatTimeInput(time.value);
+    if (formatted !== time.value) {
+      const start = time.selectionStart, end = time.selectionEnd, direction = time.selectionDirection;
+      time.value = formatted;
+      // Новое двоеточие сдвигает только ту часть выделения, которая была после часов.
+      if (typeof start === "number" && typeof end === "number") {
+        time.setSelectionRange(start + Number(start > 2), end + Number(end > 2), direction);
+      }
+    }
+    form.setTime(time.value);
+    edited("time");
+  });
+  unknown.addEventListener("change", () => { form.setUnknownTime(unknown.checked); edited("time"); });
+  acknowledged.addEventListener("change", () => { form.acknowledge(acknowledged.checked); edited("acknowledged"); });
   place.addEventListener("input", () => {
     form.editPlace(place.value);
     places.setQuery(place.value);
-    renderErrors();
+    edited("place");
   });
   place.addEventListener("keydown", (event) => { if (places.handleKey(event.key)) event.preventDefault(); });
   place.addEventListener("focus", () => renderPlaces(places.snapshot()));
@@ -110,18 +184,22 @@ export function mountBirthForm(document, { apiClient = api } = {}) {
     if (option) places.select(Number(option.dataset.placeIndex));
   });
   retry.addEventListener("click", () => { places.retry(); });
-  element.addEventListener("submit", (event) => {
+  readAgain.addEventListener("click", () => { void session.open(); });
+  element.addEventListener("submit", async (event) => {
     event.preventDefault();
+    if (!session.snapshot().canSubmit) return;
     const result = form.prepareSubmission();
     renderErrors();
     if (!result.ok) {
       fields[Object.keys(result.errors)[0]].focus();
       return;
     }
-    // Форма выдаёт проверенный intent; session/build coordinator подключается в DEV-UI-03.
-    element.dispatchEvent(new document.defaultView.CustomEvent("birth-intent", { bubbles: true, detail: result.intent }));
+    await session.submit();
+    const issueField = Object.keys(session.snapshot().fieldIssues)[0];
+    if (issueField) fields[issueField].focus();
   });
-  return Object.freeze({ form, places });
+  const ready = session.open();
+  return Object.freeze({ form, places, session, ready });
 }
 
 if (globalThis.document) mountBirthForm(globalThis.document);

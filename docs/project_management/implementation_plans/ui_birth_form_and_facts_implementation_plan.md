@@ -1,7 +1,7 @@
 # Implementation Plan: ui-birth-form-and-facts
 
 **Owner:** Developer. **Дата:** 2026-10-06. **Ветка:** `dev/ui-birth-form-and-facts-review`.
-**Status:** READY_FOR_DEVELOPMENT — административное утверждение Manager по поручению владельца 2026-10-07; DEV-UI-01 COMPLETE; DEV-UI-02 IMPLEMENTED / BROWSER CHECK PENDING; оба результата включены в пакет Developer для одного коммита, остальные задания NOT STARTED. Текущий delivery status/G3 — [Manager-артефакт](../change_plans/ui-birth-form-and-facts/artifacts.md#change-brief).
+**Status:** READY_FOR_DEVELOPMENT — административное утверждение Manager по поручению владельца 2026-10-07; DEV-UI-01 COMPLETE; DEV-UI-02 IMPLEMENTED / BROWSER CHECK PENDING, оба опубликованы в Developer-ветке @ `ef75d77`; DEV-UI-03 IMPLEMENTED / FULL REGRESSION FAILED на неизменённом тесте конфигураций; задания 04–06 NOT STARTED. Текущий delivery status/G3 — [Manager-артефакт](../change_plans/ui-birth-form-and-facts/artifacts.md#change-brief).
 **Technical assessment:** FEASIBLE; закрытые продуктовые решения повторно сверены, blocking semantic gaps Developer не обнаружены.
 **Estimate Developer:** **5–8 рабочих дней / 40–64 человеко-часа**, один рабочий день = 8 часов. Уверенность средняя.
 **Бюджет владельца:** DP-UI-07 текущей Manager-редакции — Analysis 4 / Development 5 / Testing 5 дней. Estimate Developer 5–8 сохраняется; относительно budget Development 5 риск составляет до +3 дней. Это не обещание выполнить верхнюю границу за 5 дней.
@@ -13,6 +13,7 @@
 | Общий `change/ui-birth-form-and-facts` | `033217db41aed65d2cd6fadcc1cd1adc7c06d4c9`, получен из `ksenia-baranova/exact-orb-demo` 2026-10-06; Developer-ветка обновлена `git merge --ff-only FETCH_HEAD`. |
 | Baseline исполнения DEV-UI-01 | `082c6b9ac5c8b054c38de5f17bc673956ec058d8`, проверен новым fetch из `ksenia-baranova/exact-orb-demo`: `HEAD` = `FETCH_HEAD`, расхождение `0 0`. Нормативный контракт и версии REQ/AS/DP выше сохранились. Результат сохранён при обновлении ветки и входит в общий пакет DEV-UI-01/02. |
 | Baseline исполнения DEV-UI-02 | `6fc62b9c8813b5aadfd5150ca39033664f18b777`, PR #49/50 интегрируют Tester `0f6aa82` и утверждение Manager `e4f60fb`. Получен fetch и `git merge --ff-only FETCH_HEAD` 2026-10-07. Семантика REQ/AS @ `ce25dd0` и HTTP baseline сохранены; допуск G3 подтверждён Manager. Общий пакет DEV-UI-01/02 подготовлен поверх этого HEAD; сведения о подготовке коммита — в разделе 11. |
+| Baseline исполнения DEV-UI-03 | `ef75d77232e1f629540827bfd90e93c1c16977ea`: реализация DEV-UI-01/02 опубликована в `dev/ui-birth-form-and-facts-review` по отдельному поручению. `git ls-remote` 2026-10-07 подтвердил общий `change/*` @ `6fc62b9`, уже включённый в Developer HEAD. Семантика требований и G3 сохранились; браузерный критерий DEV-UI-02 остаётся pending, доступные form/transport позволяют порученную интеграцию. |
 | Нормативный baseline | [HTTP API](../../requirements/http_api.md) §§4–9, 11, 13; [каталог](../../requirements/component_responsibilities/exact-orb_place_catalog.md); [Build Natal](../../requirements/component_responsibilities/exact-orb_build_natal_components.md); [сессия](../../requirements/component_responsibilities/exact-orb_session_requirements.md); [stored chart](../../requirements/session/stored-chart-session-behavior.md); ADR-0008, 0029–0034, 0039–0041 @ `652bd73405db0a0611e98e81af6f3f668dd429f6`. Эти пути ещё не перенесены в `current/`. |
 | Требования и сценарии change | [requirements.md](../../requirements/changes/ui-birth-form-and-facts/requirements.md), [scenarios.md](../../requirements/changes/ui-birth-form-and-facts/scenarios.md), [analysis.md](../../requirements/changes/ui-birth-form-and-facts/analysis.md) — семантика `ce25dd0`, 10 REQ / 23 AS; APPROVED FOR DEVELOPMENT этой Manager-редакцией после повторной сверки обеих ролей. |
 | Единый реестр | [artifacts.md](../change_plans/ui-birth-form-and-facts/artifacts.md#decision-register), рабочая административная редакция поверх `2972e42`. DP-UI-01…09 ACCEPTED; опубликованный семантический выбор @ `64934fc`, Developer вклад `082c6b9`, Tester `0f6aa82`. Budget 4/5/5 и G3 утверждены Manager; точный commit статусов передаётся после сохранения/интеграции. |
@@ -87,7 +88,7 @@
 
 ## 5. Work items и подход
 
-Карточки 03–06 и их файлы остаются **планируемыми**. DEV-UI-01 выполнен; код и автоматические проверки DEV-UI-02 готовы, реальная браузерная проверка остаётся pending. Факт исполнения записан в журнале Developer. Карточки утверждены Manager 2026-10-07; историческое DRAFT/NOT EXECUTED в промтах не переписывается. В тестовых docstrings/comments сохраняются REQ/AS IDs и ссылки на Analyst baseline; при финализации ссылки сверяются с картой переноса Analyst.
+Карточки 04–06 и их файлы остаются **планируемыми**. DEV-UI-01 выполнен; код и автоматические проверки DEV-UI-02/03 готовы, реальная браузерная проверка остаётся pending. Полный pytest при DEV-UI-03 нашёл воспроизводимый контрпример существующего теста конфигураций; общий regression gate не объявлен PASS. Факт исполнения записан в журнале Developer. Карточки утверждены Manager 2026-10-07; историческое DRAFT/NOT EXECUTED в промтах не переписывается. В тестовых docstrings/comments сохраняются REQ/AS IDs и ссылки на Analyst baseline; при финализации ссылки сверяются с картой переноса Analyst.
 
 <a id="dev-ui-01"></a>
 ### DEV-UI-01. Страница доставляется тем же приложением
@@ -118,6 +119,7 @@
 <a id="dev-ui-03"></a>
 ### DEV-UI-03. Вход, явный build и ошибки
 
+- **Статус исполнения:** IMPLEMENTED / FULL REGRESSION FAILED по поручению пользователя 2026-10-07. Client state, wiring через листовой DOM-порт, целевые/связанные HTTP проверки, installed-wheel и реальный HTTPS bootstrap/build/current прошли. Полный pytest: 2959 passed / 1 failed; контрпример воспроизведён на неизменённых baseline файлах конфигураций. Браузерная проверка и независимая Tester acceptance не заявлены. См. [журнал](#12-журнал-исполнения-dev-ui-03).
 - **REQ/AS:** REQ-UI-01, 03, 08, 09; AS-UI-01, 03–06, 10–13, 15, 17, 20/21. **DP:** 02/04/08. **Dependency:** DEV-UI-01/02.
 - **Файлы:** новый `ui/session.mjs`; `transport.mjs`, `main.mjs`; новый `tests/ui/session.test.mjs`; адресное дополнение HTTP integration только при действительно новом шве.
 - **Результат:** bootstrap → current; screen state из ответа; build с snapshot трёх полей, запрет второго click; field issues и общий fallback; cookie/query/expected version не конструируются клиентом.
@@ -327,3 +329,83 @@ GET request ID **`22c87fa0-f186-4d2b-bfe5-f894d11c4255`** сопоставлен
 Пакет сохраняет выполненные проверки раздела 10: **46 Node**, **106 place contracts/DTO**, **346 HTTP/boundaries**, **2960 full pytest**, installed-wheel delivery и HTTPS контроль. После этих проверок менялись только сведения о поставке в плане; исполняемый код и тесты не менялись. Перед коммитом проверяются staged scope и `git diff --cached --check`.
 
 Браузерный критерий DEV-UI-02 остаётся **PENDING**, известный FIND-TEST-HTTP-001 сохраняется, DEV-UI-03 не начат. Этот коммит не подтверждает независимую Tester acceptance. Записи разделов 9–10 об отсутствии коммита и пустом index относятся к моменту их выполнения. Push и PR в текущем поручении не выполняются.
+
+## 12. Журнал исполнения DEV-UI-03
+
+**Дата:** 2026-10-07. **Основание:** прямое поручение пользователя «Реализуй третий промт». **Состояние:** IMPLEMENTED / FULL REGRESSION FAILED; локальный diff поверх `ef75d77`. Исполнение разрешено отдельно от исторического DRAFT в промте. G3 Manager интегрирован в `6fc62b9`; смысл REQ/AS @ `ce25dd0` и нормативный HTTP baseline сохранён.
+
+Пакет двух предыдущих шагов сохранён и ранее опубликован: `ef75d77` в `dev/ui-birth-form-and-facts-review` репозитория `ksenia-baranova/exact-orb-demo`. `origin` настроен на другой репозиторий, поэтому сверка общего change выполнена по точному URL. Начальное рабочее дерево и index пустые. Новый коммит, push или PR третьего шага не создавались; поручение относится к реализации.
+
+### Реализованное поведение и границы
+
+- Новый `session.mjs` координирует настоящие form/transport. При открытии страницы выполняется `POST bootstrap {}` → `GET current`; успешный bootstrap/version не превращается в карту. `empty`, `chart_ready` со stale true/false и `chart_unavailable` сохраняются отдельно. При `empty/unavailable` chart отсутствует; stale сохраняет исходный ChartDTO без пересчёта. Ответ без полноценной идентичности карты не объявляется committed успехом.
+- Submit повторно проверяет валидность формы и ручной checkbox, сохраняет frozen intent ровно `{birth_date,birth_time,place_id}` и отправляет один POST. Busy guard устанавливается до await и действует для чтения и построения внутри этой вкладки. Нет client expected version, самодельной cookie, shared mutable результата или скрытого автоматического POST. Черновик остаётся отдельным от отправленного intent; последующее редактирование не меняет уже отправленный запрос.
+- `422` сопоставляет `birth.date/time/place` с соответствующими полями. Сохраняются IssueDTO code/candidates/constraints, `user_message` и неизвестные fields для общей ошибки; отображение использует `textContent`. Двусмысленная минута требует исправления пользователем, без browser timezone или автоматического выбора UTC offset. Исправление поля снимает его server issue. Отказ не заменяет предыдущую подтверждённую карту.
+- `already_applied` и `RESULT_SUPERSEDED` приводят к отдельному current. `409 SESSION_REQUIRED/EXPIRED/NOT_FOUND` восстанавливаются bootstrap → current без повторного build; повторный session 409 останавливает ограниченную сверку вместо цикла. Отказ самой сверки сохраняет подтверждённую карту/черновик и запрещает build до безопасного чтения.
+- `Retry-After` сохраняется вместе с request ID и ограничивает следующее явное действие. Fake clock проверяет точную границу; истечение timer только обновляет доступность кнопки, сеть автоматически не вызывается. Network build failure, `STATE_COMMIT_FAILED`, `BUILD_TIMEOUT` и неполный `200` оставляют исход неподтверждённым и блокируют новый POST. Их code-specific сверка, restart/readiness, потерянный ответ и foreground двух вкладок остаются DEV-UI-05; для них текущий шаг не заявляет готовый recovery.
+- `main.mjs` запускает координатор после сборки формы, показывает ожидание и различие состояний, связывает field errors/focus и блокировку кнопки. Сохранённый birth из current предзаполняет нетронутую форму с настоящим ID места; регион/страна, отсутствующие в BirthViewDTO, не выдумываются. Ввод во время чтения и draft при recovery не затираются. Checkbox остаётся снятым при новом открытии и не сохраняется. Stale/unavailable получают явные «Пересчитать» / «Построить заново» через тот же submit.
+- Ровно четыре файла поставки: `ui/session.mjs`, `ui/main.mjs`, `tests/ui/session.test.mjs`, этот план. Transport уже покрывает нужные outcomes и AbortSignal, поэтому не изменён. Wildcard package-data уже включает новый модуль. Backend/API/расчёт/logging, другие ролевые артефакты и исторические промты не изменены. Читаемые таблицы и действия результата относятся к DEV-UI-04.
+
+### TDD и фактические проверки
+
+Подготовительный seam — исполняемый coordinator с базовыми bootstrap/current/успешным POST. Затем проверены недостающие переходы на настоящих form/session/transport с заменой только fetch leaf; импорт не считается RED.
+
+1. `node --test --test-isolation=none tests/ui/session.test.mjs` — **4 passed / 15 failed**, exit 1: двойной click отправлял второй POST, build допускался до чтения, отсутствовал field mapping и required current/session recovery, incomplete success заменял подтверждённую карту.
+2. После guard/mapping/recovery — **18 passed / 1 failed**: тест сразу пытался повторить safe read после `Retry-After:5`. Он уточнён по действующему ограничению и переведён на управляемый fake clock; реальное ожидание не используется.
+3. Итог — **27 session checks**, включая rate/capacity, read/build overlap, отказ сверки, dispose/late response и три проверки настоящего mount через листовой DOM-порт. Вместе с предыдущими checks — **73 passed**. DOM-порт проверяет вызовы/render/focus связи, но не является browser acceptance или layout evidence.
+
+| Команда / действие | Фактический результат |
+|---|---|
+| `git ls-remote --heads https://github.com/ksenia-baranova/exact-orb-demo.git change/ui-birth-form-and-facts` | Exit 0; общий HEAD `6fc62b9` уже в Developer `ef75d77`, обновление checkout не потребовалось. |
+| `node --test --test-isolation=none tests/ui/session.test.mjs` | **27 passed**, exit 0. После замены микрозадачи в dispose-тесте на явный callback фактического входа в leaf выполнен весь набор ниже. |
+| `node --test --test-isolation=none tests/ui/session.test.mjs tests/ui/form.test.mjs tests/ui/places.test.mjs tests/ui/transport.test.mjs` | **73 passed**, exit 0. Node v24.19.0; новые dependencies отсутствуют. |
+| `python -B -m pytest -p no:cacheprovider tests/http_api/test_session.py tests/http_api/test_request_boundary.py tests/http_api/test_build_admission.py -q` | **113 passed in 3.09s**, exit 0. Переиспользованы действующие server coverage/fixtures. |
+| `python -B -m pytest -p no:cacheprovider tests/http_api tests/test_module_boundaries.py -q` | **346 passed in 24.75s**, exit 0 вне sandbox. Первый запуск: **345 passed / 1 failed in 27.66s**, pip offline wheel setup заблокирован PermissionError системного temp; это не behavioral defect. |
+| `python -B -m pytest -p no:cacheprovider -q` | **2959 passed / 1 failed in 125.24s**, exit 1. Ошибка существующего `test_property_configuration_count_does_not_grow_when_threshold_decreases`; полный regression gate не пройден. Платные/сетевые LLM smoke не запускались. |
+| `python -B -m pytest -p no:cacheprovider tests/test_configurations.py::test_property_configuration_count_does_not_grow_when_threshold_decreases -q` | **1 failed in 0.86s**, exit 1; тот же Hypothesis-контрпример воспроизводится отдельно от UI. |
+| `python -B logs/ui-dev-03/verify_regression_baseline.py` | Контрпример воспроизведён детерминированно на **18 Python-файлах**, совпадающих по строкам с Git @ `ef75d77`: high/low counts **0/1**. Позитивный контроль с уникальными парами даёт **1/1**. Helper диагностический, не заменяет failed regression gate. |
+| `python -B logs/ui-dev-03/verify_installed_assets.py` | PASS: offline wheel/install и новое импортированное ASGI-приложение вне checkout доставляют **7 ресурсов**, включая session.mjs. Downloads отсутствуют. |
+| `node logs/ui-dev-03/live_session_flow.mjs` | PASS: **7 HTTPS ресурсов**, настоящий bootstrap/current, **0 POST до manual gate**, один explicit natal POST при двойном действии; reload/current возвращает тот же ChartDTO/identity/version без дополнительного POST. TLS CA/hostname проверены, source `127.0.0.2`, отдельная cookie jar. Это API/controller evidence, не браузерная cookie jar/DOM. |
+| `python -B logs/ui-dev-03/verify_sequence.py` | PASS: **6 business requests / 48 событий** координации; HTTP 001/003/004 и вложенные application pairs сопоставлены. Первое ожидание helper для поиска было уточнено с `search_places` до фактического `operation=search`; production code/diagram не менялись. |
+| `git diff --check`; `python -X utf8 -B -` — структурная проверка плана/пакета | Exit 0: **4 файла** поставки, UTF-8/newline/whitespace; **25 локальных ссылок/anchors**, **6 work items**. Index пустой, HEAD остаётся `ef75d77`; исторические промты и чужие ролевые файлы не затронуты. |
+
+### Реальное HTTPS и наблюдаемость
+
+Использован существующий Uvicorn/Caddy стенд DEV-UI-02, его отдельная ignored session DB и сертификат mkcert; новый UI process не создавался. Пример: `1985-09-02`, `00:45`, подтверждённая Москва `524901`. Manual gate проверен настоящим form/coordinator, транспорт передал только три поля. Явный POST **`828c448f-29ed-46f3-be33-87c2c7431597`** дал `chart_identity=eo:calc:v2:f112dfae69d8d6daaf5051292bc21f78682940bb2df0fc7d7b1f027623f6b7e2`, state version **1**. После повторного bootstrap **`bd3d77e1-32bd-4d30-a078-6317a3952328`** current **`37334d4f-deb3-4977-91cd-948414102fce`** вернул ту же карту и birth.
+
+Первый bootstrap **`b1f2eb8d-1c49-4d15-9a2f-b64d89c1bdb5`** сопоставлен с reserve/create, первый current **`f60cdac4-5ac4-4fef-ab05-fa39d2e0cc4d`** — с load/session_view и empty. В build есть admission reserve → Orchestrator.execute → ContextService.load → Handler.handle → BirthDataResolver.resolve → ensure_chart → to_stored → ContextService.save/Committed → ApplicationCommitted → release. Оба current имеют только load/session_view и request terminal, без нового Orchestrator/расчёта. Сохранены request/run correlation и 48 компактных событий в ignored `logs/ui-dev-03/sequence-events.log`; DEBUG payload туда не копировался.
+
+### Непройденный regression gate и пределы
+
+Новый контрпример относится к неизменённой области конфигураций: `_aspect_lists()` допускает SEXTILE и TRINE для одной пары `(p0,p1)`, а также SEXTILE и TRINE для `(p0,p4)` с orb 4 у второго TRINE. При пороге 7 bisextile finder видит две trine edges и отклоняет кандидат; при пороге 3 остаётся одна trine edge и count становится 1 вместо 0. Наличие разных типов для одной пары нарушает предпосылку монотонного oracle; вопрос согласования генератора и допустимых входов finder требует отдельной задачи расчётного слоя. Тест, генератор, алгоритм, golden и допуски не изменялись и не отключались. Полный pytest честно остаётся FAILED.
+
+Реальные browser DOM/mouse/keyboard/360–1440 px и визуальное соответствие ещё **NOT VERIFIED**: ранее инструмент отклонил локальный URL политикой доступа, обход не выполнялся. Известный localhost `FORWARDED_HEADER_INVALID` сохранён; позитивный source `127.0.0.2` не считается его исправлением. DEV-UI-04 reader/actions и DEV-UI-05 полное recovery не выполнены; новая независимая Tester acceptance не получена. Стенд оставлен для просмотра, секреты/DB/диагностика только в ignored logs. Исторические записи об отсутствии реализации/коммита в разделах 9–11 относятся к своим моментам исполнения.
+
+## 13. Исправление формата ввода времени
+
+**Дата:** 2026-10-07. **Основание:** пользовательский дефект — при вводе времени `0045` оставалось одной строкой без разделителя, тогда как дата имела структурированный ввод. Исправление выполняется поверх сохранённого локального DEV-UI-03; предыдущие изменения не откатываются.
+
+**Реестр ручного тестирования:** [TEST-FIND-UI-004](../../testing/ui-birth-form-and-facts/manual-test-bugs.md#test-find-ui-004), зарегистрирован по отдельному поручению пользователя. Исправление готово; ручной retest ещё NOT RUN, дефект не закрыт.
+
+**Корневая причина:** время использовало `type=text` и placeholder `ЧЧ:ММ`; input handler передавал строку в draft без форматирования. Строгая проверка `HH:MM` действовала только перед отправкой, поэтому `0045` оставалось на экране и затем отвергалось вместо удобного ввода `00:45`.
+
+Добавлен presentation formatter `formatTimeInput` в `form.mjs`: ровно три/четыре цифры показываются как `HH:M` / `HH:MM`. `main.mjs` применяет его на input и сохраняет границы/направление выделения при вставке двоеточия. В `index.html` задан numeric inputmode для цифровой клавиатуры. Готовое `HH:MM` и очистка сохраняются; ведущие нули не теряются. Неполное время остаётся неполным, неверный диапазон не округляется и не заменяется, неизвестность не включается автоматически. Model validation и HTTP body по-прежнему требуют `HH:MM` либо явный null; секунды/offset, серверные schema/API и расчёт не менялись.
+
+**Regression evidence:** в существующий `session.test.mjs` добавлено шесть checks через настоящий mount/form/session/transport и листовой DOM-порт. До исправления — `node --test --test-isolation=none tests/ui/session.test.mjs`: **27 passed / 6 failed**, exit 1, в том числе точное `0045 != 00:45`. После исправления весь Node-набор: **79 passed**, exit 0. Проверены последовательный набор, вставка `0045/0000/1200/2359`, каретка/выделение, очистка, неполный ввод, секунды, неверные диапазоны, сохранность при переключении неизвестности и позитивная отправка только канонического `00:45`.
+
+**Scope:** дополнительно изменены `form.mjs` и `index.html`; поправки `main.mjs`, regression tests и журнал встроены в уже имеющийся diff DEV-UI-03. Текущий общий пакет — шесть файлов: план, main/form/index, session.mjs и session.test.mjs. Коммит/push/PR этого исправления не создавались. Проверка настоящего browser input остаётся pending; листовой DOM-порт не подтверждает поведение мобильной клавиатуры или layout.
+
+| Команда | Фактический результат после исправления |
+|---|---|
+| `node --test --test-isolation=none tests/ui/session.test.mjs tests/ui/form.test.mjs tests/ui/places.test.mjs tests/ui/transport.test.mjs` | **79 passed**, exit 0; 33 session/mount checks и 46 предыдущих form/place/transport checks. |
+| `python -B -m pytest -p no:cacheprovider tests/http_api tests/test_module_boundaries.py -q` | **346 passed in 24.79s**, exit 0, включая delivery из wheel. |
+| `python -B -m pytest -p no:cacheprovider -q` | **2959 passed / 1 failed in 123.78s**, exit 1. Повторяется тот же неизменённый property-тест конфигураций с контрпримером из раздела 12; полный regression gate остаётся FAILED. |
+| `git diff --check`; `python -X utf8 -B -` — структурная проверка | Exit 0: **6 файлов** текущего пакета, UTF-8/newline/whitespace, **25 локальных ссылок и anchors**. Index пустой; предыдущая реализация и посторонние файлы сохранены. |
+
+## 14. Подготовка коммита DEV-UI-03 и исправления времени
+
+**Дата:** 2026-10-07. **Основание:** прямое поручение пользователя «готовь комит». Ветка — `dev/ui-birth-form-and-facts-review`, родитель поставки — `ef75d77232e1f629540827bfd90e93c1c16977ea`.
+
+В единый атомарный коммит входят семь файлов: этот план, реестр ручных багов `docs/testing/ui-birth-form-and-facts/manual-test-bugs.md`, `ui/session.mjs`, `ui/main.mjs`, `ui/form.mjs`, `ui/index.html` и `tests/ui/session.test.mjs`. Пакет включает исполнение третьего промта, исправление TEST-FIND-UI-004 и его автоматические regression checks. Сообщение коммита — на русском языке. Исторические записи об отсутствии коммита и меньшем составе пакета в разделах 12–13 относятся к моментам соответствующих проверок.
+
+После последних исполняемых изменений выполнены команды из раздела 13: **79 Node checks passed**, **346 HTTP/boundary tests passed**, полный pytest — **2959 passed / 1 failed** на существующем property-тесте конфигураций. После этих запусков изменены только записи журнала и реестр, исполняемый код не менялся. Полный regression gate остаётся FAILED; ручной retest TEST-FIND-UI-004 и независимая browser/Tester acceptance ещё не выполнены. Push и PR этого пакета не выполнялись.

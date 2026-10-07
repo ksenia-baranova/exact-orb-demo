@@ -1,4 +1,9 @@
 // REQ-UI-02/03: черновик хранит ввод, а отправляемый intent содержит только три поля API.
+export function formatTimeInput(value) {
+  // Разделитель добавляется при вводе минут; диапазон проверяется отдельно, без угадывания.
+  return value.replace(/^([0-9]{2})([0-9]{1,2})$/, "$1:$2");
+}
+
 function calendarDate(value) {
   if (!/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.test(value)) return false;
   const [year, month, day] = value.split("-").map(Number);
