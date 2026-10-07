@@ -23,7 +23,7 @@ from tests.http_api.conftest import http_settings
 
 UI_RESOURCES = (
     "index.html", "styles.css", "main.mjs", "transport.mjs", "form.mjs",
-    "places.mjs", "session.mjs", "facts.mjs", "recovery.mjs",
+    "places.mjs", "session.mjs", "facts.mjs", "recovery.mjs", "response.mjs",
 )
 
 
@@ -64,6 +64,19 @@ async def test_page_and_its_modules_are_same_origin_package_resources(app_client
                                      if name.endswith(".mjs") and name != "main.mjs")):
             asset = await client.get(path)
             assert asset.status_code == 200
+            # REQ-UI-01/10, AS-UI-01/10; TEST-FIND-UI-009, найдено другой моделью.
+            assert asset.headers.get("cache-control") == "no-cache"
+            assert asset.headers["etag"]
+            assert asset.headers["last-modified"]
+            for header, value in (
+                ("If-None-Match", asset.headers["etag"]),
+                ("If-Modified-Since", asset.headers["last-modified"]),
+            ):
+                cached = await client.get(path, headers={header: value})
+                assert cached.status_code == 304
+                assert cached.content == b""
+                assert cached.headers.get("cache-control") == "no-cache"
+                assert cached.headers["etag"] == asset.headers["etag"]
             assert "Set-Cookie" not in asset.headers
             assert asset.content == resource.joinpath(path.rsplit("/", 1)[1]).read_bytes()
             mime = asset.headers["content-type"].split(";", 1)[0]
@@ -117,6 +130,7 @@ async def test_ui_methods_do_not_intercept_business_or_health_routes(app_client,
             assert wrong_method.json()["code"] == "METHOD_NOT_ALLOWED"
         asset_head = await client.head("/ui/styles.css")
         assert asset_head.status_code == 200
+        assert asset_head.headers.get("cache-control") == "no-cache"
         assert asset_head.content == b""
         current = await client.get("/charts/current")
         assert current.status_code == 409
@@ -183,6 +197,12 @@ async def check():
             response = await client.get(path)
             assert response.status_code == 200, (path, response.status_code)
             assert response.content == resource.joinpath(name).read_bytes()
+            if name.endswith((".mjs", ".css")):
+                assert response.headers.get("cache-control") == "no-cache"
+                cached = await client.get(path, headers={"If-None-Match": response.headers["etag"]})
+                assert cached.status_code == 304
+                assert cached.headers.get("cache-control") == "no-cache"
+                assert cached.content == b""
             assert "Set-Cookie" not in response.headers
 asyncio.run(check())
 print(f"installed wheel: {len(names)} UI resources delivered without checkout")

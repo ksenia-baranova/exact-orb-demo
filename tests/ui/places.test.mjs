@@ -5,11 +5,26 @@ import { test } from "node:test";
 import { createPlaceSearch } from "../../src/exact_orb/http_api/ui/places.mjs";
 import { createBirthForm } from "../../src/exact_orb/http_api/ui/form.mjs";
 import { createApiClient } from "../../src/exact_orb/http_api/ui/transport.mjs";
+import { placeWithoutRegion } from "./fixtures/session.mjs";
 
 const north = { place_id: "ki-north", display_name: "Кировск", admin1_name: "Мурманская область", country_code: "RU" };
 const south = { place_id: "ki-south", display_name: "Кировск", admin1_name: "Луганская область", country_code: "UA" };
 const success = (items, requestId = "place-request") => ({ kind: "http", status: 200,
   body: { items }, requestId, retryAfter: null });
+
+// REQ-UI-02/10, AS-UI-02/18/19; TEST-FIND-UI-005, найдено другой моделью.
+test("a nullable region preserves the entire mixed result and confirmed selection", async () => {
+  const timer = clock(), form = createBirthForm();
+  const search = createPlaceSearch({ clock: timer, onSelect: form.selectPlace,
+    searchPlaces: async () => success([placeWithoutRegion, north]) });
+  search.setQuery("Гонк"); await Promise.all(timer.tick(250));
+  assert.equal(search.snapshot().status, "results");
+  assert.deepEqual(search.snapshot().items, [placeWithoutRegion, north]);
+  search.select(0); assert.equal(form.snapshot().place.place_id, placeWithoutRegion.place_id);
+  assert.equal(form.snapshot().place.admin1_name, null);
+  search.setQuery("Кир"); await Promise.all(timer.tick(250)); search.select(1);
+  assert.equal(form.snapshot().place.admin1_name, north.admin1_name, "string-region positive control");
+});
 function clock() {
   let time = 0;
   let id = 0;

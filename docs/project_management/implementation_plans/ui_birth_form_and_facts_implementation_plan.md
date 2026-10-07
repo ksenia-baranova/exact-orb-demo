@@ -3,7 +3,7 @@
 **Owner:** Developer. **Дата:** 2026-10-06. **Ветка:** `dev/ui-birth-form-and-facts-review`.
 **Status:** READY_FOR_DEVELOPMENT — административное утверждение Manager по поручению владельца 2026-10-07; DEV-UI-01 COMPLETE; DEV-UI-02 IMPLEMENTED / BROWSER CHECK PENDING, оба опубликованы в Developer-ветке @ `ef75d77`; DEV-UI-03/04 опубликованы в Developer-ветке @ `564186d` / `6d970f6`; DEV-UI-05 IMPLEMENTED / BROWSER CHECK PENDING, фактические проверки — в разделе 17; DEV-UI-06 PARTIAL / FULL REGRESSION FAILED: форма, HTTPS API и штатный browser build/details/reload проверены, оставшиеся browser criteria и independent Tester acceptance pending; полный regression gate FAILED по DEBT-CALC-001, G4/G5 не заявлены. Текущий delivery status/G3 — [Manager-артефакт](../change_plans/ui-birth-form-and-facts/artifacts.md#change-brief).
 **Technical assessment:** FEASIBLE; закрытые продуктовые решения повторно сверены, blocking semantic gaps Developer не обнаружены.
-**Дополнение по внешнему ревью (2026-10-07):** зарегистрированы восемь OPEN bugs TEST-FIND-UI-005…012 — **найдено другой моделью**. Подготовлены DEV-UI-07/08 и промты 07/08; исполнение NOT STARTED. Актуальные scope, зависимости, отдельная оценка и условия проверки — [раздел 21](#external-model-bugs).
+**Дополнение по внешнему ревью (2026-10-07):** зарегистрированы восемь bugs TEST-FIND-UI-005…012 — **найдено другой моделью**. DEV-UI-07 IMPLEMENTED / BROWSER RETEST PENDING: 005/009/011 FIXED PENDING RETEST, проверки — [раздел 22](#dev-ui-07-execution). DEV-UI-08 и его пять findings NOT STARTED / OPEN. Scope и отдельная оценка — [раздел 21](#external-model-bugs); полный regression gate FAILED по прежнему DEBT-CALC-001.
 **Актуальная проверка локального стенда (2026-10-07):** отдельным исправлением прокси снят forwarding blocker штатного браузера; natal build/details/reload проверены. Исходный статус BLOCKED в журнале DEV-UI-06 описывает проверку до исправления. Полный regression gate остаётся FAILED по DEBT-CALC-001, G4/G5 не объявлены; см. [раздел 20](#local-proxy-fix).
 **Estimate Developer:** **5–8 рабочих дней / 40–64 человеко-часа**, один рабочий день = 8 часов. Уверенность средняя.
 **Бюджет владельца:** DP-UI-07 текущей Manager-редакции — Analysis 4 / Development 5 / Testing 5 дней. Estimate Developer 5–8 сохраняется; относительно budget Development 5 риск составляет до +3 дней. Это не обещание выполнить верхнюю границу за 5 дней.
@@ -712,7 +712,7 @@ HTTPS positive control теперь использует **обычный адр
 <a id="external-model-bugs"></a>
 ## 21. Исправления по ревью другой модели
 
-**Дата / комментарий:** 2026-10-07; **найдено другой моделью**. Владелец передал 16 замечаний, согласовал регистрацию принятых дефектов и подготовку одного или двух промтов. Подготовлены два; реализация, перезапуск, commit/push в этой задаче не поручены.
+**Дата / комментарий:** 2026-10-07; **найдено другой моделью**. Владелец передал 16 замечаний, согласовал регистрацию принятых дефектов и подготовку одного или двух промтов. Подготовлены два; затем отдельным поручением «Реализуй промт 7» исполнен DEV-UI-07, см. раздел 22. DEV-UI-08 остаётся подготовленным. Перезапуск, commit/push в задаче исполнения 07 не поручены.
 **Baseline:** `0d5d70acfc4f1f384b2c06970b35111b411c4fc4`, `dev/ui-birth-form-and-facts-review`, входное дерево/index чистые. Это baseline ревью и будущих исправлений; исходные baselines DEV-UI-01…06 сохраняются.
 **Единый источник дефектов:** [реестр TEST-FIND-UI-005…012](../../testing/ui-birth-form-and-facts/manual-test-bugs.md#external-model-review). Оценки severity/priority предложены Developer; независимый retest и окончательная severity принадлежат Tester, priority/delivery — Manager.
 **Requirements/decisions:** нормативные источники раздела 1 @ `652bd734`; семантика approved REQ-UI-01…10 / AS-UI-01…23 @ `ce25dd0`; текущие документы и реестр DP-UI-01…09 прочитаны @ `0d5d70a`. Применимы DP-UI-01/03/05/09, ADR-0034/0039/0040/0041. Продуктовые требования, Gantt и принятые строки DP не переписываются; новые API/решения не вводятся этим дополнением.
@@ -744,7 +744,7 @@ HTTPS positive control теперь использует **обычный адр
 <a id="dev-ui-07"></a>
 ### DEV-UI-07. Допустимые места и проверенные UI-ответы
 
-- **Комментарий:** найдено другой моделью; TEST-FIND-UI-005/009/011, замечания №1/5/13. **Статус:** PLANNED / NOT STARTED; постановка PREPARED, автоматические regression cases исправления ещё не созданы.
+- **Комментарий:** найдено другой моделью; TEST-FIND-UI-005/009/011, замечания №1/5/13. **Статус:** IMPLEMENTED / BROWSER RETEST PENDING; три findings FIXED PENDING RETEST, целевые/связанные checks PASS, full FAILED по прежнему DEBT-CALC-001; [фактическое исполнение](#dev-ui-07-execution). Исторический промт сохраняет исходную постановку.
 - **Промт:** [07-place-assets-and-response-guards.md](../../../prompts/2026-10-07/ui-birth-form-and-facts/07-place-assets-and-response-guards.md).
 - **Требования/scenarios:** REQ-UI-01/02/03/08/09/10; AS-UI-01/02/03/04/10/15/17/18/19/23; DP-UI-01/03/09. Источники и версии — baseline этого раздела.
 - **Подход:** тесты → реализация в одном промте. Доказанные nullable/invalid-body расхождения и непроверенные static headers дают чувствительные regression tests до правки.
@@ -783,4 +783,51 @@ HTTPS positive control теперь использует **обычный адр
 - `git diff --check`: **PASS**, exit 0.
 - Runtime/browser regression исправлений при подготовке документов: **NOT RUN**; исполняемые файлы и исторические промты 01…06 сохранены. Коммиты, push и перезапуск не выполнялись.
 
-Это завершает подготовку постановок; DEV-UI-07/08 остаются PLANNED / NOT STARTED, G4/G5 и Tester acceptance не изменены.
+На момент завершения подготовки DEV-UI-07/08 оставались PLANNED / NOT STARTED, G4/G5 и Tester acceptance не изменялись. Последующее исполнение 07 описано отдельно ниже.
+
+<a id="dev-ui-07-execution"></a>
+## 22. Журнал исполнения DEV-UI-07 и handoff
+
+**Дата:** 2026-10-07. **Основание:** прямое поручение владельца «Реализуй промт 7». **Developer status:** IMPLEMENTED / BROWSER RETEST PENDING. TEST-FIND-UI-005/009/011 — FIXED PENDING RETEST; независимая Tester acceptance и G4/G5 не заявлены.
+**Фактический baseline:** `a2445e4494c1c8ca4e4d22f20a8a761969afa633`, dev/ui-birth-form-and-facts-review, входные дерево/index чистые. Отличие от baseline промта 0d5d70a — только четыре Markdown-файла регистрации/постановок; REQ/AS/DP и исполняемый код не менялись. Исполнение ведётся незакоммиченным diff, index не изменён.
+
+### Корневые причины и исправления
+
+1. **005:** UI требовал строку региона, хотя публичный PlaceSuggestionDTO допускает null. В places.mjs nullable регион теперь валиден; остальные поля и прежний отказ при повреждённой выдаче сохранены. Подсказка/выбранное место показывают «—», а явный build отправляет выбранный ID.
+2. **009:** обычный StaticFiles оставлял ресурсы с постоянными URL без Cache-Control. Private `_UiStaticFiles` задаёт no-cache для модулей/CSS, включая 304. HTML/API no-store, MIME/ETag/Last-Modified, HEAD и безопасные 404/405 сохранены; новые middleware/business events не добавлены.
+3. **011:** проверка только kind/identity пропускала коллекции/поля, которые renderer не может прочитать. Чистый `ui/response.mjs` проверяет build/current/bootstrap и читаемые поля ErrorDTO/IssueDTO до accept/render, без пересчёта/исправления данных. Входной current не заменяет подтверждённую карту при отказе; повреждённый POST 200 сохраняет existing unconfirmed-response → bootstrap/current и запрещает новый build при failed check.
+4. Для неожиданного сбоя renderer coordinator фиксирует видимую ошибку, закрывает операцию из busy и оставляет только safe recheck через простой fallback существующих DOM-узлов. Ошибка не превращается в successful return; pending foreground не продолжает цикл после failed rendering. Cache renderer фиксируется после успешной отрисовки, поэтому safe retry не пропускает восстановление таблиц. Known BUILD_TIMEOUT сохраняет Retry-After и явное restart confirmation.
+
+Затронуты app.py (только headers), UI places/session/main/facts и новый response.mjs, три test-файла и общий session fixture, настоящий план и три записи bug registry. Package-data wildcard уже включает *.mjs; pyproject.toml, HTTP DTO/routes/transport, engine/calculation/cache/commit, требования/ADR/server sequences не менялись. Значения расчёта и HH:MM/null сохраняются. Неподтверждённые 5xx, stale classification и feedback из DEV-UI-08 не исправлялись этим work item.
+
+### Подход и воспроизводимая регрессия
+
+**Тесты → реализация.** Подготовительный leaf seam: main передаёт уже существующий clock в createPlaceSearch для mounted debounce без реального ожидания; это не исправляло nullable-region bug.
+
+- Node RED: **106 passed / 20 failed**, exit 1. Существующие tests не падали; новые assertions дошли до поиска/accept/render и воспроизвели nullable rejection, неправильно принятые/падающие ChartDTO и renderer rejection. Лог: `logs/ui-dev-07/node-red.log`.
+- Python RED: **4 passed / 2 failed / 1 deselected**, exit 1; выбранный набор без wheel воспроизвёл отсутствие no-cache на GET/HEAD, а не ошибку setup. Лог: `logs/ui-dev-07/python-red.log`.
+- Первоначальный target Python после исправления: 6 passed / 1 failed из-за PermissionError записи pip build tracker в Windows sandbox, не assertion поведения. Сохранён `python-target-sandbox.log`; та же pytest-команда повторена с необходимым доступом, **7 passed**, включая installed wheel вне checkout.
+- Добавлены **23** UI regression/positive-control cases поверх прежних 126. Проверены mixed null/string suggestions, ручной gate/выбранный ID, 11 повреждённых POST, 4 повреждённых current, bootstrap/issues, renderer failure open/foreground/submit, повторная отрисовка и timeout/restart policy. Existing golden natal/cosmogram, formatter/unknown time, late response/dispose, no-auto-POST и two-tab tests сохранены.
+
+### Фактические команды и результаты
+
+Все команды выполнены из указанного worktree; Node v24.19.0, Python 3.14, Starlette 0.49.3. Логи текущего исполнения находятся в ignored `logs/ui-dev-07/`.
+SHA-256 десяти проверенных source/test-файлов сохранены в `logs/ui-dev-07/fingerprint.json`; после runtime-проверок изменялись только этот план и bug registry. Документальная проверка новых ссылок/якорей/fences дала **57 links PASS**, exit 0; index остаётся пустым.
+
+| Команда | Фактический результат |
+|---|---|
+| `node --test --test-isolation=none tests/ui/places.test.mjs tests/ui/session.test.mjs tests/ui/recovery.test.mjs tests/ui/facts.test.mjs tests/ui/transport.test.mjs` | RED 106 passed / 20 failed; после основного исправления target GREEN **126 passed**, exit 0. Последующий positive timeout case проверен в полном Node-наборе. |
+| `python -B -m pytest -p no:cacheprovider tests/http_api/test_ui_delivery.py -k 'not installed_wheel' -q` | RED **4 passed / 2 failed / 1 deselected**, exit 1. |
+| `python -B -m pytest -p no:cacheprovider tests/http_api/test_ui_delivery.py -q` | После повторения вне sandbox **7 passed in 12.31s**, exit 0; 10 UI-ресурсов из installed wheel, включая response.mjs, headers 200/304 и MIME/HTML/API controls. |
+| `node --test --test-isolation=none tests/ui/*.test.mjs` | **149 passed / 0 failed**, exit 0, 186.38 ms. |
+| `python -B -m pytest -p no:cacheprovider tests/http_api tests/test_module_boundaries.py -q` | **346 passed in 54.36s**, exit 0. |
+| `python -B -m pytest -p no:cacheprovider -q` | **2959 passed / 1 failed in 122.92s**, exit 1; только прежний `test_property_configuration_count_does_not_grow_when_threshold_decreases`, DEBT-CALC-001, тот же контрпример двойных sextile/trine пар. |
+| `git diff --check` | PASS, exit 0. |
+
+### Наблюдаемость и границы handoff
+
+Mounted tests собирают настоящие form/session/transport/renderer с листовыми network/DOM/clock. Calls подтверждают POST → bootstrap → current для повреждённого 200, отдельные original/check request IDs, failed-check block и успешный safe retry без auto POST. Same-origin credentials/cache options и published facts проверяют existing controls. HTTP integration/packaging tests подтверждают прежние серверные lifecycle/request events; assets не создают business-request events и не вызывают calculation. Server sequences 001–004 и logging contract сохранены; нового server flow нет.
+
+**Browser retest:** NOT RUN на исправленной версии; работающий HTTPS стенд не перезапускался. Новая Python-настройка static headers требует обновления процесса перед проверкой браузера. После отдельно разрешённого обновления проверить «Гонк»/«—»/ручной выбор, ordinary-cache reload/revalidation, valid natal/cosmogram и controlled malformed recovery. Node DOM-port/ASGI/wheel не подменяют браузер или Tester.
+**Оставшиеся gates:** DEBT-CALC-001 OPEN, полный pytest FAILED; G4/G5 и acceptance не закрыты. Расчётный тест не отключён и не изменён. Пять findings DEV-UI-08 OPEN, реализация 08 NOT STARTED.
+**Дальше:** DEV-UI-08 получает текущий actual diff 07 и response guards; перед самостоятельной передачей сохранить проверяемую версию и ignored evidence или повторить команды. Commit/push/PR, публикация и перезапуск в этом поручении не выполнялись; historical prompts 01…08 сохранены.

@@ -24,6 +24,7 @@ from fastapi.exceptions import RequestValidationError
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.responses import FileResponse, JSONResponse, Response
 from starlette.staticfiles import StaticFiles
+from starlette.types import Scope
 
 from exact_orb.http_api.admission import AdmissionController, DEFAULT_POLICY
 from exact_orb.http_api.request_boundary import (
@@ -37,6 +38,16 @@ from exact_orb.http_api.routes.session import router as session_router
 
 _LOG = logging.getLogger("exact_orb.http_api")
 _T = TypeVar("_T")
+
+
+class _UiStaticFiles(StaticFiles):
+    """Revalidate stable module/CSS URLs while preserving conditional responses."""
+
+    async def get_response(self, path: str, scope: Scope) -> Response:
+        response = await super().get_response(path, scope)
+        if path.endswith((".mjs", ".css")):
+            response.headers["Cache-Control"] = "no-cache"
+        return response
 
 
 class HttpAppConfigurationError(ValueError):
@@ -513,6 +524,6 @@ def create_app(
             headers=response_headers(request_id_for(request)),
         )
 
-    app.mount("/ui", StaticFiles(directory=str(ui_directory)), name="ui")
+    app.mount("/ui", _UiStaticFiles(directory=str(ui_directory)), name="ui")
 
     return app

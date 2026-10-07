@@ -9,6 +9,9 @@ export const charts = JSON.parse(readFileSync(new URL("../../http_api/golden/cha
 const placeFixture = JSON.parse(readFileSync(new URL("../../fixtures/places.jsonl", import.meta.url), "utf8").split("\n")[0]);
 export const place = { place_id: placeFixture.place_id, display_name: placeFixture.name,
   admin1_name: placeFixture.admin1, country_code: placeFixture.country };
+// TEST-FIND-UI-005: публичный item из live GET /places?query=Гонк.
+export const placeWithoutRegion = { place_id: "1819729", display_name: "Гонконг",
+  admin1_name: null, country_code: "HK" };
 export const bootstrapPath = "/session/bootstrap", currentPath = "/charts/current", buildPath = "/charts/natal";
 export const ready = (stale = false, unknown = false) => ({ ...structuredClone(views[unknown ? "unknown_ready" : "known_ready"]),
   chart: structuredClone(charts[unknown ? "cosmogram" : "natal"]), chart_stale: stale });

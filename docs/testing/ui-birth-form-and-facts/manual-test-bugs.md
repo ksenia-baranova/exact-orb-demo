@@ -9,13 +9,13 @@
 | ID | Дефект | Severity | Priority | Состояние исправления | Ручной retest |
 |---|---|---|---|---|---|
 | [TEST-FIND-UI-004](#test-find-ui-004) | Ввод `0045` не отображается как `00:45` | S3, PROPOSED Developer | P3, PROPOSED | Исправление включено в пакет DEV-UI-03 | NOT RUN после исправления |
-| [TEST-FIND-UI-005](#test-find-ui-005) | Допустимый `admin1_name:null` ломает всю выдачу мест | S2, PROPOSED Developer | P2, PROPOSED | OPEN, DEV-UI-07; найдено другой моделью, замечание №1 | NOT RUN после исправления |
+| [TEST-FIND-UI-005](#test-find-ui-005) | Допустимый `admin1_name:null` ломает всю выдачу мест | S2, PROPOSED Developer | P2, PROPOSED | FIXED PENDING RETEST, DEV-UI-07; найдено другой моделью, замечание №1 | NOT RUN после исправления |
 | [TEST-FIND-UI-006](#test-find-ui-006) | После неподтверждённого 5xx разрешён POST без сверки | S2, PROPOSED Developer | P2, PROPOSED | OPEN, DEV-UI-08; найдено другой моделью, замечание №2 | NOT RUN после исправления |
 | [TEST-FIND-UI-007](#test-find-ui-007) | Устаревшая карта получает recovery-статус `matched` | S3, PROPOSED Developer | P2, PROPOSED | OPEN, DEV-UI-08; найдено другой моделью, замечание №3 | NOT RUN после исправления |
 | [TEST-FIND-UI-008](#test-find-ui-008) | Нет объяснения повторного действия после восстановления сессии | S3, PROPOSED Developer | P3, PROPOSED | OPEN, DEV-UI-08; найдено другой моделью, замечание №4 | NOT RUN после исправления |
-| [TEST-FIND-UI-009](#test-find-ui-009) | Ресурсы с постоянными URL не имеют явной политики кэша | S2, PROPOSED Developer | P2, PROPOSED | OPEN, DEV-UI-07; найдено другой моделью, замечание №5 | Смешение версий в браузере NOT RUN |
+| [TEST-FIND-UI-009](#test-find-ui-009) | Ресурсы с постоянными URL не имеют явной политики кэша | S2, PROPOSED Developer | P2, PROPOSED | FIXED PENDING RETEST, DEV-UI-07; найдено другой моделью, замечание №5 | Смешение версий в браузере NOT RUN |
 | [TEST-FIND-UI-010](#test-find-ui-010) | После committed POST отсутствует сводка данных построенной карты | S3, PROPOSED Developer | P3, PROPOSED | OPEN, DEV-UI-08; найдено другой моделью, замечание №6 | NOT RUN после исправления |
-| [TEST-FIND-UI-011](#test-find-ui-011) | Повреждённый успешный ответ вызывает исключение без сообщения UI | S2, PROPOSED Developer | P2, PROPOSED | OPEN, DEV-UI-07; найдено другой моделью, замечание №13 | NOT RUN после исправления |
+| [TEST-FIND-UI-011](#test-find-ui-011) | Повреждённый успешный ответ вызывает исключение без сообщения UI | S2, PROPOSED Developer | P2, PROPOSED | FIXED PENDING RETEST, DEV-UI-07; найдено другой моделью, замечание №13 | NOT RUN после исправления |
 | [TEST-FIND-UI-012](#test-find-ui-012) | Фокус стирает подпись восстановленного места | S3, PROPOSED Developer | P3, PROPOSED | OPEN, DEV-UI-08; найдено другой моделью, замечание №14 | NOT RUN после исправления |
 
 <a id="test-find-ui-004"></a>
@@ -81,7 +81,7 @@
 
 **Происхождение:** найдено другой моделью. Имя/версия модели не сообщены. Владелец передал список из 16 замечаний и поручил Developer зарегистрировать принятые баги и подготовить промты. Исходный материал — вложение «Вставленный текст.txt» в текущем чате; ниже сохранены номера и самостоятельные воспроизводимые описания.
 **Baseline проверки:** `0d5d70acfc4f1f384b2c06970b35111b411c4fc4`, `dev/ui-birth-form-and-facts-review`. **Дата проверки:** 2026-10-07.
-**Ownership:** исправление — Developer; независимая проверка и окончательная severity — Tester; priority/delivery — Change Manager. Все восемь новых записей OPEN, исправления NOT STARTED, retest NOT RUN.
+**Ownership:** исправление — Developer; независимая проверка и окончательная severity — Tester; priority/delivery — Change Manager. После DEV-UI-07 записи 005/009/011 — FIXED PENDING RETEST; пять записей DEV-UI-08 остаются OPEN. Ручной retest исправлений NOT RUN.
 **Подтверждение:** Developer сверил код/approved requirements и воспроизвёл указанные ниже случаи на настоящих UI-модулях с существующими fixtures и листовыми fake network/clock/DOM. Команда `node --test --test-isolation=none tests/ui/*.test.mjs` при ревью дала 126 passed / 0 failed; эти зелёные тесты не покрывают найденные условия. Live HTTPS GET отдельно подтвердил №1 и заголовки ресурсов №5. Это не независимая Tester acceptance.
 **План исправления:** [DEV-UI-07/08 — найдено другой моделью](../../project_management/implementation_plans/ui_birth_form_and_facts_implementation_plan.md#external-model-bugs).
 **Предел scope:** зарегистрированы №1, 2, 3, 4, 5, 6, 13, 14 в уточнённой формулировке. №7, 11 не нарушают текущий контракт; №8–10 — предложения UX; №12 связан с уже принятым FIND-HTTP-023 и предложением клиентского таймаута; №15–16 — предложения очистки. Новыми багами они не объявляются.
@@ -90,11 +90,12 @@
 ## TEST-FIND-UI-005. Место без названия региона нельзя выбрать
 
 - **Источник:** найдено другой моделью, замечание №1; пользователь подтвердил сообщение «Поиск временно недоступен» для «Гонк» скриншотом.
-- **Тип / оценка / blocks:** implementation defect; S2/P2 PROPOSED — часть допустимого каталога недоступна для выбора, основной сценарий для этих мест блокируется; остальные сценарии можно продолжать. **Статус:** OPEN. **Work item:** DEV-UI-07.
+- **Тип / оценка / blocks:** implementation defect; S2/P2 PROPOSED — часть допустимого каталога недоступна для выбора, основной сценарий для этих мест блокируется до поставки исправления; остальные сценарии можно продолжать. **Статус:** FIXED PENDING RETEST. **Work item:** DEV-UI-07.
 - **Контракт:** REQ-UI-02/10, AS-UI-02/18/19; [PlaceSuggestion](../../requirements/component_responsibilities/exact-orb_place_catalog.md), [PlaceSuggestionDTO](../../../src/exact_orb/http_api/dto.py) допускают `admin1_name:null`.
 - **Воспроизведение / actual:** ввести «Гонк». Live `GET /places?query=Гонк` вернул 200 и `{"items":[{"place_id":"1819729","display_name":"Гонконг","admin1_name":null,"country_code":"HK"}]}`, request ID `d454c88c-74ba-4d7a-8d0c-419073e67bbb`. UI отвергает всю выдачу. В локальном `data/places.sqlite` read-only SQL подтвердил 37/16329 мест с отсутствующим названием региона.
 - **Причина / expected:** [places.mjs](../../../src/exact_orb/http_api/ui/places.mjs) требует строку для всех четырёх полей. Допустимый `null` должен доходить до подсказки «Гонконг / — / HK» и выбора подтверждённого ID. В смешанном списке остальные корректные места также доступны.
-- **Регрессия / закрытие:** planned `places.test.mjs` и mounted проверка выбора/явного POST с `place_id:"1819729"`; позитивный контроль региона-строки. Политика удаления повреждённых элементов отдельно не меняется. Закрытие после автоматических проверок и ручного retest выбора.
+- **Регрессия / закрытие:** `places.test.mjs` и mounted проверка выбора/явного POST с `place_id:"1819729"`; позитивный контроль региона-строки. Политика удаления повреждённых элементов отдельно не меняется. Закрытие после автоматических проверок и ручного retest выбора.
+- **Developer fix, 2026-10-07:** nullable регион принят, в смешанном списке элементы сохранены; mounted тест проверяет «—», выбор ID и один POST только после ручного checkbox. Tests `a nullable region preserves the entire mixed result and confirmed selection` и `mounted nullable-region selection renders a dash and sends only the selected ID after the gate` прошли. [Фактические проверки DEV-UI-07](../../project_management/implementation_plans/ui_birth_form_and_facts_implementation_plan.md#dev-ui-07-execution). Рабочий стенд не перезапускался, browser retest NOT RUN.
 
 <a id="test-find-ui-006"></a>
 ## TEST-FIND-UI-006. Неподтверждённый 5xx не запускает сверку
@@ -128,11 +129,12 @@
 <a id="test-find-ui-009"></a>
 ## TEST-FIND-UI-009. Обновление UI может смешивать версии ресурсов
 
-- **Источник:** найдено другой моделью, замечание №5. **Тип / оценка / blocks:** дефект доставки ресурсов, подтверждённая конфигурация с риском обновления; S2/P2 PROPOSED — несовместимые версии модулей могут нарушать работу после обновления; конкретное смешение версий в браузере NOT RUN. **Статус:** OPEN. **Work item:** DEV-UI-07.
+- **Источник:** найдено другой моделью, замечание №5. **Тип / оценка / blocks:** дефект доставки ресурсов, подтверждённая конфигурация с риском обновления; S2/P2 PROPOSED — несовместимые версии модулей могут нарушать работу после обновления; конкретное смешение версий в браузере NOT RUN. **Статус:** FIXED PENDING RETEST. **Work item:** DEV-UI-07.
 - **Контракт:** REQ-UI-01/10, AS-UI-01/10/19; same-origin packaged UI. Явная политика кэширования ресурсов — технический выбор Developer внутри этого способа доставки.
 - **Воспроизведение / actual:** live HTTPS GET `/ui/main.mjs` вернул 200, ETag и Last-Modified, без Cache-Control; [app.py](../../../src/exact_orb/http_api/app.py) монтирует обычный StaticFiles. HTML имеет no-store. Постоянные URL ресурсов допускают эвристическую свежесть и использование прежнего кода.
 - **Expected:** для `/ui/*.mjs` и CSS задать `Cache-Control:no-cache`, сохранив ETag/Last-Modified и корректные conditional 304; HTML/API сохраняют no-store. Новые URL/hash build pipeline не нужны для этого исправления.
-- **Регрессия / закрытие:** дополнить `tests/http_api/test_ui_delivery.py` проверками 200/304 и установленного wheel вне checkout. После обновления повторить browser reload с обычным кэшем, зафиксировать версии/сетевое evidence. CSP/nosniff не включены в этот баг.
+- **Регрессия / закрытие:** `tests/http_api/test_ui_delivery.py` проверяет 200/304 и установленный wheel вне checkout. После обновления повторить browser reload с обычным кэшем, зафиксировать версии/сетевое evidence. CSP/nosniff не включены в этот баг.
+- **Developer fix, 2026-10-07:** private StaticFiles subclass добавляет no-cache модулям/CSS, включая conditional 304; ETag/Last-Modified/MIME, HTML/API no-store и безопасные 404/405 сохранены. Расширены существующие delivery и installed-wheel tests; **7 passed**, wheel доставляет **10** UI-ресурсов вне checkout. [Evidence](../../project_management/implementation_plans/ui_birth_form_and_facts_implementation_plan.md#dev-ui-07-execution). Live cache/reload после обновления NOT RUN.
 
 <a id="test-find-ui-010"></a>
 ## TEST-FIND-UI-010. Результат POST не имеет сводки данных рождения
@@ -146,11 +148,12 @@
 <a id="test-find-ui-011"></a>
 ## TEST-FIND-UI-011. Некорректный успешный ответ ломает отрисовку
 
-- **Источник:** найдено другой моделью, замечание №13; подтверждён контролируемый случай повреждённого ответа. **Тип / оценка / blocks:** implementation defect UI boundary; S2/P2 PROPOSED — отрисовка прекращается без объяснения, результат не подтверждён; затронута error/recovery acceptance. **Статус:** OPEN. **Work item:** DEV-UI-07.
+- **Источник:** найдено другой моделью, замечание №13; подтверждён контролируемый случай повреждённого ответа. **Тип / оценка / blocks:** implementation defect UI boundary; S2/P2 PROPOSED — отрисовка прекращается без объяснения, результат не подтверждён; затронута error/recovery acceptance. **Статус:** FIXED PENDING RETEST. **Work item:** DEV-UI-07.
 - **Контракт:** REQ-UI-03/08/09/10, AS-UI-15/17/23; публичные ChartDTO/current по [HTTP API](../../requirements/http_api.md).
 - **Воспроизведение / actual:** вернуть `200 chart_ready`, корректные kind/identity/state_version и `chart.points:null` в настоящем mounted coordinator. `session.submit()` отклоняется с `TypeError: Cannot read properties of null (reading 'map')`; form-error пуст, phase idle. Обычные сетевые ошибки уже ловятся; реальные корректные DTO не дали этой ошибки.
 - **Причина / expected:** минимальная проверка chart допускает объект, который renderer не может читать, а ошибка отрисовки не превращается в видимое состояние отказа. Повреждённый DTO не принимается как подтверждённая карта; сохраняются черновик/последняя подтверждённая карта, отображается ошибка и выполняется соответствующая safe recovery policy для POST.
-- **Регрессия / закрытие:** planned mounted malformed POST/current cases, валидные natal/cosmogram и deferred dispose controls; исключение не подавлять пустым catch, не исправлять цифры/типы догадками. Проверить отсутствие необработанного rejection и автоматического POST. Retest после исправления.
+- **Регрессия / закрытие:** mounted malformed POST/current cases, валидные natal/cosmogram и deferred dispose controls; исключение не подавляется пустым catch, цифры/типы не исправляются догадками. Проверено отсутствие необработанного rejection и автоматического POST. Ручной retest после исправления ожидается.
+- **Developer fix, 2026-10-07:** `response.mjs` проверяет DTO перед accept; повреждённый POST 200 запускает только safe bootstrap/current, плохой current сохраняет подтверждённый view и блокирует build. Ошибка renderer даёт видимый fallback и read-only recovery; render cache фиксируется после успешного построения DOM, поэтому повторная проверка действительно отрисовывает таблицы. Mounted cases `malformed POST …` (11), `malformed foreground current …` (4), `unexpected renderer failure during …` (open/foreground/submit), malformed bootstrap/issues и positive BUILD_TIMEOUT/restart прошли. Весь UI — **149 passed**. [Evidence и команды](../../project_management/implementation_plans/ui_birth_form_and_facts_implementation_plan.md#dev-ui-07-execution). Ручной/независимый retest NOT RUN.
 
 <a id="test-find-ui-012"></a>
 ## TEST-FIND-UI-012. Подпись восстановленного места исчезает при фокусе

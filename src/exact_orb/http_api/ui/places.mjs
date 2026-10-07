@@ -62,7 +62,8 @@ export function createPlaceSearch({ searchPlaces, clock = browserClock, debounce
     const items = outcome.body?.items;
     if (outcome.kind === "http" && outcome.status === 200 && Array.isArray(items)
       && items.every((item) => item !== null && typeof item === "object"
-        && ["place_id", "display_name", "admin1_name", "country_code"].every((key) => typeof item[key] === "string")
+        && ["place_id", "display_name", "country_code"].every((key) => typeof item[key] === "string")
+        && (item.admin1_name === null || typeof item.admin1_name === "string")
         && item.place_id !== "" && item.display_name !== "")) {
       state.items = items.map(copyItem);
       state.status = items.length === 0 ? "empty" : "results";

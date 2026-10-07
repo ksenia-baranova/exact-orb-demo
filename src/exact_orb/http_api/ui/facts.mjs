@@ -153,19 +153,18 @@ export function mountChartResult(document) {
       const facts = view?.status === "chart_ready" && view.chart ? readChartFacts(view.chart) : null;
       const key = JSON.stringify([facts, view?.chart_stale]);
       if (key === lastKey) return;
-      lastKey = key;
       if (facts?.identity !== currentFacts?.identity) {
         details.hidden = true;
         detailsButton.setAttribute("aria-expanded", "false");
         detailsButton.textContent = "Показать подробности карты";
       }
-      currentFacts = facts;
       element.hidden = facts === null;
       detailsButton.disabled = facts === null;
       if (facts === null) {
         details.replaceChildren();
         title.textContent = ""; metadata.textContent = ""; note.textContent = "";
         delete element.dataset.chartIdentity;
+        currentFacts = null; lastKey = key;
         return;
       }
       element.dataset.chartIdentity = facts.identity;
@@ -174,6 +173,7 @@ export function mountChartResult(document) {
       note.textContent = facts.note;
       note.hidden = facts.note === "";
       renderFacts(facts);
+      currentFacts = facts; lastKey = key;
     },
   });
 }

@@ -1,5 +1,6 @@
 // REQ-UI-01/03/08/09: текущая карта и изменяемый черновик имеют разные источники.
 import { planRecovery, recoveredStatus, recoveryMessage } from "./recovery.mjs";
+import { validVersion, validCurrent, validBootstrap, validBuild, validError } from "./response.mjs";
 const sessionErrors = new Set(["SESSION_REQUIRED", "SESSION_EXPIRED", "SESSION_NOT_FOUND"]);
 const fields = { "birth.date": "date", "birth.time": "time", "birth.place": "place" };
 const browserClock = { now: () => performance.now(),
@@ -19,7 +20,7 @@ export function issueMessage(issue) {
   return message;
 }
 
-export function createSessionCoordinator({ apiClient, form, onChange, clock = browserClock } = {}) {
+export function createSessionCoordinator({ apiClient, form, onChange, onRenderError, clock = browserClock } = {}) {
   let state = { phase: "idle", sessionReady: false, view: null, source: null, submittedIntent: null,
     fieldIssues: {}, error: null, requiresReconciliation: false, requestId: null, recovery: null };
   let disposed = false, controller = null, retryAt = 0, retryTimer = null, pendingForeground = false;
@@ -37,8 +38,21 @@ export function createSessionCoordinator({ apiClient, form, onChange, clock = br
       canRecheck: !disposed && !busy() && clock.now() >= retryAt,
       retryInSeconds: Math.max(0, Math.ceil((retryAt - clock.now()) / 1000)) };
   }
-  function publish() { if (!disposed && onChange) onChange(snapshot()); }
-  function phase(value) { state.phase = value; publish(); }
+  function publish() {
+    if (disposed || !onChange) return true;
+    try { onChange(snapshot()); return true; }
+    catch {
+      // Ошибка renderer имеет видимый исход; восстановление только безопасным чтением.
+      state.error = { message: "Не удалось показать ответ сервера. Введённые данные сохранены. Повторите проверку карты.",
+        userMessage: null, code: null, detailCode: null, status: null, retryable: false,
+        generalIssues: [], requestId: state.requestId, retryAfter: null };
+      state.requiresReconciliation = true;
+      if (state.recovery) state.recovery.status = "check_failed";
+      if (onRenderError) onRenderError(snapshot());
+      return false;
+    }
+  }
+  function phase(value) { state.phase = value; return publish(); }
   function cooldown(outcome) {
     if (retryTimer !== null) clock.clear(retryTimer);
     retryTimer = null;
@@ -53,7 +67,7 @@ export function createSessionCoordinator({ apiClient, form, onChange, clock = br
     }, retryAt - clock.now());
   }
   function error(outcome, checking = false) {
-    const body = outcome.body;
+    const body = validError(outcome.body) ? outcome.body : null;
     const userMessage = typeof body?.user_message === "string" ? body.user_message : null;
     state.fieldIssues = {};
     const generalIssues = [];
@@ -74,18 +88,6 @@ export function createSessionCoordinator({ apiClient, form, onChange, clock = br
     }
     cooldown(outcome);
     return false;
-  }
-  const version = (body) => Number.isSafeInteger(body?.state_version) && body.state_version >= 0;
-  const chart = (body) => body?.chart && typeof body.chart.chart_identity === "string" && body.chart.chart_identity !== ""
-    && ["natal", "cosmogram"].includes(body.chart.kind);
-  function validCurrent(body) {
-    if (!version(body)) return false;
-    if (body.status === "empty") return body.birth === null && body.chart === null && body.chart_stale === null;
-    const birth = body.birth;
-    if (!birth || typeof birth.birth_date !== "string" || !birth.place?.place_id || typeof birth.place.display_name !== "string"
-      || typeof birth.time_unknown !== "boolean" || (birth.time_unknown ? birth.birth_time !== null : typeof birth.birth_time !== "string")) return false;
-    return body.status === "chart_ready" ? Boolean(chart(body)) && typeof body.chart_stale === "boolean"
-      : body.status === "chart_unavailable" && body.chart === null && body.chart_stale === null;
   }
   function accept(outcome, source) {
     state.view = structuredClone(outcome.body);
@@ -114,7 +116,7 @@ export function createSessionCoordinator({ apiClient, form, onChange, clock = br
   }
   const missingSession = (outcome) => outcome.kind === "http" && outcome.status === 409 && sessionErrors.has(outcome.body?.code);
   async function read(allowRecovery) {
-    phase("reading");
+    if (!phase("reading")) return false;
     const outcome = await call("current");
     if (disposed) return false;
     if (missingSession(outcome) && allowRecovery) return bootstrapAndRead(false);
@@ -127,10 +129,10 @@ export function createSessionCoordinator({ apiClient, form, onChange, clock = br
   }
   async function bootstrapAndRead(allowRecovery) {
     state.sessionReady = false;
-    phase("bootstrapping");
+    if (!phase("bootstrapping")) return false;
     const outcome = await call("bootstrap");
     if (disposed) return false;
-    if (outcome.kind !== "http" || outcome.status !== 200 || outcome.body?.status !== "ready" || !version(outcome.body)) return error(outcome, true);
+    if (outcome.kind !== "http" || outcome.status !== 200 || !validBootstrap(outcome.body)) return error(outcome, true);
     return read(allowRecovery);
   }
   function begin() {
@@ -138,12 +140,15 @@ export function createSessionCoordinator({ apiClient, form, onChange, clock = br
     state.fieldIssues = {}; state.error = null;
   }
   async function finish() {
-    if (disposed) return;
-    controller = null; phase("idle");
-    if (pendingForeground && clock.now() >= retryAt) {
+    if (disposed) return false;
+    controller = null;
+    const rendered = phase("idle");
+    if (!rendered) pendingForeground = false;
+    if (rendered && pendingForeground && clock.now() >= retryAt) {
       pendingForeground = false;
       await foreground();
     }
+    return rendered;
   }
   const restartRequired = () => state.recovery?.kind === "timeout" && !state.recovery.restartConfirmed;
   async function checkRecovery() {
@@ -154,9 +159,11 @@ export function createSessionCoordinator({ apiClient, form, onChange, clock = br
     if (disposed || busy() || clock.now() < retryAt || restartRequired()) return false;
     begin();
     if (state.recovery) state.recovery.status = "checking";
+    let accepted, rendered;
     try {
-      return state.recovery && !asForeground ? await checkRecovery() : await bootstrapAndRead(true);
-    } finally { await finish(); }
+      accepted = state.recovery && !asForeground ? await checkRecovery() : await bootstrapAndRead(true);
+    } finally { rendered = await finish(); }
+    return accepted && rendered;
   }
   async function recheck({ restartConfirmed = false } = {}) {
     if (disposed || busy() || clock.now() < retryAt) return false;
@@ -182,22 +189,25 @@ export function createSessionCoordinator({ apiClient, form, onChange, clock = br
       state.recovery = null;
       state.submittedIntent = Object.freeze({ ...prepared.intent });
       submittedPlaceName = form.snapshot().place.display_name;
-      phase("building");
+      let accepted = false, rendered;
       try {
-        const outcome = await call("buildNatal", state.submittedIntent);
-        if (disposed) return false;
-        if (missingSession(outcome)) return await bootstrapAndRead(false);
-        if (outcome.kind === "http" && ((outcome.status === 200 && outcome.body?.status === "already_applied" && version(outcome.body))
-          || (outcome.status === 409 && outcome.body?.code === "RESULT_SUPERSEDED"))) return await read(true);
-        if (outcome.kind === "http" && outcome.status === 200 && outcome.body?.status === "chart_ready" && version(outcome.body) && chart(outcome.body)) {
-          return accept({ ...outcome, body: { ...outcome.body, birth: null, chart_stale: false } }, "build");
+        if (phase("building")) {
+          const outcome = await call("buildNatal", state.submittedIntent);
+          if (disposed) return false;
+          if (missingSession(outcome)) accepted = await bootstrapAndRead(false);
+          else if (outcome.kind === "http" && ((outcome.status === 200 && outcome.body?.status === "already_applied" && validVersion(outcome.body))
+            || (outcome.status === 409 && outcome.body?.code === "RESULT_SUPERSEDED"))) accepted = await read(true);
+          else if (outcome.kind === "http" && outcome.status === 200 && validBuild(outcome.body)) {
+            accepted = accept({ ...outcome, body: { ...outcome.body, birth: null, chart_stale: false } }, "build");
+          } else {
+            state.recovery = planRecovery(outcome, state.submittedIntent, state.view, submittedPlaceName);
+            state.requiresReconciliation = state.recovery !== null;
+            error(outcome);
+            if (state.recovery && !restartRequired() && clock.now() >= retryAt) await checkRecovery();
+          }
         }
-        state.recovery = planRecovery(outcome, state.submittedIntent, state.view, submittedPlaceName);
-        state.requiresReconciliation = state.recovery !== null;
-        error(outcome);
-        if (state.recovery && !restartRequired() && clock.now() >= retryAt) await checkRecovery();
-        return false;
-      } finally { await finish(); }
+      } finally { rendered = await finish(); }
+      return accepted && rendered;
     },
     clearFieldError(field) { delete state.fieldIssues[field]; publish(); },
     dispose() {

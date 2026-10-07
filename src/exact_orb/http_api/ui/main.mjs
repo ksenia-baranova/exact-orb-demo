@@ -102,12 +102,27 @@ export function mountBirthForm(document, { apiClient = api, clock } = {}) {
       ? "Построить ещё раз" : view?.chart_stale ? "Пересчитать"
       : view?.status === "chart_unavailable" ? "Построить заново" : "Построить карту";
     element.setAttribute("aria-busy", String(state.busy));
-    readAgain.hidden = !(state.recovery && state.recovery.status !== "matched") && !(state.error && !state.sessionReady);
+    readAgain.hidden = !(state.recovery && state.recovery.status !== "matched")
+      && !(state.error && (!state.sessionReady || state.requiresReconciliation));
     readAgain.textContent = state.recovery?.kind === "timeout" && !state.recovery.restartConfirmed
       ? "Проверить после перезапуска" : "Повторить проверку карты";
     readAgain.disabled = !state.canRecheck;
     result.update(view);
     renderErrors();
+  }
+
+  function renderFailure(state) {
+    // Простой fallback на существующих DOM-узлах, без повторного вызова renderer.
+    sessionState = state;
+    overallError.hidden = false;
+    overallError.textContent = state.error.message;
+    sessionStatus.textContent = state.error.message;
+    element.setAttribute("aria-busy", String(state.busy));
+    build.disabled = !state.canSubmit;
+    readAgain.hidden = false;
+    readAgain.disabled = !state.canRecheck;
+    readAgain.textContent = state.recovery?.kind === "timeout" && !state.recovery.restartConfirmed
+      ? "Проверить после перезапуска" : "Повторить проверку карты";
   }
 
   function edited(field) {
@@ -158,7 +173,7 @@ export function mountBirthForm(document, { apiClient = api, clock } = {}) {
     renderErrors();
   }
 
-  places = createPlaceSearch({ searchPlaces: apiClient.searchPlaces, onChange: renderPlaces,
+  places = createPlaceSearch({ searchPlaces: apiClient.searchPlaces, clock, onChange: renderPlaces,
     onSelect(item) {
       form.selectPlace(item);
       place.value = item.display_name;
@@ -169,8 +184,7 @@ export function mountBirthForm(document, { apiClient = api, clock } = {}) {
   time.value = "";
   unknown.checked = false;
   acknowledged.checked = false;
-  session = createSessionCoordinator({ apiClient, form, clock, onChange: renderSession });
-  renderSession(session.snapshot());
+  session = createSessionCoordinator({ apiClient, form, clock, onChange: renderSession, onRenderError: renderFailure });
   date.addEventListener("input", () => { form.setDate(date.value); edited("date"); });
   time.addEventListener("input", () => {
     const formatted = formatTimeInput(time.value);

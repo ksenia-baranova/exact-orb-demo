@@ -6,8 +6,177 @@ import { test } from "node:test";
 import { mountBirthForm } from "../../src/exact_orb/http_api/ui/main.mjs";
 import { documentPort } from "./fixtures/dom.mjs";
 
-import { charts, views, place, ready, committed, response, failure, deferred, harness,
+import { charts, views, place, placeWithoutRegion, ready, committed, response, failure, deferred, harness,
   bootstrapPath, currentPath, buildPath } from "./fixtures/session.mjs";
+
+// DEV-UI-07, REQ-UI-02/03/10, AS-UI-02/18/19/20; TEST-FIND-UI-005.
+test("mounted nullable-region selection renders a dash and sends only the selected ID after the gate", async () => {
+  const h = harness(), document = documentPort();
+  h.queue(currentPath, response(ready()));
+  const ui = mountBirthForm(document, { apiClient: h.apiClient, clock: h.clock }); await ui.ready;
+  const path = "/places?query=" + encodeURIComponent("Гонк");
+  h.queue(path, response({ items: [placeWithoutRegion, place] }));
+  const input = document.getElementById("birth-place"); input.focus(); input.value = "Гонк";
+  input.emit("input"); await h.clock.advance(250);
+  const options = document.getElementById("place-list").children;
+  assert.equal(options.length, 2);
+  assert.match(options[0].textContent, /Регион: — · Страна: HK/);
+  assert.ok(options[1].textContent.includes(place.admin1_name));
+  ui.places.select(0);
+  assert.match(document.getElementById("place-status").textContent, /Регион: —/);
+  await document.getElementById("birth-form").emit("submit"); assert.equal(h.builds().length, 0);
+  const gate = document.getElementById("terms-acknowledged"); gate.checked = true; gate.emit("change");
+  await document.getElementById("birth-form").emit("submit");
+  assert.equal(h.builds().length, 1);
+  assert.equal(h.builds()[0].body.place_id, placeWithoutRegion.place_id);
+  assert.deepEqual(Object.keys(h.builds()[0].body).sort(), ["birth_date", "birth_time", "place_id"]);
+  ui.dispose();
+});
+
+// REQ-UI-03/08/09/10, AS-UI-15/17/23; TEST-FIND-UI-011.
+const damagedCharts = [
+  ["points null", (chart) => { chart.points = null; }],
+  ["point null", (chart) => { chart.points[0] = null; }],
+  ["point degree outside range", (chart) => { chart.points[0].degree = 30; }],
+  ["point minute wrong type", (chart) => { chart.points[0].minute = "15"; }],
+  ["point retrograde wrong type", (chart) => { chart.points[0].retrograde = "false"; }],
+  ["houses not array", (chart) => { chart.houses = {}; }],
+  ["house null", (chart) => { chart.houses[0] = null; }],
+  ["missing angle", (chart) => { delete chart.angles.asc; }],
+  ["aspects null", (chart) => { chart.aspects = null; }],
+  ["aspect null", (chart) => { chart.aspects[0] = null; }],
+  ["aspect orb wrong type", (chart) => { chart.aspects[0].orb = "1"; }],
+];
+for (const [name, damage] of damagedCharts) {
+  test(`malformed POST ${name} preserves the confirmed view and reconciles without a second POST`, async () => {
+    const h = harness(), document = documentPort(), saved = ready();
+    h.queue(currentPath, response(saved));
+    const ui = mountBirthForm(document, { apiClient: h.apiClient, clock: h.clock }); await ui.ready;
+    ui.form.acknowledge(true); const draft = ui.form.snapshot();
+    const bad = structuredClone(charts.natal); damage(bad);
+    h.queue(buildPath, response(committed(bad), 200, { "X-Request-ID": "bad-post" }));
+    h.queue(currentPath, response(failure("STATE_READ_FAILED"), 503, { "X-Request-ID": "failed-check" }));
+    await assert.doesNotReject(() => document.getElementById("birth-form").emit("submit"));
+    const state = ui.session.snapshot();
+    assert.equal(state.recovery?.kind, "unconfirmed_response");
+    assert.equal(state.recovery.status, "check_failed");
+    assert.equal(state.recovery.originalRequestId, "bad-post");
+    assert.equal(state.recovery.checkRequestId, "failed-check");
+    assert.equal(state.canSubmit, false); assert.equal(state.busy, false);
+    assert.deepEqual(state.view, saved); assert.deepEqual(ui.form.snapshot(), draft);
+    assert.ok(document.getElementById("form-error").textContent);
+    assert.equal(h.builds().length, 1);
+    assert.deepEqual(h.calls.map((call) => call.path),
+      [bootstrapPath, currentPath, buildPath, bootstrapPath, currentPath]);
+    h.queue(currentPath, response(saved)); assert.equal(await ui.session.recheck(), true);
+    assert.equal(ui.session.snapshot().canSubmit, true, "valid current recovers availability");
+    assert.equal(h.builds().length, 1); ui.dispose();
+  });
+}
+for (const [name, damage] of [
+  ["points null", (view) => { view.chart.points = null; }],
+  ["birth time wrong format", (view) => { view.birth.birth_time = "0045"; }],
+  ["place ID wrong type", (view) => { view.birth.place.place_id = 42; }],
+  ["cosmogram with houses", (view) => { view.chart.kind = "cosmogram"; }],
+]) {
+  test(`malformed foreground current ${name} cannot replace the confirmed view`, async () => {
+    const h = harness(), document = documentPort(), saved = ready();
+    h.queue(currentPath, response(saved));
+    const ui = mountBirthForm(document, { apiClient: h.apiClient, clock: h.clock }); await ui.ready;
+    const draft = ui.form.snapshot(), bad = structuredClone(saved); damage(bad);
+    h.queue(currentPath, response(bad, 200, { "X-Request-ID": "bad-current" }));
+    await assert.doesNotReject(() => document.defaultView.emit("online"));
+    const state = ui.session.snapshot();
+    assert.deepEqual(state.view, saved); assert.deepEqual(ui.form.snapshot(), draft);
+    assert.equal(state.busy, false); assert.equal(state.canSubmit, false);
+    assert.equal(state.error.requestId, "bad-current");
+    assert.ok(document.getElementById("form-error").textContent);
+    assert.equal(h.builds().length, 0);
+    h.queue(currentPath, response(saved)); assert.equal(await ui.session.recheck(), true);
+    assert.equal(ui.session.snapshot().error, null); ui.dispose();
+  });
+}
+
+test("malformed bootstrap is visible, blocks current/build and can be safely retried", async () => {
+  const h = harness(), document = documentPort();
+  h.queue(bootstrapPath, response({ status: "ready", state_version: "1" }));
+  const ui = mountBirthForm(document, { apiClient: h.apiClient, clock: h.clock });
+  assert.equal(await ui.ready, false);
+  assert.equal(ui.session.snapshot().canSubmit, false);
+  assert.ok(document.getElementById("form-error").textContent);
+  assert.deepEqual(h.calls.map((call) => call.path), [bootstrapPath]);
+  assert.equal(await ui.session.recheck(), true);
+  assert.equal(ui.session.snapshot().view.status, "empty"); ui.dispose();
+});
+
+test("malformed issue candidates do not reject the mounted submission handler", async () => {
+  const h = harness(), document = documentPort(); h.queue(currentPath, response(ready()));
+  const ui = mountBirthForm(document, { apiClient: h.apiClient, clock: h.clock }); await ui.ready;
+  ui.form.acknowledge(true);
+  h.queue(buildPath, response(failure("INPUT_REQUIRED",
+    [{ field: "birth.time", code: "INVALID", candidates: { length: 1 } }]), 422));
+  await assert.doesNotReject(() => document.getElementById("birth-form").emit("submit"));
+  assert.ok(document.getElementById("form-error").textContent);
+  assert.equal(ui.session.snapshot().error.status, 422);
+  assert.equal(ui.session.snapshot().requiresReconciliation, false);
+  assert.equal(ui.session.snapshot().busy, false); assert.equal(h.builds().length, 1); ui.dispose();
+});
+
+for (const action of ["open", "foreground", "submit"]) {
+  test(`unexpected renderer failure during ${action} becomes a visible safe-read-only error`, async () => {
+    const h = harness(), document = documentPort(); h.queue(currentPath, response(ready()));
+    const originalCreate = document.createElement;
+    const breakRenderer = () => {
+      document.createElement = () => { throw new Error("controlled DOM failure"); };
+    };
+    // mount creates the result skeleton before open; damage only the dynamic table renderer.
+    const ui = mountBirthForm(document, { apiClient: h.apiClient, clock: h.clock });
+    if (action === "open") breakRenderer();
+    else {
+      await ui.ready; ui.form.acknowledge(true);
+      const next = ready(); next.chart.chart_identity += "-new";
+      h.queue(action === "foreground" ? currentPath : buildPath,
+        response(action === "foreground" ? next : committed(next.chart)));
+      breakRenderer();
+    }
+    const operation = action === "open" ? ui.ready : action === "foreground"
+      ? document.defaultView.emit("online") : document.getElementById("birth-form").emit("submit");
+    await assert.doesNotReject(() => operation);
+    assert.equal(ui.session.snapshot().busy, false); assert.equal(ui.session.snapshot().canSubmit, false);
+    assert.match(document.getElementById("form-error").textContent, /показать|отобразить|обновить/i);
+    assert.equal(document.getElementById("birth-form").getAttribute("aria-busy"), "false");
+    document.createElement = originalCreate;
+    h.queue(currentPath, response(ready())); assert.equal(await ui.session.recheck(), true);
+    assert.equal(ui.session.snapshot().error, null);
+    assert.equal(document.getElementById("chart-facts").querySelectorAll("table").length, 4);
+    ui.dispose();
+  });
+}
+
+test("renderer fallback preserves the BUILD_TIMEOUT restart confirmation and Retry-After gate", async () => {
+  const h = harness(), document = documentPort(); h.queue(currentPath, response(ready()));
+  const ui = mountBirthForm(document, { apiClient: h.apiClient, clock: h.clock }); await ui.ready;
+  ui.form.acknowledge(true);
+  const element = document.getElementById("birth-form"), originalSet = element.setAttribute;
+  let fail = true;
+  element.setAttribute = (name, value) => {
+    if (fail && name === "aria-busy" && value === "false") {
+      fail = false; throw new Error("controlled render failure after timeout");
+    }
+    return originalSet(name, value);
+  };
+  h.queue(buildPath, response(failure("BUILD_TIMEOUT"), 504, { "Retry-After": "5" }));
+  await assert.doesNotReject(() => element.emit("submit"));
+  assert.ok(document.root.querySelectorAll("button").some((node) => node.textContent === "Проверить после перезапуска"));
+  assert.equal(ui.session.snapshot().recovery.restartConfirmed, false);
+  assert.equal(await ui.session.recheck({ restartConfirmed: true }), false);
+  await h.clock.advance(5000);
+  assert.equal(await ui.session.recheck(), false);
+  assert.equal(h.calls.length, 3, "neither renderer fallback nor cooldown confirms server restart");
+  h.queue(currentPath, response(ready()));
+  assert.equal(await ui.session.recheck({ restartConfirmed: true }), true);
+  assert.equal(h.calls.length, 5); assert.equal(h.builds().length, 1); ui.dispose();
+});
 
 test("bootstrap ready/version never supplies a chart; current determines empty without build", async () => {
   const h = harness(), boot = deferred();
