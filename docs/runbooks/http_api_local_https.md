@@ -2,6 +2,9 @@
 
 Это M1-6 стенд с одним Uvicorn web process. Caddy завершает HTTPS на
 `https://exact-orb.localhost`, Uvicorn слушает только `127.0.0.1:8000`.
+Caddy соединяется с Uvicorn с исходящего адреса `127.0.0.2`; только
+`127.0.0.2/32` входит в trusted proxy allowlist приложения. Адрес обычного
+браузерного клиента `127.0.0.1` остаётся отдельным звеном цепочки.
 Внешний supervisor, production ACL и deployment manifest относятся к M1-12.
 Каталог, runtime и их executor открывает один lifespan через
 `exact_orb.http_server:create_local_app`; один каталог передаётся и
@@ -69,9 +72,36 @@ Get-CimInstance Win32_Process -Filter "ProcessId = $($webPids[0])" |
 `http://127.0.0.1:8000/health/live` и `/health/ready` доступны только с
 локального host. Caddy отвечает 404 на внешний `/health/*`. Для обычных
 запросов Caddy задаёт ровно по одному `X-Forwarded-For` с адресом TLS-клиента
-и `X-Forwarded-Proto: https`; приложение доверяет только loopback peer Caddy.
+и `X-Forwarded-Proto: https`; приложение доверяет только `127.0.0.2/32`.
 Raw ASGI peer остаётся адресом Caddy, поскольку Uvicorn запущен с
 `--no-proxy-headers`.
+
+`local_address 127.0.0.2` внутри `transport http` задаёт адрес **исходящего**
+соединения Caddy, а не адрес сайта. `bind 127.0.0.1`, upstream
+`127.0.0.1:8000` и браузерный URL остаются прежними. Клиенту не нужно
+привязывать соединение к `127.0.0.2`: этот адрес зарезервирован для прокси.
+Совпадение адреса браузера и trusted proxy раньше удаляло оба звена цепочки
+и давало `400 FORWARDED_HEADER_INVALID` (FIND-TEST-HTTP-001). Расширять
+allowlist до `127.0.0.0/8` нельзя: это снова исключит клиента из цепочки.
+
+После изменения allowlist перезапустите единственный Uvicorn process с той
+же базой сессий и параметрами окружения. В терминале с переменными сертификата
+проверьте и перезагрузите Caddy:
+
+```powershell
+caddy validate --config docs/runbooks/http_api_local.Caddyfile --adapter caddyfile
+caddy reload --config docs/runbooks/http_api_local.Caddyfile --adapter caddyfile
+```
+
+Проверьте через обычный браузер или Postman с включённой cookie jar:
+`POST /session/bootstrap` с JSON `{}` и Origin `https://exact-orb.localhost`
+должен дать 200 и Secure/HttpOnly session cookie; `GET /places?query=Москва`
+— 200 с фактическими ID каталога. После выбора места и ручной отметки checkbox
+постройте карту, затем перезагрузите страницу и сверьте восстановленный
+результат. В Postman используйте полученный `place_id` и ту же cookie jar
+для `POST /charts/natal` и `GET /charts/current`; поле checkbox в JSON не входит.
+Malformed headers и цепочка только из trusted адресов по-прежнему дают 400
+до admission согласно HTTP §10; общий алгоритм проверки не меняется.
 
 Локальный Caddy ждёт заголовки ответа от Uvicorn не более 35 секунд после
 отправки upstream-запроса. Это ограничение прокси для зависшего запроса,
@@ -154,11 +184,16 @@ Uvicorn рядом с зависшим процессом.
 
 На рабочем Python проверены `FastAPI 0.121.2`, `Starlette 0.49.3`,
 `Pydantic 2.12.4`, `Uvicorn 0.38.0`, `httpx 0.28.1` и наличие опций `--factory`, `--workers`,
-`--no-proxy-headers`, `--lifespan`. Запуск Caddy, mkcert и сетевой smoke в
-этом окружении не проверены: их исполняемые файлы отсутствуют. Синтаксис
+`--no-proxy-headers`, `--lifespan`. На этапе исходной подготовки runbook
+Caddy/mkcert и сетевой smoke не запускались из-за отсутствия исполняемых файлов.
+Настройка `local_address` проверена адаптером установленного Caddy **2.11.6**;
+результаты отдельного перезапуска и HTTPS/browser проверки записываются в
+[Developer-плане](../project_management/implementation_plans/ui_birth_form_and_facts_implementation_plan.md#local-proxy-fix).
+Синтаксис
 конфигурации основан на [reverse_proxy](https://caddyserver.com/docs/caddyfile/directives/reverse_proxy),
 [tls](https://caddyserver.com/docs/caddyfile/directives/tls),
-[bind](https://caddyserver.com/docs/caddyfile/directives/bind) и
+[bind](https://caddyserver.com/docs/caddyfile/directives/bind),
+[HTTP transport Caddy 2.11.6](https://github.com/caddyserver/caddy/blob/v2.11.6/modules/caddyhttp/reverseproxy/caddyfile.go#L1272) и
 [mkcert](https://github.com/FiloSottile/mkcert).
 В `pyproject.toml` есть верхние границы FastAPI/Uvicorn `<1` и httpx `<0.29`,
 но нет lock-файла. Для M1-12 требуется решение о pin/lock при deployment;

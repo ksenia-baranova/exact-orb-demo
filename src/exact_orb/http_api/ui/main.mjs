@@ -7,7 +7,7 @@ import { mountChartResult } from "./facts.mjs";
 // Загрузка модуля собирает клиент; запросы выполняются только при вызове его методов.
 export const api = createApiClient();
 
-export function mountBirthForm(document, { apiClient = api } = {}) {
+export function mountBirthForm(document, { apiClient = api, clock } = {}) {
   const element = document.getElementById("birth-form");
   const result = mountChartResult(document);
   element.after(result.element);
@@ -33,7 +33,12 @@ export function mountBirthForm(document, { apiClient = api } = {}) {
   readAgain.className = "secondary-button";
   readAgain.textContent = "Повторить проверку карты";
   readAgain.hidden = true;
+  const submitted = document.createElement("p");
+  submitted.id = "submitted-intent";
+  submitted.className = "hint";
+  submitted.hidden = true;
   element.insertBefore(sessionStatus, overallError);
+  element.insertBefore(submitted, overallError);
   element.insertBefore(readAgain, overallError);
   let places, session, sessionState;
   let draftEdited = false, birthRestored = false;
@@ -60,7 +65,7 @@ export function mountBirthForm(document, { apiClient = api } = {}) {
     sessionState = state;
     const view = state.view;
     // Восстановление не затирает ввод, сделанный во время запроса или после него.
-    if (state.source === "current" && view?.birth && !draftEdited && !birthRestored) {
+    if (state.source === "current" && view?.birth && !state.recovery && !draftEdited && !birthRestored) {
       const birth = view.birth;
       form.setDate(birth.birth_date);
       form.setTime(birth.birth_time ?? "");
@@ -84,13 +89,23 @@ export function mountBirthForm(document, { apiClient = api } = {}) {
     if (state.phase === "bootstrapping") message = "Открываем сессию…";
     if (state.phase === "reading") message = "Проверяем текущую карту…";
     if (state.phase === "building") message = "Строим карту…";
+    if (state.recovery) message = state.recovery.message;
     sessionStatus.textContent = message;
+    const original = state.recovery?.intent, draft = form.snapshot();
+    submitted.hidden = !original;
+    submitted.textContent = original ? `Отправленные данные: ${original.birth_date}. ${original.birth_time === null
+      ? "Точное время неизвестно." : `Время: ${original.birth_time}.`} Место: ${state.recovery.placeName}.` : "";
+    const unchanged = original && draft.date === original.birth_date && draft.place?.place_id === original.place_id
+      && (draft.timeUnknown ? null : draft.time) === original.birth_time;
     build.disabled = !state.canSubmit;
-    build.textContent = state.phase === "building" ? "Строим карту…" : view?.chart_stale ? "Пересчитать"
+    build.textContent = state.phase === "building" ? "Строим карту…" : state.recovery?.status === "old_or_empty" && unchanged
+      ? "Построить ещё раз" : view?.chart_stale ? "Пересчитать"
       : view?.status === "chart_unavailable" ? "Построить заново" : "Построить карту";
     element.setAttribute("aria-busy", String(state.busy));
-    readAgain.hidden = !state.error || state.sessionReady || state.requiresReconciliation;
-    readAgain.disabled = state.busy || state.retryInSeconds > 0;
+    readAgain.hidden = !(state.recovery && state.recovery.status !== "matched") && !(state.error && !state.sessionReady);
+    readAgain.textContent = state.recovery?.kind === "timeout" && !state.recovery.restartConfirmed
+      ? "Проверить после перезапуска" : "Повторить проверку карты";
+    readAgain.disabled = !state.canRecheck;
     result.update(view);
     renderErrors();
   }
@@ -154,7 +169,7 @@ export function mountBirthForm(document, { apiClient = api } = {}) {
   time.value = "";
   unknown.checked = false;
   acknowledged.checked = false;
-  session = createSessionCoordinator({ apiClient, form, onChange: renderSession });
+  session = createSessionCoordinator({ apiClient, form, clock, onChange: renderSession });
   renderSession(session.snapshot());
   date.addEventListener("input", () => { form.setDate(date.value); edited("date"); });
   time.addEventListener("input", () => {
@@ -188,7 +203,12 @@ export function mountBirthForm(document, { apiClient = api } = {}) {
     if (option) places.select(Number(option.dataset.placeIndex));
   });
   retry.addEventListener("click", () => { places.retry(); });
-  readAgain.addEventListener("click", () => { void session.open(); });
+  readAgain.addEventListener("click", () => session.recheck({ restartConfirmed:
+    session.snapshot().recovery?.kind === "timeout" && !session.snapshot().recovery.restartConfirmed }));
+  const visible = () => { if (document.visibilityState === "visible") return session.foreground(); };
+  const online = () => session.foreground();
+  document.addEventListener("visibilitychange", visible);
+  document.defaultView.addEventListener("online", online);
   element.addEventListener("submit", async (event) => {
     event.preventDefault();
     if (!session.snapshot().canSubmit) return;
@@ -203,7 +223,12 @@ export function mountBirthForm(document, { apiClient = api } = {}) {
     if (issueField) fields[issueField].focus();
   });
   const ready = session.open();
-  return Object.freeze({ form, places, session, result, ready });
+  return Object.freeze({ form, places, session, result, ready,
+    dispose() {
+      document.removeEventListener("visibilitychange", visible);
+      document.defaultView.removeEventListener("online", online);
+      places.dispose(); session.dispose();
+    } });
 }
 
 if (globalThis.document) mountBirthForm(globalThis.document);

@@ -1,4 +1,5 @@
 // REQ-UI-01/03/08/09: текущая карта и изменяемый черновик имеют разные источники.
+import { planRecovery, recoveredStatus, recoveryMessage } from "./recovery.mjs";
 const sessionErrors = new Set(["SESSION_REQUIRED", "SESSION_EXPIRED", "SESSION_NOT_FOUND"]);
 const fields = { "birth.date": "date", "birth.time": "time", "birth.place": "place" };
 const browserClock = { now: () => performance.now(),
@@ -20,14 +21,20 @@ export function issueMessage(issue) {
 
 export function createSessionCoordinator({ apiClient, form, onChange, clock = browserClock } = {}) {
   let state = { phase: "idle", sessionReady: false, view: null, source: null, submittedIntent: null,
-    fieldIssues: {}, error: null, requiresReconciliation: false, requestId: null };
-  let disposed = false, controller = null, retryAt = 0, retryTimer = null;
+    fieldIssues: {}, error: null, requiresReconciliation: false, requestId: null, recovery: null };
+  let disposed = false, controller = null, retryAt = 0, retryTimer = null, pendingForeground = false;
+  let submittedPlaceName = "";
   const busy = () => state.phase !== "idle";
   function snapshot() {
     const copy = structuredClone(state);
     if (copy.submittedIntent) Object.freeze(copy.submittedIntent);
+    if (copy.recovery) {
+      Object.freeze(copy.recovery.intent);
+      copy.recovery.message = recoveryMessage(copy.recovery);
+    }
     return { ...copy, busy: busy(), canSubmit: !disposed && !busy() && state.sessionReady
       && !state.requiresReconciliation && clock.now() >= retryAt,
+      canRecheck: !disposed && !busy() && clock.now() >= retryAt,
       retryInSeconds: Math.max(0, Math.ceil((retryAt - clock.now()) / 1000)) };
   }
   function publish() { if (!disposed && onChange) onChange(snapshot()); }
@@ -38,9 +45,14 @@ export function createSessionCoordinator({ apiClient, form, onChange, clock = br
     const raw = outcome.retryAfter ?? "";
     const seconds = /^[0-9]+$/.test(raw) ? Number(raw) : 0;
     retryAt = clock.now() + (Number.isSafeInteger(seconds) ? seconds * 1000 : 0);
-    if (retryAt > clock.now()) retryTimer = clock.set(() => { retryTimer = null; publish(); }, retryAt - clock.now());
+    if (retryAt > clock.now()) retryTimer = clock.set(() => {
+      retryTimer = null; publish();
+      // Только один безопасный check после исходного отказа; failed check сам не повторяется.
+      if (state.recovery?.status === "waiting" && !busy()) { pendingForeground = false; return recheck(); }
+      if (pendingForeground && !busy()) { pendingForeground = false; return foreground(); }
+    }, retryAt - clock.now());
   }
-  function error(outcome) {
+  function error(outcome, checking = false) {
     const body = outcome.body;
     const userMessage = typeof body?.user_message === "string" ? body.user_message : null;
     state.fieldIssues = {};
@@ -56,6 +68,10 @@ export function createSessionCoordinator({ apiClient, form, onChange, clock = br
       status: outcome.status ?? null, retryable: body?.retryable === true, generalIssues,
       requestId: outcome.requestId ?? null, retryAfter: outcome.retryAfter ?? null };
     state.requestId = outcome.requestId ?? null;
+    if (checking && state.recovery) {
+      state.recovery.status = "check_failed";
+      state.requiresReconciliation = true;
+    }
     cooldown(outcome);
     return false;
   }
@@ -77,16 +93,24 @@ export function createSessionCoordinator({ apiClient, form, onChange, clock = br
     state.requestId = outcome.requestId ?? null;
     state.error = null;
     state.fieldIssues = {};
+    state.requiresReconciliation = false;
+    if (state.recovery && source === "current") state.recovery.status = recoveredStatus(state.recovery, state.view);
     cooldown({});
     return true;
   }
   async function call(method, intent) {
+    let outcome;
     try {
-      return await (method === "buildNatal" ? apiClient.buildNatal(intent, { signal: controller.signal })
+      outcome = await (method === "buildNatal" ? apiClient.buildNatal(intent, { signal: controller.signal })
         : apiClient[method]({ signal: controller.signal }));
     } catch {
-      return { kind: "network_error", status: null, requestId: null, retryAfter: null };
+      outcome = { kind: "network_error", status: null, requestId: null, retryAfter: null };
     }
+    if (!disposed && state.recovery) {
+      if (method === "bootstrap") state.recovery.bootstrapRequestId = outcome.requestId ?? null;
+      if (method === "current") state.recovery.checkRequestId = outcome.requestId ?? null;
+    }
+    return outcome;
   }
   const missingSession = (outcome) => outcome.kind === "http" && outcome.status === 409 && sessionErrors.has(outcome.body?.code);
   async function read(allowRecovery) {
@@ -99,34 +123,65 @@ export function createSessionCoordinator({ apiClient, form, onChange, clock = br
       return accept(outcome, "current");
     }
     state.sessionReady = false;
-    return error(outcome);
+    return error(outcome, true);
   }
   async function bootstrapAndRead(allowRecovery) {
     state.sessionReady = false;
     phase("bootstrapping");
     const outcome = await call("bootstrap");
     if (disposed) return false;
-    if (outcome.kind !== "http" || outcome.status !== 200 || outcome.body?.status !== "ready" || !version(outcome.body)) return error(outcome);
+    if (outcome.kind !== "http" || outcome.status !== 200 || outcome.body?.status !== "ready" || !version(outcome.body)) return error(outcome, true);
     return read(allowRecovery);
   }
   function begin() {
     controller = new AbortController();
     state.fieldIssues = {}; state.error = null;
   }
-  function finish() { if (!disposed) { controller = null; phase("idle"); } }
+  async function finish() {
+    if (disposed) return;
+    controller = null; phase("idle");
+    if (pendingForeground && clock.now() >= retryAt) {
+      pendingForeground = false;
+      await foreground();
+    }
+  }
+  const restartRequired = () => state.recovery?.kind === "timeout" && !state.recovery.restartConfirmed;
+  async function checkRecovery() {
+    state.recovery.status = "checking";
+    return state.recovery.kind === "commit_failed" ? read(true) : bootstrapAndRead(true);
+  }
+  async function readSession(asForeground = false) {
+    if (disposed || busy() || clock.now() < retryAt || restartRequired()) return false;
+    begin();
+    if (state.recovery) state.recovery.status = "checking";
+    try {
+      return state.recovery && !asForeground ? await checkRecovery() : await bootstrapAndRead(true);
+    } finally { await finish(); }
+  }
+  async function recheck({ restartConfirmed = false } = {}) {
+    if (disposed || busy() || clock.now() < retryAt) return false;
+    if (restartRequired()) {
+      if (!restartConfirmed) return false;
+      state.recovery.restartConfirmed = true;
+    }
+    return readSession();
+  }
+  async function foreground() {
+    if (disposed || restartRequired()) return false;
+    if (busy() || clock.now() < retryAt) { pendingForeground = true; return false; }
+    return readSession(true);
+  }
   return Object.freeze({
     snapshot,
-    async open() {
-      if (disposed || busy() || state.requiresReconciliation || clock.now() < retryAt) return false;
-      begin();
-      try { return await bootstrapAndRead(true); } finally { finish(); }
-    },
+    open: () => readSession(), recheck, foreground,
     async submit() {
       if (!snapshot().canSubmit) return false;
       const prepared = form.prepareSubmission();
       if (!prepared.ok) { publish(); return false; }
       begin();
+      state.recovery = null;
       state.submittedIntent = Object.freeze({ ...prepared.intent });
+      submittedPlaceName = form.snapshot().place.display_name;
       phase("building");
       try {
         const outcome = await call("buildNatal", state.submittedIntent);
@@ -137,18 +192,19 @@ export function createSessionCoordinator({ apiClient, form, onChange, clock = br
         if (outcome.kind === "http" && outcome.status === 200 && outcome.body?.status === "chart_ready" && version(outcome.body) && chart(outcome.body)) {
           return accept({ ...outcome, body: { ...outcome.body, birth: null, chart_stale: false } }, "build");
         }
-        state.requiresReconciliation = outcome.kind === "network_error" || outcome.status === 200
-          || ["STATE_COMMIT_FAILED", "BUILD_TIMEOUT"].includes(outcome.body?.code);
+        state.recovery = planRecovery(outcome, state.submittedIntent, state.view, submittedPlaceName);
+        state.requiresReconciliation = state.recovery !== null;
         error(outcome);
-        if (state.requiresReconciliation) state.error.message = "Не удалось подтвердить результат построения. Текущая карта требует сверки. Введённые данные сохранены.";
+        if (state.recovery && !restartRequired() && clock.now() >= retryAt) await checkRecovery();
         return false;
-      } finally { finish(); }
+      } finally { await finish(); }
     },
     clearFieldError(field) { delete state.fieldIssues[field]; publish(); },
     dispose() {
       disposed = true;
       controller?.abort();
       if (retryTimer !== null) clock.clear(retryTimer);
+      pendingForeground = false;
     },
   });
 }

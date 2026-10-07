@@ -1,6 +1,17 @@
 // Переиспользуемый листовой DOM-порт для wiring checks. Браузер/layout не имитируются.
 export function documentPort() {
   let document;
+  function events() {
+    const listeners = new Map();
+    return {
+      addEventListener(type, listener) {
+        if (!listeners.has(type)) listeners.set(type, new Set());
+        listeners.get(type).add(listener);
+      },
+      removeEventListener(type, listener) { listeners.get(type)?.delete(listener); },
+      emit(type) { return Promise.all([...listeners.get(type) ?? []].map((listener) => listener())); },
+    };
+  }
   function node(tagName = "div", id = "") {
     const listeners = new Map(), attributes = new Map();
     let ownText = "";
@@ -53,7 +64,7 @@ export function documentPort() {
   for (const id of ["birth-date", "birth-place", "birth-time", "time-unknown", "terms-acknowledged",
     "place-list", "place-status", "place-retry", "form-error", "date-error", "place-error", "time-error", "acknowledged-error"]) form.append(node("div", id));
   const build = node("button", "build-button"); build.type = "submit"; form.append(build); main.append(form);
-  document = { activeElement: null, root: main,
+  document = { ...events(), visibilityState: "visible", defaultView: events(), activeElement: null, root: main,
     getElementById: (id) => main.querySelector(`#${id}`), createElement: (tag) => node(tag) };
   return document;
 }

@@ -1,7 +1,7 @@
 """REQ-UI-01/10, AS-UI-01/19: доставка страницы; приёмка полного UI ещё впереди.
 
 Контракт: docs/requirements/changes/ui-birth-form-and-facts/requirements.md
-на ce25dd0; DEV-UI-01/04 не добавляют бизнес-операций при доставке ресурсов.
+на ce25dd0; DEV-UI-01/04/05 не добавляют бизнес-операций при доставке ресурсов.
 """
 
 from __future__ import annotations
@@ -23,7 +23,7 @@ from tests.http_api.conftest import http_settings
 
 UI_RESOURCES = (
     "index.html", "styles.css", "main.mjs", "transport.mjs", "form.mjs",
-    "places.mjs", "session.mjs", "facts.mjs",
+    "places.mjs", "session.mjs", "facts.mjs", "recovery.mjs",
 )
 
 

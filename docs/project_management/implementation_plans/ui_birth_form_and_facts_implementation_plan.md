@@ -1,8 +1,9 @@
 # Implementation Plan: ui-birth-form-and-facts
 
 **Owner:** Developer. **Дата:** 2026-10-06. **Ветка:** `dev/ui-birth-form-and-facts-review`.
-**Status:** READY_FOR_DEVELOPMENT — административное утверждение Manager по поручению владельца 2026-10-07; DEV-UI-01 COMPLETE; DEV-UI-02 IMPLEMENTED / BROWSER CHECK PENDING, оба опубликованы в Developer-ветке @ `ef75d77`; DEV-UI-03 сохранён в локальном коммите `564186d`; DEV-UI-04 IMPLEMENTED / BROWSER CHECK PENDING, полный regression gate FAILED на том же неизменённом тесте конфигураций; задания 05–06 NOT STARTED. Текущий delivery status/G3 — [Manager-артефакт](../change_plans/ui-birth-form-and-facts/artifacts.md#change-brief).
+**Status:** READY_FOR_DEVELOPMENT — административное утверждение Manager по поручению владельца 2026-10-07; DEV-UI-01 COMPLETE; DEV-UI-02 IMPLEMENTED / BROWSER CHECK PENDING, оба опубликованы в Developer-ветке @ `ef75d77`; DEV-UI-03/04 опубликованы в Developer-ветке @ `564186d` / `6d970f6`; DEV-UI-05 IMPLEMENTED / BROWSER CHECK PENDING, фактические проверки — в разделе 17; DEV-UI-06 PARTIAL / FULL REGRESSION FAILED: форма, HTTPS API и штатный browser build/details/reload проверены, оставшиеся browser criteria и independent Tester acceptance pending; полный regression gate FAILED по DEBT-CALC-001, G4/G5 не заявлены. Текущий delivery status/G3 — [Manager-артефакт](../change_plans/ui-birth-form-and-facts/artifacts.md#change-brief).
 **Technical assessment:** FEASIBLE; закрытые продуктовые решения повторно сверены, blocking semantic gaps Developer не обнаружены.
+**Актуальная проверка локального стенда (2026-10-07):** отдельным исправлением прокси снят forwarding blocker штатного браузера; natal build/details/reload проверены. Исходный статус BLOCKED в журнале DEV-UI-06 описывает проверку до исправления. Полный regression gate остаётся FAILED по DEBT-CALC-001, G4/G5 не объявлены; см. [раздел 20](#local-proxy-fix).
 **Estimate Developer:** **5–8 рабочих дней / 40–64 человеко-часа**, один рабочий день = 8 часов. Уверенность средняя.
 **Бюджет владельца:** DP-UI-07 текущей Manager-редакции — Analysis 4 / Development 5 / Testing 5 дней. Estimate Developer 5–8 сохраняется; относительно budget Development 5 риск составляет до +3 дней. Это не обещание выполнить верхнюю границу за 5 дней.
 
@@ -15,6 +16,8 @@
 | Baseline исполнения DEV-UI-02 | `6fc62b9c8813b5aadfd5150ca39033664f18b777`, PR #49/50 интегрируют Tester `0f6aa82` и утверждение Manager `e4f60fb`. Получен fetch и `git merge --ff-only FETCH_HEAD` 2026-10-07. Семантика REQ/AS @ `ce25dd0` и HTTP baseline сохранены; допуск G3 подтверждён Manager. Общий пакет DEV-UI-01/02 подготовлен поверх этого HEAD; сведения о подготовке коммита — в разделе 11. |
 | Baseline исполнения DEV-UI-03 | `ef75d77232e1f629540827bfd90e93c1c16977ea`: реализация DEV-UI-01/02 опубликована в `dev/ui-birth-form-and-facts-review` по отдельному поручению. `git ls-remote` 2026-10-07 подтвердил общий `change/*` @ `6fc62b9`, уже включённый в Developer HEAD. Семантика требований и G3 сохранились; браузерный критерий DEV-UI-02 остаётся pending, доступные form/transport позволяют порученную интеграцию. |
 | Baseline исполнения DEV-UI-04 | `564186d1e40ee8560b6df402c51ae2ee401c38e6`: локальный коммит DEV-UI-03 и TEST-FIND-UI-004. Входное дерево/index чистые. `git ls-remote` 2026-10-07 подтвердил общий `change/*` @ `6fc62b9`, уже в истории Developer HEAD; обновление не потребовалось. G3 и смысл approved REQ/AS/DP сохранены. |
+| Baseline исполнения DEV-UI-05 | `6d970f605188ad1419cbae791e8e2f83d63d67c9`: реализация DEV-UI-04 опубликована в Developer-ветке по отдельному поручению. Входное дерево/index чистые. `git ls-remote` правильного репозитория `ksenia-baranova/exact-orb-demo` 2026-10-07 подтвердил Developer HEAD и общий `change/*` @ `6fc62b9`, уже включённый в историю. G3 и approved REQ/AS/DP сохранены; браузерный gate предыдущих шагов остаётся pending. |
+| Baseline исполнения DEV-UI-06 | `6d970f605188ad1419cbae791e8e2f83d63d67c9` плюс сохранённый незакоммиченный diff DEV-UI-05 (9 файлов). Входной index пуст; свои изменения предыдущего шага не откатывались и не смешивались с новым коммитом. `git ls-remote` правильного репозитория 2026-10-07 подтвердил общий `change/*` @ `6fc62b9` и remote dev @ `6d970f6`. Семантика REQ/AS/DP и G3 сохранены. Точный fingerprint поставляемых файлов — `logs/ui-dev-06/https-evidence.json` (9 SHA-256, bytes verified через HTTPS). |
 | Нормативный baseline | [HTTP API](../../requirements/http_api.md) §§4–9, 11, 13; [каталог](../../requirements/component_responsibilities/exact-orb_place_catalog.md); [Build Natal](../../requirements/component_responsibilities/exact-orb_build_natal_components.md); [сессия](../../requirements/component_responsibilities/exact-orb_session_requirements.md); [stored chart](../../requirements/session/stored-chart-session-behavior.md); ADR-0008, 0029–0034, 0039–0041 @ `652bd73405db0a0611e98e81af6f3f668dd429f6`. Эти пути ещё не перенесены в `current/`. |
 | Требования и сценарии change | [requirements.md](../../requirements/changes/ui-birth-form-and-facts/requirements.md), [scenarios.md](../../requirements/changes/ui-birth-form-and-facts/scenarios.md), [analysis.md](../../requirements/changes/ui-birth-form-and-facts/analysis.md) — семантика `ce25dd0`, 10 REQ / 23 AS; APPROVED FOR DEVELOPMENT этой Manager-редакцией после повторной сверки обеих ролей. |
 | Единый реестр | [artifacts.md](../change_plans/ui-birth-form-and-facts/artifacts.md#decision-register), рабочая административная редакция поверх `2972e42`. DP-UI-01…09 ACCEPTED; опубликованный семантический выбор @ `64934fc`, Developer вклад `082c6b9`, Tester `0f6aa82`. Budget 4/5/5 и G3 утверждены Manager; точный commit статусов передаётся после сохранения/интеграции. |
@@ -89,7 +92,7 @@
 
 ## 5. Work items и подход
 
-Карточки 05–06 и их файлы остаются **планируемыми**. DEV-UI-01 выполнен; код и автоматические проверки DEV-UI-02–04 готовы, реальная браузерная проверка остаётся pending. Полный pytest при DEV-UI-03 нашёл воспроизводимый контрпример существующего теста конфигураций; общий regression gate не объявлен PASS. Факт исполнения записан в журнале Developer. Карточки утверждены Manager 2026-10-07; историческое DRAFT/NOT EXECUTED в промтах не переписывается. В тестовых docstrings/comments сохраняются REQ/AS IDs и ссылки на Analyst baseline; при финализации ссылки сверяются с картой переноса Analyst.
+DEV-UI-01 выполнен; код и автоматические проверки DEV-UI-02–05 готовы. DEV-UI-06 выполнен частично: после исправления прокси проверен штатный browser build/details/reload, оставшиеся browser criteria и независимая приёмка Tester pending. Полный pytest при DEV-UI-03 обнаружил контрпример существующего теста конфигураций; повторные прогоны подтверждают DEBT-CALC-001, общий regression gate не объявлен PASS. Факты исполнения и границы evidence записаны в журналах Developer, актуальная проверка стенда — в разделе 20. Карточки утверждены Manager 2026-10-07; историческое DRAFT/NOT EXECUTED в промтах не переписывается. В тестовых docstrings/comments сохраняются REQ/AS IDs и ссылки на Analyst baseline; при финализации ссылки сверяются с картой переноса Analyst.
 
 <a id="dev-ui-01"></a>
 ### DEV-UI-01. Страница доставляется тем же приложением
@@ -146,11 +149,12 @@
 <a id="dev-ui-05"></a>
 ### DEV-UI-05. Recovery не создаёт скрытый повтор
 
+- **Статус исполнения:** IMPLEMENTED / BROWSER CHECK PENDING по прямому поручению пользователя 2026-10-07. 24 новых recovery checks и 126 суммарных UI checks прошли; целевые server disconnect/admission — 32 passed, связанные HTTP/boundary — 346 passed. Loss/commit failure/timeout, safe-check failure, manual retry и два coordinator с общей листовой сетью проверены детерминированно. Полный pytest: 2959 passed / 1 failed на существующем property-тесте конфигураций; browser/Tester acceptance не заявлены. Предел evidence — в [журнале](#17-журнал-исполнения-dev-ui-05).
 - **REQ/AS:** REQ-UI-03, 08, 09; AS-UI-12–14, 16, 18, 23. **DP:** 04/09. **Dependency:** DEV-UI-02/03/04.
-- **Файлы:** новый `ui/recovery.mjs`; `session.mjs`, `main.mjs`, `transport.mjs`; новый `tests/ui/recovery.test.mjs`; reuse controlled server seams из HTTP tests.
+- **Файлы:** новый `ui/recovery.mjs`; `session.mjs`, `main.mjs`; новый `tests/ui/recovery.test.mjs`, общий `tests/ui/fixtures/session.mjs`; связанные session/DOM/delivery assertions. `transport.mjs` переиспользован без изменений: уже различает HTTP/network и сохраняет полученные заголовки.
 - **Результат:** code-specific recovery, отказ самой сверки, потеря ответа, сохранение submitted intent отдельно от draft/current, foreground двух вкладок. DP-UI-09 применяется без обещания идемпотентности или остановки первой задачи.
 - **Подход:** тесты → реализация; контролируемые responses/Event/fake clock и реальные coordinator modules. Mock самого coordinator запрещён.
-- **Покрытие:** `test_lifecycle.py::test_disconnect_before_commit_cancels_without_sqlite_mutation`, `test_disconnect_during_protected_commit_is_visible_after_restart`; `test_build_admission.py::test_lost_commit_ack_requires_current_then_explicit_fresh_post_after_restart`, `test_timeout_is_one_execute_and_restarts_against_same_sqlite_state`. Это server evidence, новые browser transitions отсутствуют.
+- **Покрытие:** `test_lifecycle.py::test_disconnect_before_commit_cancels_without_sqlite_mutation`, `test_disconnect_during_protected_commit_is_visible_after_restart`; `test_build_admission.py::test_lost_commit_ack_requires_current_then_explicit_fresh_post_after_restart`, `test_timeout_is_one_execute_and_restarts_against_same_sqlite_state`. Это server evidence; client transitions дополнены recovery tests на реальных form/coordinator/transport с управляемой сетью/clock. Реальная браузерная проверка остаётся pending.
 - **Наблюдаемость:** первый/второй POST и bootstrap/current имеют разные request/run IDs; late completion не выдаётся за ответ второго POST. AS-UI-14 и AS-UI-23 различаются по реально полученному outcome.
 - **Промт:** [05-recovery-and-two-tabs](../../../prompts/2026-10-06/ui-birth-form-and-facts/05-recovery-and-two-tabs.md).
 - **Completion:** committed/not committed/in-progress после disconnect, отказ сверки, success old/empty и manual retry, two-tabs/CAS outcomes проходят; health остаётся внутренним, автоматического повторного POST нет.
@@ -158,6 +162,7 @@
 <a id="dev-ui-06"></a>
 ### DEV-UI-06. Проверенный browser путь и передача Tester
 
+- **Статус исполнения:** PARTIAL / FULL REGRESSION FAILED по прямому поручению пользователя 2026-10-07. Реальная форма на 360/768/1440 px, 0045 → 00:45, Tab/Space/focus/labels проверены. После отдельного исправления прокси штатный browser bootstrap/place selection/natal build/details/reload прошёл; HTTPS API подтвердил natal/cosmogram и восстановление одинаковых фактов с обычным source 127.0.0.1. Исходный handoff — в [журнале](#18-журнал-исполнения-dev-ui-06-и-handoff), актуальное browser evidence и оставшиеся проверки — в [разделе 20](#local-proxy-fix). Полный pytest FAILED по DEBT-CALC-001; G4 и Tester acceptance не объявлены.
 - **REQ/AS:** REQ-UI-01…10, AS-UI-01…23, прежде всего AS-UI-19/22/23. **DP:** 01…09. **Dependency:** DEV-UI-01…05.
 - **Файлы:** адресные UI/CSS fixes, существующий [UI/UX обзор](../../ui_ux/README.md) и техническая sequence детализация в `docs/sequence_diagrams/http_api/` только при фактической необходимости, Developer plan/handoff; тесты соответствующего дефекта/пробела.
 - **Результат:** реальные HTTPS/cookie вход→выбор→build→details→reload, 360/768/1440 px, keyboard/error/loading, recovery; передача runnable setup и точного implemented commit.
@@ -467,3 +472,238 @@ AS-UI-22 проверен отдельно для натала и космогр
 Один атомарный пакет содержит девять файлов: этот план; `ui/facts.mjs`, `ui/main.mjs`, `ui/styles.css`; `tests/ui/facts.test.mjs`, `tests/ui/session.test.mjs`; общие `tests/ui/fixtures/dom.mjs` и `natal_1985_chart_dto.json`; адресно расширенный `tests/http_api/test_ui_delivery.py`. Сообщение коммита — на русском языке. Historical prompt, другие ролевые файлы и production backend не изменены. Сведения раздела 15 об отсутствии коммита относятся к предыдущему моменту исполнения.
 
 Сохраняются фактические результаты раздела 15: **103 UI checks**, **346 HTTP/boundary tests**, installed-wheel delivery; full pytest **2959 passed / 1 failed** на неизменённом property-тесте конфигураций. После проверок исполняемый код не менялся; при подготовке уточнены только журнал и ограничения evidence. Сквозной ручной сценарий localhost остаётся BLOCKED, browser/Tester acceptance не получена. Push/PR этого пакета не выполнялись.
+
+
+## 17. Журнал исполнения DEV-UI-05
+
+**Дата:** 2026-10-07. **Основание:** прямое поручение пользователя «выполни 5-й промт». **Входной HEAD:** `6d970f605188ad1419cbae791e8e2f83d63d67c9`, ветка `dev/ui-birth-form-and-facts-review`; дерево/index были чистыми. Общий `change/ui-birth-form-and-facts` проверен через `git ls-remote` в правильном репозитории и остаётся `6fc62b9`. Обновление не потребовалось. Исторический промт 05, требования и решения владельцев не редактировались.
+
+### Реализованное поведение и границы
+
+Причина отсутствовавшего сценария: DEV-UI-03 сохранял неопределённый исход и блокировал новый POST, но ещё не выполнял code-specific сверку и не обрабатывал возврат вкладки. Новый `recovery.mjs` задаёт политику по реально полученному outcome; `session.mjs` выполняет её существующим HTTP-клиентом.
+
+- Потеря ответа POST сохраняет замороженный исходный intent и редактируемый draft; затем выполняется bootstrap → current. Если ответ получен частично, сохранены только реально прочитанные статус/заголовки; отсутствующие ErrorDTO, request ID и Retry-After не выдумываются. Совпадение birth подтверждает **текущую** карту из GET, без утверждения, что исходный POST завершил commit. Другая карта показывается как actual current с сохранением своего draft.
+- Successful old/empty показывает точное предупреждение DP-UI-09 о возможном позднем завершении. «Построить ещё раз» отправляет новый POST только по отдельному действию при действующей ручной отметке; повторный ввод неизменённых данных не нужен. Если draft исправлен, новое действие создаёт отдельный snapshot исправленных данных. Первый intent остаётся неизменным во время своей сверки и виден отдельно от редактируемых полей.
+- Failed bootstrap/current сохраняет последнюю подтверждённую карту и draft, блокирует build и предлагает безопасную проверку. Retry-After failed check ограничивает это действие; истечение срока само не запускает цикл повторов. Позитивный successful check снимает запрет, без автоматического POST.
+- Received `503 STATE_COMMIT_FAILED` после своего Retry-After выполняет один `GET /charts/current`; только session 409 добавляет bounded bootstrap/current. Received `504 BUILD_TIMEOUT` сохраняет отдельную политику: после Retry-After пользователь подтверждает выполненный **внешний** restart кнопкой «Проверить после перезапуска», затем bootstrap/current проверяют доступность и current. UI не запускает restart, не вызывает внутренний health и не создаёт polling. Истечение таймера/возврат вкладки до подтверждения не разрешают POST или автоматическую проверку timeout.
+- `visibilitychange` при visible и `online` запускают bootstrap/current, сохраняя draft. События во время операции объединяются в одну отложенную сверку после её завершения; read/build в одном coordinator не перекрываются. Dispose снимает эти подписки, abort текущего запроса и таймер; поздний ответ не публикуется. Это не обещание отмены серверного protected commit.
+- Уже существующие session 409, `RESULT_SUPERSEDED` и `already_applied` переиспользованы. Два настоящих coordinator с общей листовой сетью проверяют текущую карту B в A, отдельные intents, same-origin credentials и отсутствие клиентского expected version/Cookie. Late first commit при concurrent second POST возвращается через superseded → GET как actual first current, без выдуманного second artifact.
+
+Изменения ограничены девятью файлами: `ui/recovery.mjs`, `ui/session.mjs`, `ui/main.mjs`; `tests/ui/recovery.test.mjs`, `tests/ui/session.test.mjs`, `tests/ui/fixtures/session.mjs`, `tests/ui/fixtures/dom.mjs`; `tests/http_api/test_ui_delivery.py`; этот план. Общий fixture вынесен из session tests для reuse, прежний network assertion заменён полными recovery assertions, incomplete 200 проверяет successful safe current. Новый ресурс включён в существующий installed-wheel test; packaging не менялся. DTO/API/CAS/lifecycle, backend, вычисления, прокси, logging, зависимости и terms page сохранены.
+
+### TDD и фактические проверки
+
+Первый запуск `node --test --test-isolation=none tests/ui/recovery.test.mjs` дал **2 passed / 10 failed**, exit 1: модули/fixtures загружались, но coordinator не делал safe bootstrap/current после потери ответа, GET после Retry-After и отложенный foreground. Это behavioral RED. После реализации тот же набор дал **12 passed**, exit 0. Затем дополнены существующие coverage gaps двух вкладок, late commit и подключения UI, включая lost response с другим actual current и неизвестное время. Один промежуточный wiring assertion ошибочно ожидал русское имя места из каталога вместо `Moscow` из сохранённого BirthViewDTO; oracle исправлен на фактически выбранное имя до POST, продуктовые данные не менялись.
+
+| Команда | Фактический результат |
+|---|---|
+| `node --test tests/ui/recovery.test.mjs tests/ui/session.test.mjs` | **56 passed**, exit 0; из них 24 recovery. Первый sandbox запуск не выполнил тесты из-за `spawn EPERM`, exit 1; точная команда повторена с разрешённым запуском вне sandbox. Ошибка среды не считается behavioral RED. |
+| `node --test tests/ui/transport.test.mjs tests/ui/form.test.mjs tests/ui/places.test.mjs tests/ui/session.test.mjs tests/ui/facts.test.mjs tests/ui/recovery.test.mjs` | **126 passed**, exit 0; полный UI-набор вне sandbox. |
+| `python -B -m pytest -p no:cacheprovider tests/http_api/test_lifecycle.py::test_disconnect_before_commit_cancels_without_sqlite_mutation tests/http_api/test_lifecycle.py::test_disconnect_during_protected_commit_is_visible_after_restart tests/http_api/test_build_admission.py -q` | **32 passed** за 1,82 s, exit 0. Existing real ASGI/SQLite/Orchestrator/admission/Event/save barrier/supervisor coverage переиспользовано без дублирования. |
+| `python -B -m pytest -p no:cacheprovider tests/http_api tests/test_module_boundaries.py -q` | **346 passed** за 55,07 s, exit 0. Installed-wheel test вне checkout доставляет все 9 UI-ресурсов, включая импортируемый `recovery.mjs`. |
+| `python -B -m pytest -p no:cacheprovider -q` | **2959 passed / 1 failed** за 402,09 s, exit 1; тот же `tests/test_configurations.py::test_property_configuration_count_does_not_grow_when_threshold_decreases`. |
+| `git diff --check` | exit 0; только штатные сообщения Git о LF → CRLF. После финальной записи журнала проверка повторяется. |
+
+Клиентские assertions связывают received `post-1` / `partial-post` с отдельными `current-2` / `check-A`, а second POST `second-post` — с GET `late-first-read`. Отсутствующий исходный ID остаётся null. Это controlled leaf evidence, не live request/run IDs. Серверные disconnect/admission tests проверяют настоящий before-commit cancel без SQLite mutation и protected commit, видимый после restart, а также существующие HTTP/application log pairs с request/run correlation. Sequence HTTP 003/004 и session/006 сохранены; новые серверные события и схемы не потребовались.
+
+После связанных Python checks поставляемый код не менялся; во время полного прогона дополнены только Node assertions другого actual current/unknown time и журнал, затем точные целевая и полная Node-команды повторены с результатами 56/126 passed. Python-набор не повторялся: эти test-only изменения не входят в Python collection.
+
+Полный regression gate остаётся **FAILED** на том же неизменённом property-тесте, что в DEV-UI-03/04. Контрпример снова содержит SEXTILE и TRINE на одной паре: при orb threshold 7 результат пустой, при 3 появляется один bisextile (`1 <= 0` ложно). В этом прогоне пары `(0,1)` и `(0,4)`, последний TRINE имеет orb 4. Product configurations и этот тест не редактировались; границы/допуски/golden не ослаблялись, skip/xfail не добавлялись. Это незакрытый риск полного regression gate; его устранение не входит в UI recovery.
+
+### Ограничения и следующий шаг
+
+Риск позднего первого commit остаётся принятым DP-UI-09; successful old/empty не доказывает завершение первой задачи, exactly-once не обещается. Runtime tests подтверждают client state/wiring и существующий server contract; настоящий browser cookie/две вкладки/DOM/keyboard/layout 360–1440 px и независимая Tester acceptance — **NOT VERIFIED**.
+
+Известный FIND-TEST-HTTP-001 (`FORWARDED_HEADER_INVALID` у обычного localhost-клиента) остаётся вне scope промта 05. Сквозная ручная проверка штатного стенда по-прежнему **BLOCKED**. Прокси и процессы стенда этим шагом не менялись; новое live/browser evidence не заявляется. Исправление прокси требует отдельного поручения; доступные локальные поля/оформление не заменяют полный ручной build/recovery.
+
+Следующий work item — DEV-UI-06; TEST-FIND-UI-004 manual retest остаётся pending. Текущая реализация — незакоммиченный рабочий diff поверх `6d970f6`, индекс не заполнялся; коммит/push/PR DEV-UI-05 не создавались. Исторические записи предыдущих разделов отражают состояние на момент своих проверок; DEV-UI-04 был опубликован отдельным поручением до начала этого шага. Manager G4 и Tester acceptance не заполняются от имени Developer.
+
+
+## 18. Журнал исполнения DEV-UI-06 и handoff
+
+**Дата:** 2026-10-07. **Основание:** прямое поручение пользователя «реализуй 6-й промт». **Ветка:** `dev/ui-birth-form-and-facts-review`. **Implementation commit:** отдельный commit DEV-UI-05/06 пока **не создан**; проверен рабочий diff поверх `6d970f605188ad1419cbae791e8e2f83d63d67c9`. Входные девять файлов DEV-UI-05 сохранены. `change/*` @ `6fc62b9`, требования/scenarios @ `ce25dd0`, решения DP @ `64934fc`, Manager G3 интегрирован; смысл approved contract не менялся.
+
+**Developer Handoff status:** **BLOCKED для полного G4/browser acceptance**, пригоден для воспроизведения доступных частей. Эта запись не меняет Manager gate или Tester verdict. Шестой промт выполнен в доступной части, незавершённые браузерные критерии ниже указаны явно.
+
+### Подход, результат и изменения
+
+Использованы existing coverage → реальный browser/HTTPS integration → документальные проверки. TDD нового поведения не потребовался: в пределах UI scope новый implementation defect не установлен, исполняемый код и тесты этого шага не менялись. Known M1-6 forwarding и property configuration failure не исправлялись вне scope. Повторные regression-команды выполнены один раз как финальные обязательные checks промта 06; после них изменяются только текст/локальное evidence, лишних повторов нет.
+
+В `docs/ui_ux/README.md` исправлен устаревший общий статус «не реализован»: документ различает черновой V2 и поставленные M1-7 форму/три группы, ссылается на approved change contract и этот handoff. Полный перенос прототипа, wheel illustration, имя, чат и demo values не добавлялись. Исторические промты, Analyst/Manager/Tester артефакты, requirements/ADR, source/API/DTO/CAS/lifecycle/numerics/logging и proxy config сохранены.
+
+Локальные воспроизводимые evidence-скрипты/JSON/JPG находятся только в ignored `logs/ui-dev-06/`. Они не являются новым production service/test dependency. Ключи TLS и значения cookie не публикуются; HTTPS клиент проверяет mkcert CA, не отключает проверку сертификата. Девять UI-ресурсов через HTTPS побайтно совпали с текущим `src/exact_orb/http_api/ui/`; их SHA-256 записаны в `https-evidence.json`. Это fingerprint **working tree**, не ссылка на отсутствующий implemented commit.
+
+### Реальная браузерная проверка
+
+Использована уже открытая вкладка `https://exact-orb.localhost/` в Codex In-app Browser, tab 2. Свежий DOM содержит `submitted-intent` из DEV-UI-05; проверен существующий текущий mount. Ранее было ограничение навигации инструментом; в этом шаге чтение и управление существующей вкладкой оказались доступны. Обход browser safety/TLS interstitial, нового браузерного транспорта или подмена ответов не применялись. Второй доступный tab с ERR_CONNECTION_REFUSED не использовался как источник состояния текущей страницы.
+
+| Проверка | Фактический результат / граница |
+|---|---|
+| REQ-UI-02; ручной Developer retest TEST-FIND-UI-004 | Настоящие последовательные клавиши `0045` в поле времени дали видимое `00:45`, caret=5. Соответствующий JPG сохранён. Независимый Tester retest/закрытие его реестра не выполнялись от имени роли. |
+| Keyboard/focus, REQ-UI-10 / часть AS-UI-19 | Tab из времени перевёл фокус на `time-unknown`; Space включил unknown (`disabled:true`, `required:false`) и повторный Space вернул known (`disabled:false`, `required:true`) с тем же `00:45`. Следующий Tab перевёл фокус к checkbox условий. Outline focus-visible: 2px `rgb(240,205,115)`. |
+| Labels/descriptions, часть AS-UI-19 | У всех пяти input есть label; `aria-describedby` ссылается на существующие hint/error/status. Общая ошибка — role alert, состояние поиска — status. Это DOM/browser checks, без утверждения о проверке screen reader. |
+| 360 px | `innerWidth=360`, document client/scroll width=345/345, form width≈304,67. Поля, текст отметок и ошибка/кнопки читаемы; горизонтального overflow формы/страницы в проверенном состоянии нет. |
+| 768 px | client/scroll width=753/753, form width=560, form right≈590,72. Form screenshot сохранён. |
+| 1440 px | client/scroll width=1425/1425, form width=560, form right≈760,33. Form screenshot сохранён. |
+| Композиция/палитра, часть REQ-UI-10 | Сопоставлены реальные форма/карточка, тёмный фон `rgb(8,7,6)`, золотой заголовок `rgb(240,205,115)`, порядок полей/ритм и focus с Р1/Э1. Полный прототип, demo badge/name/consent/CTA chat и иллюстрация wheel не являются обязательными элементами M1-7. Числа макетов не использованы как oracle. |
+| Safe check на штатном URL | Кнопка «Повторить проверку карты» реально отправила bootstrap. Ответ `400 FORWARDED_HEADER_INVALID`, request ID `e252e734-08d3-48b9-a934-9e97b41571ce`; поиск также отклонён. Build остаётся disabled, fake place_id не вводился. |
+| AS-UI-10/19/22/23 полностью | **BLOCKED / NOT VERIFIED**: cookie bootstrap, успешный выбор, browser build/reload, все длинные таблицы на трёх ширинах, keyboard details/disabled chat, browser disconnect/recovery и две успешные вкладки не пройдены. Негативное отсутствие POST без позитивного browser build не считается полным PASS этих AS. |
+
+Использовался документированный viewport override, после проверок он снят: fresh DOM снова имеет innerWidth=609/clientWidth=594. Значение времени, временно введённое для теста, возвращено к исходному пустому; unknown и checkbox условий остаются в исходном false, текст места не менялся. Полностраничный capture оказался недоступен; сохранены viewport JPG. Первый мгновенный снимок после ввода отставал от свежего DOM; после сверки текущего состояния сохранён обновлённый кадр с видимым `00:45`. Неактуальный кадр не используется как доказательство.
+
+### Реальный HTTPS positive control и наблюдаемость
+
+Штатный source `127.0.0.1`: `POST /session/bootstrap` снова дал **400 FORWARDED_HEADER_INVALID**, request ID `f86094a4-49c3-4f64-bf29-f14b0e1b81db`. Это существующий FIND-TEST-HTTP-001, не новая UI-находка. Uvicorn listener `127.0.0.1:8000` — PID 21224, Caddy `127.0.0.1:443` — PID 16216; процессы/конфигурация не перезапускались и не менялись. Sandbox запретил `Get-NetTCPConnection`; та же проверка с разрешённым доступом подтвердила listeners.
+
+Изолированный Node TLS-клиент с **исходным** адресом `127.0.0.2`, настоящими form/coordinator/transport и cookie jar выполнил bootstrap → empty current → `/places?query=Москва` → выбор ID 524901 из полученного каталога → explicit build → новое открытие/bootstrap/current. Для натала и космограммы использованы разные новые сессии, дата 1985-09-02 и известное 00:45 / явное null. До отметки в модели POST нет; double submit не создаёт второй POST; ровно один успешный build на kind. После чтения опубликованный DTO структурно совпадает со всеми committed фактами; новая модель формы starts unchecked. Это **API/TLS/controller evidence**, не native browser cookie или human UI gate acceptance.
+
+| Kind | Actual committed identity / факты | POST run/request ID | Восстановленный current request ID |
+|---|---|---|---|
+| natal | `eo:calc:v2:f112dfae69d8d6daaf5051292bc21f78682940bb2df0fc7d7b1f027623f6b7e2`; 16 points / 12 houses / 46 aspects; state_version=1 | `6870e638-54ab-49d9-9301-3948f11f8636` | `26971e0f-616a-4d65-b71b-d49e9cabfdfe` |
+| cosmogram | `eo:calc:v2:df21a4af0fdc460ed6d1aad6ddcec1680559ffa26cae7d134e2f44a68040f452`; 15 points / houses=null / 13 aspects; state_version=1 | `9686a553-4f46-4e4f-8fc7-01adf7de336b` | `234bd420-3fc0-4705-b251-61442eadf8de` |
+
+`verify_sequence.py` сопоставил **13 business requests / 98 compact ordered events** с HTTP 001/002/003/004. Normal rejected bootstrap не имеет ложных service receive. На create — AdmissionControl.reserve → ContextService.create; на search — reserve → PlaceSearch.search; на current — ContextService.load → session_view без Orchestrator/engine; на build — reserve → Orchestrator.execute → release, application пары load → Handler → BirthDataResolver → artifact ensure/to_stored → Handler receive → save/Committed под `run_id=request_id`. Повторный bootstrap имеет только load. Secure/HttpOnly cookie выдаётся и сохраняется jar на положительном контроле. Инициатор восстановлен по logger: HTTP = exact_orb.http_api, application load/handle/save = exact_orb.application.orchestrator, resolution/artifact = exact_orb.application.handlers.build_natal; порядок источников дополнительно проверен скриптом. Серверный поток не менялся, поэтому диаграммы не переписывались; подробные payload в компактный evidence не добавлены.
+
+### Фактические команды и результаты
+
+| Команда | Результат |
+|---|---|
+| `node --test tests/ui/transport.test.mjs tests/ui/form.test.mjs tests/ui/places.test.mjs tests/ui/session.test.mjs tests/ui/facts.test.mjs tests/ui/recovery.test.mjs` | **126 passed**, exit 0, 221,10 ms; финальный Node-прогон этого шага. |
+| `python -B -m pytest -p no:cacheprovider tests/http_api tests/test_module_boundaries.py -q` | **346 passed**, exit 0, 25,29 s; installed wheel содержит девять UI-ресурсов и не зависит от checkout. |
+| `python -B -m pytest -p no:cacheprovider -q` | **2959 passed / 1 failed**, exit 1, 125,77 s; тот же `tests/test_configurations.py::test_property_configuration_count_does_not_grow_when_threshold_decreases`. |
+| `node logs/ui-dev-06/live_session_flow.mjs` | **PASS**, exit 0; 9 exact assets, 2 committed builds, одинаковые restored facts, standard 400 отдельно. |
+| `python -B logs/ui-dev-06/verify_sequence.py` | **PASS**, exit 0; 13 requests / 98 ordered events, HTTP 001…004 matched, два correlated committed run IDs. |
+| `git diff --check` | exit 0 после финальной записи журнала; только штатные предупреждения Git LF → CRLF. |
+
+Чувствительные deterministic regression tests существующего поведения: `session.test.mjs` (gate/time issues/409/current/stale/unavailable), `facts.test.mjs` (all groups, null/[], AS-UI-22, full natal fixture), `recovery.test.mjs` (loss/commit/timeout/check failure/manual repeat/two tabs/late first/dispose). Серверный disconnect before/within protected commit и admission покрыты 32 target tests DEV-UI-05, входящие в связанную коллекцию здесь; в этом шаге их не дублировали новым seam. Реальные API positive traces не проверяют controlled browser disconnect.
+
+### Воспроизведение и передача Tester
+
+1. Checkout — этот worktree, указанная Developer-ветка и **весь текущий diff**, включая новые recovery/fixtures. HEAD `6d970f6` сам по себе не содержит DEV-UI-05. Передача на чистом implemented commit пока невозможна без отдельно порученного коммита; source SHA-256 для текущей проверки записаны в `logs/ui-dev-06/https-evidence.json`.
+2. Setup — [локальный HTTPS runbook](../../runbooks/http_api_local_https.md), текущий Caddyfile и logging config. Один Uvicorn `create_local_app` на 127.0.0.1:8000, без reload/proxy-header rewrite, один Caddy; `data/places.sqlite`, `ephe`, отдельный session SQLite и существующий mkcert CA. В браузере открывать `https://exact-orb.localhost/`, не file:// и не сайт `127.0.0.2`. Новый процесс для этих проверок не нужен.
+3. Для повторного API positive control выполнить `node logs/ui-dev-06/live_session_flow.mjs`, затем `python -B logs/ui-dev-06/verify_sequence.py`. Скрипт требует существующий `%LOCALAPPDATA%/mkcert/rootCA.pem`, рабочий стенд и native loopback binding; создаёт две собственные сессии и ровно два build. `127.0.0.2` — bind клиента, не обходным браузерным URL. Ignored скрипты/JSON/снимки доступны в текущем worktree, но не придут с Git pull; при чистой передаче сохранить их отдельно либо воспроизвести стандартные pytest/ручные сценарии.
+4. Cookie-preserving Postman для **штатного** пути: установить `base_url=https://exact-orb.localhost`, оставить cookie jar включённым. `POST {{base_url}}/session/bootstrap` с JSON `{}`, Origin `https://exact-orb.localhost`, Content-Type `application/json`; сейчас воспроизводится 400 forwarding и дальнейший сценарий BLOCKED. После отдельного исправления M1-6 ожидать 200 и Secure/HttpOnly cookie в jar; затем `GET /places?query=Москва`, взять фактический `place_id` из items. Один явный `POST /charts/natal` с `{"birth_date":"1985-09-02","birth_time":"00:45","place_id":"<выбранный ID>"}`, затем `GET /charts/current` с той же jar; сверить identity/все три группы. Для unknown — отдельный явный POST с `birth_time:null`, current должен иметь houses/angles/house_system null. Значение checkbox не входит в JSON; Postman не заменяет проверку presentation gate в UI. Прямой source bind positive control выше не является доступной опцией Postman-сценария. Целевая серверная команда для disconnect/admission — точная команда раздела 17, связанные проверки — таблица выше.
+5. Browser после отдельного снятия FIND-TEST-HTTP-001: bootstrap → префикс/выбор → unchecked gate → один valid build → details → reload/current, затем unknown/stale/unavailable/issues и AS-UI-23/two tabs. На каждой 360/768/1440 px проверить **все** строки points/12 houses/aspects, keyboard details, disabled chat, field error/focus/loading. Не скрывать группы и не создавать fake place_id или выдуманный результат для mobile PASS. Точное implemented commit/setup/evidence зафиксировать отдельно Tester.
+6. Чистовой перенос требований в `current/ui/birth-form-and-facts.md` и карта переноса остаются Analyst-owned; approved change links/IDs сохраняются. В этом пакете чистовой контракт не создаётся от имени Analyst, independent test plan/acceptance — не от имени Tester. Handoff подготовлен здесь; сообщение в другой чат не отправлялось без отдельной авторизации.
+
+### Оставшиеся ограничения и gates
+
+Сквозной штатный browser build/reload/details/recovery и длинные таблицы — **BLOCKED** известным FIND-TEST-HTTP-001. Локальные поля/ошибка/адаптивность формы проверены и имеют отдельный статус PARTIAL; эту часть нельзя выдавать за полный AS-UI-19 или G4. Live SQLite restart, controlled socket loss и timeout/restart в native browser в этом шаге не выполнялись; существующие controlled backend/controller tests остаются отдельным evidence.
+
+Полный regression gate снова **FAILED** на неизменённом property-тесте конфигураций: тот же контрпример SEXTILE/TRINE для пар (0,1)/(0,4), orb последнего TRINE=4; threshold 7 дал 0 configurations, threshold 3 дал 1 bisextile. Код конфигураций и этот тест не менялись; допуски/golden, skip/xfail не подгонялись. Решение/исправление вне UI scope, отдельный незакрытый риск формального G4. DP-UI-09 accepted late-first risk, DEBT-UI-001/M1-9 и Analyst clean transfer сохраняются; бюджет/решения/формальная приёмка не менялись. Новых blocking UI implementation findings не установлено в доступной части.
+
+Коммит/push/PR этого шага не создавались и index не заполнялся. Для полного завершения DEV-UI-06 требуются снятие forwarding ограничения отдельным изменением, browser criteria с позитивным valid build и ясный regression gate, затем implemented commit и independent Tester handoff/acceptance. Статус остаётся PARTIAL / BLOCKED, без фиктивного COMPLETE/G4/G5.
+
+<a id="debt-calc-001"></a>
+## 19. DEBT-CALC-001 — монотонность теста и топология бисекстиля
+
+**Дата:** 2026-10-07. **Автор evidence:** Developer. **Статус:** OPEN; исправление отдельной задачей расчётного слоя, срок и milestone не назначены.
+**Основание регистрации:** прямое поручение владельца «Создавай техдолг» после диагностики одного красного теста.
+**Единая запись долга и ownership:** [реестр, DEBT-CALC-001](../change_plans/ui-birth-form-and-facts/artifacts.md#technical-debt). Регистрация не разрешает исключить тест из обязательных проверок и не переводит G4/G5 в PASS.
+**Baseline:** ветка `dev/ui-birth-form-and-facts-review`, HEAD `6d970f605188ad1419cbae791e8e2f83d63d67c9`; поверх него остаётся локальный пакет DEV-UI-05/06. `git diff ef75d77 -- tests/test_configurations.py src/exact_orb/engine/configurations src/exact_orb/engine/aspects` пуст: эти файлы не менялись в последующих UI заданиях.
+
+### Причина и границы
+
+В [генераторе `_aspect_lists()`](../../../tests/test_configurations.py) нет ограничения на разные типы аспектов между одной неориентированной парой точек. Поэтому property-тест монотонности использует и входы, не соответствующие Т-АСП-3: штатный aspect finder выбирает один аспект на пару. Для проверки этого свойства нужен отдельный генератор допустимых наборов; произвольные входы остальных тестов не следует молча ограничивать вместе с ним. Дубли одного типа, разрешённые Т-КНФ-3, должны сохранять отдельное покрытие.
+
+В [bisextile finder](../../../src/exact_orb/engine/configurations/patterns/bisextile.py) проверяется число секстилей и тригонов, но не проверяется, что найденный тригон замыкает два крыла. На приведённом противоречивом входе он создаёт фигуру с повтором пары «центр — крыло» и отсутствующей парой «крыло — крыло». Это не соответствует Т-КНФ-4/11; существующая aggregate integrity-проверка такую фигуру отклоняет. Одного ограничения генератора недостаточно для закрытия этой части долга.
+
+Источники контракта: [Т-АСП-3, Т-КНФ-3/4/11](../../requirements/component_responsibilities/exact-orb_calculation_requirements.md), [ADR-0031](../../requirements/decisions/0031-materialized-configuration-integrity.md). Изменение требований, ADR, схем, версий или числовых reference-результатов для устранения долга не предлагается. Этот контрпример не доказывает ошибку на корректной карте штатного натального пути.
+
+### Контрпример и воспроизведение
+
+Все точки принадлежат `natal`; объекты собраны существующим test helper `_make_aspect()`:
+
+| Пара точек | Тип | Orb |
+|---|---|---|
+| `p0`, `p1` | SEXTILE | 0 |
+| `p0`, `p1` | TRINE | 0 |
+| `p0`, `p4` | SEXTILE | 0 |
+| `p0`, `p4` | TRINE | 4 |
+
+При `include_nested=True`, `points=None` порог 7 даёт 0 фигур, порог 3 — 1 бисекстиль; assertion `len(low) <= len(high)` падает. Роли результата: `center=p0`, `wing_1=p1`, `wing_2=p4`. Его тригон — `p0–p1`, а ребро `p1–p4` отсутствует.
+
+Команда диагностики перед регистрацией:
+
+```powershell
+python -B -m pytest -p no:cacheprovider tests/test_configurations.py::test_property_configuration_count_does_not_grow_when_threshold_decreases -q
+```
+
+**Фактический результат:** exit 1, **1 failed in 0.59s**, `assert 1 <= 0`, приведённый Hypothesis-контрпример. Повтор на чистом checkout без сохранённой базы Hypothesis не гарантирует выбор именно этих случайных входов; для фиксированного контрпримера выполнить из корня:
+
+```powershell
+@'
+from tests.test_configurations import _make_aspect
+from exact_orb.engine.aspects import AspectType
+from exact_orb.engine.configurations import find_configurations, ConfigurationConfig
+from exact_orb.engine.configurations.integrity import validate_configuration_tree
+
+aspects = [
+    _make_aspect((0, 1), AspectType.SEXTILE, 0.0),
+    _make_aspect((0, 1), AspectType.TRINE, 0.0),
+    _make_aspect((0, 4), AspectType.SEXTILE, 0.0),
+    _make_aspect((0, 4), AspectType.TRINE, 4.0),
+]
+high = find_configurations(aspects, ConfigurationConfig(
+    configuration_max_orb=7.0, include_nested=True, points=None))
+low = find_configurations(aspects, ConfigurationConfig(
+    configuration_max_orb=3.0, include_nested=True, points=None))
+print("high/low:", len(high), len(low))
+validate_configuration_tree(low[0], aspects, "configurations[0]")
+'@ | python -B -
+```
+
+Выполненная до регистрации детерминированная диагностика этих данных дала **0/1** и `configurations[0].aspects[1] duplicates a participant pair`. Скрипт выше намеренно оставляет это исключение видимым; после исправления его следует заменить regression-тестом ожидаемого корректного поведения. Последний полный прогон DEV-UI-06 — **2959 passed / 1 failed**, см. раздел 18; при регистрации документа полный pytest повторно не запускался.
+
+### Рекомендованный объём отдельной задачи и закрытие
+
+1. Сначала закрепить фиксированный контрпример regression-тестом топологии и позитивным контролем настоящего бисекстиля с тригоном между крыльями; сопоставить с существующими integrity/reference-тестами, не дублируя их.
+2. В property-тесте монотонности использовать допустимые наборы с одним типом аспекта на неориентированную пару. Не ослаблять assertion и не удалять отдельные проверки обработки дублей одного типа по Т-КНФ-3.
+3. Исправить проверку замыкающего тригона на ответственном слое finder. Сохранить корректные фигуры, категории, публичные DTO, reference/golden и допуски.
+4. Последовательно выполнить целевые, связанные и полные проверки и сохранить результаты на точном implementation commit:
+
+```powershell
+python -B -m pytest -p no:cacheprovider tests/test_configurations.py -q
+python -B -m pytest -p no:cacheprovider tests/test_aspects.py tests/test_natal_include_gating.py tests/test_chart_artifact_codec.py tests/test_module_boundaries.py -q
+python -B -m pytest -p no:cacheprovider -q
+```
+
+Эти команды закрытия **запланированы**, а не выполнены при регистрации. Долг закрывается после исправления обеих причин, прохождения проверок и независимой сверки Tester; статус/приоритет контролирует Manager. До этого полный regression gate остаётся **FAILED**, независимая UI работа может продолжаться в согласованном scope. Реализация долга, обход gate и commit/push/PR этим поручением не запрашивались.
+
+<a id="local-proxy-fix"></a>
+## 20. Исправление локального прокси и перезапуск стенда
+
+**Дата:** 2026-10-07. **Основание:** поручение владельца «внеси изменения и перезапусти стенд» к ранее предложенному исправлению прокси. **Developer status:** IMPLEMENTED / LOCAL HTTPS AND BROWSER FLOW VERIFIED. Это отдельная поставка исправления FIND-TEST-HTTP-001, не исправление DEBT-CALC-001 и не независимая Tester acceptance.
+**Baseline:** HEAD `6d970f605188ad1419cbae791e8e2f83d63d67c9`, ветка `dev/ui-birth-form-and-facts-review`, с сохранёнными локальными изменениями DEV-UI-05/06 и карточкой долга. Коммит, push и PR не создавались.
+
+### Причина, объём и подход
+
+Обычный TLS-клиент и raw ASGI peer Caddy раньше имели один адрес `127.0.0.1`, включённый в trusted allowlist. Проверка по HTTP §10 отбрасывала оба trusted звена, не находила клиента и возвращала 400. Исправлен локальный composition: Caddy подключается к Uvicorn с `local_address 127.0.0.2`, приложение доверяет только `127.0.0.2/32`; браузерный клиент `127.0.0.1` остаётся untrusted client hop. URL `https://exact-orb.localhost/`, внешний bind `127.0.0.1:443`, upstream `127.0.0.1:8000` и `--no-proxy-headers` сохранены.
+
+Изменены [local factory](../../../src/exact_orb/http_server.py), [Caddyfile](../../runbooks/http_api_local.Caddyfile), [HTTPS runbook](../../runbooks/http_api_local_https.md) и [существующий integration test](../../../tests/http_api/test_integration.py). Актуальный browser status уточнён в [UI/UX README](../../ui_ux/README.md). Общий `proxy.py`, HTTP §10, DTO, API, диаграммы HTTP 001–004 и вычислительное поведение не менялись: межкомпонентный поток остался прежним.
+
+Подход — **тест → настройка → проверки**. Расширен существующий тест local factory/catalog; отдельный дублирующий тест не создавался. Он использует реальную factory и boundary, заменяет только листовые catalog/runtime, проверяет browser XFF `127.0.0.1` при raw peer `127.0.0.2` и негативные цепочки `127.0.0.2` / `bad-hostname`. Позитивный запрос достигает каталога, отрицательные дают 400 до его вызова. RED получен на старой настройке: доверенный peer ошибочно считался direct, отрицательный запрос дал 200 вместо 400. После смены allowlist все условия прошли; проверка заголовков не ослаблена.
+
+### Перезапуск и фактические проверки
+
+До остановки сохранены журнал и согласованная SQLite backup в ignored `logs/local-proxy-fix/`; исходная база `logs/ui-dev-02/sessions.sqlite3` продолжает использоваться. Старый Uvicorn PID **21224** остановлен, прежний listener проверен до запуска нового. Новый единственный Uvicorn PID **27492**, Caddy PID **16216** применил конфигурацию через reload. Проверены активная конфигурация Caddy с `local_address=127.0.0.2`, listener `127.0.0.1:8000` и внутренний `/health/ready` — **200**. Сертификат mkcert/CA не заменялся, TLS verification не отключалась.
+
+| Команда / проверка | Фактический результат |
+|---|---|
+| `python -B -m pytest -p no:cacheprovider tests/http_api/test_integration.py::test_local_factory_passes_one_open_catalog_to_runtime_and_route -q` | До настройки **1 failed in 0.72s**, ожидаемый RED; после настройки **1 passed in 0.47s**, exit 0. |
+| `python -B -m pytest -p no:cacheprovider tests/http_api tests/test_module_boundaries.py -q` | **346 passed in 39.81s**, exit 0 вне sandbox. Первый запуск: 345 passed / 1 failed, 65.55s, из-за запрета pip записи в Temp build tracker; та же команда повторена с необходимым доступом. |
+| `python -B -m pytest -p no:cacheprovider -q` | **2959 passed / 1 failed in 303.51s**, exit 1. Единственное падение — прежний property-тест из DEBT-CALC-001 с тем же контрпримером; полный gate остаётся FAILED. |
+| `caddy validate --config docs/runbooks/http_api_local.Caddyfile --adapter caddyfile` | **Valid configuration**, exit 0, Caddy **2.11.6**, существующие cert/key. |
+| `& ./logs/local-proxy-fix/restart.ps1` | Exit 0: backup, остановка старого web process, запуск нового с прежней БД; `caddy reload --config docs/runbooks/http_api_local.Caddyfile --adapter caddyfile` прошёл. Скрипт сохраняет PID и останавливает только проверенный исходный процесс; он одноразовый и не предназначен для повторного запуска с устаревшим PID. |
+| `node logs/local-proxy-fix/live_session_flow.mjs` | **PASS**, exit 0. Обычный source `127.0.0.1`, bootstrap 200, 9 assets побайтово совпали; две собственные cookie jar, по одному явному natal/cosmogram POST и равенство current после повторного bootstrap. |
+| `python -B logs/local-proxy-fix/verify_sequence.py` | **PASS**, exit 0: 13 business requests, 102 компактных упорядоченных событий; HTTP 001–004 и инициаторы application transitions совпали, два build завершились Committed. |
+
+HTTPS positive control теперь использует **обычный адрес клиента `127.0.0.1`**. Старые source-`127.0.0.2` helpers и журналы DEV-UI-01…06 сохранены как исторические; с новой topology они не являются текущей инструкцией проверки. Стандартный bootstrap request ID — `f7414727-51e3-4361-8379-8c7f2093563f`. Natal POST — `6d69c15e-4539-41fb-9f69-143abe640643`, restored current — `45c914a0-b251-45d5-8602-dbbfb6af28ed`; cosmogram POST — `f8dd5ac6-581d-49c8-8162-ddb4da7e0554`, current — `5149f89d-5da5-4c7b-b95f-4b1c38654e3a`. Identity, версии и опубликованные факты совпали с предыдущими корректными positive controls.
+
+### Браузер и границы evidence
+
+В отдельной вкладке обычного in-app browser выполнены: bootstrap/current → дата `1985-09-02`, ввод времени `0045` с видимым `00:45` → поиск Москвы → выбор RU/Москва из настоящего каталога → попытка без отметки (видимая ошибка gate) → ручная отметка → явный build → «Натальная карта готова» → details → reload/current → details. На странице показаны 16 точек, 12 домов, 5 углов и 46 аспектов; полный текст всех четырёх таблиц до/после reload совпал. Checkbox после reload снова снят; чат disabled. Данные для проверки синтетические, существующая пользовательская форма во вкладках не редактировалась.
+
+Снимок `logs/local-proxy-fix/browser-ready.png` и `browser-evidence.json` сохранены вместе с HTTPS manifest, request IDs и `sequence-events.log`. Эти файлы ignored: они доступны локально и не придут с Git pull. Стенд оставлен работающим; URL прежний. Для повторной ручной проверки использовать браузер или cookie-preserving Postman из обновлённого runbook, без source bind клиента к `127.0.0.2`.
+
+Это подтверждает исправление обычного localhost flow в текущем worktree. Browser cosmogram, все recovery/error/two-tab сценарии, повторная адаптивность длинных таблиц и независимая Tester acceptance в этой задаче не проверялись. Статус Tester FIND-TEST-HTTP-001 и финальные G4/G5 не закрывались от имени другой роли. DEBT-CALC-001 остаётся OPEN, полный pytest FAILED; расчётный тест не отключён. После проверок исполняемые файлы не менялись — дополнена только документация.

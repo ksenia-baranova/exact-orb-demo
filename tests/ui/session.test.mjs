@@ -2,68 +2,12 @@
 // Контракт: docs/requirements/changes/ui-birth-form-and-facts/{requirements,scenarios}.md @ ce25dd0.
 // Настоящие form/session/transport; заменена только листовая сеть, ожидание управляется Promise.
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
 import { test } from "node:test";
-import { createBirthForm } from "../../src/exact_orb/http_api/ui/form.mjs";
-import { createApiClient } from "../../src/exact_orb/http_api/ui/transport.mjs";
-import { createSessionCoordinator } from "../../src/exact_orb/http_api/ui/session.mjs";
 import { mountBirthForm } from "../../src/exact_orb/http_api/ui/main.mjs";
 import { documentPort } from "./fixtures/dom.mjs";
 
-const views = JSON.parse(readFileSync(new URL("../http_api/golden/session_view.json", import.meta.url), "utf8"));
-const charts = JSON.parse(readFileSync(new URL("../http_api/golden/chart_dto.json", import.meta.url), "utf8"));
-const placeFixture = JSON.parse(readFileSync(new URL("../fixtures/places.jsonl", import.meta.url), "utf8").split("\n")[0]);
-const place = { place_id: placeFixture.place_id, display_name: placeFixture.name,
-  admin1_name: placeFixture.admin1, country_code: placeFixture.country };
-const bootstrapPath = "/session/bootstrap", currentPath = "/charts/current", buildPath = "/charts/natal";
-const ready = (stale = false, unknown = false) => ({ ...structuredClone(views[unknown ? "unknown_ready" : "known_ready"]),
-  chart: structuredClone(charts[unknown ? "cosmogram" : "natal"]), chart_stale: stale });
-const committed = (chart = charts.natal) => ({ status: "chart_ready", state_version: 2, chart });
-function response(body, status = 200, extra = {}) {
-  return new Response(JSON.stringify(body), { status, headers: { "X-Request-ID": "controlled-request", ...extra } });
-}
-function failure(code, issues = null) {
-  return { code, detail_code: null, user_message: "Проверьте введённые данные.", retryable: false, issues };
-}
-function deferred() {
-  let resolve;
-  const promise = new Promise((done) => { resolve = done; });
-  return { promise, resolve };
-}
-function fakeClock() {
-  let now = 0, id = 0;
-  const tasks = new Map();
-  return { now: () => now,
-    set(callback, milliseconds) { const handle = ++id; tasks.set(handle, { at: now + milliseconds, callback }); return handle; },
-    clear(handle) { tasks.delete(handle); },
-    advance(milliseconds) {
-      now += milliseconds;
-      for (const [handle, task] of [...tasks]) if (task.at <= now) { tasks.delete(handle); task.callback(); }
-    } };
-}
-function harness() {
-  const form = createBirthForm();
-  form.setDate("1985-09-02"); form.setTime("14:30"); form.selectPlace(place); form.acknowledge(true);
-  const queues = new Map(), calls = [], changes = [], clock = fakeClock(), observers = new Map();
-  const apiClient = createApiClient({ fetchFn: async (path, options) => {
-    calls.push({ path, options: { ...options }, body: options.body ? JSON.parse(options.body) : null });
-    observers.get(path)?.resolve();
-    observers.delete(path);
-    const next = queues.get(path)?.shift();
-    if (next instanceof Error) throw next;
-    if (next !== undefined) return await next;
-    if (path === bootstrapPath) return response({ status: "ready", state_version: 99 });
-    if (path === currentPath) return response(views.empty);
-    if (path === buildPath) return response(committed());
-    throw new Error(`Unexpected leaf request ${path}`);
-  } });
-  const coordinator = createSessionCoordinator({ apiClient, form, clock, onChange: (state) => changes.push(state) });
-  return { form, calls, changes, coordinator, clock, apiClient,
-    entered(path) { const event = deferred(); observers.set(path, event); return event.promise; },
-    queue(path, ...items) { queues.set(path, [...(queues.get(path) ?? []), ...items]); },
-    builds: () => calls.filter((call) => call.path === buildPath),
-  };
-}
+import { charts, views, place, ready, committed, response, failure, deferred, harness,
+  bootstrapPath, currentPath, buildPath } from "./fixtures/session.mjs";
 
 test("bootstrap ready/version never supplies a chart; current determines empty without build", async () => {
   const h = harness(), boot = deferred();
@@ -211,11 +155,10 @@ test("bootstrap failure suppresses current/build and keeps draft; safe explicit 
   assert.equal(await h.coordinator.submit(), true);
 });
 
-for (const code of ["STATE_COMMIT_FAILED", "BUILD_TIMEOUT", "network"]) {
-  test(`${code} keeps outcome unresolved without replay; detailed recovery belongs to DEV-UI-05`, async () => {
+for (const code of ["STATE_COMMIT_FAILED", "BUILD_TIMEOUT"]) {
+  test(`${code} blocks a new build before delayed check or restart confirmation`, async () => {
     const h = harness(); await h.coordinator.open(); const draft = h.form.snapshot();
-    h.queue(buildPath, code === "network" ? new Error("offline")
-      : response(failure(code), code === "BUILD_TIMEOUT" ? 504 : 503, { "Retry-After": "5" }));
+    h.queue(buildPath, response(failure(code), code === "BUILD_TIMEOUT" ? 504 : 503, { "Retry-After": "5" }));
     assert.equal(await h.coordinator.submit(), false);
     assert.equal(h.coordinator.snapshot().requiresReconciliation, true);
     assert.deepEqual(h.form.snapshot(), draft);
@@ -231,8 +174,12 @@ test("text proxy error and incomplete success cannot masquerade as a committed c
   assert.equal(await h.coordinator.submit(), false);
   assert.deepEqual(h.coordinator.snapshot().view, ready());
   assert.ok(h.coordinator.snapshot().error.message);
+  h.queue(currentPath, response(ready()));
   assert.equal(await h.coordinator.submit(), false);
   assert.deepEqual(h.coordinator.snapshot().view, ready());
+  assert.equal(h.coordinator.snapshot().source, "current");
+  assert.equal(h.coordinator.snapshot().recovery.status, "old_or_empty");
+  assert.equal(h.builds().length, 2);
 });
 
 test("snapshots do not share mutable charts, issues or request intent with callers", async () => {
