@@ -1,10 +1,10 @@
 # Implementation Plan: ui-birth-form-and-facts
 
 **Owner:** Developer. **Дата:** 2026-10-06. **Ветка:** `dev/ui-birth-form-and-facts-review`.
-**Status:** DRAFT FOR MANAGER ALIGNMENT; задания подготовлены, реализация NOT STARTED.
+**Status:** READY_FOR_DEVELOPMENT — административное утверждение Manager по поручению владельца 2026-10-07; реализация NOT STARTED. Текущий delivery status/G3 — [Manager-артефакт](../change_plans/ui-birth-form-and-facts/artifacts.md#change-brief).
 **Technical assessment:** FEASIBLE; закрытые продуктовые решения повторно сверены, blocking semantic gaps Developer не обнаружены.
 **Estimate Developer:** **5–8 рабочих дней / 40–64 человеко-часа**, один рабочий день = 8 часов. Уверенность средняя.
-**Target:** DP-UI-07; отличие оценки от Development target — **+1…4 дня**. Оценка не является изменением target или календарным обязательством.
+**Бюджет владельца:** DP-UI-07 текущей Manager-редакции — Analysis 4 / Development 5 / Testing 5 дней. Estimate Developer 5–8 сохраняется; относительно budget Development 5 риск составляет до +3 дней. Это не обещание выполнить верхнюю границу за 5 дней.
 
 ## 1. Baselines и разрешённый контракт
 
@@ -12,18 +12,20 @@
 |---|---|
 | Общий `change/ui-birth-form-and-facts` | `033217db41aed65d2cd6fadcc1cd1adc7c06d4c9`, получен из `ksenia-baranova/exact-orb-demo` 2026-10-06; Developer-ветка обновлена `git merge --ff-only FETCH_HEAD`. |
 | Нормативный baseline | [HTTP API](../../requirements/http_api.md) §§4–9, 11, 13; [каталог](../../requirements/component_responsibilities/exact-orb_place_catalog.md); [Build Natal](../../requirements/component_responsibilities/exact-orb_build_natal_components.md); [сессия](../../requirements/component_responsibilities/exact-orb_session_requirements.md); [stored chart](../../requirements/session/stored-chart-session-behavior.md); ADR-0008, 0029–0034, 0039–0041 @ `652bd73405db0a0611e98e81af6f3f668dd429f6`. Эти пути ещё не перенесены в `current/`. |
-| Требования и сценарии change | [requirements.md](../../requirements/changes/ui-birth-form-and-facts/requirements.md), [scenarios.md](../../requirements/changes/ui-birth-form-and-facts/scenarios.md), [analysis.md](../../requirements/changes/ui-birth-form-and-facts/analysis.md) @ `ce25dd0bebf5eb3b6d41fe933d1809005e5779ab`, включены через PR #47 / `a6c4d6f`. **10 REQ, 23 AS**; REVIEW REVISION, формальный допуск Manager ещё требуется. |
-| Единый реестр | [artifacts.md](../change_plans/ui-birth-form-and-facts/artifacts.md#decision-register) @ `64934fc33b8c04191e7a1b40a40d84b232d948f3`, включён через PR #48 / `033217d`. Применимы DP-UI-01…09, все ACCEPTED. В текущем Developer diff дополнены только поля Developer; новый baseline этого вклада фиксирует Manager после интеграции. |
-| Tester consultation | [tester.md](../../testing/ui-birth-form-and-facts/tester.md) @ `81624f83c54bf7fe9072990b393efae0ceabd6d2`, интегрирован PR #45. Estimate 3–5 дней; вывод ещё относится к `9ae1abc` / 21 AS. Повторная сверка исправленного пакета принадлежит Tester. |
-| Developer повторная валидация | [раздел review](ui_birth_form_and_facts_developer_review.md#повторная-валидация-2026-10-06) @ текущий рабочий diff поверх `033217d`. Старое review `b36b63d` сохраняется как история. |
+| Требования и сценарии change | [requirements.md](../../requirements/changes/ui-birth-form-and-facts/requirements.md), [scenarios.md](../../requirements/changes/ui-birth-form-and-facts/scenarios.md), [analysis.md](../../requirements/changes/ui-birth-form-and-facts/analysis.md) — семантика `ce25dd0`, 10 REQ / 23 AS; APPROVED FOR DEVELOPMENT этой Manager-редакцией после повторной сверки обеих ролей. |
+| Единый реестр | [artifacts.md](../change_plans/ui-birth-form-and-facts/artifacts.md#decision-register), рабочая административная редакция поверх `2972e42`. DP-UI-01…09 ACCEPTED; опубликованный семантический выбор @ `64934fc`, Developer вклад `082c6b9`, Tester `0f6aa82`. Budget 4/5/5 и G3 утверждены Manager; точный commit статусов передаётся после сохранения/интеграции. |
+| Tester consultation | [tester.md](../../testing/ui-birth-form-and-facts/tester.md) @ `0f6aa8256eb154ddd4871fbb734e6663a2873828`, PR #49 / `2972e42`: TESTABLE на baseline `082c6b9`, 23 AS/stack; estimate 3–5 повторно подтверждён, три findings resolved in contract. |
+| Developer повторная валидация | [review](ui_birth_form_and_facts_developer_review.md#повторная-валидация-2026-10-06) опубликован @ `082c6b9`, исходный review baseline `033217d`; старый `b36b63d` — история. |
 
 Между `652bd734` и `033217d` нет изменений `src/`, `tests/`, `pyproject.toml`. Ни merge ролевых документов, ни результаты backend tests не подтверждают готовность браузерного UI. Решения и accepted risks хранятся в реестре; таблицы ниже фиксируют их перенос/проверку и не создают второго источника выбора.
 
 ## 2. Manager summary и G3
 
+**Текущая диспозиция Manager — 2026-10-07:** G2/alignment завершены после TESTABLE Tester `0f6aa82`; требования/scenarios и этот план утверждены, G3 подтверждён в [Change Plan](../change_plans/ui-birth-form-and-facts/artifacts.md#roadmap). Матрица ниже сохраняет историческую оценку Developer на момент подготовки `082c6b9`; её NOT MET не является текущим delivery status.
+
 Прежние FIND-DEV-UI-001…003 закрываются **на уровне контракта и baseline**: DP-UI-05 перенесён в REQ-UI-03/10 и AS-UI-22; recovery выбран в DP-UI-09 и описан в REQ-UI-09 / AS-UI-23; для consultation зафиксирован единый вход `033217d`. Правило орбиса из TEST-FIND-UI-003 также определено в REQ-UI-04 / AS-UI-07. Browser evidence появится после реализации; Developer не меняет статусы Tester findings.
 
-**Рекомендация Developer:** технически можно готовить переход к READY_FOR_DEVELOPMENT на этом scope. **Сейчас G3 не пройден**. Manager владеет change status; этот план не переводит change в новый статус и не разрешает исполнение промтов.
+**Рекомендация Developer:** технически можно готовить переход к READY_FOR_DEVELOPMENT на этом scope. **На момент подготовки Developer-пакета G3 не был пройден**. Manager владеет change status; этот план не переводит change в новый статус и не разрешает исполнение промтов.
 
 | Условие G3 по process.md | Оценка на `033217d` + этот Developer diff | Владелец следующего действия |
 |---|---|---|
@@ -35,7 +37,7 @@
 | Gantt соответствует оценкам/зависимостям | NOT MET: target 4/2 дня не покрывает estimates 5–8/3–5. Нужны alignment бюджета, зависимости и контрольные результаты, без механического пересчёта старого roadmap. | Manager + владелец target |
 | Developer знает разрешённый scope | MET технически: форма, три группы, восстановление/ошибки, закрытый gate, доступность. План и промты явно исключают смежный scope. | Developer |
 
-**Условие начала:** этот Developer пакет интегрирован/зафиксирован на согласованной версии; Tester подтвердил testability нового пакета; Analyst/Manager подтвердили REQ/AS; Manager принял estimates/зависимости и записал G3. До этого независимая подготовка и консультация возможны, production изменения не исполняются. Чистовая редакция и browser acceptance требуются к G5, их отсутствие сейчас не превращается в предварительный G3 blocker.
+**Условие начала:** административный G3 подтверждён этой Manager-редакцией. До исполнения work items получить общий HEAD `change/*`, включающий её commit, и выдать его Developer-ветке с approved scope/plan. Статус IN_DEVELOPMENT фиксируется при фактическом старте. Чистовая редакция/карта переноса Analyst и независимая browser acceptance остаются обязательными до G5.
 
 ## 3. Стоимость, уверенность и допущения
 
@@ -53,11 +55,11 @@
 
 В каждом work item уже учтены его Developer tests и локальная проверка. DEV-UI-06 содержит интеграционную/визуальную сверку, один финальный регрессионный прогон, синхронизацию технических документов и handoff; эти часы не прибавляются повторно. Резерв не покрывает изменение scope, новые зависимости или длительное восстановление инфраструктуры.
 
-**Основание:** backend/DTO уже готовы, но production frontend, UI test harness и assets packaging отсутствуют. Основная стоимость — state transitions, управляемые late response/commit cases, keyboard/mobile и реальный HTTPS browser путь, а не расширение вычислительного ядра. Target 4 дня ниже нижней границы: обещать его как полный объём с проверками оснований нет.
+**Основание:** backend/DTO уже готовы, но production frontend, UI test harness и assets packaging отсутствуют. Основная стоимость — state transitions, управляемые late response/commit cases, keyboard/mobile и реальный HTTPS browser путь, а не расширение вычислительного ядра. На момент оценки target 4 дня был ниже нижней границы. Новый budget владельца 5 дней соответствует нижней границе estimate; диапазон 5–8 и риск +3 сохраняются.
 
 **Допущения:** один Developer, 8 продуктивных часов в дне; scope трёх групп без wheel/chat/DTO delta; Node и Python доступны; существующий HTTPS стенд доступен для интеграции; один небольшой retest учтён. Ожидание решений и чужих PR отдельно. Tester/Analyst work не включены в Developer estimate.
 
-**Отдельные роли:** Tester уже оценил свою работу в **3–5 дней / 24–40 часов**, уверенность средняя-низкая; требуется подтверждение после выбора UI stack и повторной сверки. Сумма записанных Developer + Tester трудозатрат — **8–13 человеко-дней / 64–104 часа**, без оставшейся работы Analyst/Manager и календарного ожидания. Историческая оценка Analyst 1,5–2,5 дня не считается автоматически новым остатком.
+**Отдельные роли:** Tester оценил свою работу в **3–5 дней / 24–40 часов** со средней-низкой уверенностью и подтвердил эту оценку после выбора UI stack и повторной сверки @ `0f6aa82`. Сумма записанных Developer + Tester трудозатрат — **8–13 человеко-дней / 64–104 часа**, без оставшейся работы Analyst/Manager и календарного ожидания. Историческая оценка Analyst 1,5–2,5 дня не считается автоматически новым остатком.
 
 **Денежный расчёт:** ставка не задана. Стоимость Developer = `40…64 × ставка Developer за час`; Developer + Tester = `40…64 × ставка Developer + 24…40 × ставка Tester`. При одной ставке `R` — `64R…104R`. Валюта, ставка, налоги, стоимость LLM/API и внешней инфраструктуры не выдумываются. План не добавляет вызовов LLM; стоимость работы агента этим estimate не измерена.
 
@@ -83,7 +85,7 @@
 
 ## 5. Work items и подход
 
-Все файлы ниже — **планируемые**, кроме существующих `app.py`, `pyproject.toml`, HTTP tests и документов. Карточки и промты DRAFT; в этом задании не исполнялись. В тестовых docstrings/comments сохраняются REQ/AS IDs и ссылки на Analyst baseline; при финализации ссылки сверяются с картой переноса Analyst.
+Все файлы ниже — **планируемые**, кроме существующих `app.py`, `pyproject.toml`, HTTP tests и документов. Карточки утверждены для разработки этой Manager-редакцией; исполнение NOT STARTED. DRAFT/NOT EXECUTED внутри исходных промтов @ `082c6b9` сохраняется как историческое состояние подготовки; текущий допуск задаёт Manager G3, фактическое исполнение фиксируется в плане. В тестовых docstrings/comments сохраняются REQ/AS IDs и ссылки на Analyst baseline; при финализации ссылки сверяются с картой переноса Analyst.
 
 <a id="dev-ui-01"></a>
 ### DEV-UI-01. Страница доставляется тем же приложением
@@ -209,6 +211,6 @@ git diff --check
 
 ## 8. Handoff и границы текущей поставки
 
-Manager получает этот DRAFT plan, estimate, gate matrix и [повторную валидацию](ui_birth_form_and_facts_developer_review.md#повторная-валидация-2026-10-06). Tester получает предложенный UI/test stack и список швов/AS для независимого подтверждения. Analyst сохраняет семантику и готовит чистовую редакцию/карту переноса до G5. Developer не объявляет приёмку и не заполняет статус change за Manager.
+Manager утвердил этот план/estimate/зависимости 2026-10-07 после Developer `082c6b9` и Tester `0f6aa82`. Tester подтвердил testability stack/23 AS и готовит независимую проверку после реализации. Analyst подготавливает чистовую редакцию/карту переноса до G5. Административное утверждение не меняет авторские estimates, технические choices или фактический runtime evidence.
 
-Пользователь отдельно поручил коммит и публикацию этого пакета в `change/ui-birth-form-and-facts` 2026-10-06. Результат публикации подтверждается Git evidence в handoff; само поручение не означает состоявшейся интеграции. Исполнение production work items и перевод статуса change этим поручением не разрешены. После интеграции проверить новый HEAD и обновлять фактический статус/журнал карточек при выполнении работ; исторические промты сохраняются.
+**История публикации:** Developer-пакет @ `082c6b9` опубликован по отдельному поручению владельца и включён в `change/*`; Tester review @ `0f6aa82` включён через PR #49 / `2972e42`. **Текущий допуск:** Manager G3 задан этой редакцией; её commit/merge ещё не подтверждены. После интеграции использовать фактический общий HEAD, обновлять журнал work items по выполнению. Исторические промты не редактируются; реализация в этом административном задании не выполнялась.
