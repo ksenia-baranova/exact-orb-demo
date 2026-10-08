@@ -20,8 +20,9 @@
 прошёл: сессия, поиск/выбор Москвы, ручной checkbox gate, natal build,
 открытие подробностей и reload/current с равенством всех строк таблиц.
 Результат: 16 точек, 12 домов, 5 углов и 46 аспектов. Полный browser recovery,
-адаптивность длинных таблиц и независимая приёмка Tester ещё не подтверждены;
-полный pytest остаётся FAILED на `DEBT-CALC-001`. Точная рабочая версия,
+адаптивность длинных таблиц и независимая приёмка Tester ещё не подтверждены.
+После разрешённого skip полный pytest дал 2959 passed / 1 skipped; `DEBT-CALC-001`
+остаётся OPEN / NON-BLOCKING для M1-7: skip не доказывает исключённое свойство, но не удерживает G4 этого change. Точная рабочая версия,
 команды и границы проверки — в [журнале исправления прокси](../project_management/implementation_plans/ui_birth_form_and_facts_implementation_plan.md#local-proxy-fix)
 и [исходном handoff DEV-UI-06](../project_management/implementation_plans/ui_birth_form_and_facts_implementation_plan.md#18-журнал-исполнения-dev-ui-06-и-handoff).
 
