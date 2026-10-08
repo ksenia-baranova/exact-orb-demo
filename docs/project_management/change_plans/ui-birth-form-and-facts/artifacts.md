@@ -1,24 +1,24 @@
 # M1-7: артефакты Change Manager
 
-Единый файл изменения `ui-birth-form-and-facts`: описание, реестр решений, технический долг, задания ролям и дорожная карта. После повторного Tester review Manager завершил G2/alignment и утвердил переход G3. План готов к разработке; итоговая приёмка добавляется после реализации и проверок.
+Единый файл изменения `ui-birth-form-and-facts`: описание, реестр решений, технический долг, задания ролям и дорожная карта. G3 завершён; реализация и Developer handoff интегрированы через PR #51. G4 подтверждён, change READY_FOR_TEST; `DEBT-CALC-001` остаётся OPEN / NON-BLOCKING для M1-7.
 
 <a id="change-brief"></a>
 ## Черновое описание изменения
 
-**Статус изменения:** READY_FOR_DEVELOPMENT — G2 и alignment завершены, G3 подтверждён этой Manager-редакцией по прямому поручению владельца. Требования, Implementation Plan и независимый Tester review согласованы; blocking contract findings сняты. Реализация NOT STARTED, G4/G5 и acceptance ещё не выполнялись.
+**Статус изменения:** READY_FOR_TEST — реализация DEV-UI-01…08 и Developer handoff `ab072ec` интегрированы в `change/*` через PR #51 / `0c893f0`; G4 подтверждён. `DEBT-CALC-001` остаётся OPEN / NON-BLOCKING для M1-7: полный pytest имеет 2959 passed / 1 skipped, и skip не доказывает исключённое свойство. Tester execution, G5 и acceptance NOT RUN.
 **Руководитель изменения:** агент Change Manager в `manager/ui-birth-form-and-facts-review-alignment`.
 **Интеграционная ветка:** `change/ui-birth-form-and-facts`.
 **История Intake:** `956a0d3acbb1536e57535c4689aee57efe607381` — исходный HEAD подготовки 2026-10-03.
-**Текущий исходный commit `change/*`:** `2972e4248237fed4913b96c4c5e6b4c1d9105fe9`; повторный Tester review `0f6aa8256eb154ddd4871fbb734e6663a2873828` интегрирован через PR #49. Manager-ветка обновлена fast-forward с `082c6b9`, локальные roadmap/budget изменения сохранены.
+**Текущий исходный commit `change/*`:** `0c893f0ce3f78787010f463662efe689c6ace242`; Developer handoff `ab072ec247e8d43d4f83e941263f77504dfeed55` интегрирован через PR #51. Implementation commit `f7fb34bce8de23d8c08a7491c5698a7b5ab9e4ab`; согласованный skip `DEBT-CALC-001` входит в handoff.
 **Утверждённый Analysis-контракт:** `ce25dd0bebf5eb3b6d41fe933d1809005e5779ab`, 10 REQ / 23 AS, включён через PR #47. Повторно сверён Developer @ `082c6b9` и Tester @ `0f6aa82`; административный статус требований/сценариев обновляется этой Manager-редакцией, исторический нормативный вход сохраняется.
 **Единый реестр:** [раздел «Единый реестр решений»](#decision-register); эта версия возвращается в `change/*` через отдельный Manager PR.
 **Задания ролям:** [раздел «Задания ролям»](#role-tasks).
 **Связанные строки:** `DP-UI-01`…`DP-UI-09`; долг страницы — `DEBT-UI-001` в [разделе технического долга](#technical-debt).
-**Версия исходных материалов:** первичный просмотр — `956a0d3`, нормативный вход Analysis — `652bd734`; текущий общий вход — `2972e42`, семантика Analyst — `ce25dd0`, Developer plan/повторная сверка — `082c6b9`, Tester — `0f6aa82` (review baseline `082c6b9`, 23 AS). В `src/`, `tests/`, `pyproject.toml` нет дельты от нормативного входа. Эта Manager-редакция утверждает административные статусы; для исполнения требуется общий HEAD `change/*`, включающий её commit.
+**Версия исходных материалов:** первичный просмотр — `956a0d3`, нормативный вход Analysis — `652bd734`; семантика Analyst — `ce25dd0`, plan/review — `082c6b9`, testability — `0f6aa82`, G3 — `e4f60fb` / merge `6fc62b9`. Текущий общий вход `0c893f0` содержит production UI, tests, Developer evidence и handoff PR #51. Эта Manager-редакция синхронизирует delivery status; runtime evidence не перезапускается и не переименовывается в Tester acceptance.
 
 ### Потребность и подтверждённые рамки
 
-Пользователь хочет ввести дату, выбрать место из подсказок, указать время или явно отметить его неизвестным, построить карту и прочитать факты. HTTP API реализован; production браузерный UI ещё отсутствует. На review 2026-10-05 владелец заменил прежний шестигрупповой scope на **три группы текущего `ChartDTO`: планеты/точки, дома, аспекты** (`DP-UI-01/02`). Поиск запускается с трёх символов (`DP-UI-06`); порядок формы — дата → место → время. UI получает уже рассчитанные факты и форматирует опубликованные градусы/минуты.
+Пользователь хочет ввести дату, выбрать место из подсказок, указать время или явно отметить его неизвестным, построить карту и прочитать факты. HTTP API и production браузерный UI реализованы и интегрированы в `change/*`; независимая приёмка ещё не выполнена. На review 2026-10-05 владелец заменил прежний шестигрупповой scope на **три группы текущего `ChartDTO`: планеты/точки, дома, аспекты** (`DP-UI-01/02`). Поиск запускается с трёх символов (`DP-UI-06`); порядок формы — дата → место → время. UI получает уже рассчитанные факты и форматирует опубликованные градусы/минуты.
 
 Целевой результат: в браузере человек вводит поддерживаемые данные, видит подсказки места и выбирает `place_id`, выполняет явное построение и читает факты своей карты. После обновления страницы тот же результат восстанавливается по session cookie и `GET /charts/current`, пока сессия жива. Значения таблиц происходят из реального результата API, а не из демонстрационных чисел макетов.
 
@@ -95,7 +95,7 @@
 
 **Не входит:** публикация и UI конфигураций, силы, особых градусов, оценки стихий; новые endpoint, публичные DTO-блоки и расчёт в браузере; SVG-колесо M1-8, полный перенос прототипа M1-8.1, реализация чата M2 и deployment M1-12/13. Отдельная страница условий зарегистрирована как долг M1-9 `DEBT-UI-001` и закрывается до распространения ссылки другим людям и публичного трафика. Переименование `admin1_name` отложено (`DP-UI-03`).
 
-**Следующие результаты:** реализация DEV-UI-01…06, Developer checks/G4, независимая приёмка/G5, макет и чистовой перенос Analyst со сверкой Tester. Повторная консультация ролей завершена; новых blocking вопросов Manager не обнаружил. Budget 4/5/5 и диапазоны ролей сохранены; DEBT-UI-001 OPEN, DP-UI-03 и ограничения M1-6 действуют.
+**Следующие результаты:** Tester выполняет независимые UI/browser/recovery проверки на `0c893f0`, включая retest TEST-FIND-UI-004…012; Analyst готовит чистовой перенос к G5. Расчётный Developer отдельно закрывает `DEBT-CALC-001`, снимает skip и получает полный pytest PASS — это условие полного G4. Budget 4/5/5 и диапазоны ролей сохраняются; DEBT-UI-001, DP-UI-03 и ограничения M1-6 действуют.
 
 ### Ожидаемый результат на приёмке — предварительный контур
 
@@ -130,34 +130,34 @@ Tester включает fixtures/среду, автоматические UI che
 <a id="roadmap"></a>
 ## Change Plan: дорожная карта M1-7
 
-**Статус плана:** READY_FOR_DEVELOPMENT — Manager утвердил план после Developer `082c6b9` и независимого Tester `0f6aa82`. Вход согласования — `2972e42`; семантика требований `ce25dd0` (10 REQ / 23 AS), Implementation Plan `082c6b9`, budget 4/5/5 и риски — [единый реестр](#decision-register). Это готовность к реализации, не выполненная поставка.
+**Статус плана:** READY_FOR_TEST — UI-реализация и воспроизводимый Developer handoff интегрированы в `0c893f0`; G4 подтверждён, независимое тестирование UI может начинаться. `DEBT-CALC-001` остаётся OPEN / NON-BLOCKING для M1-7. G5 и final acceptance не выполнялись.
 
-Шкала Д1…Д14 — **относительные рабочие дни полного цикла M1-7**, а не даты от сегодняшнего дня и не ещё 14 дней оставшейся работы. Analysis-пакет поставлен, G2/G3 закрыты этой редакцией. Дата фактического старта не задана; её назначение не подменяет статус readiness. Бюджет Analysis 4 дня не включает повторную четырёхдневную подготовку уже готовых документов.
+Шкала Д1…Д14 — **относительный бюджет полного цикла M1-7**, а не фактический календарь. Analysis и Development поставлены; Developer handoff интегрирован 2026-10-08 и G4 подтверждён. Testing ещё не имеет независимого execution evidence. Открытый расчётный долг не блокирует M1-7 и ведётся отдельно.
 
 ```mermaid
 flowchart LR
-    A["Analysis · 4 дня<br/>Д1–Д4: REQ/AS, review, alignment"] --> G3{"G3<br/>подтверждён"}
-    G3 -->|"старт по общему baseline"| D["Development · 5 дней<br/>Д5–Д9: DEV-UI-01…06"]
-    D --> G4{"G4<br/>готовая реализация и handoff"}
-    G4 --> T["Testing · 5 дней<br/>Д10–Д14: независимые проверки"]
+    A["Analysis · 4 дня<br/>Д1–Д4: выполнено"] --> G3{"G3<br/>подтверждён"}
+    G3 --> D["Development · 5 дней<br/>DEV-UI-01…08 и handoff интегрированы"]
+    D --> G4{"G4<br/>подтверждён"}
+    G4 --> T["Testing · 5 дней<br/>READY TO START / NOT RUN"]
     T --> G5{"G5<br/>evidence и чистовые требования"}
     G5 --> F["Final Acceptance<br/>Change Manager"]
     classDef phase fill:#e8f1fb,stroke:#345b85,color:#172b40;
     classDef gate fill:#fff4d6,stroke:#aa7c1d,color:#4b370b;
-    class A,D,T phase;
     classDef approved fill:#e0f2e6,stroke:#33704a,color:#183b25;
-    class G4,G5 gate;
-    class G3 approved;
+    class A,G3,D,G4 approved;
+    class T phase;
+    class G5 gate;
 ```
 
 | Фаза | Плановая шкала / бюджет | Контрольный результат | Условие перехода |
 |---|---|---|---|
 | Analysis и alignment | Д1–Д4 / 4 дня | Analyst `ce25dd0`, Developer plan/review `082c6b9`, независимый Tester `0f6aa82`; G2/alignment выполнены | G3 подтверждён Manager по этому пакету; фактические затраты не приравниваются к бюджету |
-| Development | Д5–Д9 / 5 дней | runnable HTML/ES-modules UI: страница/transport → форма/место → session/build → три группы/кнопки → recovery → проверки/handoff | G3 до старта; 6 work items, целевые/связанные/полные проверки и воспроизводимый implemented commit для G4 |
-| Testing | Д10–Д14 / 5 дней | независимая матрица REQ/AS → actual evidence, HTTP/UI/browser/keyboard/mobile, positive controls, retest, сверка чистовой редакции | G4 до acceptance checks; закрыты blocking defects, перечислено NOT RUN/limitations, выполнен G5 |
+| Development | Д5–Д9 / 5 дней | DEV-UI-01…08, production UI, автоматические checks и handoff интегрированы PR #51 / `0c893f0` | Developer handoff принят; G4 подтверждён с согласованным неблокирующим исключением DEBT-CALC-001 |
+| Testing | Д10–Д14 / 5 дней | независимая матрица REQ/AS → actual evidence, HTTP/UI/browser/keyboard/mobile, positive controls, retest, сверка чистовой редакции | независимый UI scope проверяется на `0c893f0`; G5 только после закрытия blocking defects и чистового переноса |
 | Final Acceptance | после G5; отдельный бюджет не задан | delivered scope, открытый долг M1-9, карта переноса и точные role baselines | Manager принимает evidence; финальный PR/merge выполняются по отдельному поручению |
 
-Критический путь по Developer: `DEV-UI-01 → 02 → 03 → 04 → 05 → 06 → G4 → независимая приёмка → G5`. Один Developer, 8 продуктивных часов в дне. Fixtures/test plan Tester можно готовить параллельно Development; самостоятельная приёмка начинается с готовой реализации. Параллельная подготовка не вычитается из оценок труда. Чистовую редакцию/карту переноса готовит Analyst до G5, Tester сверяет её; эта работа не добавляется молча к Developer estimate.
+Фактический путь Developer: `DEV-UI-01…06 → DEV-UI-07/08 → handoff ab072ec → merge 0c893f0 → G4`. Дальше Tester выполняет независимую UI acceptance для G5. `DEBT-CALC-001` закрывается отдельным расчётным change и не блокирует M1-7. Чистовую редакцию/карту переноса готовит Analyst до G5, Tester сверяет её.
 
 **Предел прогноза:** 14 дней — выбранный базовый бюджет. При Developer 8 и Testing 5 условный последовательный цикл с Analysis бюджетом 4 составит 17 рабочих дней; это риск/сценарий, не новый утверждённый бюджет. Ожидание review/PR, недоступность HTTPS-среды, новые зависимости и дополнительные исправления могут изменить календарь и требуют пересмотра.
 
@@ -166,13 +166,25 @@ flowchart LR
 | Условие | Evidence / статус | Следующее действие |
 |---|---|---|
 | Analyst-контракт и выбранное поведение согласованы | MET: `ce25dd0`, 10 REQ / 23 AS, DP-UI-01…09; Developer/Tester сверили перенос | requirements/scenarios APPROVED FOR DEVELOPMENT; чистовой перенос до G5 |
-| Developer feasibility, risks, estimate, plan | MET: `082c6b9`, FEASIBLE, 5–8 дней, 6 work items, повторное review | production NOT STARTED; промты до G3 не исполнять |
+| Developer feasibility, risks, estimate, plan | MET: `082c6b9`, FEASIBLE; реализация DEV-UI-01…08 и handoff @ `ab072ec` интегрированы в `0c893f0` | независимые UI-проверки; отдельно закрыть DEBT-CALC-001 |
 | Независимая повторная сверка Tester | **MET**: `0f6aa82` на `082c6b9`, TESTABLE; TEST-FIND-UI-001…003 RESOLVED IN CONTRACT, estimate 3–5 подтверждён | независимая acceptance по implemented commit после G4; UI checks NOT RUN |
 | Бюджет и зависимости | MET AS OWNER BUDGET: DP-UI-07 = 4/5/5, граф и риск +3 Development записаны | календарные даты после завершения gate; оценки ролей сохраняются |
 | Blocking продуктовые DP | MET: DP-UI-01…09 ACCEPTED с owner evidence | нового выбора по scope/gate/кнопкам/recovery не требуется |
 | Non-blocking items | DEBT-UI-001, DP-UI-03 и принятые ограничения M1-6 сохраняют owner/условие возврата | не закрывать чужую приёмку и не расширять scope |
 
 **Решение Manager по G3 — 2026-10-07:** замечаний, блокирующих разработку, нет. G2/alignment завершены; требования/scenarios и Implementation Plan утверждены для исполнения, change/Change Plan получают READY_FOR_DEVELOPMENT. По прямому поручению владельца синхронизированы административные статусы связанных артефактов со ссылкой на этот источник. Авторские оценки и результаты review сохраняются; Tester TESTABLE не превращается в PASS реализации. После отдельно разрешённого commit/merge этой редакции передать Developer фактический общий HEAD `change/*`; только он служит воспроизводимым input для исполнения. IN_DEVELOPMENT фиксируется при фактическом старте работ, не сейчас.
+
+### Проверка G4 Manager
+
+| Условие G4 | Evidence / статус | Действие |
+|---|---|---|
+| Implementation соответствует baseline requirements | **MET FOR TEST:** DEV-UI-01…08 реализованы на семантике `ce25dd0`; implementation `f7fb34b`, handoff `ab072ec`, merge PR #51 / `0c893f0` | Tester сверяет 10 REQ / 23 AS на точном merge commit |
+| Developer checks выполнены | **MET WITH ACCEPTED EXCEPTION:** 180 Node passed, 300 HTTP passed, полный pytest 2959 passed / 1 skipped; точечный skip разрешён владельцем и помечен DEBT-CALC-001 | расчётный Developer закрывает долг отдельно; исключённое свойство не считается доказанным |
+| Diff, ограничения и reproducible handoff описаны | **MET:** раздел 25 Implementation Plan содержит версии, команды, порядок запуска и NOT RUN; handoff находится в `change/*` | Tester фиксирует собственную среду и actual results |
+| Blocking development findings закрыты | **MET FOR G4:** TEST-FIND-UI-004…012 имеют исправления и остаются FIXED PENDING RETEST для независимого Testing; `DEBT-CALC-001` OPEN / NON-BLOCKING для M1-7 | retest findings обязателен до G5; расчётный долг закрывается отдельно |
+| Контрактная документация синхронизирована | **MET FOR TEST:** требования не менялись, manual bug registry и Developer handoff интегрированы | Analyst готовит clean transfer до G5 |
+
+**Решение Manager по G4 — 2026-10-08:** G4 подтверждён, change получает `READY_FOR_TEST`. UI implementation handoff принят как воспроизводимый вход Tester для независимых UI/browser/recovery проверок на `0c893f0`. `DEBT-CALC-001` остаётся OPEN / NON-BLOCKING для M1-7; согласованный skip не доказывает исключённое свойство. G5 и acceptance остаются NOT RUN.
 
 ### Интеграция и контрольные результаты
 
@@ -187,8 +199,10 @@ flowchart LR
 | Manager: регистрация recovery и ролевых результатов | `64934fc`, [PR #48](https://github.com/ksenia-baranova/exact-orb-demo/pull/48) | `033217d` | DP-UI-09, baselines и диспозиция возврата |
 | Developer: Implementation Plan и повторное review | `082c6b9` | включён в текущий `2972e42` | FEASIBLE, 6 work items, estimate 5–8; findings resolved in contract, реализация NOT STARTED |
 | Tester: независимая повторная сверка | `0f6aa82`, [PR #49](https://github.com/ksenia-baranova/exact-orb-demo/pull/49) | `2972e42` | TESTABLE на 23 AS/stack; 3 findings resolved in contract, estimate 3–5 подтверждён |
+| Manager: G3 и budgets 4/5/5 | `e4f60fb`, [PR #50](https://github.com/ksenia-baranova/exact-orb-demo/pull/50) | `6fc62b9` | READY_FOR_DEVELOPMENT, утверждённые REQ/AS и roadmap |
+| Developer: UI implementation и handoff | `f7fb34b`, `ab072ec`, [PR #51](https://github.com/ksenia-baranova/exact-orb-demo/pull/51) | `0c893f0` | DEV-UI-01…08, READY_FOR_TEST у Developer; 180 Node, 300 HTTP, 2959 passed / 1 skipped; acceptance NOT RUN |
 
-Предыдущая Manager-редакция `64934fc` включена через PR #48; ветка обновлена fast-forward до `2972e42` с сохранением budget/roadmap дельты. Текущий переход G3 и административные статусы — рабочая Manager-редакция поверх `2972e42`; commit/push/интеграция её изменений ещё не выполнены. Это решение readiness, не evidence начала разработки или final acceptance.
+Manager-ветка fast-forward до `0c893f0`. Эта административная редакция фиксирует READY_FOR_TEST и подтверждённый G4 отдельным Manager commit; до её merge общий baseline `change/*` остаётся `0c893f0`. Merge PR #51 доказывает интеграцию implementation/handoff, но не независимую Tester acceptance или G5.
 
 ### Диспозиция замечаний и завершение G2
 
@@ -199,9 +213,9 @@ flowchart LR
 | FIND-DEV-UI-003 — baseline / delivery documentation | Manager PR #48 интегрирован, актуальный общий вход `2972e42` | Developer resolved for consultation baseline; административные ссылки/статусы актуализированы этой Manager-редакцией |
 | TEST-FIND-UI-003 — formatting oracle | REQ-UI-04 / AS-UI-07, Math.round для неотрицательного orb | Tester `0f6aa82`: RESOLVED IN CONTRACT; Developer spike 7 cases — его evidence; UI renderer checks после реализации |
 
-Исходный document review обеих ролей относится к `9ae1abc`. Повторный Developer `082c6b9` и Tester `0f6aa82` подтвердили исправленный пакет; их findings имеют диспозиции на уровне контракта. Manager использует эти опубликованные результаты для G3; acceptance UI по-прежнему отсутствует.
+Исходный document review обеих ролей относится к `9ae1abc`. G3-пакет подтверждён и implementation/handoff интегрированы в `0c893f0`. UI findings TEST-FIND-UI-004…012 исправлены Developer и ожидают retest; независимая acceptance по-прежнему отсутствует.
 
-[Дорожная карта](#roadmap), budgets 4/5/5, estimates 5–8 / 3–5 и зависимости согласованы для перехода G3. Подготовка Tester может идти параллельно Development; независимая acceptance — после G4. Статус change READY_FOR_DEVELOPMENT; дата фактического начала ещё не назначена.
+[Дорожная карта](#roadmap), budgets 4/5/5 и estimates 5–8 / 3–5 сохраняются как плановые основания. Development handoff интегрирован, G4 подтверждён, change READY_FOR_TEST; Tester может проверять независимый UI scope. DEBT-CALC-001 закрывается отдельно и не блокирует M1-7.
 
 <a id="decision-register"></a>
 ## Единый реестр решений
@@ -233,7 +247,7 @@ flowchart LR
 
 | ID и статус | Работа и причина переноса | Связь и evidence | Ответственный | Срок / условие возврата | Ожидаемый результат и проверка | Ограничение до закрытия |
 |---|---|---|---|---|---|---|
-| `DEBT-CALC-001` — **OPEN**, отдельная задача расчётного слоя | Устранить падение property-теста монотонности числа конфигураций: генератор допускает разные типы аспектов для одной пары, а bisextile finder на таком входе публикует тригон между центром и крылом вместо замыкания крыльев. Тест и finder не менялись в DEV-UI-03…06; исправление вынесено из UI scope по поручению владельца «Создавай техдолг» от 2026-10-07. | Т-АСП-3, Т-КНФ-3/4/11; ADR-0031; исходные файлы @ `6d970f6`. [Контрпример, команды и Developer evidence](../../implementation_plans/ui_birth_form_and_facts_implementation_plan.md#debt-calc-001): пороги 7/3 дают 0/1 фигур; integrity отклоняет результат. | **Поставка:** Developer расчётного слоя.<br>**Проверка:** Tester.<br>**Приоритет/срок и закрытие по evidence:** Change Manager / владелец проекта. | Срок и milestone не назначены. Вернуться отдельной задачей до объявления полного regression gate PASS и завершения зависимого G4. Независимая UI работа может продолжаться в согласованном объёме. | Допустимый генератор для проверки монотонности; детерминированная регрессия найденного контрпримера; тригон бисекстиля соединяет именно крылья. Позитивные фигуры, Т-КНФ-3 и reference/golden сохраняются. При закрытии долга снять временный skip; целевые, связанные и полный pytest проходят без исключения на зафиксированном commit, Tester подтверждает проверку. | **Новое разрешение владельца 2026-10-07:** «Поставь метку игнор падающего теста» — временный `pytest.mark.skip` только на `test_property_configuration_count_does_not_grow_when_threshold_decreases`, reason DEBT-CALC-001; прежний запрет skip/xfail заменён только для этого теста. [Исполнение и проверки](../../implementation_plans/ui_birth_form_and_facts_implementation_plan.md#debt-calc-001-test-skip). Остальные тесты, golden/допуски и числовое поведение сохраняются. Долг OPEN; skipped не доказывает свойство и не закрывает G4/G5 или acceptance. Контрпример на противоречивых рёбрах сам по себе не доказывает ошибку штатного натального расчёта. |
+| `DEBT-CALC-001` — **OPEN / NON-BLOCKING для M1-7**, отдельная задача расчётного слоя | Устранить падение property-теста монотонности числа конфигураций: генератор допускает разные типы аспектов для одной пары, а bisextile finder на таком входе публикует тригон между центром и крылом вместо замыкания крыльев. Тест и finder не менялись в DEV-UI-03…06; исправление вынесено из UI scope по поручению владельца «Создавай техдолг» от 2026-10-07. | Т-АСП-3, Т-КНФ-3/4/11; ADR-0031; исходные файлы @ `6d970f6`. [Контрпример, команды и Developer evidence](../../implementation_plans/ui_birth_form_and_facts_implementation_plan.md#debt-calc-001): пороги 7/3 дают 0/1 фигур; integrity отклоняет результат. | **Поставка:** Developer расчётного слоя.<br>**Проверка:** Tester.<br>**Приоритет/срок и закрытие по evidence:** Change Manager / владелец проекта. | Срок и milestone не назначены. Вернуться отдельной задачей до снятия skip и заявления полного regression gate без исключений; M1-7 G4/G5 этот долг не блокирует. | Допустимый генератор для проверки монотонности; детерминированная регрессия найденного контрпримера; тригон бисекстиля соединяет именно крылья. Позитивные фигуры, Т-КНФ-3 и reference/golden сохраняются. При закрытии долга снять временный skip; целевые, связанные и полный pytest проходят без исключения на зафиксированном commit, Tester подтверждает проверку. | **Новое разрешение владельца 2026-10-07:** «Поставь метку игнор падающего теста» — временный `pytest.mark.skip` только на `test_property_configuration_count_does_not_grow_when_threshold_decreases`, reason DEBT-CALC-001; прежний запрет skip/xfail заменён только для этого теста. [Исполнение и проверки](../../implementation_plans/ui_birth_form_and_facts_implementation_plan.md#debt-calc-001-test-skip). Остальные тесты, golden/допуски и числовое поведение сохраняются. Долг OPEN; skipped не доказывает свойство и не закрывает сам DEBT-CALC-001. Для M1-7 G4/G5 долг принят как NON-BLOCKING limitation. Контрпример на противоречивых рёбрах сам по себе не доказывает ошибку штатного натального расчёта. |
 | `DEBT-UI-001` — **OPEN**, отложена в M1-9 | Подготовка текста и отдельной страницы «Условия использования сервиса», доступной из формы. На закрытом этапе пока нет ни страницы, ни её текста; пользователь отмечает checkbox вручную. Обе работы отложены в M1-9 решением владельца. | DP-UI-04; ADR-0034 §2 @ `652bd734`; correction Analysis @ `dbee888`; ответ владельца в turn `01a10d96-420f-7730-abe5-80ca4c718a65`; [граница передачи ссылки](https://github.com/ksenia-baranova/exact-orb-demo/pull/43#discussion_r4179370676). | **Владелец закрытия:** пользователь, владелец проекта.<br>**Ответственный за поставку:** Developer роли M1-9.<br>**Требования/копия:** Analyst; содержание утверждает владелец.<br>**Проверка:** Tester.<br>**Контроль срока/статуса:** Change Manager. | Включить в M1-9 и закрыть **до распространения ссылки другим людям и до публичного трафика**. Если владелец намерен передать ссылку раньше M1-9, вернуть долг в ближайший обязательный объём; до закрытия передачу не выполнять. Календарная дата пока не назначена. | Отдельная страница открывается из формы и содержит минимум ADR §2: исследовательский характер; отсутствие гарантий доступности/сохранности; результат не является услугой, советом или предсказанием; входные данные и цель расчёта; категории данных в session/cache/logging; контакт владельца по данным/удалению; заметная ссылка на полный исходный код по ADR-0022/AGPL §13. Владелец утверждает текст и реальные реквизиты; Tester фиксирует проверку содержания, доступности и связи checkbox со страницей на точном commit. Manager закрывает долг по этому evidence. | Не распространять ссылку другим людям и не открывать публичный трафик до поставки и проверки страницы. DP-UI-08 не требует предварительной сводки для закрытого этапа; долг охватывает и текст, и страницу. Checkbox не является доказательством юридического согласия и не хранится. |
 
 Закрытие этого долга само по себе не объявляет выполненными остальные условия публичного запуска ADR-0034. Для закрытого этапа M1-7 проверяются ручной checkbox gate и фактический режим доступа; страница не добавляется в его критический путь.
@@ -286,9 +300,9 @@ flowchart LR
 
 **Завершение follow-up Analysis:** ссылки на принятые DP-UI-01…09 и открытый долг, синхронизированные handoff/диспозиции на точном role commit. Основной возврат review выполнен в `ce25dd0`; сверка регистрации DP-UI-09 остаётся следующим действием. Production code, Change Plan и решения владельца не менять.
 
-### Задание Developer — план подготовлен, бюджет 5 рабочих дней
+### Задание Developer — UI handoff интегрирован, расчётный долг возвращён
 
-Document review `b36b63d` интегрирован через PR #46; Implementation Plan и повторная валидация — `082c6b9`, уже в `change/*`. Ниже сохранены результаты/обязанности consultation и delivery; повторно создавать план не требуется. Реализация DEV-UI-01…06 начинается только после G3 на общем согласованном HEAD, в отдельной Developer-ветке.
+Implementation DEV-UI-01…08 и handoff интегрированы PR #51 / `0c893f0`. Исторические пункты ниже сохраняют approved scope. Текущий Developer return: отдельной задачей закрыть `DEBT-CALC-001`, снять skip и передать полный pytest PASS без изменения M1-7 contract.
 
 1. Проверить реализуемость UI на существующем FastAPI и текущем ChartDTO/whitelist/common projector. Сохранить endpoint, DTO, вычисления и публичные ошибки; проверить одинаковые три группы committed POST и restored current. Новые факты и отдельная операция не нужны по DP-UI-01/02.
 2. Предложить минимальный способ поставки страницы в существующем модульном монолите. Разбить работу: форма; prefix autocomplete с порогом три; reader и форматирование трёх групп; bootstrap/current/build; ошибки/recovery и две вкладки; адаптивность/доступность; проверки и синхронизация документации.
@@ -297,11 +311,11 @@ Document review `b36b63d` интегрирован через PR #46; Implementa
 5. Поддерживать подготовленный `docs/project_management/implementation_plans/ui_birth_form_and_facts_implementation_plan.md`: 6 work items, диапазоны, confidence, assumptions, зависимости, risks и critical path. Estimate 5–8 сохранён; новый budget 5 соответствует его нижней границе. Recovery и formatting учтены в DEV-UI-04/05; при новом риске вернуть переоценку Manager до расширения scope.
 6. Сверить `ce25dd0` с FIND-DEV-UI-001…003, указать собственную диспозицию и точный baseline; для work items записать coverage и проверки без дублей. DP-UI-09 не вводит endpoint статуса, идемпотентность или изменение server lifecycle. Реализация начинается после G3; проверки затем target → related → full pytest.
 
-**Результат консультации Developer:** Implementation Plan, estimate, зависимости/критический путь и повторное заключение получены @ `082c6b9`. Новый budget 5 дней не является сокращением estimate 5–8; gates реализации остаются в плане.
+**Результат Developer:** implementation `f7fb34b` и handoff `ab072ec` интегрированы в `0c893f0`; Developer artifact READY_FOR_TEST, G4 подтверждён. Независимые проверки могут начинаться. DEBT-CALC-001 остаётся отдельным OPEN / NON-BLOCKING долгом; estimates не переписываются.
 
-### Задание Tester — consultation завершена, приёмка после G4, бюджет 5 дней
+### Задание Tester — implementation handoff доступен, бюджет 5 дней
 
-Первичный document review `81624f8` интегрирован через PR #45; повторный `0f6aa82` — через PR #49. TESTABLE и estimate 3–5 подтверждены, TEST-FIND-UI-001…003 resolved in contract. Следующая Tester задача — независимый plan/acceptance на implemented commit после G4, в отдельной role branch от фактического общего HEAD.
+TESTABLE и estimate 3–5 подтверждены @ `0f6aa82`. Вход независимых UI-проверок — merge commit `0c893f0`, содержащий implementation/handoff PR #51. G4 подтверждён; Tester начинает независимый scope и retest TEST-FIND-UI-004…012. DEBT-CALC-001 фиксируется как OPEN / NON-BLOCKING для M1-7.
 
 1. Подготовить `docs/testing/ui-birth-form-and-facts/test-plan.md`: requirement → scenario → planned evidence для трёх групп, форматирования позиций, натала/космограммы, пустых списков и недоступных домов, POST/current parity и отсутствия demo-данных.
 2. Проверить отсутствие поля имени и лишних полей POST, форму/место: порог 2→3→4→2, пустой ввод, debounce управляемым таймером, поздний ответ, сброс ID, одноимённые места, клавиатуру/мышь, даты/время и IssueDTO. После расчёта проверить видимость неактивной кнопки чата: действия мышью/клавиатурой не открывают чат и не отправляют запросы. Позитивный контроль — активная кнопка подробностей открывает факты той же карты без повторного POST. Нормализация/лимиты API не меняются.
@@ -310,7 +324,7 @@ Document review `b36b63d` интегрирован через PR #46; Implementa
 5. Разделить оценку на автоматические, интеграционные, браузерные HTTPS/cookie и визуальные проверки 360/768/1440 px, подготовку среды и повторные прогоны. Для отрицательных утверждений дать позитивные контроли. FIND-TEST-HTTP-001 остаётся известным ограничением; обход и стандартный путь имеют отдельный статус.
 6. Поддерживать подтверждённый estimate 3–5 и его допущения; budget 5 дней соответствует верхней границе. Повторный testability review и диспозиции TEST-FIND-UI-001…003 получены @ `0f6aa82`; переоценивать при фактическом изменении setup/scope. После реализации обновить `tester.md` с exact tested commit, coverage matrix, severity/priority/Blocks, actual checks и limitations; сверить чистовые требования Analyst.
 
-**Завершение консультации:** независимый testability review, оценка, блокеры и рекомендации переданы Manager. Будущая приёмка требует implemented commit и реальных проверок; PARTIAL M1-6 не становится PASS автоматически.
+**Текущий Tester handoff:** implementation commit и команды доступны; execution/acceptance NOT RUN. Tester фиксирует exact tested commit, coverage matrix, severity/priority/Blocks, реальные результаты и ограничения. PARTIAL M1-6 и DEBT-CALC-001 не становятся PASS автоматически.
 
 ### Условный Technical Reviewer
 
@@ -320,8 +334,8 @@ Reviewer подключается по фактической эскалации
 
 ### Manager handoff и итоговая приёмка
 
-Manager утвердил [дорожную карту](#roadmap) и budget 4/5/5 после Analyst `ce25dd0`, Developer `082c6b9` и Tester `0f6aa82`; G2/alignment завершены, статус READY_FOR_DEVELOPMENT. По поручению владельца административные статусы связанных документов синхронизированы. Следующие gates — фактический старт/IN_DEVELOPMENT, затем G4/G5; Technical Reviewer подключается при новой реальной эскалации.
+Manager принял интегрированный Developer handoff `ab072ec` в `0c893f0`, подтвердил G4 и установил READY_FOR_TEST. Tester начинает UI/browser/recovery checks и готовит evidence для G5; расчётный Developer закрывает DEBT-CALC-001 отдельным change. После Tester evidence Manager проверяет G5 и final acceptance.
 
-После отдельно разрешённой интеграции этой Manager-редакции проверить общий HEAD `change/*` и выдать его ролевым веткам. Интеграция Analyst PR #47 подтверждена; эта Manager-редакция до её merge не является общим интегрированным baseline. Не запускать роли и не выполнять commit/push/PR/approval/merge без соответствующего поручения пользователя.
+Эта Manager-редакция статусов публикуется в Manager-ветке отдельным commit/push. PR/approval/merge выполняются только по отдельному поручению пользователя; до её интеграции общий опубликованный baseline `change/*` остаётся `0c893f0`.
 
 Final acceptance M1-7 проверяет форму и три таблицы, реальное API/browser evidence, ручной checkbox gate, закрытый режим и зарегистрированный долг страницы, clean requirements и карту переноса. Отдельная страница не является условием этой закрытой приёмки. При переходе к распространению ссылки/публичному доступу требуется закрытый DEBT-UI-001; прочие границы публичного запуска ADR-0034 сохраняются.

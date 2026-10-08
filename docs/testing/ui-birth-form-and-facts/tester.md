@@ -6,14 +6,14 @@
 **Область:** повторное ревью артефакта Manager, исправленного Analyst-контракта,
 Implementation Plan и шести промтов Developer; testability consultation.
 **Статус:** TESTABLE — авторский независимый verdict @ `0f6aa82`, review baseline `082c6b9`.
-**Административная диспозиция Manager — 2026-10-07:** заключение и estimate 3–5 приняты для alignment, G3 подтверждён в [Manager-артефакте](../../project_management/change_plans/ui-birth-form-and-facts/artifacts.md#change-brief). Текущий budget Testing 5 дней; UI acceptance ещё не выполнялась, результаты UI-проверок остаются NOT RUN.
+**Административная диспозиция Manager — 2026-10-08:** Developer handoff `ab072ec` интегрирован PR #51 / `0c893f0`; общий change получил READY_FOR_TEST, G4 подтверждён. DEBT-CALC-001 остаётся OPEN / NON-BLOCKING для M1-7. Budget Testing 5 дней сохраняется; Tester execution, retest TEST-FIND-UI-004…012 и acceptance остаются NOT RUN.
 **Обоснование статуса:** все 10 требований связаны с 23 сценариями; TEST-FIND-UI-001…003
 устранены на уровне контракта. Промты предусматривают наблюдаемые expected results,
 управляемые timer/network швы и позитивные контроли. Существенных новых блокеров
 тестируемости не найдено. Исполняемые UI-проверки не выполнялись; это заключение
-о документах, не acceptance evidence реализации. На момент handoff следующий шаг был
-Manager alignment/G3; он выполнен этой Manager-редакцией. Исходные промты сохраняют
-исторический DRAFT / NOT EXECUTED; фактическое выполнение ещё не началось.
+о документах, не acceptance evidence реализации. Исторический Manager alignment/G3 выполнен;
+последующая Developer implementation интегрирована в `0c893f0`. Этот Tester-отчёт ещё
+не содержит execution evidence новой версии; фактическая независимая проверка не началась.
 
 ## Baselines и источники
 
@@ -249,8 +249,8 @@ Manager получает findings и estimate из этого отчёта дл�
   7 упомянутых test functions, 10 строк требований и три статуса RESOLVED IN CONTRACT;
   отсутствующих целей и несогласованности статусов не найдено. `git diff --check` — exit 0.
 
-**Readiness recommendation:** TESTABLE для consultation и Manager alignment.
+**Readiness recommendation:** TESTABLE сохраняется как авторский verdict консультации.
 Прежние TEST-FIND-UI-001…003 сняты на уровне контракта, estimate Tester 3–5 дней подтверждён.
-Manager-план актуализирован и G3 подтверждён административной редакцией 2026-10-07;
-для исполнения нужен общий commit после её интеграции. Финальная приёмка не выполнялась;
-implemented commit, реальные UI проверки и сверка чистовой редакции ещё необходимы.
+Текущий execution input — `0c893f0`; Manager подтвердил G4 и передал change в READY_FOR_TEST.
+Финальная приёмка не выполнялась: нужны actual UI/browser results, retest TEST-FIND-UI-004…012,
+учёт DEBT-CALC-001 и сверка чистовой редакции.
