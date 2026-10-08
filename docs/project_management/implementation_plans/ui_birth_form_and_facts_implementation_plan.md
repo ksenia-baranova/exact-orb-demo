@@ -1,9 +1,11 @@
 # Implementation Plan: ui-birth-form-and-facts
 
 **Owner:** Developer. **Дата актуализации:** 2026-10-08. **Ветка:** `dev/ui-birth-form-and-facts-review`.
-**Status:** **READY_FOR_TEST** — авторский Developer handoff 2026-10-08. Реализация DEV-UI-01…08: `f7fb34bce8de23d8c08a7491c5698a7b5ab9e4ab`; handoff со skip: `ab072ec247e8d43d4f83e941263f77504dfeed55`; merge PR #51: `0c893f0ce3f78787010f463662efe689c6ace242`. [Раздел 25](#developer-ready-for-test) содержит команды/evidence. Последний полный pytest: **2959 passed / 1 skipped**, exit 0; DEBT-CALC-001 OPEN. Ручные browser criteria и независимая приёмка ожидаются.
+**Status:** **READY_FOR_TEST** — авторский Developer handoff 2026-10-08. Реализация DEV-UI-01…08: `f7fb34bce8de23d8c08a7491c5698a7b5ab9e4ab`; handoff со skip: `ab072ec247e8d43d4f83e941263f77504dfeed55`; merge PR #51: `0c893f0ce3f78787010f463662efe689c6ace242`. [Раздел 25](#developer-ready-for-test) содержит команды/evidence первоначальной передачи; исправление DEV-UI-09 поверх `84410f1` — [раздел 27](#dev-ui-09-execution), коммит передачи включает эту редакцию документов, source/tests и промт 09. Последний полный pytest: **2959 passed / 1 skipped**, exit 0; DEBT-CALC-001 OPEN. Ручные browser criteria и независимая приёмка ожидаются.
 **Technical assessment:** FEASIBLE; закрытые продуктовые решения повторно сверены, blocking semantic gaps Developer не обнаружены.
 **Административная диспозиция Manager — 2026-10-08:** Developer handoff принят, общий change получил READY_FOR_TEST и G4 подтверждён. DEBT-CALC-001 остаётся OPEN / NON-BLOCKING для M1-7; Tester execution/G5 NOT RUN. Источник delivery status — [Manager-артефакт](../change_plans/ui-birth-form-and-facts/artifacts.md#change-brief).
+
+**Дополнение после независимого ревью Tester — 2026-10-08:** [DEV-UI-09 — округление орбиса](#dev-ui-09) IMPLEMENTED / INDEPENDENT RETEST PENDING; TEST-FIND-UI-013 FIXED PENDING RETEST. UI **188 passed**, полный pytest **2959 passed / 1 skipped**, exit 0. Independent/browser retest NOT RUN; finding не закрыт, Manager/Tester-статусы сохраняются. Estimate Developer 2–4 часа сохранён как плановая оценка.
 
 **Дополнение по внешнему ревью (2026-10-07):** зарегистрированы восемь bugs TEST-FIND-UI-005…012 — **найдено другой моделью**. DEV-UI-07/08 IMPLEMENTED / BROWSER RETEST PENDING, все восемь findings FIXED PENDING RETEST; исправления опубликованы в Developer-ветке @ `25e3e0f` / `f7fb34b`. Проверки 07 — [раздел 22](#dev-ui-07-execution), 08 — [раздел 23](#dev-ui-08-execution). Scope и отдельная оценка — [раздел 21](#external-model-bugs); последующий прогон с согласованным исключением — [раздел 24](#debt-calc-001-test-skip).
 **Последняя ручная проверка локального стенда (2026-10-07):** отдельным исправлением прокси снят forwarding blocker штатного браузера; natal build/details/reload проверены до DEV-UI-07/08. Исходный статус BLOCKED в журнале DEV-UI-06 описывает проверку до исправления. Ручной retest исправлений 07/08 NOT RUN, стенд для них не перезапускался; см. [раздел 20](#local-proxy-fix) и актуальный handoff.
@@ -87,7 +89,7 @@
 - `main.mjs` — сборка страницы, DOM events/render; серверные/пользовательские строки выводятся как текст.
 - `transport.mjs` — существующие fetch операции same-origin с cookie и no-store; возвращает различимые HTTP outcome / отсутствие ответа, сохраняет request ID и Retry-After для диагностики.
 - `form.mjs`, `places.mjs` — минутный ввод, выбранный ID, управляемый debounce и generation запроса.
-- `facts.mjs` — reader публичного DTO и pure formatting; `Math.round(orb * 60)` для неотрицательного orb, затем деление целых минут. Изменения type/category/чисел API нет.
+- `facts.mjs` — reader публичного DTO и pure formatting; нижняя целая минута через `Math.floor(orb * 60)`, сравнение исходного orb с границей `(lowerMinute + 0.5) / 60`, затем деление целых минут. Half-up сохраняется без epsilon и погрешности умножения на границе; изменения type/category/чисел API нет. Причина исправления DEV-UI-09 — [раздел 27](#dev-ui-09-execution).
 - `session.mjs`, `recovery.mjs` — координация сессии, snapshot отправленного intent, текущей карты и черновика; устаревший read/search response не подменяет более новое состояние.
 
 `fetch`, monotonic timer и view/DOM — листовые швы для управляемых тестов. Тесты собирают настоящие модули coordinator/transport/form/reader, заменяют сеть/таймер, а не предмет проверки. Нет общего mutable результата между экземплярами вкладок. Ограничение повторного click принадлежит локальному client intent, серверные permit/CAS/lifecycle не изменяются.
@@ -968,3 +970,95 @@ DEBT-CALC-001 остаётся OPEN: причина недопустимых в�
 Следующий результат — независимый Tester report на зафиксированной версии с disposition сценариев и findings. Перевод статуса выполнен отдельно от порученной затем публикации коммита; Manager/Tester-статусы сохраняются.
 
 **Проверка этой передачи (2026-10-08):** документальные валидаторы — PASS, exit 0: 72 локальные ссылки/якоря разделов внешнего ревью, Markdown fences и mapping восьми findings; отдельно 19 ссылок/якорей актуальных заголовков и handoff, READY_FOR_TEST metadata и SHA-256 теста со skip. Пять source/test fingerprints DEV-UI-08 совпали. `git diff --check` — PASS, exit 0. В этом задании изменены только актуальные статусы и handoff двух Developer-документов; прежние skip и запись исключения сохранены.
+
+<a id="dev-ui-09"></a>
+## 26. DEV-UI-09 — округление орбиса на половине минуты вверх
+
+**Owner / дата:** Developer, 2026-10-08. **Источник:** найдено Tester при независимом ревью — [TEST-FIND-UI-013](../../testing/ui-birth-form-and-facts/manual-test-bugs.md#test-find-ui-013). **Статус work item:** **IMPLEMENTED / INDEPENDENT RETEST PENDING**; finding FIXED PENDING RETEST. Постановка подготовлена отдельно, затем исполнена по новому поручению владельца «выплни промт»; [журнал и Developer handoff](#dev-ui-09-execution). Исторический промт сохраняет PREPARED / NOT EXECUTED на момент подготовки.
+
+**Промт:** [09-orb-half-up-rounding.md](../../../prompts/2026-10-07/ui-birth-form-and-facts/09-orb-half-up-rounding.md). Сохранён рядом с 07/08 в существующей серии `prompts/2026-10-07/ui-birth-form-and-facts/`; дата подготовки новой постановки — 2026-10-08, historical prompts не изменены.
+
+### Baseline, оценка и границы
+
+- **Baseline подготовки:** `84410f17304d6ca2a06d3ac2e8e04b3c529b29f0`, текущая Developer-ветка после fast-forward из change; включает implementation/handoff 01…08, Manager READY_FOR_TEST/G4 и finding Tester. До исполнения записать фактический HEAD/diff и сверить изменения baseline.
+- **Контракт:** нормативный HTTP/backend @ `652bd734`, семантика change @ `ce25dd0`, текущие редакции @ `84410f1`; [REQ-UI-04](../../requirements/changes/ui-birth-form-and-facts/requirements.md#req-ui-04-представление-общих-фактов), [AS-UI-07](../../requirements/changes/ui-birth-form-and-facts/scenarios.md#as-ui-07-три-группы-натала-и-формат), HTTP §7.2. [Реестр](../change_plans/ui-birth-form-and-facts/artifacts.md#decision-register) @ `84410f1`, применимы DP-UI-01/02; нового DP/ADR и пояснения Analyst не требуется.
+- **Estimate Developer:** **2–4 часа / 0,25–0,5 рабочего дня по 8 часов**, уверенность высокая. Включены локальное исправление, regression checks и handoff; Tester retest, перезапуск стенда и DEBT-CALC-001 исключены. Это дополнительная оценка конкретного дефекта; прежние estimates/budgets не заменены, влияние на delivery оценивает Manager.
+- **Разрешённые файлы:** `src/exact_orb/http_api/ui/facts.mjs`, `tests/ui/facts.test.mjs`, связанный Developer journal/способ форматирования в этом плане и только Developer evidence TEST-FIND-UI-013 в bug registry после фактического исполнения.
+- **Инварианты:** исходные orb/type/category и порядок DTO, расчётный API, known/unknown time и recovery сохраняются; без epsilon, обрезания дроби, новых dependencies, смены golden/допусков и дополнительных HTTP requests. Согласованный skip DEBT-CALC-001 сохраняется, новый skip/xfail не допускается. Manager/Analyst/Tester acceptance documents не входят в scope.
+
+### Подход, coverage и результат
+
+**Тесты → реализация в одном промте.** Existing семь formatter cases проходят, но отсутствует `1.025`. Доказанная причина — `Math.round(orb * 60)` получает `61.49999999999999` и выводит `1°01′` вместо `1°02′`. Дополнить текущую параметризацию half-up/соседями и mounted regression на настоящем form/session/transport/renderer; переиспользовать leaf DOM/clock/network helpers и golden. Пустая таблица или setup failure не доказывают RED.
+
+Предпочтительный вариант — сравнить исходный orb с границей половины минуты в градусах, `(lowerMinute + 0.5) / 60`, после определения нижней целой минуты. В bounded spike сохранены прежние половины `1/120`, `3/120`, различены ближайшие Number ниже/выше `1.025` и перенос минуты. Эквивалентная минимальная реализация допустима при выполнении матрицы; тестовый oracle — явные ожидаемые строки, а не повтор production-алгоритма.
+
+Матрица и точные команды target → related → full находятся в промте: `1.025` → `1°02′`; ближайшее ниже → `1°01′`, выше → `1°02′`; обычные значения и перенос → прежние strings. Mounted current должен пройти validChart, создать непустую строку, сохранить опубликованную category/исходный DTO и не добавить HTTP request при открытии подробностей. Existing natal/cosmogram, immutability и no-extra-request tests сохраняются. Новых server transitions/logging events нет; HTTP sequences 003/004 остаются прежними.
+
+### Фактическая диагностика до подготовки промта
+
+Диагностика проведена на `84410f1` в предыдущем задании оценки; при подготовке документов runtime tests не повторялись. Production code/tests не менялись.
+
+| Проверка | Фактический результат / граница |
+|---|---|
+| `node --test --test-isolation=none tests/ui/facts.test.mjs` | **24 passed**, exit 0; existing coverage не ловит finding. |
+| `node --input-type=module -e <mounted reproduction>` | **3 passed / 1 failed**, exit 1; current `orb:1.025` принят, таблица показывает `1°01′`, ожидается `1°02′`. Повторяемый полный сценарий — в [карточке Tester](../../testing/ui-birth-form-and-facts/manual-test-bugs.md#test-find-ui-013). |
+| `node --input-type=module -e <candidate boundary spike>` | **15 контролей + 32 400 half-boundary/neighbor checks PASS**, exit 0, диапазон 0…180°; кандидат существовал только в памяти. Это предварительное техническое evidence, не production fix, регрессия или новая граница API. |
+| `git diff --check`; `git status --short` после диагностики | PASS; рабочее дерево было чистым. |
+
+### Порядок и handoff
+
+DEV-UI-01…08 уже включены в baseline; DEV-UI-09 выполняется отдельным поручением, затем проходят чувствительный RED/GREEN, весь UI-набор, связанные projector/delivery tests и полный pytest по промту. Результат с существующим skipped не закрывает DEBT-CALC-001. Обновить нынешнее описание алгоритма в разделе 4 только после фактического исправления.
+
+После успешных checks записать actual baseline/diff, алгоритм, test IDs, команды/exit codes и непроверенное в новый execution journal; TEST-FIND-UI-013 — FIXED PENDING RETEST. Закрытие finding и независимую приёмку фиксирует Tester на исправленной версии. Browser/layout evidence нельзя выводить из Node DOM-port. Semantic conflict → Analyst, scope/delivery → Manager; сейчас контракт однозначен, вопросов Analyst нет. Commit/push/PR и перезапуск стенда в текущем поручении не выполняются.
+
+**Проверки подготовки:** документальный валидатор — PASS, exit 0: 26 локальных ссылок/якорей, Markdown fences, baseline/estimate/provenance DEV-UI-09, команды и существование test paths. `git diff --check` — PASS, exit 0. Изменены только этот план и новый промт 09; production code/tests, historical prompts и index сохранены. Исполнение исправления и runtime regression при подготовке документов NOT RUN.
+
+<a id="dev-ui-09-execution"></a>
+## 27. Журнал исполнения DEV-UI-09 и Developer handoff
+
+**Дата / Owner:** 2026-10-08, Developer. **Основание:** прямое поручение владельца «выплни промт», исполнен [промт 09](../../../prompts/2026-10-07/ui-birth-form-and-facts/09-orb-half-up-rounding.md). **Результат:** IMPLEMENTED / INDEPENDENT RETEST PENDING; [TEST-FIND-UI-013](../../testing/ui-birth-form-and-facts/manual-test-bugs.md#test-find-ui-013) — FIXED PENDING RETEST. Пакет готов к проверке Tester в этом checkout; новый commit/push не поручены и не выполнены.
+
+**Публикация пакета — отдельное поручение 2026-10-08:** владелец после исполнения запросил коммит и push в Developer-ветку. Исправление, tests, промт 09, этот план и запись TEST-FIND-UI-013 включаются в один коммит передачи; версия для Tester — коммит, содержащий эту редакцию. Его полный SHA и подтверждённый результат push фиксируются в итоговом сообщении. Baseline и результаты исполнения выше/ниже сохраняются как evidence до публикации; independent retest остаётся NOT RUN.
+
+### Версия и изменения
+
+**Baseline исполнения:** `84410f17304d6ca2a06d3ac2e8e04b3c529b29f0`, `dev/ui-birth-form-and-facts-review`. При старте сохранены подготовленный diff плана и untracked промт 09; index пуст. Исполнялся этот baseline с локальными изменениями, а не фиктивный будущий commit.
+
+- `src/exact_orb/http_api/ui/facts.mjs`: вместо `Math.round(orb * 60)` определить нижнюю минуту и сравнить исходное значение с половинной границей в градусах. `1.025` теперь выводится как `1°02′`; ближайшее ниже `1.0249999999999997` остаётся `1°01′`. Новых допусков, предварительного обрезания дроби и dependencies нет.
+- `tests/ui/facts.test.mjs`: добавлены семь cases в существующую параметризацию и один mounted regression; переиспользованы настоящие mount/form/session/transport/renderer, существующие session/DOM helpers и HTTP golden. Leaf network/clock/DOM управляемые; sleep и случайных задержек нет.
+- В этом плане синхронизирован текущий алгоритм раздела 4, карточка 09 и журнал; в bug registry обновлены только состояние TEST-FIND-UI-013 и Developer evidence. Historical постановки, исходная находка Tester, Manager/Analyst/Tester acceptance documents, backend/DTO/расчётный код и golden сохранены.
+
+Публичные orb/type/category, порядок аспектов и chart identity не меняются. Formatter остаётся чистым presentation-слоем. HTTP 003/004, bootstrap/current/build и server logging transitions сохраняются; открытие подробностей читает уже принятую карту и не создаёт запрос. Нового ADR, DP или вопроса Analyst не потребовалось.
+
+### RED → GREEN и точные test IDs
+
+Целевой facts-набор после добавления regression дал **30 passed / 2 failed**, exit 1. Упали только unit case `1.025` и mounted assertion `1°02′`: фактический текст был `1°01′`. ValidChart, непустая таблица, категория, source DTO и calls прошли; ошибок setup/import нет. После минимального исправления та же команда дала **32 passed**, exit 0. Всего UI теперь 188 tests, прирост — восемь checks к прежним 180.
+
+| REQ / AS / finding | Фактические test IDs / evidence |
+|---|---|
+| REQ-UI-04, AS-UI-07, TEST-FIND-UI-013 | `REQ-UI-04 orb 1.025 rounds half-up with minute carry to 1°02′` — чувствительный unit RED/GREEN. |
+| Те же IDs, позитивные контроли | Existing параметризация `REQ-UI-04 orb ${orb} rounds half-up with minute carry to ${expected}` дополнена `1.024`, `1.0249999999999997`, `1.0250000000000001`, `1.026`, `0.9916666666666666`, `59.5/60`; expected строки заданы явно. Прежние семь cases, включая `1/120` и `3/120`, сохранены. |
+| Те же IDs, интеграция presentation | `REQ-UI-04 / AS-UI-07 / TEST-FIND-UI-013: mounted current orb 1.025 rounds half-up without changing DTO or requests` — валидный current, реальные компоненты, непустая строка и число строк по DTO; опубликованная exact-категория показана как «Точный», snapshot/source DTO неизменны, только bootstrap → current до открытия и никаких новых запросов после него. |
+
+Existing natal/cosmogram, category/type/order, zero padding, minute carry, POST/current parity, immutability, no-extra-request и recovery tests проходят. Дополнительный duplicating cosmogram mount или production-wide перебор границ не добавлялся; diagnostic spike раздела 26 остаётся предварительным evidence.
+
+### Фактические команды и результаты
+
+Команды выполнены из указанного checkout; Node v24.19.0, Python 3.14.0. Evidence — ignored `logs/ui-dev-09/`. Baseline и SHA-256 двух изменённых source/test файлов сохранены в `fingerprint.json`; после runtime checks меняются только документы.
+
+| Команда | Результат / evidence |
+|---|---|
+| `node --test --test-isolation=none tests/ui/facts.test.mjs` | RED **30 passed / 2 failed**, exit 1, 89.31 ms (`node-red.log`); GREEN **32 passed**, exit 0, 65.67 ms (`node-target.log`). |
+| `node --test --test-isolation=none tests/ui/*.test.mjs` | **188 passed / 0 failed / 0 skipped**, exit 0, 282.09 ms (`node-all.log`). |
+| `python -B -m pytest -p no:cacheprovider tests/http_api/test_projectors.py tests/http_api/test_ui_delivery.py -q` | Первый sandbox run: **33 passed / 1 failed**, exit 1, 14.52 s — PermissionError записи временного pip build tracker (`python-related.log`). Повторена та же pytest-команда с необходимым доступом: **34 passed**, exit 0, 10.13 s (`python-related-elevated.log`), включая installed wheel вне checkout. |
+| `python -X utf8 -B -m pytest -p no:cacheprovider -q -rs` | **2959 passed / 1 skipped**, exit 0, 126.04 s (`python-full.log`). Единственный skip — прежний согласованный DEBT-CALC-001; новые исключения не добавлены. Запуск с доступом к системным временным файлам pip. |
+| `python -X utf8 -B logs/ui-dev-09/validate_docs.py` | PASS, exit 0: **35 локальных ссылок/якорей**, Markdown fences, сохранённая постановка промта, статусы finding/work item, execution evidence и **два source/test SHA-256** (`docs-check.log`). |
+| `git diff --check` | PASS, exit 0. |
+
+Целевые, связанные и полный наборы выполнены в этом порядке; исходный sandbox failure сохранён отдельно от успешного повторения. Числа пересекающихся наборов не суммируются. Подгонка golden/допусков и изменение теста DEBT-CALC-001 не выполнялись.
+
+### Передача Tester и пределы
+
+После получения коммита передачи повторить целевой mounted regression и воспроизведение из карточки TEST-FIND-UI-013, затем независимые проверки по REQ-UI-04 / AS-UI-07. Проверяемая версия исполнения — baseline плюс описанный diff, версия поставки — коммит с этой редакцией, source/tests и промтом 09; при переносе сверить fingerprints. Открытие подробностей сохраняет категорию/исходные данные и не требует нового HTTP call.
+
+**NOT RUN:** независимый retest Tester, controlled live-browser DTO и layout/mobile acceptance на исправленной версии. Стенд не перезапускался. Node DOM-port и installed-wheel evidence не подтверждают эти проверки; окончательное закрытие finding, рекомендация G5 и приёмка остаются за Tester/Manager. DEBT-CALC-001 OPEN, прежний skip не доказывает свойство монотонности. Остальные deferred debts и accepted recovery risks сохраняются.

@@ -4,6 +4,7 @@
 **Источник наблюдений:** ручные проверки пользователя на локальном стенде, ревью другой модели, переданное владельцем 2026-10-07, и независимое ревью Tester 2026-10-08. Источник и предел подтверждения указаны в каждой записи.
 **Developer handoff — 2026-10-08:** исправления TEST-FIND-UI-004…012 интегрированы в Developer package PR #51 / `0c893f0`; на момент передачи все записи имели FIXED PENDING RETEST, independent results NOT RUN. Manager подтвердил G4 и READY_FOR_TEST; DEBT-CALC-001 остаётся OPEN / NON-BLOCKING для M1-7.
 **Дополнение Tester — 2026-10-08:** на `1af6e45` независимо воспроизведён TEST-FIND-UI-013, статус OPEN. Существующий UI-набор дал 180 passed; дополнительная проверка границы округления — 3 passed / 1 failed. Замечание блокирует приёмку REQ-UI-04; исправление и retest ожидаются от Developer и Tester. Статусы других записей этим дополнением не закрываются.
+**Исправление Developer — 2026-10-08:** TEST-FIND-UI-013 исправлен в DEV-UI-09 поверх `84410f1`, **FIXED PENDING RETEST**. Target RED 30 passed / 2 failed → GREEN 32 passed, весь UI 188 passed, полный pytest 2959 passed / 1 skipped. По отдельному поручению владельца исправление, tests, промт и документы включаются в один коммит передачи; версия для Tester — коммит с этой редакцией. Независимый retest/browser evidence NOT RUN; [Developer handoff](../../project_management/implementation_plans/ui_birth_form_and_facts_implementation_plan.md#dev-ui-09-execution). Исходная находка Tester и её evidence сохранены.
 **Регистрация:** Developer — TEST-FIND-UI-004…012; Tester — TEST-FIND-UI-013, по прямому поручению пользователя.
 
 Реестр использует общую нумерацию `TEST-FIND-UI-*`: номера 001–003 относятся к ранее выполненному ревью документов в [Tester-артефакте](tester.md). Здесь фиксируются наблюдения реализации. Запись об исправлении Developer не означает успешный ручной retest или независимую Tester acceptance. В записях 004…012 критичность и приоритет предварительные; в записи 013 severity назначена Tester. Priority подтверждает Change Manager по [шаблону дефекта](../../development_approach/artifacts/tester.md#3-дефект-или-замечание-тестирования-defect-or-test-finding).
@@ -19,7 +20,7 @@
 | [TEST-FIND-UI-010](#test-find-ui-010) | После committed POST отсутствует сводка данных построенной карты | S3, PROPOSED Developer | P3, PROPOSED | FIXED PENDING RETEST, DEV-UI-08; найдено другой моделью, замечание №6 | NOT RUN после исправления |
 | [TEST-FIND-UI-011](#test-find-ui-011) | Повреждённый успешный ответ вызывает исключение без сообщения UI | S2, PROPOSED Developer | P2, PROPOSED | FIXED PENDING RETEST, DEV-UI-07; найдено другой моделью, замечание №13 | NOT RUN после исправления |
 | [TEST-FIND-UI-012](#test-find-ui-012) | Фокус стирает подпись восстановленного места | S3, PROPOSED Developer | P3, PROPOSED | FIXED PENDING RETEST, DEV-UI-08; найдено другой моделью, замечание №14 | NOT RUN после исправления |
-| [TEST-FIND-UI-013](#test-find-ui-013) | Орбис на половине минуты округляется вниз | S3, назначена Tester | P2, PROPOSED | OPEN; независимо воспроизведён Tester на `1af6e45` | Исправления нет; retest NOT RUN |
+| [TEST-FIND-UI-013](#test-find-ui-013) | Орбис на половине минуты округляется вниз | S3, назначена Tester | P2, PROPOSED | FIXED PENDING RETEST; DEV-UI-09 поверх `84410f1`, коммит передачи с этой редакцией | Независимый/browser retest NOT RUN |
 
 <a id="test-find-ui-004"></a>
 ## TEST-FIND-UI-004. Поле времени не поддерживает формат при вводе цифр
@@ -186,8 +187,8 @@
 **Priority:** **P2, PROPOSED** — исправить нарушение обязательного правила форматирования до приёмки M1-7.
 **Подтверждение приоритета:** ожидается от Change Manager.
 **Blocks:** приёмку REQ-UI-04 / AS-UI-07 и рекомендацию Tester о готовности к G5; независимые проверки остальных требований можно продолжать.
-**Статус:** **OPEN**.
-**Обоснование статуса:** допустимый DTO с `orb:1.025` принят UI, но таблица показывает `1°01′` вместо `1°02′`. Дополнительная проверка дала 3 passed / 1 failed, exit 1. Исправление не передано; следующий шаг — Developer исправляет форматирование и добавляет regression test, затем Tester повторяет сценарий.
+**Статус:** **FIXED PENDING RETEST**.
+**Обоснование статуса:** на исходном baseline допустимый DTO с `orb:1.025` показывал `1°01′` вместо `1°02′`, независимая проверка дала 3 passed / 1 failed. Developer исправил форматирование в DEV-UI-09 и закрепил unit/mounted regression; target GREEN 32 passed, UI 188 passed. Исправление включается в коммит передачи с этой редакцией; независимый Tester retest ещё не выполнен. Finding не закрыт.
 **Связанное решение:** нет; ожидаемое поведение уже определено утверждённым требованием, новый выбор семантики не требуется.
 
 ### Воспроизведение и причина
@@ -253,4 +254,17 @@ test('REQ-UI-04 / AS-UI-07: orb 1.025 rounds half-up in mounted UI', async () =>
 - На исправленном commit воспроизводящий сценарий и UI-набор проходят; значения непосредственно ниже/выше границы и перенос минуты сохраняются, исходные `orb`, `type`, `category` не изменяются.
 - Tester фиксирует точный исправленный commit, команду и фактический результат retest. Общая приёмка других требований этой записью не подтверждается.
 
-**Retest:** **NOT RUN** — commit с исправлением ещё не передан; дефект остаётся OPEN. В живом браузере контролируемый DTO `orb:1.025` не подставлялся, этот способ воспроизведения не объявляется browser evidence.
+### Developer evidence DEV-UI-09 — 2026-10-08
+
+Baseline исполнения `84410f17304d6ca2a06d3ac2e8e04b3c529b29f0`, ветка `dev/ui-birth-form-and-facts-review`, локальный diff. В `facts.mjs` нижняя целая минута определяется через floor, половинная граница сравнивается с исходным orb в градусах; epsilon и обрезание дроби не используются. `1.025` → `1°02′`, ближайшее меньшее Number → `1°01′`, сосед сверху → `1°02′`; прежние половины и перенос минуты сохранены.
+
+Добавлены семь cases в существующую параметризацию и один mounted regression `REQ-UI-04 / AS-UI-07 / TEST-FIND-UI-013: mounted current orb 1.025 rounds half-up without changing DTO or requests`. Реальные mount/form/session/transport/renderer с заменой только leaf network/clock/DOM; validChart, непустая строка, unchanged category/source/snapshot DTO и отсутствие запросов при открытии подтверждают выполнение пути.
+
+- `node --test --test-isolation=none tests/ui/facts.test.mjs`: **30 passed / 2 failed** до исправления, оба assertion неверного текста; затем **32 passed**, exit 0.
+- `node --test --test-isolation=none tests/ui/*.test.mjs`: **188 passed**, exit 0.
+- `python -B -m pytest -p no:cacheprovider tests/http_api/test_projectors.py tests/http_api/test_ui_delivery.py -q`: **34 passed**, exit 0 при повторении с доступом к системным временным файлам pip; initial sandbox 33 passed / 1 failed — PermissionError installed-wheel setup, сохранён отдельно.
+- `python -X utf8 -B -m pytest -p no:cacheprovider -q -rs`: **2959 passed / 1 skipped**, exit 0; только согласованный DEBT-CALC-001.
+
+Ignored logs/fingerprint — `logs/ui-dev-09/`; точный состав и handoff — [журнал Developer](../../project_management/implementation_plans/ui_birth_form_and_facts_implementation_plan.md#dev-ui-09-execution). Исходные `orb`, `type`, `category`, порядок DTO и расчётное поведение сохраняются. Severity/priority и независимое evidence Tester не переопределяются.
+
+**Retest:** **NOT RUN** — finding **FIXED PENDING RETEST**, закрытие ожидает независимой проверки Tester на коммите передачи DEV-UI-09. В живом браузере контролируемый DTO `orb:1.025` не подставлялся, стенд не перезапускался; Node evidence не объявляется browser evidence.
