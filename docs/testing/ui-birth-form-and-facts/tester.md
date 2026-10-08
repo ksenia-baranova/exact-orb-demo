@@ -1,4 +1,10 @@
-# Tester: ревью документов ui-birth-form-and-facts
+# Tester: ревью и независимые проверки ui-birth-form-and-facts
+
+**Последняя независимая проверка:** 2026-10-08, регрессия и retest TEST-FIND-UI-013 на `6f44404e6ba9e9f1eb8a529978b5e076d8af1bf2`.
+**Статус регрессионной проверки:** **PASS**.
+**Обоснование статуса:** исходное воспроизведение — 4 passed, facts — 32 passed, UI — 188 passed, связанные HTTP/архитектурные тесты — 346 passed, полный pytest — 2959 passed / 1 skipped; только прежний DEBT-CALC-001. Условия закрытия TEST-FIND-UI-013 выполнены. [Матрица и точные команды](#tester-orb-fix-retest) отделяют этот результат от общей приёмки M1-7.
+
+## Историческое ревью документов @ `082c6b9`
 
 **Роль:** Tester. **Дата:** 2026-10-06.
 **Ветка:** `test/ui-birth-form-and-facts-review`.
@@ -249,8 +255,67 @@ Manager получает findings и estimate из этого отчёта дл�
   7 упомянутых test functions, 10 строк требований и три статуса RESOLVED IN CONTRACT;
   отсутствующих целей и несогласованности статусов не найдено. `git diff --check` — exit 0.
 
-**Readiness recommendation:** TESTABLE сохраняется как авторский verdict консультации.
+**Readiness recommendation исторической консультации:** TESTABLE сохраняется как авторский verdict консультации.
 Прежние TEST-FIND-UI-001…003 сняты на уровне контракта, estimate Tester 3–5 дней подтверждён.
 Текущий execution input — `0c893f0`; Manager подтвердил G4 и передал change в READY_FOR_TEST.
 Финальная приёмка не выполнялась: нужны actual UI/browser results, retest TEST-FIND-UI-004…012,
 учёт DEBT-CALC-001 и сверка чистовой редакции.
+
+<a id="tester-orb-fix-retest"></a>
+## Независимая регрессия и retest TEST-FIND-UI-013 — 2026-10-08
+
+**Роль:** Tester. **Проверенный commit:** `6f44404e6ba9e9f1eb8a529978b5e076d8af1bf2` (merge PR #54).
+**Исправление Developer:** `a576253c4e132498ae394c67237a6f29d3e0c4ee`; ветка Tester обновлена с `f23ed53` через `git merge --ff-only 6f44404e6ba9e9f1eb8a529978b5e076d8af1bf2`, exit 0.
+**Статус:** **PASS** для выполненной регрессии и закрытия [TEST-FIND-UI-013](manual-test-bugs.md#test-find-ui-013).
+**Обоснование статуса:** исходный failing case теперь проходит; ближайшие значения ниже/выше половины различаются, перенос минуты сохранён. Assertions настоящего mounted UI подтверждают текст, category, неизменность source/snapshot DTO и отсутствие дополнительных запросов. Все перечисленные регрессионные команды дали exit 0, кроме отсутствующих запусков, явно указанных ниже; единственное исключение полного pytest — согласованный DEBT-CALC-001.
+**Область:** REQ-UI-04 / AS-UI-07, связанные представления аспектов REQ-UI-06, существующий UI-набор M1-7 и HTTP/архитектурная/полная Python регрессия. Это отдельное evidence retest, а не PASS всех browser acceptance scenarios.
+**Requirements baseline:** нормативный HTTP/backend @ `652bd734`, утверждённая семантика 10 REQ / 23 AS @ `ce25dd0`; [requirements.md](../../requirements/changes/ui-birth-form-and-facts/requirements.md) и [scenarios.md](../../requirements/changes/ui-birth-form-and-facts/scenarios.md) на tested commit сохраняют правило half-up.
+**Реестр решений:** [DP-UI-01…09 и долги](../../project_management/change_plans/ui-birth-form-and-facts/artifacts.md#decision-register) @ `6f44404`; решения не изменены.
+**Окружение:** Windows / PowerShell, Node.js v24.19.0, Python 3.14.0. Actual runtime checks выполнены на чистом tracked-дереве; после них изменены только Tester evidence и bug registry. Для installed-wheel checks разрешён доступ к временным файлам pip. Стенд не запускался и не перезапускался, браузер в этом раунде не использовался.
+
+### Фактические команды
+
+| Команда из корня checkout | Результат Tester |
+|---|---|
+| Исходный PowerShell here-string из [карточки бага](manual-test-bugs.md#test-find-ui-013), извлечённый и переданный `node --input-type=module` | **4 passed / 0 failed**, exit 0; actual/expected `1°02′`. |
+| `node --test --test-isolation=none tests/ui/facts.test.mjs` | **32 passed / 0 failed / 0 skipped**, exit 0, 168.53 ms. |
+| `node --test --test-isolation=none tests/ui/*.test.mjs` | **188 passed / 0 failed / 0 skipped**, exit 0, 319.88 ms. |
+| `python -X utf8 -B -m pytest -p no:cacheprovider tests/http_api tests/test_module_boundaries.py -q` | **346 passed**, exit 0, 25.68 s; includes installed-wheel delivery вне checkout. |
+| `python -X utf8 -B -m pytest -p no:cacheprovider -q -rs` | **2959 passed / 1 skipped**, exit 0, 148.35 s; skip только `test_property_configuration_count_does_not_grow_when_threshold_decreases` по DEBT-CALC-001. |
+| Дополнительный `node --input-type=module`, integer oracle ниже | **180 001 values PASS**, exit 0; диапазон диагностический, API не меняется. |
+| `git diff --check f23ed53 HEAD`; `git status --short` перед сохранением evidence | exit 0; tracked-дерево чистое. |
+
+Наборы пересекаются, числа не суммируются. Порядок проверки: исходное воспроизведение / целевые facts → весь UI и связанные HTTP/архитектурные → полный pytest.
+
+### Матрица покрытия retest
+
+| Требование / сценарий | Данные и expected result | Конкретная проверка | Покрытие / запуск |
+|---|---|---|---|
+| REQ-UI-04 / AS-UI-07 | `1.025` → `1°02′`; ближайший Number ниже → `1°01′`, сверху → `1°02′` | [facts.test.mjs](../../../tests/ui/facts.test.mjs), cases `REQ-UI-04 orb 1.025 rounds half-up with minute carry to 1°02′`, `1.0249999999999997`, `1.0250000000000001` в той же параметризации | SUFFICIENT для найденной границы / PASS |
+| REQ-UI-04 / AS-UI-07 | Обычные значения, ноль, прежние половины; `0.999` и `59.5/60` переносят минуту в `1°00′` | Та же параметризация `REQ-UI-04 orb ${orb} rounds half-up with minute carry to ${expected}`; explicit expected strings, независимое воспроизведение с тремя контролями | SUFFICIENT / PASS |
+| REQ-UI-04/06 / AS-UI-07 | Валидный current, непустая строка с `1°02′`; category остаётся «Точный», DTO/calls неизменны | `REQ-UI-04 / AS-UI-07 / TEST-FIND-UI-013: mounted current orb 1.025 rounds half-up without changing DTO or requests` | SUFFICIENT для интеграции formatter/renderer / PASS |
+| REQ-UI-04–06 / AS-UI-07–09/22 | Натал/космограмма, опубликованные позиции и полный список аспектов, null/empty, POST/current и открытие подробностей без POST | Existing facts suite: `all aspect rows retain endpoint/type/category and DTO order without recalculation`, `cosmogram displays only published points/stable aspects and inapplicable houses`, `empty calculated aspects are distinct from missing/unavailable chart`, `AS-UI-22 natal/cosmogram: build and reload details show the same identity/facts without chat or extra requests` | SUFFICIENT на этом UI integration уровне / PASS |
+| REQ-UI-01…10, существующие регрессионные сценарии | Сохранить форму, места, сессию, recovery и DTO после локальной смены formatter | `tests/ui/*.test.mjs`; HTTP/module-boundary и полный pytest по командам выше | PASS выполненных наборов; это не замена live-browser coverage всех 23 AS |
+| REQ-UI-10 / AS-UI-19 и управляемый live-browser retest | HTTPS/browser/layout/keyboard на новой версии | В этом раунде NOT RUN; прежний browser run не переносится на новый commit | PARTIAL для полной acceptance / NOT RUN |
+| DEBT-CALC-001 | Монотонность расчётных конфигураций | Прежний согласованный property-test skip | EXCLUDED / NOT RUN; долг OPEN, решение не менялось |
+
+Дополнительный integer oracle не повторяет production half-boundary comparison; expected вычисляется из целого числа тысячных долей:
+
+```powershell
+@'
+import assert from 'node:assert/strict';
+import {formatOrb} from './src/exact_orb/http_api/ui/facts.mjs';
+for (let units = 0; units <= 180000; units++) {
+  const minute = Math.floor((units * 120 + 1000) / 2000);
+  const expected = `${Math.floor(minute / 60)}°${String(minute % 60).padStart(2, '0')}′`;
+  assert.equal(formatOrb(units / 1000), expected, `orb=${units}/1000`);
+}
+console.log('180001 values PASS');
+'@ | node --input-type=module
+```
+
+### Вывод и handoff
+
+TEST-FIND-UI-013 **CLOSED**: воспроизведение исправлено на фактически проверенном commit, чувствительный regression проверяет наблюдаемый текст и реальные UI-компоненты, ближайшие соседние значения и прежние случаи сохранены. Дополнительный дублирующий тест для этого дефекта Tester не добавлял: новое Developer coverage достаточно для сформулированного условия закрытия.
+
+**Readiness recommendation:** bug fix и выполненная автоматическая регрессия PASS; **общий M1-7 ещё не READY_FOR_FINAL_ACCEPTANCE**. Live browser/error/recovery acceptance и окончательный retest остальных findings остаются отдельными обязательствами; чистовая редакция `current/ui/` и карта переноса Analyst не представлены для сверки. DEBT-CALC-001, DEBT-UI-001, DP-UI-03 и принятый риск позднего commit DP-UI-09 не закрываются этим результатом. Production code, Developer tests, Manager/Analyst decisions и historical prompts Tester не изменены; commit/push/PR в этом поручении не выполнялись.

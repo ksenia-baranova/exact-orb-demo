@@ -3,8 +3,9 @@
 **Change:** `ui-birth-form-and-facts`. **Дата начала реестра:** 2026-10-07.
 **Источник наблюдений:** ручные проверки пользователя на локальном стенде, ревью другой модели, переданное владельцем 2026-10-07, и независимое ревью Tester 2026-10-08. Источник и предел подтверждения указаны в каждой записи.
 **Developer handoff — 2026-10-08:** исправления TEST-FIND-UI-004…012 интегрированы в Developer package PR #51 / `0c893f0`; на момент передачи все записи имели FIXED PENDING RETEST, independent results NOT RUN. Manager подтвердил G4 и READY_FOR_TEST; DEBT-CALC-001 остаётся OPEN / NON-BLOCKING для M1-7.
-**Дополнение Tester — 2026-10-08:** на `1af6e45` независимо воспроизведён TEST-FIND-UI-013, статус OPEN. Существующий UI-набор дал 180 passed; дополнительная проверка границы округления — 3 passed / 1 failed. Замечание блокирует приёмку REQ-UI-04; исправление и retest ожидаются от Developer и Tester. Статусы других записей этим дополнением не закрываются.
+**Первичная находка Tester — 2026-10-08:** на `1af6e45` независимо воспроизведён TEST-FIND-UI-013, статус на момент регистрации OPEN. Существующий UI-набор дал 180 passed; дополнительная проверка границы округления — 3 passed / 1 failed. Исходное evidence сохранено ниже.
 **Исправление Developer — 2026-10-08:** TEST-FIND-UI-013 исправлен в DEV-UI-09 поверх `84410f1`, **FIXED PENDING RETEST**. Target RED 30 passed / 2 failed → GREEN 32 passed, весь UI 188 passed, полный pytest 2959 passed / 1 skipped. По отдельному поручению владельца исправление, tests, промт и документы включаются в один коммит передачи; версия для Tester — коммит с этой редакцией. Независимый retest/browser evidence NOT RUN; [Developer handoff](../../project_management/implementation_plans/ui_birth_form_and_facts_implementation_plan.md#dev-ui-09-execution). Исходная находка Tester и её evidence сохранены.
+**Независимый retest Tester — 2026-10-08:** исправление `a576253` проверено на общем `6f44404`, TEST-FIND-UI-013 **CLOSED**. Исходная команда — 4 passed; facts — 32 passed; UI — 188 passed; HTTP/границы модулей — 346 passed; полный pytest — 2959 passed / 1 skipped (прежний DEBT-CALC-001). [Отчёт и матрица Tester](tester.md#tester-orb-fix-retest). Остальные findings и общий acceptance status этим retest не закрываются.
 **Регистрация:** Developer — TEST-FIND-UI-004…012; Tester — TEST-FIND-UI-013, по прямому поручению пользователя.
 
 Реестр использует общую нумерацию `TEST-FIND-UI-*`: номера 001–003 относятся к ранее выполненному ревью документов в [Tester-артефакте](tester.md). Здесь фиксируются наблюдения реализации. Запись об исправлении Developer не означает успешный ручной retest или независимую Tester acceptance. В записях 004…012 критичность и приоритет предварительные; в записи 013 severity назначена Tester. Priority подтверждает Change Manager по [шаблону дефекта](../../development_approach/artifacts/tester.md#3-дефект-или-замечание-тестирования-defect-or-test-finding).
@@ -20,7 +21,7 @@
 | [TEST-FIND-UI-010](#test-find-ui-010) | После committed POST отсутствует сводка данных построенной карты | S3, PROPOSED Developer | P3, PROPOSED | FIXED PENDING RETEST, DEV-UI-08; найдено другой моделью, замечание №6 | NOT RUN после исправления |
 | [TEST-FIND-UI-011](#test-find-ui-011) | Повреждённый успешный ответ вызывает исключение без сообщения UI | S2, PROPOSED Developer | P2, PROPOSED | FIXED PENDING RETEST, DEV-UI-07; найдено другой моделью, замечание №13 | NOT RUN после исправления |
 | [TEST-FIND-UI-012](#test-find-ui-012) | Фокус стирает подпись восстановленного места | S3, PROPOSED Developer | P3, PROPOSED | FIXED PENDING RETEST, DEV-UI-08; найдено другой моделью, замечание №14 | NOT RUN после исправления |
-| [TEST-FIND-UI-013](#test-find-ui-013) | Орбис на половине минуты округляется вниз | S3, назначена Tester | P2, PROPOSED | FIXED PENDING RETEST; DEV-UI-09 поверх `84410f1`, коммит передачи с этой редакцией | Независимый/browser retest NOT RUN |
+| [TEST-FIND-UI-013](#test-find-ui-013) | Орбис на половине минуты округляется вниз | S3, назначена Tester | P2, PROPOSED | CLOSED; независимый retest Tester на `6f44404` | Mounted retest PASS; live-browser DTO NOT RUN |
 
 <a id="test-find-ui-004"></a>
 ## TEST-FIND-UI-004. Поле времени не поддерживает формат при вводе цифр
@@ -186,12 +187,12 @@
 **Severity:** **S3, назначена Tester** — в таблице показано неверное значение орбиса с отклонением на одну угловую минуту. Расчёт, исходный DTO и category не изменяются; основной build доступен.
 **Priority:** **P2, PROPOSED** — исправить нарушение обязательного правила форматирования до приёмки M1-7.
 **Подтверждение приоритета:** ожидается от Change Manager.
-**Blocks:** приёмку REQ-UI-04 / AS-UI-07 и рекомендацию Tester о готовности к G5; независимые проверки остальных требований можно продолжать.
-**Статус:** **FIXED PENDING RETEST**.
-**Обоснование статуса:** на исходном baseline допустимый DTO с `orb:1.025` показывал `1°01′` вместо `1°02′`, независимая проверка дала 3 passed / 1 failed. Developer исправил форматирование в DEV-UI-09 и закрепил unit/mounted regression; target GREEN 32 passed, UI 188 passed. Исправление включается в коммит передачи с этой редакцией; независимый Tester retest ещё не выполнен. Finding не закрыт.
+**Blocks:** блокер этого дефекта снят успешным retest; общая готовность M1-7 к G5 требует отдельной полноты acceptance evidence.
+**Статус:** **CLOSED**.
+**Обоснование статуса:** Tester независимо проверил исправление `a576253` на `6f44404`: исходная команда теперь даёт 4 passed, настоящий mounted UI показывает `1°02′`; ближайшие значения по обе стороны половины, перенос минуты, неизменность DTO/category и отсутствие дополнительных запросов подтверждены. Facts 32 passed, UI 188 passed, связанные HTTP/архитектурные проверки 346 passed; полный pytest 2959 passed / 1 skipped с прежним DEBT-CALC-001. Условия закрытия выполнены; live-browser DTO/layout этим retest не проверялись.
 **Связанное решение:** нет; ожидаемое поведение уже определено утверждённым требованием, новый выбор семантики не требуется.
 
-### Воспроизведение и причина
+### Воспроизведение и причина на исходной версии
 
 1. В существующем валидном natal `ChartDTO` изменить только `aspects[0].orb` на `1.025`; `validChart` подтверждает допустимость fixture. Остальные опубликованные поля и category сохраняются.
 2. Передать этот DTO как успешный current через настоящий transport/coordinator, смонтировать форму и открыть «Показать подробности карты».
@@ -267,4 +268,12 @@ Baseline исполнения `84410f17304d6ca2a06d3ac2e8e04b3c529b29f0`, вет
 
 Ignored logs/fingerprint — `logs/ui-dev-09/`; точный состав и handoff — [журнал Developer](../../project_management/implementation_plans/ui_birth_form_and_facts_implementation_plan.md#dev-ui-09-execution). Исходные `orb`, `type`, `category`, порядок DTO и расчётное поведение сохраняются. Severity/priority и независимое evidence Tester не переопределяются.
 
-**Retest:** **NOT RUN** — finding **FIXED PENDING RETEST**, закрытие ожидает независимой проверки Tester на коммите передачи DEV-UI-09. В живом браузере контролируемый DTO `orb:1.025` не подставлялся, стенд не перезапускался; Node evidence не объявляется browser evidence.
+### Независимый retest Tester — 2026-10-08
+
+**Проверенный commit:** `6f44404e6ba9e9f1eb8a529978b5e076d8af1bf2`, merge PR #54; исправление — `a576253c4e132498ae394c67237a6f29d3e0c4ee`. Ветка `test/ui-birth-form-and-facts-review` обновлена fast-forward с `f23ed53`; production code/tests и expected values Tester не менял.
+**Окружение:** Windows, Node.js v24.19.0, Python 3.14.0; те же реальные UI-модули и управляемые листовые fixtures. Все runtime commands выполнены до этих документных изменений.
+**Результат:** **PASS** — код исходного воспроизведения из этой карточки извлечён и выполнен через `node --input-type=module`: **4 passed / 0 failed**, exit 0; actual/expected для `1.025` одинаковы — `1°02′`. Контроли `1.024`, `1.026`, `0.999` сохранились.
+
+Проверены фактические assertions нового mounted regression: валидный current, непустая строка, категория «Точный», исходный и snapshot DTO неизменны, открытие подробностей не добавляет запрос. Параметризация различает ближайший Number ниже `1.025` и сосед сверху, а также половину с переносом градуса; искусственного epsilon нет. Независимый integer oracle дополнительно проверил 180 001 значение с шагом 0.001° на диагностическом диапазоне 0…180° — PASS; это не новая граница API.
+
+Точные команды остальных прогонов, матрица покрытия, skip и предел acceptance — [отчёт Tester](tester.md#tester-orb-fix-retest). Полный pytest имеет только прежний DEBT-CALC-001; этот долг не закрывается. Controlled live-browser DTO/layout и общий G5 NOT RUN в данном retest. **Итог Tester:** условия закрытия TEST-FIND-UI-013 выполнены, дефект CLOSED; остальные findings сохраняют свои отдельные статусы.
