@@ -1,7 +1,7 @@
-# Сценарии приёмки: ui-birth-form-and-facts
+# Сценарии приёмки формы рождения и фактов карты
 
-**Статус:** IMPLEMENTED / TESTER REWORK — Tester на `a8b45db` подтвердил 22 AS; AS-UI-16 PARTIAL из-за невыполненного настоящего foreground-перехода. Чистовые [сценарии current/ui](../../current/ui/scenarios.md) подготовлены к независимой сверке перед G5; финальная приёмка не состоялась. [Актуальный отчёт Tester](../../../testing/ui-birth-form-and-facts/acceptance-a8b45db.md).
-**Версия требований:** [requirements.md](requirements.md); исходный commit Analysis `652bd73405db0a0611e98e81af6f3f668dd429f6`, семантика Analyst @ `ce25dd0`, implementation/handoff merge @ `0c893f0`. **Исходный HTTP baseline:** `docs/requirements/http_api.md` и ADR-0008, 0029–0034, 0039–0041. **Карта переноса:** [analysis.md](analysis.md#карта-переноса-и-handoff); HTTP сценарии наследуются без дельты.
+**Область:** M1-7, change `ui-birth-form-and-facts`; AS-UI-01…23 проверяют [REQ-UI-01…10](birth-form-and-facts.md) и действующий [HTTP-контракт](../../http_api.md). Семантика принята в Analyst `ce25dd0` и перенесена из [change-сценариев](../../changes/ui-birth-form-and-facts/scenarios.md) без изменения expected behavior.
+**Состояние проверки:** на реализации `a8b45db` Tester дал PASS для 22 сценариев; AS-UI-16 частичен из-за невыполненного настоящего foreground-перехода. Чистовые требования и сценарии ещё требуют отдельной сверки Tester перед G5. [Отчёт Tester](../../../testing/ui-birth-form-and-facts/acceptance-a8b45db.md); [карта переноса](../../changes/ui-birth-form-and-facts/analysis.md#карта-переноса-и-handoff).
 
 Все проверки API используют HTTPS, одну настоящую cookie jar и ответы без кэша. Числа проверяются по сохранённому артефакту/контрактным fixtures, а не по PNG. Для controllable отказов и конкурентности Tester использует fake clock/barrier/Event на соответствующем шве; `sleep` не является доказательством порядка. В каждом ответе проверяются `X-Request-ID` и `Cache-Control: no-store`; для 429/503/504 — соответствующий `Retry-After` по `http_api.md` §4.4.
 
