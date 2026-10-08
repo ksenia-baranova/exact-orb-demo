@@ -1,10 +1,11 @@
 # Implementation Plan: ui-birth-form-and-facts
 
-**Owner:** Developer. **Дата:** 2026-10-06. **Ветка:** `dev/ui-birth-form-and-facts-review`.
-**Status:** READY_FOR_DEVELOPMENT — административное утверждение Manager по поручению владельца 2026-10-07; DEV-UI-01 COMPLETE; DEV-UI-02 IMPLEMENTED / BROWSER CHECK PENDING, оба опубликованы в Developer-ветке @ `ef75d77`; DEV-UI-03/04 опубликованы в Developer-ветке @ `564186d` / `6d970f6`; DEV-UI-05 IMPLEMENTED / BROWSER CHECK PENDING, фактические проверки — в разделе 17; DEV-UI-06 PARTIAL / FULL REGRESSION FAILED: форма, HTTPS API и штатный browser build/details/reload проверены, оставшиеся browser criteria и independent Tester acceptance pending; полный regression gate FAILED по DEBT-CALC-001, G4/G5 не заявлены. Текущий delivery status/G3 — [Manager-артефакт](../change_plans/ui-birth-form-and-facts/artifacts.md#change-brief).
+**Owner:** Developer. **Дата актуализации:** 2026-10-08. **Ветка:** `dev/ui-birth-form-and-facts-review`.
+**Status:** **READY_FOR_TEST** — по прямому поручению владельца 2026-10-08. Реализация DEV-UI-01…08 передаётся Tester на implementation commit `f7fb34bce8de23d8c08a7491c5698a7b5ab9e4ab` с одним согласованным skip в коммите передачи, содержащем эту редакцию документов. Актуальный [Developer Handoff — раздел 25](#developer-ready-for-test) содержит версии, команды, evidence, порядок запуска и оставшиеся проверки. Последний полный pytest: **2959 passed / 1 skipped**, exit 0; DEBT-CALC-001 OPEN. Исторические результаты и PARTIAL/BLOCKED в журналах сохранены; ручные browser criteria и независимая приёмка ожидаются. Статус change/G4/G5 ведёт [Manager](../change_plans/ui-birth-form-and-facts/artifacts.md#change-brief).
 **Technical assessment:** FEASIBLE; закрытые продуктовые решения повторно сверены, blocking semantic gaps Developer не обнаружены.
-**Дополнение по внешнему ревью (2026-10-07):** зарегистрированы восемь bugs TEST-FIND-UI-005…012 — **найдено другой моделью**. DEV-UI-07/08 IMPLEMENTED / BROWSER RETEST PENDING, все восемь findings FIXED PENDING RETEST. Проверки 07 — [раздел 22](#dev-ui-07-execution), 08 — [раздел 23](#dev-ui-08-execution). Scope и отдельная оценка — [раздел 21](#external-model-bugs); полный regression gate FAILED по прежнему DEBT-CALC-001.
-**Актуальная проверка локального стенда (2026-10-07):** отдельным исправлением прокси снят forwarding blocker штатного браузера; natal build/details/reload проверены. Исходный статус BLOCKED в журнале DEV-UI-06 описывает проверку до исправления. Полный regression gate остаётся FAILED по DEBT-CALC-001, G4/G5 не объявлены; см. [раздел 20](#local-proxy-fix).
+**Дополнение по внешнему ревью (2026-10-07):** зарегистрированы восемь bugs TEST-FIND-UI-005…012 — **найдено другой моделью**. DEV-UI-07/08 IMPLEMENTED / BROWSER RETEST PENDING, все восемь findings FIXED PENDING RETEST; исправления опубликованы в Developer-ветке @ `25e3e0f` / `f7fb34b`. Проверки 07 — [раздел 22](#dev-ui-07-execution), 08 — [раздел 23](#dev-ui-08-execution). Scope и отдельная оценка — [раздел 21](#external-model-bugs); последующий прогон с согласованным исключением — [раздел 24](#debt-calc-001-test-skip).
+**Последняя ручная проверка локального стенда (2026-10-07):** отдельным исправлением прокси снят forwarding blocker штатного браузера; natal build/details/reload проверены до DEV-UI-07/08. Исходный статус BLOCKED в журнале DEV-UI-06 описывает проверку до исправления. Ручной retest исправлений 07/08 NOT RUN, стенд для них не перезапускался; см. [раздел 20](#local-proxy-fix) и актуальный handoff.
+**Исключение теста (2026-10-07):** по новому поручению владельца «Поставь метку игнор падающего теста» только property-тест монотонности отмечен `pytest.mark.skip` с причиной DEBT-CALC-001. Долг OPEN, остальные тесты выполняются; фактические результаты и порядок снятия отметки — [раздел 24](#debt-calc-001-test-skip).
 **Estimate Developer:** **5–8 рабочих дней / 40–64 человеко-часа**, один рабочий день = 8 часов. Уверенность средняя.
 **Бюджет владельца:** DP-UI-07 текущей Manager-редакции — Analysis 4 / Development 5 / Testing 5 дней. Estimate Developer 5–8 сохраняется; относительно budget Development 5 риск составляет до +3 дней. Это не обещание выполнить верхнюю границу за 5 дней.
 
@@ -224,6 +225,8 @@ git diff --check
 Новые browser сценарии выполняются на закрытом HTTPS стенде по [runbook](../../runbooks/http_api_local_https.md), с cookie jar, сетью и журналом; обычный и известный обходной путь отмечаются отдельно. Node/ASGI не выдаются за live HTTPS evidence. Один и тот же approval/commit не подменяет actual checks. Полный pytest, browser/mobile acceptance, wheel/install packaging check и исполнение промтов **в этом planning задании не выполнялись**.
 
 ## 8. Handoff и границы текущей поставки
+
+Ниже сохранён handoff этапа планирования. Актуальная передача реализованного пакета со статусом **READY_FOR_TEST** — [раздел 25](#developer-ready-for-test).
 
 Manager утвердил этот план/estimate/зависимости 2026-10-07 после Developer `082c6b9` и Tester `0f6aa82`. Tester подтвердил testability stack/23 AS и готовит независимую проверку после реализации. Analyst подготавливает чистовую редакцию/карту переноса до G5. Административное утверждение не меняет авторские estimates, технические choices или фактический runtime evidence.
 
@@ -600,7 +603,7 @@ AS-UI-22 проверен отдельно для натала и космогр
 
 **Дата:** 2026-10-07. **Автор evidence:** Developer. **Статус:** OPEN; исправление отдельной задачей расчётного слоя, срок и milestone не назначены.
 **Основание регистрации:** прямое поручение владельца «Создавай техдолг» после диагностики одного красного теста.
-**Единая запись долга и ownership:** [реестр, DEBT-CALC-001](../change_plans/ui-birth-form-and-facts/artifacts.md#technical-debt). Регистрация не разрешает исключить тест из обязательных проверок и не переводит G4/G5 в PASS.
+**Единая запись долга и ownership:** [реестр, DEBT-CALC-001](../change_plans/ui-birth-form-and-facts/artifacts.md#technical-debt). Первоначальная регистрация не разрешала исключить тест из обязательных проверок. Последующее отдельное поручение владельца разрешает точечный skip, см. [раздел 24](#debt-calc-001-test-skip); G4/G5 этим не объявляются PASS.
 **Baseline:** ветка `dev/ui-birth-form-and-facts-review`, HEAD `6d970f605188ad1419cbae791e8e2f83d63d67c9`; поверх него остаётся локальный пакет DEV-UI-05/06. `git diff ef75d77 -- tests/test_configurations.py src/exact_orb/engine/configurations src/exact_orb/engine/aspects` пуст: эти файлы не менялись в последующих UI заданиях.
 
 ### Причина и границы
@@ -884,3 +887,82 @@ Calls сопоставлены с HTTP 003 (явный POST), 001 (bootstrap), 0
 **Ручной/браузерный retest:** NOT RUN на изменённой версии, стенд не перезапускался. После отдельно разрешённого обновления проверить known/unknown summary при редактировании, restore → focus/blur → edit → выбор, session 409 → failed/successful safe read и новое отдельное нажатие. Proxy 502/504/500 и stale recovery воспроизводить на управляемой сети/fixtures; не ломать рабочий сервер ради случайной ошибки. Node DOM-port не доказывает browser/layout; Tester должен независимо сохранить tested version/evidence.
 **Оставшиеся ограничения:** вариант B сохраняет accepted risk позднего commit и повторной работы после successful old/empty check; reading matching current не идентифицирует попытку. DEBT-CALC-001 OPEN, полный regression gate FAILED без xfail/skip/изменения расчёта. Все восемь замечаний внешней модели FIXED PENDING RETEST; окончательное закрытие, G4/G5 и Manager acceptance не объявляются.
 **Передача:** локальный diff от baseline + ignored logs/fingerprint позволяют повторить команды выше. Commit/push/PR, перезапуск и публикация в поручении 08 не выполнялись; historical prompts 01…08 сохранены. Для передачи между checkout нужен отдельный проверяемый commit; source/test hashes следует сверить перед использованием этого evidence.
+
+<a id="debt-calc-001-test-skip"></a>
+## 24. Временный skip теста DEBT-CALC-001
+
+**Дата / Owner исполнения:** 2026-10-07, Developer. **Основание:** новое прямое поручение владельца «Поставь метку игнор падающего теста». Оно заменяет прежний запрет skip/xfail только для одного перечисленного теста. **Baseline:** `f7fb34bce8de23d8c08a7491c5698a7b5ab9e4ab`, `dev/ui-birth-form-and-facts-review`; дерево и index были чистыми.
+
+На `tests/test_configurations.py::test_property_configuration_count_does_not_grow_when_threshold_decreases` добавлен `pytest.mark.skip` с русской причиной и ID долга. Assertion, генератор, golden и расчётный код сохранены. Исключение не распространяется на остальные property/integrity/reference tests. Нового regression-теста для самого декоратора не требуется; выборочное выполнение проверяет skip/reason, связанный набор — выполнение соседних тестов, полный pytest — остальные проверки проекта.
+
+DEBT-CALC-001 остаётся OPEN: причина недопустимых входов генератора и топология бисекстиля требуют отдельного исправления из раздела 19. При закрытии долга снять этот skip и выполнить целевые/связанные/полные проверки без исключения; Tester подтверждает evidence, Manager закрывает долг. Результат с skipped не доказывает свойство монотонности и не является самостоятельной приёмкой G4/G5.
+
+**Фактические проверки:** выполнены target → related → full; все команды дали exit 0. `-X utf8` сохраняет русскую reason без повреждения кодировки. Evidence — ignored `logs/debt-calc-001-skip/`.
+
+| Команда | Результат |
+|---|---|
+| `python -X utf8 -B -m pytest -p no:cacheprovider tests/test_configurations.py::test_property_configuration_count_does_not_grow_when_threshold_decreases -q -rs` | **1 skipped in 0.40s**, причина DEBT-CALC-001 показана (`target.log`). |
+| `python -X utf8 -B -m pytest -p no:cacheprovider tests/test_configurations.py -q -rs` | **49 passed / 1 skipped in 0.84s** (`related.log`); соседние property/integrity/reference tests выполняются. |
+| `python -X utf8 -B -m pytest -p no:cacheprovider -q -rs` | **2959 passed / 1 skipped in 128.59s**, exit 0 (`full.log`); skipped только указанный тест. Запуск с необходимым доступом к временным файлам pip для installed-wheel test. |
+| `git diff --check` | PASS, exit 0. |
+
+Документальная проверка: 63 локальные ссылки/якоря разделов внешнего ревью, fences и mapping findings — PASS; отдельно три ссылки новой записи разрешаются в section 24. Тестовая правка содержит только четыре строки одного skip-декоратора; production code, source/test-файлы DEV-UI-07/08 и historical prompts не менялись. Долг OPEN, независимая приёмка и полная проверка свойства монотонности ожидаются. Commit/push/PR и перезапуск стенда этим поручением не запрошены.
+
+<a id="developer-ready-for-test"></a>
+## 25. Developer Handoff — READY_FOR_TEST
+
+**Owner / дата:** Developer, 2026-10-08. **Status:** **READY_FOR_TEST**, по поручению владельца «переводи артефакт разработчика в ready to test». Пакет реализации и Developer checks подготовлен для независимого тестирования. Это статус Developer-артефакта; получение пакета Tester, изменение общего статуса change, формальное решение Manager по G4 и приёмка G5 здесь не объявляются.
+
+### Версия передаваемого пакета
+
+- **Checkout:** `C:\Users\KateUser\.codex\worktrees\c9cb\exact-orb-recovered`, ветка `dev/ui-birth-form-and-facts-review`.
+- **Implementation commit:** `f7fb34bce8de23d8c08a7491c5698a7b5ab9e4ab`; DEV-UI-07 — `25e3e0fa9ce1a4ebdd50d70df72bbe771e065423`, DEV-UI-05/06 и локальный proxy fix — `0d5d70a`. Реализация опубликована в Developer-ветке правильного репозитория `ksenia-baranova/exact-orb-demo` предыдущими поручениями; новой проверки remote в этом документальном задании нет.
+- **Коммит передачи поверх implementation commit:** четыре строки одного `pytest.mark.skip` в `tests/test_configurations.py`, запись разрешённого исключения в Manager-реестре и два текущих Developer-документа. По отдельному поручению владельца 2026-10-08 этот пакет включается в один коммит и отправляется в `dev/ui-birth-form-and-facts-review`. Воспроизводимая версия для Tester — коммит, содержащий эту редакцию handoff и skip; его полный SHA и результат push фиксируются в итоговом сообщении. Один commit `f7fb34b` без коммита передачи даст прежний красный property-тест.
+- **Точная версия теста со skip:** SHA-256 `tests/test_configurations.py` = `5362920B80D5B61356C87DA84325CDCAB81BBB4CC6028EEA3FABF1E133662576`. Пять SHA-256 source/test файлов DEV-UI-08 из `logs/ui-dev-08/fingerprint.json` повторно сверены 2026-10-08 и совпали; `src/` и UI tests с момента прогонов не менялись.
+- **Requirements baseline:** нормативный HTTP/backend @ `652bd73405db0a0611e98e81af6f3f668dd429f6`, смысл 10 REQ / 23 AS change @ `ce25dd0`; точные источники — раздел 1. **Decision register baseline:** [реестр](../change_plans/ui-birth-form-and-facts/artifacts.md#decision-register) в implementation commit плюс запись исключения в коммите передачи; DP-UI-01…09 ACCEPTED, семантический выбор @ `64934fc` сохранён.
+
+### Реализованное поведение и покрытие
+
+| Work items / требования | Передаваемый результат и подход | Evidence |
+|---|---|---|
+| DEV-UI-01/02; REQ-UI-01…03/10 | Страница и assets доставляются FastAPI и installed wheel; same-origin client, форма даты/времени, явный выбор `place_id`, debounce и сброс ID при редактировании. UI обслуживает тот же web process. | Журналы 9–14, delivery/transport/form/places tests. |
+| DEV-UI-03; REQ-UI-01/03/08/09 | Bootstrap/current, ручной unchecked-checkbox gate перед POST, busy и типизированные ошибки, форматирование ввода времени. | Журнал 12; session/form tests. TEST-FIND-UI-004 ожидает ручного retest. |
+| DEV-UI-04; REQ-UI-03…07/10 | Три группы фактов из ChartDTO, форматирование, режим неизвестного времени, действия результата по AS-UI-22. | Журнал 15; facts/projector tests, golden natal/cosmogram. |
+| DEV-UI-05/06; REQ-UI-01…10 | Recovery, foreground/two-tab, интеграция страницы и API; локальный proxy fix обеспечивает обычный браузерный путь. | Журналы 17/18/20; managed clock/transport и реальные backend integration checks. Оставшиеся visual/mobile criteria DEV-UI-06 переданы Tester, их выполнение не подтверждено. |
+| DEV-UI-07; TEST-FIND-UI-005/009/011 | Nullable region, revalidation cache headers, guards DTO и видимое безопасное восстановление при отказе renderer. | [Раздел 22](#dev-ui-07-execution), чувствительный RED → GREEN, реальные installed-wheel и HTTP checks. |
+| DEV-UI-08; TEST-FIND-UI-006/007/008/010/012 | Безопасная сверка неподтверждённых 5xx, честный stale/session-loss feedback, immutable сводка committed результата, сохранение восстановленной подписи места. | [Раздел 23](#dev-ui-08-execution), RED 121 passed / 27 failed → GREEN 148 passed; fake clock/deferred и реальные coordinator/transport/form с листовым DOM-port. |
+
+Связи каждого work item с промтом, REQ/AS и тестами сохранены в разделах 5, 21–23. Исторические промты не изменены. Состав поставки: `src/exact_orb/http_api/ui/`, доставка assets, local HTTP composition/runbook, `tests/ui/`, связанные HTTP tests и Developer evidence. Публичные HTTP DTO/коды ошибок, расчётный API и серверная последовательность bootstrap/current/build сохраняются; автоматический повтор POST отсутствует. Действуют ADR-0034 и accepted вариант recovery B из DP-UI-09.
+
+### Фактически выполненные проверки
+
+Это результаты уже выполненных прогонов на соответствующем коде; при переводе статуса runtime tests заново не запускались. Числа пересекающихся наборов не суммируются. Логи ignored и доступны в этом checkout; для другого окружения Tester повторяет команды и сохраняет собственное evidence.
+
+| Команда из корня checkout | Последний результат / evidence |
+|---|---|
+| `node --test --test-isolation=none tests/ui/*.test.mjs` | **180 passed / 0 failed / 0 skipped**, exit 0, 265.59 ms; `logs/ui-dev-08/node-all.log`. |
+| `python -B -m pytest -p no:cacheprovider tests/http_api/test_lifecycle.py tests/http_api/test_build_admission.py tests/http_api/test_session.py tests/test_module_boundaries.py -q` | **178 passed**, exit 0, 14.79 s; `logs/ui-dev-08/python-target.log`. |
+| `python -B -m pytest -p no:cacheprovider tests/http_api -q` | **300 passed**, exit 0, 21.57 s; `logs/ui-dev-08/python-related-elevated.log`, включая installed wheel вне checkout. |
+| `python -X utf8 -B -m pytest -p no:cacheprovider tests/test_configurations.py -q -rs` | **49 passed / 1 skipped**, exit 0, 0.84 s; `logs/debt-calc-001-skip/related.log`. |
+| `python -X utf8 -B -m pytest -p no:cacheprovider -q -rs` | **2959 passed / 1 skipped**, exit 0, 128.59 s; `logs/debt-calc-001-skip/full.log`. Единственное исключение — согласованный тест DEBT-CALC-001. |
+
+До разрешённого skip полный pytest дал 2959 passed / 1 failed, exit 1; этот результат остаётся в разделе 23. Текущий exit 0 с исключением не доказывает исправление свойства монотонности. Node v24.19.0, Python 3.14; новых зависимостей нет. На Windows для installed-wheel проверки потребовался доступ к системным временным файлам pip; первый sandbox failure и успешное повторение сохранены отдельно.
+
+### Запуск и независимая проверка Tester
+
+1. Зафиксировать implementation commit и коммит передачи из этого handoff. Проверить установленное окружение, `data/places.sqlite`, ephemeris path и отдельную SQLite базу сессий по [HTTPS runbook](../../runbooks/http_api_local_https.md). В существующем стенде сохранить прежнюю базу и параметры; состояние сохранённых карт входит в restore-сценарий.
+2. Запускать один Uvicorn process через `exact_orb.http_server:create_local_app` с `--workers 1 --no-proxy-headers` и существующим Caddyfile; точные команды и переменные — в runbook. Проверить внутренний `/health/ready`, bootstrap/cookie и `/places` через HTTPS. Открывать `https://exact-orb.localhost/`; `file://index.html` не является запуском приложения. `127.0.0.2` — исходящий адрес Caddy.
+3. Перед ручным retest обновить процесс приложения до этой версии, затем перезагрузить страницу и сверить assets/cache headers. В этом задании стенд не перезапускался; прежняя ручная проверка natal build/details/reload до DEV-UI-07/08 не является проверкой нового пакета.
+4. По [23 acceptance scenarios](../../requirements/changes/ui-birth-form-and-facts/scenarios.md) независимо проверить форму, выбор места, known/unknown time, закрытый gate, build/details/reload, три группы и действия результата; ширины 360/768/1440, keyboard/focus, длинные таблицы и две вкладки. Сопоставить видимый результат, фактические запросы и журналы с сохранением версии/evidence.
+5. Повторно проверить [TEST-FIND-UI-004…012](../../testing/ui-birth-form-and-facts/manual-test-bugs.md); все остаются FIXED PENDING RETEST. Для nullable region, malformed DTO, 5xx, session loss, stale и late response использовать управляемые fixtures/transport: успешный контроль, отсутствие auto-POST и новый явный gate обязательны. Случайный сетевой сбой не заменяет воспроизводимый сценарий. Статусы findings и независимое заключение ведёт Tester.
+
+### Ограничения и следующий результат
+
+- **DEBT-CALC-001 OPEN:** один property-тест временно исключён прямым поручением владельца. Исправление генератора/топологии и снятие skip — отдельная задача; [разделы 19](#debt-calc-001) и [24](#debt-calc-001-test-skip), [реестр долгов](../change_plans/ui-birth-form-and-facts/artifacts.md#decision-register).
+- **DP-UI-09, вариант B:** после успешной сверки old/empty current допустим один ручной повтор; риск позднего commit исходной попытки принят и сохраняется. Совпадение current не идентифицирует конкретный POST.
+- **DEBT-UI-001 и прежний naming debt DP-UI-03** остаются в Manager-реестре с условиями возврата. Закрытый checkbox gate не подтверждает готовность публичного доступа; требований к публичному выпуску этот handoff не меняет.
+- **NOT RUN на финальной версии:** независимая browser/mobile/keyboard acceptance, визуальная сверка макета и управляемые live error/recovery проверки DEV-UI-07/08. Node DOM-port и ASGI evidence не заменяют их. Analyst чистовая редакция/карта переноса и Manager acceptance остаются действиями своих ролей.
+
+Следующий результат — независимый Tester report на зафиксированной версии с disposition сценариев и findings. Перевод статуса выполнен отдельно от порученной затем публикации коммита; Manager/Tester-статусы сохраняются.
+
+**Проверка этой передачи (2026-10-08):** документальные валидаторы — PASS, exit 0: 72 локальные ссылки/якоря разделов внешнего ревью, Markdown fences и mapping восьми findings; отдельно 19 ссылок/якорей актуальных заголовков и handoff, READY_FOR_TEST metadata и SHA-256 теста со skip. Пять source/test fingerprints DEV-UI-08 совпали. `git diff --check` — PASS, exit 0. В этом задании изменены только актуальные статусы и handoff двух Developer-документов; прежние skip и запись исключения сохранены.

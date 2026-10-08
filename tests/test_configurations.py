@@ -472,6 +472,10 @@ def test_configuration_integrity_rejects_second_contains_level() -> None:
 
 @settings(max_examples=30, deadline=None, suppress_health_check=[HealthCheck.too_slow])
 @given(aspects=_aspect_lists())
+@pytest.mark.skip(
+    reason="DEBT-CALC-001: проверка монотонности отложена по поручению владельца; "
+    "генератор допускает разные типы аспектов одной пары, требуется исправление топологии бисекстиля."
+)
 def test_property_configuration_count_does_not_grow_when_threshold_decreases(
     aspects: list[Aspect],
 ) -> None:
