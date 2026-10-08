@@ -1,11 +1,12 @@
-# Баги UI: ручное тестирование и ревью другой модели
+# Баги UI: ручное тестирование и независимое ревью
 
 **Change:** `ui-birth-form-and-facts`. **Дата начала реестра:** 2026-10-07.
-**Источник наблюдений:** ручные проверки пользователя на локальном стенде и ревью другой модели, переданное владельцем 2026-10-07. Источник и предел подтверждения указаны в каждой записи.
-**Текущий handoff — 2026-10-08:** исправления TEST-FIND-UI-004…012 интегрированы в Developer package PR #51 / `0c893f0`; все записи остаются FIXED PENDING RETEST, independent results NOT RUN. Manager подтвердил G4 и READY_FOR_TEST; DEBT-CALC-001 остаётся OPEN / NON-BLOCKING для M1-7.
-**Регистрация:** Developer по прямому поручению пользователя.
+**Источник наблюдений:** ручные проверки пользователя на локальном стенде, ревью другой модели, переданное владельцем 2026-10-07, и независимое ревью Tester 2026-10-08. Источник и предел подтверждения указаны в каждой записи.
+**Developer handoff — 2026-10-08:** исправления TEST-FIND-UI-004…012 интегрированы в Developer package PR #51 / `0c893f0`; на момент передачи все записи имели FIXED PENDING RETEST, independent results NOT RUN. Manager подтвердил G4 и READY_FOR_TEST; DEBT-CALC-001 остаётся OPEN / NON-BLOCKING для M1-7.
+**Дополнение Tester — 2026-10-08:** на `1af6e45` независимо воспроизведён TEST-FIND-UI-013, статус OPEN. Существующий UI-набор дал 180 passed; дополнительная проверка границы округления — 3 passed / 1 failed. Замечание блокирует приёмку REQ-UI-04; исправление и retest ожидаются от Developer и Tester. Статусы других записей этим дополнением не закрываются.
+**Регистрация:** Developer — TEST-FIND-UI-004…012; Tester — TEST-FIND-UI-013, по прямому поручению пользователя.
 
-Реестр использует общую нумерацию `TEST-FIND-UI-*`: номера 001–003 относятся к ранее выполненному ревью документов в [Tester-артефакте](tester.md). Здесь фиксируются наблюдения реализации. Запись об исправлении Developer не означает успешный ручной retest или независимую Tester acceptance. Критичность и приоритет ниже предварительные; окончательную severity назначает Tester, priority подтверждает Change Manager по [шаблону дефекта](../../development_approach/artifacts/tester.md#3-дефект-или-замечание-тестирования-defect-or-test-finding).
+Реестр использует общую нумерацию `TEST-FIND-UI-*`: номера 001–003 относятся к ранее выполненному ревью документов в [Tester-артефакте](tester.md). Здесь фиксируются наблюдения реализации. Запись об исправлении Developer не означает успешный ручной retest или независимую Tester acceptance. В записях 004…012 критичность и приоритет предварительные; в записи 013 severity назначена Tester. Priority подтверждает Change Manager по [шаблону дефекта](../../development_approach/artifacts/tester.md#3-дефект-или-замечание-тестирования-defect-or-test-finding).
 
 | ID | Дефект | Severity | Priority | Состояние исправления | Ручной retest |
 |---|---|---|---|---|---|
@@ -18,6 +19,7 @@
 | [TEST-FIND-UI-010](#test-find-ui-010) | После committed POST отсутствует сводка данных построенной карты | S3, PROPOSED Developer | P3, PROPOSED | FIXED PENDING RETEST, DEV-UI-08; найдено другой моделью, замечание №6 | NOT RUN после исправления |
 | [TEST-FIND-UI-011](#test-find-ui-011) | Повреждённый успешный ответ вызывает исключение без сообщения UI | S2, PROPOSED Developer | P2, PROPOSED | FIXED PENDING RETEST, DEV-UI-07; найдено другой моделью, замечание №13 | NOT RUN после исправления |
 | [TEST-FIND-UI-012](#test-find-ui-012) | Фокус стирает подпись восстановленного места | S3, PROPOSED Developer | P3, PROPOSED | FIXED PENDING RETEST, DEV-UI-08; найдено другой моделью, замечание №14 | NOT RUN после исправления |
+| [TEST-FIND-UI-013](#test-find-ui-013) | Орбис на половине минуты округляется вниз | S3, назначена Tester | P2, PROPOSED | OPEN; независимо воспроизведён Tester на `1af6e45` | Исправления нет; retest NOT RUN |
 
 <a id="test-find-ui-004"></a>
 ## TEST-FIND-UI-004. Поле времени не поддерживает формат при вводе цифр
@@ -169,3 +171,86 @@
 - **Причина / expected:** восстановление меняет form/DOM, но search state остаётся idle. Фокус/blur без редактирования сохраняют подпись и подтверждённый ID. Начало редактирования снимает выбор по прежнему правилу; регион/страна отсутствуют в BirthViewDTO и не выдумываются.
 - **Регрессия / закрытие:** planned mounted restore → focus → blur и restore → edit → select cases; после явного выбора новый ID используется в POST. Ручной retest после исправления.
 - **Developer fix, 2026-10-07:** idle search presentation сохраняет подтверждённое место из form при focus/blur; недоступные регион/страна не выдумываются. Edit по-прежнему снимает ID; поиск и явный выбор устанавливают новый ID, который уходит в POST. Три `restored ${chart_ready/chart_unavailable}/${time_unknown} place survives focus/blur then edit and explicit new selection` passed, дополнительных lookup при focus нет и undefined не отображается. [Evidence](../../project_management/implementation_plans/ui_birth_form_and_facts_implementation_plan.md#dev-ui-08-execution). Ручной retest NOT RUN.
+
+<a id="test-find-ui-013"></a>
+## TEST-FIND-UI-013. Орбис на половине минуты округляется вниз
+
+**Тип:** баг реализации (implementation defect), форматирование опубликованного орбиса.
+**Обнаружил / дата:** Tester, независимое ревью 2026-10-08.
+**Ответственный за исправление:** Developer. **Ответственный за retest:** Tester.
+**Требование:** [REQ-UI-04](../../requirements/changes/ui-birth-form-and-facts/requirements.md#req-ui-04-представление-общих-фактов), семантика @ `ce25dd0`: ближайшая целая угловая минута, точная половина округляется вверх.
+**Связанный сценарий:** [AS-UI-07](../../requirements/changes/ui-birth-form-and-facts/scenarios.md#as-ui-07-три-группы-натала-и-формат).
+**Проверенный commit:** `1af6e45f9f9f1507149b74e786037d17cf0c73b8`, ветка `test/ui-birth-form-and-facts-review`; production UI из `f7fb34b` интегрирован через PR #51. Во время воспроизведения tracked-дерево чистое.
+**Окружение:** Windows, PowerShell, Node.js v24.19.0; настоящий `mountBirthForm` / form / session / transport / renderer, существующие HTTP golden fixtures. Заменены только листовые сеть, таймер и DOM-порт; браузер и layout этим сценарием не проверяются.
+**Severity:** **S3, назначена Tester** — в таблице показано неверное значение орбиса с отклонением на одну угловую минуту. Расчёт, исходный DTO и category не изменяются; основной build доступен.
+**Priority:** **P2, PROPOSED** — исправить нарушение обязательного правила форматирования до приёмки M1-7.
+**Подтверждение приоритета:** ожидается от Change Manager.
+**Blocks:** приёмку REQ-UI-04 / AS-UI-07 и рекомендацию Tester о готовности к G5; независимые проверки остальных требований можно продолжать.
+**Статус:** **OPEN**.
+**Обоснование статуса:** допустимый DTO с `orb:1.025` принят UI, но таблица показывает `1°01′` вместо `1°02′`. Дополнительная проверка дала 3 passed / 1 failed, exit 1. Исправление не передано; следующий шаг — Developer исправляет форматирование и добавляет regression test, затем Tester повторяет сценарий.
+**Связанное решение:** нет; ожидаемое поведение уже определено утверждённым требованием, новый выбор семантики не требуется.
+
+### Воспроизведение и причина
+
+1. В существующем валидном natal `ChartDTO` изменить только `aspects[0].orb` на `1.025`; `validChart` подтверждает допустимость fixture. Остальные опубликованные поля и category сохраняются.
+2. Передать этот DTO как успешный current через настоящий transport/coordinator, смонтировать форму и открыть «Показать подробности карты».
+3. **Фактически:** первая строка таблицы «Все опубликованные аспекты» содержит `1°01′`.
+4. **Ожидается:** `1.025° = 61.5′`; половина округляется вверх до `62′`, то есть `1°02′`, по REQ-UI-04. Категория берётся из DTO и не пересчитывается.
+
+Причина в [facts.mjs](../../../src/exact_orb/http_api/ui/facts.mjs), `formatOrb`: `Math.round(orb * 60)`.
+Для опубликованного значения `1.025` умножение в JavaScript даёт `61.49999999999999`, после чего округление выбирает 61 минуту.
+Это дефект экранного форматирования, а не повод менять расчётный орбис или публичный контракт.
+
+### Доказательства и позитивные контроли
+
+- Независимая команда в предыдущем ревью: PowerShell here-string → `node --input-type=module`; **3 passed / 1 failed**, exit 1. Точный сценарий для повторения приведён ниже.
+- При регистрации 2026-10-08 код из этой карточки повторно извлечён и выполнен через `node --input-type=module`: **3 passed / 1 failed**, exit 1; воспроизведение подтверждено. Незакоммиченные изменения при этом затрагивают только этот Markdown-реестр, production code и tests не изменены.
+- Валидный DTO проходит `validChart`, настоящий mounted renderer создаёт непустую строку; исключение вызвано assertion ожидаемого текста, а не отказом загрузки UI.
+- Контроли: `1.024` → `1°01′`, `1.026` → `1°02′`, `0.999` → `1°00′` — PASS. Последний проверяет перенос минуты в градус.
+- `node --test --test-isolation=none tests/ui/*.test.mjs` на том же commit дал **180 passed**. В [facts.test.mjs](../../../tests/ui/facts.test.mjs) есть семь cases округления, включая `1/120` и `3/120`; они не проверяют случай `1.025`.
+
+Команда из корня checkout; ожидаемый результат на дефектной версии — exit 1:
+
+```powershell
+@'
+import assert from 'node:assert/strict';
+import {test} from 'node:test';
+import {formatOrb} from './src/exact_orb/http_api/ui/facts.mjs';
+import {mountBirthForm} from './src/exact_orb/http_api/ui/main.mjs';
+import {documentPort} from './tests/ui/fixtures/dom.mjs';
+import {harness,ready,response,currentPath} from './tests/ui/fixtures/session.mjs';
+import {validChart} from './src/exact_orb/http_api/ui/response.mjs';
+for (const [orb, expected] of [[1.024,'1°01′'],[1.026,'1°02′'],[0.999,'1°00′']]) {
+  test(`positive control orb ${orb}`, () => assert.equal(formatOrb(orb), expected));
+}
+test('REQ-UI-04 / AS-UI-07: orb 1.025 rounds half-up in mounted UI', async () => {
+  const h = harness(), doc = documentPort(), saved = ready();
+  saved.chart.aspects[0].orb = 1.025;
+  assert.equal(validChart(saved.chart), true);
+  const category = saved.chart.aspects[0].category;
+  h.queue(currentPath, response(saved));
+  const ui = mountBirthForm(doc, {apiClient:h.apiClient, clock:h.clock});
+  try {
+    assert.equal(await ui.ready, true);
+    doc.getElementById('chart-details-button').click();
+    const table = doc.getElementById('chart-facts').querySelectorAll('table')
+      .find(t => t.querySelector('caption').textContent === 'Все опубликованные аспекты');
+    const row = table.querySelector('tbody').children[0];
+    assert.ok(row.textContent);
+    assert.equal(saved.chart.aspects[0].category, category);
+    console.log(JSON.stringify({orb:1.025, actual:row.children[4].textContent, expected:'1°02′'}));
+    assert.equal(row.children[4].textContent, '1°02′');
+  } finally {
+    ui.dispose();
+  }
+});
+'@ | node --input-type=module
+```
+
+### Условие закрытия и повторная проверка
+
+- Developer добавляет детерминированный case `orb:1.025` в существующее покрытие REQ-UI-04 / AS-UI-07 и исправляет форматирование на ответственном UI-слое.
+- На исправленном commit воспроизводящий сценарий и UI-набор проходят; значения непосредственно ниже/выше границы и перенос минуты сохраняются, исходные `orb`, `type`, `category` не изменяются.
+- Tester фиксирует точный исправленный commit, команду и фактический результат retest. Общая приёмка других требований этой записью не подтверждается.
+
+**Retest:** **NOT RUN** — commit с исправлением ещё не передан; дефект остаётся OPEN. В живом браузере контролируемый DTO `orb:1.025` не подставлялся, этот способ воспроизведения не объявляется browser evidence.
