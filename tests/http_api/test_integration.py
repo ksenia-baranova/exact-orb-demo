@@ -197,16 +197,27 @@ async def test_local_factory_passes_one_open_catalog_to_runtime_and_route(
     app = http_server.create_local_app(LOCAL_ENV)
     async with app.router.lifespan_context(app):
         assert received == [app.state.catalog]
-        transport = httpx.ASGITransport(app=app)
+        # FIND-TEST-HTTP-001: браузер и доверенный Caddy имеют разные адреса.
+        transport = httpx.ASGITransport(app=app, client=("127.0.0.2", 12345))
         async with httpx.AsyncClient(
             transport=transport, base_url="https://exact-orb.localhost",
         ) as client:
             response = await client.get(
                 "/places", params={"query": "Москва"},
-                headers={"X-Forwarded-For": "198.51.100.7",
+                headers={"X-Forwarded-For": "127.0.0.1",
                          "X-Forwarded-Proto": "https"},
             )
             assert response.status_code == 200
+            assert inner_catalog.calls == [("Москва", 10)]
+            # Цепочка без клиента и некорректный заголовок остаются запрещены.
+            for forwarded in ("127.0.0.2", "bad-hostname"):
+                rejected = await client.get(
+                    "/places", params={"query": "Москва"},
+                    headers={"X-Forwarded-For": forwarded,
+                             "X-Forwarded-Proto": "https"},
+                )
+                assert rejected.status_code == 400
+                assert rejected.json()["code"] == "FORWARDED_HEADER_INVALID"
             assert inner_catalog.calls == [("Москва", 10)]
     assert runtime.closed and inner_catalog.closed
 

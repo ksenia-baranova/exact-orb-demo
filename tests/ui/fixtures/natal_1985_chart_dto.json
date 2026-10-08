@@ -1,0 +1,594 @@
+{
+  "chart_identity": "eo:calc:v2:471780444330e2d9108e7ae97652bb4a47d3142ffc14cb238a587a6002df8eee",
+  "kind": "natal",
+  "zodiac": "tropical",
+  "house_system": "P",
+  "points": [
+    {
+      "id": "sun",
+      "longitude": 159.34074778029736,
+      "sign": "Virgo",
+      "degree": 9,
+      "minute": 20,
+      "house": 4,
+      "retrograde": false
+    },
+    {
+      "id": "moon",
+      "longitude": 7.664949064158727,
+      "sign": "Aries",
+      "degree": 7,
+      "minute": 39,
+      "house": 11,
+      "retrograde": false
+    },
+    {
+      "id": "mercury",
+      "longitude": 142.09770491769441,
+      "sign": "Leo",
+      "degree": 22,
+      "minute": 5,
+      "house": 3,
+      "retrograde": false
+    },
+    {
+      "id": "venus",
+      "longitude": 125.5987958919479,
+      "sign": "Leo",
+      "degree": 5,
+      "minute": 35,
+      "house": 2,
+      "retrograde": false
+    },
+    {
+      "id": "mars",
+      "longitude": 144.79275143392266,
+      "sign": "Leo",
+      "degree": 24,
+      "minute": 47,
+      "house": 3,
+      "retrograde": false
+    },
+    {
+      "id": "jupiter",
+      "longitude": 308.6836676177389,
+      "sign": "Aquarius",
+      "degree": 8,
+      "minute": 41,
+      "house": 9,
+      "retrograde": true
+    },
+    {
+      "id": "saturn",
+      "longitude": 232.6155421895736,
+      "sign": "Scorpio",
+      "degree": 22,
+      "minute": 36,
+      "house": 6,
+      "retrograde": false
+    },
+    {
+      "id": "uranus",
+      "longitude": 254.00365980527386,
+      "sign": "Sagittarius",
+      "degree": 14,
+      "minute": 0,
+      "house": 6,
+      "retrograde": false
+    },
+    {
+      "id": "neptune",
+      "longitude": 270.87690779987076,
+      "sign": "Capricorn",
+      "degree": 0,
+      "minute": 52,
+      "house": 6,
+      "retrograde": true
+    },
+    {
+      "id": "pluto",
+      "longitude": 212.65770399299151,
+      "sign": "Scorpio",
+      "degree": 2,
+      "minute": 39,
+      "house": 5,
+      "retrograde": false
+    },
+    {
+      "id": "chiron",
+      "longitude": 74.44553413224777,
+      "sign": "Gemini",
+      "degree": 14,
+      "minute": 26,
+      "house": 12,
+      "retrograde": false
+    },
+    {
+      "id": "true_node",
+      "longitude": 40.9113848348305,
+      "sign": "Taurus",
+      "degree": 10,
+      "minute": 54,
+      "house": 11,
+      "retrograde": true
+    },
+    {
+      "id": "south_node",
+      "longitude": 220.9113848348305,
+      "sign": "Scorpio",
+      "degree": 10,
+      "minute": 54,
+      "house": 5,
+      "retrograde": true
+    },
+    {
+      "id": "mean_apog",
+      "longitude": 40.201551132952346,
+      "sign": "Taurus",
+      "degree": 10,
+      "minute": 12,
+      "house": 11,
+      "retrograde": false
+    },
+    {
+      "id": "selena",
+      "longitude": 225.50257012821265,
+      "sign": "Scorpio",
+      "degree": 15,
+      "minute": 30,
+      "house": 5,
+      "retrograde": true
+    },
+    {
+      "id": "pars_fortune",
+      "longitude": 249.78151332909155,
+      "sign": "Sagittarius",
+      "degree": 9,
+      "minute": 46,
+      "house": 6,
+      "retrograde": false
+    }
+  ],
+  "angles": {
+    "asc": {
+      "longitude": 98.10571461295291,
+      "sign": "Cancer",
+      "degree": 8,
+      "minute": 6
+    },
+    "mc": {
+      "longitude": 327.62940719926064,
+      "sign": "Aquarius",
+      "degree": 27,
+      "minute": 37
+    },
+    "vertex": {
+      "longitude": 229.73871832539606,
+      "sign": "Scorpio",
+      "degree": 19,
+      "minute": 44
+    },
+    "dsc": {
+      "longitude": 278.1057146129529,
+      "sign": "Capricorn",
+      "degree": 8,
+      "minute": 6
+    },
+    "ic": {
+      "longitude": 147.62940719926064,
+      "sign": "Leo",
+      "degree": 27,
+      "minute": 37
+    }
+  },
+  "houses": [
+    {
+      "number": 1,
+      "cusp_longitude": 98.10571461295291,
+      "sign": "Cancer",
+      "degree": 8,
+      "minute": 6
+    },
+    {
+      "number": 2,
+      "cusp_longitude": 111.86113073362736,
+      "sign": "Cancer",
+      "degree": 21,
+      "minute": 51
+    },
+    {
+      "number": 3,
+      "cusp_longitude": 127.21128222848128,
+      "sign": "Leo",
+      "degree": 7,
+      "minute": 12
+    },
+    {
+      "number": 4,
+      "cusp_longitude": 147.62940719926064,
+      "sign": "Leo",
+      "degree": 27,
+      "minute": 37
+    },
+    {
+      "number": 5,
+      "cusp_longitude": 179.74928469285112,
+      "sign": "Virgo",
+      "degree": 29,
+      "minute": 44
+    },
+    {
+      "number": 6,
+      "cusp_longitude": 231.38720474173113,
+      "sign": "Scorpio",
+      "degree": 21,
+      "minute": 23
+    },
+    {
+      "number": 7,
+      "cusp_longitude": 278.1057146129529,
+      "sign": "Capricorn",
+      "degree": 8,
+      "minute": 6
+    },
+    {
+      "number": 8,
+      "cusp_longitude": 291.86113073362736,
+      "sign": "Capricorn",
+      "degree": 21,
+      "minute": 51
+    },
+    {
+      "number": 9,
+      "cusp_longitude": 307.2112822284813,
+      "sign": "Aquarius",
+      "degree": 7,
+      "minute": 12
+    },
+    {
+      "number": 10,
+      "cusp_longitude": 327.62940719926064,
+      "sign": "Aquarius",
+      "degree": 27,
+      "minute": 37
+    },
+    {
+      "number": 11,
+      "cusp_longitude": 359.7492846928511,
+      "sign": "Pisces",
+      "degree": 29,
+      "minute": 44
+    },
+    {
+      "number": 12,
+      "cusp_longitude": 51.38720474173114,
+      "sign": "Taurus",
+      "degree": 21,
+      "minute": 23
+    }
+  ],
+  "aspects": [
+    {
+      "from": "mean_apog",
+      "to": "pars_fortune",
+      "type": "quincunx",
+      "orb": 0.4200378038607937,
+      "category": "exact"
+    },
+    {
+      "from": "moon",
+      "to": "asc",
+      "type": "square",
+      "orb": 0.4407655487941611,
+      "category": "exact"
+    },
+    {
+      "from": "sun",
+      "to": "pars_fortune",
+      "type": "square",
+      "orb": 0.4407655487941611,
+      "category": "exact"
+    },
+    {
+      "from": "uranus",
+      "to": "chiron",
+      "type": "opposition",
+      "orb": 0.4418743269739025,
+      "category": "exact"
+    },
+    {
+      "from": "mercury",
+      "to": "saturn",
+      "type": "square",
+      "orb": 0.5178372718792161,
+      "category": "exact"
+    },
+    {
+      "from": "jupiter",
+      "to": "asc",
+      "type": "quincunx",
+      "orb": 0.577953004785968,
+      "category": "exact"
+    },
+    {
+      "from": "sun",
+      "to": "jupiter",
+      "type": "quincunx",
+      "orb": 0.6570801625584863,
+      "category": "exact"
+    },
+    {
+      "from": "true_node",
+      "to": "mean_apog",
+      "type": "conjunction",
+      "orb": 0.7098337018781535,
+      "category": "exact"
+    },
+    {
+      "from": "sun",
+      "to": "mean_apog",
+      "type": "trine",
+      "orb": 0.8608033526549832,
+      "category": "exact"
+    },
+    {
+      "from": "moon",
+      "to": "jupiter",
+      "type": "sextile",
+      "orb": 1.018718553580129,
+      "category": "working"
+    },
+    {
+      "from": "chiron",
+      "to": "selena",
+      "type": "quincunx",
+      "orb": 1.0570359959648954,
+      "category": "working"
+    },
+    {
+      "from": "jupiter",
+      "to": "pars_fortune",
+      "type": "sextile",
+      "orb": 1.0978457113526758,
+      "category": "working"
+    },
+    {
+      "from": "true_node",
+      "to": "pars_fortune",
+      "type": "quincunx",
+      "orb": 1.1298715057389472,
+      "category": "working"
+    },
+    {
+      "from": "sun",
+      "to": "asc",
+      "type": "sextile",
+      "orb": 1.2350331673444543,
+      "category": "working"
+    },
+    {
+      "from": "jupiter",
+      "to": "mean_apog",
+      "type": "square",
+      "orb": 1.517883515213498,
+      "category": "working"
+    },
+    {
+      "from": "sun",
+      "to": "true_node",
+      "type": "trine",
+      "orb": 1.5706370545331367,
+      "category": "working"
+    },
+    {
+      "from": "pars_fortune",
+      "to": "asc",
+      "type": "quincunx",
+      "orb": 1.6757987161386438,
+      "category": "working"
+    },
+    {
+      "from": "sun",
+      "to": "moon",
+      "type": "quincunx",
+      "orb": 1.6757987161386438,
+      "category": "working"
+    },
+    {
+      "from": "neptune",
+      "to": "pluto",
+      "type": "sextile",
+      "orb": 1.78079619312075,
+      "category": "working"
+    },
+    {
+      "from": "moon",
+      "to": "venus",
+      "type": "trine",
+      "orb": 2.066153172210818,
+      "category": "working"
+    },
+    {
+      "from": "mean_apog",
+      "to": "asc",
+      "type": "sextile",
+      "orb": 2.095836519999466,
+      "category": "working"
+    },
+    {
+      "from": "mars",
+      "to": "saturn",
+      "type": "square",
+      "orb": 2.177209244349058,
+      "category": "working"
+    },
+    {
+      "from": "jupiter",
+      "to": "true_node",
+      "type": "square",
+      "orb": 2.2277172170915946,
+      "category": "working"
+    },
+    {
+      "from": "mercury",
+      "to": "vertex",
+      "type": "square",
+      "orb": 2.358986592298379,
+      "category": "working"
+    },
+    {
+      "from": "mercury",
+      "to": "mars",
+      "type": "conjunction",
+      "orb": 2.695046516228217,
+      "category": "working"
+    },
+    {
+      "from": "true_node",
+      "to": "asc",
+      "type": "sextile",
+      "orb": 2.8056702218775627,
+      "category": "working"
+    },
+    {
+      "from": "mars",
+      "to": "mc",
+      "type": "opposition",
+      "orb": 2.83665576533798,
+      "category": "working"
+    },
+    {
+      "from": "saturn",
+      "to": "vertex",
+      "type": "conjunction",
+      "orb": 2.8768238641775383,
+      "category": "working"
+    },
+    {
+      "from": "venus",
+      "to": "pluto",
+      "type": "square",
+      "orb": 2.941091898956415,
+      "category": "working"
+    },
+    {
+      "from": "venus",
+      "to": "jupiter",
+      "type": "opposition",
+      "orb": 3.0848717257909755,
+      "category": "background"
+    },
+    {
+      "from": "neptune",
+      "to": "mc",
+      "type": "sextile",
+      "orb": 3.247500600610124,
+      "category": "background"
+    },
+    {
+      "from": "sun",
+      "to": "uranus",
+      "type": "square",
+      "orb": 4.662912024976492,
+      "category": "background"
+    },
+    {
+      "from": "venus",
+      "to": "neptune",
+      "type": "quincunx",
+      "orb": 4.721888092077137,
+      "category": "background"
+    },
+    {
+      "from": "moon",
+      "to": "pluto",
+      "type": "quincunx",
+      "orb": 5.007245071167205,
+      "category": "background"
+    },
+    {
+      "from": "saturn",
+      "to": "mc",
+      "type": "square",
+      "orb": 5.013865009687038,
+      "category": "background"
+    },
+    {
+      "from": "pluto",
+      "to": "mc",
+      "type": "trine",
+      "orb": 5.028296793730874,
+      "category": "background"
+    },
+    {
+      "from": "sun",
+      "to": "chiron",
+      "type": "square",
+      "orb": 5.104786351950409,
+      "category": "background"
+    },
+    {
+      "from": "jupiter",
+      "to": "uranus",
+      "type": "sextile",
+      "orb": 5.319992187534979,
+      "category": "background"
+    },
+    {
+      "from": "pluto",
+      "to": "asc",
+      "type": "trine",
+      "orb": 5.448010619961394,
+      "category": "background"
+    },
+    {
+      "from": "mercury",
+      "to": "mc",
+      "type": "opposition",
+      "orb": 5.531702281566226,
+      "category": "background"
+    },
+    {
+      "from": "jupiter",
+      "to": "chiron",
+      "type": "trine",
+      "orb": 5.761866514508881,
+      "category": "background"
+    },
+    {
+      "from": "uranus",
+      "to": "asc",
+      "type": "quincunx",
+      "orb": 5.897945192320947,
+      "category": "background"
+    },
+    {
+      "from": "moon",
+      "to": "uranus",
+      "type": "trine",
+      "orb": 6.338710741115136,
+      "category": "background"
+    },
+    {
+      "from": "sun",
+      "to": "pluto",
+      "type": "sextile",
+      "orb": 6.683043787305849,
+      "category": "background"
+    },
+    {
+      "from": "moon",
+      "to": "chiron",
+      "type": "sextile",
+      "orb": 6.780585068089067,
+      "category": "background"
+    },
+    {
+      "from": "moon",
+      "to": "neptune",
+      "type": "square",
+      "orb": 6.788041264287983,
+      "category": "background"
+    }
+  ]
+}

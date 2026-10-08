@@ -11,6 +11,7 @@ https://exact-orb.localhost {
             header_up X-Forwarded-For {remote_host}
             header_up X-Forwarded-Proto https
             transport http {
+                local_address 127.0.0.2
                 response_header_timeout 35s
             }
         }

@@ -3,7 +3,7 @@
 **Роль и дата:** Developer, 2026-10-06.
 **Ветка:** `dev/ui-birth-form-and-facts-review`.
 **Статус первого review @ `b36b63d`:** DOCUMENT REVIEW COMPLETE / OPEN FINDINGS; исходное заключение и findings ниже сохраняются как история.
-**Текущий статус Developer:** REVALIDATED / FEASIBLE — авторская повторная сверка @ `082c6b9`, review baseline `033217d`; findings закрыты на уровне контрактов/baseline. [Implementation Plan](ui_birth_form_and_facts_implementation_plan.md) административно утверждён Manager 2026-10-07. Delivery status/G3 — [Manager-артефакт](../change_plans/ui-birth-form-and-facts/artifacts.md#change-brief); реализация NOT STARTED, browser acceptance NOT RUN.
+**Текущий статус Developer (2026-10-08):** **READY_FOR_TEST** — по поручению владельца; реализация DEV-UI-01…08 и актуальные Developer checks передаются в [Implementation Plan / Developer Handoff](ui_birth_form_and_facts_implementation_plan.md#developer-ready-for-test) на implementation commit `f7fb34b` с одним согласованным skip DEBT-CALC-001 в коммите передачи, содержащем эту редакцию документов. Долг OPEN, независимая browser acceptance ожидается. Подготовительная сверка REVALIDATED / FEASIBLE @ `082c6b9`, review baseline `033217d`, и исходные findings ниже сохранены как история. Общий delivery status/G4/G5 ведёт [Manager](../change_plans/ui-birth-form-and-facts/artifacts.md#change-brief).
 **Технический вывод:** три группы реализуемы на существующем API; контракт действий/recovery повторно сверён Developer и независимым Tester `0f6aa82`, blocking semantic gaps отсутствуют. Ниже сохранены историческое первое review и последующая авторская валидация.
 
 ## Проверенный baseline

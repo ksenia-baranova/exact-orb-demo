@@ -72,7 +72,7 @@ def create_local_app(env: Mapping[str, str] | None = None) -> FastAPI:
     )
     http_settings = SimpleNamespace(
         allowed_origins=(origin,),
-        trusted_proxy_cidrs=("127.0.0.1/32",),
+        trusted_proxy_cidrs=("127.0.0.2/32",),
         public_origin=origin,
         body_timeout_seconds=5.0,
         build_timeout_seconds=30.0,
