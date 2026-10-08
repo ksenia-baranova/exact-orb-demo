@@ -7,7 +7,9 @@ import { test } from "node:test";
 import { formatOrb, formatPosition, readChartFacts, mountChartResult } from "../../src/exact_orb/http_api/ui/facts.mjs";
 import { createApiClient } from "../../src/exact_orb/http_api/ui/transport.mjs";
 import { mountBirthForm } from "../../src/exact_orb/http_api/ui/main.mjs";
+import { validChart } from "../../src/exact_orb/http_api/ui/response.mjs";
 import { documentPort } from "./fixtures/dom.mjs";
+import { harness, response, bootstrapPath, currentPath } from "./fixtures/session.mjs";
 
 const charts = JSON.parse(readFileSync(new URL("../http_api/golden/chart_dto.json", import.meta.url), "utf8"));
 // project_chart(decode_chart_artifact(tests/golden/chart_artifact_format_1_natal_1985.bin)).
@@ -21,11 +23,43 @@ const ready = (chart = natal(), stale = false) => ({ ...structuredClone(views[ch
   chart, chart_stale: stale });
 
 for (const [orb, expected] of [[0, "0°00′"], [0.008, "0°00′"], [0.009, "0°01′"],
-  [0.999, "1°00′"], [1.5, "1°30′"], [1 / 120, "0°01′"], [3 / 120, "0°02′"]]) {
+  [0.999, "1°00′"], [1.5, "1°30′"], [1 / 120, "0°01′"], [3 / 120, "0°02′"],
+  // TEST-FIND-UI-013, AS-UI-07: половина, ближайшие Number по её сторонам и перенос минуты.
+  [1.024, "1°01′"], [1.0249999999999997, "1°01′"], [1.025, "1°02′"],
+  [1.0250000000000001, "1°02′"], [1.026, "1°02′"],
+  [0.9916666666666666, "0°59′"], [59.5 / 60, "1°00′"]]) {
   test(`REQ-UI-04 orb ${orb} rounds half-up with minute carry to ${expected}`, () => {
     assert.equal(formatOrb(orb), expected);
   });
 }
+
+test("REQ-UI-04 / AS-UI-07 / TEST-FIND-UI-013: mounted current orb 1.025 rounds half-up without changing DTO or requests", async () => {
+  const h = harness(), document = documentPort(), current = ready();
+  current.chart.aspects[0].orb = 1.025;
+  assert.equal(validChart(current.chart), true);
+  const before = structuredClone(current.chart);
+  h.queue(currentPath, response(current));
+  const ui = mountBirthForm(document, { apiClient: h.apiClient, clock: h.clock });
+  try {
+    assert.equal(await ui.ready, true);
+    assert.deepEqual(h.calls.map(({ path }) => path), [bootstrapPath, currentPath]);
+    assert.deepEqual(ui.session.snapshot().view.chart, before);
+    document.getElementById("chart-details-button").click();
+    const table = document.getElementById("chart-facts").querySelectorAll("table")
+      .find((node) => node.querySelector("caption").textContent === "Все опубликованные аспекты");
+    const rows = table.querySelector("tbody").children;
+    assert.equal(rows.length, before.aspects.length);
+    assert.ok(rows[0].textContent);
+    assert.equal(before.aspects[0].category, "exact");
+    assert.equal(rows[0].children[3].textContent, "Точный");
+    assert.deepEqual(ui.session.snapshot().view.chart, before);
+    assert.deepEqual(current.chart, before);
+    assert.deepEqual(h.calls.map(({ path }) => path), [bootstrapPath, currentPath]);
+    assert.equal(rows[0].children[4].textContent, "1°02′");
+  } finally {
+    ui.dispose();
+  }
+});
 
 test("published positions keep zeroes and sign boundaries, independent of longitude", () => {
   for (const [degree, minute, expected] of [[0, 0, "00°00′"], [0, 59, "00°59′"], [29, 0, "29°00′"], [29, 59, "29°59′"]]) {

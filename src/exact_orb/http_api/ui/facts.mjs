@@ -25,7 +25,9 @@ export function formatPosition({ degree, minute }) {
 }
 
 export function formatOrb(orb) {
-  const total = Math.round(orb * 60);
+  const lowerMinute = Math.floor(orb * 60);
+  // Проверяем половину в исходных градусах: 1.025 * 60 может дать 61.49999999999999.
+  const total = lowerMinute + (orb >= (lowerMinute + 0.5) / 60 ? 1 : 0);
   return `${Math.floor(total / 60)}°${String(total % 60).padStart(2, "0")}′`;
 }
 
