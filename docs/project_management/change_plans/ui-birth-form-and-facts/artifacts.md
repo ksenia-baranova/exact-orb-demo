@@ -1,20 +1,20 @@
 # M1-7: артефакты Change Manager
 
-Единый файл изменения `ui-birth-form-and-facts`: описание, реестр решений, технический долг, задания ролям и дорожная карта. G3/G4/G5 завершены; change находится в READY_FOR_ACCEPTANCE. Tester закрыл TEST-FIND-UI-004…013, подтвердил 23/23 AS и 10/10 REQ и сверил чистовую редакцию; `DEBT-CALC-001` остаётся OPEN / NON-BLOCKING для M1-7. Final Acceptance Manager ещё не выполнена.
+Единый файл изменения `ui-birth-form-and-facts`: описание, реестр решений, технический долг, задания ролям, дорожная карта и Final Acceptance. G3/G4/G5 и Final Acceptance завершены; change находится в терминальном статусе ACCEPTED. Tester закрыл TEST-FIND-UI-004…013, подтвердил 23/23 AS и 10/10 REQ и сверил чистовую редакцию; `DEBT-CALC-001` и `DEBT-UI-001` сохраняются как принятые неблокирующие долги с отдельными условиями возврата. Merge в `main` проверяется отдельно по Git evidence.
 
 <a id="change-brief"></a>
 ## Черновое описание изменения
 
-**Статус изменения:** READY_FOR_ACCEPTANCE — Tester завершил обязательную acceptance на runtime baseline `a8b45db` и clean-transfer baseline `063c843`: TEST-FIND-UI-004…013 CLOSED, 23/23 AS PASS, 10/10 REQ SUFFICIENT. Финальный Tester handoff `ea4b0b9` интегрирован PR #58 в общий `0e34cd1`; Manager подтвердил G5. Final Acceptance и разрешение final PR `change/* → main` ещё не выполнены. `DEBT-CALC-001` остаётся OPEN / NON-BLOCKING для M1-7; skip не доказывает исключённое свойство.
+**Статус изменения:** ACCEPTED — Final Acceptance подтверждена владельцем сообщением «Acceptance прошло» 2026-10-09 на интеграционном baseline `7a17e7245fbddde9a57e498d10a063e877045e7c` (Manager G5 commit `e34ac88`, PR #59). Поставленный scope принят: TEST-FIND-UI-004…013 CLOSED, 23/23 AS PASS, 10/10 REQ SUFFICIENT, clean transfer verified. `DEBT-CALC-001`, `DEBT-UI-001`, DP-UI-03/09 и ограничения закрытого этапа приняты как неблокирующие. Final PR `change/* → main` разрешён решением о приёмке, но его создание и merge этим статусом не утверждаются как уже выполненные.
 **Руководитель изменения:** агент Change Manager в `manager/ui-birth-form-and-facts-review-alignment`.
 **Интеграционная ветка:** `change/ui-birth-form-and-facts`.
 **История Intake:** `956a0d3acbb1536e57535c4689aee57efe607381` — исходный HEAD подготовки 2026-10-03.
-**Текущий исходный commit `change/*`:** `0e34cd1a7aecead9561fb2bccf5d8b75027651e0`; включает полный Tester retest/HTTPS acceptance PR #56 / `538648d`, чистовую редакцию Analyst `879a4ee` через PR #57 / `063c843` и финальный Tester handoff `ea4b0b9` через PR #58. Проверенный production runtime baseline остаётся `a8b45dbbda5378e598eb75b15f81e1445a75020e`; последующие PR изменяли requirements и test evidence, а не production code/tests.
+**Текущий исходный commit `change/*`:** `7a17e7245fbddde9a57e498d10a063e877045e7c`; PR #59 интегрировал Manager G5/READY_FOR_ACCEPTANCE commit `e34ac8872cc826fde4b58f2d7e7638d0ca829142`. Проверенный production runtime baseline остаётся `a8b45dbbda5378e598eb75b15f81e1445a75020e`; Analyst clean transfer — `879a4ee`, Tester completion — `ea4b0b9`. Final Acceptance относится к полному интеграционному дереву `7a17e72`.
 **Утверждённый Analysis-контракт:** семантика `ce25dd0bebf5eb3b6d41fe933d1809005e5779ab`, 10 REQ / 23 AS; чистовая редакция `879a4eefd05bd0cdda13ab6e417d5a9a22af2394` интегрирована PR #57 и независимо сверена Tester на `063c8439de3392c888383913fabffa336bd0c44e` без semantic delta.
 **Единый реестр:** [раздел «Единый реестр решений»](#decision-register); эта версия возвращается в `change/*` через отдельный Manager PR.
 **Задания ролям:** [раздел «Задания ролям»](#role-tasks).
 **Связанные строки:** `DP-UI-01`…`DP-UI-09`; долг страницы — `DEBT-UI-001` в [разделе технического долга](#technical-debt).
-**Версия исходных материалов:** первичный просмотр — `956a0d3`, нормативный вход Analysis — `652bd734`; семантика Analyst — `ce25dd0`, plan/review — `082c6b9`, testability — `0f6aa82`, G3 — `e4f60fb` / merge `6fc62b9`, G4 — `ff8f951` / merge `1af6e45`. Проверенный runtime — `a8b45db`; чистовой перенос — `879a4ee` / merge `063c843`; итоговый Tester handoff — `ea4b0b9` / merge `0e34cd1`. Эта Manager-редакция подтверждает G5 и синхронизирует delivery status; Final Acceptance остаётся отдельным действием.
+**Версия исходных материалов:** первичный просмотр — `956a0d3`, нормативный вход Analysis — `652bd734`; семантика Analyst — `ce25dd0`, plan/review — `082c6b9`, testability — `0f6aa82`, G3 — `e4f60fb` / merge `6fc62b9`, G4 — `ff8f951` / merge `1af6e45`. Проверенный runtime — `a8b45db`; чистовой перенос — `879a4ee` / merge `063c843`; итоговый Tester handoff — `ea4b0b9` / merge `0e34cd1`; Manager G5 — `e34ac88` / PR #59 / merge `7a17e72`. Final Acceptance подтверждена владельцем 2026-10-09 на `7a17e72`.
 
 ### Потребность и подтверждённые рамки
 
@@ -95,11 +95,11 @@
 
 **Не входит:** публикация и UI конфигураций, силы, особых градусов, оценки стихий; новые endpoint, публичные DTO-блоки и расчёт в браузере; SVG-колесо M1-8, полный перенос прототипа M1-8.1, реализация чата M2 и deployment M1-12/13. Отдельная страница условий зарегистрирована как долг M1-9 `DEBT-UI-001` и закрывается до распространения ссылки другим людям и публичного трафика. Переименование `admin1_name` отложено (`DP-UI-03`).
 
-**Следующие результаты:** Manager выполняет отдельную Final Acceptance по подтверждённому G5 и готовит final PR `change/* → main` только по отдельному поручению. `DEBT-CALC-001` закрывается отдельным расчётным change, снимает skip и подтверждает исключённое свойство, но не является условием G5/Final Acceptance M1-7. Budget 4/5/5 и диапазоны ролей сохраняются как плановый baseline; DEBT-UI-001, DP-UI-03 и ограничения M1-6 действуют.
+**Следующие результаты:** создать final PR `change/ui-birth-form-and-facts → main` и после merge проверить Git evidence совместной интеграции реализации, тестов, чистовых требований и документов. Это операции публикации принятого change, а не дополнительные условия его статуса ACCEPTED. `DEBT-CALC-001` и `DEBT-UI-001` закрываются отдельными change по записанным условиям возврата.
 
-### Ожидаемый результат на приёмке — предварительный контур
+### Ожидаемый и принятый результат
 
-Это ожидания Manager, не замена `requirements.md`/`scenarios.md` Analyst и evidence Tester.
+Эти критерии Manager использованы при Final Acceptance; нормативный контракт остаётся в `requirements.md`/`scenarios.md`, фактическое evidence — в Tester artifacts.
 
 1. В работающем браузере по HTTPS первый вход создаёт/восстанавливает cookie через bootstrap и получает фактическое состояние через current. Пустая сессия показывает форму; демо-данные не показываются как результат расчёта.
 2. Поиск не отправляет GET при длине ввода меньше трёх символов; после порога и debounce показывает актуальные подсказки, одноимённые места различимы. Выбранный `place_id`, дата и `HH:MM` либо `birth_time:null` идут в build. Ошибки объясняются у поля, введённые значения сохраняются.
@@ -130,9 +130,9 @@ Tester включает fixtures/среду, автоматические UI che
 <a id="roadmap"></a>
 ## Change Plan: дорожная карта M1-7
 
-**Статус плана:** READY_FOR_ACCEPTANCE — G4 и независимое Testing завершены. Tester на runtime baseline `a8b45db` закрыл TEST-FIND-UI-004…013 и подтвердил 23/23 AS; Analyst clean transfer `879a4ee` независимо сверён на `063c843`, 10/10 REQ SUFFICIENT. Финальный handoff интегрирован в `0e34cd1`; Manager подтвердил G5. Final Acceptance ещё не выполнена. `DEBT-CALC-001` остаётся OPEN / NON-BLOCKING для M1-7.
+**Статус плана:** ACCEPTED — Analysis, Development, Testing, G3/G4/G5 и Final Acceptance завершены. Итоговый интеграционный baseline — `7a17e72`; владелец подтвердил Acceptance 2026-10-09. `DEBT-CALC-001` и `DEBT-UI-001` остаются OPEN / NON-BLOCKING с отдельными владельцами и условиями возврата. Создание final PR и merge в `main` фиксируются отдельно.
 
-Шкала Д1…Д14 — **относительный бюджет полного цикла M1-7**, а не фактический календарь. Analysis, Development и Testing завершены; G4/G5 подтверждены. Открытый расчётный долг не блокирует M1-7 и ведётся отдельно. Следующая контрольная точка — отдельная Final Acceptance Manager.
+Шкала Д1…Д14 — **относительный бюджет полного цикла M1-7**, а не фактический календарь. Analysis, Development, Testing и Final Acceptance завершены; change ACCEPTED. Открытые долги не блокируют M1-7 и ведутся отдельно. Следующая операция — final PR и последующая проверка merge в `main`.
 
 ```mermaid
 flowchart LR
@@ -141,11 +141,9 @@ flowchart LR
     D --> G4{"G4<br/>подтверждён"}
     G4 --> T["Testing · 5 дней<br/>23 AS PASS · 10 REQ SUFFICIENT"]
     T --> G5{"G5<br/>подтверждён"}
-    G5 --> F["Final Acceptance<br/>ожидается решение Manager"]
-    classDef gate fill:#fff4d6,stroke:#aa7c1d,color:#4b370b;
+    G5 --> F["Final Acceptance<br/>ACCEPTED"]
     classDef approved fill:#e0f2e6,stroke:#33704a,color:#183b25;
-    class A,G3,D,G4,T,G5 approved;
-    class F gate;
+    class A,G3,D,G4,T,G5,F approved;
 ```
 
 | Фаза | Плановая шкала / бюджет | Контрольный результат | Условие перехода |
@@ -153,9 +151,9 @@ flowchart LR
 | Analysis и alignment | Д1–Д4 / 4 дня | Analyst `ce25dd0`, Developer plan/review `082c6b9`, независимый Tester `0f6aa82`; G2/alignment выполнены | G3 подтверждён Manager по этому пакету; фактические затраты не приравниваются к бюджету |
 | Development | Д5–Д9 / 5 дней | DEV-UI-01…08, production UI, автоматические checks и handoff интегрированы PR #51 / `0c893f0` | Developer handoff принят; G4 подтверждён с согласованным неблокирующим исключением DEBT-CALC-001 |
 | Testing | Д10–Д14 / 5 дней | COMPLETE: TEST-FIND-UI-004…013 CLOSED; 23/23 AS PASS, 10/10 REQ SUFFICIENT; native foreground и clean transfer verified | Tester verdict READY_FOR_ACCEPTANCE; G5 подтверждён Manager на `0e34cd1` |
-| Final Acceptance | после G5; отдельный бюджет не задан | PENDING: проверить delivered scope, ограничения, role handoffs и разрешение final PR | Manager выполняет отдельную приёмку; `ACCEPTED` и merge в `main` ещё не объявлены |
+| Final Acceptance | после G5; отдельный бюджет не задан | COMPLETE: scope, ограничения, role handoffs и clean transfer проверены на `7a17e72`; владелец подтвердил Acceptance | ACCEPTED; final PR и merge в `main` — отдельное Git evidence |
 
-Фактический путь: `DEV-UI-01…08 → handoff ab072ec → merge 0c893f0 → G4 → TEST-FIND-UI-013 → DEV-UI-09/a576253 → retest PASS/a58df9c → merge a8b45db → full HTTPS/retest 44f9f5c → clean transfer 879a4ee → Tester completion ea4b0b9 → merge 0e34cd1 → G5`. `DEBT-CALC-001` закрывается отдельным расчётным change и не блокирует M1-7. Следующий шаг — Final Acceptance Manager.
+Фактический путь: `DEV-UI-01…08 → handoff ab072ec → merge 0c893f0 → G4 → TEST-FIND-UI-013 → DEV-UI-09/a576253 → retest PASS/a58df9c → merge a8b45db → full HTTPS/retest 44f9f5c → clean transfer 879a4ee → Tester completion ea4b0b9 → merge 0e34cd1 → G5/e34ac88 → PR #59/7a17e72 → Final Acceptance/ACCEPTED`. `DEBT-CALC-001` и `DEBT-UI-001` ведутся отдельно и не блокируют принятый M1-7.
 
 **Предел прогноза:** 14 дней — выбранный базовый бюджет. При Developer 8 и Testing 5 условный последовательный цикл с Analysis бюджетом 4 составит 17 рабочих дней; это риск/сценарий, не новый утверждённый бюджет. Ожидание review/PR, недоступность HTTPS-среды, новые зависимости и дополнительные исправления могут изменить календарь и требуют пересмотра.
 
@@ -220,8 +218,9 @@ flowchart LR
 | Tester: full HTTPS acceptance и retest 004…012 | `44f9f5c`, [PR #56](https://github.com/ksenia-baranova/exact-orb-demo/pull/56) | `538648d` | 22 AS PASS, AS-UI-16 PARTIAL; bugs 004…013 CLOSED; возврат по foreground и clean transfer |
 | Analyst: чистовая редакция и карта переноса | `879a4ee`, [PR #57](https://github.com/ksenia-baranova/exact-orb-demo/pull/57) | `063c843` | 10 REQ / 23 AS / 33 transfer IDs подготовлены без semantic delta |
 | Tester: завершение acceptance | `ea4b0b9`, [PR #58](https://github.com/ksenia-baranova/exact-orb-demo/pull/58) | `0e34cd1` | native foreground и clean transfer verified; 23 AS PASS, 10 REQ SUFFICIENT; READY_FOR_ACCEPTANCE |
+| Manager: G5 / READY_FOR_ACCEPTANCE | `e34ac88`, [PR #59](https://github.com/ksenia-baranova/exact-orb-demo/pull/59) | `7a17e72` | все условия G5 подтверждены; полный интеграционный baseline Final Acceptance |
 
-Manager-ветка fast-forward до текущего общего `0e34cd1`. Эта административная редакция фиксирует READY_FOR_ACCEPTANCE после финального Tester handoff и решения Manager по G5; она возвращается в `change/*` через отдельный Manager PR. Final Acceptance, разрешение final PR и merge в `main` остаются отдельными действиями.
+Manager-ветка fast-forward до общего `7a17e72`, содержащего PR #59. Final Acceptance подтверждена владельцем на этом интеграционном baseline; текущая административная редакция фиксирует терминальный статус ACCEPTED. Final PR и merge в `main` остаются отдельными Git-действиями.
 
 ### Диспозиция замечаний и завершение G2
 
@@ -234,7 +233,7 @@ Manager-ветка fast-forward до текущего общего `0e34cd1`. Э
 
 Исходный document review обеих ролей относится к `9ae1abc`. G3-пакет подтверждён и implementation/handoff интегрированы в `0c893f0`. UI findings TEST-FIND-UI-004…013 закрыты Tester; независимая acceptance завершена на `063c843`, итоговый handoff интегрирован в `0e34cd1`.
 
-[Дорожная карта](#roadmap), budgets 4/5/5 и estimates 5–8 / 3–5 сохраняются как плановые основания. G4/G5 подтверждены, change READY_FOR_ACCEPTANCE: TEST-FIND-UI-004…013 закрыты, clean transfer сверён. DEBT-CALC-001 закрывается отдельно и не блокирует M1-7.
+[Дорожная карта](#roadmap), budgets 4/5/5 и estimates 5–8 / 3–5 сохраняются как плановые основания. G4/G5 и Final Acceptance подтверждены, change ACCEPTED: TEST-FIND-UI-004…013 закрыты, clean transfer сверён. DEBT-CALC-001 и DEBT-UI-001 закрываются отдельно и не блокируют M1-7.
 
 <a id="decision-register"></a>
 ## Единый реестр решений
@@ -330,7 +329,7 @@ Implementation DEV-UI-01…08 и handoff интегрированы PR #51 / `0c
 5. Поддерживать подготовленный `docs/project_management/implementation_plans/ui_birth_form_and_facts_implementation_plan.md`: 6 work items, диапазоны, confidence, assumptions, зависимости, risks и critical path. Estimate 5–8 сохранён; новый budget 5 соответствует его нижней границе. Recovery и formatting учтены в DEV-UI-04/05; при новом риске вернуть переоценку Manager до расширения scope.
 6. Сверить `ce25dd0` с FIND-DEV-UI-001…003, указать собственную диспозицию и точный baseline; для work items записать coverage и проверки без дублей. DP-UI-09 не вводит endpoint статуса, идемпотентность или изменение server lifecycle. Реализация начинается после G3; проверки затем target → related → full pytest.
 
-**Результат Developer:** implementation `f7fb34b` и handoff `ab072ec` интегрированы в `0c893f0`; последующий DEV-UI-09 `a576253` интегрирован в `6f44404` и прошёл независимый retest. Developer artifact сохраняет авторский READY_FOR_TEST, общий change после завершения Tester handoff и G5 — READY_FOR_ACCEPTANCE. DEBT-CALC-001 остаётся отдельным OPEN / NON-BLOCKING долгом; estimates не переписываются.
+**Результат Developer:** implementation `f7fb34b` и handoff `ab072ec` интегрированы в `0c893f0`; последующий DEV-UI-09 `a576253` интегрирован в `6f44404` и прошёл независимый retest. Авторский handoff Developer был READY_FOR_TEST; terminal disposition реализации — IMPLEMENTED / ACCEPTED вместе с change на `7a17e72`. DEBT-CALC-001 остаётся отдельным OPEN / NON-BLOCKING долгом; estimates не переписываются.
 
 ### Задание Tester — implementation handoff доступен, бюджет 5 дней
 
@@ -343,7 +342,7 @@ TESTABLE и estimate 3–5 подтверждены @ `0f6aa82`. Tester закр
 5. Разделить оценку на автоматические, интеграционные, браузерные HTTPS/cookie и визуальные проверки 360/768/1440 px, подготовку среды и повторные прогоны. Для отрицательных утверждений дать позитивные контроли. FIND-TEST-HTTP-001 остаётся известным ограничением; обход и стандартный путь имеют отдельный статус.
 6. Поддерживать подтверждённый estimate 3–5 и его допущения; budget 5 дней соответствует верхней границе. Повторный testability review и диспозиции TEST-FIND-UI-001…003 получены @ `0f6aa82`; переоценивать при фактическом изменении setup/scope. После реализации обновить `tester.md` с exact tested commit, coverage matrix, severity/priority/Blocks, actual checks и limitations; сверить чистовые требования Analyst.
 
-**Текущий Tester handoff:** READY_FOR_ACCEPTANCE @ `ea4b0b9`, интегрирован PR #58 / `0e34cd1`. TEST-FIND-UI-004…013 CLOSED; 23/23 AS PASS, 10/10 REQ SUFFICIENT; native foreground и clean transfer verified. PARTIAL M1-6 и DEBT-CALC-001 не становятся PASS автоматически.
+**Терминальная диспозиция Tester artifact:** COMPLETE / ACCEPTED BY MANAGER. Авторский handoff Tester READY_FOR_ACCEPTANCE @ `ea4b0b9` интегрирован PR #58 / `0e34cd1`; TEST-FIND-UI-004…013 CLOSED, 23/23 AS PASS, 10/10 REQ SUFFICIENT, native foreground и clean transfer verified. PARTIAL M1-6 и DEBT-CALC-001 не становятся PASS автоматически.
 
 ### Условный Technical Reviewer
 
@@ -351,10 +350,19 @@ TESTABLE и estimate 3–5 подтверждены @ `0f6aa82`. Tester закр
 
 Reviewer подключается по фактической эскалации архитектурной границы, security, ownership, нового service или исключения из ADR по `roles.md`. На такой вопрос даёт подписанную рекомендацию; текущий checkbox/страница сами по себе нового архитектурного решения не требуют.
 
+<a id="final-acceptance"></a>
 ### Manager handoff и итоговая приёмка
 
-Manager подтвердил G4 на `0c893f0`; Tester завершил full HTTPS/browser/recovery acceptance на runtime baseline `a8b45db`, Analyst подготовил clean transfer `879a4ee`, Tester сверил его на `063c843`. Итоговый handoff `ea4b0b9` интегрирован в `0e34cd1`; Manager подтвердил G5 и перевёл change в READY_FOR_ACCEPTANCE. Final Acceptance выполняется отдельно.
+**Дата и решение:** 2026-10-09, Final Acceptance PASSED; change **ACCEPTED**. **Decision owner evidence:** сообщение владельца «Acceptance прошло» и поручение перевести все артефакты в терминальные статусы. **Проверенный интеграционный baseline:** `7a17e7245fbddde9a57e498d10a063e877045e7c`, PR #59 содержит Manager G5 package `e34ac88`.
 
-Эта Manager-редакция статусов готовится в Manager-ветке. Commit/push/PR выполняются только по отдельному поручению пользователя; текущий опубликованный baseline `change/*` — `0e34cd1`.
+| Условие Final Acceptance | Результат |
+|---|---|
+| Scope поставлен или исключения приняты | MET: форма, autocomplete, session/build/recovery и три таблицы текущего `ChartDTO` поставлены; колесо, активный чат и дополнительные расчётные группы остаются вне M1-7 |
+| Blocking findings отсутствуют | MET: TEST-FIND-UI-004…013 CLOSED; новых blocking findings нет |
+| Решения и риски имеют владельцев | MET: DP-UI-01…09 ACCEPTED; DEBT-CALC-001, DEBT-UI-001 и ограничения M1-6 сохраняют владельцев и условия возврата |
+| Role handoffs завершены | MET: Developer implementation/handoff, Analyst clean transfer и Tester READY_FOR_ACCEPTANCE интегрированы; G3/G4/G5 подтверждены |
+| Чистовые требования входят в поставку | MET: `docs/requirements/current/ui/` подготовлен Analyst и сверён Tester без semantic delta |
+| Change объясним по артефактам | MET: plan, решения, REQ/AS, implementation evidence, test matrix и ограничения связаны точными baselines |
+| Final PR разрешён | MET: владелец подтвердил Final Acceptance и терминальный статус; создание PR и merge выполняются отдельными Git-действиями |
 
-Final acceptance M1-7 проверяет форму и три таблицы, реальное API/browser evidence, ручной checkbox gate, закрытый режим и зарегистрированный долг страницы, clean requirements и карту переноса. Отдельная страница не является условием этой закрытой приёмки. При переходе к распространению ссылки/публичному доступу требуется закрытый DEBT-UI-001; прочие границы публичного запуска ADR-0034 сохраняются.
+**Итог Manager:** M1-7 принят в согласованном закрытом scope. Отдельная страница условий не была условием этой приёмки; до распространения ссылки и публичного трафика требуется закрыть DEBT-UI-001. DEBT-CALC-001 не закрыт и не считается доказанным из-за skip, но принят как NON-BLOCKING для M1-7. Статус ACCEPTED не доказывает состоявшийся merge в `main`; после final PR Manager отдельно проверяет, что реализация, тесты, чистовые требования и документы вошли вместе.

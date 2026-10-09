@@ -1,6 +1,6 @@
 # exact-orb — дорожная карта
 
-Статус документа: рабочий, версия 3.15 (2026-10-09).
+Статус документа: рабочий, версия 3.16 (2026-10-09).
 Объединяет milestone-план версии 3.0 с фактической историей выполненных работ
 и заменяет версии 2.x, планировавшие работу блоками A–J от расчётного фундамента.
 
@@ -56,12 +56,12 @@ alignment/G3 2026-10-07; это исторический вход реализа
 включена PR #50 / `6fc62b9`.
 Новый target не является estimate Developer или пересчётом календарного baseline.
 
-Ревизия 3.15 фиксирует завершение Testing и clean transfer: полный HTTPS/browser
-retest интегрирован PR #56, чистовая редакция Analyst — PR #57, финальный Tester
-handoff — PR #58 / `0e34cd1`. TEST-FIND-UI-004…013 CLOSED, 23/23 AS PASS,
-10/10 REQ SUFFICIENT; Manager подтвердил G5. Delivery status M1-7 —
-**READY_FOR_ACCEPTANCE**; Final Acceptance ещё не выполнена. `DEBT-CALC-001`
-остаётся OPEN / NON-BLOCKING для M1-7.
+Ревизия 3.16 фиксирует Final Acceptance M1-7: Manager G5 package `e34ac88`
+интегрирован PR #59 / `7a17e72`, владелец подтвердил «Acceptance прошло»
+2026-10-09. TEST-FIND-UI-004…013 CLOSED, 23/23 AS PASS, 10/10 REQ
+SUFFICIENT; delivery status M1-7 — **ACCEPTED**. `DEBT-CALC-001` и
+`DEBT-UI-001` остаются OPEN / NON-BLOCKING с отдельными условиями возврата.
+Final PR и merge в `main` фиксируются отдельно.
 
 ## 1. Вехи
 
@@ -306,7 +306,7 @@ JSON-сериализация не выполняются. Локальный DE
 | M1-5.1 | `chore/bootstrap-composition` | **Выполнено 21.09:** process-local `ApplicationRuntime` собирает реальные resolver/cache/engine, SQLite session persistence, `ContextService`, существующий `build_application_orchestrator`, фактическую `CalculationVersion`, owned executors и one-shot reaper. Сквозные cache miss → hit и cancelled-waiter shutdown приняты; `PlaceCatalog` внедряется извне | план 2; факт 21.09 |
 | M1-5.2 | `feat/session-stored-chart` | **Компонентная приёмка выполнена 27.09:** промты 01–08 реализованы; `StoredChart` атомарно сохраняется с состоянием в InMemory/SQLite, миграция v2 и lifecycle проверены, `session_view` восстанавливает карту после нового runtime с пустым кэшем. Полный локальный `pytest`: 2649 passed. Публичный HTTP bootstrap и cookie — M1-6; подробный [журнал](implementation_plans/session_stored_chart_implementation_plan.md#8-статус-журнал-свидетельств-и-передача-в-m1-6) | оценка открыта; факт 27.09 |
 | M1-6 | `feat/http-api-and-session-middleware` | **Реализовано и включено в `main` через PR #40; формальная приёмка не записана:** FastAPI/lifespan, анонимная cookie, bootstrap/current, Build API, поиск мест, admission, shutdown и reaper. Полный локальный `pytest` на каталожном commit `cd42c5d`: 2953 passed; [Tester](../testing/http-api-and-session-middleware/tester.md) выполнил M-01…M-14 через HTTPS с обходом `FIND-TEST-HTTP-001`, evidence `PARTIAL`. Открытые findings требуют решения | исходный план 2; факт и остаток не пересчитаны |
-| M1-7 | `feat/ui-birth-form-and-facts` | Реализация и G4 интегрированы PR #51/#52. Полный Tester retest и HTTPS acceptance — PR #56; clean transfer Analyst — PR #57; финальный Tester handoff — PR #58 / `0e34cd1`. TEST-FIND-UI-004…013 CLOSED, 23/23 AS PASS, 10/10 REQ SUFFICIENT; G5 подтверждён Manager. `DEBT-CALC-001` OPEN / NON-BLOCKING | бюджеты A4/D5/T5 = 14; estimates D5–8/T3–5; READY_FOR_ACCEPTANCE |
+| M1-7 | `feat/ui-birth-form-and-facts` | Реализация/G4 — PR #51/#52; полный Tester acceptance — PR #56/#58; clean transfer — PR #57; Manager G5 — PR #59 / `7a17e72`. Final Acceptance подтверждена владельцем 2026-10-09. TEST-FIND-UI-004…013 CLOSED, 23/23 AS PASS, 10/10 REQ SUFFICIENT. `DEBT-CALC-001` и `DEBT-UI-001` OPEN / NON-BLOCKING | бюджеты A4/D5/T5 = 14; estimates D5–8/T3–5; ACCEPTED |
 | M1-8 | `feat/ui-chart-wheel` | Chart Renderer: SVG-колесо — знаки, дома и углы, планеты и производные точки, линии аспектов по категориям. Отрисовочные решения фиксируются ADR: что делать при скучивании планет, как показывать ретроградность, какие аспекты рисовать | 5 |
 | M1-8.1 | `feat/ui-chart-wheel-imolementation` | Перенос [чернового web-прототипа](../ui_ux/web-prototype.html) и экранов Э1–Э7 в основной UI-код: собрать пользовательский поток из формы и фактов M1-7, SVG-колеса M1-8 и реальных ответов API. Демо-значения прототипа не становятся расчётными данными; чат Э8–Э9 остаётся в M2-7 | оценка открыта |
 | M1-9 | `feat/terms-of-use` | [DEBT-UI-001](change_plans/ui-birth-form-and-facts/artifacts.md#technical-debt): подготовка текста и отдельной страницы «Условия использования сервиса», доступной из формы, с содержанием ADR-0034 §2 и ссылкой на полный исходный код. Поставить и проверить до распространения ссылки другим людям и публичного трафика. Закрытый M1-7 работает после ручной отметки исходно снятого checkbox при ещё неготовых странице и её тексте по DP-UI-04/08; ADR не меняется. Developer отвечает за поставку, владелец за текст/закрытие, Tester за evidence | исходный план 1; долг до распространения ссылки |
@@ -337,7 +337,7 @@ M1-8.1 пока не входит в эти 26 дней и 17 дней оста�
 **5–8 дней** и Tester **3–5 дней** сохранены. Для последовательного сценария
 Analysis budget 4 + Developer 8 + Testing budget 5 верхняя длительность составит
 17 дней до календарного ожидания; дополнительные 3 дня не являются утверждённым бюджетом.
-Повторная сверка Tester и G3/G4/G5 подтверждены; текущий baseline `0e34cd1`, change READY_FOR_ACCEPTANCE. Полная acceptance Tester и clean transfer завершены; Final Acceptance Manager ещё впереди. DEBT-CALC-001 остаётся отдельным OPEN / NON-BLOCKING долгом расчётного слоя.
+Повторная сверка Tester и G3/G4/G5 подтверждены; Final Acceptance выполнена на baseline `7a17e72`, change ACCEPTED. DEBT-CALC-001 и DEBT-UI-001 остаются отдельными OPEN / NON-BLOCKING долгами; final PR и merge в `main` фиксируются отдельно.
 Суммы 26 и 17 дней выше и горизонты §6 сохраняются как прежний baseline,
 а не как текущий обещанный остаток. Их нельзя механически пересчитать по
 новому бюджету: G3 M1-7 подтверждён, но для общего M1 нужны
@@ -470,7 +470,7 @@ M2-8 обязателен и обязателен до начала этой р�
 | Известная часть M3 | M3 | 36, предварительно |
 | Весь оценённый остаток | M1 остаток + M2 + содержание + M3 | 80–90 |
 
-Таблица — исторический оценочный baseline; новый бюджет M1-7 4/5/5 не является новым прогнозом этих горизонтов. M1-7 READY_FOR_ACCEPTANCE на `0e34cd1`: Tester acceptance завершена, G5 подтверждён, Final Acceptance впереди; DEBT-CALC-001 остаётся OPEN / NON-BLOCKING. При пересмотре общего остатка учитываются staging M1-9 и M1-8.1.
+Таблица — исторический оценочный baseline; новый бюджет M1-7 4/5/5 не является новым прогнозом этих горизонтов. M1-7 ACCEPTED на `7a17e72`; final PR и merge в `main` ещё требуют отдельного Git evidence. DEBT-CALC-001 и DEBT-UI-001 остаются OPEN / NON-BLOCKING. При пересмотре общего остатка учитываются staging M1-9 и M1-8.1.
 
 ---
 
