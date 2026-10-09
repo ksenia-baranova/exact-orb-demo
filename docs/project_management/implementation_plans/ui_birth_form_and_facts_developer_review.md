@@ -3,7 +3,7 @@
 **Роль и дата:** Developer, 2026-10-06.
 **Ветка:** `dev/ui-birth-form-and-facts-review`.
 **Статус первого review @ `b36b63d`:** DOCUMENT REVIEW COMPLETE / OPEN FINDINGS; исходное заключение и findings ниже сохраняются как история.
-**Текущий статус Developer (2026-10-08):** **READY_FOR_TEST** — implementation `f7fb34b`, handoff `ab072ec` и Developer checks интегрированы PR #51 / `0c893f0`. Один согласованный skip помечен DEBT-CALC-001; долг OPEN, независимая browser acceptance ожидается. Подготовительная сверка REVALIDATED / FEASIBLE @ `082c6b9`, review baseline `033217d`, и исходные findings ниже сохранены как история. **Manager disposition:** общий change READY_FOR_TEST, G4 подтверждён; DEBT-CALC-001 остаётся OPEN / NON-BLOCKING для M1-7, независимый UI test scope доступен, G5 NOT RUN.
+**Текущий статус Developer (2026-10-08):** **READY_FOR_TEST** — базовые implementation/handoff интегрированы PR #51 / `0c893f0`; DEV-UI-09 `a576253` интегрирован PR #54 / `6f44404` и прошёл независимый Tester retest. Подготовительная сверка REVALIDATED / FEASIBLE @ `082c6b9`, review baseline `033217d`, и исходные findings ниже сохраняются как история. **Manager disposition 2026-10-09:** общий change READY_FOR_ACCEPTANCE на `0e34cd1`; Tester закрыл TEST-FIND-UI-004…013, подтвердил 23/23 AS и 10/10 REQ, clean transfer verified, G5 подтверждён. Final Acceptance PENDING. DEBT-CALC-001 OPEN / NON-BLOCKING для M1-7.
 **Технический вывод:** три группы реализуемы на существующем API; контракт действий/recovery повторно сверён Developer и независимым Tester `0f6aa82`, blocking semantic gaps отсутствуют. Ниже сохранены историческое первое review и последующая авторская валидация.
 
 ## Проверенный baseline
