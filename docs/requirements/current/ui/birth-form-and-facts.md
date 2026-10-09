@@ -1,9 +1,9 @@
 # Форма рождения и факты карты
 
 **Область:** M1-7, change `ui-birth-form-and-facts`; 10 требований к браузерной форме и трём группам фактов текущего `ChartDTO`. **Сценарии:** [scenarios.md](scenarios.md), AS-UI-01…23.
-**Источник принятой редакции:** Analyst `ce25dd0` на исходном change baseline `652bd73405db0a0611e98e81af6f3f668dd429f6`; реализация интегрирована в `0c893f0` и проверена Tester на `a8b45db`. Чистовой текст подготовлен от HEAD `change/ui-birth-form-and-facts` `538648d` без изменения наблюдаемой семантики. [Карта переноса и handoff](../../changes/ui-birth-form-and-facts/analysis.md#карта-переноса-и-handoff).
+**Источник принятой редакции:** Analyst `ce25dd0`; реализация интегрирована в `0c893f0` и проверена Tester на `a8b45db`. Чистовой текст подготовлен в `879a4ee`, интегрирован в `063c843` и независимо сверён Tester без semantic delta; Manager G5 package интегрирован PR #59 / `7a17e72`. [Карта переноса и handoff](../../changes/ui-birth-form-and-facts/analysis.md#карта-переноса-и-handoff).
 **Источники связанных контрактов:** [HTTP API](../../http_api.md) §§4–9, 13; component requirements каталога мест, построения и сессии; stored-chart session behavior; ADR-0008, 0029–0034, 0039–0041. [Единый реестр решений](../../../project_management/change_plans/ui-birth-form-and-facts/artifacts.md#decision-register) содержит принятые DP-UI-01…09 и открытые долги. `ChartDTO` наследуется без дельты M1-7.
-**Состояние проверки:** Tester подтвердил 22 сценария; AS-UI-16 частичен из-за невыполненного настоящего foreground-перехода. Чистовая редакция и карта переноса ожидают независимой сверки Tester перед G5; этот текст сам по себе не означает финальную приёмку. [Отчёт Tester](../../../testing/ui-birth-form-and-facts/acceptance-a8b45db.md).
+**Состояние проверки:** ACCEPTED — Tester подтвердил 23/23 AS PASS и 10/10 REQ SUFFICIENT, включая native foreground AS-UI-16; clean transfer verified. G5 и Final Acceptance подтверждены, change ACCEPTED на `7a17e72`. [Отчёт Tester](../../../testing/ui-birth-form-and-facts/acceptance-a8b45db.md).
 
 ## Границы и нормативное наследование
 

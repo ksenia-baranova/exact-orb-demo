@@ -22,8 +22,8 @@
 Результат: 16 точек, 12 домов, 5 углов и 46 аспектов. Tester завершил
 browser/error/recovery acceptance и retest TEST-FIND-UI-004…013 на runtime baseline
 `a8b45db`: 23/23 AS PASS, 10/10 REQ SUFFICIENT. Native foreground и clean transfer
-подтверждены на `063c843`; итоговый handoff интегрирован в `0e34cd1`. G5 подтверждён,
-change READY_FOR_ACCEPTANCE; Final Acceptance ещё не выполнена. `DEBT-CALC-001`
+подтверждены на `063c843`; Manager G5 package интегрирован PR #59 / `7a17e72`.
+Final Acceptance подтверждена, M1-7 ACCEPTED. `DEBT-CALC-001` и `DEBT-UI-001`
 остаётся OPEN / NON-BLOCKING для M1-7: skip не доказывает исключённое свойство. Точная рабочая версия,
 команды и границы проверки — в [журнале исправления прокси](../project_management/implementation_plans/ui_birth_form_and_facts_implementation_plan.md#local-proxy-fix)
 и [исходном handoff DEV-UI-06](../project_management/implementation_plans/ui_birth_form_and_facts_implementation_plan.md#18-журнал-исполнения-dev-ui-06-и-handoff).

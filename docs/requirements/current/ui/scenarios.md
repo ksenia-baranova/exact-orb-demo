@@ -1,7 +1,7 @@
 # Сценарии приёмки формы рождения и фактов карты
 
 **Область:** M1-7, change `ui-birth-form-and-facts`; AS-UI-01…23 проверяют [REQ-UI-01…10](birth-form-and-facts.md) и действующий [HTTP-контракт](../../http_api.md). Семантика принята в Analyst `ce25dd0` и перенесена из [change-сценариев](../../changes/ui-birth-form-and-facts/scenarios.md) без изменения expected behavior.
-**Состояние проверки:** на реализации `a8b45db` Tester дал PASS для 22 сценариев; AS-UI-16 частичен из-за невыполненного настоящего foreground-перехода. Чистовые требования и сценарии ещё требуют отдельной сверки Tester перед G5. [Отчёт Tester](../../../testing/ui-birth-form-and-facts/acceptance-a8b45db.md); [карта переноса](../../changes/ui-birth-form-and-facts/analysis.md#карта-переноса-и-handoff).
+**Состояние проверки:** ACCEPTED — на реализации `a8b45db` Tester подтвердил 23/23 AS PASS, включая native foreground AS-UI-16; чистовая редакция независимо сверена без semantic delta. G5 и Final Acceptance подтверждены, change ACCEPTED на `7a17e72`. [Отчёт Tester](../../../testing/ui-birth-form-and-facts/acceptance-a8b45db.md); [карта переноса](../../changes/ui-birth-form-and-facts/analysis.md#карта-переноса-и-handoff).
 
 Все проверки API используют HTTPS, одну настоящую cookie jar и ответы без кэша. Числа проверяются по сохранённому артефакту/контрактным fixtures, а не по PNG. Для controllable отказов и конкурентности Tester использует fake clock/barrier/Event на соответствующем шве; `sleep` не является доказательством порядка. В каждом ответе проверяются `X-Request-ID` и `Cache-Control: no-store`; для 429/503/504 — соответствующий `Retry-After` по `http_api.md` §4.4.
 
@@ -251,4 +251,4 @@
 
 ## Условия решения и границы проверки
 
-AS-UI-01–23 используют действующий HTTP-контракт и checkbox gate ADR-0034. AS-UI-21 проверяет принятый порядок закрытого стенда; долг текста и страницы контролируется отдельно до распространения ссылки. Ревизия ADR не требуется. `DP-UI-01…09` приняты в реестре; критерий ручного повтора B зарегистрирован @ `64934fc`. По [последнему evidence Tester](../../../testing/ui-birth-form-and-facts/acceptance-a8b45db.md) 22 AS получили PASS на проверенных уровнях; AS-UI-16 остаётся PARTIAL до настоящего foreground-контроля. Чистовой перенос этих сценариев требует отдельной сверки Tester до G5.
+AS-UI-01–23 используют действующий HTTP-контракт и checkbox gate ADR-0034. AS-UI-21 проверяет принятый порядок закрытого стенда; долг текста и страницы контролируется отдельно до распространения ссылки. Ревизия ADR не требуется. `DP-UI-01…09` приняты в реестре; критерий ручного повтора B зарегистрирован @ `64934fc`. По [последнему evidence Tester](../../../testing/ui-birth-form-and-facts/acceptance-a8b45db.md) все 23 AS получили PASS на проверенных уровнях, включая native foreground AS-UI-16. Чистовой перенос независимо сверён; G5 и Final Acceptance подтверждены, сценарии приняты.

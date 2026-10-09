@@ -3,7 +3,7 @@
 **Роль и дата:** Developer, 2026-10-06.
 **Ветка:** `dev/ui-birth-form-and-facts-review`.
 **Статус первого review @ `b36b63d`:** DOCUMENT REVIEW COMPLETE / OPEN FINDINGS; исходное заключение и findings ниже сохраняются как история.
-**Текущий статус Developer (2026-10-08):** **READY_FOR_TEST** — базовые implementation/handoff интегрированы PR #51 / `0c893f0`; DEV-UI-09 `a576253` интегрирован PR #54 / `6f44404` и прошёл независимый Tester retest. Подготовительная сверка REVALIDATED / FEASIBLE @ `082c6b9`, review baseline `033217d`, и исходные findings ниже сохраняются как история. **Manager disposition 2026-10-09:** общий change READY_FOR_ACCEPTANCE на `0e34cd1`; Tester закрыл TEST-FIND-UI-004…013, подтвердил 23/23 AS и 10/10 REQ, clean transfer verified, G5 подтверждён. Final Acceptance PENDING. DEBT-CALC-001 OPEN / NON-BLOCKING для M1-7.
+**Терминальный статус артефакта (2026-10-09):** **COMPLETED / ACCEPTED** — авторский Developer handoff READY_FOR_TEST интегрирован PR #51, DEV-UI-09 прошёл независимый retest; Tester закрыл TEST-FIND-UI-004…013 и подтвердил 23/23 AS, 10/10 REQ. Final Acceptance владельца подтверждена на `7a17e72`; реализация принята. Исторические Developer verdict, review baselines и findings ниже сохраняются. DEBT-CALC-001 OPEN / NON-BLOCKING для M1-7.
 **Технический вывод:** три группы реализуемы на существующем API; контракт действий/recovery повторно сверён Developer и независимым Tester `0f6aa82`, blocking semantic gaps отсутствуют. Ниже сохранены историческое первое review и последующая авторская валидация.
 
 ## Проверенный baseline
