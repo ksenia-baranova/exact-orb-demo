@@ -2,6 +2,7 @@
 
 **Change:** `ui-birth-form-and-facts`. **Дата начала реестра:** 2026-10-07.
 **Текущая диспозиция Tester — 2026-10-09:** TEST-FIND-UI-004…013 **CLOSED** после независимого retest @ `a8b45db`; closure evidence [сохранено ниже](#tester-full-retest-a8b45db). Общий verdict **READY_FOR_ACCEPTANCE**: native foreground AS-UI-16 и clean transfer review завершены на `063c8439de3392c888383913fabffa336bd0c44e`, все23AS PASS и10REQ SUFFICIENT. [Актуальная матрица и handoff](acceptance-a8b45db.md#tester-completion-063c843). Прежний REVORK 2026-10-08 относится к двум устранённым environment/documentation gaps, не к этим закрытым bugs; runtime test runs сохраняют исходный baseline.
+**Диспозиция Manager — 2026-10-09:** G5 CONFIRMED, change READY_FOR_ACCEPTANCE на `0e34cd1`; Final Acceptance PENDING. Приоритеты findings подтверждены: P3 для 004/008/010/012, P2 для 005/006/007/009/011/013.
 **Источник наблюдений:** ручные проверки пользователя на локальном стенде, ревью другой модели, переданное владельцем 2026-10-07, и независимое ревью Tester 2026-10-08. Источник и предел подтверждения указаны в каждой записи.
 **Developer handoff — 2026-10-08:** исправления TEST-FIND-UI-004…012 интегрированы в Developer package PR #51 / `0c893f0`; на момент передачи все записи имели FIXED PENDING RETEST, independent results NOT RUN. Manager подтвердил G4 и READY_FOR_TEST; DEBT-CALC-001 остаётся OPEN / NON-BLOCKING для M1-7.
 **Первичная находка Tester — 2026-10-08:** на `1af6e45` независимо воспроизведён TEST-FIND-UI-013, статус на момент регистрации OPEN. Существующий UI-набор дал 180 passed; дополнительная проверка границы округления — 3 passed / 1 failed. Исходное evidence сохранено ниже.
@@ -9,20 +10,20 @@
 **Независимый retest Tester — 2026-10-08:** исправление `a576253` проверено на общем `6f44404`, TEST-FIND-UI-013 **CLOSED**. Исходная команда — 4 passed; facts — 32 passed; UI — 188 passed; HTTP/границы модулей — 346 passed; полный pytest — 2959 passed / 1 skipped (прежний DEBT-CALC-001). [Отчёт и матрица Tester](tester.md#tester-orb-fix-retest). Остальные findings и общий acceptance status этим retest не закрываются.
 **Регистрация:** Developer — TEST-FIND-UI-004…012; Tester — TEST-FIND-UI-013, по прямому поручению пользователя.
 
-Реестр использует общую нумерацию `TEST-FIND-UI-*`: номера 001–003 относятся к ранее выполненному ревью документов в [Tester-артефакте](tester.md). Здесь фиксируются наблюдения реализации. Запись об исправлении Developer не означает успешный ручной retest или независимую Tester acceptance. Severity 004…013 назначена Tester после независимой проверки; исторические оценки Developer сохранены в описании происхождения. Priority остаётся PROPOSED и подтверждается Change Manager по [шаблону дефекта](../../development_approach/artifacts/tester.md#3-дефект-или-замечание-тестирования-defect-or-test-finding).
+Реестр использует общую нумерацию `TEST-FIND-UI-*`: номера 001–003 относятся к ранее выполненному ревью документов в [Tester-артефакте](tester.md). Здесь фиксируются наблюдения реализации. Запись об исправлении Developer не означает успешный ручной retest или независимую Tester acceptance. Severity 004…013 назначена Tester после независимой проверки; исторические оценки Developer сохранены в описании происхождения. Текущие Priority подтверждены Change Manager 2026-10-09 в сводной таблице; пометки PROPOSED внутри описаний ниже сохраняют историческую оценку на момент регистрации по [шаблону дефекта](../../development_approach/artifacts/tester.md#3-дефект-или-замечание-тестирования-defect-or-test-finding).
 
 | ID | Дефект | Severity | Priority | Состояние исправления | Ручной retest |
 |---|---|---|---|---|---|
-| [TEST-FIND-UI-004](#test-find-ui-004) | Ввод `0045` не отображается как `00:45` | S3, Tester | P3, PROPOSED | CLOSED; DEV-UI-03 | PASS @ a8b45db: typing/paste/edit/toggle/API |
-| [TEST-FIND-UI-005](#test-find-ui-005) | Допустимый `admin1_name:null` ломает всю выдачу мест | S2, Tester | P2, PROPOSED | CLOSED; DEV-UI-07 | PASS: real Hong Kong null region/select/build |
-| [TEST-FIND-UI-006](#test-find-ui-006) | После неподтверждённого 5xx разрешён POST без сверки | S2, Tester | P2, PROPOSED | CLOSED; DEV-UI-08 | PASS: raw502/504, typed500, failed check/recovery/manual |
-| [TEST-FIND-UI-007](#test-find-ui-007) | Устаревшая карта получает recovery-статус `matched` | S3, Tester | P2, PROPOSED | CLOSED; DEV-UI-08 | PASS: actual stale + fresh same-identity positive |
-| [TEST-FIND-UI-008](#test-find-ui-008) | Нет объяснения повторного действия после восстановления сессии | S3, Tester | P3, PROPOSED | CLOSED; DEV-UI-08 | PASS: cookie expiry, visible message/manual positive |
-| [TEST-FIND-UI-009](#test-find-ui-009) | Ресурсы с постоянными URL не имеют явной политики кэша | S2, Tester | P2, PROPOSED | CLOSED; DEV-UI-07 | PASS: no-cache200/304/wheel/browser reload |
-| [TEST-FIND-UI-010](#test-find-ui-010) | После committed POST отсутствует сводка данных построенной карты | S3, Tester | P3, PROPOSED | CLOSED; DEV-UI-08 | PASS: known/unknown summary, pending draft edit |
-| [TEST-FIND-UI-011](#test-find-ui-011) | Повреждённый успешный ответ вызывает исключение без сообщения UI | S2, Tester | P2, PROPOSED | CLOSED; DEV-UI-07 | PASS: malformed POST/current + valid safe read |
-| [TEST-FIND-UI-012](#test-find-ui-012) | Фокус стирает подпись восстановленного места | S3, Tester | P3, PROPOSED | CLOSED; DEV-UI-08 | PASS: actual reload/focus/blur/edit/reselect |
-| [TEST-FIND-UI-013](#test-find-ui-013) | Орбис на половине минуты округляется вниз | S3, Tester | P2, PROPOSED | CLOSED; DEV-UI-09 | Mounted PASS @6f44404; live DTO boundaries PASS @a8b45db |
+| [TEST-FIND-UI-004](#test-find-ui-004) | Ввод `0045` не отображается как `00:45` | S3, Tester | P3, CONFIRMED Manager 2026-10-09 | CLOSED; DEV-UI-03 | PASS @ a8b45db: typing/paste/edit/toggle/API |
+| [TEST-FIND-UI-005](#test-find-ui-005) | Допустимый `admin1_name:null` ломает всю выдачу мест | S2, Tester | P2, CONFIRMED Manager 2026-10-09 | CLOSED; DEV-UI-07 | PASS: real Hong Kong null region/select/build |
+| [TEST-FIND-UI-006](#test-find-ui-006) | После неподтверждённого 5xx разрешён POST без сверки | S2, Tester | P2, CONFIRMED Manager 2026-10-09 | CLOSED; DEV-UI-08 | PASS: raw502/504, typed500, failed check/recovery/manual |
+| [TEST-FIND-UI-007](#test-find-ui-007) | Устаревшая карта получает recovery-статус `matched` | S3, Tester | P2, CONFIRMED Manager 2026-10-09 | CLOSED; DEV-UI-08 | PASS: actual stale + fresh same-identity positive |
+| [TEST-FIND-UI-008](#test-find-ui-008) | Нет объяснения повторного действия после восстановления сессии | S3, Tester | P3, CONFIRMED Manager 2026-10-09 | CLOSED; DEV-UI-08 | PASS: cookie expiry, visible message/manual positive |
+| [TEST-FIND-UI-009](#test-find-ui-009) | Ресурсы с постоянными URL не имеют явной политики кэша | S2, Tester | P2, CONFIRMED Manager 2026-10-09 | CLOSED; DEV-UI-07 | PASS: no-cache200/304/wheel/browser reload |
+| [TEST-FIND-UI-010](#test-find-ui-010) | После committed POST отсутствует сводка данных построенной карты | S3, Tester | P3, CONFIRMED Manager 2026-10-09 | CLOSED; DEV-UI-08 | PASS: known/unknown summary, pending draft edit |
+| [TEST-FIND-UI-011](#test-find-ui-011) | Повреждённый успешный ответ вызывает исключение без сообщения UI | S2, Tester | P2, CONFIRMED Manager 2026-10-09 | CLOSED; DEV-UI-07 | PASS: malformed POST/current + valid safe read |
+| [TEST-FIND-UI-012](#test-find-ui-012) | Фокус стирает подпись восстановленного места | S3, Tester | P3, CONFIRMED Manager 2026-10-09 | CLOSED; DEV-UI-08 | PASS: actual reload/focus/blur/edit/reselect |
+| [TEST-FIND-UI-013](#test-find-ui-013) | Орбис на половине минуты округляется вниз | S3, Tester | P2, CONFIRMED Manager 2026-10-09 | CLOSED; DEV-UI-09 | Mounted PASS @6f44404; live DTO boundaries PASS @a8b45db |
 
 <a id="test-find-ui-004"></a>
 ## TEST-FIND-UI-004. Поле времени не поддерживает формат при вводе цифр
@@ -35,8 +36,8 @@
 **Связанные сценарии:** [AS-UI-05](../../requirements/changes/ui-birth-form-and-facts/scenarios.md#as-ui-05-пустое-или-противоречивое-время), [AS-UI-19](../../requirements/changes/ui-birth-form-and-facts/scenarios.md#as-ui-19-доступность-и-узкий-экран).
 **Baseline:** `ef75d77232e1f629540827bfd90e93c1c16977ea`, ветка `dev/ui-birth-form-and-facts-review`; наблюдение относится к локальной реализации DEV-UI-03 поверх этого HEAD. Исправление включено в единый коммит пакета DEV-UI-03 с этим baseline в качестве родителя, добавляющий настоящий реестр и regression checks. Для ручного retest нужно зафиксировать фактически проверяемый хеш из Git.
 **Окружение наблюдения:** локальный HTTPS стенд `https://exact-orb.localhost/`, Windows. Версия браузера и размер экрана не зафиксированы.
-**Severity:** **S3, PROPOSED Developer** — ограниченное нарушение удобства ввода; обходной путь — вручную поставить двоеточие. Нет подтверждённого искажения числового результата или сохранённых данных. Окончательная оценка Tester ожидается.
-**Priority:** **P3, PROPOSED** — локальное исправление поведения поля; исправление уже подготовлено по сообщению пользователя. Подтверждение Change Manager ещё не получено.
+**Severity:** **S3, назначена Tester** — ограниченное нарушение удобства ввода; обходной путь — вручную поставить двоеточие. Нет подтверждённого искажения числового результата или сохранённых данных. Историческая оценка Developer заменена независимой классификацией Tester.
+**Priority:** **P3, CONFIRMED Manager 2026-10-09** — локальное исправление поведения поля; дефект закрыт независимым retest.
 **Blocks:** закрытие этого дефекта требует ручного retest; влияние на общий gate приёмки оценивает Tester. Проверки остальных сценариев можно продолжать.
 **Статус:** **CLOSED** — independent browser retest @ `a8b45db`; [actual/expected и controls](#tester-full-retest-a8b45db). Исходное описание и Developer handoff ниже сохранены как история.
 
@@ -186,9 +187,9 @@
 **Проверенный commit:** `1af6e45f9f9f1507149b74e786037d17cf0c73b8`, ветка `test/ui-birth-form-and-facts-review`; production UI из `f7fb34b` интегрирован через PR #51. Во время воспроизведения tracked-дерево чистое.
 **Окружение:** Windows, PowerShell, Node.js v24.19.0; настоящий `mountBirthForm` / form / session / transport / renderer, существующие HTTP golden fixtures. Заменены только листовые сеть, таймер и DOM-порт; браузер и layout этим сценарием не проверяются.
 **Severity:** **S3, назначена Tester** — в таблице показано неверное значение орбиса с отклонением на одну угловую минуту. Расчёт, исходный DTO и category не изменяются; основной build доступен.
-**Priority:** **P2, PROPOSED** — исправить нарушение обязательного правила форматирования до приёмки M1-7.
-**Подтверждение приоритета:** ожидается от Change Manager.
-**Blocks:** блокер этого дефекта снят успешным retest; общая готовность M1-7 к G5 требует отдельной полноты acceptance evidence.
+**Priority:** **P2, CONFIRMED Manager 2026-10-09** — приоритет подтверждён; дефект закрыт до приёмки M1-7.
+**Подтверждение приоритета:** Change Manager, 2026-10-09.
+**Blocks:** блокер этого дефекта снят успешным retest; G5 подтверждён Manager 2026-10-09.
 **Статус:** **CLOSED**.
 **Обоснование статуса:** Tester независимо проверил исправление `a576253` на `6f44404`: исходная команда теперь даёт 4 passed, настоящий mounted UI показывает `1°02′`; ближайшие значения по обе стороны половины, перенос минуты, неизменность DTO/category и отсутствие дополнительных запросов подтверждены. Facts 32 passed, UI 188 passed, связанные HTTP/архитектурные проверки 346 passed; полный pytest 2959 passed / 1 skipped с прежним DEBT-CALC-001. Условия закрытия выполнены; live-browser DTO/layout этим retest не проверялись.
 **Связанное решение:** нет; ожидаемое поведение уже определено утверждённым требованием, новый выбор семантики не требуется.
@@ -301,4 +302,4 @@ Ignored logs/fingerprint — `logs/ui-dev-09/`; точный состав и han
 
 **Verdict этого исторического раунда 2026-10-08:** **REVORK**. AS-UI-16 native foreground тогда был NOT RUN, clean transfer/current сверка — G5 BLOCKED. Эти пробелы не переоткрывали исправленные bugs.
 
-**Завершение 2026-10-09 @063c843:** оба возврата устранены. Человек выполнил native tab switching в YaBrowser26.8/Chromium150; Tester сверил screenshots, actual POST/current DTOs и server events: A показывает B2005-10-02, draftA1985-10-20 сохранён, новых POST нет. Clean requirements Analyst879a4ee сохраняют10REQ/23AS/33IDs и approved behavior. Новый verdict Tester **READY_FOR_ACCEPTANCE**, [полный Reviewer package](acceptance-a8b45db.md#tester-completion-063c843). Прежние closed bug dispositions/priority proposals и принятые долги не изменены; G5/final acceptance утверждает Manager.
+**Завершение 2026-10-09 @063c843:** оба возврата устранены. Человек выполнил native tab switching в YaBrowser26.8/Chromium150; Tester сверил screenshots, actual POST/current DTOs и server events: A показывает B2005-10-02, draftA1985-10-20 сохранён, новых POST нет. Clean requirements Analyst879a4ee сохраняют10REQ/23AS/33IDs и approved behavior. Новый verdict Tester **READY_FOR_ACCEPTANCE**, [полный Reviewer package](acceptance-a8b45db.md#tester-completion-063c843). Прежние closed bug dispositions и принятые долги не изменены; Manager подтвердил предложенные приоритеты и G5, Final Acceptance остаётся отдельным действием.

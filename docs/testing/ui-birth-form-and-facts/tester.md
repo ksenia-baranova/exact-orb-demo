@@ -3,6 +3,7 @@
 **Последняя независимая проверка:** 2026-10-09, завершение Tester acceptance на `063c8439de3392c888383913fabffa336bd0c44e`; автоматическая регрессия и остальные browser checks выполнены 2026-10-08 на `a8b45dbbda5378e598eb75b15f81e1445a75020e`.
 **Итоговый verdict:** **READY_FOR_ACCEPTANCE** — рекомендация Tester для закрытого M1-7. TEST-FIND-UI-004…013 CLOSED; все 23 AS — PASS на зафиксированных уровнях, все 10 REQ — SUFFICIENT.
 **Обоснование:** живой foreground AS-UI-16 выполнен пользователем в Яндекс.Браузере и подтверждён Tester по двум скриншотам, полным DTO и server/wire events: карта B показана в A, черновик A сохранён, скрытого POST нет. Чистовая редакция Analyst `879a4ee` сверена: 10 REQ /23 AS и 33 transfer IDs без semantic delta; 167 links/62 anchors/7 diagrams PASS. Production code/tests совпадают с проверенным `a8b45db`, старые test runs не приписываются новому commit. [Актуальная матрица, baselines, команды, ограничения и handoff](acceptance-a8b45db.md#tester-completion-063c843); [новый JSON evidence](acceptance-063c843.json). Manager решает G5 и final acceptance; ACCEPTED/merge/publication этим verdict не объявлены. Исторические раунды ниже сохраняются.
+**Административная диспозиция Manager — 2026-10-09:** G5 CONFIRMED; общий change READY_FOR_ACCEPTANCE на `0e34cd1`. Final Acceptance, разрешение final PR и merge в `main` ещё не выполнены.
 
 ## Историческое ревью документов @ `082c6b9`
 
