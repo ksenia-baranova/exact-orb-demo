@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Карта рождения — Exact Orb</title>
+    <link rel="stylesheet" href="/ui/styles.css">
+    <script type="module" src="/ui/main.mjs"></script>
+  </head>
+  <body>
+    <header class="top">
+      <div class="container brand">Exact Orb</div>
+    </header>
+    <main class="container">
+      <h1>Карта рождения</h1>
+      <p class="intro">Введите дату и место рождения. Если точное время неизвестно, отметьте это отдельно.</p>
+      <form id="birth-form" class="birth-form" novalidate autocomplete="off">
+        <div class="field">
+          <label for="birth-date">Дата рождения <span class="required-mark" aria-hidden="true">*</span></label>
+          <input id="birth-date" type="date" required aria-describedby="date-error">
+          <p id="date-error" class="error" hidden></p>
+        </div>
+        <div class="field">
+          <label for="birth-place">Место рождения <span class="required-mark" aria-hidden="true">*</span></label>
+          <div class="place-input-wrap">
+            <input id="birth-place" type="text" role="combobox" aria-autocomplete="list"
+              aria-expanded="false" aria-controls="place-list" aria-describedby="place-hint place-status place-error"
+              placeholder="Начните вводить город" maxlength="512" autocomplete="off" spellcheck="false" required>
+            <ul id="place-list" class="place-options" role="listbox" aria-label="Варианты места рождения" hidden></ul>
+          </div>
+          <p id="place-hint" class="hint">Введите не меньше трёх символов и выберите вариант из списка.</p>
+          <p id="place-status" class="hint" role="status" aria-live="polite" aria-atomic="true"></p>
+          <button id="place-retry" class="secondary-button" type="button" hidden>Повторить поиск</button>
+          <p id="place-error" class="error" hidden></p>
+        </div>
+        <div class="field">
+          <label for="birth-time">Время рождения</label>
+          <input id="birth-time" type="text" inputmode="numeric" placeholder="ЧЧ:ММ" maxlength="5"
+            aria-describedby="time-hint time-error" required>
+          <p id="time-hint" class="hint">Укажите местное время с точностью до минуты.</p>
+          <p id="time-error" class="error" hidden></p>
+          <label class="check" for="time-unknown">
+            <input id="time-unknown" type="checkbox" autocomplete="off">
+            <span>Точное время неизвестно<small>Карта будет без асцендента и домов.</small></span>
+          </label>
+        </div>
+        <div class="field">
+          <label class="check" for="terms-acknowledged">
+            <input id="terms-acknowledged" type="checkbox" autocomplete="off" aria-describedby="acknowledged-error">
+            <span>Я ознакомился с условиями сервиса</span>
+          </label>
+          <p id="acknowledged-error" class="error" hidden></p>
+        </div>
+        <p id="form-error" class="error" role="alert" hidden></p>
+        <button class="primary-button" type="submit">Построить карту</button>
+      </form>
+    </main>
+  </body>
+</html>

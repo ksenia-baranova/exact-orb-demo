@@ -36,6 +36,12 @@ Change — единица поставки от намерения до прин
 - implementation и test evidence;
 - единый реестр решений, findings и принятых ограничений.
 
+Для нового change все разделы, которыми владеет Change Manager — brief, реестр решений,
+задания ролям, Change Plan с календарём/Gantt и итоговая приёмка — ведутся в одном
+`docs/project_management/change_plans/<change-id>/artifacts.md`. Ролевые requirements,
+Implementation Plan и test evidence остаются в каталогах своих владельцев. Исторические
+change с опубликованными путями сохраняют эти пути.
+
 ### Чистовые требования и требования change
 
 Размещение артефактов, форматы `DELTA`/`FULL` и перенос в чистовую редакцию определены в

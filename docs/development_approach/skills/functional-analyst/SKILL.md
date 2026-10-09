@@ -50,7 +50,9 @@ closure evidence. Таблица findings является индексом и �
 ## Единый реестр решений
 
 - Не создавай отдельное описание решения в Analysis artifact.
-- Создай или обнови одну строку `DP-*` в `docs/project_management/change_plans/<change>-decisions.md`.
+- Создай или обнови одну строку `DP-*` в разделе реестра
+  `docs/project_management/change_plans/<change-id>/artifacts.md#decision-register`.
+  Для исторического change используй его действующий путь.
 - Добавь вопрос, контекст, различающий пример, sources, варианты и влияние.
 - Запиши рекомендацию Analysis с основанием в подписанное поле строки.
 - Назови decision owner, консультантов и gate.

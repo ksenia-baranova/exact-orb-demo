@@ -1,0 +1,1161 @@
+{
+  "schema_version": 1,
+  "tested_commit": "a8b45dbbda5378e598eb75b15f81e1445a75020e",
+  "captured_utc": "2026-10-08T20:05:07.248340+00:00",
+  "verdict": "REVORK",
+  "scenario_summary": {
+    "PASS": 22,
+    "PARTIAL": 1,
+    "native_foreground": "NOT RUN",
+    "clean_transfer": "BLOCKED"
+  },
+  "environment": {
+    "date": "2026-10-08T21:23:14.0279243+03:00",
+    "node": "C:\\Users\\KateUser\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\node\\bin\\node.exe",
+    "server_pid": 22364,
+    "tested_commit": "a8b45dbbda5378e598eb75b15f81e1445a75020e",
+    "cwd": "C:\\Users\\KateUser\\.codex\\worktrees\\402f\\exact-orb-recovered",
+    "python": "C:\\Users\\KateUser\\AppData\\Local\\Programs\\Python\\Python314\\python.exe",
+    "proxy_pid": 1992,
+    "initial_process_ids_note": "environment.json records initial launch; dedicated QA runtime was restarted as described in report",
+    "final_process_ids": {
+      "uvicorn": 26556,
+      "tls_proxy": 29412
+    }
+  },
+  "fingerprint": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "versions": {
+      "fastapi": "0.121.2",
+      "starlette": "0.49.3",
+      "uvicorn": "0.38.0",
+      "httpx": "0.28.1",
+      "pydantic": "2.12.4",
+      "tzdata": "2025.2"
+    },
+    "files": {
+      "data\\places.sqlite": "afa097af657805c420449393b1e3c561c6c3170a3a1084b0189386a37abba0dd",
+      "src\\exact_orb\\http_api\\ui\\facts.mjs": "64a47d1cd4158afa1b27cafb5936f4ffda11ed243ae169f3a9ec144fb18781e9",
+      "src\\exact_orb\\http_api\\ui\\form.mjs": "01c67968c92569cfa039c08a29b097bee8f9e7d06b335a9d58575b0fb31bdad3",
+      "src\\exact_orb\\http_api\\ui\\index.html": "0e0590f58e22320d81a33d73c857d547b85dc5a0a79ea980cc4698aa3fffd167",
+      "src\\exact_orb\\http_api\\ui\\main.mjs": "2c48b775d504c06bd134ba92a2c065e31bd0e614efe7a80c1fc255d3a2a102e8",
+      "src\\exact_orb\\http_api\\ui\\places.mjs": "9261d46e9c716db979ee4dc7454a4a656c6d350f78f5883c7635103af56b9dcb",
+      "src\\exact_orb\\http_api\\ui\\recovery.mjs": "b5d3cd889cd12ae42b9461429c1eef98d1ddc737cde2ce7e83189cb2e3ff81b5",
+      "src\\exact_orb\\http_api\\ui\\response.mjs": "124eed92a2be48598eb38f2deaae6f826bced0491e0acf82384c681fca27942c",
+      "src\\exact_orb\\http_api\\ui\\session.mjs": "920439c370071397f6b5d291e87b997950ebe52a5357251ac908c016f91db5cd",
+      "src\\exact_orb\\http_api\\ui\\styles.css": "54dfb987f75bb3c4c0f2e3efabc63c446c5833faaf9c8cc316a23748fee859e9",
+      "src\\exact_orb\\http_api\\ui\\transport.mjs": "bc1ca991d76af8ec6af63cdf69cb25bc00053a77cb1d12d8ae67fccea4140fdb"
+    }
+  },
+  "browser": "Codex IAB Chromium 154 on Windows11",
+  "automated_results": {
+    "ui": {
+      "passed": 188,
+      "failed": 0,
+      "skipped": 0,
+      "milliseconds": 284.714
+    },
+    "http_api_and_boundaries": {
+      "passed": 346,
+      "seconds": 25.46
+    },
+    "full_pytest": {
+      "passed": 2959,
+      "skipped": 1,
+      "seconds": 125.03,
+      "skip": "DEBT-CALC-001"
+    }
+  },
+  "browser_assertions": [
+    {
+      "name": "AS-UI-01 empty",
+      "status": "PASS",
+      "detail": {
+        "fields": [
+          {
+            "checked": false,
+            "disabled": false,
+            "id": "birth-date",
+            "type": "date",
+            "value": ""
+          },
+          {
+            "checked": false,
+            "disabled": false,
+            "id": "birth-place",
+            "type": "text",
+            "value": ""
+          },
+          {
+            "checked": false,
+            "disabled": false,
+            "id": "birth-time",
+            "type": "text",
+            "value": ""
+          },
+          {
+            "checked": false,
+            "disabled": false,
+            "id": "time-unknown",
+            "type": "checkbox",
+            "value": "on"
+          },
+          {
+            "checked": false,
+            "disabled": false,
+            "id": "terms-acknowledged",
+            "type": "checkbox",
+            "value": "on"
+          }
+        ],
+        "focus": "",
+        "scrollWidth": 478,
+        "tableRows": [],
+        "text": "Exact Orb\nКарта рождения\n\nВведите дату и место рождения. Если точное время неизвестно, отметьте это отдельно.\n\nДата рождения *\nМесто рождения *\n\nВведите не меньше трёх символов и выберите вариант из списка.\n\nВремя рождения\n\nУкажите местное время с точностью до минуты.\n\nТочное время неизвестно\nКарта будет без асцендента и домов.\nЯ ознакомился с условиями сервиса\n\nСохранённой карты пока нет.\n\nПостроить карту",
+        "width": 478
+      }
+    },
+    {
+      "name": "004 typing",
+      "status": "PASS",
+      "detail": "0045 => 00:45"
+    },
+    {
+      "name": "004 0000",
+      "status": "PASS",
+      "detail": "00:00"
+    },
+    {
+      "name": "004 1200",
+      "status": "PASS",
+      "detail": "12:00"
+    },
+    {
+      "name": "004 2359",
+      "status": "PASS",
+      "detail": "23:59"
+    },
+    {
+      "name": "004 paste",
+      "status": "PASS",
+      "detail": "paste 0045"
+    },
+    {
+      "name": "AS02 same-name regions",
+      "status": "PASS",
+      "detail": [
+        "КировскРегион: Мурманская Область · Страна: RU",
+        "КировскРегион: Луганская область · Страна: UA",
+        "КировскРегион: Ленинградская область · Страна: RU",
+        "КировскРегион: Могилевская область · Страна: BY"
+      ]
+    },
+    {
+      "name": "AS20/21 manual gate",
+      "status": "PASS",
+      "detail": "Visible checkbox explanation; wire confirms zero POST"
+    },
+    {
+      "name": "AS05 empty time",
+      "status": "PASS",
+      "detail": "Укажите время в формате ЧЧ:ММ или отметьте, что точное время неизвестно."
+    },
+    {
+      "name": "AS05 invalid 24:00",
+      "status": "PASS",
+      "detail": "Укажите время в формате ЧЧ:ММ или отметьте, что точное время неизвестно."
+    },
+    {
+      "name": "AS07/22 natal details",
+      "status": "PASS",
+      "detail": {
+        "groups": [
+          "Планеты и точки · 16",
+          "Дома · 12",
+          "Аспекты · 39"
+        ],
+        "rows": [
+          16,
+          12,
+          5,
+          39
+        ]
+      }
+    },
+    {
+      "name": "AS19 natal 360",
+      "status": "PASS",
+      "detail": {
+        "requestedWidth": 360,
+        "clientWidth": 345,
+        "scrollWidth": 345,
+        "allRowsEqualIgnoringLayoutWhitespace": true
+      }
+    },
+    {
+      "name": "AS19 natal 768",
+      "status": "PASS",
+      "detail": {
+        "requestedWidth": 768,
+        "clientWidth": 753,
+        "scrollWidth": 753,
+        "allRowsEqualIgnoringLayoutWhitespace": true
+      }
+    },
+    {
+      "name": "AS19 natal 1440",
+      "status": "PASS",
+      "detail": {
+        "requestedWidth": 1440,
+        "clientWidth": 1425,
+        "scrollWidth": 1425,
+        "allRowsEqualIgnoringLayoutWhitespace": true
+      }
+    },
+    {
+      "name": "AS10/22 natal reload",
+      "status": "PASS",
+      "detail": "DTO text equal; responsive whitespace normalized"
+    },
+    {
+      "name": "012 restore focus/blur",
+      "status": "PASS",
+      "detail": {
+        "beforePlace": "Сохранённое место: Гонконг.",
+        "afterPlace": "Сохранённое место: Гонконг."
+      }
+    },
+    {
+      "name": "AS03 pending single submit",
+      "status": "PASS",
+      "detail": "очное время неизвестно\nКарта будет без асцендента и домов.\nЯ ознакомился с условиями сервиса\n\nСтроим карту… Дата: 1985-09-02. Место: Гонконг. Время: 12:00.\n\nСтроим карту…\nНатальная карта готова\n\nТропический зодиак · Дома: Плацидус\n\nПоказать подробности карты\nОткрыть чат\n\nЧат пока недоступен."
+    },
+    {
+      "name": "010 committed immutable summary",
+      "status": "PASS",
+      "detail": "Exact Orb\nКарта рождения\n\nВведите дату и место рождения. Если точное время неизвестно, отметьте это отдельно.\n\nДата рождения *\nМесто рождения *\n\nВведите не меньше трёх символов и выберите вариант из списка.\n\nСохранённое место: Гонконг.\n\nВремя рождения\n\nУкажите местное время с точностью до минуты.\n\nТочное время неизвестно\nКарта будет без асцендента и домов.\nЯ ознакомился с условиями сервиса\n\nКарта доступна. Дата: 1985-09-02. Место: Гонконг. Точное время неизвестно.\n\nПостроить карту\nКосмограмма готова\n\nТропический зодиак · Без домов\n\nТочное время неизвестно. Положения точек приведены для технического якоря, а не точного момента рождения.\n\nПоказать подробности карты\nОткрыть чат\n\nЧат пока недоступен."
+    },
+    {
+      "name": "AS04/08 cosmo details",
+      "status": "PASS",
+      "detail": {
+        "tables": [
+          {
+            "caption": "Положения планет и точек",
+            "rows": 15
+          },
+          {
+            "caption": "Все опубликованные аспекты",
+            "rows": 12
+          }
+        ],
+        "text": "ная\nДома\n\nДля домов нужно время рождения\n\nАспекты · 12\n\nПоказаны устойчивые аспекты. Орбисы — консервативные максимальные значения по допустимым минутам даты.\n\nВсе опубликованные аспекты\nОт\tК\tВид\tКатегория\tОрбис\nУран\tХирон\tОппозиция\tТочный\t0°27′\nСеверный узел\tЛилит\tСоединение\tТочный\t0°45′\nМеркурий\tСатурн\tКвадрат\tТочный\t0°47′\nЮпитер\tЛилит\tКвадрат\tРабочий\t1°41′\nНептун\tПлутон\tСекстиль\tРабочий\t1°48′\nЮпитер\tСеверный узел\tКвадрат\tРабочий\t2°14′\nМарс\tСатурн\tКвадрат\tРабочий\t2°38′\nМеркурий\tМарс\tСоединение\tРабочий\t2°51′\nСолнце\tУран\tКвадрат\tФоновый\t4°51′\nСолнце\tХирон\tКвадрат\tФоновый\t5°18′\nЮпитер\tУран\tСекстиль\tФоновый\t5°24′\nЮпитер\tХирон\tТрин\tФоновый\t5°51′"
+      }
+    },
+    {
+      "name": "AS19 cosmo 360",
+      "status": "PASS",
+      "detail": {
+        "width": 345,
+        "scrollWidth": 345
+      }
+    },
+    {
+      "name": "AS19 cosmo 768",
+      "status": "PASS",
+      "detail": {
+        "width": 753,
+        "scrollWidth": 753
+      }
+    },
+    {
+      "name": "AS19 cosmo 1440",
+      "status": "PASS",
+      "detail": {
+        "width": 1425,
+        "scrollWidth": 1425
+      }
+    },
+    {
+      "name": "AS08 cosmo reload",
+      "status": "PASS",
+      "detail": "All stable aspect/point rows match, unknown time restored"
+    },
+    {
+      "name": "006 502 pending check",
+      "status": "PASS",
+      "detail": "и домов.\nЯ ознакомился с условиями сервиса\n\nНе удалось подтвердить результат построения. Проверяем текущую карту. Введённые данные сохранены. Дата: 1985-09-02. Место: Гонконг. Точное время неизвестно.\n\nОтправленные данные: 1990-01-01. Время: 14:30. Место: Гонконг.\n\nПовторить проверку карты\n\nНе удалось выполнить запрос. Введённые данные сохранены.\n\nПостроить карту\nКосмограмма готова\n\nТропический зодиак · Без домов\n\nТочное время неизвестно. Положения точек приведены для технического якоря, а не точного момента рождения.\n\nСкрыть подробности карты\nОткрыть чат\n\nЧат пока недоступен.\n\nПланеты и точки · 15\nПоложения планет и точек\nНазвание\tЗнак\tПолож"
+    },
+    {
+      "name": "006 failed check",
+      "status": "PASS",
+      "detail": "и домов.\nЯ ознакомился с условиями сервиса\n\nНе удалось проверить текущую карту. Введённые данные сохранены. Повторите безопасную проверку карты. Дата: 1985-09-02. Место: Гонконг. Точное время неизвестно.\n\nОтправленные данные: 1990-01-01. Время: 14:30. Место: Гонконг.\n\nПовторить проверку карты\n\nЧтение временно недоступно.\n\nПостроить карту\nКосмограмма готова\n\nТропический зодиак · Без домов\n\nТочное время неизвестно. Положения точек приведены для технического якоря, а не точного момента рождения.\n\nСкрыть подробности карты\nОткрыть чат\n\nЧат пока недо"
+    },
+    {
+      "name": "006 safe repeat old map",
+      "status": "PASS",
+      "detail": "и домов.\nЯ ознакомился с условиями сервиса\n\nЧто-то пошло не так. Новый результат пока не появился. Введённые данные сохранены. Вы можете построить карту ещё раз; предыдущий расчёт может завершиться позже Дата: 1985-09-02. Место: Гонконг. Точное время неизвестно.\n\nОтправленные данные: 1990-01-01. Время: 14:30. Место: Гонконг.\n\nПовторить проверку карты\nПостроить ещё раз\nКосмограмма готова\n\nТропический зодиак · Без домов\n\nТочное время неизвестно. Положения точек приведены для технического якоря, а "
+    },
+    {
+      "name": "006 explicit second POST positive",
+      "status": "PASS",
+      "detail": "Actual committed natal after separate click"
+    },
+    {
+      "name": "011 malformed POST",
+      "status": "PASS",
+      "detail": {
+        "summary": "Что-то пошло не так. Новый результат пока не появился. Введённые данные сохранены. Вы можете построить карту ещё раз; предыдущий расчёт может завершиться позже Дата: 1990-01-01. Место: Гонконг. Время: 14:30.",
+        "rows": [
+          16,
+          12,
+          5,
+          38
+        ]
+      }
+    },
+    {
+      "name": "011 malformed current",
+      "status": "PASS",
+      "detail": "Не удалось проверить текущую карту. Введённые данные сохранены. Повторите безопасную проверку карты. Дата: 1990-01-01. Место: Гонконг. Время: 14:30."
+    },
+    {
+      "name": "011 repaired safe read",
+      "status": "PASS",
+      "detail": "Actual valid DTO renders and manual action returns"
+    },
+    {
+      "name": "008 session loss",
+      "status": "PASS",
+      "detail": "и домов.\nЯ ознакомился с условиями сервиса\n\nСохранённой карты пока нет. Сессия обновлена. Запрос построения был отклонён. Чтобы построить карту, нажмите кнопку ещё раз.\n\nПостроить карту"
+    },
+    {
+      "name": "008 manual build positive",
+      "status": "PASS",
+      "detail": "New-session real build after independent click"
+    },
+    {
+      "name": "012 restored known focus",
+      "status": "PASS",
+      "detail": "focus + blur preserves confirmed label"
+    },
+    {
+      "name": "AS02 edit invalidates ID",
+      "status": "PASS",
+      "detail": "Выберите место рождения из списка."
+    },
+    {
+      "name": "AS10 actual process restart",
+      "status": "PASS",
+      "detail": "Same SQLite; new runtime/process; all rows equal"
+    },
+    {
+      "name": "AS11 real stale",
+      "status": "PASS",
+      "detail": "Real CalculationVersion change; old numbers preserved; no auto POST"
+    },
+    {
+      "name": "007 stale recovery",
+      "status": "PASS",
+      "detail": {
+        "summary": "Сохранённая карта соответствует отправленным данным, но устарела. Свежий результат не подтверждён. Её можно явно пересчитать или повторить проверку карты. Дата: 1991-01-01. Место: Москва. Время: 14:30.",
+        "safeCheck": true
+      }
+    },
+    {
+      "name": "007 fresh same identity positive",
+      "status": "PASS",
+      "detail": "Текущая карта соответствует отправленным данным. Дата: 1991-01-01. Место: Москва. Время: 14:30."
+    },
+    {
+      "name": "AS11 real unavailable",
+      "status": "PASS",
+      "detail": "чное время неизвестно\nКарта будет без асцендента и домов.\nЯ ознакомился с условиями сервиса\n\nСохранённую карту не удалось открыть. Данные рождения сохранены; карту можно построить заново. Дата: 1991-01-01. Место: Москва. Время: 14:30.\n\nПостроить заново"
+    },
+    {
+      "name": "AS11 unavailable explicit rebuild",
+      "status": "PASS",
+      "detail": "Damaged StoredChart replaced by a real explicit build"
+    },
+    {
+      "name": "AS06 real missing local date + UI issue",
+      "status": "PASS",
+      "detail": {
+        "error": "Некорректное значение.",
+        "focus": "birth-date",
+        "rows": [
+          16,
+          12,
+          5,
+          37
+        ]
+      }
+    },
+    {
+      "name": "AS06 Apia positive date",
+      "status": "PASS",
+      "detail": "Same fixture/resolver path with a valid neighboring local date commits"
+    },
+    {
+      "name": "AS23 lost before status/late pending",
+      "status": "PASS",
+      "detail": "т без асцендента и домов.\nЯ ознакомился с условиями сервиса\n\nЧто-то пошло не так. Новый результат пока не появился. Введённые данные сохранены. Вы можете построить карту ещё раз; предыдущий расчёт может завершиться позже Дата: 2011-12-29. Место: Апиа. Точное время неизвестно.\n\nОтправленные данные: 2000-01-01. Время: 14:30. Место: Москва.\n\nПовторить проверку карты\nПостроить ещё раз\nКосмограмма готова\n\nТропический зодиак · Без домов\n\nТочное время неизвестно. Положения точек приведены для технического якоря, а не точного момента рождения.\n\nПоказать подробности карты\nОткрыть чат\n\nЧат пока недоступен."
+    },
+    {
+      "name": "AS23 manual second intent pending",
+      "status": "PASS",
+      "detail": "т без асцендента и домов.\nЯ ознакомился с условиями сервиса\n\nСтроим карту… Дата: 2011-12-29. Место: Апиа. Точное время неизвестно.\n\nСтроим карту…\nКосмограмма готова\n\nТропический зодиак · Без домов\n\nТочное время неизвестно. Положения точек приведены для технического якоря, а не точного момента рождения.\n\nПоказать подробности карты\nОткрыть чат\n\nЧат пока недоступен."
+    },
+    {
+      "name": "AS23 late first/second superseded",
+      "status": "PASS",
+      "detail": {
+        "summary": "Карта доступна. Дата: 2000-01-01. Место: Москва. Время: 14:30.",
+        "draft": "2001-01-01"
+      }
+    },
+    {
+      "name": "AS23 committed response lost",
+      "status": "PASS",
+      "detail": "Текущая карта соответствует отправленным данным. Дата: 2002-01-01. Место: Москва. Время: 14:30."
+    },
+    {
+      "name": "AS23 cancelled no new commit",
+      "status": "PASS",
+      "detail": "Old saved map; original intent retained; explicit repeat offered"
+    },
+    {
+      "name": "AS23 manual retry positive",
+      "status": "PASS",
+      "detail": "One real build after distinct user click"
+    },
+    {
+      "name": "AS14 503 pending Retry-After",
+      "status": "PASS",
+      "detail": "т без асцендента и домов.\nЯ ознакомился с условиями сервиса\n\nНе удалось подтвердить результат построения. Проверяем текущую карту. Введённые данные сохранены. Дата: 2003-01-01. Место: Москва. Время: 14:30.\n\nОтправленные данные: 2004-01-01. Время: 14:30. Место: Москва.\n\nПовторить проверку карты\n\nИсход сохранения неизвестен. Следующее действие доступно через 1 с.\n\nПостроить карту\nНатальная карта готова\n\nТропический зодиак · Дома: Плацидус\n\nПоказать подробности карты\nОткрыть чат\n\nЧат пока недоступен."
+    },
+    {
+      "name": "AS14 503 matching commit",
+      "status": "PASS",
+      "detail": "Текущая карта соответствует отправленным данным. Дата: 2004-01-01. Место: Москва. Время: 14:30."
+    },
+    {
+      "name": "006 500 conservative check",
+      "status": "PASS",
+      "detail": "Текущая карта соответствует отправленным данным. Дата: 2005-01-01. Место: Москва. Время: 14:30."
+    },
+    {
+      "name": "006 raw 504 no restart required",
+      "status": "PASS",
+      "detail": "Что-то пошло не так. Новый результат пока не появился. Введённые данные сохранены. Вы можете построить карту ещё раз; предыдущий расчёт может завершиться позже Дата: 2005-01-01. Место: Москва. Время: 14:30."
+    },
+    {
+      "name": "AS14 timeout restart gate",
+      "status": "PASS",
+      "detail": "т без асцендента и домов.\nЯ ознакомился с условиями сервиса\n\nРасчёт не завершился вовремя. Исход построения пока неизвестен. После перезапуска и восстановления работы сервера нажмите «Проверить после перезапуска». Дата: 2005-01-01. Место: Москва. Время: 14:30.\n\nОтправленные данные: 2007-01-01. Время: 14:30. Место: Москва.\n\nПроверить после перезапуска\n\nРасчет не завершился вовремя. Следующее действие доступно через 5 с.\n\nПостроить карту\nНатальная карта готова\n\nТропический зодиак · Дома: Плацидус\n\nПоказать подробности карты\nОткрыть чат\n\nЧат пока недоступен."
+    },
+    {
+      "name": "AS14 explicit restart check",
+      "status": "PASS",
+      "detail": "Новый результат не подтверждён. Введённые данные сохранены. Вы можете явно построить карту ещё раз. Дата: 2005-01-01. Место: Москва. Время: 14:30."
+    },
+    {
+      "name": "AS13 capacity preserves draft",
+      "status": "PASS",
+      "detail": "Все расчетные места заняты. Следующее действие доступно через 1 с."
+    },
+    {
+      "name": "AS13 capacity manual positive",
+      "status": "PASS",
+      "detail": "Actual build after distinct click"
+    },
+    {
+      "name": "AS13 rate visible",
+      "status": "PASS",
+      "detail": "Слишком много построений. Следующее действие доступно через 1 с."
+    },
+    {
+      "name": "AS13 rate manual positive",
+      "status": "PASS",
+      "detail": "One explicit real POST succeeds after delay"
+    },
+    {
+      "name": "AS02 newest search arrives first",
+      "status": "PASS",
+      "detail": [
+        "КировскРегион: Ленинградская область · Страна: RU"
+      ]
+    },
+    {
+      "name": "AS02 late response ignored",
+      "status": "PASS",
+      "detail": "Latest prefix/options preserved after explicit old response release"
+    },
+    {
+      "name": "AS02 clear suggestions",
+      "status": "PASS",
+      "detail": "No options and no confirmed old place"
+    },
+    {
+      "name": "AS02 clear cannot build",
+      "status": "PASS",
+      "detail": "Выберите место рождения из списка."
+    },
+    {
+      "name": "AS18 empty search",
+      "status": "PASS",
+      "detail": "Место не найдено."
+    },
+    {
+      "name": "AS18 unavailable search",
+      "status": "PASS",
+      "detail": "Поиск временно недоступен. Повторить поиск можно через 5 с."
+    },
+    {
+      "name": "AS18 explicit search retry positive",
+      "status": "PASS",
+      "detail": [
+        "МоскваРегион: Москва · Страна: RU",
+        "БагтыярлыкРегион: Ахалский велаят · Страна: TM",
+        "МоскваРегион: Хатлонская область · Страна: TJ"
+      ]
+    },
+    {
+      "name": "AS19 place-to-time keyboard",
+      "status": "PASS",
+      "detail": "birth-time"
+    },
+    {
+      "name": "AS19 keyboard form order",
+      "status": "PASS",
+      "detail": {
+        "id": "",
+        "tag": "BUTTON",
+        "text": "Построить карту"
+      }
+    },
+    {
+      "name": "AS19 details focus",
+      "status": "PASS",
+      "detail": "chart-details-button"
+    },
+    {
+      "name": "AS19 details Space",
+      "status": "PASS",
+      "detail": [
+        16,
+        12,
+        5,
+        24
+      ]
+    },
+    {
+      "name": "AS19 disabled chat skipped",
+      "status": "PASS",
+      "detail": {
+        "disabled": false,
+        "tag": "BODY",
+        "text": "\n    \n      Exact Orb\n    \n    \n      Карта рождения\n      В"
+      }
+    },
+    {
+      "name": "AS16 B actual shared-cookie build",
+      "status": "PASS",
+      "detail": "Карта доступна. Дата: 2012-01-01. Место: Москва. Время: 14:30."
+    },
+    {
+      "name": "AS09 empty calculated aspects",
+      "status": "PASS",
+      "detail": [
+        {
+          "caption": "Положения планет и точек",
+          "rows": 16
+        },
+        {
+          "caption": "Куспиды домов",
+          "rows": 12
+        },
+        {
+          "caption": "Углы карты",
+          "rows": 5
+        }
+      ]
+    },
+    {
+      "name": "REQ07 no live deferred groups",
+      "status": "PASS",
+      "detail": [
+        "Планеты и точки · 16",
+        "Дома · 12",
+        "Аспекты · 0"
+      ]
+    },
+    {
+      "name": "AS07/TEST-FIND-UI-013 live orb half-up boundaries",
+      "status": "PASS",
+      "detail": [
+        {
+          "category": "Точный",
+          "orb": "1°02′"
+        },
+        {
+          "category": "Точный",
+          "orb": "1°01′"
+        },
+        {
+          "category": "Точный",
+          "orb": "1°02′"
+        },
+        {
+          "category": "Точный",
+          "orb": "1°00′"
+        }
+      ]
+    },
+    {
+      "name": "AS16 second B build after user opened Browser",
+      "status": "PASS",
+      "detail": {
+        "birth": "2013-01-01",
+        "tables": [
+          {
+            "caption": "Положения планет и точек",
+            "rows": 16
+          },
+          {
+            "caption": "Куспиды домов",
+            "rows": 12
+          },
+          {
+            "caption": "Углы карты",
+            "rows": 5
+          },
+          {
+            "caption": "Все опубликованные аспекты",
+            "rows": 38
+          }
+        ]
+      }
+    }
+  ],
+  "foreground": {
+    "status": "NOT RUN",
+    "coverage": "PARTIAL",
+    "expected": "A reads B current and retains draft on a native visibility/online event",
+    "actual": {
+      "aDraft": "2010-01-01",
+      "aDisplayed": "2009-01-01",
+      "bCommitted": "2013-01-01",
+      "browserPresented": false,
+      "documentHidden": false,
+      "documentVisibility": "visible",
+      "openInCodex": "queued"
+    },
+    "reason": "IAB display/tab selection did not hide the document or produce a native foreground transition; synthetic dispatch was not used"
+  },
+  "latest_protocol_and_audit_assertions": [
+    {
+      "name": "AS11 corruption fixture",
+      "status": "PASS",
+      "details": {
+        "identity": "eo:calc:v2:6fe086f8e584f089390e44d9b86b0914539e8768651d31a91b82d48faf5a56b3",
+        "wire_source": 117
+      }
+    },
+    {
+      "name": "AS17 invalid calendar without cookie status/headers",
+      "status": "PASS",
+      "details": {
+        "status": 422,
+        "request_id": "09ba51ab-f267-4117-9a3b-278a94c4c983"
+      }
+    },
+    {
+      "name": "AS17 validation precedes cookie",
+      "status": "PASS",
+      "details": {
+        "code": "INVALID_REQUEST",
+        "detail_code": null,
+        "user_message": "Проверьте формат запроса и значения полей.",
+        "retryable": false,
+        "issues": [
+          {
+            "field": "birth.date",
+            "code": "INVALID"
+          }
+        ]
+      }
+    },
+    {
+      "name": "AS17 valid body without cookie status/headers",
+      "status": "PASS",
+      "details": {
+        "status": 409,
+        "request_id": "20963000-d3d8-491e-a510-4a0261910936"
+      }
+    },
+    {
+      "name": "AS17 session required",
+      "status": "PASS",
+      "details": {
+        "code": "SESSION_REQUIRED",
+        "detail_code": null,
+        "user_message": "Сначала откройте или восстановите сессию.",
+        "retryable": false
+      }
+    },
+    {
+      "name": "AS17 foreign Origin before body status/headers",
+      "status": "PASS",
+      "details": {
+        "status": 403,
+        "request_id": "cdbca02b-86f2-4840-8f23-9ad7c6cd2b5f"
+      }
+    },
+    {
+      "name": "AS17 Origin priority",
+      "status": "PASS",
+      "details": {
+        "code": "ORIGIN_NOT_ALLOWED",
+        "detail_code": null,
+        "user_message": "Источник запроса не разрешён.",
+        "retryable": false
+      }
+    },
+    {
+      "name": "AS01 cookie bootstrap status/headers",
+      "status": "PASS",
+      "details": {
+        "status": 200,
+        "request_id": "3e023508-9561-4dc3-929c-6b2250389c60"
+      }
+    },
+    {
+      "name": "AS01 cookie current status/headers",
+      "status": "PASS",
+      "details": {
+        "status": 200,
+        "request_id": "8a37bcbd-9f6c-4346-91f5-04382cd11688"
+      }
+    },
+    {
+      "name": "AS18 query empty status/headers",
+      "status": "PASS",
+      "details": {
+        "status": 422,
+        "request_id": "8a863f1d-fe7c-4913-8b63-31aa05099dde"
+      }
+    },
+    {
+      "name": "AS18 query empty typed error",
+      "status": "PASS",
+      "details": {
+        "code": "INVALID_PLACE_QUERY",
+        "detail_code": "EMPTY",
+        "user_message": "Проверьте поисковый запрос.",
+        "retryable": false
+      }
+    },
+    {
+      "name": "AS18 query control status/headers",
+      "status": "PASS",
+      "details": {
+        "status": 422,
+        "request_id": "ebff868c-14c1-4062-b60e-84f86c9a6ef8"
+      }
+    },
+    {
+      "name": "AS18 query control typed error",
+      "status": "PASS",
+      "details": {
+        "code": "INVALID_PLACE_QUERY",
+        "detail_code": "CONTROL_CHARACTERS",
+        "user_message": "Проверьте поисковый запрос.",
+        "retryable": false
+      }
+    },
+    {
+      "name": "AS18 query too long status/headers",
+      "status": "PASS",
+      "details": {
+        "status": 422,
+        "request_id": "7342bde3-c1c7-4b51-8a5e-5e949d67ba11"
+      }
+    },
+    {
+      "name": "AS18 query too long typed error",
+      "status": "PASS",
+      "details": {
+        "code": "INVALID_REQUEST",
+        "detail_code": "QUERY_TOO_LONG",
+        "user_message": "Проверьте формат запроса и значения полей.",
+        "retryable": false
+      }
+    },
+    {
+      "name": "AS02 query positive status/headers",
+      "status": "PASS",
+      "details": {
+        "status": 200,
+        "request_id": "45c1544f-6f2a-4eb9-b2b8-b7419c7bef91"
+      }
+    },
+    {
+      "name": "AS02 real Moscow",
+      "status": "PASS",
+      "details": {
+        "count": 3
+      }
+    },
+    {
+      "name": "AS06 unsupported date status/headers",
+      "status": "PASS",
+      "details": {
+        "status": 422,
+        "request_id": "2c9c2fc2-43d7-4806-ac06-1ab90ed9c4f9"
+      }
+    },
+    {
+      "name": "AS06 unsupported date typed issue",
+      "status": "PASS",
+      "details": {
+        "code": "INPUT_REQUIRED",
+        "detail_code": null,
+        "user_message": "Проверьте введённые данные и исправьте отмеченные поля.",
+        "retryable": false,
+        "state_version": 0,
+        "issues": [
+          {
+            "field": "birth.date",
+            "code": "UNSUPPORTED",
+            "candidates": null,
+            "constraints": {
+              "min": "1800-01-01",
+              "max": "2026-10-08"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "AS06 gap status/headers",
+      "status": "PASS",
+      "details": {
+        "status": 422,
+        "request_id": "455a4d1f-f8ed-4920-95b9-dc0ead1c9674"
+      }
+    },
+    {
+      "name": "AS06 gap typed issue",
+      "status": "PASS",
+      "details": {
+        "code": "INPUT_REQUIRED",
+        "detail_code": null,
+        "user_message": "Проверьте введённые данные и исправьте отмеченные поля.",
+        "retryable": false,
+        "state_version": 0,
+        "issues": [
+          {
+            "field": "birth.time",
+            "code": "INVALID",
+            "candidates": null,
+            "constraints": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "AS06 fold status/headers",
+      "status": "PASS",
+      "details": {
+        "status": 422,
+        "request_id": "8ff56fc5-a6ad-43e5-b332-e8b531d1c78d"
+      }
+    },
+    {
+      "name": "AS06 fold typed issue",
+      "status": "PASS",
+      "details": {
+        "code": "INPUT_REQUIRED",
+        "detail_code": null,
+        "user_message": "Проверьте введённые данные и исправьте отмеченные поля.",
+        "retryable": false,
+        "state_version": 0,
+        "issues": [
+          {
+            "field": "birth.time",
+            "code": "AMBIGUOUS",
+            "candidates": [
+              -14400,
+              -18000
+            ],
+            "constraints": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "AS06 missing place status/headers",
+      "status": "PASS",
+      "details": {
+        "status": 422,
+        "request_id": "53fa26ac-b2d3-4b92-a9a1-243529cd0b7b"
+      }
+    },
+    {
+      "name": "AS06 missing place typed issue",
+      "status": "PASS",
+      "details": {
+        "code": "INPUT_REQUIRED",
+        "detail_code": null,
+        "user_message": "Проверьте введённые данные и исправьте отмеченные поля.",
+        "retryable": false,
+        "state_version": 0,
+        "issues": [
+          {
+            "field": "birth.place",
+            "code": "INVALID",
+            "candidates": null,
+            "constraints": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "AS06 missing local date status/headers",
+      "status": "PASS",
+      "details": {
+        "status": 422,
+        "request_id": "811323f0-8563-4e1a-87b5-d5b4efd6d199"
+      }
+    },
+    {
+      "name": "AS06 missing local date typed issue",
+      "status": "PASS",
+      "details": {
+        "code": "INPUT_REQUIRED",
+        "detail_code": null,
+        "user_message": "Проверьте введённые данные и исправьте отмеченные поля.",
+        "retryable": false,
+        "state_version": 0,
+        "issues": [
+          {
+            "field": "birth.date",
+            "code": "INVALID",
+            "candidates": null,
+            "constraints": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "AS06 positive real build status/headers",
+      "status": "PASS",
+      "details": {
+        "status": 200,
+        "request_id": "8d0a6717-b890-4a36-b273-ccfa499d3a42"
+      }
+    },
+    {
+      "name": "AS06 positive natal",
+      "status": "PASS",
+      "details": {
+        "identity": "eo:calc:v2:fb244d6bdeccfb429ee0c71611de9a3ec4bae791fd4dfe3aa5fc37bcf81ca279",
+        "points": 16,
+        "aspects": 36
+      }
+    },
+    {
+      "name": "browser assertions",
+      "status": "PASS",
+      "details": {
+        "checks": 75,
+        "failures": []
+      }
+    },
+    {
+      "name": "wire API headers",
+      "status": "PASS",
+      "details": {
+        "responses": 126
+      }
+    },
+    {
+      "name": "browser/API intent whitelist",
+      "status": "PASS",
+      "details": {
+        "bad_wire_ids": []
+      }
+    },
+    {
+      "name": "closed HTTPS endpoint",
+      "status": "PASS",
+      "details": {
+        "endpoint": "https://exact-orb.localhost:8443"
+      }
+    },
+    {
+      "name": "real build HTTP coordination",
+      "status": "PASS",
+      "details": {
+        "wire_id": 250,
+        "request_id": "ce4526d5-2051-483a-bbf8-5c62a87fc5eb",
+        "peers": [
+          "AdmissionControl",
+          "ApplicationOrchestrator"
+        ]
+      }
+    },
+    {
+      "name": "real build application commit trace",
+      "status": "PASS",
+      "details": {
+        "request_id": "ce4526d5-2051-483a-bbf8-5c62a87fc5eb",
+        "correlated_events": 45,
+        "transitions": [
+          [
+            "ContextService",
+            "load"
+          ],
+          [
+            "BuildNatalHandler",
+            "handle"
+          ],
+          [
+            "BirthDataResolver",
+            "resolve_birth_data"
+          ],
+          [
+            "ChartArtifactResolver",
+            "ensure_chart"
+          ],
+          [
+            "ChartArtifactResolver",
+            "to_stored"
+          ],
+          [
+            "ContextService",
+            "save"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "Origin rejection before component boundary",
+      "status": "PASS",
+      "details": {
+        "wire_id": 136,
+        "request_id": "7004f591-6c96-4066-9183-94367395dd68"
+      }
+    }
+  ],
+  "wire_summary": {
+    "records": 250,
+    "last_id": 250
+  },
+  "local_evidence_files": {
+    "apia-date-error.png": {
+      "sha256": "72547eca1984d2e1f6bc87dc7e91f1b69336be71120eaead6e5f6bb7e34bda0d",
+      "bytes": 54171
+    },
+    "application.log": {
+      "sha256": "2e857a8ef9e8b304135b3227df1acde070f0353092a4a2ec1c6e1875891990a0",
+      "bytes": 4968074
+    },
+    "cosmogram-1440.png": {
+      "sha256": "ec1950f1e1990c20c1fd00e3f582a58610138a5e7d046c071087086273a8ca16",
+      "bytes": 236163
+    },
+    "cosmogram-360.png": {
+      "sha256": "6c0dac114f7d873325ac916cbe4fb0abce22bbd18a89b2e39725f189ddd3b107",
+      "bytes": 222693
+    },
+    "cosmogram-768.png": {
+      "sha256": "4d04c896eed63abf8035d776dd2526a07db8852d1519f44a3828fafc0ca9f682",
+      "bytes": 208489
+    },
+    "empty-aspects-360.png": {
+      "sha256": "a878c0ce73f897737c995a4be60aae20587fa9e4a49cb7903e30456395310e48",
+      "bytes": 44038
+    },
+    "failed-check.png": {
+      "sha256": "3ddb7ff30dd581485809267b0d2e156487b15c1aa28b60fcef8ee1f73cf4b675",
+      "bytes": 61650
+    },
+    "foreground-a-360.png": {
+      "sha256": "d7a97bdd590ba65251b55ab26dbe6fc95f3d1da370093a1f980d614a0ca8d7a5",
+      "bytes": 36164
+    },
+    "full-pytest.txt": {
+      "sha256": "229bc025276e2aee1a074d41fcd256644ed5fb2e5ca7ebc7b28f112ca722e058",
+      "bytes": 3874
+    },
+    "http-tests.txt": {
+      "sha256": "5901c13c255773ed2a387ea5c4245339c3f8e4b90791c73e350d606f37500c0b",
+      "bytes": 427
+    },
+    "late-commit.png": {
+      "sha256": "aa4cc2bd4b12cb9a5f5a326be1bcadbfb7739b386e00c67ff210631d18e86ce0",
+      "bytes": 55032
+    },
+    "live-protocol-final.txt": {
+      "sha256": "422984df780883e4696da3e4fd089652cfca5dbb27c120d2083a458335612d9d",
+      "bytes": 5907
+    },
+    "natal-1440.png": {
+      "sha256": "469ecfa9f5e055714edc33a64e5d7f2f5d6f19e095ac5b8246eb7772ac4d62bd",
+      "bytes": 346968
+    },
+    "natal-360.png": {
+      "sha256": "7a4d68a34e98ddb6da418b2fe511e6ce045838bec4eb1575d1dc2c85552f084e",
+      "bytes": 361362
+    },
+    "natal-768.png": {
+      "sha256": "2c9cbd87920d9024d861625166a2dcbc473b53957208d151fbdc8baf2f6d289c",
+      "bytes": 305265
+    },
+    "natal-final-360.png": {
+      "sha256": "7a24051a53ac620381c7af72e607e67f9de3c9494a759bb388e973cf03d58dea",
+      "bytes": 37433
+    },
+    "orb-boundaries-360.png": {
+      "sha256": "fb564f35a6dbd56048a524a686a4adbc74d01caca56c90b9f1934949f958532e",
+      "bytes": 317472
+    },
+    "session-loss.png": {
+      "sha256": "5431fec228cbf73bfa211e6c5fd0908b44d83c6a62fbf973d5477bb137f4c3d2",
+      "bytes": 52782
+    },
+    "stale-360.png": {
+      "sha256": "a64d262ff92282c245e3b3c58efade9ad10a432a7dd11df39d8a46a408f2af44",
+      "bytes": 60966
+    },
+    "ui.tap": {
+      "sha256": "5b709666ba57f1bf3c9c0a63c7bd193c513e3b801042816d0d517ce43a74945c",
+      "bytes": 18427
+    },
+    "wire.jsonl": {
+      "sha256": "5a38d40714bb76fbd78b4a73f7b249e9238b7f30893a96870a516ef9f49f3f6b",
+      "bytes": 533567
+    }
+  },
+  "diagnostics": "Initial fixture/oracle/setup failures are retained in the local append-only journal; final statuses above do not classify them as product bugs.",
+  "manual_harness_sha256": {
+    "browser_acceptance_checks.py": "eae771b587b2459e575fc5eea1181c541b4556eac7bc5574b6c84d7051d867e6",
+    "browser_acceptance_factory.py": "e4cc54826d04fa76757b9383da9b07515827903745f68f68cbf5629f29cecbc1",
+    "browser_acceptance_proxy.py": "46c9073ae0644eb2cb72ea0ea57f59c63fae8e4e7c4730930eea5691fa078223"
+  },
+  "metadata_validation": {
+    "command": "python -X utf8 -B logs/tester-a8b45db/verify-evidence.py",
+    "result": "PASS: 100 local links/anchors, balanced fences, 3 script ASTs, exact SHA, 23 AS / 10 REQ, 75 assertions; NOT RUN/BLOCKED retained"
+  },
+  "cleanup": {
+    "qa_processes_stopped": [
+      26556,
+      29412
+    ],
+    "browser_temporary_tabs_closed": true,
+    "viewport_reset": true,
+    "original_stand_health_ready": 200
+  }
+}
