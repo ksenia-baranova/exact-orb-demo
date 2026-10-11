@@ -7,7 +7,7 @@
 **Дата структурной ревизии:** 2026-09-30
 **Назначение:** основные утверждения формирующегося метода разработки `exact-orb`.
 
-> Этот документ фиксирует принципы метода. Конкретный рабочий цикл описан в [process.md](process.md), роли и ownership —
+> Этот документ фиксирует принципы метода. Конкретный рабочий цикл описан в [process.md](process/process.md), роли и ownership —
 > в [roles.md](roles.md). Метод изменяется только на основании наблюдений из реальной разработки, а не одного
 > рассуждения модели.
 
@@ -189,7 +189,7 @@ Implementation task или prompt должен быть достаточно с�
 baseline, invariants, ссылки на источники истины, ожидаемые проверки и completion evidence без скрытой переписки.
 
 Подготовка задачи и разрешение на её исполнение являются разными действиями и учитываются состояниями из
-[process.md](process.md), раздел 2: подготовленный prompt — версия артефакта (`DRAFT → IN_REVIEW → APPROVED`), его
+[process.md](process/process.md), раздел 2: подготовленный prompt — версия артефакта (`DRAFT → IN_REVIEW → APPROVED`), его
 исполнение — ролевое задание (`NOT_STARTED → IN_PROGRESS → … → DONE`). Если изменились входы, утверждённый prompt не
 исполняется: готовится новая `DRAFT`-версия, прежнее approval сохраняется для прежнего содержания. Исторический prompt
 после исполнения сохраняется как журнал и не переписывается в действующую спецификацию.
@@ -260,7 +260,7 @@ gates, слабом handoff, высокой стоимости артефакт�
 
 ## 14. Связанные документы
 
-- [Change development process](process.md)
+- [Change development process](process/process.md)
 - [Roles and ownership](roles.md)
 - [Artifact templates](artifacts/README.md)
 - [Role skill drafts](skills/README.md)

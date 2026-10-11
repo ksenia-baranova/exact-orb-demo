@@ -11,7 +11,7 @@
 и [журнал](../../project_management/experiments/experiment-002-log.md).
 
 > Этот документ сохраняет постановку и evidence Experiment 002. Текущие правила метода вынесены в
-> [Development approach](../development-approach.md), [Change development process](../process.md) и
+> [Development approach](../development-approach.md), [Change development process](../process/process.md) и
 > [Roles and ownership](../roles.md). При расхождении эксперимент не переопределяет действующий процесс.
 
 ---

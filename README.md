@@ -816,7 +816,7 @@ final acceptance + подтверждённый merge
 Актуальная методология разделена по назначению:
 
 - [принципы метода](docs/development_approach/development-approach.md);
-- [процесс выполнения change](docs/development_approach/process.md);
+- [процесс выполнения change](docs/development_approach/process/process.md);
 - [роли и ownership](docs/development_approach/roles.md);
 - [шаблоны артефактов](docs/development_approach/artifacts/README.md);
 - [инструкции ролей](docs/development_approach/skills/README.md).
@@ -975,7 +975,7 @@ Mock, удовлетворяющий интерфейсу, полезен для
 |---|---|
 | [`docs/development_approach/README.md`](docs/development_approach/README.md) | Навигация по методологии разработки |
 | [`docs/development_approach/development-approach.md`](docs/development_approach/development-approach.md) | Основные принципы AI-assisted development |
-| [`docs/development_approach/process.md`](docs/development_approach/process.md) | Role-based процесс выполнения change |
+| [`docs/development_approach/process/process.md`](docs/development_approach/process/process.md) | Role-based процесс выполнения change |
 | [`docs/development_approach/roles.md`](docs/development_approach/roles.md) | Роли, ownership и handoff |
 | [`docs/development_approach/artifacts/README.md`](docs/development_approach/artifacts/README.md) | Шаблоны требований, планов, промтов, findings и evidence по ролям |
 | [`docs/development_approach/skills/README.md`](docs/development_approach/skills/README.md) | Канонические draft skills Change Manager, Analyst, Developer и Tester |

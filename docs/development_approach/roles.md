@@ -3,7 +3,7 @@
 **Статус:** DRAFT / WORK IN PROGRESS
 **Дата:** 2026-10-11
 
-Документ описывает полномочия ролей. Порядок стадий находится в [process.md](process.md), общие принципы — в
+Документ описывает полномочия ролей. Порядок стадий находится в [process.md](process/process.md), общие принципы — в
 [development-approach.md](development-approach.md).
 
 ## 1. Общие правила
@@ -263,7 +263,7 @@ delivery boundary, ею владеет Developer.
 | Пользовательское намерение и priority | Owner | Change Manager | Owner; brief ведёт Manager (G0) |
 | Change scope и бюджет | Owner | Change Manager, Analyst, Developer, Tester | Owner (G0 / G3) |
 | Delivery plan | Change Manager | Analyst, Developer, Tester | Manager; scope и бюджет — Owner |
-| Наблюдаемое поведение | Functional Analyst | Developer, Tester, Manager, Owner | Developer — реализуемость; Tester — тестируемость; Owner — продуктовые решения ([process.md §3.2](process.md)) |
+| Наблюдаемое поведение | Functional Analyst | Developer, Tester, Manager, Owner | Developer — реализуемость; Tester — тестируемость; Owner — продуктовые решения ([process.md §3.2](process/process.md)) |
 | Техническая реализация | Developer | Analyst, Tester, Technical Reviewer при эскалации | Implementation Plan — Manager и назначенный reviewer; реализация — Developer evidence |
 | Development estimate | Developer | Manager | Developer |
 | Подход к разработке и Developer checks | Developer | Tester при необходимости; Manager при влиянии на delivery | implementation plan и промт с обоснованием |

@@ -1,6 +1,6 @@
 # Artifact templates
 
-Шаблоны поддерживают [Change development process](../process.md) и распределены по владельцам смысла.
+Шаблоны поддерживают [Change development process](../process/process.md) и распределены по владельцам смысла.
 
 Пути заполненных требований, сценариев, findings, диаграмм и ADR определены в
 [правилах требований](../../requirements/README.md). Здесь хранятся шаблоны, а материалы реального change создаются

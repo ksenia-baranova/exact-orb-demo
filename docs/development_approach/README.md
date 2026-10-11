@@ -8,7 +8,7 @@
 | Документ | Назначение |
 |---|---|
 | [Development approach](development-approach.md) | Стабильные принципы и границы метода |
-| [Change development process](process.md) | Текущий рабочий цикл от намерения до принятия change |
+| [Change development process](process/process.md) | Текущий рабочий цикл от намерения до принятия change |
 | [Roles and ownership](roles.md) | Полномочия, ответственность и handoff ролей |
 | [Artifact templates](artifacts/README.md) | Шаблоны рабочих артефактов по ролям |
 | [Role skill drafts](skills/README.md) | Инструкции для агентов, реализующих роли |
@@ -21,7 +21,7 @@
 | [Problems detected by human](problems_detected_by_human/) | Разборы дефектов, которые повлияли на метод |
 
 Эксперименты объясняют происхождение правил, но не переопределяют действующий процесс. При расхождении используются
-`development-approach.md`, `process.md` и `roles.md`.
+`development-approach.md`, `process/process.md` и `roles.md`.
 
 ## Изменение структуры 2026-09-30
 
@@ -30,7 +30,7 @@
 role ownership, реализацию, тестирование и приёмку. Вариант `sdlc-process-approach` не выбран, потому что процесс вынесен
 в отдельный документ, а `SDLC process` дублирует смысл lifecycle.
 
-Детальные процессные правила вынесены в [process.md](process.md), роли — в [roles.md](roles.md). Историческое развитие
+Детальные процессные правила вынесены в [process.md](process/process.md), роли — в [roles.md](roles.md). Историческое развитие
 role-based модели сохранено в [Experiment 002](experiments/experiment-002-role-based-change-development.md).
 
 ## Карта переноса содержания
@@ -38,7 +38,7 @@ role-based модели сохранено в [Experiment 002](experiments/exper
 | Содержание прежнего документа | Текущий источник |
 |---|---|
 | Граница между предложением и решением, источники истины, переносимый контекст, executable evidence, observability, bounded prompts, review и критерии успеха | [Development approach](development-approach.md) |
-| Decision gates, lifecycle change, возвраты между ролями, branching и финальная приёмка | [Change development process](process.md) |
+| Decision gates, lifecycle change, возвраты между ролями, branching и финальная приёмка | [Change development process](process/process.md) |
 | Распределение полномочий, запреты и handoff | [Roles and ownership](roles.md) |
 | Единый реестр решений и рабочие форматы finding, estimate, plan и acceptance evidence | [Artifact templates](artifacts/README.md) |
 | Ограниченные инструкции агенту для конкретной роли | [Role skill drafts](skills/README.md) |

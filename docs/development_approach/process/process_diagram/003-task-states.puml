@@ -1,0 +1,52 @@
+@startuml
+title exact-orb — Статусы ролевого задания
+
+' Источник: docs/development_approach/process/process.md, раздел 2 «Ролевое задание».
+' Текущий статус записывается только в сводке artifacts.md.
+' Review требований и проверка реализации — разные задания.
+
+hide empty description
+skinparam shadowing false
+skinparam state {
+    BackgroundColor #F8FAFC
+    BorderColor #64748B
+    FontColor #0F172A
+    ArrowColor #2563EB
+    ArrowFontColor #334155
+    BackgroundColor<<return>> #FFF7ED
+    BorderColor<<return>> #EA580C
+}
+
+state "Незавершённое задание" as OPEN_TASK {
+    state NOT_STARTED : назначены вход, reviewer,\nкритерий и сроки
+    state IN_PROGRESS : роль выполняет задание
+    state READY_FOR_REVIEW : результат передан\nна точной версии
+    state REWORK <<return>> : причина и условие\nповторной передачи
+}
+state DONE : результат принят
+state BLOCKED : записаны зависимость\nи ResumeStatus
+
+[*] --> NOT_STARTED : Manager назначил задание
+NOT_STARTED --> IN_PROGRESS : исполнитель подтвердил\nначало разрешённой работы
+IN_PROGRESS --> READY_FOR_REVIEW : передан результат
+READY_FOR_REVIEW --> DONE : назначенные reviewers\nприняли по критерию
+READY_FOR_REVIEW -[#EA580C]-> REWORK : возврат
+REWORK --> IN_PROGRESS : исправление возобновлено
+REWORK --> READY_FOR_REVIEW : повторная передача
+DONE -[#EA580C]-> REWORK : подтверждённый\nfinding
+
+OPEN_TASK -[#475569]-> BLOCKED : продолжать невозможно
+BLOCKED -[#475569]-> OPEN_TASK[H] : зависимость устранена,\nвходы пригодны → ResumeStatus
+
+note right of BLOCKED
+  Изменение входного контракта
+  требует пересмотра затронутого
+  результата, а не простого возврата.
+end note
+
+note right of DONE
+  При DONE → REWORK прежняя
+  версия и её приёмка
+  сохраняются в истории.
+end note
+@enduml

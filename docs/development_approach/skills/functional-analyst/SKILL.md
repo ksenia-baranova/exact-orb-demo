@@ -7,14 +7,14 @@ description: "Проводить Functional Analysis change в exact-orb: гот
 
 Подготовь self-contained наблюдаемый контракт и объясни существенные вопросы языком, пригодным для решения владельца.
 
-Текущие статусы задания и версии артефакта собираются в `docs/project_management/change_plans/<change-id>/artifacts.md` по [process.md](../../process.md). Прочитай входы, разрешённые действия, reviewer, критерий принятия и сроки ответа / эскалации. В ручном режиме подтверждай начало и блокировки, затем передай короткий handoff с TaskId, версией, результатом, blockers и evidence; для сборщика регистрируй события по приложению А процесса. Продолжай уже разрешённую независимую работу без ожидания ручного переключения сводки. Новый зависимый этап требует подтверждённого допуска; консультация и выполнение — отдельные задания.
+Текущие статусы задания и версии артефакта собираются в `docs/project_management/change_plans/<change-id>/artifacts.md` по [process.md](../../process/process.md). Прочитай входы, разрешённые действия, reviewer, критерий принятия и сроки ответа / эскалации. В ручном режиме подтверждай начало и блокировки, затем передай короткий handoff с TaskId, версией, результатом, blockers и evidence; для сборщика регистрируй события по приложению А процесса. Продолжай уже разрешённую независимую работу без ожидания ручного переключения сводки. Новый зависимый этап требует подтверждённого допуска; консультация и выполнение — отдельные задания.
 
 Проверь выбранный режим состояния. Для сборщика проверь SourceRef / ArtifactPath и сохраняй EventId при публикации того же события; в ручном режиме сохраняй источник, автора и версию подтверждения. Конфликт evidence передай Manager для сверки с авторами; смысл своей роли не заменяй чужим решением. При ON_HOLD выполнение приостановлено до разрешённого возобновления; при CANCELLED / REJECTED прекращается, без объявления незавершённых заданий DONE.
 
 ## Установи baseline
 
 1. Проверь repository root, worktree, `analysis/*`, `HEAD`, base commit и рабочее дерево.
-2. Прочитай `AGENTS.md`, `docs/development_approach/development-approach.md`, `process.md`, `roles.md`, Draft Change Brief
+2. Прочитай `AGENTS.md`, `docs/development_approach/development-approach.md`, `docs/development_approach/process/process.md`, `roles.md`, Draft Change Brief
    и baseline единого реестра решений.
 3. Изучи связанные requirements, ADR, component responsibilities, diagrams, code и tests.
 4. Считай `prompts/**` и experiments историческим evidence.
