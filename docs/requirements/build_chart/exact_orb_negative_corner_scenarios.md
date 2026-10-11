@@ -958,7 +958,7 @@ N8 описывает отказ при **записи**. Этот случай 
 | N12 — интерпретация | Session/dialog contracts и хранение версии ответа | Interpretation handler/service, генерация и transport/UI |
 
 Следующие проверки привязываются к этапам
-[roadmap](../../project_management/roadmap.md): сначала UI и сервер для build,
+[roadmap](../../project_management/Roadmap/roadmap.md): сначала UI и сервер для build,
 затем первый interpretation-путь, затем полный runtime/pipeline.
 Существующее компонентное покрытие переиспользуется; сквозные сценарии
 ниже не отмечаются пройденными до фактического запуска соответствующего пути.

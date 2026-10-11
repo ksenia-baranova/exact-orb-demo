@@ -966,7 +966,7 @@ transit, aspect/configuration/strength-блоки, `CalculationVersion`,
 `test_strength.py`, calculation/birth/application tests. При этой сверке
 тесты повторно не запускались.
 
-Startup wiring входит в M1-3 [roadmap](../../project_management/roadmap.md).
+Startup wiring входит в M1-3 [roadmap](../../project_management/Roadmap/roadmap.md).
 HTTP/UI, transit application-flow, дополнительные техники и отмеченные
 в документе **пробелы** не считаются реализованными вместе с ядром.
 Исторические замеры сохраняются; актуальная нагрузочная проверка остаётся

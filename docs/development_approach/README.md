@@ -18,7 +18,7 @@
 | Раздел | Назначение |
 |---|---|
 | [Experiments](experiments/) | Проверяемые организационные и инженерные гипотезы |
-| [Problems detected by human](problems_detected_by_human/) | Разборы дефектов, которые повлияли на метод |
+| [Problems detected by human](../project_management/problems_detected_by_human/) | Разборы дефектов, которые повлияли на метод |
 
 Эксперименты объясняют происхождение правил, но не переопределяют действующий процесс. При расхождении используются
 `development-approach.md`, `process/process.md` и `roles.md`.

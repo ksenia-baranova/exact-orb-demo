@@ -266,4 +266,4 @@ gates, слабом handoff, высокой стоимости артефакт�
 - [Role skill drafts](skills/README.md)
 - [Experiment 001](experiments/experiment-001-atomic-tdd-prompts.md)
 - [Experiment 002](experiments/experiment-002-role-based-change-development.md)
-- [Problems detected by human](problems_detected_by_human/)
+- [Problems detected by human](../project_management/problems_detected_by_human/)

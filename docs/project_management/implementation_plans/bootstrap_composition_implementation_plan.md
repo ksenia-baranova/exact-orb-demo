@@ -32,7 +32,7 @@ lifespan, request-task lifecycle, HTTP-контрактом и периодич�
 ### 2.1. Источники истины
 
 - [AGENTS.md](../../../AGENTS.md).
-- [Roadmap](../roadmap.md): последовательность M1-5 → bootstrap composition → M1-6 и
+- [Roadmap](../Roadmap/roadmap.md): последовательность M1-5 → bootstrap composition → M1-6 и
   отдельный production/deployment этап M1-12.
 - [ApplicationOrchestrator — план реализации](application_orchestrator_implementation_plan.md):
   завершённая минимальная composition и принятый application-контракт.

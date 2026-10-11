@@ -878,7 +878,7 @@ regression test
 Оба случая разобраны до корневой причины и превращены в ADR и regression-сценарии.
 
 Материалы:
-[`docs/development_approach/problems_detected_by_human/`](docs/development_approach/problems_detected_by_human/)
+[`docs/project_management/problems_detected_by_human/`](docs/project_management/problems_detected_by_human/)
 
 ### 001 — множественные источники истины в модели результата
 
@@ -917,7 +917,7 @@ regression test
 ## Стратегия тестирования
 
 Сверка планов на 2026-09-14: выполненные блоки и подтверждения собраны в
-[roadmap, §2](docs/project_management/roadmap.md). Нормализация результата,
+[roadmap, §2](docs/project_management/Roadmap/roadmap.md). Нормализация результата,
 DEBUG-диагностика, ADR-0029–0033 и исправление epsilon-границы орбиса уже
 реализованы; инженерная граница M1 принята в ADR-0034. Отдельный обязательный
 тест импортных границ handler ещё остаётся открытым пунктом его формальной
@@ -979,7 +979,7 @@ Mock, удовлетворяющий интерфейсу, полезен для
 | [`docs/development_approach/roles.md`](docs/development_approach/roles.md) | Роли, ownership и handoff |
 | [`docs/development_approach/artifacts/README.md`](docs/development_approach/artifacts/README.md) | Шаблоны требований, планов, промтов, findings и evidence по ролям |
 | [`docs/development_approach/skills/README.md`](docs/development_approach/skills/README.md) | Канонические draft skills Change Manager, Analyst, Developer и Tester |
-| [`docs/development_approach/problems_detected_by_human/`](docs/development_approach/problems_detected_by_human/) | Разборы дефектов, найденных человеком |
+| [`docs/project_management/problems_detected_by_human/`](docs/project_management/problems_detected_by_human/) | Разборы дефектов, найденных человеком |
 | [`docs/requirements/README.md`](docs/requirements/README.md) | Размещение требований, форматы `DELTA`/`FULL` и перенос принятого change в чистовую редакцию |
 | [`docs/requirements/current/`](docs/requirements/current/) | Каталог консолидированных чистовых требований; наполняется по мере миграции тематических документов |
 | [`docs/requirements/changes/`](docs/requirements/changes/) | Требования, сценарии и analysis конкретного change |
@@ -992,7 +992,7 @@ Mock, удовлетворяющий интерфейсу, полезен для
 | [`docs/ui_ux/README.md`](docs/ui_ux/README.md) | Черновик требований, решений, прототипа и рендеров UI/UX |
 | [`docs/architecture/service_ready_architecture.md`](docs/architecture/service_ready_architecture.md) | Modular monolith и service seams |
 | [`docs/sequence_diagrams/`](docs/sequence_diagrams/) | Positive, negative и concurrency scenarios |
-| [`docs/project_management/roadmap.md`](docs/project_management/roadmap.md) | Roadmap проекта |
+| [`docs/project_management/Roadmap/roadmap.md`](docs/project_management/Roadmap/roadmap.md) | Roadmap проекта |
 | [`docs/benchmarks/`](docs/benchmarks/) | Замеры |
 | [`prompts/`](prompts/) | История bounded implementation tasks |
 
@@ -1040,7 +1040,7 @@ docs/
 ├── architecture/          диаграммы и service seams
 ├── benchmarks/            замеры
 ├── development_approach/  принципы, процесс, роли, шаблоны, skills и evidence экспериментов
-├── project_management/    roadmap, change plans и реестры решений DP-*
+├── project_management/    Roadmap/, разборы ошибок, change plans и реестры решений DP-*
 ├── requirements/
 │   ├── current/           консолидированный контракт после принятия change
 │   ├── changes/           DELTA/FULL, scenarios и analysis по change
@@ -1094,7 +1094,7 @@ InterpretSelectionHandler
 
 Agent Runtime, async Tool, streaming и остальные сценарии входят в M3 после
 проверки прямого interpretation-flow. Полная декомпозиция и оценки находятся
-в [roadmap](docs/project_management/roadmap.md).
+в [roadmap](docs/project_management/Roadmap/roadmap.md).
 
 Порядок выбран намеренно:
 

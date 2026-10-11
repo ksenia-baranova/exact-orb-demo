@@ -38,7 +38,7 @@ session storage. CAS одной операцией сохраняет или о�
 [ADR-0041](../../requirements/decisions/0041-stored-chart-in-session.md),
 [спецификация поведения сессии](../../requirements/session/stored-chart-session-behavior.md),
 действующие [session requirements](../../requirements/component_responsibilities/exact-orb_session_requirements.md)
-и [roadmap](../roadmap.md). Поведение по сценариям сверяется с
+и [roadmap](../Roadmap/roadmap.md). Поведение по сценариям сверяется с
 [session sequence](../../sequence_diagrams/session/README.md) и
 [Build Natal sequence](../../sequence_diagrams/build_natal/README.md).
 Приложенный черновик `variant-d-action-plan.md` использован для порядка работ,

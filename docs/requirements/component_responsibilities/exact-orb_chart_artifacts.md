@@ -1546,7 +1546,7 @@ thread-backed leader реальным calculation executor после отмен
 
 **Остаётся:** подключение к HTTP/application lifecycle; общий артефактный путь
 `NatalTool`; актуальные замеры нагрузки. Эти работы
-распределены между M1 и M3 [roadmap](../../project_management/roadmap.md).
+распределены между M1 и M3 [roadmap](../../project_management/Roadmap/roadmap.md).
 Подготовка полного DEBUG-потока к публичному доступу остаётся отдельной
 ранее отложенной задачей; наличие логирования не закрывает её.
 

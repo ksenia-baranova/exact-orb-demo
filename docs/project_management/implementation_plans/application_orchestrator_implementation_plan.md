@@ -2248,7 +2248,7 @@ whitespace в четырёх затронутых файлах проверен�
 #### 1.3.43. Протокол дефектов и выполнение 9.R1 — 2026-09-19
 
 По результатам ручного ревью создана отдельная запись
-[004 — внутренние ошибки commit-flow теряют terminal-событие](../../development_approach/problems_detected_by_human/004-application-orchestrator-internal-failures-lose-terminal-event.md).
+[004 — внутренние ошибки commit-flow теряют terminal-событие](../problems_detected_by_human/004-application-orchestrator-internal-failures-lose-terminal-event.md).
 На `e53404a` read-only воспроизведение подтвердило два разрыва контракта:
 синхронная ошибка вызова `save` выходила с 0 attempt/0 terminal, а naive clock
 после первого `StateCommitFailed` — с 1 attempt/0 terminal. Это нарушало
