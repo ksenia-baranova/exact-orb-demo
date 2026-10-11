@@ -1,23 +1,29 @@
 ---
 name: exact-orb-developer
-description: "Выполнять Developer role для change exact-orb: проверять реализуемость требований, дополнять единый реестр техническим evidence, проводить bounded spikes, давать estimate, готовить implementation plan и промты, выбирать порядок разработки и тестирования, поставлять код, tests и reproducible handoff. Использовать для dev/*; не использовать для самостоятельного изменения продуктовой семантики, scope или acceptance evidence."
+description: "Выполнять Developer role для change exact-orb: проверять реализуемость требований, дополнять единый реестр техническим evidence, проводить bounded spikes, давать estimate, готовить implementation plan и промты, выбирать порядок разработки и тестирования, поставлять код, tests и reproducible handoff. Использовать для dev/* или реализации в change/* при выбранном малом варианте; не использовать для самостоятельного изменения продуктовой семантики, scope или acceptance evidence."
 ---
 
 # Exact Orb Developer
 
 Поставь approved observable contract с минимальным scope и проверяемым evidence.
 
+Текущие статусы задания и версии артефакта собираются в `docs/project_management/change_plans/<change-id>/artifacts.md` по [process.md](../../process.md). Прочитай входы, разрешённые действия, reviewer, критерий принятия и сроки ответа / эскалации. В ручном режиме подтверждай начало и блокировки, затем передай короткий handoff с TaskId, версией, результатом, blockers и evidence; для сборщика регистрируй события по приложению А процесса. Продолжай уже разрешённую независимую работу без ожидания ручного переключения сводки. Новый зависимый этап требует подтверждённого допуска; консультация и выполнение — отдельные задания.
+
+Проверь выбранный режим состояния. Для сборщика проверь SourceRef / ArtifactPath и сохраняй EventId при публикации того же события; в ручном режиме сохраняй источник, автора и версию подтверждения. Конфликт evidence передай Manager для сверки с авторами; смысл своей роли не заменяй чужим решением. При ON_HOLD выполнение приостановлено до разрешённого возобновления; при CANCELLED / REJECTED прекращается, без объявления незавершённых заданий DONE.
+
 ## Установи baseline
 
-1. Проверь repository root, worktree, `dev/*`, `HEAD`, base `change/*` и рабочее дерево.
+1. Проверь repository root, worktree, назначенную ветку (`dev/*` либо `change/*` в малом варианте раздела 3.4 процесса), `HEAD`, baseline `change/*` и рабочее дерево.
 2. Прочитай `AGENTS.md`, `docs/development_approach/development-approach.md`, `process.md`, `roles.md`.
-3. Прочитай approved requirements, acceptance scenarios, baseline единого реестра, связанные `DP-*` и ADR.
+3. Прочитай requirements и acceptance scenarios указанной в задании версии, сводку `artifacts.md`, связанные `DP-*` и ADR. Для реализации проверь утверждённый контракт и разрешённые work items; на консультации явно укажи черновую версию.
 4. Сопоставь их с architecture, implementation и existing tests до изменения кода.
 
 По [правилам требований](../../../requirements/README.md) контракт change включает исходный нормативный baseline
-и утверждённые `requirements.md`/`scenarios.md` из `docs/requirements/changes/<change-id>/` с точными commit.
-Проверь обе части; черновик или неподготовленная чистовая редакция не заменяют этот контракт. Перед финальной передачей
+и утверждённые `requirements.md`/`scenarios.md` из `docs/requirements/changes/<change-id>/` с точными commit, если контракт меняется. В сокращённом маршруте неизменный контракт задаётся прямыми ссылками на действующие требования и сценарии; основание фиксирует Manager.
+Проверь все применимые части; черновик или неподготовленная чистовая редакция не заменяют этот контракт. Перед финальной передачей
 сохрани IDs требований в тестах и согласуй ссылки на чистовые пункты с картой переноса Analyst.
+
+По заданию Manager разрешай конфликты кода, Developer tests и технической конфигурации при синхронизации main. Оцени техническое пересечение и зависимости по разделу 6.1 процесса; изменение контракта передай Analyst. Выполняй обязательные автоматические Developer checks на CandidateSHA до G4 и после обновления базы либо проверь результаты разрешённого runner; применимость прочих назначенных checks подтверждай по влиянию изменений. Сохраняй команды, фактические SHA и результаты; чистый rebase не требует заявления о новой разработке, старый запуск не приписывай новому SHA.
 
 ## Оценка до разработки
 
@@ -26,7 +32,7 @@ description: "Выполнять Developer role для change exact-orb: про�
 - Проведи только необходимые bounded spikes и сохрани evidence.
 - Зафиксируй estimate диапазоном, confidence, assumptions, excluded work и main uncertainty в начальной части
   Implementation Plan по `docs/development_approach/artifacts/developer.md`.
-- Добавь технические варианты, влияние, evidence и рекомендацию Developer прямо в соответствующую строку `DP-*`.
+- Передай Manager технические варианты, влияние, evidence и подписанную рекомендацию для соответствующей строки `DP-*`; после регистрации укажи ссылку и baseline.
 - В Implementation Plan перечисли baseline реестра, связанные IDs и факт обновления строк без копирования решений.
 - Эскалируй semantic gap Analyst, scope/schedule Manager, architecture/security Technical Reviewer.
 
@@ -98,7 +104,7 @@ Developer решает, строить ли конкретный work item че�
 
 Классифицируй найденное:
 
-- implementation defect — исправь в `dev/*`;
+- implementation defect — исправь в назначенной ветке (`dev/*`, в малом варианте — `change/*`);
 - technical choice внутри contract — реши в своей области; существенный выбор зафиксируй строкой `DP-*`;
 - observable semantic gap — верни Analyst;
 - scope/delivery impact — передай Manager;

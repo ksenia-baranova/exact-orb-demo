@@ -6,6 +6,8 @@
 Для отдельного задания используй [шаблон промта Developer](developer-prompt.md): он содержит подробное описание
 разделов, примеры, выбор подхода к разработке и заготовку для копирования.
 
+Текущие состояния задания и версии артефакта собираются в `docs/project_management/change_plans/<change-id>/artifacts.md` по [process.md](../process.md). В ручном режиме достаточно ссылки на сводку, TaskId, короткого handoff, точной версии и evidence. При выборе сборщика добавляются устойчивые EventIds и зарегистрированные SourceRef / ArtifactPath по приложению А процесса; источники доступны до merge. Reviewer, критерий принятия и сроки ответа / эскалации задаются при назначении. Заключения, findings и результаты проверок относятся к своему предмету и версии; короткий handoff ссылается на подробные материалы.
+
 ## 1. Implementation Plan
 
 ```markdown
@@ -15,7 +17,7 @@
 **Requirements baseline:** `<исходные нормативные пути @ commit + требования/scenarios change @ commit>`
 **Decision register baseline:** `<путь и commit>`
 **Applicable decisions:** `<DP-* IDs>`
-**Status:** DRAFT / READY FOR DEVELOPMENT / IN DEVELOPMENT / READY FOR TEST / BLOCKED
+**State summary:** `docs/project_management/change_plans/<change-id>/artifacts.md` — <task ID and plan version>
 **Technical assessment:** FEASIBLE / FEASIBLE WITH DECISIONS / NOT FEASIBLE
 **Estimate:** <range and confidence>
 
@@ -84,8 +86,10 @@
 ```markdown
 ## Developer Handoff
 
-**Status:** READY FOR TEST / BLOCKED
+**State summary:** `docs/project_management/change_plans/<change-id>/artifacts.md` — <task ID and handoff version>
 **Implementation commit:** `<sha>`
+**MainBaseline / CandidateSHA:** <база и кандидат после синхронизации; фактические проверки привязаны к версии>
+**Обновление базы / конфликты:** <класс влияния, diff, решение конфликтов кода / tests / конфигурации; выполненные повторные checks или N/A>
 **Decision register baseline:** `<путь и commit>`
 
 ### Implemented behavior

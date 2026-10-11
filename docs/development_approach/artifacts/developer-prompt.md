@@ -216,8 +216,10 @@ scope/сроки — Manager, архитектурный вопрос — Techni
 
 Задай формат фактического отчёта: результат, причина выбора/исправления, файлы, проверенная версия и состояние дерева,
 команды, результаты и ограничения. Исполнение записывай в карточку implementation plan и
-[Development Handoff](developer.md#3-development-handoff). Промт остаётся постановкой; текущий статус реализации
-хранится в плане. Для TDD различай свидетельства RED и GREEN. Запланированные проверки не выдавай за выполненные.
+[Development Handoff](developer.md#3-development-handoff). Состояния версии промта и задания исполнения ведутся
+в сводке `docs/project_management/change_plans/<change-id>/artifacts.md` по [process.md](../process.md), раздел 2;
+Implementation Plan содержит work items и подробное evidence. Для TDD различай свидетельства RED и GREEN.
+Запланированные проверки не выдавай за выполненные.
 
 **Пример заготовки отчёта:**
 
@@ -242,9 +244,9 @@ TDD, если выбран: <node ID, причина RED, результат GRE
 **Дата подготовки:** <YYYY-MM-DD>
 **Change / work item:** <change-id> / <DEV-NN и ссылка на карточку плана>
 **Владелец:** Developer
-**Состояние постановки:** DRAFT / APPROVED / EXECUTED / INVALIDATED
+**Состояние версии постановки:** <ссылка на версию артефакта в artifacts.md; DRAFT / IN_REVIEW / APPROVED по process.md>
 **Основание исполнения:** <ссылка на действующее поручение или согласованный план; либо пока только подготовка>
-**Текущий статус исполнения:** <ссылка на карточку implementation plan>
+**Текущий статус исполнения:** <TaskId и ссылка на задание в сводке artifacts.md; связанный work item Implementation Plan>
 
 ## 1. Что делаем и зачем
 
