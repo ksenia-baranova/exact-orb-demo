@@ -8,6 +8,7 @@ from contextlib import AsyncExitStack, asynccontextmanager
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
+from importlib.resources import files
 import inspect
 from ipaddress import ip_network
 import logging
@@ -21,7 +22,9 @@ from uuid import uuid4
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from starlette.exceptions import HTTPException as StarletteHTTPException
-from starlette.responses import JSONResponse, Response
+from starlette.responses import FileResponse, JSONResponse, Response
+from starlette.staticfiles import StaticFiles
+from starlette.types import Scope
 
 from exact_orb.http_api.admission import AdmissionController, DEFAULT_POLICY
 from exact_orb.http_api.request_boundary import (
@@ -35,6 +38,16 @@ from exact_orb.http_api.routes.session import router as session_router
 
 _LOG = logging.getLogger("exact_orb.http_api")
 _T = TypeVar("_T")
+
+
+class _UiStaticFiles(StaticFiles):
+    """Revalidate stable module/CSS URLs while preserving conditional responses."""
+
+    async def get_response(self, path: str, scope: Scope) -> Response:
+        response = await super().get_response(path, scope)
+        if path.endswith((".mjs", ".css")):
+            response.headers["Cache-Control"] = "no-cache"
+        return response
 
 
 class HttpAppConfigurationError(ValueError):
@@ -500,5 +513,17 @@ def create_app(
     app.include_router(session_router)
     app.include_router(places_router)
     app.include_router(build_router)
+
+    ui_directory = files("exact_orb.http_api").joinpath("ui")
+
+    @app.get("/", include_in_schema=False)
+    async def ui_page(request: Request) -> FileResponse:
+        return FileResponse(
+            str(ui_directory.joinpath("index.html")),
+            media_type="text/html",
+            headers=response_headers(request_id_for(request)),
+        )
+
+    app.mount("/ui", _UiStaticFiles(directory=str(ui_directory)), name="ui")
 
     return app

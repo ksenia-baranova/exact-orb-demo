@@ -1,0 +1,1363 @@
+{
+  "schema_version": 1,
+  "captured_utc": "2026-10-09T08:17:38.830475+00:00",
+  "verified_commit": "063c8439de3392c888383913fabffa336bd0c44e",
+  "inherited_tested_commit": "a8b45dbbda5378e598eb75b15f81e1445a75020e",
+  "analyst_commit": "879a4eefd05bd0cdda13ab6e417d5a9a22af2394",
+  "verdict": "READY_FOR_ACCEPTANCE",
+  "scenario_summary": {
+    "PASS": 23,
+    "PARTIAL": 0,
+    "native_foreground": "PASS",
+    "clean_transfer": "PASS"
+  },
+  "environment": {
+    "server_pid": 4036,
+    "database": "C:\\Users\\KateUser\\.codex\\worktrees\\402f\\exact-orb-recovered\\logs\\tester-as16-063c843-20261009\\sessions.sqlite3",
+    "commit": "063c8439de3392c888383913fabffa336bd0c44e",
+    "url": "https://exact-orb.localhost:8443",
+    "proxy_pid": 7564,
+    "root": "C:\\Users\\KateUser\\.codex\\worktrees\\402f\\exact-orb-recovered",
+    "started_at": "2026-10-09T10:36:32.7572612+03:00"
+  },
+  "browser_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 YaBrowser/26.8.0.0 Safari/537.36",
+  "previous_snapshot": "acceptance-a8b45db.json",
+  "runtime_tests_rerun": false,
+  "production_and_tests_unchanged": true,
+  "clean_review": {
+    "requirements": 10,
+    "scenarios": 23,
+    "unique_transfer_ids": 33,
+    "files": 5,
+    "local_links": 167,
+    "anchors": 62,
+    "sequence_references": 7,
+    "behavior_unchanged": true,
+    "analyst_sha256": {
+      "docs/requirements/changes/ui-birth-form-and-facts/analysis.md": "d62ed047cf7f7e48466845f2cd598005d893af89336d48b92ca84076eb3d216f",
+      "docs/requirements/changes/ui-birth-form-and-facts/requirements.md": "7de6dff6b9bd8b493a5fc00f64b3fe2f8f0360040b8c661a39002b9abaacbe23",
+      "docs/requirements/changes/ui-birth-form-and-facts/scenarios.md": "7d82e81c8ec657e30309186d9ac358f179df52d36c972f99586fe05ea9a306f0",
+      "docs/requirements/current/ui/birth-form-and-facts.md": "f75c353441dfbba4bd11ce3617b3d3e105ebdfe844af99f105ff25b0149e881b",
+      "docs/requirements/current/ui/scenarios.md": "56a377d0e305adfa31d0c8cf79f30ff53f8a8d26d401ecb7d7409596ec7696d4"
+    }
+  },
+  "foreground": {
+    "status": "PASS",
+    "evidence_source": "Human manual tab switching; Tester compared supplied screenshots, real wire responses and correlated server events; no synthetic visibility dispatch",
+    "draft_a_birth_date": "1985-10-20",
+    "displayed_a_birth_date": "2005-10-02",
+    "build_wire_ids": [
+      32,
+      49
+    ],
+    "post_build_current_wire_ids": [
+      51,
+      53,
+      55,
+      57,
+      59,
+      61,
+      63,
+      65,
+      67,
+      69,
+      71,
+      73
+    ],
+    "full_dto_equal": true,
+    "chart_stale": false,
+    "extra_build_posts_after_49": 0,
+    "injected_response_rules": 0,
+    "chart_dto": {
+      "chart_identity": "eo:calc:v2:5c06bc98d5a7e7d0bbced4723d6af1eadd8cdb2bea6740d2d83396728ab1fe55",
+      "kind": "natal",
+      "zodiac": "tropical",
+      "house_system": "P",
+      "points": [
+        {
+          "id": "sun",
+          "longitude": 188.76478036164457,
+          "sign": "Libra",
+          "degree": 8,
+          "minute": 45,
+          "house": 4,
+          "retrograde": false
+        },
+        {
+          "id": "moon",
+          "longitude": 171.032974646677,
+          "sign": "Virgo",
+          "degree": 21,
+          "minute": 1,
+          "house": 3,
+          "retrograde": false
+        },
+        {
+          "id": "mercury",
+          "longitude": 199.1493969314352,
+          "sign": "Libra",
+          "degree": 19,
+          "minute": 8,
+          "house": 4,
+          "retrograde": false
+        },
+        {
+          "id": "venus",
+          "longitude": 233.0904610734938,
+          "sign": "Scorpio",
+          "degree": 23,
+          "minute": 5,
+          "house": 5,
+          "retrograde": false
+        },
+        {
+          "id": "mars",
+          "longitude": 53.372299913276734,
+          "sign": "Taurus",
+          "degree": 23,
+          "minute": 22,
+          "house": 11,
+          "retrograde": false
+        },
+        {
+          "id": "jupiter",
+          "longitude": 204.7541076519739,
+          "sign": "Libra",
+          "degree": 24,
+          "minute": 45,
+          "house": 4,
+          "retrograde": false
+        },
+        {
+          "id": "saturn",
+          "longitude": 128.97595470329972,
+          "sign": "Leo",
+          "degree": 8,
+          "minute": 58,
+          "house": 1,
+          "retrograde": false
+        },
+        {
+          "id": "uranus",
+          "longitude": 337.6346257200467,
+          "sign": "Pisces",
+          "degree": 7,
+          "minute": 38,
+          "house": 9,
+          "retrograde": true
+        },
+        {
+          "id": "neptune",
+          "longitude": 314.98755880494446,
+          "sign": "Aquarius",
+          "degree": 14,
+          "minute": 59,
+          "house": 8,
+          "retrograde": true
+        },
+        {
+          "id": "pluto",
+          "longitude": 262.05673871796074,
+          "sign": "Sagittarius",
+          "degree": 22,
+          "minute": 3,
+          "house": 5,
+          "retrograde": false
+        },
+        {
+          "id": "chiron",
+          "longitude": 297.80942171555955,
+          "sign": "Capricorn",
+          "degree": 27,
+          "minute": 48,
+          "house": 6,
+          "retrograde": true
+        },
+        {
+          "id": "true_node",
+          "longitude": 13.626255389989463,
+          "sign": "Aries",
+          "degree": 13,
+          "minute": 37,
+          "house": 10,
+          "retrograde": true
+        },
+        {
+          "id": "south_node",
+          "longitude": 193.62625538998947,
+          "sign": "Libra",
+          "degree": 13,
+          "minute": 37,
+          "house": 4,
+          "retrograde": true
+        },
+        {
+          "id": "mean_apog",
+          "longitude": 137.4466382576771,
+          "sign": "Leo",
+          "degree": 17,
+          "minute": 26,
+          "house": 2,
+          "retrograde": false
+        },
+        {
+          "id": "selena",
+          "longitude": 312.64158932003227,
+          "sign": "Aquarius",
+          "degree": 12,
+          "minute": 38,
+          "house": 7,
+          "retrograde": false
+        },
+        {
+          "id": "pars_fortune",
+          "longitude": 137.7186008584475,
+          "sign": "Leo",
+          "degree": 17,
+          "minute": 43,
+          "house": 2,
+          "retrograde": false
+        }
+      ],
+      "angles": {
+        "asc": {
+          "longitude": 119.98679514347995,
+          "sign": "Cancer",
+          "degree": 29,
+          "minute": 59
+        },
+        "mc": {
+          "longitude": 359.50765530683407,
+          "sign": "Pisces",
+          "degree": 29,
+          "minute": 30
+        },
+        "vertex": {
+          "longitude": 254.45879861954137,
+          "sign": "Sagittarius",
+          "degree": 14,
+          "minute": 27
+        },
+        "dsc": {
+          "longitude": 299.98679514348,
+          "sign": "Capricorn",
+          "degree": 29,
+          "minute": 59
+        },
+        "ic": {
+          "longitude": 179.50765530683407,
+          "sign": "Virgo",
+          "degree": 29,
+          "minute": 30
+        }
+      },
+      "houses": [
+        {
+          "number": 1,
+          "cusp_longitude": 119.98679514347995,
+          "sign": "Cancer",
+          "degree": 29,
+          "minute": 59
+        },
+        {
+          "number": 2,
+          "cusp_longitude": 134.31717779978374,
+          "sign": "Leo",
+          "degree": 14,
+          "minute": 19
+        },
+        {
+          "number": 3,
+          "cusp_longitude": 152.84029210456538,
+          "sign": "Virgo",
+          "degree": 2,
+          "minute": 50
+        },
+        {
+          "number": 4,
+          "cusp_longitude": 179.50765530683407,
+          "sign": "Virgo",
+          "degree": 29,
+          "minute": 30
+        },
+        {
+          "number": 5,
+          "cusp_longitude": 219.47248206076338,
+          "sign": "Scorpio",
+          "degree": 9,
+          "minute": 28
+        },
+        {
+          "number": 6,
+          "cusp_longitude": 266.17755605332866,
+          "sign": "Sagittarius",
+          "degree": 26,
+          "minute": 10
+        },
+        {
+          "number": 7,
+          "cusp_longitude": 299.98679514348,
+          "sign": "Capricorn",
+          "degree": 29,
+          "minute": 59
+        },
+        {
+          "number": 8,
+          "cusp_longitude": 314.31717779978374,
+          "sign": "Aquarius",
+          "degree": 14,
+          "minute": 19
+        },
+        {
+          "number": 9,
+          "cusp_longitude": 332.8402921045654,
+          "sign": "Pisces",
+          "degree": 2,
+          "minute": 50
+        },
+        {
+          "number": 10,
+          "cusp_longitude": 359.50765530683407,
+          "sign": "Pisces",
+          "degree": 29,
+          "minute": 30
+        },
+        {
+          "number": 11,
+          "cusp_longitude": 39.472482060763376,
+          "sign": "Taurus",
+          "degree": 9,
+          "minute": 28
+        },
+        {
+          "number": 12,
+          "cusp_longitude": 86.17755605332864,
+          "sign": "Gemini",
+          "degree": 26,
+          "minute": 10
+        }
+      ],
+      "aspects": [
+        {
+          "from": "sun",
+          "to": "saturn",
+          "type": "sextile",
+          "orb": 0.21117434165515192,
+          "category": "exact"
+        },
+        {
+          "from": "mean_apog",
+          "to": "pars_fortune",
+          "type": "conjunction",
+          "orb": 0.2719626007703937,
+          "category": "exact"
+        },
+        {
+          "from": "venus",
+          "to": "mars",
+          "type": "opposition",
+          "orb": 0.28183883978294944,
+          "category": "exact"
+        },
+        {
+          "from": "asc",
+          "to": "mc",
+          "type": "trine",
+          "orb": 0.479139836645885,
+          "category": "exact"
+        },
+        {
+          "from": "neptune",
+          "to": "vertex",
+          "type": "sextile",
+          "orb": 0.5287601854030868,
+          "category": "exact"
+        },
+        {
+          "from": "true_node",
+          "to": "vertex",
+          "type": "trine",
+          "orb": 0.8325432295519022,
+          "category": "exact"
+        },
+        {
+          "from": "true_node",
+          "to": "selena",
+          "type": "sextile",
+          "orb": 0.9846660699571999,
+          "category": "exact"
+        },
+        {
+          "from": "moon",
+          "to": "pluto",
+          "type": "square",
+          "orb": 1.023764071283722,
+          "category": "working"
+        },
+        {
+          "from": "sun",
+          "to": "uranus",
+          "type": "quincunx",
+          "orb": 1.1301546415978692,
+          "category": "working"
+        },
+        {
+          "from": "mars",
+          "to": "pluto",
+          "type": "quincunx",
+          "orb": 1.3155611953159791,
+          "category": "working"
+        },
+        {
+          "from": "saturn",
+          "to": "uranus",
+          "type": "quincunx",
+          "orb": 1.341328983253021,
+          "category": "working"
+        },
+        {
+          "from": "neptune",
+          "to": "true_node",
+          "type": "sextile",
+          "orb": 1.361303414954989,
+          "category": "working"
+        },
+        {
+          "from": "mars",
+          "to": "jupiter",
+          "type": "quincunx",
+          "orb": 1.3818077386971481,
+          "category": "working"
+        },
+        {
+          "from": "mercury",
+          "to": "pars_fortune",
+          "type": "sextile",
+          "orb": 1.4307960729877038,
+          "category": "working"
+        },
+        {
+          "from": "chiron",
+          "to": "mc",
+          "type": "sextile",
+          "orb": 1.6982335912745157,
+          "category": "working"
+        },
+        {
+          "from": "mercury",
+          "to": "mean_apog",
+          "type": "sextile",
+          "orb": 1.7027586737580975,
+          "category": "working"
+        },
+        {
+          "from": "selena",
+          "to": "vertex",
+          "type": "sextile",
+          "orb": 1.817209299509102,
+          "category": "working"
+        },
+        {
+          "from": "moon",
+          "to": "venus",
+          "type": "sextile",
+          "orb": 2.0574864268168085,
+          "category": "working"
+        },
+        {
+          "from": "chiron",
+          "to": "asc",
+          "type": "opposition",
+          "orb": 2.1773734279204007,
+          "category": "working"
+        },
+        {
+          "from": "moon",
+          "to": "mars",
+          "type": "trine",
+          "orb": 2.3393252665997437,
+          "category": "working"
+        },
+        {
+          "from": "neptune",
+          "to": "selena",
+          "type": "conjunction",
+          "orb": 2.345969484912189,
+          "category": "working"
+        },
+        {
+          "from": "neptune",
+          "to": "mean_apog",
+          "type": "opposition",
+          "orb": 2.4590794527326523,
+          "category": "working"
+        },
+        {
+          "from": "jupiter",
+          "to": "pluto",
+          "type": "sextile",
+          "orb": 2.697368934013184,
+          "category": "working"
+        },
+        {
+          "from": "mercury",
+          "to": "pluto",
+          "type": "sextile",
+          "orb": 2.907341786525535,
+          "category": "working"
+        },
+        {
+          "from": "mean_apog",
+          "to": "vertex",
+          "type": "trine",
+          "orb": 2.987839638135739,
+          "category": "working"
+        },
+        {
+          "from": "jupiter",
+          "to": "chiron",
+          "type": "square",
+          "orb": 3.0553140635856835,
+          "category": "background"
+        },
+        {
+          "from": "mercury",
+          "to": "neptune",
+          "type": "trine",
+          "orb": 4.16183812649075,
+          "category": "background"
+        },
+        {
+          "from": "venus",
+          "to": "chiron",
+          "type": "sextile",
+          "orb": 4.718960642065781,
+          "category": "background"
+        },
+        {
+          "from": "jupiter",
+          "to": "mc",
+          "type": "quincunx",
+          "orb": 4.753547654860171,
+          "category": "background"
+        },
+        {
+          "from": "jupiter",
+          "to": "asc",
+          "type": "square",
+          "orb": 5.232687491506056,
+          "category": "background"
+        },
+        {
+          "from": "mercury",
+          "to": "jupiter",
+          "type": "conjunction",
+          "orb": 5.604710720538719,
+          "category": "background"
+        },
+        {
+          "from": "moon",
+          "to": "neptune",
+          "type": "quincunx",
+          "orb": 6.0454158417325345,
+          "category": "background"
+        },
+        {
+          "from": "sun",
+          "to": "neptune",
+          "type": "trine",
+          "orb": 6.222778443299887,
+          "category": "background"
+        },
+        {
+          "from": "moon",
+          "to": "chiron",
+          "type": "trine",
+          "orb": 6.776447068882561,
+          "category": "background"
+        }
+      ]
+    },
+    "server_transitions": [
+      [
+        "ContextService",
+        "load"
+      ],
+      [
+        "BuildNatalHandler",
+        "handle"
+      ],
+      [
+        "BirthDataResolver",
+        "resolve_birth_data"
+      ],
+      [
+        "ChartArtifactResolver",
+        "ensure_chart"
+      ],
+      [
+        "ChartArtifactResolver",
+        "to_stored"
+      ],
+      [
+        "ContextService",
+        "save"
+      ]
+    ],
+    "scope": "Manual browser run ending at wire 73; server CAS/AlreadyApplied/Superseded covered by original executed regression"
+  },
+  "wire_snapshot": [
+    {
+      "wire_id": 28,
+      "started_msk": "2026-10-09 10:38:06,997",
+      "finished_msk": "2026-10-09 10:38:07,033",
+      "method": "POST",
+      "route": "/session/bootstrap",
+      "status": 200,
+      "request_id": "ddbc8415-97fe-411e-be90-e527500e69b4",
+      "outcome": "ready",
+      "state_version": 0,
+      "intent": null,
+      "birth": null,
+      "chart_identity": null,
+      "chart_sha256": null,
+      "response_sha256": "a9ed6226d042874cee05be3cbe5e94a2e66ea62e94483eb0df219e0ea5c84351"
+    },
+    {
+      "wire_id": 30,
+      "started_msk": "2026-10-09 10:38:07,364",
+      "finished_msk": "2026-10-09 10:38:07,379",
+      "method": "GET",
+      "route": "/charts/current",
+      "status": 200,
+      "request_id": "54e78f39-3714-41c1-90d2-c446e645997e",
+      "outcome": "empty",
+      "state_version": 0,
+      "intent": null,
+      "birth": null,
+      "chart_identity": null,
+      "chart_sha256": null,
+      "response_sha256": "30fc7aaa8d602fdd0dd74d101eb5c7ff5b267402aee59267d84956b49090d692"
+    },
+    {
+      "wire_id": 32,
+      "started_msk": "2026-10-09 10:38:23,775",
+      "finished_msk": "2026-10-09 10:38:24,032",
+      "method": "POST",
+      "route": "/charts/natal",
+      "status": 200,
+      "request_id": "ff4ee5ee-bf21-4687-b6be-95ed7307e563",
+      "outcome": "chart_ready",
+      "state_version": 1,
+      "intent": {
+        "birth_date": "1985-09-02",
+        "birth_time": "00:45",
+        "place_id": "524901"
+      },
+      "birth": null,
+      "chart_identity": "eo:calc:v2:f112dfae69d8d6daaf5051292bc21f78682940bb2df0fc7d7b1f027623f6b7e2",
+      "chart_sha256": "8f83706a06190f7ef6e82b8a36137348218771d2f2be207d78bb97eba1321459",
+      "response_sha256": "4793897925e9d24ec9d6f4066fa0aaf84c4bab1d6fd8a56455409a390cf6cec2"
+    },
+    {
+      "wire_id": 33,
+      "started_msk": "2026-10-09 10:38:49,910",
+      "finished_msk": "2026-10-09 10:38:49,933",
+      "method": "POST",
+      "route": "/session/bootstrap",
+      "status": 200,
+      "request_id": "4b9b85ba-4219-44de-8acc-39b170d0b449",
+      "outcome": "ready",
+      "state_version": 1,
+      "intent": null,
+      "birth": null,
+      "chart_identity": null,
+      "chart_sha256": null,
+      "response_sha256": "63ea9de6a8e1aa63b845c1ef13a90048a40d45f024702b1ba5a2f16922bbc73c"
+    },
+    {
+      "wire_id": 34,
+      "started_msk": "2026-10-09 10:38:50,171",
+      "finished_msk": "2026-10-09 10:38:50,207",
+      "method": "GET",
+      "route": "/charts/current",
+      "status": 200,
+      "request_id": "9de3ffe4-f67e-42f2-8dfd-e3b30e8f7056",
+      "outcome": "chart_ready",
+      "state_version": 1,
+      "intent": null,
+      "birth": {
+        "birth_date": "1985-09-02",
+        "birth_time": "00:45",
+        "place": {
+          "place_id": "524901",
+          "display_name": "Москва"
+        },
+        "tz_id": "Europe/Moscow",
+        "utc_offset_seconds": 14400,
+        "time_unknown": false,
+        "warnings": []
+      },
+      "chart_identity": "eo:calc:v2:f112dfae69d8d6daaf5051292bc21f78682940bb2df0fc7d7b1f027623f6b7e2",
+      "chart_sha256": "8f83706a06190f7ef6e82b8a36137348218771d2f2be207d78bb97eba1321459",
+      "response_sha256": "f69110305d9297012cb025dc44b3f8c065797a7c460731d280d168a6507e16cb"
+    },
+    {
+      "wire_id": 35,
+      "started_msk": "2026-10-09 10:39:03,234",
+      "finished_msk": "2026-10-09 10:39:03,249",
+      "method": "POST",
+      "route": "/session/bootstrap",
+      "status": 200,
+      "request_id": "1c7edc74-472c-4fcc-9682-9ca5c467953d",
+      "outcome": "ready",
+      "state_version": 1,
+      "intent": null,
+      "birth": null,
+      "chart_identity": null,
+      "chart_sha256": null,
+      "response_sha256": "63ea9de6a8e1aa63b845c1ef13a90048a40d45f024702b1ba5a2f16922bbc73c"
+    },
+    {
+      "wire_id": 36,
+      "started_msk": "2026-10-09 10:39:03,574",
+      "finished_msk": "2026-10-09 10:39:03,602",
+      "method": "GET",
+      "route": "/charts/current",
+      "status": 200,
+      "request_id": "ed31c6c8-fc47-447a-8be9-8d1c5f7fe2be",
+      "outcome": "chart_ready",
+      "state_version": 1,
+      "intent": null,
+      "birth": {
+        "birth_date": "1985-09-02",
+        "birth_time": "00:45",
+        "place": {
+          "place_id": "524901",
+          "display_name": "Москва"
+        },
+        "tz_id": "Europe/Moscow",
+        "utc_offset_seconds": 14400,
+        "time_unknown": false,
+        "warnings": []
+      },
+      "chart_identity": "eo:calc:v2:f112dfae69d8d6daaf5051292bc21f78682940bb2df0fc7d7b1f027623f6b7e2",
+      "chart_sha256": "8f83706a06190f7ef6e82b8a36137348218771d2f2be207d78bb97eba1321459",
+      "response_sha256": "f69110305d9297012cb025dc44b3f8c065797a7c460731d280d168a6507e16cb"
+    },
+    {
+      "wire_id": 47,
+      "started_msk": "2026-10-09 10:39:07,807",
+      "finished_msk": "2026-10-09 10:39:07,851",
+      "method": "POST",
+      "route": "/session/bootstrap",
+      "status": 200,
+      "request_id": "4833a955-7e9e-467d-8e83-ff44cdd08db1",
+      "outcome": "ready",
+      "state_version": 1,
+      "intent": null,
+      "birth": null,
+      "chart_identity": null,
+      "chart_sha256": null,
+      "response_sha256": "63ea9de6a8e1aa63b845c1ef13a90048a40d45f024702b1ba5a2f16922bbc73c"
+    },
+    {
+      "wire_id": 48,
+      "started_msk": "2026-10-09 10:39:08,197",
+      "finished_msk": "2026-10-09 10:39:08,219",
+      "method": "GET",
+      "route": "/charts/current",
+      "status": 200,
+      "request_id": "dc64c4be-f25d-484d-b13b-e26ca2434579",
+      "outcome": "chart_ready",
+      "state_version": 1,
+      "intent": null,
+      "birth": {
+        "birth_date": "1985-09-02",
+        "birth_time": "00:45",
+        "place": {
+          "place_id": "524901",
+          "display_name": "Москва"
+        },
+        "tz_id": "Europe/Moscow",
+        "utc_offset_seconds": 14400,
+        "time_unknown": false,
+        "warnings": []
+      },
+      "chart_identity": "eo:calc:v2:f112dfae69d8d6daaf5051292bc21f78682940bb2df0fc7d7b1f027623f6b7e2",
+      "chart_sha256": "8f83706a06190f7ef6e82b8a36137348218771d2f2be207d78bb97eba1321459",
+      "response_sha256": "f69110305d9297012cb025dc44b3f8c065797a7c460731d280d168a6507e16cb"
+    },
+    {
+      "wire_id": 49,
+      "started_msk": "2026-10-09 10:39:20,035",
+      "finished_msk": "2026-10-09 10:39:20,157",
+      "method": "POST",
+      "route": "/charts/natal",
+      "status": 200,
+      "request_id": "514cb5c5-3641-4acd-ac42-4fe6573d8f82",
+      "outcome": "chart_ready",
+      "state_version": 2,
+      "intent": {
+        "birth_date": "2005-10-02",
+        "birth_time": "00:45",
+        "place_id": "524901"
+      },
+      "birth": null,
+      "chart_identity": "eo:calc:v2:5c06bc98d5a7e7d0bbced4723d6af1eadd8cdb2bea6740d2d83396728ab1fe55",
+      "chart_sha256": "7f53301f410ba3e6c1a2cf4b714dbd951dc83942f52d7dd1b53ada0f06a29fdd",
+      "response_sha256": "fc22770a8584b66443727f50e5f2b9955acee9bbf465ee1c259430920d13be99"
+    },
+    {
+      "wire_id": 50,
+      "started_msk": "2026-10-09 10:39:25,795",
+      "finished_msk": "2026-10-09 10:39:25,818",
+      "method": "POST",
+      "route": "/session/bootstrap",
+      "status": 200,
+      "request_id": "b6172811-9729-47b9-954e-92fc8eaee408",
+      "outcome": "ready",
+      "state_version": 2,
+      "intent": null,
+      "birth": null,
+      "chart_identity": null,
+      "chart_sha256": null,
+      "response_sha256": "fa4d24a4665582b891c32af2c776a1c334d3ccae1806d1dbee5a63054f1f9db5"
+    },
+    {
+      "wire_id": 51,
+      "started_msk": "2026-10-09 10:39:26,066",
+      "finished_msk": "2026-10-09 10:39:26,092",
+      "method": "GET",
+      "route": "/charts/current",
+      "status": 200,
+      "request_id": "d9f3539d-c1f1-4def-928a-b5ee94ebc373",
+      "outcome": "chart_ready",
+      "state_version": 2,
+      "intent": null,
+      "birth": {
+        "birth_date": "2005-10-02",
+        "birth_time": "00:45",
+        "place": {
+          "place_id": "524901",
+          "display_name": "Москва"
+        },
+        "tz_id": "Europe/Moscow",
+        "utc_offset_seconds": 14400,
+        "time_unknown": false,
+        "warnings": []
+      },
+      "chart_identity": "eo:calc:v2:5c06bc98d5a7e7d0bbced4723d6af1eadd8cdb2bea6740d2d83396728ab1fe55",
+      "chart_sha256": "7f53301f410ba3e6c1a2cf4b714dbd951dc83942f52d7dd1b53ada0f06a29fdd",
+      "response_sha256": "1938adb47844609c631cfd6afd1ebff3a6729622664c7c84b2f2a7286b0d1d68"
+    },
+    {
+      "wire_id": 52,
+      "started_msk": "2026-10-09 10:40:10,255",
+      "finished_msk": "2026-10-09 10:40:10,271",
+      "method": "POST",
+      "route": "/session/bootstrap",
+      "status": 200,
+      "request_id": "4bf7c6f2-99fd-415b-8b08-9ff775e7d75c",
+      "outcome": "ready",
+      "state_version": 2,
+      "intent": null,
+      "birth": null,
+      "chart_identity": null,
+      "chart_sha256": null,
+      "response_sha256": "fa4d24a4665582b891c32af2c776a1c334d3ccae1806d1dbee5a63054f1f9db5"
+    },
+    {
+      "wire_id": 53,
+      "started_msk": "2026-10-09 10:40:10,622",
+      "finished_msk": "2026-10-09 10:40:10,646",
+      "method": "GET",
+      "route": "/charts/current",
+      "status": 200,
+      "request_id": "b4aff60c-6742-4673-8732-4b35b7ad890b",
+      "outcome": "chart_ready",
+      "state_version": 2,
+      "intent": null,
+      "birth": {
+        "birth_date": "2005-10-02",
+        "birth_time": "00:45",
+        "place": {
+          "place_id": "524901",
+          "display_name": "Москва"
+        },
+        "tz_id": "Europe/Moscow",
+        "utc_offset_seconds": 14400,
+        "time_unknown": false,
+        "warnings": []
+      },
+      "chart_identity": "eo:calc:v2:5c06bc98d5a7e7d0bbced4723d6af1eadd8cdb2bea6740d2d83396728ab1fe55",
+      "chart_sha256": "7f53301f410ba3e6c1a2cf4b714dbd951dc83942f52d7dd1b53ada0f06a29fdd",
+      "response_sha256": "1938adb47844609c631cfd6afd1ebff3a6729622664c7c84b2f2a7286b0d1d68"
+    },
+    {
+      "wire_id": 54,
+      "started_msk": "2026-10-09 10:40:17,154",
+      "finished_msk": "2026-10-09 10:40:17,181",
+      "method": "POST",
+      "route": "/session/bootstrap",
+      "status": 200,
+      "request_id": "10dca0f1-2642-4d5a-9322-16b7da953a26",
+      "outcome": "ready",
+      "state_version": 2,
+      "intent": null,
+      "birth": null,
+      "chart_identity": null,
+      "chart_sha256": null,
+      "response_sha256": "fa4d24a4665582b891c32af2c776a1c334d3ccae1806d1dbee5a63054f1f9db5"
+    },
+    {
+      "wire_id": 55,
+      "started_msk": "2026-10-09 10:40:17,504",
+      "finished_msk": "2026-10-09 10:40:17,527",
+      "method": "GET",
+      "route": "/charts/current",
+      "status": 200,
+      "request_id": "4b627c91-dc1a-4d9a-ab99-eb46b0ab229e",
+      "outcome": "chart_ready",
+      "state_version": 2,
+      "intent": null,
+      "birth": {
+        "birth_date": "2005-10-02",
+        "birth_time": "00:45",
+        "place": {
+          "place_id": "524901",
+          "display_name": "Москва"
+        },
+        "tz_id": "Europe/Moscow",
+        "utc_offset_seconds": 14400,
+        "time_unknown": false,
+        "warnings": []
+      },
+      "chart_identity": "eo:calc:v2:5c06bc98d5a7e7d0bbced4723d6af1eadd8cdb2bea6740d2d83396728ab1fe55",
+      "chart_sha256": "7f53301f410ba3e6c1a2cf4b714dbd951dc83942f52d7dd1b53ada0f06a29fdd",
+      "response_sha256": "1938adb47844609c631cfd6afd1ebff3a6729622664c7c84b2f2a7286b0d1d68"
+    },
+    {
+      "wire_id": 56,
+      "started_msk": "2026-10-09 10:41:26,097",
+      "finished_msk": "2026-10-09 10:41:26,114",
+      "method": "POST",
+      "route": "/session/bootstrap",
+      "status": 200,
+      "request_id": "2c440261-cc97-4170-95d5-f9411ae539e6",
+      "outcome": "ready",
+      "state_version": 2,
+      "intent": null,
+      "birth": null,
+      "chart_identity": null,
+      "chart_sha256": null,
+      "response_sha256": "fa4d24a4665582b891c32af2c776a1c334d3ccae1806d1dbee5a63054f1f9db5"
+    },
+    {
+      "wire_id": 57,
+      "started_msk": "2026-10-09 10:41:26,363",
+      "finished_msk": "2026-10-09 10:41:26,390",
+      "method": "GET",
+      "route": "/charts/current",
+      "status": 200,
+      "request_id": "c4ef7f29-eada-4287-bc95-71032a5f92c9",
+      "outcome": "chart_ready",
+      "state_version": 2,
+      "intent": null,
+      "birth": {
+        "birth_date": "2005-10-02",
+        "birth_time": "00:45",
+        "place": {
+          "place_id": "524901",
+          "display_name": "Москва"
+        },
+        "tz_id": "Europe/Moscow",
+        "utc_offset_seconds": 14400,
+        "time_unknown": false,
+        "warnings": []
+      },
+      "chart_identity": "eo:calc:v2:5c06bc98d5a7e7d0bbced4723d6af1eadd8cdb2bea6740d2d83396728ab1fe55",
+      "chart_sha256": "7f53301f410ba3e6c1a2cf4b714dbd951dc83942f52d7dd1b53ada0f06a29fdd",
+      "response_sha256": "1938adb47844609c631cfd6afd1ebff3a6729622664c7c84b2f2a7286b0d1d68"
+    },
+    {
+      "wire_id": 58,
+      "started_msk": "2026-10-09 10:41:26,935",
+      "finished_msk": "2026-10-09 10:41:26,943",
+      "method": "POST",
+      "route": "/session/bootstrap",
+      "status": 200,
+      "request_id": "4e7ccaca-ee65-4241-aec4-e1c09d7af4a8",
+      "outcome": "ready",
+      "state_version": 2,
+      "intent": null,
+      "birth": null,
+      "chart_identity": null,
+      "chart_sha256": null,
+      "response_sha256": "fa4d24a4665582b891c32af2c776a1c334d3ccae1806d1dbee5a63054f1f9db5"
+    },
+    {
+      "wire_id": 59,
+      "started_msk": "2026-10-09 10:41:27,267",
+      "finished_msk": "2026-10-09 10:41:27,291",
+      "method": "GET",
+      "route": "/charts/current",
+      "status": 200,
+      "request_id": "2a7e263a-07fe-4037-b1a9-c39696b2fbfb",
+      "outcome": "chart_ready",
+      "state_version": 2,
+      "intent": null,
+      "birth": {
+        "birth_date": "2005-10-02",
+        "birth_time": "00:45",
+        "place": {
+          "place_id": "524901",
+          "display_name": "Москва"
+        },
+        "tz_id": "Europe/Moscow",
+        "utc_offset_seconds": 14400,
+        "time_unknown": false,
+        "warnings": []
+      },
+      "chart_identity": "eo:calc:v2:5c06bc98d5a7e7d0bbced4723d6af1eadd8cdb2bea6740d2d83396728ab1fe55",
+      "chart_sha256": "7f53301f410ba3e6c1a2cf4b714dbd951dc83942f52d7dd1b53ada0f06a29fdd",
+      "response_sha256": "1938adb47844609c631cfd6afd1ebff3a6729622664c7c84b2f2a7286b0d1d68"
+    },
+    {
+      "wire_id": 60,
+      "started_msk": "2026-10-09 10:41:50,040",
+      "finished_msk": "2026-10-09 10:41:50,061",
+      "method": "POST",
+      "route": "/session/bootstrap",
+      "status": 200,
+      "request_id": "9b9e174d-665c-4d1b-b663-485f9d384b20",
+      "outcome": "ready",
+      "state_version": 2,
+      "intent": null,
+      "birth": null,
+      "chart_identity": null,
+      "chart_sha256": null,
+      "response_sha256": "fa4d24a4665582b891c32af2c776a1c334d3ccae1806d1dbee5a63054f1f9db5"
+    },
+    {
+      "wire_id": 61,
+      "started_msk": "2026-10-09 10:41:50,380",
+      "finished_msk": "2026-10-09 10:41:50,408",
+      "method": "GET",
+      "route": "/charts/current",
+      "status": 200,
+      "request_id": "e9825d8f-9841-4957-a796-49f06c8d3213",
+      "outcome": "chart_ready",
+      "state_version": 2,
+      "intent": null,
+      "birth": {
+        "birth_date": "2005-10-02",
+        "birth_time": "00:45",
+        "place": {
+          "place_id": "524901",
+          "display_name": "Москва"
+        },
+        "tz_id": "Europe/Moscow",
+        "utc_offset_seconds": 14400,
+        "time_unknown": false,
+        "warnings": []
+      },
+      "chart_identity": "eo:calc:v2:5c06bc98d5a7e7d0bbced4723d6af1eadd8cdb2bea6740d2d83396728ab1fe55",
+      "chart_sha256": "7f53301f410ba3e6c1a2cf4b714dbd951dc83942f52d7dd1b53ada0f06a29fdd",
+      "response_sha256": "1938adb47844609c631cfd6afd1ebff3a6729622664c7c84b2f2a7286b0d1d68"
+    },
+    {
+      "wire_id": 62,
+      "started_msk": "2026-10-09 10:42:33,900",
+      "finished_msk": "2026-10-09 10:42:33,915",
+      "method": "POST",
+      "route": "/session/bootstrap",
+      "status": 200,
+      "request_id": "c1d96ea2-6697-4c9f-91cd-647e68bd40ee",
+      "outcome": "ready",
+      "state_version": 2,
+      "intent": null,
+      "birth": null,
+      "chart_identity": null,
+      "chart_sha256": null,
+      "response_sha256": "fa4d24a4665582b891c32af2c776a1c334d3ccae1806d1dbee5a63054f1f9db5"
+    },
+    {
+      "wire_id": 63,
+      "started_msk": "2026-10-09 10:42:34,248",
+      "finished_msk": "2026-10-09 10:42:34,272",
+      "method": "GET",
+      "route": "/charts/current",
+      "status": 200,
+      "request_id": "83424978-cc96-4141-9ae5-77b5dcbee945",
+      "outcome": "chart_ready",
+      "state_version": 2,
+      "intent": null,
+      "birth": {
+        "birth_date": "2005-10-02",
+        "birth_time": "00:45",
+        "place": {
+          "place_id": "524901",
+          "display_name": "Москва"
+        },
+        "tz_id": "Europe/Moscow",
+        "utc_offset_seconds": 14400,
+        "time_unknown": false,
+        "warnings": []
+      },
+      "chart_identity": "eo:calc:v2:5c06bc98d5a7e7d0bbced4723d6af1eadd8cdb2bea6740d2d83396728ab1fe55",
+      "chart_sha256": "7f53301f410ba3e6c1a2cf4b714dbd951dc83942f52d7dd1b53ada0f06a29fdd",
+      "response_sha256": "1938adb47844609c631cfd6afd1ebff3a6729622664c7c84b2f2a7286b0d1d68"
+    },
+    {
+      "wire_id": 64,
+      "started_msk": "2026-10-09 10:42:43,788",
+      "finished_msk": "2026-10-09 10:42:43,803",
+      "method": "POST",
+      "route": "/session/bootstrap",
+      "status": 200,
+      "request_id": "6e28894e-ca48-4b07-8817-24687d1ff907",
+      "outcome": "ready",
+      "state_version": 2,
+      "intent": null,
+      "birth": null,
+      "chart_identity": null,
+      "chart_sha256": null,
+      "response_sha256": "fa4d24a4665582b891c32af2c776a1c334d3ccae1806d1dbee5a63054f1f9db5"
+    },
+    {
+      "wire_id": 65,
+      "started_msk": "2026-10-09 10:42:44,126",
+      "finished_msk": "2026-10-09 10:42:44,144",
+      "method": "GET",
+      "route": "/charts/current",
+      "status": 200,
+      "request_id": "390e712f-85db-4c4e-a390-e16a060e8420",
+      "outcome": "chart_ready",
+      "state_version": 2,
+      "intent": null,
+      "birth": {
+        "birth_date": "2005-10-02",
+        "birth_time": "00:45",
+        "place": {
+          "place_id": "524901",
+          "display_name": "Москва"
+        },
+        "tz_id": "Europe/Moscow",
+        "utc_offset_seconds": 14400,
+        "time_unknown": false,
+        "warnings": []
+      },
+      "chart_identity": "eo:calc:v2:5c06bc98d5a7e7d0bbced4723d6af1eadd8cdb2bea6740d2d83396728ab1fe55",
+      "chart_sha256": "7f53301f410ba3e6c1a2cf4b714dbd951dc83942f52d7dd1b53ada0f06a29fdd",
+      "response_sha256": "1938adb47844609c631cfd6afd1ebff3a6729622664c7c84b2f2a7286b0d1d68"
+    },
+    {
+      "wire_id": 66,
+      "started_msk": "2026-10-09 10:43:42,506",
+      "finished_msk": "2026-10-09 10:43:42,521",
+      "method": "POST",
+      "route": "/session/bootstrap",
+      "status": 200,
+      "request_id": "bd41dde2-c374-4200-9b5b-05f08a74eb58",
+      "outcome": "ready",
+      "state_version": 2,
+      "intent": null,
+      "birth": null,
+      "chart_identity": null,
+      "chart_sha256": null,
+      "response_sha256": "fa4d24a4665582b891c32af2c776a1c334d3ccae1806d1dbee5a63054f1f9db5"
+    },
+    {
+      "wire_id": 67,
+      "started_msk": "2026-10-09 10:43:42,853",
+      "finished_msk": "2026-10-09 10:43:42,882",
+      "method": "GET",
+      "route": "/charts/current",
+      "status": 200,
+      "request_id": "37cd705c-b976-4283-be4b-fd00f2019b40",
+      "outcome": "chart_ready",
+      "state_version": 2,
+      "intent": null,
+      "birth": {
+        "birth_date": "2005-10-02",
+        "birth_time": "00:45",
+        "place": {
+          "place_id": "524901",
+          "display_name": "Москва"
+        },
+        "tz_id": "Europe/Moscow",
+        "utc_offset_seconds": 14400,
+        "time_unknown": false,
+        "warnings": []
+      },
+      "chart_identity": "eo:calc:v2:5c06bc98d5a7e7d0bbced4723d6af1eadd8cdb2bea6740d2d83396728ab1fe55",
+      "chart_sha256": "7f53301f410ba3e6c1a2cf4b714dbd951dc83942f52d7dd1b53ada0f06a29fdd",
+      "response_sha256": "1938adb47844609c631cfd6afd1ebff3a6729622664c7c84b2f2a7286b0d1d68"
+    },
+    {
+      "wire_id": 68,
+      "started_msk": "2026-10-09 10:44:02,152",
+      "finished_msk": "2026-10-09 10:44:02,169",
+      "method": "POST",
+      "route": "/session/bootstrap",
+      "status": 200,
+      "request_id": "350e9002-9b6d-42df-9234-bec33e924f4a",
+      "outcome": "ready",
+      "state_version": 2,
+      "intent": null,
+      "birth": null,
+      "chart_identity": null,
+      "chart_sha256": null,
+      "response_sha256": "fa4d24a4665582b891c32af2c776a1c334d3ccae1806d1dbee5a63054f1f9db5"
+    },
+    {
+      "wire_id": 69,
+      "started_msk": "2026-10-09 10:44:02,510",
+      "finished_msk": "2026-10-09 10:44:02,537",
+      "method": "GET",
+      "route": "/charts/current",
+      "status": 200,
+      "request_id": "8e9961e6-3d48-4f83-86fc-ae0e5365f59b",
+      "outcome": "chart_ready",
+      "state_version": 2,
+      "intent": null,
+      "birth": {
+        "birth_date": "2005-10-02",
+        "birth_time": "00:45",
+        "place": {
+          "place_id": "524901",
+          "display_name": "Москва"
+        },
+        "tz_id": "Europe/Moscow",
+        "utc_offset_seconds": 14400,
+        "time_unknown": false,
+        "warnings": []
+      },
+      "chart_identity": "eo:calc:v2:5c06bc98d5a7e7d0bbced4723d6af1eadd8cdb2bea6740d2d83396728ab1fe55",
+      "chart_sha256": "7f53301f410ba3e6c1a2cf4b714dbd951dc83942f52d7dd1b53ada0f06a29fdd",
+      "response_sha256": "1938adb47844609c631cfd6afd1ebff3a6729622664c7c84b2f2a7286b0d1d68"
+    },
+    {
+      "wire_id": 70,
+      "started_msk": "2026-10-09 10:45:04,367",
+      "finished_msk": "2026-10-09 10:45:04,385",
+      "method": "POST",
+      "route": "/session/bootstrap",
+      "status": 200,
+      "request_id": "575b33dc-a217-4774-be8a-6326f478bfab",
+      "outcome": "ready",
+      "state_version": 2,
+      "intent": null,
+      "birth": null,
+      "chart_identity": null,
+      "chart_sha256": null,
+      "response_sha256": "fa4d24a4665582b891c32af2c776a1c334d3ccae1806d1dbee5a63054f1f9db5"
+    },
+    {
+      "wire_id": 71,
+      "started_msk": "2026-10-09 10:45:04,618",
+      "finished_msk": "2026-10-09 10:45:04,642",
+      "method": "GET",
+      "route": "/charts/current",
+      "status": 200,
+      "request_id": "509814f3-e9e1-4f5c-b7ca-543c72da3a44",
+      "outcome": "chart_ready",
+      "state_version": 2,
+      "intent": null,
+      "birth": {
+        "birth_date": "2005-10-02",
+        "birth_time": "00:45",
+        "place": {
+          "place_id": "524901",
+          "display_name": "Москва"
+        },
+        "tz_id": "Europe/Moscow",
+        "utc_offset_seconds": 14400,
+        "time_unknown": false,
+        "warnings": []
+      },
+      "chart_identity": "eo:calc:v2:5c06bc98d5a7e7d0bbced4723d6af1eadd8cdb2bea6740d2d83396728ab1fe55",
+      "chart_sha256": "7f53301f410ba3e6c1a2cf4b714dbd951dc83942f52d7dd1b53ada0f06a29fdd",
+      "response_sha256": "1938adb47844609c631cfd6afd1ebff3a6729622664c7c84b2f2a7286b0d1d68"
+    },
+    {
+      "wire_id": 72,
+      "started_msk": "2026-10-09 10:45:05,078",
+      "finished_msk": "2026-10-09 10:45:05,095",
+      "method": "POST",
+      "route": "/session/bootstrap",
+      "status": 200,
+      "request_id": "63541dea-155f-48ce-b171-018fb564fab3",
+      "outcome": "ready",
+      "state_version": 2,
+      "intent": null,
+      "birth": null,
+      "chart_identity": null,
+      "chart_sha256": null,
+      "response_sha256": "fa4d24a4665582b891c32af2c776a1c334d3ccae1806d1dbee5a63054f1f9db5"
+    },
+    {
+      "wire_id": 73,
+      "started_msk": "2026-10-09 10:45:05,444",
+      "finished_msk": "2026-10-09 10:45:05,459",
+      "method": "GET",
+      "route": "/charts/current",
+      "status": 200,
+      "request_id": "dcd5b804-9b57-4e74-bb3f-2c1aaacc367a",
+      "outcome": "chart_ready",
+      "state_version": 2,
+      "intent": null,
+      "birth": {
+        "birth_date": "2005-10-02",
+        "birth_time": "00:45",
+        "place": {
+          "place_id": "524901",
+          "display_name": "Москва"
+        },
+        "tz_id": "Europe/Moscow",
+        "utc_offset_seconds": 14400,
+        "time_unknown": false,
+        "warnings": []
+      },
+      "chart_identity": "eo:calc:v2:5c06bc98d5a7e7d0bbced4723d6af1eadd8cdb2bea6740d2d83396728ab1fe55",
+      "chart_sha256": "7f53301f410ba3e6c1a2cf4b714dbd951dc83942f52d7dd1b53ada0f06a29fdd",
+      "response_sha256": "1938adb47844609c631cfd6afd1ebff3a6729622664c7c84b2f2a7286b0d1d68"
+    }
+  ],
+  "evidence_files": {
+    "AS-UI-16-20261009.txt": {
+      "bytes": 44286,
+      "sha256": "5d118443235d4c92a3bd48f88b3abae96f8d1a492ca3cf88246134ec38a063b2"
+    },
+    "AS-UI-16-20261009-a.png": {
+      "bytes": 137239,
+      "sha256": "5acc41ac03db25224f4039a81964832afe232cc097bb948e3379bfbee3a0d69a"
+    },
+    "AS-UI-16-20261009-b.png": {
+      "bytes": 73211,
+      "sha256": "7acb83390a07d1e2aceab03fdc51ac5cb37d7a4037bc4e2267e1512f32b6df92"
+    }
+  },
+  "commands": [
+    "python -X utf8 -B logs/tester-as16-063c843-20261009/finalize-evidence.py",
+    "python -X utf8 -B logs/tester-as16-063c843-20261009/verify-final.py",
+    "git diff --quiet a8b45db HEAD -- src tests",
+    "git diff --check"
+  ],
+  "accepted_limits": [
+    "DEBT-CALC-001 OPEN/NON-BLOCKING",
+    "DEBT-UI-001 closed stage only",
+    "DP-UI-03",
+    "DP-UI-09"
+  ],
+  "handoff": "Tester recommendation only; Manager decides G5/final acceptance and merge; no public deployment",
+  "artifact_validation": {
+    "status": "PASS",
+    "local_links": 112,
+    "anchors": 59,
+    "evidence_hashes": 3,
+    "historical_snapshot_preserved": true,
+    "distinct_test_baselines": true
+  }
+}

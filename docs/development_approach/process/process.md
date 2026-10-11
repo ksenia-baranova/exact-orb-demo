@@ -360,6 +360,8 @@ Manager назначает **Developer** разрешение конфликто
 
 ## 7. Размещение материалов
 
+Исторические change и реестры сохраняют опубликованные пути; их перенос выполняется только по отдельной задаче.
+
 - Manager: `docs/project_management/change_plans/<change-id>/artifacts.md`.
 - Analyst: `docs/requirements/changes/<change-id>/requirements.md`, `scenarios.md`, `analysis.md`.
 - Developer: Implementation Plan в `docs/project_management/implementation_plans/`.

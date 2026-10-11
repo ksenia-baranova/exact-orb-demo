@@ -30,6 +30,9 @@ exact-orb = "exact_orb.cli:main"
 [tool.setuptools.packages.find]
 where = ["src"]
 
+[tool.setuptools.package-data]
+"exact_orb.http_api" = ["ui/*.html", "ui/*.css", "ui/*.mjs"]
+
 [tool.exact_orb]
 ephemeris_path = "ephe"
 selena_method = "true_perigee"
