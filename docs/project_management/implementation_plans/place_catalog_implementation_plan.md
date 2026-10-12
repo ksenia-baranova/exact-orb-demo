@@ -44,7 +44,7 @@ M1-6/M1-7.
 - [Требования BirthDataResolver](../../requirements/component_responsibilities/exact-orb_birth_data_resolution.md).
 - [Сценарии](../../requirements/scenarios.md) и
   [sequence diagrams](../../sequence_diagrams/place_catalog/README.md).
-- [Roadmap M1-5](../roadmap.md).
+- [Roadmap M1-5](../Roadmap/roadmap.md).
 - [ADR-0005](../../requirements/decisions/0005-resolve-in-intent-layer.md),
   [ADR-0017](../../requirements/decisions/0017-calculation-cache-and-chartspec.md)
   и [ADR-0019](../../requirements/decisions/0019-defer-nl-birth-data.md).
@@ -427,7 +427,7 @@ real-data smoke.
 - `docs/requirements/scenarios.md`;
 - `docs/sequence_diagrams/place_catalog/README.md` и только изменившиеся
   place-catalog diagrams;
-- `docs/project_management/roadmap.md`.
+- `docs/project_management/Roadmap/roadmap.md`.
 
 **Запрещено менять:** production/tests, исторические prompts, соседние ADR,
 goldens, raw dumps и generated SQLite в Git.

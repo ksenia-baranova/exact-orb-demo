@@ -1,0 +1,42 @@
+@startuml
+title exact-orb — Статусы Decision Point (DP)
+
+' Источник: docs/development_approach/process/process.md, разделы 4 и 8.2.
+' Один вопрос — одна запись единого реестра в manager_artifact.md.
+' Рекомендации ролей не являются решением до подтверждения владельца.
+
+hide empty description
+skinparam shadowing false
+skinparam state {
+    BackgroundColor #F8FAFC
+    BorderColor #64748B
+    FontColor #0F172A
+    ArrowColor #2563EB
+    ArrowFontColor #334155
+}
+
+state OPEN : вопрос, контекст, пример;\nназначен владелец решения
+state READY_FOR_REVIEW : материалы достаточны\nдля решения
+state ACCEPTED : выбор, основание,\nпоследствия, evidence
+state DEFERRED : владелец, срок или\nсобытие возврата
+state REJECTED : основание отказа
+
+[*] --> OPEN : роль предложила,\nManager зарегистрировал
+OPEN --> READY_FOR_REVIEW : материалы собраны
+READY_FOR_REVIEW --> OPEN : нужны данные
+READY_FOR_REVIEW --> ACCEPTED : владелец подтвердил выбор
+OPEN -[#475569]-> DEFERRED : отложено
+READY_FOR_REVIEW -[#475569]-> DEFERRED : отложено
+OPEN -[#475569]-> REJECTED : отклонено
+READY_FOR_REVIEW -[#475569]-> REJECTED : отклонено
+DEFERRED -[#EA580C]-> OPEN : наступил срок / событие\nили владелец возобновил
+REJECTED -[#EA580C]-> OPEN : владелец разрешил пересмотр\nна новых данных
+ACCEPTED -[#EA580C]-> OPEN : владелец разрешил пересмотр;\nпрежний выбор сохраняется
+
+note right of ACCEPTED
+  Перенос в техдолг — это ACCEPTED
+  с вариантом «техдолг» и DebtId,
+  а не DEFERRED.
+  Архитектурный выбор — со ссылкой на ADR.
+end note
+@enduml

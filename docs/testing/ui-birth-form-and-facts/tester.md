@@ -38,7 +38,7 @@ Implementation Plan и шести промтов Developer; testability consulta
 - Manager-редакция — `64934fc33b8c04191e7a1b40a40d84b232d948f3`;
   единый реестр сверяется в общем `082c6b9`, содержащем также подписанный вклад Developer:
   [artifacts.md](../../project_management/change_plans/ui-birth-form-and-facts/artifacts.md#decision-register),
-  [roadmap.md](../../project_management/roadmap.md).
+  [roadmap.md](../../project_management/Roadmap/roadmap.md).
 - Developer-пакет — `082c6b9ac5c8b054c38de5f17bc673956ec058d8`:
   [Implementation Plan](../../project_management/implementation_plans/ui_birth_form_and_facts_implementation_plan.md),
   [повторная валидация Developer](../../project_management/implementation_plans/ui_birth_form_and_facts_developer_review.md),
@@ -49,7 +49,7 @@ Implementation Plan и шести промтов Developer; testability consulta
   и 21 AS; его фактические baselines и проверки сохраняются ниже как история.
   Факт интеграции не означает утверждения требований или готовности к разработке.
 - Применены [Tester skill](../../development_approach/skills/tester/SKILL.md),
-  [процесс](../../development_approach/process.md),
+  [процесс](https://github.com/ksenia-baranova/exact-orb-demo/blob/082c6b9ac5c8b054c38de5f17bc673956ec058d8/docs/development_approach/process.md),
   [ownership](../../development_approach/roles.md) и
   [шаблон Tester](../../development_approach/artifacts/tester.md).
 

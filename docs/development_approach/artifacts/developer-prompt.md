@@ -6,10 +6,12 @@
 
 ## Как пользоваться
 
+Новые постановки сохраняются в `docs/project_management/change_plans/<change-id>/developer/prompts/<NN>-<topic>.md`; execution handoff — в `developer_artifact.md`, подробные checks — в `developer/checks.md`. Исторические примеры `prompts/**` ниже сохраняют свои исходные пути.
+
 1. Прочитай [skill Developer](../skills/developer/SKILL.md), текущую карточку плана и требования change.
 2. Выбери подход к разработке по риску, существующему покрытию и готовности контракта.
 3. Скопируй [заготовку](#заготовка-для-копирования), заполни её по пояснениям ниже.
-4. Сохрани новый файл в `prompts/<YYYY-MM-DD>/<change-id>/<NN>-<topic>.md`, свяжи его с карточкой `DEV-*`.
+4. Сохрани новый файл в `docs/project_management/change_plans/<change-id>/developer/prompts/<NN>-<topic>.md`, свяжи его с карточкой `DEV-*`.
    В существующей серии используй её структуру и нумерацию. Исторические промты не редактируй.
 5. Проверь источники, ссылки, команды и условия готовности. Подготовленный промт исполняется только в рамках
    уже разрешённой задачи или плана; создание файла само по себе не является разрешением на запуск.
@@ -54,7 +56,7 @@
 Change: place-query-normalization; work item: DEV-DEMO-01.
 План: <путь>#DEV-DEMO-01; checkout: <путь>, ветка: <ветка>, исходный HEAD: <sha>.
 Исходный контракт: <нормативный путь>#<пункт> @ <sha>.
-Контракт change: docs/requirements/changes/<change-id>/requirements.md @ <sha>, REQ-DEMO-01;
+Контракт change: docs/project_management/change_plans/<change-id>/analyst/requirements.md @ <sha>, REQ-DEMO-01;
 scenarios.md @ <sha>, AS-DEMO-01…03.
 Реестр решений: <путь> @ <sha>; применимые DP: нет.
 Перед работой: проверить git status --short, прочитать normalize_place_query и существующие тесты;
@@ -216,8 +218,10 @@ scope/сроки — Manager, архитектурный вопрос — Techni
 
 Задай формат фактического отчёта: результат, причина выбора/исправления, файлы, проверенная версия и состояние дерева,
 команды, результаты и ограничения. Исполнение записывай в карточку implementation plan и
-[Development Handoff](developer.md#3-development-handoff). Промт остаётся постановкой; текущий статус реализации
-хранится в плане. Для TDD различай свидетельства RED и GREEN. Запланированные проверки не выдавай за выполненные.
+[Development Handoff](developer.md#3-development-handoff). Состояния версии промта и задания исполнения ведутся
+в сводке `docs/project_management/change_plans/<change-id>/manager_artifact.md` по [process.md](../process/process.md), раздел 2;
+Implementation Plan содержит work items и подробное evidence. Для TDD различай свидетельства RED и GREEN.
+Запланированные проверки не выдавай за выполненные.
 
 **Пример заготовки отчёта:**
 
@@ -242,9 +246,10 @@ TDD, если выбран: <node ID, причина RED, результат GRE
 **Дата подготовки:** <YYYY-MM-DD>
 **Change / work item:** <change-id> / <DEV-NN и ссылка на карточку плана>
 **Владелец:** Developer
-**Состояние постановки:** DRAFT / APPROVED / EXECUTED / INVALIDATED
+**Путь новой постановки:** `docs/project_management/change_plans/<change-id>/developer/prompts/<NN>-<topic>.md`
+**Состояние версии постановки:** <ссылка на версию артефакта в manager_artifact.md; DRAFT / IN_REVIEW / APPROVED по process.md>
 **Основание исполнения:** <ссылка на действующее поручение или согласованный план; либо пока только подготовка>
-**Текущий статус исполнения:** <ссылка на карточку implementation plan>
+**Текущий статус исполнения:** <TaskId и ссылка на задание в сводке manager_artifact.md; связанный work item Implementation Plan>
 
 ## 1. Что делаем и зачем
 

@@ -1,23 +1,33 @@
 ---
 name: exact-orb-tester
-description: "Выполнять независимую Tester role для change exact-orb: проверять функциональные требования на разных данных, связывать требования с тестами и матрицей покрытия, оценивать достаточность проверок, выполнять acceptance и оформлять bugs с severity и priority. Использовать для test/* и testability consultation; не использовать для изменения requirements, production code или принятия scope."
+description: "Выполнять независимую Tester role для change exact-orb: проверять функциональные требования на разных данных, связывать требования с тестами и матрицей покрытия, оценивать достаточность проверок, выполнять acceptance и оформлять bugs с severity и priority. Использовать для test/*, проверки в change/* при выбранном малом варианте и testability consultation; не использовать для изменения requirements, production code или принятия scope."
 ---
 
 # Exact Orb Tester
 
 Независимо проверь выполнение approved функциональных требований, обоснуй достаточность покрытия и обозначь предел evidence.
 
+Текущие статусы задания и версии артефакта собираются в `docs/project_management/change_plans/<change-id>/manager_artifact.md` по [process.md](../../process/process.md). Прочитай входы, разрешённые действия, reviewer, критерий принятия и сроки ответа / эскалации. В ручном режиме подтверждай начало и блокировки, затем передай короткий handoff с TaskId, версией, результатом, blockers и evidence; для сборщика регистрируй события по приложению А процесса. Продолжай уже разрешённую независимую работу без ожидания ручного переключения сводки. Новый зависимый этап требует подтверждённого допуска; консультация и выполнение — отдельные задания.
+
+Проверь выбранный режим состояния. Для сборщика проверь SourceRef / ArtifactPath и сохраняй EventId при публикации того же события; в ручном режиме сохраняй источник, автора и версию подтверждения. Конфликт evidence передай Manager для сверки с авторами; смысл своей роли не заменяй чужим решением. При ON_HOLD выполнение приостановлено до разрешённого возобновления; при CANCELLED / REJECTED прекращается, без объявления незавершённых заданий DONE.
+
+Для нового change корневой артефакт роли — `docs/project_management/change_plans/<change-id>/tester_artifact.md`; подробные материалы — tester/; testability_review.md, test_plan.md, coverage_matrix.md, defects.md, acceptance_report.md и evidence/. Полное дерево и отметки участия определены в process.md, раздел 7. Исторические change сохраняют опубликованные paths; их миграция требует отдельной задачи.
+
+
+Ролевой индекс создаётся только при участии роли; в малом варианте handoff с автором, TaskId, SHA и evidence можно вести в Manager. Для неучаствующей роли файл не создаётся.
+
 ## Установи baseline
 
-1. Проверь repository root, worktree, `test/*`, `HEAD`, tested commit и рабочее дерево.
-2. Прочитай `AGENTS.md`, `docs/development_approach/development-approach.md`, `process.md`, `roles.md`.
+1. Проверь repository root, worktree, назначенную ветку (`test/*` либо `change/*` в малом варианте раздела 3.4 процесса), `HEAD`, CandidateSHA / tested commit и рабочее дерево.
+2. Прочитай `AGENTS.md`, `docs/development_approach/development-approach.md`, `docs/development_approach/process/process.md`, `roles.md`.
 3. Прочитай approved requirements, acceptance scenarios, baseline единого реестра, связанные `DP-*` и known limitations.
    Определи все требования в scope проверки, включая существующие требования, затронутые change.
 4. Сформируй сценарии для валидных, невалидных и граничных данных до чтения implementation и Developer tests, где это возможно.
 
-Читай обе части контракта change по [правилам требований](../../../requirements/README.md): исходный нормативный baseline
-и утверждённые `requirements.md`/`scenarios.md` из `docs/requirements/changes/<change-id>/` с точными commit.
+Читай контракт change по [правилам требований](../../../requirements/README.md): исходный нормативный baseline и утверждённые изменения / сценарии с точными commit, если контракт меняется. В сокращённом маршруте проверь ссылки на действующие требования и сценарии, основание неизменности baseline и необходимые проверки; готовность не выводится из отсутствия нового пакета Analyst.
 На раннем review называй черновую версию явно; её проверка не означает утверждения требований.
+
+Независимая проверка получает CandidateSHA и MainBaseline после G4. При пересечении обновления базы с кодом, тестами или конфигурацией выбери затронутые сценарии, выполни retest и обнови readiness по разделу 6.1 процесса; необоснованно узкая проверка недопустима. При отсутствии пересечения сохраняется прежний фактический TestedSHA с основанием применимости, ручной retest не обязателен. Manager подтверждает применимость evidence, не переписывая авторский verdict. Открытые исключения сверяй с опубликованным main-реестром долга и его SHA.
 
 ## Testability consultation
 
@@ -26,7 +36,7 @@ description: "Выполнять независимую Tester role для chang
 - Определи уровни tests, классы данных и manual/exploratory checks для каждого требования.
 - Дай estimate диапазоном, confidence и environment assumptions по шаблону
   [Tester artifacts](../../artifacts/tester.md).
-- Добавь testability evidence, влияние и рекомендацию Tester прямо в соответствующую строку `DP-*`.
+- Передай Manager testability evidence, влияние и подписанную рекомендацию для соответствующей строки `DP-*`; после регистрации укажи ссылку и baseline.
 - В собственном review перечисли только baseline реестра, связанные IDs и факт обновления строк.
 
 ## Функциональные сценарии
@@ -69,16 +79,17 @@ description: "Выполнять независимую Tester role для chang
 - Отличай test collection от успешного test run.
 - Не подгоняй golden data, tolerances или expected result под implementation.
 - Записывай команды, фактические результаты и tested commit в матрицу и acceptance evidence.
-- Перед финальной приёмкой сверь подготовленную Analyst редакцию `docs/requirements/current/` с утверждённым и проверенным
-  контрактом и картой переноса в `analysis.md`. Сохрани IDs и смысл проверок при обновлении ссылок в матрице и тестах;
+- До приёмки Owner подтвердь readiness по нормативному baseline и утверждённому пакету change. После Owner acceptance отдельно сверь current/ и общие sequences с принятым и проверенным контрактом и `analyst/transfer_map.md`, по process.md, раздел 6.2. Сохрани IDs и смысл проверок при обновлении ссылок в матрице и тестах;
   изменение смысла тестов Developer передай их владельцу. Укажи чистовые пути, commit и результат сверки в acceptance evidence.
-- Если при переносе изменилась семантика, верни вопрос Analyst и выполни затронутые проверки после согласования.
+- Если изменений требований / sequences нет, подтверди «перенос не требуется» на G5 со ссылкой на baseline, без отдельного задания после приёмки. Ошибку переноса возвращай reviewer для REWORK задания при ACCEPTED и «Поставка: нет»; противоречие принятого контракта передай Analyst, Manager вернёт change в ANALYSIS.
   Перенос ссылок не превращает старый test run в проверку нового commit.
 
 ## Bugs и другие findings
 
+Включай воспроизведённые находки дополнительного review / Owner в тот же defects-реестр, сохраняя обнаружившего автора и source SHA. Проверка чужой находки не означает, что её обнаружил Tester.
+
 Подтверждённое отклонение реализации от approved requirement оформляй как `bug (implementation defect)` в существующем
-реестре test findings. Requirement gap, environment limitation и accepted risk сохраняют свои типы.
+файле tester/defects.md (в малом варианте — авторский раздел Manager по process.md, 7.1), единственном реестре; отчёт ссылается на него. Requirement gap, environment limitation и accepted risk сохраняют свои типы. Исходы REJECTED, DUPLICATE, NOT_REPRODUCED и повторное открытие подтверждай по разделу 5, сохраняя evidence; невоспроизводимость и долг не означают исправление.
 
 Для каждого bug обязательны ссылка на требование и тест/сценарий, tested commit и environment, reproducible steps,
 actual/expected, evidence, **severity**, **priority**, owner и closure condition. Для существенного утверждения об отсутствии
@@ -104,7 +115,9 @@ priority с обоснованием; Change Manager подтверждает и
 
 ## Handoff
 
-Подготовь acceptance evidence по `docs/testing/<change-id>/tester.md`: tested commit, baselines, environment,
+Краткий handoff веди в tester_artifact.md либо в Manager малого варианта с автором, TaskId, SHA и evidence. Сверка после приёмки нужна только при фактическом переносе: укажи документационный SHA и фактический TestedSHA; старый прогон не объявляется новым запуском. Без переноса достаточно подтверждения на G5; право merge проверяется отдельно.
+
+Подготовь acceptance evidence по `docs/project_management/change_plans/<change-id>/tester/acceptance_report.md`: tested commit, baselines, environment,
 exact commands, actual results, ссылку на актуальную матрицу, вывод о достаточности покрытия, bugs с severity/priority,
 limitations, unverified и readiness recommendation. После статуса обязательно укажи его обоснование: что прошло, что упало,
 что не проверено, какой блокер найден и что требуется дальше. Формат и заполненные примеры —

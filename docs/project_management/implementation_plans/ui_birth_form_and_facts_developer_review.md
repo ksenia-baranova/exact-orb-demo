@@ -11,7 +11,7 @@
 | Объект | Проверенная версия |
 |---|---|
 | Общий исходный HEAD `change/ui-birth-form-and-facts` | `9ae1abc71e6876d5440f20541996f489a387e1cb`; Developer-ветка создана от этого commit. |
-| [Manager artifacts и единый реестр](../change_plans/ui-birth-form-and-facts/artifacts.md#decision-register), [roadmap M1-7/M1-9](../roadmap.md) | Manager commit `ad8892fd7ed8bd3f0998202c32bbcc05f31020f9`, интегрирован через [PR #44](https://github.com/ksenia-baranova/exact-orb-demo/pull/44), merge `ea0678da1546bff15493239372e27b32726e7086`. |
+| [Manager artifacts и единый реестр](../change_plans/ui-birth-form-and-facts/artifacts.md#decision-register), [roadmap M1-7/M1-9](../Roadmap/roadmap.md) | Manager commit `ad8892fd7ed8bd3f0998202c32bbcc05f31020f9`, интегрирован через [PR #44](https://github.com/ksenia-baranova/exact-orb-demo/pull/44), merge `ea0678da1546bff15493239372e27b32726e7086`. |
 | [requirements.md](../../requirements/changes/ui-birth-form-and-facts/requirements.md), [scenarios.md](../../requirements/changes/ui-birth-form-and-facts/scenarios.md), [analysis.md](../../requirements/changes/ui-birth-form-and-facts/analysis.md) | Analyst commit `dbee8880ae00f65aac7660936e69b906900ae216`, интегрирован через [PR #43](https://github.com/ksenia-baranova/exact-orb-demo/pull/43), merge `9ae1abc71e6876d5440f20541996f489a387e1cb`. |
 | Нормативный вход Analyst | `652bd73405db0a0611e98e81af6f3f668dd429f6`: [HTTP API](../../requirements/http_api.md), component requirements и ADR из Analyst-пакета. Этот исторический вход не переписывается новым HEAD. |
 | Код и существующие тесты | `9ae1abc`; между `652bd734` и этим HEAD нет изменений `src/`, `tests/` и `pyproject.toml`. |

@@ -1,0 +1,59 @@
+@startuml
+title exact-orb — Статусы change: основной маршрут и gates
+
+' Источник: docs/development_approach/process/process.md, разделы 2, 3.1, 3.3, 6.1 и 6.2.
+' Условия gates G0–G5 определены только в таблице раздела 3.1.
+' Возвраты и остановки показаны в 002-change-returns-and-stops.puml.
+
+hide empty description
+skinparam shadowing false
+skinparam state {
+    BackgroundColor #F8FAFC
+    BorderColor #64748B
+    FontColor #0F172A
+    ArrowColor #2563EB
+    ArrowFontColor #334155
+    StartColor #0F172A
+    EndColor #0F172A
+}
+
+state INTAKE : Owner открыл change
+state DRAFT : Manager готовит brief
+state ANALYSIS : Analyst: требования и сценарии
+state ALIGNMENT : консультации Developer и Tester
+state "READY_FOR_DEVELOPMENT" as RFD : реализация разрешена
+state IN_DEVELOPMENT : Developer: код и checks
+state READY_FOR_TEST : кандидат интегрирован с main
+state IN_TEST : Tester: независимые проверки
+state READY_FOR_ACCEPTANCE : ждёт решения Owner
+state ACCEPTED : приёмка версии\nПоставка: нет
+
+[*] -down-> INTAKE : Owner: новый change
+INTAKE -down-> DRAFT : Owner разрешил brief
+DRAFT -down-> ANALYSIS : G0 + старт Analyst
+ANALYSIS -down-> ALIGNMENT : G1
+ALIGNMENT -down-> RFD : G2 + G3
+DRAFT -[#2563EB,dashed]-> RFD : сокращённый маршрут:\nG0 + G3, G1 / G2 = N/A
+RFD -down-> IN_DEVELOPMENT : старт Developer
+IN_DEVELOPMENT -down-> READY_FOR_TEST : G4
+READY_FOR_TEST -down-> IN_TEST : старт Tester
+IN_TEST -down-> READY_FOR_ACCEPTANCE : G5
+READY_FOR_ACCEPTANCE -down-> ACCEPTED : решение Owner
+ACCEPTED -down-> [*] : Поставка: интегрирована\n(перенос / сверка, MergeSHA,\nсверка поставки)
+
+note right of ACCEPTED
+  ACCEPTED — приёмка версии; поставка — отдельное поле.
+  При изменениях после решения Owner — перенос и сверка (6.2).
+  Если изменений нет, достаточно подтверждения Tester на G5.
+  Обновление main без изменения принятого результата
+  статус не меняет: checks / retest по разделу 6.1,
+  до их завершения «Поставка: нет».
+end note
+
+note right of DRAFT
+  Сокращённый маршрут — изменение в рамках
+  действующего контракта и ADR (раздел 3.3).
+  Малый вариант (раздел 3.4)
+  идёт тем же маршрутом.
+end note
+@enduml

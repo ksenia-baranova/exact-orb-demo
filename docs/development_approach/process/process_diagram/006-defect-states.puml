@@ -1,0 +1,43 @@
+@startuml
+title exact-orb — Статусы дефекта (TEST-FIND-*)
+
+' Источник: docs/development_approach/process/process.md, раздел 5.
+' Реестр — tester/defects.md; в малом варианте — авторский раздел Manager (process.md, 7.1).
+' Исход дефекта не меняет одноимённое состояние change.
+
+hide empty description
+skinparam shadowing false
+skinparam state {
+    BackgroundColor #F8FAFC
+    BorderColor #64748B
+    FontColor #0F172A
+    ArrowColor #2563EB
+    ArrowFontColor #334155
+}
+
+state OPEN : воспроизведён; severity, priority,\nBlocks и ответственный указаны
+state FIXED_PENDING_RETEST : Developer указал\ncommit исправления
+state "Исход" as OUTCOME {
+    state CLOSED : успешный retest Tester
+    state REJECTED : не дефект: соответствует\nдействующему требованию
+    state DUPLICATE : ссылка на\nканоническую запись
+    state NOT_REPRODUCED : попытки, commit, окружение\nи предел evidence записаны
+}
+
+[*] --> OPEN : Tester зарегистрировал
+OPEN --> FIXED_PENDING_RETEST : исправление передано
+FIXED_PENDING_RETEST --> CLOSED : Tester подтвердил закрытие
+FIXED_PENDING_RETEST -[#EA580C]-> OPEN : воспроизведён\nпосле исправления
+OPEN --> REJECTED : Tester; спорный expected\nresult — Analyst через DP
+OPEN --> DUPLICATE : Tester
+OPEN --> NOT_REPRODUCED : Tester
+OUTCOME -[#EA580C]-> OPEN : новое evidence\nопровергает исход
+
+note bottom of OUTCOME
+  NOT_REPRODUCED не подтверждает исправление и не снимает blocker:
+  риск остаётся до достаточной проверки или исключения Owner.
+  Для DUPLICATE blocker следует канонической записи.
+  Принятый техдолг не закрывает bug: дефект сохраняет состояние,
+  в нём отмечаются решение владельца и DebtId.
+end note
+@enduml

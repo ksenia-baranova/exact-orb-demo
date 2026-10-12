@@ -49,7 +49,7 @@ deployment startup policy пока не реализованы.
 | 6–8 | расчёт транзитов есть в ядре/CLI; free-form flow отсутствует | производные карты и free-form после MVP |
 | 13 | Research contracts, whitelist-проекция и InMemory adapter | SQLite, producer wiring и политика application-записи |
 
-Порядок реализации уточнён в [roadmap](../project_management/roadmap.md):
+Порядок реализации уточнён в [roadmap](../project_management/Roadmap/roadmap.md):
 сначала сценарий 1 с UI на удалённом сервере, затем первая интерпретация
 через прямой handler → InterpretationService → Gateway, затем runtime.
 Прямой interpretation-путь пока запланирован и требует отдельного ADR;

@@ -18,7 +18,7 @@
 Источники требований:
 
 - [change plan](../project_management/change_plans/http-api-and-session-middleware.md)
-  и [roadmap](../project_management/roadmap.md), M1-6;
+  и [roadmap](../project_management/Roadmap/roadmap.md), M1-6;
 - [ADR-0006](decisions/0006-application-orchestrator.md),
   [ADR-0009](decisions/0009-context-yes-profiles-later.md),
   [ADR-0012](decisions/0012-bootstrap-request-response-streaming.md),

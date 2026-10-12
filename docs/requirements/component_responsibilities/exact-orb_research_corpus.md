@@ -399,7 +399,7 @@ behavioral conformance реализованы в `research/` и `tests/research/
 
 **Остаются P5b и producer wiring:** SQLite, durable schema, restart и
 конкуренция реальных workers, а также подключение записи из application.
-Они относятся к M3-7 [roadmap](../../project_management/roadmap.md).
+Они относятся к M3-7 [roadmap](../../project_management/Roadmap/roadmap.md).
 Готовый P5a не означает автоматическую запись данных при первом запуске UI.
 
 P5b обязан

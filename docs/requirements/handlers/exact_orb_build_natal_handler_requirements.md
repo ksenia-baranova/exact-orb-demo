@@ -998,7 +998,7 @@ Cache hit/miss должен журналироваться самим `ChartArti
 | Граница прямых импортов §10.1 | `tests/test_module_boundaries.py`; `0828c26`; 44 теста файла прошли |
 
 Обязательный import-boundary regression-тест §10.1 выполнен в M1-4
-[roadmap](../../project_management/roadmap.md); формальная готовность
+[roadmap](../../project_management/Roadmap/roadmap.md); формальная готовность
 перечня Handler закрыта. Внешние
 `ApplicationOrchestrator`, `ApplicationResult` и commit-flow реализованы за
 границей предметной ответственности Handler. Их итоговая приёмка и новый

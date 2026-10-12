@@ -1,0 +1,55 @@
+@startuml
+title exact-orb — Статусы change: возвраты, пауза и завершение без поставки
+
+' Источник: docs/development_approach/process/process.md, раздел 3.1.
+' Слева — группы статусов-источников (пунктирная рамка), справа — целевой статус.
+' Оранжевые стрелки — возвраты, серые — пауза и завершение без поставки.
+' Основной маршрут — в 001-change-main-route.puml.
+
+left to right direction
+hide empty description
+skinparam shadowing false
+skinparam state {
+    BackgroundColor #F8FAFC
+    BorderColor #64748B
+    FontColor #0F172A
+    ArrowFontColor #334155
+    BackgroundColor<<group>> #FFFFFF
+    BorderColor<<group>> #94A3B8
+    BorderStyle<<group>> dashed
+    BackgroundColor<<return>> #FFF7ED
+    BorderColor<<return>> #EA580C
+}
+
+state "READY_FOR_TEST · IN_TEST ·\nREADY_FOR_ACCEPTANCE ·\nACCEPTED до merge" as SRC_QA <<group>>
+state "READY_FOR_DEVELOPMENT · IN_DEVELOPMENT ·\nREADY_FOR_TEST · IN_TEST ·\nREADY_FOR_ACCEPTANCE" as SRC_CONTRACT <<group>>
+state "ACCEPTED до merge" as SRC_ACC <<group>>
+state "Любое активное,\nвключая ACCEPTED до merge" as SRC_ACTIVE <<group>>
+state "INTAKE · DRAFT ·\nANALYSIS · ALIGNMENT" as SRC_PRE <<group>>
+
+state IN_DEVELOPMENT <<return>> : исправление Developer,\nзатем повтор затронутых G4 / G5
+state ANALYSIS <<return>> : пересмотр контракта,\nповтор затронутых G1–G5
+state READY_FOR_ACCEPTANCE <<return>> : G5 подтверждён,\nнужно новое решение Owner
+state ON_HOLD : записаны причина,\nResumeChangeStatus и условие возврата
+state "Прежний статус" as RESUME : ResumeChangeStatus
+state CANCELLED : без поставки; результаты\nи обязательства сохранены
+state REJECTED : намерение или scope отклонены
+
+SRC_QA -[#EA580C]-> IN_DEVELOPMENT : подтверждённый\nblocking дефект
+SRC_CONTRACT -[#EA580C]-> ANALYSIS : изменение\nутверждённого контракта
+SRC_ACC -[#EA580C]-> ANALYSIS : противоречие принятого\nконтракта / обновление main
+SRC_ACC -[#EA580C]-> READY_FOR_ACCEPTANCE : обновлённый кандидат\nменяет принятое
+
+SRC_ACTIVE -[#475569]-> ON_HOLD : Owner / делегированный\nManager приостановил
+ON_HOLD -[#475569]-> RESUME : разрешено возобновление;\nисточники, baseline\nи approvals проверены
+SRC_ACTIVE -[#475569]-> CANCELLED : Owner прекратил
+ON_HOLD -[#475569]-> CANCELLED : Owner прекратил
+SRC_PRE -[#475569]-> REJECTED : Owner отклонил\nдо допуска реализации
+
+legend bottom
+  Обновление main без пересмотра контракта и без изменения принятого результата статус не меняет:
+  checks и retest — по разделу 6.1, до их завершения «Поставка: нет».
+  Ошибка переноса без пересмотра контракта: задание → REWORK, change остаётся ACCEPTED, поставка — «нет».
+  CANCELLED и REJECTED не возобновляются поздними событиями; новая работа — новый change.
+endlegend
+@enduml

@@ -12,7 +12,7 @@
 наружу.
 
 Оперативный источник текущего состояния компонентов —
-[`overview.md` §2.1](../requirements/overview.md). Раздел 2 этого roadmap —
+[`overview.md` §2.1](../../requirements/overview.md). Раздел 2 этого roadmap —
 датированный снимок выполненной работы и аудит сроков по промптам/коммитам;
 он нужен для истории и не заменяет текущий component status. Актуализация
 2026-09-20 дополнительно фиксирует перерасход Application Orchestrator
@@ -43,11 +43,11 @@ composition M1-5.1 между каталогом и FastAPI, не переотк
 Закрытый этап с ручной отметкой согласован в `DP-UI-04` без изменения ADR-0034.
 Страница условий зарегистрирована как `DEBT-UI-001` для M1-9; её нужно поставить
 до распространения ссылки другим людям и публичного трафика. Решения и задания —
-[артефакты M1-7](change_plans/ui-birth-form-and-facts/artifacts.md#decision-register).
+[артефакты M1-7](../change_plans/ui-birth-form-and-facts/artifacts.md#decision-register).
 
 Ревизия 3.11 зафиксировала опубликованный Developer Implementation Plan @ `082c6b9`
 и новый бюджет владельца M1-7: **Analysis 4, Development 5, Testing 5 рабочих дней**.
-Относительная [дорожная карта M1-7](change_plans/ui-birth-form-and-facts/artifacts.md#roadmap)
+Относительная [дорожная карта M1-7](../change_plans/ui-birth-form-and-facts/artifacts.md#roadmap)
 охватывает Д1–Д14. Estimate Developer 5–8 дней и Tester 3–5 сохраняются;
 риск выхода Development за 5 дней — до +3 дней, дополнительный бюджет не утверждён.
 Implementation Plan повторно сверён Developer; Tester @ `0f6aa82` подтвердил
@@ -108,7 +108,7 @@ Application Orchestrator по коммитам `a12daf4` → `e688592` и README
 | Расчётные артефакты | `ChartSpec`, key, opaque bytes cache, codec, валидация, resolver и single-flight на `Task` + `shield` | `calculation/`, `tests/test_chart_artifact_resolver.py`, `tests/test_chart_artifact_codec.py`, `tests/test_calculation_block_integration.py` |
 | Версия расчёта и долг API движка | Отпечаток `CalculationVersion`, заморозка параметров по ADR-0017, исправления API транзита и меток точек | `55f0f03`, `604d411`, `tests/test_calculation_version.py` |
 | Резолв рождения | `place_id` lookup, JSONL loader и скрипт сборки каталога, historical TZ, проверки дат, неоднозначное/несуществующее время, неизвестное время | `birth/`, `scripts/build_place_catalog.py`, `tests/test_birth_places.py`, `tests/test_birth_tz.py`, `tests/test_birth_resolver.py` |
-| Сессии P1–P4.1 | Контракты, `ContextService`, InMemory и SQLite, TTL, CAS, `AlreadyApplied`, retry без rebase, общий conformance; benchmark полного SQLite adapter path | `session/`, `tests/session/`, [отчёт P4](../benchmarks/2026-09-06-session-sqlite.md) |
+| Сессии P1–P4.1 | Контракты, `ContextService`, InMemory и SQLite, TTL, CAS, `AlreadyApplied`, retry без rebase, общий conformance; benchmark полного SQLite adapter path | `session/`, `tests/session/`, [отчёт P4](../../benchmarks/2026-09-06-session-sqlite.md) |
 | Research P5a | Контракты, whitelist-проекция, digest, append-only port и InMemory adapter | `research/`, `tests/research/`, `457a9dc`, `11c8c9e` |
 | Build Natal C1 | Команда, порты, четыре исхода handler, выбор natal/cosmogram, `StateDelta`, обработка ошибок, реальная интеграция резолва/расчёта/кэша | `application/`, `tests/application/`, `2f86fb9`, `5406306` |
 | Граница импортов Build Natal | AST regression-тест прямых импортов handler, денилист §10.1 и позитивные контроли | `tests/test_module_boundaries.py`, `0828c26`; 44 теста файла, 910 application-тестов и полный `pytest` (2564 теста) прошли 23.09 |
@@ -155,35 +155,35 @@ Git начинается 22.08.2026: `46372eb` — начальная запис
 
 | Этап | Начало | Конец | Календарных дней | Основание |
 |---|---|---|---:|---|
-| Натал и CLI | 15.08 | 16.08 | ~2 | [промпт](../../prompts/2026-08-15/01-natal-module.md); `fb8cafe`. Окно промптов 15–16.08; промпт Gateway 17.08 уже описывает ядро как существующее. Git подтверждает состав только 22.08. |
-| Аспекты, конфигурации и сила | 16.08 | 16.08 | ~1 | [промпт](../../prompts/2026-08-16/02-aspects-module.md); `fb8cafe`. Промпты 02–05 за 16.08; следующий контекст 17.08 говорит о готовом детерминированном слое. |
-| Первичное логирование | 17.08 | 17.08 | ~1 | [промпт](../../prompts/2026-08-17/01-logging.md); `fb8cafe`. Один датированный промпт; самостоятельного коммита исполнения нет. |
-| LLM Gateway transport | 17.08 | 19.08 | ~3 | [промпт](../../prompts/2026-08-17/02-llm-gateway.md); `fb8cafe`. Редакция 19.08 заменяет постановку 17.08; это окно подготовки задачи, не доказательство трёх дней реализации. |
-| Пакет engine и каркас agent-слоёв | 19.08 | 22.08 | ~4 | [промпт](../../prompts/2026-08-19/01-agent-skeleton.md); `fb8cafe`. Промпты 19/22.08; реализация присутствует в initial commit 22.08. Каркас не означает готовый runtime. |
-| Явный chart_kind и космограмма | 22.08 | 23.08 | 2 | [промпт](../../prompts/2026-08-22/12-explicit-chart-kind-and-honest-cosmogram.md); `2726eab` |
-| Имена функций расчёта | 25.08 | 25.08 | 1 | [промпт](../../prompts/2026-08-25/01-rename-chart-calculation-functions.md); `a3dddfd` |
-| Безопасный startup Swiss Ephemeris | 26.08 | 26.08 | 1 | [промпт](../../prompts/2026-08-26/01-freeze-swiss-ephemeris-runtime.md); `eeb6c77` |
-| Резолв рождения и каталог lookup | 27.08 | 28.08 | 2 | [промпт](../../prompts/2026-08-27/01-birth-data-resolution.md); `dad7064` → `dd21500`. Включён RunContext; merge 29.08 не продлевает интервал реализации. |
-| Артефакты, cache/codec и single-flight | 30.08 | 01.09 | 3 | [промпт](../../prompts/2026-08-30/01-chart-artifacts-input-and-key.md); `d02dcb2` → `b5c1beb`. Основной resolver закончен 31.08; 01.09 включены исправления single-flight и входной валидации. |
-| Исправления домов, транзита и config | 01.09 | 02.09 | 2 | [промпт](../../prompts/2026-09-01/03-fix-house-system-validation.md); `a6e6a2a` → `8bb60b4`. Транзитный root search, заморозка конфигурации эфемерид и валидация orb factories. |
-| AGPL и файлы эфемерид | 03.09 | 03.09 | 1 | [промпт](../../prompts/2026-09-03/01-project-license-agpl.md); `f81523a` → `381610a` |
-| Сессии P1–P4.1 и benchmark SQLite | 04.09 | 06.09 | 3 | [промпт](../../prompts/2026-09-04/01-session-contracts.md); `fe2ad68` → `f771aa0`. Постановка 04.09 — локальный untracked-файл, редакция 05.09 — tracked; коммиты реализации 05–06.09. |
-| Research Corpus P5a | 06.09 | 06.09 | 1 | [промпт](../../prompts/2026-09-06/02-research-corpus-contracts.md); `457a9dc` → `11c8c9e` |
-| Решение о заморозке ChartSpec | 06.09 | 07.09 | 2 | [промпт](../../prompts/2026-09-06/06-adr-chart-spec-completeness-freeze.md); `7f05723`. Включены обоснование ключа и синхронизация документов; реализация version вынесена отдельной строкой. |
-| CalculationVersion | 07.09 | 07.09 | 1 | [промпт](../../prompts/2026-09-07/02-calculation-version.md); `55f0f03` → `f94d8c6` |
-| Долг API движка | 07.09 | 07.09 | 1 | [промпт](../../prompts/2026-09-07/03-engine-debt.md); `604d411` |
-| BuildNatalHandler, интеграция и ревью | 08.09 | 09.09 | 2 | [промпт](../../prompts/2026-09-08/01-application-contracts.md); `e18ab87` → `d48f303`. Код, тесты и cleanup завершены 08.09; согласование требований — 09.09. Import-boundary тест не входил в это окно и закрыт отдельно 23.09 (M1-4). |
-| Correlation и component logging | 09.09 | 09.09 | 1 | [промпт](../../prompts/2026-09-09/03-optimize-chart-boundary-logging.md); `3c9fa6e` |
-| Нормализация результата ADR-0027 | 10.09 | 11.09 | 2 | [промпт](../../prompts/2026-09-10/01-research-build-natal-sources-of-truth.md); `30eb1f3` → `d6c0c89`. Result → artifact → BuildNatalSuccess; включена синхронизация итогового контракта. |
-| Полный DEBUG payload ADR-0028 | 10.09 | 11.09 | 2 | [промпт](../../prompts/2026-09-10/05-full-debug-component-boundary-logging.md); `babeb09` → `d6c0c89` |
-| Разделение active/deferred диаграмм | 11.09 | 11.09 | 1 | [промпт](../../prompts/2026-09-11/01-reorganize-build-chart-sequence-diagrams.md); `ded9895` |
-| Канонические point ID: ADR-0029 | 11.09 | 12.09 | 2 | [промпт](../../prompts/2026-09-11/02-canonical-chart-point-identifiers.md); `229be82` |
-| Ось лунных узлов: ADR-0030 | 12.09 | 12.09 | 1 | [промпт](../../prompts/2026-09-12/01-lunar-node-axis-semantics.md); `3cca8eb` |
-| Целостность конфигураций: ADR-0031 | 12.09 | 12.09 | 1 | [промпт](../../prompts/2026-09-12/02-configuration-materialization-integrity.md); `71df64c` |
-| Неизвестное время: ADR-0032 | 12.09 | 12.09 | 1 | [промпт](../../prompts/2026-09-12/03-unknown-time-aspect-semantics-decision.md); `baff28a` → `3945677` |
-| Достоинства и диспозиторы: ADR-0033 | 13.09 | 13.09 | 1 | [промпт](../../prompts/2026-09-13/01-align-dignities-and-dispositors.md); `ba825af` |
-| Нормализация epsilon-орбиса | 13.09 | 13.09 | 1 | [промпт](../../prompts/2026-09-13/02-aspect-orb-boundary-normalization.md); `4b86238` |
-| Application Orchestrator и минимальная composition | 16.09 | 19.09 | 4 | [план 0.1](../../prompts/2026-09-16/00-application-orchestrator-plan/00.1-baseline-and-acceptance-map.md); `a12daf4` → `e688592`. Baseline v3.2 планировал M1-2 + M1-3 как 2 рабочих дня 15–16.09; фактическая приёмка заняла четыре календарных дня и 36 основных карточек с корректировками. README/status синхронизированы 20.09 в `011f0fc`. |
+| Натал и CLI | 15.08 | 16.08 | ~2 | [промпт](../../../prompts/2026-08-15/01-natal-module.md); `fb8cafe`. Окно промптов 15–16.08; промпт Gateway 17.08 уже описывает ядро как существующее. Git подтверждает состав только 22.08. |
+| Аспекты, конфигурации и сила | 16.08 | 16.08 | ~1 | [промпт](../../../prompts/2026-08-16/02-aspects-module.md); `fb8cafe`. Промпты 02–05 за 16.08; следующий контекст 17.08 говорит о готовом детерминированном слое. |
+| Первичное логирование | 17.08 | 17.08 | ~1 | [промпт](../../../prompts/2026-08-17/01-logging.md); `fb8cafe`. Один датированный промпт; самостоятельного коммита исполнения нет. |
+| LLM Gateway transport | 17.08 | 19.08 | ~3 | [промпт](../../../prompts/2026-08-17/02-llm-gateway.md); `fb8cafe`. Редакция 19.08 заменяет постановку 17.08; это окно подготовки задачи, не доказательство трёх дней реализации. |
+| Пакет engine и каркас agent-слоёв | 19.08 | 22.08 | ~4 | [промпт](../../../prompts/2026-08-19/01-agent-skeleton.md); `fb8cafe`. Промпты 19/22.08; реализация присутствует в initial commit 22.08. Каркас не означает готовый runtime. |
+| Явный chart_kind и космограмма | 22.08 | 23.08 | 2 | [промпт](../../../prompts/2026-08-22/12-explicit-chart-kind-and-honest-cosmogram.md); `2726eab` |
+| Имена функций расчёта | 25.08 | 25.08 | 1 | [промпт](../../../prompts/2026-08-25/01-rename-chart-calculation-functions.md); `a3dddfd` |
+| Безопасный startup Swiss Ephemeris | 26.08 | 26.08 | 1 | [промпт](../../../prompts/2026-08-26/01-freeze-swiss-ephemeris-runtime.md); `eeb6c77` |
+| Резолв рождения и каталог lookup | 27.08 | 28.08 | 2 | [промпт](../../../prompts/2026-08-27/01-birth-data-resolution.md); `dad7064` → `dd21500`. Включён RunContext; merge 29.08 не продлевает интервал реализации. |
+| Артефакты, cache/codec и single-flight | 30.08 | 01.09 | 3 | [промпт](../../../prompts/2026-08-30/01-chart-artifacts-input-and-key.md); `d02dcb2` → `b5c1beb`. Основной resolver закончен 31.08; 01.09 включены исправления single-flight и входной валидации. |
+| Исправления домов, транзита и config | 01.09 | 02.09 | 2 | [промпт](../../../prompts/2026-09-01/03-fix-house-system-validation.md); `a6e6a2a` → `8bb60b4`. Транзитный root search, заморозка конфигурации эфемерид и валидация orb factories. |
+| AGPL и файлы эфемерид | 03.09 | 03.09 | 1 | [промпт](../../../prompts/2026-09-03/01-project-license-agpl.md); `f81523a` → `381610a` |
+| Сессии P1–P4.1 и benchmark SQLite | 04.09 | 06.09 | 3 | [промпт](../../../prompts/2026-09-04/01-session-contracts.md); `fe2ad68` → `f771aa0`. Постановка 04.09 — локальный untracked-файл, редакция 05.09 — tracked; коммиты реализации 05–06.09. |
+| Research Corpus P5a | 06.09 | 06.09 | 1 | [промпт](../../../prompts/2026-09-06/02-research-corpus-contracts.md); `457a9dc` → `11c8c9e` |
+| Решение о заморозке ChartSpec | 06.09 | 07.09 | 2 | [промпт](../../../prompts/2026-09-06/06-adr-chart-spec-completeness-freeze.md); `7f05723`. Включены обоснование ключа и синхронизация документов; реализация version вынесена отдельной строкой. |
+| CalculationVersion | 07.09 | 07.09 | 1 | [промпт](../../../prompts/2026-09-07/02-calculation-version.md); `55f0f03` → `f94d8c6` |
+| Долг API движка | 07.09 | 07.09 | 1 | [промпт](../../../prompts/2026-09-07/03-engine-debt.md); `604d411` |
+| BuildNatalHandler, интеграция и ревью | 08.09 | 09.09 | 2 | [промпт](../../../prompts/2026-09-08/01-application-contracts.md); `e18ab87` → `d48f303`. Код, тесты и cleanup завершены 08.09; согласование требований — 09.09. Import-boundary тест не входил в это окно и закрыт отдельно 23.09 (M1-4). |
+| Correlation и component logging | 09.09 | 09.09 | 1 | [промпт](../../../prompts/2026-09-09/03-optimize-chart-boundary-logging.md); `3c9fa6e` |
+| Нормализация результата ADR-0027 | 10.09 | 11.09 | 2 | [промпт](../../../prompts/2026-09-10/01-research-build-natal-sources-of-truth.md); `30eb1f3` → `d6c0c89`. Result → artifact → BuildNatalSuccess; включена синхронизация итогового контракта. |
+| Полный DEBUG payload ADR-0028 | 10.09 | 11.09 | 2 | [промпт](../../../prompts/2026-09-10/05-full-debug-component-boundary-logging.md); `babeb09` → `d6c0c89` |
+| Разделение active/deferred диаграмм | 11.09 | 11.09 | 1 | [промпт](../../../prompts/2026-09-11/01-reorganize-build-chart-sequence-diagrams.md); `ded9895` |
+| Канонические point ID: ADR-0029 | 11.09 | 12.09 | 2 | [промпт](../../../prompts/2026-09-11/02-canonical-chart-point-identifiers.md); `229be82` |
+| Ось лунных узлов: ADR-0030 | 12.09 | 12.09 | 1 | [промпт](../../../prompts/2026-09-12/01-lunar-node-axis-semantics.md); `3cca8eb` |
+| Целостность конфигураций: ADR-0031 | 12.09 | 12.09 | 1 | [промпт](../../../prompts/2026-09-12/02-configuration-materialization-integrity.md); `71df64c` |
+| Неизвестное время: ADR-0032 | 12.09 | 12.09 | 1 | [промпт](../../../prompts/2026-09-12/03-unknown-time-aspect-semantics-decision.md); `baff28a` → `3945677` |
+| Достоинства и диспозиторы: ADR-0033 | 13.09 | 13.09 | 1 | [промпт](../../../prompts/2026-09-13/01-align-dignities-and-dispositors.md); `ba825af` |
+| Нормализация epsilon-орбиса | 13.09 | 13.09 | 1 | [промпт](../../../prompts/2026-09-13/02-aspect-orb-boundary-normalization.md); `4b86238` |
+| Application Orchestrator и минимальная composition | 16.09 | 19.09 | 4 | [план 0.1](../../../prompts/2026-09-16/00-application-orchestrator-plan/00.1-baseline-and-acceptance-map.md); `a12daf4` → `e688592`. Baseline v3.2 планировал M1-2 + M1-3 как 2 рабочих дня 15–16.09; фактическая приёмка заняла четыре календарных дня и 36 основных карточек с корректировками. README/status синхронизированы 20.09 в `011f0fc`. |
 
 Для первоначального низкоуровневого транзитного ядра отдельного датированного
 промпта или коммита реализации не найдено: оно уже присутствует в `fb8cafe`
@@ -233,7 +233,7 @@ baseline; вторая диаграмма сдвигает оставшуюся 
 
 ### 3.2. Персональные данные и условия использования
 
-[ADR-0034](../requirements/decisions/0034-birth-data-and-terms-of-use.md)
+[ADR-0034](../../requirements/decisions/0034-birth-data-and-terms-of-use.md)
 разделяет контуры данных вместо прежней формулировки, где DEBUG-журнал был
 назван единственным местом хранения после сессии. В текущей системе исходные
 и разрешённые данные рождения живут в TTL-сессии, полный сериализованный
@@ -302,19 +302,19 @@ JSON-сериализация не выполняются. Локальный DE
 | M1-2 | `feat/application-orchestrator` | **Выполнено с перерасходом:** `application/orchestrator.py`, `ApplicationResult`, protected commit, один точный retry, cancellation/lifecycle semantics, real SQLite/CAS acceptance и load profile | план 1.5; факт 16–19.09 |
 | M1-3 | `feat/application-orchestrator` | **Минимальная composition выполнена внутри Orchestrator-среза:** `application/composition.py` собирает application registry и `ApplicationOrchestrator` из готовых зависимостей. Полная process runtime composition выделена в M1-5.1 | план 0.5; вошло в факт 16–19.09 |
 | M1-4 | `test/build-natal-handler-import-boundary` | **Выполнено 23.09:** обязательный regression-тест §10.1 запрещает прямые импорты concrete birth/calculation implementations, session adapters, transport, agent и LLM; позитивные контроли проверяют разрешённые импорты. Формальная приёмка handler закрыта (`0828c26`) | план 0.5; принято 23.09 |
-| M1-5 | `feat/place-catalog` | **Выполнено 22.09:** по [требованиям каталога мест](../requirements/component_responsibilities/exact-orb_place_catalog.md) и [implementation plan](implementation_plans/place_catalog_implementation_plan.md) реализованы GeoNames SQLite builder, отдельные `PlaceSearch.search(text)` и `PlaceCatalog.lookup(place_id)` одного leaf-adapter, русские подписи мест/admin1, индексный поиск, lifecycle/executor, startup validation, module boundaries и сквозная приёмка; полный local-data build принят | план 4; факт 21–22.09 |
+| M1-5 | `feat/place-catalog` | **Выполнено 22.09:** по [требованиям каталога мест](../../requirements/component_responsibilities/exact-orb_place_catalog.md) и [implementation plan](../implementation_plans/place_catalog_implementation_plan.md) реализованы GeoNames SQLite builder, отдельные `PlaceSearch.search(text)` и `PlaceCatalog.lookup(place_id)` одного leaf-adapter, русские подписи мест/admin1, индексный поиск, lifecycle/executor, startup validation, module boundaries и сквозная приёмка; полный local-data build принят | план 4; факт 21–22.09 |
 | M1-5.1 | `chore/bootstrap-composition` | **Выполнено 21.09:** process-local `ApplicationRuntime` собирает реальные resolver/cache/engine, SQLite session persistence, `ContextService`, существующий `build_application_orchestrator`, фактическую `CalculationVersion`, owned executors и one-shot reaper. Сквозные cache miss → hit и cancelled-waiter shutdown приняты; `PlaceCatalog` внедряется извне | план 2; факт 21.09 |
-| M1-5.2 | `feat/session-stored-chart` | **Компонентная приёмка выполнена 27.09:** промты 01–08 реализованы; `StoredChart` атомарно сохраняется с состоянием в InMemory/SQLite, миграция v2 и lifecycle проверены, `session_view` восстанавливает карту после нового runtime с пустым кэшем. Полный локальный `pytest`: 2649 passed. Публичный HTTP bootstrap и cookie — M1-6; подробный [журнал](implementation_plans/session_stored_chart_implementation_plan.md#8-статус-журнал-свидетельств-и-передача-в-m1-6) | оценка открыта; факт 27.09 |
-| M1-6 | `feat/http-api-and-session-middleware` | **Реализовано и включено в `main` через PR #40; формальная приёмка не записана:** FastAPI/lifespan, анонимная cookie, bootstrap/current, Build API, поиск мест, admission, shutdown и reaper. Полный локальный `pytest` на каталожном commit `cd42c5d`: 2953 passed; [Tester](../testing/http-api-and-session-middleware/tester.md) выполнил M-01…M-14 через HTTPS с обходом `FIND-TEST-HTTP-001`, evidence `PARTIAL`. Открытые findings требуют решения | исходный план 2; факт и остаток не пересчитаны |
+| M1-5.2 | `feat/session-stored-chart` | **Компонентная приёмка выполнена 27.09:** промты 01–08 реализованы; `StoredChart` атомарно сохраняется с состоянием в InMemory/SQLite, миграция v2 и lifecycle проверены, `session_view` восстанавливает карту после нового runtime с пустым кэшем. Полный локальный `pytest`: 2649 passed. Публичный HTTP bootstrap и cookie — M1-6; подробный [журнал](../implementation_plans/session_stored_chart_implementation_plan.md#8-статус-журнал-свидетельств-и-передача-в-m1-6) | оценка открыта; факт 27.09 |
+| M1-6 | `feat/http-api-and-session-middleware` | **Реализовано и включено в `main` через PR #40; формальная приёмка не записана:** FastAPI/lifespan, анонимная cookie, bootstrap/current, Build API, поиск мест, admission, shutdown и reaper. Полный локальный `pytest` на каталожном commit `cd42c5d`: 2953 passed; [Tester](../../testing/http-api-and-session-middleware/tester.md) выполнил M-01…M-14 через HTTPS с обходом `FIND-TEST-HTTP-001`, evidence `PARTIAL`. Открытые findings требуют решения | исходный план 2; факт и остаток не пересчитаны |
 | M1-7 | `feat/ui-birth-form-and-facts` | Реализация/G4 — PR #51/#52; полный Tester acceptance — PR #56/#58; clean transfer — PR #57; Manager G5 — PR #59 / `7a17e72`. Final Acceptance подтверждена владельцем 2026-10-09. TEST-FIND-UI-004…013 CLOSED, 23/23 AS PASS, 10/10 REQ SUFFICIENT. `DEBT-CALC-001` и `DEBT-UI-001` OPEN / NON-BLOCKING | бюджеты A4/D5/T5 = 14; estimates D5–8/T3–5; ACCEPTED |
 | M1-8 | `feat/ui-chart-wheel` | Chart Renderer: SVG-колесо — знаки, дома и углы, планеты и производные точки, линии аспектов по категориям. Отрисовочные решения фиксируются ADR: что делать при скучивании планет, как показывать ретроградность, какие аспекты рисовать | 5 |
-| M1-8.1 | `feat/ui-chart-wheel-imolementation` | Перенос [чернового web-прототипа](../ui_ux/web-prototype.html) и экранов Э1–Э7 в основной UI-код: собрать пользовательский поток из формы и фактов M1-7, SVG-колеса M1-8 и реальных ответов API. Демо-значения прототипа не становятся расчётными данными; чат Э8–Э9 остаётся в M2-7 | оценка открыта |
-| M1-9 | `feat/terms-of-use` | [DEBT-UI-001](change_plans/ui-birth-form-and-facts/artifacts.md#technical-debt): подготовка текста и отдельной страницы «Условия использования сервиса», доступной из формы, с содержанием ADR-0034 §2 и ссылкой на полный исходный код. Поставить и проверить до распространения ссылки другим людям и публичного трафика. Закрытый M1-7 работает после ручной отметки исходно снятого checkbox при ещё неготовых странице и её тексте по DP-UI-04/08; ADR не меняется. Developer отвечает за поставку, владелец за текст/закрытие, Tester за evidence | исходный план 1; долг до распространения ссылки |
+| M1-8.1 | `feat/ui-chart-wheel-imolementation` | Перенос [чернового web-прототипа](../../ui_ux/web-prototype.html) и экранов Э1–Э7 в основной UI-код: собрать пользовательский поток из формы и фактов M1-7, SVG-колеса M1-8 и реальных ответов API. Демо-значения прототипа не становятся расчётными данными; чат Э8–Э9 остаётся в M2-7 | оценка открыта |
+| M1-9 | `feat/terms-of-use` | [DEBT-UI-001](../change_plans/ui-birth-form-and-facts/artifacts.md#technical-debt): подготовка текста и отдельной страницы «Условия использования сервиса», доступной из формы, с содержанием ADR-0034 §2 и ссылкой на полный исходный код. Поставить и проверить до распространения ссылки другим людям и публичного трафика. Закрытый M1-7 работает после ручной отметки исходно снятого checkbox при ещё неготовых странице и её тексте по DP-UI-04/08; ADR не меняется. Developer отвечает за поставку, владелец за текст/закрытие, Tester за evidence | исходный план 1; долг до распространения ссылки |
 | M1-10 | `chore/bench-concurrency` | `p50/p95/p99` для натала и космограммы при 1, 2, 5 и 10 одновременных расчётах (ADR-0012). Идёт **до** деплоя: определяет конфигурацию воркеров и может отменить целый блок отложенных решений — или потребовать его немедленно | 1 |
 | M1-11 | `chore/ci-pipeline` | GitHub Actions: `pytest` на Linux. Закрывает известное ограничение «нет CI» и впервые проверяет переносимость golden-эталонов на другую ОС | 0.5 |
 | M1-12 | `chore/deploy-environment` | Эфемериды, `tzdata`, read-only доставка уже версионированного для локального стенда каталога мест, конфигурация; production fail-fast при `EphemerisStatus.mode != "files"`; effective `INFO` и проверяемый guard от случайного `DEBUG` для удалённого стенда по ADR-0034 | 1 |
 | M1-13 | `chore/deploy-server` | Деплой, reverse proxy, TLS, автозапуск. Заметная ссылка на исходный код в интерфейсе (AGPL §13) | 2 |
-| M1-14 | `test/scenario-acceptance` | Сквозная приёмка по [`negative corner scenarios`](../requirements/build_chart/exact_orb_negative_corner_scenarios.md) плюс контрольный кейс: 02.09.1990 Москва → UTC+4, локальные 14:30 = 10:30 UTC | 1.5 |
+| M1-14 | `test/scenario-acceptance` | Сквозная приёмка по [`negative corner scenarios`](../../requirements/build_chart/exact_orb_negative_corner_scenarios.md) плюс контрольный кейс: 02.09.1990 Москва → UTC+4, локальные 14:30 = 10:30 UTC | 1.5 |
 | M1-15 | `fix/first-release-issues` | Фиксы по итогам приёмки | 1 |
 
 **Итого оценённый M1 по baseline v3.7 — 26 рабочих дней.** К baseline v3.2 добавлены
@@ -331,7 +331,7 @@ M1-8.1 пока не входит в эти 26 дней и 17 дней оста�
 
 Для M1-7 владелец заменил прежний target 1/4/2 на плановый бюджет
 **Analysis 4 / Development 5 / Testing 5 рабочих дней** в
-[DP-UI-07](change_plans/ui-birth-form-and-facts/artifacts.md#decision-register).
+[DP-UI-07](../change_plans/ui-birth-form-and-facts/artifacts.md#decision-register).
 Полный базовый цикл — 14 рабочих дней на относительной шкале; это не ещё 14 дней
 остатка и не фактический табель уже выполненного Analysis. Developer estimate
 **5–8 дней** и Tester **3–5 дней** сохранены. Для последовательного сценария
@@ -478,7 +478,7 @@ M2-8 обязателен и обязателен до начала этой р�
 
 | № | Решение | Когда | Статус |
 |---|---|---|---|
-| 1 | Данные рождения остаются защищаемой категорией; условия и presentation checkbox не заменяют юридическое согласие; отметка не хранится; удалённый стенд использует effective `INFO` | до M1-9 | **принято 2026-09-14**, [ADR-0034](../requirements/decisions/0034-birth-data-and-terms-of-use.md) |
+| 1 | Данные рождения остаются защищаемой категорией; условия и presentation checkbox не заменяют юридическое согласие; отметка не хранится; удалённый стенд использует effective `INFO` | до M1-9 | **принято 2026-09-14**, [ADR-0034](../../requirements/decisions/0034-birth-data-and-terms-of-use.md) |
 | 2 | Каталог мест — офлайн из GeoNames, без сетевого геокодера в рантайме | до M1-5 | **принято 2026-09-14** |
 | 3 | Первый экран — колесо карты плюс таблицы фактов | до M1-8 | **принято 2026-09-14** |
 | 4 | Интерпретация первой версии идёт мимо Agent Runtime | до M2-2 | **принято 2026-09-14**, оформляется M2-1 |
@@ -532,7 +532,7 @@ M2-8 обязателен и обязателен до начала этой р�
 приоритет; расхождение между этим документом и ними — дефект этого документа.
 
 Текущее состояние компонентов поддерживается в
-[`overview.md` §2.1](../requirements/overview.md). Раздел 2 сохраняет
+[`overview.md` §2.1](../../requirements/overview.md). Раздел 2 сохраняет
 датированный аудит выполнения и сроков; при расхождении текущего статуса
 нормативен overview, а история уточняется по промптам и Git.
 
