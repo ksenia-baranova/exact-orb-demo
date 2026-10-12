@@ -1,7 +1,7 @@
 # Roles and ownership
 
 **Статус:** DRAFT / WORK IN PROGRESS
-**Дата:** 2026-10-11
+**Дата:** 2026-10-12
 
 Документ описывает полномочия ролей. Порядок стадий находится в [process.md](process/process.md), общие принципы — в
 [development-approach.md](development-approach.md).
@@ -55,7 +55,7 @@ Change Manager является единой точкой обсуждения �
 
 ### Владеет
 
-- единым `docs/project_management/change_plans/<change-id>/artifacts.md`: brief, сводкой заданий и артефактов, DP, оценками, Change Plan, журналом переходов и приёмкой;
+- единым `docs/project_management/change_plans/<change-id>/manager_artifact.md`: brief, сводкой заданий и артефактов, DP, оценками, Change Plan, журналом переходов и приёмкой;
 - согласованным delivery plan и его календарём;
 - координацией согласованных scope, priorities и dependencies в границах решений Owner;
 - единым реестром решений change, его структурой и baseline;
@@ -67,8 +67,7 @@ Change Manager является единой точкой обсуждения �
 - организацией final acceptance и фиксацией решения Owner либо явно делегированного Manager;
 - отдельной фиксацией разрешённой финальной интеграции.
 
-При завершении change Manager проверяет, что Analyst подготовил чистовые требования, Tester подтвердил их соответствие
-проверенному контракту и финальный PR включает этот перенос. Фактическая интеграция подтверждается Git evidence.
+Manager создаёт manager_artifact.md, отмечает участие ролей и назначает необходимые документы по process.md, раздел 7; в малом варианте достаточно одного файла. После финальных approvals и приёмки Owner назначает перенос только изменённых требований / sequences и сверку. При отсутствии изменений достаточно подтверждения Tester на G5.
 
 ### Обязан
 
@@ -127,8 +126,7 @@ Functional Analyst отвечает за наблюдаемое поведени
 - синхронизировать наблюдаемые requirements, scenarios и diagrams.
 
 Размещает требования, сценарии и findings по [правилам требований](../requirements/README.md), фиксирует исходный
-baseline и целевые пункты. До финальной приёмки подготавливает `current/` и карту переноса со стабильными IDs,
-сохраняя неизменённые обязательства и решения об исключениях.
+baseline и целевые пункты. Ведёт `analyst_artifact.md`, подробные материалы в `analyst/`. После финальных approvals и решения Owner, до merge, подготавливает полный текст в `current/`, переносит behavioral/API sequences и ведёт `analyst/transfer_map.md` со стабильными IDs, неизменёнными обязательствами и основаниями исключений.
 
 ### Не уполномочен самостоятельно
 
@@ -156,7 +154,7 @@ contract.
 - development estimate и confidence;
 - планом реализации и исполняемыми промтами work items;
 - выбором порядка разработки и проверок: через тесты или с иной достаточной проверкой;
-- technical sequence diagrams;
+- technical sequence diagrams в `developer/sequence_diagrams/`; после финальных approvals — их перенос в общие тематические каталоги;
 - production code;
 - developer automated tests;
 - implementation evidence и development findings.
@@ -187,7 +185,7 @@ contract.
 ### Handoff
 
 До development передаёт Manager Implementation Plan с оценкой реализуемости, dependencies, risks и estimate.
-После реализации передаёт Tester diff summary,
+Ведёт `developer_artifact.md`; план, промты, checks и findings — в `developer/`. После реализации передаёт Tester diff summary,
 reproduction/setup, выполненные checks, ограничения и открытые non-blocking findings.
 
 ## 6. Tester
@@ -216,10 +214,9 @@ Tester отвечает за независимую проверку testability
 - классифицировать проблему по владельцу смысла;
 - добавить testability evidence и рекомендацию Tester в соответствующую строку `DP-*`;
 - назвать непроверенное и предел evidence;
-- вести единый реестр дефектов change в tester.md и выбирать необходимый retest после пересечения обновления базы с поставкой.
+- вести единый реестр дефектов в tester/defects.md либо в разделе Manager малого варианта по process.md, раздел 7.1; выбирать retest при пересечении обновления базы с поставкой.
 
-Перед финальной приёмкой сверяет чистовую редакцию требований и сценариев с утверждённым и проверенным контрактом,
-поддерживает ссылки в матрице и тестах и фиксирует результат сверки в acceptance evidence.
+Ведёт `tester_artifact.md`; подробные review, план, матрица, дефекты и evidence — в `tester/`. До приёмки подтверждает проверенный контракт baseline + утверждённый пакет change. После решения Owner сверяет чистовые требования, сценарии и sequences с этим пакетом; поддерживает ссылки в матрице и тестах и фиксирует отдельное evidence переноса до merge.
 
 ### Не уполномочен самостоятельно
 
@@ -276,7 +273,7 @@ delivery boundary, ею владеет Developer.
 
 | Роль | Skill draft | Artifact templates |
 |---|---|---|
-| Owner | — | решения фиксируются в [artifacts.md Manager](artifacts/change-manager.md) |
+| Owner | — | решения фиксируются в [manager_artifact.md Manager](artifacts/change-manager.md) |
 | Change Manager | [skill](skills/change-manager/SKILL.md) | [templates](artifacts/change-manager.md) |
 | Functional Analyst | [skill](skills/functional-analyst/SKILL.md) | [templates](artifacts/functional-analyst.md) |
 | Developer | [skill](skills/developer/SKILL.md) | [templates](artifacts/developer.md) |

@@ -37,7 +37,7 @@ state REJECTED : намерение или scope отклонены
 
 SRC_QA -[#EA580C]-> IN_DEVELOPMENT : подтверждённый\nblocking дефект
 SRC_CONTRACT -[#EA580C]-> ANALYSIS : изменение\nутверждённого контракта
-SRC_ACC -[#EA580C]-> ANALYSIS : обновление main\nзадело контракт
+SRC_ACC -[#EA580C]-> ANALYSIS : противоречие принятого\nконтракта / обновление main
 SRC_ACC -[#EA580C]-> READY_FOR_ACCEPTANCE : обновлённый кандидат\nменяет принятое
 
 SRC_ACTIVE -[#475569]-> ON_HOLD : Owner / делегированный\nManager приостановил
@@ -49,6 +49,7 @@ SRC_PRE -[#475569]-> REJECTED : Owner отклонил\nдо допуска ре
 legend bottom
   Обновление main без пересмотра контракта и без изменения принятого результата статус не меняет:
   checks и retest — по разделу 6.1, до их завершения «Поставка: нет».
+  Ошибка переноса без пересмотра контракта: задание → REWORK, change остаётся ACCEPTED, поставка — «нет».
   CANCELLED и REJECTED не возобновляются поздними событиями; новая работа — новый change.
 endlegend
 @enduml

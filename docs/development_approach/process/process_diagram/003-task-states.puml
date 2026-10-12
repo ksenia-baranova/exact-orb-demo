@@ -2,7 +2,7 @@
 title exact-orb — Статусы ролевого задания
 
 ' Источник: docs/development_approach/process/process.md, раздел 2 «Ролевое задание».
-' Текущий статус записывается только в сводке artifacts.md.
+' Текущий статус записывается только в сводке manager_artifact.md.
 ' Review требований и проверка реализации — разные задания.
 
 hide empty description
@@ -33,7 +33,7 @@ READY_FOR_REVIEW --> DONE : назначенные reviewers\nприняли п�
 READY_FOR_REVIEW -[#EA580C]-> REWORK : возврат
 REWORK --> IN_PROGRESS : исправление возобновлено
 REWORK --> READY_FOR_REVIEW : повторная передача
-DONE -[#EA580C]-> REWORK : подтверждённый\nfinding
+DONE -[#EA580C]-> REWORK : reviewer подтвердил нарушение\nисходного критерия
 
 OPEN_TASK -[#475569]-> BLOCKED : продолжать невозможно
 BLOCKED -[#475569]-> OPEN_TASK[H] : зависимость устранена,\nвходы пригодны → ResumeStatus
@@ -48,5 +48,8 @@ note right of DONE
   При DONE → REWORK прежняя
   версия и её приёмка
   сохраняются в истории.
+  Новые входы / scope после корректного DONE:
+  новое связанное TaskId, прежнее остаётся DONE.
+  Manager фиксирует применимость evidence / gates.
 end note
 @enduml

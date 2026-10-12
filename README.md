@@ -982,7 +982,8 @@ Mock, удовлетворяющий интерфейсу, полезен для
 | [`docs/project_management/problems_detected_by_human/`](docs/project_management/problems_detected_by_human/) | Разборы дефектов, найденных человеком |
 | [`docs/requirements/README.md`](docs/requirements/README.md) | Размещение требований, форматы `DELTA`/`FULL` и перенос принятого change в чистовую редакцию |
 | [`docs/requirements/current/`](docs/requirements/current/) | Каталог консолидированных чистовых требований; наполняется по мере миграции тематических документов |
-| [`docs/requirements/changes/`](docs/requirements/changes/) | Требования, сценарии и analysis конкретного change |
+| [`docs/requirements/changes/`](docs/requirements/changes/) | Исторические опубликованные пакеты требований прежних change |
+| [`docs/project_management/change_plans/`](docs/project_management/change_plans/) | Новые change: четыре корневых ролевых артефакта и подпапки материалов ролей; исторические change сохраняют свои пути |
 | [`docs/requirements/decisions/README.md`](docs/requirements/decisions/README.md) | Реестр ADR |
 | [`docs/requirements/overview.md`](docs/requirements/overview.md) | Действующие общие требования и системные invariants до их явного переноса в `current/` |
 | [`docs/requirements/scenarios.md`](docs/requirements/scenarios.md) | Действующие пользовательские сценарии до их явного переноса в `current/` |

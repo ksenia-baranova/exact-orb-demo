@@ -131,7 +131,7 @@ historical prompts, experiments и свободное обсуждение
 владельца решения.
 
 Для активного change актуальные requirements означают зафиксированный нормативный baseline плюс утверждённую дельту
-или полную спецификацию изменяемой области. Перед финальным merge они сводятся в чистовую редакцию. Пути, границы `FULL`
+или полную спецификацию изменяемой области. После финальных approvals и приёмки Owner, до финального merge они сводятся в чистовую редакцию; Tester отдельно сверяет перенос. Пути, границы `FULL`
 и порядок переноса заданы в [правилах требований](../requirements/README.md); наличие черновика не меняет baseline.
 
 Исторические prompts являются журналом ограниченных задач. После выполнения они не переписываются как действующая
@@ -267,3 +267,7 @@ gates, слабом handoff, высокой стоимости артефакт�
 - [Experiment 001](experiments/experiment-001-atomic-tdd-prompts.md)
 - [Experiment 002](experiments/experiment-002-role-based-change-development.md)
 - [Problems detected by human](../project_management/problems_detected_by_human/)
+
+## Размещение материалов change
+
+Для новых change применяется одна папка с manager_artifact.md и индексами участвующих ролей и подпапками по [process.md, раздел 7](process/process.md#7-размещение-материалов). Корневые файлы передают контекст и версии, подробные требования, планы и evidence принадлежат роли. Текущие состояния и DP сохраняют общий источник в Manager. После финальных approvals и Owner acceptance перенос в общие requirements/current/ и sequence_diagrams/ и его сверка выполняются до merge по [разделу 6.2](process/process.md#62-перенос-после-финальных-approvals-и-готовность-интеграции); приёмка версии не объявляет поставку состоявшейся.

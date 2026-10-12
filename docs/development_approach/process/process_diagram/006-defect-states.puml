@@ -2,7 +2,7 @@
 title exact-orb — Статусы дефекта (TEST-FIND-*)
 
 ' Источник: docs/development_approach/process/process.md, раздел 5.
-' Единый реестр дефектов change — docs/testing/<change-id>/tester.md.
+' Реестр — tester/defects.md; в малом варианте — авторский раздел Manager (process.md, 7.1).
 ' Исход дефекта не меняет одноимённое состояние change.
 
 hide empty description
