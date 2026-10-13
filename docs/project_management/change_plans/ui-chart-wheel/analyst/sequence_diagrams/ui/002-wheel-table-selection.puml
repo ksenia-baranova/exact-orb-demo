@@ -1,0 +1,69 @@
+@startuml
+' Owner: Functional Analyst. TASK-A-001; package v1.
+' InputSHA 5188b523089acc8081585e869c482ee0d343cfba
+' REQ-WHEEL-04/05/06/07/08/09/10; REQ-UI-04/06/10
+' AS-WHEEL-04/07/08/09/10/11/12/13/16/23
+' Clean target: docs/sequence_diagrams/ui/002-wheel-table-selection.puml
+title M1-8: двусторонний выбор в пределах одной карты
+autonumber
+hide footbox
+actor "Пользователь" as User
+boundary "Страница UI / локальный выбор" as Page
+participant "Колесо" as Wheel
+participant "HTML таблицы" as Facts
+note over Page, Facts
+Точная ownership локального выбора — DP-O-010.
+Все сообщения локальные; HTTP/build не выполняются.
+Canonical ID/пара адресуют один принятый ChartDTO.
+Selection/focus/closed-table детали — DP-O-013.
+end note
+alt активация point на колесе
+  User -> Wheel : point ID (pointer / keyboard)
+  Wheel -> Page : выбран point ID данной identity
+  Page -> Facts : связать выбор с соответствующей строкой
+  Page -> Wheel : отобразить выбранную точку
+else активация exact/working линии либо маркера соединения
+  User -> Wheel : опубликованная пара/type
+  Wheel -> Page : выбран аспект данной identity
+  Page -> Facts : выделить конкретную строку аспекта
+  Page -> Wheel : выделить аспект и оба конца
+else выбор строки points
+  User -> Facts : активировать point row
+  Facts -> Page : выбран point ID данной identity
+  Page -> Wheel : выделить ту же точку
+else выбор строки aspects
+  User -> Facts : активировать aspect row
+  Facts -> Page : выбран опубликованный аспект
+  alt exact / working
+    Page -> Wheel : выделить обозначение + оба конца
+  else background
+    Page -> Wheel : выделить только оба конца, без линии/маркера
+  end
+end
+note over Wheel, Facts
+Концами могут быть points либо asc/mc/vertex.
+dsc/ic не добавляются в аспектную сетку.
+Сдвинутый символ/R связан с истинной долготой;
+линия не соединяет случайно разнесённые метки.
+Каждый отображаемый conjunction имеет свой адресуемый ☌.
+Размещение/плотность — DP-O-011, стили/легенда — DP-O-012.
+end note
+opt подробности закрыты
+  Page --> User : доступное представление выбранной записи
+  note over Page, Facts
+  Рекомендация Analyst DP-O-013: раскрыть подробности
+  без автоматической прокрутки/переноса фокуса.
+  Эта ветвь условна до решения Owner.
+  end note
+end
+User -> Page : явное \"Снять выделение\"
+Page -> Wheel : убрать выбор
+Page -> Facts : убрать выбор
+Page --> User : обе стороны без прежней отметки
+note over Page, Facts
+Resize не меняет факты и не запускает HTTP.
+Для новой identity старый выбор не адресует новую запись.
+Reset новой / preserve той же identity — кандидат DP-O-013.
+U фиксирует initiator, ID, порядок и видимый исход.
+end note
+@enduml
