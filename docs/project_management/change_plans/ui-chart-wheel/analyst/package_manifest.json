@@ -1,0 +1,48 @@
+{
+  "task_id": "TASK-A-001",
+  "author": "Codex / Functional Analyst",
+  "package_version": "v1-review",
+  "date": "2026-10-13",
+  "input_sha": "5188b523089acc8081585e869c482ee0d343cfba",
+  "main_baseline": "535551026af6eedaf2a0aa5c0daa96fa94655ec1",
+  "source_ref": "origin/analysis/ui-chart-wheel; publication commit is the first addition of analyst_artifact.md (git log --diff-filter=A)",
+  "manifest_self_excluded": true,
+  "files": [
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/analyst/decision_input.patch",
+      "sha256": "dc8081e0973cd0490e6831ba6e94203cf296af527567c82e2a62e8060dcb6916"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/analyst/findings.md",
+      "sha256": "223375a0f6609511b5bb0a7c97e75f2e7ae23f2a8029f76f22a04d0ece680260"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/analyst/requirements.md",
+      "sha256": "3f09ac40edc189407dd18112b0f6048ce19c56bdb0f751842c5d5828e6eb6402"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/analyst/scenarios.md",
+      "sha256": "c6d3662f940087d8aad8da31830fc90c8472cc787a5cda2cd1c3067e067d8558"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/analyst/sequence_diagrams/ui/001-chart-presentation.puml",
+      "sha256": "e7d4ac6c2e60aa962dd21c386c8bfbe61f6fa5a5b64dc9859b2d501115e2f474"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/analyst/sequence_diagrams/ui/002-wheel-table-selection.puml",
+      "sha256": "a3fc7d045878e5599300c18be9b2f3cb134d8b9269f89738b1c562e29f5ecd03"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/analyst/sequence_diagrams/ui/003-edit-and-recovery.puml",
+      "sha256": "9f1b0f8185b9dab716ed0ee50a385279276ceb6bd4aea2d37ebe27703f295ea2"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/analyst/sources.md",
+      "sha256": "452057ada40ce7b4e0fbfb49177287e2acafabffd1f519f9da4d49de06228278"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/analyst_artifact.md",
+      "sha256": "0649d556e25452885f09533362dcd8bb3e1de7c3fbd60d8af82d04776174c297"
+    }
+  ]
+}
