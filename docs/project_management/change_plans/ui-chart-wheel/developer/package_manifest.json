@@ -1,0 +1,24 @@
+{
+  "package": "developer-consultation-v1",
+  "author": "Codex / Developer",
+  "task_id": "TASK-D-001",
+  "input_sha": "2b846077b317e33dd892565419942c4db8517b1e",
+  "main_baseline": "535551026af6eedaf2a0aa5c0daa96fa94655ec1",
+  "hash_basis": "UTF-8 LF local payload bytes; manifest excludes itself",
+  "files": {
+    "developer_artifact.md": "a670790e8c3c1d32ab1406a72640216f8a188aa6c58368db8c8f32a996eab81f",
+    "developer/checks.md": "eca2a1566087e2d6eb7f462587c95d3e1ec04abda66e36f375262c68586eb976",
+    "developer/decision_input.patch": "ea5f0f22903b3f29423641e0ff6cb63ec4177f3530f4d041a7168bf9f8e1b4c6",
+    "developer/findings.md": "56d833d7d8f50ae1082081b4a4c69f4ccc52428b81f114bb642bb38bd83b3f65",
+    "developer/implementation_plan.md": "7622884debcb883b4ddca3c5690086390c7a556255eedc389196cb2f7bde6389",
+    "developer/prompts/01-renderer-decisions-and-spike.md": "79a8382f439237855e5dbbd2699754da8ef6dd8674057a99c58e2adcd2e7f7fe",
+    "developer/prompts/02-svg-renderer.md": "561e0b2534be45c3daecadcddf93a70204c6ce40993d654ac4c8c1fa34df95ca",
+    "developer/prompts/03-selection-and-tables.md": "e7f690755aa2ab634729d3c556011a515a81b0bcebd805ab35ebed55e398e23b",
+    "developer/prompts/04-page-form-and-recovery.md": "33d5112c198768b0ee09aecd0c3a3b2c11aaab96fa0ed3a3e3e74a9ffa40ea9a"
+  },
+  "publication": {
+    "source_ref": "origin/dev/ui-chart-wheel",
+    "commit_resolver": "git log -1 --diff-filter=A --format=%H -- docs/project_management/change_plans/ui-chart-wheel/developer_artifact.md",
+    "evidence": "Actual commit and remote SHA are reported after successful push; input_sha is unchanged."
+  }
+}
