@@ -1,8 +1,18 @@
 # Источники и наблюдаемость: ui-chart-wheel
 
 **Автор:** Analyst / Codex, TASK-A-001, актуализация 2026-10-15; исходное исследование 2026-10-13.
-**InputSHA актуализации:** `2b846077b317e33dd892565419942c4db8517b1e`; исходный Analysis InputSHA `5188b52`; **MainBaseline:** `535551026af6eedaf2a0aa5c0daa96fa94655ec1`.
+**InputSHA актуализации:** `2169845b770754e11ae8b5cb1e13ffcd780784c8`; исходный Analysis InputSHA `5188b52`; **MainBaseline:** `535551026af6eedaf2a0aa5c0daa96fa94655ec1`.
 От v1 @ 683bdd0 до 2b84607 изменились Manager и добавились process_notes.md; пакет v1 интегрирован PR #63 / bc9a4fb. Исходные code / tests / current requirements / ADR не изменились от MainBaseline. Ни чтение sources, ни текущая документальная синхронизация не являются выполнением implementation tests или live acceptance.
+
+## Текущая сверка v3
+
+На входе подготовки v3 после fetch HEAD Analyst / origin/change совпали на 2169845; origin/analysis был cb25422. SHA публикации v3 определяется корневым handoff и историей Git. Локальная change, указанная Owner в передаче как d51bbcb, не используется как более свежий source: remote 2169845 включает Tester PR #68. После cb25422 в change пришли консультации Developer @ 04be207 / Tester @ 9dd8b96; production / tests / нормативный MainBaseline не изменились.
+
+Новый источник — передача Owner 2026-10-15 из чата owner change/ui-chart-wheel (ThreadId 01a13458-36ca-7021-9246-a73b3d3b2b0d), сделанная по прямому поручению человека «Передай анлитику все принятые решения если больше нет открытых вопросов». Передача содержит исходные ответы / уточнения; финальные уточнения имеют приоритет над ранними широкими формулировками. Дополнительно Owner в чате Analyst прямо подтвердил снятие только исчезнувшего выбора при automatic current. Эти новые evidence ещё не отражены в Manager @ InputSHA. Подписанное предложение регистрации — [decision_input.patch](decision_input.patch), только дополнение DP-O-012/013, без смены статусов; отдельный реестр решений не создаётся.
+
+Визуальные примеры, названные в Owner-передаче: `chart-angles-layout.html`, вариант «Таблица», и `conjunction-marker.html`, вариант «Контур символа», в каталоге `C:/Users/KateUser/.codex/visualizations/2026/10/13/01a13458-36ca-7021-9246-a73b3d3b2b0d/`. Они передают выбранную композицию, не нормативные палитру / координаты / толщины. Rendering этих примеров Analyst в текущем проходе не выполнял; источник выбора — Owner evidence.
+
+Runtime-основа контрпримера проверена чтением main.mjs: visible / online вызывают session.foreground; recovery.test.mjs содержит mounted visibility/online control с новой identity B и сохранённым draft. F0 natal публикует moon→asc, F0 cosmogram angles=null: это различающий controlled переход AS-WHEEL-30. Тесты прочитаны, команды runtime checks не запускались.
 
 ## Проверенные источники
 
@@ -36,12 +46,12 @@ N — существующий серверный trace @ MainBaseline; U — у
 | Явный build → admission → Orchestrator → committed | http_message AdmissionControl.reserve/release, ApplicationOrchestrator.execute, application/component events, run_id=request_id; terminal | Submitted snapshot, единственный POST, source=build и та же identity у обоих представлений |
 | Refusal / lost response / recovery → safe read | Реальные terminal/code/Retry-After, если получены; каждое новое чтение имеет отдельный request_id. При потере клиентского ответа нельзя вывести его status из отсутствия DTO | Recovery intent отдельно от confirmed chart/draft; safe-read sequence; gated explicit retry; log первого build при наличии серверного evidence |
 | Accepted state → колесо и HTML | Серверные N заканчиваются HTTP исходом, не доказывают DOM render | Приёмка DTO → передача обоим представлениям → видимый результат/отказ; identity и сохранность данных |
-| Выбор планеты / аспекта → HTML и графика → повторное снятие планеты | Серверных N нет: локальные действия не инициируют запрос | Actor, выбранный canonical ID / пара, весь отбор aspects и категории, порядок / повторное снятие, network count; первые пять / отдельное раскрытие, отсутствие scroll/focus transfer. Смешанный аспектный выбор и оставшиеся DP-O-013 переходы ещё OPEN |
+| Выбор планеты / аспекта → HTML и графика → повторное снятие планеты | Серверных N нет: локальные действия не инициируют запрос | Actor, выбранный canonical ID / пара, весь отбор aspects и категории, порядок / повторное снятие, network count; первые пять / отдельное раскрытие, отсутствие scroll/focus transfer. В v3 выбор планеты / аспекта взаимоисключающий, аспект оставляет одну строку; повтор снимает его с возвратом общего раскрытия. U отдельно отличает automatic current, F5 и исчезнувшую пару |
 | Resize / form reveal / renderer failure | Локальных серверных N нет; safe recheck при назначенном действии использует N current | Сохранность фактов / draft; при resize выбранная планета / раскрытие сохранены. При render failure HTML той же карты доступен и есть сообщение ошибки, автоматического POST нет; это не successful SVG outcome |
 
 В PUML роль «Колесо» — наблюдаемый участник, точная техническая граница ожидает DP-O-010. Не вводятся новые сервисы/слои или сетевой обмен между UI participants. Реализация внутренних calls/log seams и технические sequences принадлежат Developer. Tester сопоставляет N и U на CandidateSHA; исходники N сейчас прочитаны, live logs не собирались.
 
-## Сопоставление изменений Manager и пакета v2
+## Историческое сопоставление Manager и пакета v2 @ 2b84607
 
 | Источник @ 2b84607 | Применённый контракт / сценарии | Что осталось открытым |
 |---|---|---|
@@ -55,3 +65,7 @@ N — существующий серверный trace @ MainBaseline; U — у
 ## История предложений DP
 
 Manager §2.4 @ 2b84607 подтверждает регистрацию вклада DP-O-010…013 и DP-O-014 из Git-версии `683bdd0:docs/project_management/change_plans/ui-chart-wheel/analyst/decision_input.patch`. Предложение уже применено по смыслу к единственному реестру; повторное применение к новому Manager не требуется и может конфликтовать с принятыми ответами Owner. В пакете v2 этот patch удалён как завершённое приложение, исходные bytes и история v1 сохранены в Git. Отдельного нового реестра Analysis не создаётся. Проверяется актуальный Manager baseline и отражение его решений, а не применимость старого patch к изменившемуся файлу.
+
+## Граница новой редакции
+
+Предыдущая таблица сопоставления v2 и история patch v1 — snapshots прежних входов, а не перечень нынешних нерешённых подпунктов. В v3 явно перенесены ответы о взаимоисключающем выборе / одной паре, повторном снятии аспекта / прежнем раскрытии, F5 отдельно от automatic current, исчезнувшем выборе, форме / draft, всех positions / таблице angles и подписи / контуре ☌. Не разрешены exact renderer interface / ownership; измеренные collision/hit bounds, пределы / fallback / R / несколько ☌; палитра / legend layout / расположение маркеров; mobile targets / keyboard order и доступное размещение recovery controls. Весь DP-O-010…013 не закрывается отдельным Owner ответом.
