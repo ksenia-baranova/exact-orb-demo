@@ -1,10 +1,10 @@
 @startuml
-' Owner: Functional Analyst. TASK-A-001; package v1.
-' InputSHA 5188b523089acc8081585e869c482ee0d343cfba
-' REQ-WHEEL-04/05/06/07/08/09/10; REQ-UI-04/06/10
-' AS-WHEEL-04/07/08/09/10/11/12/13/16/23
+' Owner: Functional Analyst. TASK-A-001; package v2, 2026-10-15.
+' Update InputSHA 2b846077b317e33dd892565419942c4db8517b1e; v1 at 683bdd0
+' REQ-WHEEL-04/05/06/07/08/09/10; REQ-UI-03/04/05/06/10
+' AS-WHEEL-04/07/08/09/10/11/12/13/14/16/23/26/27
 ' Clean target: docs/sequence_diagrams/ui/002-wheel-table-selection.puml
-title M1-8: двусторонний выбор в пределах одной карты
+title M1-8: выбор одной планеты, аспекты и независимые таблицы
 autonumber
 hide footbox
 actor "Пользователь" as User
@@ -12,58 +12,74 @@ boundary "Страница UI / локальный выбор" as Page
 participant "Колесо" as Wheel
 participant "HTML таблицы" as Facts
 note over Page, Facts
-Точная ownership локального выбора — DP-O-010.
-Все сообщения локальные; HTTP/build не выполняются.
-Canonical ID/пара адресуют один принятый ChartDTO.
-Selection/focus/closed-table детали — DP-O-013.
+Наблюдаемые участники не задают технический интерфейс:
+граница / ownership выбора еще DP-O-010.
+Одна принятая identity, локальные действия без HTTP / build.
+В обычном виде сразу первые 5 aspects в порядке DTO
+и первые 5 houses по number, свое Показать все у каждой.
 end note
 alt активация point на колесе
   User -> Wheel : point ID (pointer / keyboard)
-  Wheel -> Page : выбран point ID данной identity
-  Page -> Facts : связать выбор с соответствующей строкой
-  Page -> Wheel : отобразить выбранную точку
-else активация exact/working линии либо маркера соединения
-  User -> Wheel : опубликованная пара/type
-  Wheel -> Page : выбран аспект данной identity
-  Page -> Facts : выделить конкретную строку аспекта
-  Page -> Wheel : выделить аспект и оба конца
-else выбор строки points
+  Wheel -> Page : активирован point той же карты
+else активация строки points
   User -> Facts : активировать point row
-  Facts -> Page : выбран point ID данной identity
-  Page -> Wheel : выделить ту же точку
-else выбор строки aspects
-  User -> Facts : активировать aspect row
-  Facts -> Page : выбран опубликованный аспект
-  alt exact / working
-    Page -> Wheel : выделить обозначение + оба конца
-  else background
-    Page -> Wheel : выделить только оба конца, без линии/маркера
+  Facts -> Page : активирован point ID той же карты
+else независимый выбор аспекта без активного планетного отбора
+  alt графический exact / working аспект
+    User -> Wheel : опубликованная пара / type
+    Wheel -> Page : выбран конкретный аспект
+    Page -> Facts : связать с соответствующей строкой
+    Page -> Wheel : обозначение аспекта и оба конца
+  else строка aspects
+    User -> Facts : активировать конкретную строку
+    Facts -> Page : выбран опубликованный аспект
+    alt exact / working
+      Page -> Wheel : обозначение аспекта и оба конца
+    else background
+      Page -> Wheel : только два конца, без линии / маркера
+    end
   end
 end
-note over Wheel, Facts
-Концами могут быть points либо asc/mc/vertex.
-dsc/ic не добавляются в аспектную сетку.
-Сдвинутый символ/R связан с истинной долготой;
-линия не соединяет случайно разнесённые метки.
-Каждый отображаемый conjunction имеет свой адресуемый ☌.
-Размещение/плотность — DP-O-011, стили/легенда — DP-O-012.
-end note
-opt подробности закрыты
-  Page --> User : доступное представление выбранной записи
-  note over Page, Facts
-  Рекомендация Analyst DP-O-013: раскрыть подробности
-  без автоматической прокрутки/переноса фокуса.
-  Эта ветвь условна до решения Owner.
-  end note
+opt активирован point
+  alt повторно активирована выбранная планета
+    Page -> Wheel : убрать выбор и связанную подсветку
+    Page -> Facts : снять отбор, первые 5 общего списка + Показать все
+  else другая планета либо выбор отсутствовал
+    Page -> Wheel : заменить выбор единственным point ID
+    Page -> Facts : все опубликованные аспекты point сразу, без лимита 5
+    Facts --> Page : строки в порядке DTO / явный пустой отбор
+  end
+  Page --> User : обновление на месте без scroll / focus transfer
 end
-User -> Page : явное \"Снять выделение\"
-Page -> Wheel : убрать выбор
-Page -> Facts : убрать выбор
-Page --> User : обе стороны без прежней отметки
+opt Показать все у общего списка aspects
+  User -> Facts : раскрыть остальные аспекты
+  Facts --> User : полный опубликованный набор; houses не меняются
+end
+opt Показать все у houses
+  User -> Facts : раскрыть остальные рассчитанные дома
+  Facts --> User : все 12 по number; aspects не меняются
+end
+note over Wheel, Facts
+Отдельной кнопки Снять выделение нет.
+Повторная активация планеты доступна с клавиатуры.
+Концы аспекта: points / asc / mc / vertex, не dsc / ic.
+Background не становится линией / маркером после выбора.
+Exact линия сплошная, working пунктирная;
+тип цвет + текст, выбранная линия толще при прежнем цвете / рисунке.
+Палитра, legend layout, категория / выбор для ☌ еще DP-O-012.
+end note
+note over Page, Wheel
+Значки по умолчанию по истинным долготам без разноса.
+При конфликте минимально смещаются только конфликтующие,
+выноски только реально смещенным, порядок сохраняется.
+Численный критерий / R / ☌ / предел / fallback еще DP-O-011.
+end note
 note over Page, Facts
-Resize не меняет факты и не запускает HTTP.
-Для новой identity старый выбор не адресует новую запись.
-Reset новой / preserve той же identity — кандидат DP-O-013.
+Resize сохраняет выбранную планету и раскрытие таблиц, без HTTP.
+Новый принятый build по измененным birth data сбрасывает
+выбор / подсветку / раскрытие к начальным 5 + 5 строкам.
+Повторный current той же карты, смешанный выбор аспекта,
+его снятие, mobile targets / keyboard order еще DP-O-013.
 U фиксирует initiator, ID, порядок и видимый исход.
 end note
 @enduml
