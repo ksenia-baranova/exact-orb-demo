@@ -1,6 +1,6 @@
 @startuml
-' Owner: Functional Analyst. TASK-A-001; package v2; update 2026-10-15.
-' Update InputSHA 2b846077b317e33dd892565419942c4db8517b1e; v1 at 683bdd0
+' Owner: Functional Analyst. TASK-A-001; draft package v3; update 2026-10-15.
+' Update InputSHA 2169845b770754e11ae8b5cb1e13ffcd780784c8; v2 at cb25422; new Owner evidence pending Manager registration
 ' REQ-WHEEL-01/02/03/08/09/11; REQ-UI-01/03/08/11
 ' AS-WHEEL-01/02/03/05/06/14/15/24/25
 ' Clean target: docs/sequence_diagrams/ui/001-chart-presentation.puml
@@ -54,8 +54,8 @@ else явный валидный build после успешного session rea
 end
 Session -> Page : принятый outcome + источник + request_id
 alt chart_ready с подтверждённым ChartDTO
-  Page -> Wheel : та же карта / identity
-  Page -> Facts : та же карта / identity
+  Page -> Facts : HTML факты той же принятой карты / identity
+  Page -> Wheel : изображение той же карты / identity
   Wheel --> Page : изображение / видимый отказ
   Facts --> Page : HTML той же карты, первые 5 аспектов / домов
   opt локальный отказ SVG
@@ -65,15 +65,22 @@ alt chart_ready с подтверждённым ChartDTO
   note over Page, User
   POST summary: снимок A; current summary: birth ответа.
   Черновик B не подменяет показанную карту.
-  Initial ready без изменённого draft сворачивает форму.
-  Повторное редактирование/collapse ожидает DP-O-013.
+  После successful build поля совпадают со снимком: форма свернута.
+  Отличающийся поздний draft: редактор открыт, ввод сохранен.
+  Initial ready без измененного draft сворачивает форму.
+  Automatic current не скрывает открытый измененный draft.
   Stale сохраняет факты и видимую отметку.
-  Аспекты / дома: сразу первые 5, у каждой таблицы свое Показать все.
+  Обычные аспекты / дома: сразу первые 5, свои Показать все.
+  Все points сразу, опубликованные angles - компактная таблица.
+  При выбранном аспекте одна строка / одно графическое обозначение.
   Натал: фактический ASC слева; cosmogram: 0 Овна слева,
   без домов / углов; рост долгот против часовой стрелки.
   DP-O-014 принят Owner, геометрические проверки еще впереди.
   Новый принятый build по измененным birth data сбрасывает
   выбор / подсветку / раскрытие; одни edits / отказ этого не делают.
+  F5: без выбора, первые 5 + 5; automatic current сохраняет состояние.
+  При другой identity - только новый DTO: существующий выбор сохраняется,
+  отсутствующий снимается без сброса раскрытия; старые факты не переносятся.
   end note
 else empty / chart_unavailable подтверждённым current
   Page -> Wheel : убрать прежнее колесо и выбор

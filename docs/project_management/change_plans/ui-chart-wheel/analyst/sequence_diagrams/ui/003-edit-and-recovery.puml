@@ -1,6 +1,6 @@
 @startuml
-' Owner: Functional Analyst. TASK-A-001; package v2; update 2026-10-15.
-' Update InputSHA 2b846077b317e33dd892565419942c4db8517b1e; v1 at 683bdd0
+' Owner: Functional Analyst. TASK-A-001; draft package v3; update 2026-10-15.
+' Update InputSHA 2169845b770754e11ae8b5cb1e13ffcd780784c8; v2 at cb25422; new Owner evidence pending registration
 ' REQ-WHEEL-08/11; REQ-UI-03/08/09/11
 ' AS-WHEEL-17/18/19/20/21/22
 ' Clean target: docs/sequence_diagrams/ui/003-edit-and-recovery.puml
@@ -16,7 +16,8 @@ participant "Колесо + HTML" as Views
 note over Page, Views
 Confirmed A, submitted intent B и текущий draft различимы.
 Внутренняя concurrency/coalescing остаётся baseline Developer.
-Focus/collapse после редактирования ожидает DP-O-013.
+Collapse по принятому Owner условию совпадения полей со snapshot.
+Технический focus / доступное размещение recovery controls еще DP-O-013.
 end note
 User -> Page : \"Изменить данные\"
 Page --> User : заполненный редактор / сохранённый draft
@@ -55,7 +56,12 @@ else network потеря ответа / неизвестный 5xx
     API --> Session : фактическая карта / birth / stale
     Session -> Page : принять actual current identity
     Page -> Views : единая фактическая карта
-    Page --> User : сводка actual карты, draft B сохранён
+    Page --> User : сводка actual карты; измененный draft B в открытой форме
+    note right of Page
+    Automatic current без принятия нового результата своего build
+    сохраняет раскрытие / существующий выбор нового DTO;
+    исчезнувший выбор снимает без старых строк / сброса раскрытия.
+    end note
   else current empty / unavailable
     API --> Session : подтверждённое состояние без ChartDTO
     Session -> Page : убрать числовые факты, сохранить draft
@@ -69,21 +75,28 @@ else network потеря ответа / неизвестный 5xx
 else committed B
   API --> Session : chart_ready ChartDTO B
   Session -> Page : confirmed B / неизменяемая сводка B
-  Page -> Views : колесо / HTML B; сброс выбора / подсветки / раскрытия
-  Page --> User : новая B, первые 5 aspects / houses + свои Показать все
+  Page -> Views : единая карта B; reset при новом результате по измененным birth data
+  Page --> User : при этом reset первые 5 aspects / houses + свои Показать все
+  alt текущие поля совпадают со snapshot B
+    Page --> User : свернуть форму
+  else появился отличающийся поздний draft C
+    Page --> User : оставить редактор открытым с C, сводка относится к B
+  end
   opt локальный отказ SVG B
     Views --> Page : колесо B не отрисовано
     Page --> User : сообщение ошибки; HTML / подтвержденные данные B доступны
   end
 end
 note over Page, User
-Только принятие нового результата по измененным birth data
-сбрасывает состояния таблиц; ввод / отказ build этого не делают.
+Полный reset: F5 либо принятый новый build по измененным birth data.
+Ввод / отказ build этого не делают; keyboard / recovery gates сохраняются.
 Recovery/Retry-After/restart controls не скрыты свёрнутой формой.
 Late first commit не приписывается второму POST.
 Foreground читает actual current; draft не перезаписывается.
-Сохранение выбора / раскрытия при том же current еще DP-O-013;
-его нельзя вывести из принятого сохранения при resize.
+Automatic current не скрывает открытый измененный draft.
+Выбор сохраняется только при наличии в новом DTO;
+при исчезновении снимается только выбор, раскрытие сохраняется.
+Сохранение несохраненного draft сквозь F5 / закрытие не требуется.
 Dispose исключает поздний accept; серверная отмена не заявляется.
 N не доказывает render, локальные переходы фиксируются U.
 end note
