@@ -1,6 +1,6 @@
 @startuml
-' Owner: Functional Analyst. TASK-A-001; package v1.
-' InputSHA 5188b523089acc8081585e869c482ee0d343cfba
+' Owner: Functional Analyst. TASK-A-001; package v2; update 2026-10-15.
+' Update InputSHA 2b846077b317e33dd892565419942c4db8517b1e; v1 at 683bdd0
 ' REQ-WHEEL-01/02/03/08/09/11; REQ-UI-01/03/08/11
 ' AS-WHEEL-01/02/03/05/06/14/15/24/25
 ' Clean target: docs/sequence_diagrams/ui/001-chart-presentation.puml
@@ -57,16 +57,23 @@ alt chart_ready с подтверждённым ChartDTO
   Page -> Wheel : та же карта / identity
   Page -> Facts : та же карта / identity
   Wheel --> Page : изображение / видимый отказ
-  Facts --> Page : опубликованные HTML факты
-  Page --> User : сводка карты, колесо сразу,\"Изменить данные\"
+  Facts --> Page : HTML той же карты, первые 5 аспектов / домов
+  opt локальный отказ SVG
+    Page --> User : ошибка колеса; HTML и данные доступны
+  end
+  Page --> User : сводка карты, колесо сразу, "Изменить данные"
   note over Page, User
   POST summary: снимок A; current summary: birth ответа.
   Черновик B не подменяет показанную карту.
   Initial ready без изменённого draft сворачивает форму.
   Повторное редактирование/collapse ожидает DP-O-013.
   Stale сохраняет факты и видимую отметку.
-  Cosmogram: 0 Овна слева, без домов/углов.
-  Натальная ориентация/direction ожидает DP-O-014.
+  Аспекты / дома: сразу первые 5, у каждой таблицы свое Показать все.
+  Натал: фактический ASC слева; cosmogram: 0 Овна слева,
+  без домов / углов; рост долгот против часовой стрелки.
+  DP-O-014 принят Owner, геометрические проверки еще впереди.
+  Новый принятый build по измененным birth data сбрасывает
+  выбор / подсветку / раскрытие; одни edits / отказ этого не делают.
   end note
 else empty / chart_unavailable подтверждённым current
   Page -> Wheel : убрать прежнее колесо и выбор
@@ -80,8 +87,9 @@ else ошибка чтения / результат не подтверждён
   end note
 end
 note over Page, Wheel
-Отказ изображения имеет видимый исход.
-Локальный fallback с доступным HTML — рекомендация DP-O-010,
-не новое принятое техническое решение.
+DP-O-010: при локальном отказе колеса подтвержденные HTML
+и данные той же карты остаются доступны, есть сообщение ошибки SVG.
+Это принятый наблюдаемый результат, не failure расчета / отсутствие DTO.
+Техническая изоляция / замена renderer еще не утверждены.
 end note
 @enduml

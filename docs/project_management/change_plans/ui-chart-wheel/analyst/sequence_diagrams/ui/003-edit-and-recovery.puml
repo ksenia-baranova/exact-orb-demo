@@ -1,6 +1,6 @@
 @startuml
-' Owner: Functional Analyst. TASK-A-001; package v1.
-' InputSHA 5188b523089acc8081585e869c482ee0d343cfba
+' Owner: Functional Analyst. TASK-A-001; package v2; update 2026-10-15.
+' Update InputSHA 2b846077b317e33dd892565419942c4db8517b1e; v1 at 683bdd0
 ' REQ-WHEEL-08/11; REQ-UI-03/08/09/11
 ' AS-WHEEL-17/18/19/20/21/22
 ' Clean target: docs/sequence_diagrams/ui/003-edit-and-recovery.puml
@@ -69,13 +69,21 @@ else network потеря ответа / неизвестный 5xx
 else committed B
   API --> Session : chart_ready ChartDTO B
   Session -> Page : confirmed B / неизменяемая сводка B
-  Page -> Views : колесо/HTML B
-  Page --> User : B видна; post-edit collapse после DP-O-013
+  Page -> Views : колесо / HTML B; сброс выбора / подсветки / раскрытия
+  Page --> User : новая B, первые 5 aspects / houses + свои Показать все
+  opt локальный отказ SVG B
+    Views --> Page : колесо B не отрисовано
+    Page --> User : сообщение ошибки; HTML / подтвержденные данные B доступны
+  end
 end
 note over Page, User
+Только принятие нового результата по измененным birth data
+сбрасывает состояния таблиц; ввод / отказ build этого не делают.
 Recovery/Retry-After/restart controls не скрыты свёрнутой формой.
 Late first commit не приписывается второму POST.
 Foreground читает actual current; draft не перезаписывается.
+Сохранение выбора / раскрытия при том же current еще DP-O-013;
+его нельзя вывести из принятого сохранения при resize.
 Dispose исключает поздний accept; серверная отмена не заявляется.
 N не доказывает render, локальные переходы фиксируются U.
 end note

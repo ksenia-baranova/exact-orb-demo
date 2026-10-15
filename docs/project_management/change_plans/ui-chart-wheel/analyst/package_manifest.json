@@ -1,48 +1,47 @@
 {
   "task_id": "TASK-A-001",
   "author": "Codex / Functional Analyst",
-  "package_version": "v1-review",
-  "date": "2026-10-13",
-  "input_sha": "5188b523089acc8081585e869c482ee0d343cfba",
+  "package_version": "v2-review",
+  "date": "2026-10-15",
+  "input_sha": "2b846077b317e33dd892565419942c4db8517b1e",
   "main_baseline": "535551026af6eedaf2a0aa5c0daa96fa94655ec1",
-  "source_ref": "origin/analysis/ui-chart-wheel; publication commit is the first addition of analyst_artifact.md (git log --diff-filter=A)",
+  "source_ref": "origin/analysis/ui-chart-wheel; v2 publication is the first commit adding the publication-v2 section of analyst_artifact.md",
   "manifest_self_excluded": true,
   "files": [
     {
-      "path": "docs/project_management/change_plans/ui-chart-wheel/analyst/decision_input.patch",
-      "sha256": "dc8081e0973cd0490e6831ba6e94203cf296af527567c82e2a62e8060dcb6916"
-    },
-    {
       "path": "docs/project_management/change_plans/ui-chart-wheel/analyst/findings.md",
-      "sha256": "223375a0f6609511b5bb0a7c97e75f2e7ae23f2a8029f76f22a04d0ece680260"
+      "sha256": "d091bcece1c805f332fd89818e4f6e2e98fb819f949842564e1c8add186433ee"
     },
     {
       "path": "docs/project_management/change_plans/ui-chart-wheel/analyst/requirements.md",
-      "sha256": "3f09ac40edc189407dd18112b0f6048ce19c56bdb0f751842c5d5828e6eb6402"
+      "sha256": "4fd3be77f32dad58a1acd8974b9a2eedaf7f708c08d723654a5dd7e83eeec77f"
     },
     {
       "path": "docs/project_management/change_plans/ui-chart-wheel/analyst/scenarios.md",
-      "sha256": "c6d3662f940087d8aad8da31830fc90c8472cc787a5cda2cd1c3067e067d8558"
+      "sha256": "7d901b12f4715642caa4a27b1da9b4073027a2224ab55ae03a6e27c0c67d9c61"
     },
     {
       "path": "docs/project_management/change_plans/ui-chart-wheel/analyst/sequence_diagrams/ui/001-chart-presentation.puml",
-      "sha256": "e7d4ac6c2e60aa962dd21c386c8bfbe61f6fa5a5b64dc9859b2d501115e2f474"
+      "sha256": "5833c7370f58b606fad2f8b146fa46804a6147f96fab12031b8e9cdf8c3306c0"
     },
     {
       "path": "docs/project_management/change_plans/ui-chart-wheel/analyst/sequence_diagrams/ui/002-wheel-table-selection.puml",
-      "sha256": "a3fc7d045878e5599300c18be9b2f3cb134d8b9269f89738b1c562e29f5ecd03"
+      "sha256": "6b47093699160e378901d40b1683c54823fc152e1624815f0616ce1446eecead"
     },
     {
       "path": "docs/project_management/change_plans/ui-chart-wheel/analyst/sequence_diagrams/ui/003-edit-and-recovery.puml",
-      "sha256": "9f1b0f8185b9dab716ed0ee50a385279276ceb6bd4aea2d37ebe27703f295ea2"
+      "sha256": "0669df7b23ab34e0faf567d9ae9deacaeaebc77fbdfefda8ac71b6422ee88b08"
     },
     {
       "path": "docs/project_management/change_plans/ui-chart-wheel/analyst/sources.md",
-      "sha256": "452057ada40ce7b4e0fbfb49177287e2acafabffd1f519f9da4d49de06228278"
+      "sha256": "9200d4c99a506d3eef0dd4ae1b3cd3a653757f6dc65137d7536e93adcc00f8eb"
     },
     {
       "path": "docs/project_management/change_plans/ui-chart-wheel/analyst_artifact.md",
-      "sha256": "0649d556e25452885f09533362dcd8bb3e1de7c3fbd60d8af82d04776174c297"
+      "sha256": "05f43e736ba7b54f24757956892d887bd257588c21bb6147dc8e702b0c0c36bf"
     }
-  ]
+  ],
+  "original_analysis_input_sha": "5188b523089acc8081585e869c482ee0d343cfba",
+  "previous_package_sha": "683bdd0c1f5a0e65735f4e48127d408300ec697c",
+  "hash_basis": "UTF-8 file bytes with CRLF normalized to LF; matches Git blob contents"
 }

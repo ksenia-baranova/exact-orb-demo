@@ -1,8 +1,8 @@
 # Источники и наблюдаемость: ui-chart-wheel
 
-**Автор:** Analyst / Codex, TASK-A-001, 2026-10-13.
-**InputSHA:** `5188b523089acc8081585e869c482ee0d343cfba`; **MainBaseline:** `535551026af6eedaf2a0aa5c0daa96fa94655ec1`.
-`git diff --name-status MainBaseline InputSHA` содержит только добавленный Manager-файл. Нормативные/code/test источники ниже одинаковы на этих двух commits. Чтение исходников не равно выполнению tests или live acceptance.
+**Автор:** Analyst / Codex, TASK-A-001, актуализация 2026-10-15; исходное исследование 2026-10-13.
+**InputSHA актуализации:** `2b846077b317e33dd892565419942c4db8517b1e`; исходный Analysis InputSHA `5188b52`; **MainBaseline:** `535551026af6eedaf2a0aa5c0daa96fa94655ec1`.
+От v1 @ 683bdd0 до 2b84607 изменились Manager и добавились process_notes.md; пакет v1 интегрирован PR #63 / bc9a4fb. Исходные code / tests / current requirements / ADR не изменились от MainBaseline. Ни чтение sources, ни текущая документальная синхронизация не являются выполнением implementation tests или live acceptance.
 
 ## Проверенные источники
 
@@ -10,7 +10,7 @@
 |---|---|
 | [AGENTS.md](../../../../../AGENTS.md), [метод](../../../../development_approach/development-approach.md), [роли](../../../../development_approach/roles.md), [процесс](../../../../development_approach/process/process.md) | Scope/ownership; G0/G1/G3 и ручные handoffs; §6 Git отдельно, §7 каталоги. Использованы относящиеся части; алгоритм сборщика не реализуется. |
 | [Skill](../../../../development_approach/skills/functional-analyst/SKILL.md), [шаблоны](../../../../development_approach/artifacts/functional-analyst.md), [правила требований](../../../../requirements/README.md) | FULL новой области, DELTA старой, findings, точные версии; current/ после final approvals. |
-| [Manager](../manager_artifact.md) @ InputSHA | Brief v1, §2.1 задание, 9 accepted Owner choices, DP-O-010…013 OPEN; назначения/STARTED ещё не зарегистрированы в этом входе. Текущее прямое поручение Owner — источник начала работы. |
+| [Manager](../manager_artifact.md) и [process_notes.md](../process_notes.md) @ InputSHA | Brief v1 / §2.1, регистрация назначения / STARTED / передачи v1 в §2.4; G0 подтверждён, v1 имеет review-статусы в сводке. DP-O-014 ACCEPTED; DP-O-010…013 OPEN с перечисленными подтверждёнными частями. G1 неполон, консультации не назначены. Эти записи относятся к v1, а не к approval новой редакции. |
 | [UI requirements](../../../../requirements/current/ui/birth-form-and-facts.md), [AS-UI-01…23](../../../../requirements/current/ui/scenarios.md) | Прочитаны нормативные пункты формы/фактов/сводки/current/recovery, исходные IDs и карта coverage. Новое колесо не получает прежний PASS. |
 | [HTTP](../../../../requirements/http_api.md) §§6/7.2/9/12/13; [dto.py](../../../../../src/exact_orb/http_api/dto.py), [projectors.py](../../../../../src/exact_orb/http_api/projectors.py) | Публичные поля, whitelist, nullable cosmogram, from/to points/asc/mc/vertex; POST не возвращает BirthViewDTO, UI summary snapshot не расширяет API. Projector — относящиеся projection/endpoint guards. |
 | [ADR-0029](../../../../requirements/decisions/0029-canonical-chart-point-identifiers.md), [0030](../../../../requirements/decisions/0030-lunar-node-axis-representative.md), [0032](../../../../requirements/decisions/0032-unknown-birth-time-aspect-semantics.md) | Canonical ID, производная позиция south_node, устойчивые аспекты/минутный домен. Предметные численные правила не меняются. |
@@ -21,7 +21,7 @@
 | [operation_logging.py](../../../../../src/exact_orb/http_api/operation_logging.py), [routes/session.py](../../../../../src/exact_orb/http_api/routes/session.py), [routes/build.py](../../../../../src/exact_orb/http_api/routes/build.py) | log event names, recorded_call, load/create/session_view/admission/execute; сопоставление с HTTP sequences. |
 | [UI tests](../../../../../tests/ui/), [fixtures](../../../../../tests/ui/fixtures/), [HTTP tests](../../../../../tests/http_api/), [boundaries](../../../../../tests/test_module_boundaries.py) | Имена/тела относящихся facts/session/recovery/projector/delivery cases; real coordinator, leaf fake network/deferred/fakeClock; прямые Python import invariants не ослабляются. |
 | [Current sequence](../../../../sequence_diagrams/http_api/004-current-chart.puml), [build sequence](../../../../sequence_diagrams/http_api/003-build-natal.puml), [bootstrap sequence](../../../../sequence_diagrams/http_api/001-session-bootstrap.puml) | Existing HTTP участники и события; новые UI sequences не заменяют серверные technical paths. |
-| [UI/UX](../../../../ui_ux/README.md), [кандидат требований](../../../../ui_ux/requirements.md) §§6/7/9/10, [решения](../../../../ui_ux/decisions.md), [render review](../../../../ui_ux/render_review.md), [prototype](../../../../ui_ux/web-prototype.html) pt/spread/wheel/selection | Визуальные кандидаты, demo ref/℞/legend/отсутствующие API факты не нормативны. |
+| [UI/UX](../../../../ui_ux/README.md), [кандидат требований](../../../../ui_ux/requirements.md) §§6/7/9/10, [решения](../../../../ui_ux/decisions.md), [render review](../../../../ui_ux/render_review.md), [prototype](../../../../ui_ux/web-prototype.html) pt/spread/wheel/selection | Визуальные кандидаты; конкретные ref / spread values / ℞ / legend не нормативны. Принятые 0° / ASC слева и направление — по DP-O-014, условный минимальный разнос — по подтверждённой части DP-O-011. |
 | [Р5](../../../../ui_ux/renders/r5-chart-detail.png), [Э7 mobile](../../../../ui_ux/mobile/e7-chart-detail.png) | Визуально просмотрены: Р5 колесо слева, mobile краткие карточки планет ниже колеса; Owner принял иную привязку относительно краткой сводки рождения. Числа PNG не проверочный эталон. |
 | [Roadmap M1-8](../../../Roadmap/roadmap.md), [общий долг](../../../technical_debt.md) | Drawing ADR до кода, отдельные M1-8.1/M1-9; старые estimates не новый бюджет и known debts не findings M1-8. |
 
@@ -36,11 +36,22 @@ N — существующий серверный trace @ MainBaseline; U — у
 | Явный build → admission → Orchestrator → committed | http_message AdmissionControl.reserve/release, ApplicationOrchestrator.execute, application/component events, run_id=request_id; terminal | Submitted snapshot, единственный POST, source=build и та же identity у обоих представлений |
 | Refusal / lost response / recovery → safe read | Реальные terminal/code/Retry-After, если получены; каждое новое чтение имеет отдельный request_id. При потере клиентского ответа нельзя вывести его status из отсутствия DTO | Recovery intent отдельно от confirmed chart/draft; safe-read sequence; gated explicit retry; log первого build при наличии серверного evidence |
 | Accepted state → колесо и HTML | Серверные N заканчиваются HTTP исходом, не доказывают DOM render | Приёмка DTO → передача обоим представлениям → видимый результат/отказ; identity и сохранность данных |
-| Point/aspect activation → согласованное выделение → снятие | Серверных N нет: локальные действия не инициируют запрос | Actor, выбранный canonical ID/пара, обе стороны, порядок, снятие и network count; closed-table поведение после DP-O-013 |
-| Resize / form reveal / renderer failure | Локальных серверных N нет; safe recheck при назначенном действии использует N current | Сохранность фактов/draft, focus, отсутствие POST; render failure не приписывается успешному UI outcome |
+| Выбор планеты / аспекта → HTML и графика → повторное снятие планеты | Серверных N нет: локальные действия не инициируют запрос | Actor, выбранный canonical ID / пара, весь отбор aspects и категории, порядок / повторное снятие, network count; первые пять / отдельное раскрытие, отсутствие scroll/focus transfer. Смешанный аспектный выбор и оставшиеся DP-O-013 переходы ещё OPEN |
+| Resize / form reveal / renderer failure | Локальных серверных N нет; safe recheck при назначенном действии использует N current | Сохранность фактов / draft; при resize выбранная планета / раскрытие сохранены. При render failure HTML той же карты доступен и есть сообщение ошибки, автоматического POST нет; это не successful SVG outcome |
 
 В PUML роль «Колесо» — наблюдаемый участник, точная техническая граница ожидает DP-O-010. Не вводятся новые сервисы/слои или сетевой обмен между UI participants. Реализация внутренних calls/log seams и технические sequences принадлежат Developer. Tester сопоставляет N и U на CandidateSHA; исходники N сейчас прочитаны, live logs не собирались.
 
-## Передача предложений DP
+## Сопоставление изменений Manager и пакета v2
 
-[decision_input.patch](decision_input.patch) — применимое текстовое предложение изменений **единственного** Manager-реестра @ InputSHA: подписанный Analyst input DP-O-010…013 и новая OPEN строка DP-O-014. Это не второй реестр, не фактическая правка Manager и не Owner choice. Manager должен просмотреть patch, зарегистрировать его в своём файле и сохранить точную версию; выбор/статусы accepted DP-O-001…009 сохранены. Requirements/handoff ссылаются на IDs и baseline, подробности предложения находятся только в patch для целевого реестра.
+| Источник @ 2b84607 | Применённый контракт / сценарии | Что осталось открытым |
+|---|---|---|
+| DP-O-014 ACCEPTED | REQ-WHEEL-02/03, AS-WHEEL-25, sequence 001: ASC / 0° слева, рост против часовой стрелки | Drawing ADR / реализация / geometry evidence, полный closure FIND-WHEEL-001 |
+| DP-O-010, подтверждённый локальный отказ | REQ-WHEEL-10/11, AS-WHEEL-04/24, sequence 001/003: HTML / данные доступны, сообщение отказа SVG | Техническая граница / интерфейс / ownership выбора / замена, consultations |
+| DP-O-011, четыре правила | REQ-WHEEL-05, AS-WHEEL-07/09/10: без разноса по умолчанию; минимально только конфликтующие; выноски только смещённым; порядок | Численный критерий / algorithm / R/☌ / предел / fallback |
+| DP-O-012, стиль линий | REQ-WHEEL-06/07, AS-WHEEL-08: exact сплошной, working пунктир, тип цвет + текст, выбор толще при прежнем цвете / рисунке | Палитра / legend layout / категория и выбор ☌ |
+| DP-O-013, выбор / таблицы | REQ-WHEEL-07/08/09/10, DELTA REQ-UI-03/04/05/06, AS-WHEEL-11…14/16/18/23/26/27, sequence 002/003 | Повторный current той же карты, смешанный аспектный выбор / его снятие, остальная композиция facts / angles, keyboard order / mobile targets и форма |
+| process_notes.md, заметки 3…6 | Учтён факт регистрации v1; снято уже зарегистрированное proposal-приложение; новые choices включены в requirements / AS | Сам процесс, назначения Developer / Tester и их estimates принадлежат Manager / ролям, не изменены Analyst |
+
+## История предложений DP
+
+Manager §2.4 @ 2b84607 подтверждает регистрацию вклада DP-O-010…013 и DP-O-014 из Git-версии `683bdd0:docs/project_management/change_plans/ui-chart-wheel/analyst/decision_input.patch`. Предложение уже применено по смыслу к единственному реестру; повторное применение к новому Manager не требуется и может конфликтовать с принятыми ответами Owner. В пакете v2 этот patch удалён как завершённое приложение, исходные bytes и история v1 сохранены в Git. Отдельного нового реестра Analysis не создаётся. Проверяется актуальный Manager baseline и отражение его решений, а не применимость старого patch к изменившемуся файлу.
