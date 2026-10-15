@@ -1,0 +1,109 @@
+{
+  "author": "Codex / Tester",
+  "date": "2026-10-15",
+  "version": "v1-local-consultation",
+  "proposed_task_id": "TASK-T-001",
+  "manager_registration": "pending",
+  "review_sha": "2b846077b317e33dd892565419942c4db8517b1e",
+  "main_baseline": "535551026af6eedaf2a0aa5c0daa96fa94655ec1",
+  "analyst_package_sha": "683bdd0c1f5a0e65735f4e48127d408300ec697c",
+  "candidate_sha": null,
+  "tested_sha": null,
+  "worktree": "C:\\Users\\KateUser\\.codex\\worktrees\\ui-chart-wheel-test\\exact-orb-recovered",
+  "branch": "test/ui-chart-wheel",
+  "source_git_sha256": {
+    "docs/project_management/change_plans/ui-chart-wheel/analyst/decision_input.patch": "dc8081e0973cd0490e6831ba6e94203cf296af527567c82e2a62e8060dcb6916",
+    "docs/project_management/change_plans/ui-chart-wheel/analyst/findings.md": "223375a0f6609511b5bb0a7c97e75f2e7ae23f2a8029f76f22a04d0ece680260",
+    "docs/project_management/change_plans/ui-chart-wheel/analyst/package_manifest.json": "0c7cd6b0a288a8071ec4612d2e87218af175c9ed183741aed76f0e1bb3d7e616",
+    "docs/project_management/change_plans/ui-chart-wheel/analyst/requirements.md": "3f09ac40edc189407dd18112b0f6048ce19c56bdb0f751842c5d5828e6eb6402",
+    "docs/project_management/change_plans/ui-chart-wheel/analyst/scenarios.md": "c6d3662f940087d8aad8da31830fc90c8472cc787a5cda2cd1c3067e067d8558",
+    "docs/project_management/change_plans/ui-chart-wheel/analyst/sequence_diagrams/ui/001-chart-presentation.puml": "e7d4ac6c2e60aa962dd21c386c8bfbe61f6fa5a5b64dc9859b2d501115e2f474",
+    "docs/project_management/change_plans/ui-chart-wheel/analyst/sequence_diagrams/ui/002-wheel-table-selection.puml": "a3fc7d045878e5599300c18be9b2f3cb134d8b9269f89738b1c562e29f5ecd03",
+    "docs/project_management/change_plans/ui-chart-wheel/analyst/sequence_diagrams/ui/003-edit-and-recovery.puml": "9f1b0f8185b9dab716ed0ee50a385279276ceb6bd4aea2d37ebe27703f295ea2",
+    "docs/project_management/change_plans/ui-chart-wheel/analyst/sources.md": "452057ada40ce7b4e0fbfb49177287e2acafabffd1f519f9da4d49de06228278",
+    "docs/project_management/change_plans/ui-chart-wheel/analyst_artifact.md": "0649d556e25452885f09533362dcd8bb3e1de7c3fbd60d8af82d04776174c297",
+    "docs/project_management/change_plans/ui-chart-wheel/manager_artifact.md": "45ad060e538a31f024f2b747f260514cd4cf99d822c61f5ae0e05a043fe98e10",
+    "docs/project_management/change_plans/ui-chart-wheel/process_notes.md": "fc9e94a54a6ff6c394c9be605f78b4bbdc57fca2eee43ba60c11fc8d348c6692",
+    "docs/requirements/current/ui/birth-form-and-facts.md": "36a534f92b826454c0f145c6ea1acc92ab95e08e31bef17221f4005bb18fac1b",
+    "docs/requirements/current/ui/scenarios.md": "ee737e0e7cbe20a8bdee3c85e9d6fa35155ef151069ec6057d1c757bbfd54353",
+    "docs/requirements/http_api.md": "4e02a9db151b2fe728fef3ca3832c1a78c7dfebded26063053445541d920a55c",
+    "docs/project_management/technical_debt.md": "583ea6b5fe787847ea3f36bf9a39e7ed037eddc8284baf4f75c35a46b6e64ce9",
+    "src/exact_orb/http_api/ui/main.mjs": "6c9e0abdf933b1394f14279fcb2ac80990700b50cc4b70cc1176cf887fc88e7e",
+    "src/exact_orb/http_api/ui/facts.mjs": "5cfddc42b430b9d5847d7dd6446975b0a1d358615af98d401ba7cbae29edbc66",
+    "src/exact_orb/http_api/ui/session.mjs": "0eea63e3b4d0049b0f40f5fdce55fe20a8dc9430eb4cd05d7d0883bd5e895564",
+    "src/exact_orb/http_api/ui/response.mjs": "045770e93485c9f8111c6bd03bf9ce9a16e19d05f5e9624931ae63f84bfcbb8d",
+    "tests/ui/facts.test.mjs": "0e04d5bfac734f8fc8c9f91c42c35bc2415d59c6f133c1e6307128bd23cfa33c",
+    "tests/ui/session.test.mjs": "653782c7fe284119490a5216ab6257838e62804384db9329e633dceb7bd730bf",
+    "tests/ui/recovery.test.mjs": "96bbfb7f98f09ff0fc074eaf8fb32ee30684514195704da0671b8b99cf30c8c0"
+  },
+  "analyst_manifest_verified": 9,
+  "main_to_input_changed_paths": [
+    "docs/project_management/change_plans/ui-chart-wheel/analyst/decision_input.patch",
+    "docs/project_management/change_plans/ui-chart-wheel/analyst/findings.md",
+    "docs/project_management/change_plans/ui-chart-wheel/analyst/package_manifest.json",
+    "docs/project_management/change_plans/ui-chart-wheel/analyst/requirements.md",
+    "docs/project_management/change_plans/ui-chart-wheel/analyst/scenarios.md",
+    "docs/project_management/change_plans/ui-chart-wheel/analyst/sequence_diagrams/ui/001-chart-presentation.puml",
+    "docs/project_management/change_plans/ui-chart-wheel/analyst/sequence_diagrams/ui/002-wheel-table-selection.puml",
+    "docs/project_management/change_plans/ui-chart-wheel/analyst/sequence_diagrams/ui/003-edit-and-recovery.puml",
+    "docs/project_management/change_plans/ui-chart-wheel/analyst/sources.md",
+    "docs/project_management/change_plans/ui-chart-wheel/analyst_artifact.md",
+    "docs/project_management/change_plans/ui-chart-wheel/manager_artifact.md",
+    "docs/project_management/change_plans/ui-chart-wheel/process_notes.md"
+  ],
+  "static_checks": {
+    "markdown_files": 5,
+    "local_links": 125,
+    "tables": 6,
+    "requirements": 22,
+    "partial": 16,
+    "missing": 6,
+    "as_wheel": 25,
+    "as_ui": 23,
+    "planned_t_wheel": 14,
+    "dp_proposals": [
+      "010",
+      "011",
+      "012",
+      "013",
+      "014"
+    ],
+    "source_files_unchanged": 23
+  },
+  "fixture_inventory_only": {
+    "tests/http_api/golden/chart_dto.json": {
+      "natal": {
+        "points": 3,
+        "aspects": 3,
+        "houses": 3
+      },
+      "cosmogram": {
+        "points": 2,
+        "aspects": 1,
+        "houses": null
+      }
+    },
+    "tests/ui/fixtures/natal_1985_chart_dto.json": {
+      "full_natal": {
+        "points": 16,
+        "aspects": 46,
+        "houses": 12
+      }
+    }
+  },
+  "not_run": [
+    "pytest",
+    "node --test",
+    "browser acceptance",
+    "HTTPS smoke",
+    "PlantUML rendering",
+    "renderer replacement",
+    "post-acceptance transfer verification"
+  ],
+  "limitations": [
+    "Static document/assertion review only; fixture inventory is not a renderer test",
+    "Analyst v1 not approved or synchronized with current Owner decisions",
+    "No product PASS/FAIL/readiness or Manager lifecycle transition",
+    "Pre-publication validation snapshot; subsequent Git publication is recorded in tester_artifact.md; Manager approval and registration remain separate"
+  ]
+}
