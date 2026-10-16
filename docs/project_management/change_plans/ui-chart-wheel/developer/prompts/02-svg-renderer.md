@@ -1,34 +1,32 @@
-# DEV-WHEEL-02 — показать SVG из опубликованного ChartDTO
+# DEV-WHEEL-02 — SVG подтверждённого ChartDTO с локальным отказом
 
-После принятого build/current пользователь сразу видит колесо той же карты, что и HTML. Результат шага — native SVG с опубликованными точками, домами/углами и допустимыми аспектами, с видимым локальным отказом при сбое изображения.
+После принятого build/current пользователь сразу видит колесо той же карты, что и HTML. Результат будущего шага — native SVG с истинными позициями, согласованными R/☌ и аспектами; сбой SVG сохраняет подтверждённый HTML новой карты.
 
-**План:** [DEV-WHEEL-02](../implementation_plan.md#dev-wheel-02-svg-той-же-опубликованной-карты), TASK-D-001 / consultation v1. Ветка `dev/ui-chart-wheel`, worktree как в [индексе](../../developer_artifact.md), исходный HEAD `2b846077b317e33dd892565419942c4db8517b1e`.
-**Источники:** обе части контракта и точные SHA в плане: нормативный baseline `535551026af6eedaf2a0aa5c0daa96fa94655ec1`, Analyst requirements/scenarios v1 `683bdd0c1f5a0e65735f4e48127d408300ec697c`; эти версии ещё consultation input. REQ-WHEEL-01…06/09…11; AS-WHEEL-01…10/15/16/24/25. DP-O-001/002/004…007/009…012/014 @ Manager/InputSHA; ADR-0029/0030/0032/0034/0040/0041 и будущий drawing ADR из DEV-WHEEL-01.
+**Редакция 2 / TASK-D-002, 2026-10-16:** прежняя неисполненная постановка @ `04be207627de1049deac2e069574e01b62536607` заменена для v3. **InputSHA:** `543b7ec726ee96c951dc0abbf1067ca6ad47a1ba`; `dev/ui-chart-wheel`, worktree в [индексе](../../developer_artifact.md). [DEV-WHEEL-02](../implementation_plan.md#dev-wheel-02-svg-той-же-опубликованной-карты).
+**Контракт:** нормативный UI / AS-UI / HTTP / ADR @ `535551026af6eedaf2a0aa5c0daa96fa94655ec1` + [requirements](../../analyst/requirements.md) / [scenarios](../../analyst/scenarios.md) v3 @ `2634b224894b1046113557bfe241f0a5f2d46f8c`; ссылки в плане. REQ-WHEEL-01…06/09…11, AS-WHEEL-01…10/15/16/24/25 и graphical branch 28/30. DP-O-001/002/004…007/009…012/014 @ Manager/InputSHA; ADR-0029/0030/0032/0034/0040/0041 и отдельно принятый drawing ADR.
 
-## Перед запуском
+## Готовность / scope
 
-Требуются результат DEV-WHEEL-01, approved drawing rules, синхронизированный Analyst с точным опубликованным SHA и назначение G3 на этот work item. Проверить Git, Manager и применимые DP; записать новые утверждённые SHA / approvals в план до кода. Если этих входов нет, вернуть Manager недостающее; наличие этого промта не даёт разрешения на реализацию.
+До кода требуются DEV-WHEEL-01, approved drawing rules / уточнённый Analyst SHA, согласованные blockers и G3 на этот срез. Проверить фактический Git и разрешение, записать точные approved версии в план. Наличие этого файла не разрешает исполнение; текущая TASK-D-002 код не включает.
 
-**Scope:** новые renderer/geometry modules в src/exact_orb/http_api/ui/ по принятому ADR, минимальное подключение в main.mjs/facts.mjs/styles.css; tests/ui/wheel*.test.mjs и нужный листовой DOM API/controlled fixtures; UI_RESOURCES в tests/http_api/test_ui_delivery.py. Схемы API, расчёт, session/recovery и транспорт не менять. Долготы читать из принятого DTO: readChartFacts их не сохраняет. Не менять golden и допуски. Не вводить dependencies или новую сеть. Сохранить чужие изменения; commit/push не поручены.
+Разрешённые будущие файлы: новые ui/wheel*.mjs по ADR, минимальное main/facts/styles подключение; tests/ui/wheel*.test.mjs, листовые SVG DOM API / controlled fixtures, UI_RESOURCES в tests/http_api/test_ui_delivery.py. API / calculation / session/recovery алгоритм не менять. Longitudes читать из принятого ChartDTO: readChartFacts их не сохраняет. Новые зависимости / network / aliases / engine golden adjustments запрещены; чужие файлы сохранить, commit/push отдельно.
 
-## Реализация и подход
+**Подход:** чистая geometry / endpoint resolver / category mapping — тесты → минимальная реализация; SVG DOM сборка — реализация → mounted integration tests. Existing facts/projector tests сохраняют данные, но SVG не покрывают. Проверять cardinal positions / IDs / coordinates, не snapshots private path builder. Import failure не является behavioral RED.
 
-Чистая геометрия / endpoint resolver / состав линий: тесты → минимальная реализация. Прямые assertions сторон, IDs и координат дают чувствительность к зеркальности/округлению/потерянным angles; snapshots самих generated paths недостаточны. DOM сборка — реализация → mounted integration tests на реальных компонентах. Сначала проверить существующие facts/projectors tests, не дублировать их целиком.
+True anchors и концы аспектов используют опубликованные longitude / cusp_longitude; разнос меняет только метку с leader line. Без выбранного аспекта графически все exact/working; selected aspect ограничивает графику одной парой при сохранении всех объектов. Background даже выбранный даёт только два конца без линии / ☌. ☌ имеет подпись категории; selected contour только символа, подпись остаётся. Никаких расчётов sign/degree/minute/house/type/category/orb.
 
-True positions и окончания аспектов следуют longitude / cusp_longitude; разнос изменяет только label position и связывается leader line по принятому алгоритму. Ни знак, ни дом, ни orb/type/category браузер не рассчитывает. Cosmogram не синтезирует дома/углы. Background не получает линии или ☌. Сбой wheel не оставляет прежнюю SVG identity рядом с новыми HTML и не включает session reconciliation из-за ожидаемой локальной ошибки.
-
-| REQ / AS | Данные / действие | Expected result и способ проверки |
+| REQ / AS | Данные / действие | Expected result / позитивный контроль |
 |---|---|---|
-| REQ-WHEEL-02 / AS-WHEEL-03/25 | longitude=reference+0/90/180/270 и asc F1 | Лево/низ/право/верх, ASC natal слева; отдельно cosmogram 0 Aries слева; origin и радиус заданы тестом |
-| REQ-WHEEL-02/04 / AS-WHEEL-04 | F0 natal moon→asc square exact | Линия связывает point с опубликованным angle, не пропущена; позитивный контроль обеих координат |
-| REQ-WHEEL-02/05 / AS-WHEEL-03/09/10 | F1 и F3/F3-max | 16 F1 points, 12 домов, пять angles; R только по флагу; истинные отметки не смещены; density по approved критерию |
-| REQ-WHEEL-03/04 / AS-WHEEL-05/06/07 | Cosmogram и пустой aspects, exact/working/background ☌ | Нет придуманных домов/углов; empty отличим от no chart; ☌ только разрешённых категорий |
-| REQ-WHEEL-06 / AS-WHEEL-08 | Все семь public types, exact/working | Тип / категория / выделение / legend по принятому DP, не только цвета; background line sample не обещает существующую линию |
-| REQ-WHEEL-01/10 / AS-WHEEL-24 | Alternate renderer; forced wheel failure на B после A | Замена ограничена port; HTML B сохранён, отказ виден, SVG A нет; нет POST, успешный renderer является позитивным контролем |
-| REQ-WHEEL-09/10 / AS-WHEEL-16/23 | Browser 1440/768/360 + keyboard | Размеры / читабельность / focus проверяются браузером, а не fake DOM |
+| REQ-WHEEL-02 / AS-WHEEL-03/25 | reference+0/90/180/270, asc F1, cosmogram | Лево/низ/право/верх; natal ASC / cosmogram Aries слева, без demo ref=100 |
+| REQ-WHEEL-02/04 / AS-WHEEL-04 | F0 moon→asc exact square | Опубликованный angle endpoint не потерян, оба конца реальные; dsc/ic не добавлены в аспектную сетку |
+| REQ-WHEEL-02/05 / AS-WHEEL-03/09/10 | F1 / F3 / F3-max | Все IDs/R, 12 домов и 5 angles F1, true anchors неизменны; плотность по approved measured критерию |
+| REQ-WHEEL-03/04 / AS-WHEEL-05…07 | Cosmogram, empty aspects, 3 категории / conjunction | Нет вымышленных углов/домов; пустой графический набор отличим от no chart; background без ☌ |
+| REQ-WHEEL-06 / AS-WHEEL-07/08 | Линии / ☌ до и после выбора | Exact solid, working dashed, выбранная линия толще с тем же рисунком / цветом; у выбранного ☌ контур только символа и текст категории |
+| REQ-WHEEL-04/08 / AS-WHEEL-28/30 | Selected pair; новый DTO с category=background | Только выбранная графическая пара; новые координаты / category, старая линия исчезла; controller wire — в DEV-WHEEL-03 |
+| REQ-WHEEL-01/10 / AS-WHEEL-24 | Успешный / альтернативный / принудительно отказавший renderer при B после A | HTML B доступен, SVG A удалена, отказ B видим, нет POST / ожидаемого session reconciliation |
 
-**Observability:** упорядоченное deterministic evidence accepted DTO → HTML / SVG → visible result/failure с одной identity. Не добавлять runtime logging service. Ошибку изображения не подавлять: сделать видимой в согласованной границе.
+**Observability:** accepted DTO / identity → HTML / SVG → visible outcome, упорядоченные callbacks / DOM assertions, без runtime telemetry. Не подавлять отказ изображения и не оставлять частичную A рядом с B. Общий fallback неожиданных иных ошибок сохраняется.
 
-**Команды из root:** `node --test tests/ui/wheel*.test.mjs` (после создания этих тестов); `node --test tests/ui/facts.test.mjs tests/ui/session.test.mjs tests/ui/recovery.test.mjs`; затем `python -m pytest tests/http_api/test_projectors.py tests/http_api/test_ui_delivery.py tests/test_module_boundaries.py`. Browser измерения — отдельные commands / screenshots. Не запускать отсутствующий target и не считать import failure RED поведения. Full pytest — в общем handoff DEV-WHEEL-04 на CandidateSHA.
+**Команды:** `node --test tests/ui/wheel*.test.mjs` после создания targets; `node --test tests/ui/facts.test.mjs tests/ui/session.test.mjs tests/ui/recovery.test.mjs`; затем `python -m pytest tests/http_api/test_projectors.py tests/http_api/test_ui_delivery.py tests/test_module_boundaries.py`. Отдельно browser measurements 1440/768/360, шрифт / scale / focus. Full pytest — финальный handoff на CandidateSHA.
 
-**Завершение:** точные SHA, чувствительный RED/GREEN чистой логики, actual target/related results и browser пределы в checks; scope / known blockers записаны. Независимая приёмка Tester не объявляется. Неподготовленный expected result вернуть Analyst; невозможность density — Manager/Owner через DP-O-011.
+**Завершение:** target / related results и ограничения привязаны к фактическому SHA, geometry RED/GREEN чувствителен к mirrored / missing-angle примеру, локальный failure/replacement воспроизводим. Tester acceptance отдельно. Неопределённый контракт вернуть Analyst; недостижимый measured предел — Manager/Owner, без самовольного расширения.

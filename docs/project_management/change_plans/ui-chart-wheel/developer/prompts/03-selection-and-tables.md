@@ -1,30 +1,34 @@
-# DEV-WHEEL-03 — связать выбор колеса и HTML
+# DEV-WHEEL-03 — единый выбор и независимое раскрытие таблиц
 
-Пользователь выбирает объект или опубликованный аспект и видит соответствующие факты той же карты. Результат — один согласованный локальный выбор и предсказуемое раскрытие таблиц без HTTP.
+Пользователь связывает колесо с HTML и получает факты именно выбранного объекта / пары. Результат будущего шага — локальные states none / point / aspect, согласованный 5/all/one/filter и перенос допустимого выбора на новый DTO.
 
-**План:** [DEV-WHEEL-03](../implementation_plan.md#dev-wheel-03-согласованный-выбор-колеса-и-таблиц), TASK-D-001 / consultation v1. Ветка `dev/ui-chart-wheel`; worktree в [индексе](../../developer_artifact.md); исходный SHA `2b846077b317e33dd892565419942c4db8517b1e`.
-**Контракт:** нормативные UI/AS-UI/HTTP @ `535551026af6eedaf2a0aa5c0daa96fa94655ec1` + Analyst [requirements](../../analyst/requirements.md)/[scenarios](../../analyst/scenarios.md) v1 @ `683bdd0c1f5a0e65735f4e48127d408300ec697c` и более поздний [DP registry](../../manager_artifact.md) @ InputSHA. REQ-WHEEL-04/07/08/10/11, REQ-UI-04/06/10; AS-WHEEL-04/07/11…15/23/24; DP-O-008/010/012/013. Исходные ADR и drawing ADR наследуются по плану.
+**Редакция 2 / TASK-D-002, 2026-10-16:** неисполненные постановки v1 сохранены @ `04be207627de1049deac2e069574e01b62536607`. **InputSHA:** `543b7ec726ee96c951dc0abbf1067ca6ad47a1ba`, `dev/ui-chart-wheel`, worktree в [индексе](../../developer_artifact.md). [DEV-WHEEL-03](../implementation_plan.md#dev-wheel-03-согласованный-выбор-колеса-и-таблиц).
+**Контракт:** нормативный baseline `535551026af6eedaf2a0aa5c0daa96fa94655ec1` + [requirements](../../analyst/requirements.md)/[scenarios](../../analyst/scenarios.md) v3 @ `2634b224894b1046113557bfe241f0a5f2d46f8c`, ссылки в плане. REQ-WHEEL-04/07/08/09/10/11, REQ-UI-04/05/06/10; AS-WHEEL-04/07/11…15/23/26…30 и MODIFY AS-UI-22. DP-O-008/010/012/013 @ Manager/InputSHA, исходные ADR и отдельно принятый drawing ADR по плану.
 
-## Готовность / scope
+## Вход / границы
 
-Перед кодом требуются DEV-WHEEL-02 и G3, утверждённый Analyst SHA с устранённым DEV-FIND-WHEEL-001 и окончательная семантика DP-O-013. Зафиксировать точные версии в плане; не придумывать aspect toggle/same-current policy. Отдельная кнопка «Снять выделение» уже отклонена Owner — не добавлять её по старой sequence.
+Нужны результат DEV-WHEEL-02, approved port / технические criteria и G3; записать точные утверждённые SHA в план. Toggle / preserve current / один аспект уже выбраны Owner: не возвращать их как открытые вопросы. До разрешения этот промт не исполняется.
 
-Разрешены локальный result/selection port в ui/*.mjs по ADR, facts.mjs/styles.css, новый tests/ui/selection.test.mjs и точечные assertions в facts.test.mjs, листовой DOM port. Не менять transport/session/calculation, canonical data/IDs, существующий порядок API aspects. Для aspect key использовать ссылку на запись принятого DTO в рамках identity; не предполагать уникальность только пары, если в accepted port это не доказано. Новая схема API для ключа не нужна. Git-публикация не поручена.
+Будущий scope: local result/selection ui modules по port, facts/styles, новый tests/ui/selection.test.mjs, точечные facts.test.mjs / leaf DOM API. Coordinator / transport / API / engine не менять. Candidate aspect key `(from,to,type)` утвердить после проверки public canonical order / uniqueness; category/orb/row index/identity не являются ключом сохранения. Данные при каждом accepted update заново разрешаются в новом DTO, общей mutable ссылки на старую карту нет.
 
-**Подход:** сначала тесты state transitions, затем реализация. Existing facts.test.mjs покрывает immutable DTO / порядок / identity removal, но не selection. Mounted checks используют реальный controller и renderer, fake только DOM/network seams; label parsing вместо IDs не допускается.
+**Подход:** тесты → implementation переходов; реальные controller/renderer, fake только DOM/network. Переиспользовать immutable / canonical order assertions existing facts tests; новое поведение не доказано прежним PASS.
 
 | REQ / AS | Действие / данные | Expected result / контроль |
 |---|---|---|
-| REQ-WHEEL-07 / AS-WHEEL-11 | Выбрать Moon → Sun → Sun | Аспекты Moon → все аспекты Sun → первые 5 общего списка; single selection, повтор снимает; опубликованный порядок сохраняется |
-| REQ-WHEEL-07 / AS-WHEEL-11/12 | Выбрать point row и glyph | Одна и та же точка; все её опубликованные аспекты сразу, без лимита 5; строка доступна по утверждённой композиции |
-| REQ-WHEEL-04/07 / AS-WHEEL-04/11 | Выбрать background с endpoint angle | Оба опубликованных конца выделены; линия / ☌ отсутствуют; exact/working positive control показывает графику |
-| REQ-WHEEL-08 / AS-WHEEL-13/14 | Aspect toggle, same identity current, changed current | Результат только из обновлённого DP-O-013; если не определён — вернуть Analyst до кода |
-| REQ-WHEEL-08/09 / AS-WHEEL-14/16 | Новый accepted build с изменённым birth; resize | Новый build сбрасывает выбор/раскрытие до 5/5; resize сохраняет выбор/раскрытие. Простое редактирование не является new chart |
-| REQ-WHEEL-07/10 / AS-WHEEL-12/23 | «Показать все» каждой таблицы; keyboard activation | Аспекты / дома раскрываются независимо; no auto scroll/focus при выборе, видимый focus; без дополнительной кнопки снятия |
-| REQ-WHEEL-11 / AS-WHEEL-11…14 | Выбор/снятие/resize | Нет HTTP; позитивный контроль явного валидного build создаёт один POST через реальный coordinator |
+| REQ-WHEEL-07/08 / AS-WHEEL-11/13/27 | Moon → Sun → Sun; south_node с нулём аспектов | Один point; все его from/to в DTO order, включая background / angle endpoints; повтор → первые 5 общего списка; пустой фильтр не означает пустую карту |
+| REQ-WHEEL-07 / AS-WHEEL-28 | Moon filter → related moon→asc либо unrelated sun→mc с колеса | Point/filter снят, таблица одна строка, только её graphic / два конца; любой следующий point заменяет аспект |
+| REQ-WHEEL-04/07 / AS-WHEEL-04/07/11/28 | Выбрать background через HTML | Одна строка / два конца; ни линии, ни ☌, остальные аспекты скрыты; positive exact/working control показывает графику |
+| REQ-WHEEL-08 / AS-WHEEL-29 | Выбрать / повторить аспект при normal expansion=5 и all | None, общий список с прежним раскрытием, без возврата point filter; houses независимы; keyboard эквивалентен pointer |
+| REQ-WHEEL-08 / AS-WHEEL-30 | Current A → B с другой identity / orb / category=background | Существующий key сохраняется с новыми фактами; нет старой линии/координат/row index; expansion сохранён |
+| REQ-WHEEL-08 / AS-WHEEL-30 | Natal moon→asc → cosmogram без этой пары; failed read отдельно | Исчезнувший selection снят, expansion сохранён, старых angles нет; ошибка чтения не снимает существующий выбор |
+| REQ-WHEEL-08/09 / AS-WHEEL-02/14/16 | F5; принятый собственный changed-birth build; resize | F5 / подтверждённый новый own build reset к 5/5, resize сохраняет; событие reset задаётся причиной acceptance в DEV-WHEEL-04, не identity alone |
+| REQ-WHEEL-09 / AS-WHEEL-26/AS-UI-22 | Первоначальное состояние / отдельные «Показать все» | Все points сразу, отдельные published angles, 5 aspects / 5 houses, независимое раскрытие; старый global hidden gate не возвращается |
+| REQ-WHEEL-10/11 / AS-WHEEL-23 | Keyboard activation / повтор / re-render и local actions | Нет отдельной кнопки снятия, видимый focus, no auto scroll/focus для point; zero HTTP с positive valid explicit build control |
 
-**Observability:** initiator (wheel/row/keyboard), identity и canonical selected key → controller → оба представления; логический порядок доказан assertions/событиями листового порта, не sleep. Пересоздание rows при stale/update не должно незаметно сбрасывать focus/selection в нарушение утверждённой политики.
+Controller хранит normal-aspects expansion отдельно от текущей одной строки / point filter и отдельно от houses. Point toggle сбрасывает normal expansion к пяти; aspect toggle и исчезновение выбора при current возвращают сохранённое normal expansion. При замене DTO не удерживать focus на удалённом узле: применить reviewed keyboard / focus policy, не подменять её sleep / программной прокруткой по умолчанию.
 
-**Команды:** `node --test tests/ui/selection.test.mjs tests/ui/facts.test.mjs`; затем `node --test tests/ui/*.test.mjs`. Добавить browser evidence pointer/keyboard/no-hover на 360/768/1440: DOM port layout не проверяет. Полный pytest — в финальном срезе до G4.
+**Observability:** initiator / canonical key / source / actual identity → controller → wheel и HTML, в проверяемом порядке. Нового runtime logger нет. Event / fake clock для времени; timeout только от зависания.
 
-**Завершение:** каждый approved REQ/AS имеет воспроизводимый check, results привязаны к фактической версии и scope; невыбранная продуктовая ветвь возвращена Analyst/Owner. Нет посторонних API/engine изменений и заявления независимого PASS. Сохранить несвязанные файлы; commit/push отдельно.
+**Команды:** `node --test tests/ui/selection.test.mjs tests/ui/facts.test.mjs`, затем `node --test tests/ui/*.test.mjs`; real browser pointer/keyboard/no-hover на 1440/768/360. Full pytest в финальном handoff. Snapshot private state не заменяет наблюдаемый DOM/SVG outcome; программный defect закрепить deterministic regression.
+
+**Завершение:** каждый REQ/AS строки связан с чувствительным check, exact SHA и результатом, normal/filtered/single outcomes различимы. Любой новый semantic counterexample вернуть Analyst через Manager; ordinary internal details внутри reviewed port выбирает Developer. Публикация и независимый Tester отдельно.
