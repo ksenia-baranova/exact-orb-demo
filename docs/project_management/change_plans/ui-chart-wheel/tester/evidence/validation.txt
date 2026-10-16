@@ -1,36 +1,46 @@
-Дата: 2026-10-15. Автор: Codex / Tester. Пакет v1, проверки перед публикацией.
+Дата: 2026-10-16. Автор: Codex / Tester. Consultation v2 / TASK-T-002, проверки перед публикацией.
 Рабочее дерево: C:\Users\KateUser\.codex\worktrees\ui-chart-wheel-test\exact-orb-recovered
 Ветка: test/ui-chart-wheel
-ReviewSHA: 2b846077b317e33dd892565419942c4db8517b1e
-MainBaseline: 535551026af6eedaf2a0aa5c0daa96fa94655ec1
-Python 3.14.0; Node v24.19.0. Наличие runtime не означает test run.
+InputSHA / ReviewSHA: 543b7ec726ee96c951dc0abbf1067ca6ad47a1ba
+Нормативный MainBaseline: 535551026af6eedaf2a0aa5c0daa96fa94655ec1
+Проверенный опубликованный main: bba8d6cfb22f586f86c3035423f2535ede158b9f; tree совпадает.
+Analyst v3: 2634b224894b1046113557bfe241f0a5f2d46f8c
+Developer consultation v1: 04be207627de1049deac2e069574e01b62536607; нового D-002 нет.
 
-Выполненные проверки:
-1. git fetch origin change/ui-chart-wheel main
-   PASS, exit 0. Опубликованный change и main совпали с SHA выше.
-2. python -X utf8 docs/project_management/change_plans/ui-chart-wheel/tester/evidence/validate_review.py
-   PASS. Проверяет пять Markdown-файлов, локальные ссылки / anchors, таблицы,
-   22 требования, 25 AS-WHEEL / 23 AS-UI, 14 плановых T-WHEEL,
-   сохранность 23 исходных tracked files и 9/9 записей Analyst manifest.
-   PARTIAL=16, MISSING=6; исполнение требований во всех строках NOT RUN.
-   Точные счётчики / hashes финального прогона: review.json.
-3. git diff --check
-   PASS, exit 0; tracked diff пуст. Для новых untracked Markdown whitespace
-   дополнительно проверяет validate_review.py; на один diff --check не опираемся.
+Проверки и их предмет:
+1. git fetch origin change/ui-chart-wheel test/ui-chart-wheel main
+   PASS при начале повторного review; test был на 9dd8b96, change на 543b7ec.
+2. git merge --ff-only origin/change/ui-chart-wheel
+   PASS, 9dd8b96 -> 543b7ec без merge-коммита, исходное дерево было чистым.
+3. python -X utf8 docs/project_management/change_plans/ui-chart-wheel/tester/evidence/validate_review.py
+   PASS, TESTER_REVIEW_V2_OK; точные счётчики / source hashes в review.json.
+   Проверены 22 REQ, все 30 AS-WHEEL и 23 AS-UI, MODIFY AS-UI-22, 14 T-WHEEL,
+   связь с тремя sequences, актуальные CLOSED/OPEN/CLOSED 001/002/003,
+   Analyst / Developer manifest по 9/9 и сохранность исходных документов / кода.
+   PARTIAL=16, MISSING=6; run status всех требований NOT RUN.
 4. git apply --check --unidiff-zero docs/project_management/change_plans/ui-chart-wheel/tester/decision_input.patch
-   PASS, exit 0; только проверка применимости. Патч не применён. Нулевой контекст
-   устраняет пробельные context-строки внутри сохраняемого diff; проверка ведётся
-   относительно зафиксированного Manager baseline.
-5. git diff --exit-code 2b846077b317e33dd892565419942c4db8517b1e -- docs/project_management/change_plans/ui-chart-wheel/manager_artifact.md docs/project_management/change_plans/ui-chart-wheel/analyst_artifact.md docs/project_management/change_plans/ui-chart-wheel/analyst src tests
-   PASS, exit 0; Manager / Analyst / production / tests не изменены.
-6. git status --short
-   При проверке до staging только новые tester_artifact.md и tester/.
-   Исходный review не включал commit / push / PR. Последующее поручение Owner
-   разрешает commit / push девяти файлов в test/ui-chart-wheel; SourceRef и
-   способ проверки публикационной версии — в tester_artifact.md.
+   PASS; только проверка нового предложения TASK-T-002 на Manager @ InputSHA.
+   Патч не применён, Owner choices / DP statuses / Manager не изменены.
+5. git diff --check
+   PASS после обновления девяти tracked Tester-файлов; нулевой контекст patch
+   исключает пробельные context-строки. Markdown whitespace проверен и валидатором.
+6. git diff --exit-code 543b7ec726ee96c951dc0abbf1067ca6ad47a1ba -- docs/project_management/change_plans/ui-chart-wheel/manager_artifact.md docs/project_management/change_plans/ui-chart-wheel/analyst_artifact.md docs/project_management/change_plans/ui-chart-wheel/analyst docs/project_management/change_plans/ui-chart-wheel/developer_artifact.md docs/project_management/change_plans/ui-chart-wheel/developer src tests docs/requirements docs/development_approach docs/project_management/technical_debt.md
+   PASS; чужие ролевые материалы / нормативные источники / production / tests сохранены.
+7. git status --short
+   Только девять изменённых файлов существующего Tester-пакета; index не менялся.
 
-Пределы: это статический review и проверки документации. Pytest, node --test,
-браузерная acceptance, live HTTPS, renderer replacement и PlantUML rendering
-не запускались. Исторические результаты M1-7 не переносятся на ReviewSHA.
-CandidateSHA / TestedSHA отсутствуют. G1/G3/G4/G5 и приёмка этим пакетом
-не подтверждаются; изменение текущей сводки и регистрация — у Manager.
+До правок в read-only review через python -X utf8 -c $reviewCheck также проверены
+все 20 Markdown-файлов change: 630 локальных ссылок, 42 таблицы; оба manifest 9/9.
+Эти исходные counts не выдаются за counts после обновления Tester-файлов.
+
+Результат: TESTABLE WITH CLARIFICATIONS. Requirement gaps 001/003 закрыты только
+по документальному expected result; 002 OPEN по измерительным / layout условиям.
+CandidateSHA / TestedSHA отсутствуют. Pytest, node --test, browser acceptance,
+live HTTPS, density spike, renderer replacement и PlantUML rendering NOT RUN.
+Оценка независимого тестирования 3–5 чд; повторной консультации 0,5–0,75 чд;
+уверенность средняя, условия в testability_review.md, календарные сроки не согласованы.
+Прежние авторские материалы / evidence v1 доступны в Git на 9dd8b96.
+Первоначальное обновление v2 не включало commit / push / PR. Последующим прямым
+поручением Owner разрешил commit / push девяти файлов в test/ui-chart-wheel.
+SourceRef / resolver публикационной версии — в tester_artifact.md; успешный push
+подтверждается отдельной сверкой SHA. Approvals / lifecycle остаются у Manager.
