@@ -1,30 +1,32 @@
 # Проверка тестируемости и оценка: ui-chart-wheel
 
-**Автор:** Codex / Tester, 2026-10-15; v1, консультация по поручению Owner. Предлагаемый TaskId и полномочия — в [индексе](../tester_artifact.md).
+**Автор:** Codex / Tester, 2026-10-16; consultation v2 / TASK-T-002. Назначение / прямое поручение Owner, reviewers и сроки — в [индексе](../tester_artifact.md).
 
-**Версия требований:** действующие [REQ-UI-01…10](../../../../requirements/current/ui/birth-form-and-facts.md), [AS-UI-01…23](../../../../requirements/current/ui/scenarios.md), [HTTP §7.2](../../../../requirements/http_api.md#72-chartdto) @ `535551026af6eedaf2a0aa5c0daa96fa94655ec1`; предложенные [requirements](../analyst/requirements.md) / [scenarios](../analyst/scenarios.md) Analyst v1 @ `683bdd0c1f5a0e65735f4e48127d408300ec697c`. Это review чернового контракта, не approval.
+**Версия требований:** действующие [REQ-UI-01…10](../../../../requirements/current/ui/birth-form-and-facts.md), [AS-UI-01…23](../../../../requirements/current/ui/scenarios.md), [HTTP §7.2](../../../../requirements/http_api.md#72-chartdto) @ `535551026af6eedaf2a0aa5c0daa96fa94655ec1`; предложенные [requirements](../analyst/requirements.md) / [scenarios](../analyst/scenarios.md) Analyst v3 @ `2634b224894b1046113557bfe241f0a5f2d46f8c`, включая MODIFY AS-UI-22 и три behavioral sequences. Это review чернового контракта, не approval.
 
-**Версия реестра:** [Manager §3](../manager_artifact.md#3-единый-реестр-dp) @ InputSHA `2b846077b317e33dd892565419942c4db8517b1e`.
+**Версия реестра:** [Manager §3](../manager_artifact.md#3-единый-реестр-dp) @ InputSHA `543b7ec726ee96c951dc0abbf1067ca6ad47a1ba`.
 
 **Статус:** TESTABLE WITH CLARIFICATIONS.
 
-**Обоснование статуса:** источник ChartDTO, категории, принадлежность карте, safe-read/recovery и неизменность расчётных фактов имеют наблюдаемый oracle. Для финальных графических и interaction checks недостаточны критерии DP-O-010…013. Analyst v1 / sequences ещё не включают решения Owner от 15 октября. TEST-FIND-WHEEL-001…003 ограничивают соответствующие проверки; независимую подготовку можно продолжать. Кода M1-8 и CandidateSHA нет, проверка реализации не выполнялась.
+**Обоснование статуса:** Analyst v3, 30 AS-WHEEL / MODIFY AS-UI-22 и три sequences сверены с зарегистрированными решениями Owner. Документальные gaps TEST-FIND-WHEEL-001/003 устранены; 002 остаётся OPEN только по измерительным условиям. Источник DTO, выбор / снятие, automatic current и независимый draft имеют определённый expected result. Для окончательного TESTABLE нужны технические критерии DP-O-010…013: замена / изоляция renderer, минимальный разнос / плотность / fallback, измеренное размещение ☌, mobile targets / keyboard order / recovery layout. Новых блокирующих противоречий не найдено. Реализация / CandidateSHA ещё не переданы; runtime-проверок нет.
 
 ## Вывод для Manager
 
 Задача ограничена представлением, но её главный риск — согласованность подтверждённой карты, черновика, выбранной планеты / аспекта, раскрытия таблиц, ошибок и восстановления. Отдельный тест SVG не докажет M1-8. Нужны геометрические component tests, mounted-интеграция с реальными coordinator / transport и браузерная проверка плотности, клавиатуры / focus.
 
-Analyst v1 пригоден для консультации, но утверждать всю версию для реализации преждевременно. Analyst выпускает согласованную редакцию по реестру, Tester повторно проверяет затронутые обязательства. Manager регистрирует участие, TaskId, reviewer, критерий и сроки. Этот review не подтверждает G1 / G3.
+В v3 продуктовая семантика достаточна для продолжения согласования технических критериев и условного плана. В AS-WHEEL-28/29 взаимоисключающие состояния, строка / графическая пара и доступное повторное снятие согласованы с REQ-WHEEL-07/08 и sequence 002. AS-WHEEL-30 сохраняет адресуемый выбор по новым фактам, снимает только исчезнувший, сохраняет раскрытие / dirty draft и отличается от F5 / нового явного build. После successful build collapse зависит от совпадения текущих полей со snapshot. Оформление ☌: подпись категории и контур только выбранного символа; эти правила больше не OPEN.
+
+Manager регистрирует авторский результат и назначенные reviewers проверяют точную опубликованную версию. Готовность G1 / G3 и разрешение implementation этим заключением не подтверждаются. Прежний Developer v1 @ `04be207627de1049deac2e069574e01b62536607` не считается повторной консультацией v3; нового результата TASK-D-002 на входе нет.
 
 ## Недостающие основания
 
 | Замечание | Влияние | Адресат |
 |---|---|---|
-| [TEST-FIND-WHEEL-001](defects.md#test-find-wheel-001) | Уже принятые решения всё ещё условны в v1; сценарий снятия описывает отклонённую отдельную кнопку | Analyst; Manager сверяет версию |
-| [TEST-FIND-WHEEL-002](defects.md#test-find-wheel-002) | Минимальный разнос, предел плотности и категория / выбор у ☌ не имеют окончательного воспроизводимого oracle | Developer; Analyst / Owner по наблюдаемому пределу |
-| [TEST-FIND-WHEEL-003](defects.md#test-find-wheel-003) | Не определён переход от выбранной планеты к чужому аспекту и снятие самостоятельного аспекта | Analyst / Owner в DP-O-013 |
+| [TEST-FIND-WHEEL-001](defects.md#test-find-wheel-001) | CLOSED: v3 / реестр согласованы; это документальное closure evidence, не PASS реализации | Tester, 2026-10-16; Manager регистрирует handoff |
+| [TEST-FIND-WHEEL-002](defects.md#test-find-wheel-002) | OPEN: минимальность / предел / fallback, реальные bbox / R / несколько ☌; подпись и контур символа уже приняты | Developer; Analyst / Owner по наблюдаемому пределу |
+| [TEST-FIND-WHEEL-003](defects.md#test-find-wheel-003) | CLOSED: AS-WHEEL-28/29 определяют оба перехода / снятие без возврата фильтра | Tester, 2026-10-16; runtime ещё NOT RUN |
 
-Остальные вопросы уже в DP-O-010…013: повторный current той же карты, форма, hit targets / focus-order, композиция углов и replacement contract. Здесь не создаётся второй реестр решений. DP-O-014 уже ACCEPTED: нового выбора ориентации не требуется, нужны актуализация и проверки. Findings Analyst самостоятельно не закрывались.
+Остаток DP-O-010…013: replacement seam, измерительная геометрия / dense fallback, палитра / размещение, mobile targets / keyboard order / recovery layout и точная композиция блока углов. Новых DP нет. DP-O-014 уже ACCEPTED и перенесён в v3; drawing ADR / геометрические проверки ещё впереди. Смысловые правила same/different current и формы больше не считаются невыбранными. Findings Analyst / Developer самостоятельно не закрывались.
 
 ## Данные и независимые проверки
 
@@ -45,7 +47,11 @@ Analyst v1 пригоден для консультации, но утвержд
 
 В `session.test.mjs` прочитаны immutable submitted summary при pending draft, birth из current, прежняя сводка после отказа и fallback с timeout/restart gate. В `recovery.test.mjs` проверен сценарий двух реальных coordinator с общим листовым persistence и сохранением draft. `documentPort` не доказывает layout, hit testing или настоящий SVG focus. Полный аудит всех старых data classes ещё не выполнен; collection / test run не проводились. Старые результаты M1-7 не приписываются InputSHA.
 
-MainBaseline…InputSHA содержит только 12 документов change; production code / tests / конфигурация не изменены. Отсутствие wheel tests — работа будущего этапа, не дефект принятого M1-7. Матрица охватывает 22 требования, 25 AS-WHEEL и 23 AS-UI. Наличие сценария не даёт SUFFICIENT.
+Сравнение нормативного MainBaseline с InputSHA подтвердило неизменность src / tests / requirements / процесса. Опубликованный main @ `bba8d6cfb22f586f86c3035423f2535ede158b9f` имеет то же Git tree, что нормативный `5355510`; это совпадение дерева, не принятие M1-8. Отсутствие wheel tests — работа будущего этапа. Матрица охватывает 22 требования, 30 AS-WHEEL и 23 AS-UI, включая MODIFY AS-UI-22; наличие сценария не даёт SUFFICIENT.
+
+## Оценка повторной консультации
+
+TASK-T-002: 0,5–0,75 чд, средняя уверенность; сверка 30 AS / DELTA / трёх sequences / реестра, документальное closure 001/003, актуализация плана / матрицы / evidence. Предположения: один стабильный InputSHA, без нового технического пакета, runtime и дополнительных циклов Owner decisions. Сроки исполнения / reviewer / эскалации по-прежнему согласует Manager; это не измеренное elapsed time.
 
 ## Оценка независимого тестирования
 
@@ -64,4 +70,4 @@ Acceptance, полный pytest и сверка чистового перено�
 
 ## Вклад в реестр
 
-Baseline Manager @ InputSHA; связанные DP-O-010…014. Подписанные рекомендации — в [decision_input.patch](decision_input.patch), только добавление в колонку рекомендаций. Действующий Manager-файл не обновлялся; регистрация ожидается. Owner choices, статусы DP и gates не изменяются.
+Baseline Manager @ InputSHA; связанные DP-O-010…014. В [decision_input.patch](decision_input.patch) подготовлен новый подписанный вклад TASK-T-002: закрытые gaps не повторяются как открытые, принятые подпись / контур ☌ и automatic current сохраняются. Только добавление в колонку рекомендаций; Manager-файл не изменён, регистрация нового результата ожидается. Owner choices / статусы DP / gates не изменяются. Предыдущая consultation v1 и её evidence доступны на `9dd8b96` в Git history.

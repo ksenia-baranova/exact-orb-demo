@@ -1,21 +1,27 @@
 # Замечания Tester: ui-chart-wheel
 
-**Автор / дата:** Codex / Tester, 2026-10-15. **Предмет:** ранний review документов @ `2b846077b317e33dd892565419942c4db8517b1e`; это не tested commit реализации. **Окружение:** Windows, локальное чтение Git / Markdown / PUML / JS; runtime / browser не запускались. **Реестр DP:** [Manager §3](../manager_artifact.md#3-единый-реестр-dp) @ том же SHA.
+**Автор:** Codex / Tester. Первоначальное обнаружение — 2026-10-15, TASK-T-001 / review `2b846077b317e33dd892565419942c4db8517b1e`. Повторная документальная сверка — 2026-10-16, TASK-T-002 / InputSHA `543b7ec726ee96c951dc0abbf1067ca6ad47a1ba`, Analyst v3 @ `2634b224894b1046113557bfe241f0a5f2d46f8c`. Это review документов, не TestedSHA реализации. Окружение: Windows, Git / Markdown / PUML / JS; runtime / browser не запускались. Реестр: [Manager §3](../manager_artifact.md#3-единый-реестр-dp) @ новом InputSHA.
 
 Это единственный Tester-реестр находок. Подтверждённых `bug (implementation defect)` нет: CandidateSHA не передан, production M1-8 не реализован на baseline. Severity S1–S4 для нижних requirement gaps неприменима; priority — предложение порядка уточнения, не подтверждение Manager. Уже зарегистрированные DP и принятый долг не объявляются новыми багами.
 
-| ID | Тип / источник | Severity | Priority | Blocks | Ответственный |
-|---|---|---|---|---|---|
-| [TEST-FIND-WHEEL-001](#test-find-wheel-001) | requirement gap: рассогласование версий после Owner decisions | N/A | P2, PROPOSED | Утверждение затронутого Analyst-контракта, G3; не независимая подготовка | Analyst; Manager |
-| [TEST-FIND-WHEEL-002](#test-find-wheel-002) | requirement gap: уточнение уже открытых DP-O-011/012 | N/A | P2, PROPOSED | Финальные критерии плотности / ☌, соответствующая acceptance | Developer + Analyst / Owner |
-| [TEST-FIND-WHEEL-003](#test-find-wheel-003) | requirement gap: новый контрпример внутри DP-O-013 | N/A | P2, PROPOSED | Утверждение переходов выбора / acceptance этих ветвей | Analyst / Owner |
+| ID | Тип / источник | Severity | Priority | Статус | Blocks сейчас | Ответственный |
+|---|---|---|---|---|---|---|
+| [TEST-FIND-WHEEL-001](#test-find-wheel-001) | requirement gap: рассогласование версий после Owner decisions | N/A | P2, PROPOSED исторически | CLOSED | Нет по этому gap; полные gates отдельно | Tester подтвердил; Manager регистрирует результат |
+| [TEST-FIND-WHEEL-002](#test-find-wheel-002) | requirement gap: измерительные критерии в DP-O-011/012 | N/A | P2, PROPOSED | OPEN | Окончательный oracle плотности / размещения / fallback и затронутая acceptance | Developer + Analyst / Owner |
+| [TEST-FIND-WHEEL-003](#test-find-wheel-003) | requirement gap: переходы выбора внутри DP-O-013 | N/A | P2, PROPOSED исторически | CLOSED | Нет по этому gap; runtime tests ещё NOT RUN | Tester подтвердил; Manager регистрирует результат |
+
+Закрытие requirement gap означает проверенный текст expected result и зарегистрированный источник, не исправление runtime bug / PASS продукта. Priority не подтверждался Manager. Исходные примеры / условия ниже сохранены; актуальные результаты сверки добавлены с автором, датой и точными версиями.
 
 <a id="test-find-wheel-001"></a>
 ## TEST-FIND-WHEEL-001. Пакет v1 ещё не отражает актуальные решения
 
-**Статус:** OPEN.
+**Статус:** CLOSED.
 
-**Обоснование статуса:** статически сопоставлены Manager @ InputSHA и Analyst v1; явная актуализация предусмотрена самим Manager, новой версии пока нет. Это ожидаемая незавершённая передача, не нарушение реализации и не повторный вопрос Owner о принятом выборе.
+**Обоснование статуса:** Tester / Codex, повторная документальная сверка 2026-10-16: Analyst v3, REQ-WHEEL-02/03/05…10, REQ-UI-04/05/06/11, AS-WHEEL-01/02/07/08/12/13/14/24…30, MODIFY AS-UI-22 и три sequences сверены с Owner evidence, зарегистрированным Manager @ 543b7ec. Разрыв версии v1 устранён; ролевые approvals и runtime evidence этим не подтверждаются.
+
+### Историческое обнаружение @ 2b84607
+
+**Первоначальное основание OPEN:** статически сопоставлены Manager @ InputSHA и Analyst v1; явная актуализация предусмотрена самим Manager, новой версии пока нет. Это ожидаемая незавершённая передача, не нарушение реализации и не повторный вопрос Owner о принятом выборе.
 
 **Требования / сценарии:** [REQ-WHEEL-02/03/05/06/07/08/09/10](../analyst/requirements.md), [AS-WHEEL-08/09/10/12/13/14/24/25](../analyst/scenarios.md), [sequence 001](../analyst/sequence_diagrams/ui/001-chart-presentation.puml), [sequence 002](../analyst/sequence_diagrams/ui/002-wheel-table-selection.puml). **Связанные решения:** DP-O-010…014. **Сценарий Tester:** [T-WHEEL-06](test_plan.md#t-wheel-06), также 02/04/05/08/11.
 
@@ -32,14 +38,22 @@
 
 ### Передача и закрытие
 
-Analyst актуализирует FULL / DELTA / scenarios / sequences на текущих решениях; Manager фиксирует точную версию и reviewers. Снятие отдельной кнопки не означает исключение доступного снятия аспекта: см. TEST-FIND-WHEEL-003. Закрытие — повторная сверка Tester новой опубликованной версии с реестром, без потери исходных REQ-UI / AS-UI. **Retest:** не выполнен, исправленная версия не передана. **Priority confirmation:** ожидается Manager. **Условие следующей проверки:** handoff Analyst с точным SHA.
+Analyst актуализирует FULL / DELTA / scenarios / sequences на текущих решениях; Manager фиксирует точную версию и reviewers. Снятие отдельной кнопки не означает исключение доступного снятия аспекта: см. TEST-FIND-WHEEL-003. Закрытие — повторная сверка Tester новой опубликованной версии с реестром, без потери исходных REQ-UI / AS-UI. **Retest при первоначальном review:** не выполнен, исправленная версия не передана. **Priority confirmation:** ожидается Manager. **Условие следующей проверки:** handoff Analyst с точным SHA.
+
+### Closure evidence — TASK-T-002, 2026-10-16
+
+Проверены Analyst v3 @ `2634b224894b1046113557bfe241f0a5f2d46f8c` и регистрация DP-O-010…014 / назначения в Manager @ `543b7ec726ee96c951dc0abbf1067ca6ad47a1ba`: orientation, локальный SVG fallback, условный разнос, line styles, ☌, five/all, point/aspect toggle, automatic current / draft. Прежняя отдельная кнопка снятия не возвращается; остающиеся измерительные вопросы отделены и не препятствуют закрытию именно разрыва версий.
+
+**Фактический результат:** document review PASS; manifest Analyst 9/9 и source payload подтверждены. Закрытие автором Tester / Codex; [review.json](evidence/review.json). Следующий шаг — регистрация нового Tester package / review назначенными участниками, без присвоения чужих approvals. Повторно открыть при выявлении расхождения между новой утверждаемой версией и зарегистрированными решениями.
 
 <a id="test-find-wheel-002"></a>
 ## TEST-FIND-WHEEL-002. Для плотности и ☌ ещё нет окончательного oracle
 
 **Статус:** OPEN.
 
-**Обоснование статуса:** DP-O-011/012 прямо оставляют пределы / fallback / ☌ открытыми. Tester уточнил набор различающих случаев; новой архитектурной развилки и нового DP не создаётся.
+**Обоснование статуса:** на повторной сверке 2026-10-16 DP-O-011/012 ещё не имеют измерительных критериев минимальности / плотности / fallback и реального размещения нескольких R / ☌. Подпись категории и контур только выбранного символа уже зарегистрированы и отражены в v3; они больше не часть открытого выбора. Новый DP не создаётся.
+
+### Историческое обнаружение @ 2b84607
 
 **Требования / сценарии:** [REQ-WHEEL-05/06/09/10](../analyst/requirements.md), [AS-WHEEL-07…10/16](../analyst/scenarios.md); [T-WHEEL-04](test_plan.md#t-wheel-04), [T-WHEEL-05](test_plan.md#t-wheel-05). **Решения:** DP-O-011/012. **Blocks:** воспроизводимый verdict минимальности / предельной плотности / различения category и selection у ☌; простые правила Owner уже можно готовить к проверке.
 
@@ -56,12 +70,24 @@ Developer определяет измеряемые bounds / collision / seam и
 
 **Закрытие:** Developer criterion / drawing ADR + принятый наблюдаемый предел в соответствующих DP, Analyst scenarios и повторный review Tester. **Retest:** не выполнен. **Priority confirmation:** ожидается Manager. **Следующая проверка:** версия критериев и данные переданы; задача независимой подготовки не остановлена.
 
+### Повторная сверка — TASK-T-002, 2026-10-16
+
+REQ-WHEEL-06 / AS-WHEEL-07/08 / sequence 002 и DP-O-012 @ `543b7ec726ee96c951dc0abbf1067ca6ad47a1ba` определяют подпись «точный» / «рабочий» и усиленный контур только выбранного ☌ с сохранением подписи. Этот смысловой остаток устранён. Текст первоначального примера выше сохранён как история, не как актуальный вопрос Owner.
+
+Остаются OPEN: критерий bbox/collision/minimality, допустимые интервалы / bounds, placement нескольких R / ☌, палитра / legend layout и принятый наблюдаемый fallback при недостижимой плотности. Нового технического пакета TASK-D-002 и real SVG/font/browser evidence нет. Developer consultation v1 @ `04be207` содержит предложение отдельного bounded spike, не результат измерений и не допуск его исполнения.
+
+**Результат:** закрытие всего TEST-FIND-WHEEL-002 не подтверждено, статус OPEN. Условия закрытия сохраняются: проверяемые Developer критерии / drawing ADR, согласованный наблюдаемый предел / fallback в существующих DP, соответствующие AS и независимое evidence. Priority P2 остаётся PROPOSED; негативные сценарии и разрежённый positive control — [T-WHEEL-05](test_plan.md#t-wheel-05).
+
 <a id="test-find-wheel-003"></a>
 ## TEST-FIND-WHEEL-003. Переход от фильтра планеты к аспекту и снятие аспекта
 
-**Статус:** OPEN.
+**Статус:** CLOSED.
 
-**Обоснование статуса:** составлен контрпример взаимодействия двух правил; в доступном контракте нет определённого исхода для обеих ветвей ниже. Требуется уточнение DP-O-013, не самостоятельный выбор поведения Tester.
+**Обоснование статуса:** Tester / Codex, повторная документальная сверка 2026-10-16: REQ-WHEEL-07/08/10, REQ-UI-06, AS-WHEEL-28/29 и sequence 002 согласованно задают взаимоисключающие режимы, переход к unrelated aspect, одну строку / пару, повторное снятие через графику / HTML / keyboard и возврат прежнего раскрытия без фильтра планеты. Expected result определён; runtime не запускался.
+
+### Историческое обнаружение @ 2b84607
+
+**Первоначальное основание OPEN:** составлен контрпример взаимодействия двух правил; в доступном контракте нет определённого исхода для обеих ветвей ниже. Требуется уточнение DP-O-013, не самостоятельный выбор поведения Tester.
 
 **Требования / сценарии:** [REQ-WHEEL-07/08/10](../analyst/requirements.md), REQ-UI-06, [AS-WHEEL-11/13/23](../analyst/scenarios.md), [sequence 002](../analyst/sequence_diagrams/ui/002-wheel-table-selection.puml); [T-WHEEL-07](test_plan.md#t-wheel-07). **Решение:** DP-O-013. **Обнаруживший:** Tester / Codex, этот review. **Blocks:** утверждение соответствующих interaction branches / G3; независимые ветви остаются доступны.
 
@@ -77,4 +103,10 @@ Developer определяет измеряемые bounds / collision / seam и
 
 Контрпример использует два разрешённых типа действия и адресуемые разные пары одной карты; он не требует нового выбора angles. До фильтра обе строки присутствуют. Рекомендация Tester для рассмотрения Analyst / Owner: выбор аспекта вне текущего отбора переводит UI в явно определённое состояние, где видна именно эта пара; для aspect-only описать одно доступное действие снятия с pointer / keyboard и его связь с отбором. Конкретный вариант и новый UX не утверждаются этим review.
 
-**Ответственный:** Analyst формулирует варианты / expected result в DP-O-013; Owner выбирает, Developer подтверждает реализуемость. **Закрытие:** решение зарегистрировано, requirements / AS / sequence согласованы и повторно сверены Tester. **Retest:** не выполнен, новый контракт не передан. **Priority confirmation:** ожидается Manager. **Повторное открытие:** новый контрпример против согласованной версии сохраняется с исходным evidence.
+**Ответственный:** Analyst формулирует варианты / expected result в DP-O-013; Owner выбирает, Developer подтверждает реализуемость. **Закрытие:** решение зарегистрировано, requirements / AS / sequence согласованы и повторно сверены Tester. **Retest при первоначальном review:** не выполнен, новый контракт не передан. **Priority confirmation:** ожидается Manager. **Повторное открытие:** новый контрпример против согласованной версии сохраняется с исходным evidence.
+
+### Closure evidence — TASK-T-002, 2026-10-16
+
+На Analyst v3 @ `2634b224894b1046113557bfe241f0a5f2d46f8c`, Manager @ `543b7ec726ee96c951dc0abbf1067ca6ad47a1ba` проверены оба контрпримера: Луна → sun→mc снимает point/filter, оставляет одну aspect row / graphic pair; повторная активация линии/☌/строки (включая keyboard и background через HTML) снимает аспект, возвращает прежнее раскрытие общего списка, не восстанавливает фильтр Луны. Aspect → другая планета даёт полный отбор её published aspects. Это AS-WHEEL-28/29 и REQ-WHEEL-07/08/10; подпись/контур ☌ — REQ-WHEEL-06.
+
+**Фактический результат:** document review PASS; TEST-FIND-WHEEL-003 закрыт автором Tester / Codex. [T-WHEEL-07](test_plan.md#t-wheel-07) и матрица актуализированы; исполнение / regression tests всё ещё NOT RUN. Повторно открыть, если новая версия потеряет этот expected result; нарушение реализацией описать по фактическому CandidateSHA, не приписывая текущему документальному closure runtime PASS.
