@@ -1,68 +1,62 @@
 # Developer findings: ui-chart-wheel
 
-**Автор:** Codex / Developer, `TASK-D-001`, consultation v1, 2026-10-15.
-**Предмет:** Manager / интегрированный Analyst v1 / code @ `2b846077b317e33dd892565419942c4db8517b1e`.
-Это результат подготовки, а не дефекты реализованного M1-8. Состояния задания / пакета ведёт [Manager](../manager_artifact.md); существенные рекомендации — в [предложении к его DP](decision_input.patch).
+**Автор:** Codex / Developer; исходное обнаружение TASK-D-001 / 2026-10-15, повторная сверка TASK-D-002 / 2026-10-16.
+**Текущий предмет:** Analyst v3 @ `2634b224894b1046113557bfe241f0a5f2d46f8c`, Manager / code / tests на InputSHA `543b7ec726ee96c951dc0abbf1067ca6ad47a1ba`.
+**Историческое evidence:** полная консультация v1 @ `04be207627de1049deac2e069574e01b62536607`, исходный вход `2b846077b317e33dd892565419942c4db8517b1e`. Это риски будущего M1-8, не дефекты реализованного M1-7 / отсутствующего renderer.
+**Единый реестр / сводка:** [Manager](../manager_artifact.md); новый подписанный вклад — [DP patch](decision_input.patch). Чужие findings и role/task states не меняются.
 
-| ID | Классификация | Адресат | Зависимое действие |
-|---|---|---|---|
-| DEV-FIND-WHEEL-001 | Подтверждённое расхождение версий контракта | Analyst / Manager | Final estimate / approvals / G3 |
-| DEV-FIND-WHEEL-002 | Технический риск интеграции, продолжение FIND-WHEEL-002/003 | Developer; Analyst для interaction semantics | Граница renderer / DEV-WHEEL-02…04 |
-| DEV-FIND-WHEEL-003 | Неизмеренная плотность и доступность, уточнение DP-O-011/013 | Developer / Tester; Owner — пределы | Обязательство по плотности / окончательная оценка |
+| ID | Повторная сверка на InputSHA | Что осталось / адресат |
+|---|---|---|
+| DEV-FIND-WHEEL-001 | Документальная причина устранена в v3 и текущих Developer-материалах | Полный closure review не заявлен за Tester / Manager; новые рабочие Developer SHA после публикации ещё впереди |
+| DEV-FIND-WHEEL-002 | Наблюдаемое interaction/failure поведение определено, технический риск сохраняется | Port / keys / focus / acceptance cause / integration evidence; Developer, Technical Reviewer и Tester |
+| DEV-FIND-WHEEL-003 | Измерений / предельного fallback по-прежнему нет | Отдельно назначенный spike, DP-O-011/012/013, Developer / Tester / Owner |
 
-## DEV-FIND-WHEEL-001. Analyst v1 расходится с поздними решениями Owner
+## DEV-FIND-WHEEL-001. Analyst v1 расходился с поздними решениями Owner
 
-**Type:** contract version conflict. **Владелец смысла:** Analyst; Manager координирует. **Решения:** DP-O-010…014. **Закрывающего evidence пока нет.**
+**Type:** contract version conflict. **Владелец смысла:** Analyst; Manager координирует, Developer подтверждает свою повторную сверку. **Связано:** DP-O-010…014. **Полное закрытие:** не объявлено; документальная причина устранена.
 
-**Для Manager:** нельзя исполнить v1 буквально: он оставляет неопределённым уже выбранное и содержит отклонённое действие. Источник проблемы — разное время редакций, а не новая неопределённость всех решений Owner.
+### Исходное evidence TASK-D-001
 
-**Evidence:** [Manager §3](../manager_artifact.md#3-единый-реестр-dp) @ InputSHA против [requirements](../analyst/requirements.md) REQ-WHEEL-02/03/05…10, [scenarios](../analyst/scenarios.md) AS-WHEEL-08…14/23…25 и [002 sequence](../analyst/sequence_diagrams/ui/002-wheel-table-selection.puml) @ Analyst v1.
+На 2b84607 Manager уже содержал поздние Owner decisions, но Analyst v1 @ 683bdd0 оставлял ориентацию / стили / fallback неопределёнными и sequence 002 предлагала отдельное «Снять выделение», отклонённое Owner. Исполнение этой версии создало бы лишнюю кнопку и устаревший глобальный hidden gate таблиц. Исходные точные пути: analyst/requirements.md, scenarios.md и sequence_diagrams/ui/002-wheel-table-selection.puml @ 683bdd0; полное описание / контрпример сохранены в Developer v1 @ 04be207. API / engine при этом не требовали изменения.
 
-| Сверяемая область | Расхождение и нужное действие Analyst |
-|---|---|
-| Ориентация | DP-O-014 уже ACCEPTED; v1 считает решение предложенным и AS-WHEEL-25 условным. Уточнить четыре опорные позиции / последовательности. |
-| Отказ / скученность / линии | Owner выбрал HTML fallback, default без разноса с минимальным разносом конфликтующих элементов, выносные только при смещении, exact solid / working dashed и толстый selected stroke. Убрать уже решённые вопросы, оставить недостающие пределы / палитру / ☌. |
-| Таблицы и выбор | Добавить single point filter, замену / toggle, первые 5 аспектов и домов, отдельные «Показать все», все аспекты выбранной планеты, возврат к 5 после снятия, no auto scroll/focus, reset нового build и preserve resize. |
-| Снятие выделения | В sequence v1 есть отдельное действие «Снять выделение», REQ-WHEEL-08/AS-WHEEL-13 недостаточно конкретны. Поздний Owner явно отказался от отдельной кнопки. Исполнение старого примера создаст лишний UI control. |
+### Повторная сверка TASK-D-002
 
-**Контрпример:** исполнитель следует sequence v1, добавляет кнопку и сохраняет закрытую общую таблицу до выбора; результат противоречит последнему записанному выбору Owner, даже если тесты по старой постановке зелёные.
+V3 включает REQ-WHEEL-02/03/05…10, UI DELTA, AS-WHEEL-01…30 и MODIFY AS-UI-22; три behavioral sequences отражают принятые DP. Ориентация, default без разноса / смещение конфликтов, local HTML fallback, линии exact/working, подпись и контур ☌, single point/aspect selection, разные toggle outcomes, automatic current, collapse и positions/angles описаны. Отдельной кнопки снятия нет. Новых противоречий ChartDTO не найдено.
 
-**Влияние:** публичный API прежний; меняются expected UI outcomes, сценарии и бюджет проверки. Окончательная оценка недостоверна до синхронизации / spike; текущие 8–12 чд предварительны.
+Текущий Developer-план / промты синхронизированы с этими правилами: старые вопросы о toggle, same-current, выбранном виде ☌ и collapse не возвращаются Owner. Указанный первоначальный разрыв input устранён по содержанию; v1 @ 04be207 сохраняется как история.
 
-**Что дальше:** Analyst выпускает новую связанную версию требований / AS / behavioral sequences с точным commit и отмечает оставшиеся вопросы; Manager задаёт один SHA Developer / Tester, назначает reviewers и регистрирует текущее прямое поручение Developer, сроки / эскалацию. Отсутствие этой регистрации не отменяет текущую разрешённую подготовку и не подтверждает G1.
+**Closure condition сохранён:** единая прослеживаемая версия без противоречащей кнопки, Manager registration / назначения и повторная сверка затронутыми ролями. **Текущее evidence:** Analyst v3 @ 2634b22, Manager @ 543b7ec и эта Developer-сверка; независимый результат TASK-T-002 / review текущего Developer-пакета ещё отсутствуют. Их закрытие не выполняет Developer. Отсутствие geometric evidence не называется новым конфликтом требований, оно остаётся в технических findings.
 
-**Closure condition:** новая версия с сопоставлением каждого решения от 15 октября, без противоречащей кнопки; Manager зарегистрировал источник и назначения, затронутые роли сверили именно эту версию. До этого можно продолжать техническое чтение и условное планирование, но не исполнение production-промтов.
+## DEV-FIND-WHEEL-002. Табличный renderer требует явной result boundary
 
-## DEV-FIND-WHEEL-002. Существующий табличный renderer нельзя использовать как готовую границу колеса
+**Type:** technical integration risk. **Владелец:** Developer; Technical Reviewer — существенная граница, Analyst — изменение смысла при новом контрпримере. **Связано:** DP-O-010/013, прежние Analyst FIND-WHEEL-002/003. **Состояние:** риск сохраняется, implementation / integration closure evidence отсутствует.
 
-**Type:** technical integration risk; не дефект принятого M1-7. **Владелец:** Developer. **Связано:** DP-O-010/013 и существующие FIND-WHEEL-002/003, которые не создаются повторно. **Evidence закрытия отсутствует.**
+### Исходное evidence TASK-D-001
 
-**Для Manager:** простое добавление SVG внутрь старого render callback может потерять точные позиции, focus либо превратить локальный отказ колеса в блокировку построения. Нужно небольшое явное разделение presentation responsibilities, а не новый session service.
+[facts.mjs](../../../../../src/exact_orb/http_api/ui/facts.mjs) readChartFacts не сохраняет longitude / cusp_longitude, renderFacts делает replaceChildren; [session.mjs](../../../../../src/exact_orb/http_api/ui/session.mjs) publish переводит общий render exception в requiresReconciliation; [main.mjs](../../../../../src/exact_orb/http_api/ui/main.mjs) вставляет status / submitted / readAgain в birth-form. Контрпример будущего наивного соединения: принята B, SVG бросает исключение, остаётся HTML / SVG A либо ожидаемый SVG failure блокирует session как отказ всего ответа. Это не воспроизведённый bug текущего M1-7.
 
-**Где:** [facts.mjs](../../../../../src/exact_orb/http_api/ui/facts.mjs) readChartFacts исключает longitude / cusp_longitude; renderFacts делает replaceChildren; [session.mjs](../../../../../src/exact_orb/http_api/ui/session.mjs) publish ловит общий render exception и ставит requiresReconciliation; [main.mjs](../../../../../src/exact_orb/http_api/ui/main.mjs) status/submitted/readAgain вставлены в birth-form.
+### Повторная сверка TASK-D-002
 
-**Пример:** A показана, B принята; SVG B бросает исключение. Если HTML остался A либо отказ дошёл до session publish, возможны смешанный presentation / лишний reconciliation вместо принятого Owner локального fallback. Это контрпример к предлагаемому наивному соединению, а не воспроизведённый bug текущего колеса, которого ещё нет.
+REQ-WHEEL-01/07/08/10, REQ-UI-09/11 и AS-WHEEL-24/28…30 определяют наблюдаемый результат. Прежние semantic questions сняты: aspect toggle, переход вне фильтра, automatic current другой карты и late dirty draft больше не требуют нового Owner choice. Новый аспект на same/different identity должен читаться из нового DTO, включая сменившуюся category=background; row index и ссылка на прежний DTO недостаточны.
 
-**Техническое направление:** передавать подтверждённый ChartDTO в result boundary; сначала согласованные HTML факты / сводку B, затем bounded render SVG B. Ожидаемый отказ SVG показывать локально с удалением старого изображения; неожиданные общие ошибки не подавлять. Выбор принадлежит result controller, renderer сообщает только canonical ID / aspect key. Exact port и стратегия фокуса — предложение в DP input.
+**Рекомендация:** controller владеет selection и независимыми expansion states; wheel читает immutable ChartDTO и canonical intent. Кандидат aspect key `(from,to,type)` проверяется против публичного порядка / уникальности, без category/orb/identity. Причину принятия own build / automatic current различать по подтверждённому событию, не по HTTP GET и не по каждому render. Collapse — сравнение текущего draft со snapshot; feedback / safe read вне сворачиваемых полей. Ожидаемый SVG failure видим локально при HTML B и удалённом SVG A, не подавляется и не вызывает общий reconciliation. Подписанный proposal передан в DP input; он не принят как API / ADR.
 
-**Вопросы Analyst / Owner в существующий DP-O-013:** как снять выбор отдельного аспекта без отклонённой кнопки; сохранить ли выбор при повторном current той же identity; что делать при current другой вкладки; как показать / выделить point row или endpoint angle при новой композиции; сворачивать ли уже открытый изменённый редактор при последующем успехе? Не переоткрываются подтверждённые resize / reset нового build / no scroll / лимиты.
+**Что остаётся:** точный port / typed outcomes, key / acceptance-event seam, focus при пересоздании / исчезновении строк, keyboard order / hit targets и доступное recovery layout. Ordinary helpers выбирает Developer внутри будущего approved contract; существенную границу Manager передаёт Technical Reviewer. Готовить ещё один продуктовый вопрос без различающего примера не требуется.
 
-**Влияние:** API / engine без изменений. Оценка включает result port и mounted checks. До утверждения semantics controller можно только проектировать условно; решение обычных внутренних деталей внутри будущего approved contract принадлежит Developer.
+**Closure condition:** reviewed port / drawing ADR, согласованный interaction contract и integration checks на реальных controller / renderer: успешный / альтернативный / отказавший renderer, HTML B без SVG A, текущие факты сохранённой пары / исчезновение ASC-пары, preserved focus и safe-read controls при collapse. Tester подтверждает своё evidence отдельно. Консультация / планирование не блокируются ожиданием реализации.
 
-**Closure condition:** зарегистрированный technical input DP-O-010, принятый port / ADR, синхронизированный Analyst interaction contract и доказательства на реальных controller/renderer: alternate renderer, visible SVG failure с HTML B, stale/same identity focus и safe-read controls при collapse. Независимый Tester подтверждает своё evidence отдельно. Другие части планирования могут продолжаться.
+## DEV-FIND-WHEEL-003. Читаемость 16 точек на 360 px не доказана
 
-## DEV-FIND-WHEEL-003. Читаемость 16 точек на 360 px ещё не доказана
+**Type:** feasibility / estimate uncertainty внутри существующих DP-O-011/012/013. **Владелец исследования:** Developer; Tester — проверяемость, Owner — наблюдаемый предел / fallback. **Состояние:** открытый технический риск; новых Owner решений о плотности нет.
 
-**Type:** feasibility / estimate uncertainty внутри уже открытых DP-O-011/013; не новая продуктовая развилка. **Владелец исследования:** Developer; Tester оценивает testability, Owner принимает требуемый fallback. **Зависит:** DEV-WHEEL-01/02; closure evidence отсутствует.
+### Исходное evidence TASK-D-001
 
-**Где:** [AS-WHEEL-09/10/16/23](../analyst/scenarios.md), F3/F3-max; DP-O-011; [DOM port](../../../../../tests/ui/fixtures/dom.mjs) поддерживает wiring, но не createElementNS, реальный bbox / шрифт / viewport layout. Точные counts F0/F1 сверяются документальной проверкой, не доказывают доступность графики.
+[AS-WHEEL-09/10](../analyst/scenarios.md) задают F3 с пятью retrograde points через 0° и F3-max с 16 IDs; [DOM port](../../../../../tests/ui/fixtures/dom.mjs) не измеряет реальный bbox / шрифт / SVG focus / viewport. Числа 359,70 / 359,85 / 0 / 0,15 / 0,30 могут пройти numeric / fake DOM checks при фактическом наложении glyph+R / ☌ и недоступных pointer targets. Полное исходное evidence — @ 04be207.
 
-**Контрпример:** координаты 359,70 / 359,85 / 0 / 0,15 / 0,30 проходят numeric tests и fake DOM, но пять glyph с R и несколько ☌ могут пересекаться либо иметь недостижимые pointer targets в реальном браузере. Знаки долготы при этом верны, а UI всё ещё непригоден.
+### Повторная сверка TASK-D-002
 
-**Вопросы:** какой критерий непересечения относится к glyph+R / ☌ / углам и hit targets; какие пределы допускает компактная композиция и что показывать, если контролируемый F3-max не помещается? Конкретный алгоритм выбирает Developer после наблюдений; молчаливое скрытие точек, пересечение по умолчанию или уменьшение шрифта без предела не считаются решением Owner.
+V3 уточнил default без разноса, минимальное смещение только конфликтов, выноски только при сдвиге, циклический порядок, подпись категории ☌ и усиленный контур только символа. Численные collision / minimality / hit bounds, предел / fallback, palette / контраст и измеренное размещение нескольких ☌ остаются открытыми. Оформление ☌ больше не называется непринятым; его физическая читаемость по-прежнему не проверена.
 
-**Следующее действие:** назначенный spike до 0,75 чд по плану. Сначала зафиксировать проверяемые критерии с Analyst/Tester; сравнить истинные положения / разнос конфликтов, циклический 0°, порядок, линии к истинным отметкам, клавиатуру и доступность на 1440/768/360. Сохранить результаты, не подгонять engine golden под layout. Если критерий не выполнен, вернуть Owner различающие варианты и переоценить.
+**Следующее действие:** отдельно назначить spike до 0,75 чд по [плану](implementation_plan.md#предлагаемое-отдельное-задание-spike). Данные — sparse/F1/F3/F3-max; viewports 1440/768/360, настоящий шрифт / glyph / R / подписи / контур / близкие углы и keyboard. До объявления успеха согласовать критерий с Analyst / Tester. По timebox остановиться, передать counterexample / варианты Owner и пересмотреть estimate; не скрывать точки и не подгонять golden.
 
-**Влияние:** основная причина низкой уверенности диапазона и расхождения с roadmap 5 чд; новых dependency или архитектурных сервисов само по себе не требует. Не блокирует чтение кода / условный план.
-
-**Closure condition:** размеры и screenshots настоящего SVG/шрифта для F1/F3/F3-max, согласованная граница fallback, technical recommendation DP-O-011/013 и обновлённый estimate; повторяемые numeric / browser checks по утверждённому expected result. Одного вывода модели или успешного Node test недостаточно.
+**Closure condition:** воспроизводимые реальные размеры / screenshots и критерий→actual, согласованный предел / fallback, technical recommendation DP-O-011/012/013, обновлённый estimate и назначенные независимые checks. Сейчас нет ни измерений, ни ADR, ни runtime / browser PASS. Поэтому 8–12 чд сохраняются предварительными, upper bound условен; отдельный spike в этой документальной задаче не выполнялся.

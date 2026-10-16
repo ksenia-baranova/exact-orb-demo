@@ -1,24 +1,27 @@
 {
-  "package": "developer-consultation-v1",
+  "package": "developer-consultation-v2",
   "author": "Codex / Developer",
-  "task_id": "TASK-D-001",
-  "input_sha": "2b846077b317e33dd892565419942c4db8517b1e",
+  "task_id": "TASK-D-002",
+  "date": "2026-10-16",
+  "input_sha": "543b7ec726ee96c951dc0abbf1067ca6ad47a1ba",
+  "analyst_package_sha": "2634b224894b1046113557bfe241f0a5f2d46f8c",
   "main_baseline": "535551026af6eedaf2a0aa5c0daa96fa94655ec1",
-  "hash_basis": "UTF-8 LF local payload bytes; manifest excludes itself",
-  "files": {
-    "developer_artifact.md": "a670790e8c3c1d32ab1406a72640216f8a188aa6c58368db8c8f32a996eab81f",
-    "developer/checks.md": "eca2a1566087e2d6eb7f462587c95d3e1ec04abda66e36f375262c68586eb976",
-    "developer/decision_input.patch": "ea5f0f22903b3f29423641e0ff6cb63ec4177f3530f4d041a7168bf9f8e1b4c6",
-    "developer/findings.md": "56d833d7d8f50ae1082081b4a4c69f4ccc52428b81f114bb642bb38bd83b3f65",
-    "developer/implementation_plan.md": "7622884debcb883b4ddca3c5690086390c7a556255eedc389196cb2f7bde6389",
-    "developer/prompts/01-renderer-decisions-and-spike.md": "79a8382f439237855e5dbbd2699754da8ef6dd8674057a99c58e2adcd2e7f7fe",
-    "developer/prompts/02-svg-renderer.md": "561e0b2534be45c3daecadcddf93a70204c6ce40993d654ac4c8c1fa34df95ca",
-    "developer/prompts/03-selection-and-tables.md": "e7f690755aa2ab634729d3c556011a515a81b0bcebd805ab35ebed55e398e23b",
-    "developer/prompts/04-page-form-and-recovery.md": "33d5112c198768b0ee09aecd0c3a3b2c11aaab96fa0ed3a3e3e74a9ffa40ea9a"
-  },
+  "previous_package_sha": "04be207627de1049deac2e069574e01b62536607",
+  "hash_basis": "UTF-8 file bytes with CRLF normalized to LF; manifest excludes itself",
   "publication": {
     "source_ref": "origin/dev/ui-chart-wheel",
-    "commit_resolver": "git log -1 --diff-filter=A --format=%H -- docs/project_management/change_plans/ui-chart-wheel/developer_artifact.md",
-    "evidence": "Actual commit and remote SHA are reported after successful push; input_sha is unchanged."
+    "resolver": "git log --reverse --format=%H -G '^## Повторная консультация TASK-D-002$' origin/dev/ui-chart-wheel -- docs/project_management/change_plans/ui-chart-wheel/developer_artifact.md | Select-Object -First 1",
+    "evidence": "Owner explicitly authorized commit/push of consultation v2. Publication SHA is resolved by the stored resolver; actual remote parity is reported after successful push."
+  },
+  "files": {
+    "developer_artifact.md": "d03de08ede3478923000aa849470580c38d113714dc5901174e070a94111a390",
+    "developer/implementation_plan.md": "a63474dfab606f3f213362e07642603cdde63025bd32a5277d27929c3ffc83b2",
+    "developer/findings.md": "8328344f1fe74bd2d8520e7ac871c29dce03132c2576532c9dfd65f5b5460de2",
+    "developer/checks.md": "279f5e3cc09bd26d9d930c90c382d667e2f05a982609d085f3f0ddb5b7d9d04c",
+    "developer/decision_input.patch": "2465ca8a257bc07bb76a159f0b38853f2dfcc76d4b19f96a16f21aa859150fcd",
+    "developer/prompts/01-renderer-decisions-and-spike.md": "8505896cc52b2de92a675e8d68216061955781a1bd2de71df7b7e45d2e9c2d62",
+    "developer/prompts/02-svg-renderer.md": "50d1378802afeb6dd7be8dc1c6946b4be2bcbfc5d688c80b720596cb68600fb5",
+    "developer/prompts/03-selection-and-tables.md": "6cffea3214032e7bfff7ad832e3a3fa3df4aef4528c217031a559a59864757cd",
+    "developer/prompts/04-page-form-and-recovery.md": "59caf07d6454b04885d1c87863882b500635ed778d4d5f86af1d374e4902e024"
   }
 }
