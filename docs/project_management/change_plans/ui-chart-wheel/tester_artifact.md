@@ -43,3 +43,76 @@ Consultation v1 / TASK-T-001 опубликована на `9dd8b96fe25f6644b782
 Owner, 2026-10-16, после получения обновлённых документов отдельно поручил: «Выполни комит и пуш в ветку test». Разрешена атомарная публикация девяти файлов Tester в `test/ui-chart-wheel`; PR не поручен. Результат review / исходный InputSHA не меняются, чужие артефакты / код / tests не входят в commit.
 
 SourceRef: `origin/test/ui-chart-wheel`. Точный publication commit v2 — первый commit, добавивший заголовок этого раздела. После публикации: `git log --reverse --format=%H -G '^## Публикация v2' -- docs/project_management/change_plans/ui-chart-wheel/tester_artifact.md` (первая строка). Push подтверждается совпадением локального SHA с `git ls-remote --heads origin refs/heads/test/ui-chart-wheel`; результат сообщается Owner после выполнения. `review.json` / `validation.txt` сохраняют evidence проверок перед публикацией и не становятся runtime test run на publication commit. Formal review / регистрация задания и версии остаются отдельными действиями Manager / назначенных reviewers.
+
+## TASK-T-003 — оценка review до согласования сроков
+
+**Автор / подпись:** Codex / Tester, 2026-10-17. **Версия записи:** estimate v1, локально, без публикационного commit. Это отдельная оценка нового задания; handoff TASK-T-002 и его evidence выше сохранены.
+
+**Назначение:** [Manager, §§2.9–2.10 / реестр DP](manager_artifact.md) @ `f0a58a544d358585c0a6dcee2b58bbe91fc84ff8`; результат оценивает Codex / Change Manager по полноте, версиям и проверяемости. По явному поручению Owner сейчас разрешены обновление ветки и оценка. STARTED для TASK-T-003 не объявлен, содержательное review Developer v2 не выполнялось. В сводке Manager TASK-T-003 = NOT_STARTED; эта запись не меняет lifecycle.
+
+### Вход, рабочее дерево и сохранение изменений
+
+Worktree: `C:\Users\KateUser\.codex\worktrees\ui-chart-wheel-test\exact-orb-recovered`; ветка `test/ui-chart-wheel`. До обновления HEAD был `7e95c0f680cc790fc8b45d9e25d69cc6e94fbc12`. Единственная локальная правка — прежняя регистрация TASK-T-002 в `manager_artifact.md` (24 добавления / 10 удалений); index пуст, untracked отсутствовали.
+
+Эта правка сохранена отдельно: stash `0c2eb3ba6e9b6d191830da6a0d1c132a34762679`, имя `preserve/test-ui-chart-wheel-before-TASK-T-003-2026-10-17`, родитель `7e95c0f680cc790fc8b45d9e25d69cc6e94fbc12`. Stash содержит только прежнюю Manager-правку; существовавший stash `d936068b2806107cbe21499538b4f038780cc7fb` сохранён. Старую правку поверх опубликованной актуальной Manager-сводки не применял; сохранённый stash не является частью нового задания.
+
+После fetch выполнен fast-forward без reset / force и без нового merge commit. Полученный HEAD — `f0a58a544d358585c0a6dcee2b58bbe91fc84ff8`; `HEAD...origin/change/ui-chart-wheel = 0 0`. Сразу после интеграции index и рабочее дерево чистые. После этой записи изменён только `tester_artifact.md`. `origin/test/ui-chart-wheel` после fetch остаётся на `7e95c0f680cc790fc8b45d9e25d69cc6e94fbc12`; push не выполнялся.
+
+| Назначение версии | Точный SHA / применение |
+|---|---|
+| Опубликованное задание / актуальный Manager / HEAD подготовки | `f0a58a544d358585c0a6dcee2b58bbe91fc84ff8` |
+| Исторический общий ReviewInputSHA TASK-T-003 | `3da42d64a736cecd9996d57cc4d39e814908fcf4`; сохраняется при более позднем HEAD |
+| Закреплённый предмет будущего review — Developer consultation v2 | `f9c70f75ea815b2f3bf7e01426ee5afe65b31606`; `developer/implementation_plan.md` и `developer/decision_input.patch` |
+| Контракт сопоставления — Analyst v3 | `2634b224894b1046113557bfe241f0a5f2d46f8c` |
+| Сохранённый результат TASK-T-002 / Tester consultation v2 | `7e95c0f680cc790fc8b45d9e25d69cc6e94fbc12`; прежний InputSHA `543b7ec726ee96c951dc0abbf1067ca6ad47a1ba` остаётся историческим |
+| Нормативный MainBaseline по Manager | `535551026af6eedaf2a0aa5c0daa96fa94655ec1`; новый runtime-кандидат не назначен |
+
+Все пять закреплённых commits задания / ReviewInputSHA / D v2 / A v3 / T v2 доступны и являются предками полученного HEAD. Версионная сверка через `git diff --exit-code --quiet` дала exit 0 для двух предметных файлов Developer, полного пакета Analyst и прежнего пакета Tester относительно их исходных SHA. Это проверка идентичности входов, без заключения о содержательной корректности Developer v2. Основные файлы Developer: 118 и 13 строк соответственно; содержательная сверка отложена до согласования сроков.
+
+Прочитаны AGENTS.md, Tester skill, process.md, правила ownership / evidence метода, Tester role / шаблон, актуальное назначение §§2.9–2.10 и реестр DP. DP-O-010…013 и TEST-FIND-WHEEL-002 сохраняют открытые измерительные / технические условия согласно опубликованным источникам; новая оценка их не закрывает.
+
+### Новая оценка именно TASK-T-003
+
+**Трудоёмкость будущего документального review:** **3–4 рабочих часа** (`0,375–0,5 чд` при 8 часах в чд). **Уверенность:** средняя. Подготовка ветки и эта предварительная оценка уже выполнены и в будущий диапазон не включены. Прежние оценки консультации и независимого тестирования не используются.
+
+| Работа после согласования сроков | Трудоёмкость |
+|---|---|
+| Адресно сопоставить пять направлений задания с Analyst v3 / принятыми DP: renderer / failure isolation; aspect key / uniqueness / canonical order / reconciliation; reset по причине принятия / expansion / snapshot collapse; keyboard / focus / recovery; состав измерительного SVG-spike | 1,5–2 ч |
+| Для существенных утверждений описать oracle, данные, независимый positive control, недостающее evidence, владельца gap и влияние на testability / оценку | 0,75–1 ч |
+| Оформить подписанный результат TASK-T-003, явное подтверждение либо возврат с условием повторной передачи, handoff Manager и документальные проверки | 0,75–1 ч |
+
+Допущения: один проход по закреплённым D v2 / A v3 без смены scope; локальные источники доступны; проверяется планируемая наблюдаемость, без исполнения spike / browser / runtime. Уточнение собственного Tester-материала входит только при необходимости для этого review. Реализация, подбор численных пределов, новые решения Owner, устранение Developer gaps, ожидание ответов и повторное review исправленного пакета не включены. При новом SHA или расширении предмета потребуется адресная переоценка. Обнаруженное отсутствие evidence допускает мотивированный возврат, а не выдуманное подтверждение.
+
+### Предложение сроков для согласования
+
+Все значения ниже — предложение Tester для TASK-T-003, пока не согласованы и не запускают задание:
+
+- **Исполнение:** результат в пределах 4 рабочих часов после согласованного старта T0; возможно завершить в день старта при выделенном непрерывном четырёхчасовом рабочем интервале. Календарные T0 / deadline фиксирует Manager при согласовании.
+- **Ответ reviewer:** предложено до 1 рабочего дня после передачи точной версии Manager.
+- **Эскалация:** предложено Manager → Owner через 1 рабочий день просрочки согласованного срока ответа; заместитель не назначен. Контроль сроков остаётся у Manager, автоматизация не создаётся.
+
+**Условие следующего шага:** Manager / Owner явно согласует срок исполнения, срок ответа и эскалации. Только после этого Tester подтверждает STARTED и выполняет содержательное review закреплённого Developer v2. Эта оценка — материал для согласования; verdict по Developer v2 и готовый review-handoff ещё отсутствуют.
+
+### Фактические проверки подготовки
+
+Команды выполнены в указанном Tester worktree; статическая сверка файлов не является runtime-проверкой:
+
+- `git status --short --untracked-files=all`, `git diff --cached --name-only`, `git diff --numstat` — до интеграции одна незакоммиченная Manager-правка, index пуст.
+- `git fetch origin change/ui-chart-wheel test/ui-chart-wheel` — exit 0; обе remote-tracking refs получены.
+- `git cat-file -t f0a58a544d358585c0a6dcee2b58bbe91fc84ff8` — `commit`; `git merge-base --is-ancestor f0a58a544d358585c0a6dcee2b58bbe91fc84ff8 origin/change/ui-chart-wheel` — exit 0.
+- `git stash push -m 'preserve/test-ui-chart-wheel-before-TASK-T-003-2026-10-17' -- docs/project_management/change_plans/ui-chart-wheel/manager_artifact.md` — exit 0; stash SHA приведён выше; после сохранения рабочее дерево чистое.
+- `git merge --ff-only origin/change/ui-chart-wheel` — exit 0, fast-forward `7e95c0f → f0a58a5`.
+- `git branch --show-current`, `git rev-parse HEAD`, `git rev-list --left-right --count HEAD...origin/change/ui-chart-wheel` — `test/ui-chart-wheel`, полный HEAD выше, `0 0`.
+- `git show -s --format='%H %s' <закреплённый SHA>` и `git merge-base --is-ancestor <закреплённый SHA> HEAD` — выполнены для всех пяти SHA из таблицы, exit 0.
+- `git diff --exit-code --quiet f9c70f75ea815b2f3bf7e01426ee5afe65b31606 HEAD -- docs/project_management/change_plans/ui-chart-wheel/developer/implementation_plan.md docs/project_management/change_plans/ui-chart-wheel/developer/decision_input.patch` — exit 0.
+- `git diff --exit-code --quiet 2634b224894b1046113557bfe241f0a5f2d46f8c HEAD -- docs/project_management/change_plans/ui-chart-wheel/analyst docs/project_management/change_plans/ui-chart-wheel/analyst_artifact.md` — exit 0.
+- `git diff --exit-code --quiet 7e95c0f680cc790fc8b45d9e25d69cc6e94fbc12 HEAD -- docs/project_management/change_plans/ui-chart-wheel/tester docs/project_management/change_plans/ui-chart-wheel/tester_artifact.md` — exit 0 **до добавления этой записи**.
+- `git diff --check` и `python -X utf8 -` (скрипт проверки scope, неизменности прежнего индекса / evidence и локальных ссылок передан через stdin) — итоговая проверка после записи: exit 0, `TASK_T003_ESTIMATE_DOC_OK`.
+
+Содержательное review Developer v2, pytest, Node tests, browser / HTTPS, SVG measurements и рендер диаграмм не выполнялись. Старые evidence TASK-T-002 не переписывались и не считаются новым прогоном. Production, requirements, чужие артефакты, Manager-сводка и решения Owner не редактировались. Commit / push / PR не выполнялись; runtime PASS / DONE / gates не объявляются.
+
+### Публикация оценки TASK-T-003
+
+Owner отдельным поручением «Комит пуш в ветку test» разрешил commit / push оценки в `test/ui-chart-wheel`. Публикуется только этот Tester-индекс; прежние отметки «локально» / «commit / push не выполнялись» выше относятся к снимку подготовки до этого поручения. Сроки не согласованы этим поручением; STARTED и содержательное review не объявляются.
+
+Точная публикационная версия — commit, впервые добавивший заголовок этого подраздела: `git log --reverse --format=%H -G '^### Публикация оценки TASK-T-003$' -- docs/project_management/change_plans/ui-chart-wheel/tester_artifact.md` (первая строка). Успешный push подтверждается совпадением этого SHA с `git ls-remote --heads origin refs/heads/test/ui-chart-wheel`; результат сообщается Owner после выполнения. Проверки перед публикацией: `git diff --check` / `git diff --cached --check` и `TASK_T003_ESTIMATE_DOC_OK`. Статусы Manager, исходный ReviewInputSHA и закреплённые предметы review сохраняются; PR не поручен.
