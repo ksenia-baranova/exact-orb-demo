@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="940" viewBox="0 0 1440 940" role="img" aria-labelledby="title desc">
+<title id="title">ui-chart-wheel — Gantt: факт до G1 и оценки ролей</title>
+<desc id="desc">Календарный период до регистрации G1: 13–17 октября 2026. Наблюдаемое окно Analyst заканчивается публикацией v3 16 октября. Фактические человеко-дни не измерены. Будущие оценки: Developer 8–12 чд, Tester 3–5 чд, условная последовательная цепочка 11–17 рабочих дней без календарной даты старта.</desc>
+<style>text{font-family:"Segoe UI","DejaVu Sans",sans-serif;fill:#172536} .muted{fill:#586879} .small{font-size:16px} .label{font-size:18px} .section{font-size:23px;font-weight:650} .grid{stroke:#dce4ec;stroke-width:1} .estimate{stroke:#215dc2;stroke-dasharray:6 4;stroke-width:2}</style>
+<rect width="1440" height="940" fill="#f1f5f9"/>
+<text x="40" y="48" font-size="30" font-weight="700">M1-8 · ui-chart-wheel</text>
+<text x="40" y="79" font-size="19" style="fill:#586879">Факт до G1 и оценочный Gantt оставшегося объёма · срез 17 октября 2026</text>
+<rect x="28.00" y="104.00" width="1384.00" height="332.00" rx="6" fill="#ffffff"/>
+<text x="50" y="139" font-size="23" font-weight="650">ФАКТ · календарные даты до зарегистрированного G1</text>
+<text x="50" y="167" font-size="17" style="fill:#586879">13–17 октября: 4 дня между датами; 5 календарных дат включительно. Точность — день.</text>
+<line x1="435.00" y1="185.00" x2="435.00" y2="361.00" stroke="#dce4ec"/>
+<text x="435.0" y="384" font-size="16" style="fill:#586879" text-anchor="middle">13.10</text>
+<line x1="657.50" y1="185.00" x2="657.50" y2="361.00" stroke="#dce4ec"/>
+<text x="657.5" y="384" font-size="16" style="fill:#586879" text-anchor="middle">14.10</text>
+<line x1="880.00" y1="185.00" x2="880.00" y2="361.00" stroke="#dce4ec"/>
+<text x="880.0" y="384" font-size="16" style="fill:#586879" text-anchor="middle">15.10</text>
+<line x1="1102.50" y1="185.00" x2="1102.50" y2="361.00" stroke="#dce4ec"/>
+<text x="1102.5" y="384" font-size="16" style="fill:#586879" text-anchor="middle">16.10</text>
+<line x1="1325.00" y1="185.00" x2="1325.00" y2="361.00" stroke="#dce4ec"/>
+<text x="1325.0" y="384" font-size="16" style="fill:#586879" text-anchor="middle">17.10</text>
+<text x="50" y="224" font-size="18">Период Manager + Analyst до G1</text>
+<rect x="435.00" y="199.00" width="890.00" height="38.00" rx="6" fill="#215dc2"/>
+<text x="449.0" y="224" font-size="17" style="fill:#ffffff" font-weight="600">4 календарных дня между датами</text>
+<path d="M1325.00,209 l9,9 l-9,9 l-9,-9 z" fill="#215dc2"/>
+<text x="50" y="280" font-size="18">Manager · координация / регистрация</text>
+<rect x="435.00" y="255.00" width="890.00" height="38.00" rx="6" fill="#506681"/>
+<text x="449.0" y="280" font-size="17" style="fill:#ffffff" font-weight="600">13–17 октября</text>
+<path d="M1325.00,265 l9,9 l-9,9 l-9,-9 z" fill="#506681"/>
+<text x="50" y="336" font-size="18">Analyst · до публикации v3</text>
+<rect x="435.00" y="311.00" width="667.50" height="38.00" rx="6" fill="#b37415"/>
+<text x="449.0" y="336" font-size="17" style="fill:#ffffff" font-weight="600">13–16 октября</text>
+<path d="M1102.50,321 l9,9 l-9,9 l-9,-9 z" fill="#b37415"/>
+<text x="1341.0" y="224" font-size="17" style="fill:#215dc2" font-weight="700">G1</text>
+<text x="1118.5" y="337" font-size="16" style="fill:#8c5b11">v3 · 00:01 MSK</text>
+<text x="50" y="414" font-size="17" style="fill:#586879">Окна ролей перекрываются. Часы / фактические чд Manager и Analyst отдельно не учитывались.</text>
+<rect x="28.00" y="456.00" width="1384.00" height="354.00" rx="6" fill="#ffffff"/>
+<text x="50" y="492" font-size="23" font-weight="650">ОЦЕНКИ РОЛЕЙ · условные рабочие дни оставшейся цепочки</text>
+<text x="50" y="520" font-size="17" style="fill:#586879">День 0 — начало оставшегося Developer-объёма. Календарная дата старта не назначена.</text>
+<line x1="435.00" y1="536.00" x2="435.00" y2="750.00" stroke="#dce4ec"/>
+<text x="435.0" y="778" font-size="16" style="fill:#586879" text-anchor="middle">0</text>
+<line x1="644.41" y1="536.00" x2="644.41" y2="750.00" stroke="#dce4ec"/>
+<text x="644.4117647058823" y="778" font-size="16" style="fill:#586879" text-anchor="middle">4</text>
+<line x1="853.82" y1="536.00" x2="853.82" y2="750.00" stroke="#dce4ec"/>
+<text x="853.8235294117646" y="778" font-size="16" style="fill:#586879" text-anchor="middle">8</text>
+<line x1="1010.88" y1="536.00" x2="1010.88" y2="750.00" stroke="#dce4ec"/>
+<text x="1010.8823529411765" y="778" font-size="16" style="fill:#586879" text-anchor="middle">11</text>
+<line x1="1063.24" y1="536.00" x2="1063.24" y2="750.00" stroke="#dce4ec"/>
+<text x="1063.235294117647" y="778" font-size="16" style="fill:#586879" text-anchor="middle">12</text>
+<line x1="1325.00" y1="536.00" x2="1325.00" y2="750.00" stroke="#dce4ec"/>
+<text x="1325.0" y="778" font-size="16" style="fill:#586879" text-anchor="middle">17</text>
+<text x="50" y="573" font-size="18">Нижний сценарий · Developer</text>
+<rect x="435.00" y="548.00" width="418.82" height="36.00" rx="6" fill="#e6efff" stroke="#215dc2" stroke-width="2" stroke-dasharray="6 4"/>
+<text x="644.4117647058823" y="572" font-size="16" style="fill:#215dc2" font-weight="650" text-anchor="middle">Developer · 8 чд</text>
+<text x="50" y="623" font-size="18">Нижний сценарий · Tester</text>
+<rect x="853.82" y="598.00" width="157.06" height="36.00" rx="6" fill="#e1f2ec" stroke="#16795d" stroke-width="2" stroke-dasharray="6 4"/>
+<text x="932.3529411764705" y="622" font-size="16" style="fill:#16795d" font-weight="650" text-anchor="middle">Tester · 3 чд</text>
+<text x="50" y="689" font-size="18">Верхний сценарий · Developer</text>
+<rect x="435.00" y="664.00" width="628.24" height="36.00" rx="6" fill="#e6efff" stroke="#215dc2" stroke-width="2" stroke-dasharray="6 4"/>
+<text x="749.1176470588235" y="688" font-size="16" style="fill:#215dc2" font-weight="650" text-anchor="middle">Developer · 12 чд</text>
+<text x="50" y="739" font-size="18">Верхний сценарий · Tester</text>
+<rect x="1063.24" y="714.00" width="261.76" height="36.00" rx="6" fill="#e1f2ec" stroke="#16795d" stroke-width="2" stroke-dasharray="6 4"/>
+<text x="1194.1176470588234" y="738" font-size="16" style="fill:#16795d" font-weight="650" text-anchor="middle">Tester · 5 чд</text>
+<line x1="853.82" y1="584.00" x2="853.82" y2="598.00" stroke="#738297" stroke-dasharray="5 4"/>
+<line x1="1063.24" y1="700.00" x2="1063.24" y2="714.00" stroke="#738297" stroke-dasharray="5 4"/>
+<text x="1024.8823529411766" y="623" font-size="16" style="fill:#16795d" font-weight="650">Σ 11</text>
+<text x="1339.0" y="739" font-size="16" style="fill:#16795d" font-weight="650">Σ 17</text>
+<text x="50" y="846" font-size="17">Developer 8–12 чд включает подготовку / ADR / spike до 0,75 чд; время spike не прибавляется повторно.</text>
+<text x="50" y="875" font-size="17">Реализация — после G3; тестирование — после G4. Верхняя оценка Developer условна до измерений.</text>
+<text x="50" y="904" font-size="16" style="fill:#586879">Не включены Manager / Analyst / Technical Reviewer, ожидания, дополнительные reviews, приёмка и чистовой перенос.</text>
+<metadata>{&quot;timezone&quot;: &quot;Europe/Moscow&quot;, &quot;calendar_actual&quot;: {&quot;start&quot;: &quot;2026-10-13&quot;, &quot;g1_registration&quot;: &quot;2026-10-17&quot;, &quot;analyst_v3_publication&quot;: &quot;2026-10-16&quot;, &quot;date_difference_days&quot;: 4, &quot;inclusive_dates&quot;: 5}, &quot;actual_person_days&quot;: null, &quot;role_estimates&quot;: {&quot;developer_person_days&quot;: [8, 12], &quot;tester_person_days&quot;: [3, 5], &quot;serial_scenarios&quot;: [11, 17], &quot;calendar_start&quot;: null, &quot;developer_includes_pre_g3_preparation&quot;: true}, &quot;sources&quot;: {&quot;manager_start&quot;: &quot;427658aaff74f21585196c8d3f95a926b81828b6&quot;, &quot;analyst_first&quot;: &quot;683bdd0c1f5a0e65735f4e48127d408300ec697c&quot;, &quot;analyst_v3&quot;: &quot;2634b224894b1046113557bfe241f0a5f2d46f8c&quot;, &quot;developer_estimate&quot;: &quot;f9c70f75ea815b2f3bf7e01426ee5afe65b31606&quot;, &quot;tester_estimate&quot;: &quot;7e95c0f680cc790fc8b45d9e25d69cc6e94fbc12&quot;}}</metadata>
+</svg>
