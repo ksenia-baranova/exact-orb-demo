@@ -116,3 +116,33 @@ Worktree: `C:\Users\KateUser\.codex\worktrees\ui-chart-wheel-test\exact-orb-reco
 Owner отдельным поручением «Комит пуш в ветку test» разрешил commit / push оценки в `test/ui-chart-wheel`. Публикуется только этот Tester-индекс; прежние отметки «локально» / «commit / push не выполнялись» выше относятся к снимку подготовки до этого поручения. Сроки не согласованы этим поручением; STARTED и содержательное review не объявляются.
 
 Точная публикационная версия — commit, впервые добавивший заголовок этого подраздела: `git log --reverse --format=%H -G '^### Публикация оценки TASK-T-003$' -- docs/project_management/change_plans/ui-chart-wheel/tester_artifact.md` (первая строка). Успешный push подтверждается совпадением этого SHA с `git ls-remote --heads origin refs/heads/test/ui-chart-wheel`; результат сообщается Owner после выполнения. Проверки перед публикацией: `git diff --check` / `git diff --cached --check` и `TASK_T003_ESTIMATE_DOC_OK`. Статусы Manager, исходный ReviewInputSHA и закреплённые предметы review сохраняются; PR не поручен.
+
+## TASK-T-003 — review Developer consultation v2
+
+**Автор / подпись:** Codex / Tester. **STARTED:** 2026-10-17 13:36:48 MSK (10:36:48 UTC). Owner в текущем чате подтвердил «Сроки согласованы» после публикации estimate v1 @ `26b11e84884c50b6e70c62dbefaef9f90c18c827`. Подтверждаю начало разрешённого документального review.
+
+**Согласованные условия:** трудоёмкость 3–4 рабочих часа; результат в пределах 4 рабочих часов от T0; ответ Manager до 1 рабочего дня после передачи точной версии; эскалация Manager → Owner через 1 рабочий день просрочки ответа. T0 — указанная отметка STARTED; при непрерывном согласованном рабочем интервале верхняя граница — 2026-10-17 17:36:48 MSK. Контроль и регистрация сроков остаются у Manager; отдельной автоматизации нет.
+
+**Версии и дерево на старте:** `test/ui-chart-wheel` / `C:\Users\KateUser\.codex\worktrees\ui-chart-wheel-test\exact-orb-recovered`, HEAD / опубликованная оценка `26b11e84884c50b6e70c62dbefaef9f90c18c827`; после fetch index / рабочее дерево чистые. `origin/change/ui-chart-wheel = f0a58a544d358585c0a6dcee2b58bbe91fc84ff8`; `origin/test/ui-chart-wheel = 26b11e84884c50b6e70c62dbefaef9f90c18c827`. Сохранённые stash `0c2eb3ba6e9b6d191830da6a0d1c132a34762679` / `d936068b2806107cbe21499538b4f038780cc7fb` не применяются.
+
+**Предмет / основание:** [Manager §§2.9–2.10 / DP](manager_artifact.md) @ `f0a58a544d358585c0a6dcee2b58bbe91fc84ff8`. Исторический ReviewInputSHA `3da42d64a736cecd9996d57cc4d39e814908fcf4` сохраняется; предмет Developer consultation v2 `f9c70f75ea815b2f3bf7e01426ee5afe65b31606`, контракт Analyst v3 `2634b224894b1046113557bfe241f0a5f2d46f8c`, нормативный MainBaseline `535551026af6eedaf2a0aa5c0daa96fa94655ec1`. Более поздний HEAD эти предметы не заменяет.
+
+**Граница события:** это авторский STARTED Tester; Manager-сводка не редактируется. Предыдущие абзацы оценки о не начатом review — исторический снимок до согласования. Handoff / evidence TASK-T-002 сохранены. Итог review готовится; runtime PASS, DONE и gates не объявляются. Commit / push / PR результата не разрешены предыдущей публикацией одной оценки и не выполняются.
+
+### Результат и handoff TASK-T-003
+
+**Автор / подпись:** Codex / Tester, 2026-10-17. **Вывод:** подтверждаю наблюдаемость и проверяемость предложений Developer v2 @ `f9c70f75ea815b2f3bf7e01426ee5afe65b31606` относительно Analyst v3 @ `2634b224894b1046113557bfe241f0a5f2d46f8c` в предмете Tester. Возврат consultation v2 не требуется. [Подробное review](tester/task_t003_review.md) содержит пять направлений, oracle / данные / независимые positive controls и недостающее evidence; [снимок входов / проверок](tester/evidence/task_t003_review.json) отделён от evidence TASK-T-002.
+
+**Версии:** исторический ReviewInputSHA `3da42d64a736cecd9996d57cc4d39e814908fcf4`, назначение / DP @ `f0a58a544d358585c0a6dcee2b58bbe91fc84ff8`, HEAD начала / опубликованная оценка @ `26b11e84884c50b6e70c62dbefaef9f90c18c827` сохраняются. Новый review не подменяет прежний TASK-T-002 @ `7e95c0f680cc790fc8b45d9e25d69cc6e94fbc12`.
+
+**Остатки / владельцы:** T003-G01 — точный port / local failure / replacement evidence; G02 — доказательство uniqueness / направления key и reconciliation; G03 — одноразовый accepted cause / snapshot seam; G04 — keyboard / focus / recovery policy; G05 — измеримые критерии и actual SVG/font evidence. Ответственный Developer / TASK-D-003; Technical Reviewer / TASK-R-001 — техническая граница, Analyst — смысл при конфликте, Owner — необходимый выбор наблюдаемого предела / fallback. Конкретную реализацию и численные пределы Tester не выбирает.
+
+**Findings / оценка:** TEST-FIND-WHEEL-002 остаётся OPEN. Прежние handoff / closures 001/003 / evidence TASK-T-002 сохранены. Остатки уже отражены условиями v2; нового противоречия scope не найдено. Оценка TASK-T-003 3–4 часа сохраняется; прежние 3–5 чд независимого тестирования здесь заново не утверждаются.
+
+**Проверки:** `python -X utf8 -` — `TASK_T003_INPUT_AUDIT_OK` (42 source hashes; manifests D/A 9/9; 5 DP recommendation cells), финальная документальная сверка — `TASK_T003_REVIEW_DOC_OK`; `git diff --check` / `git diff --cached --check` — exit 0. Точные команды / пределы — в review. Runtime / browser / SVG measurements / PUML render не выполнялись.
+
+**Manager / следующий шаг:** принять опубликованный результат в предмете полноты / версий / traceability; точный TechnicalPackageSHA TASK-D-003 с материалами T003-G01…05 вернуть Tester на адресное review. Точный InputSHA / критерии / полная оценка и сроки технической подготовки согласуются по Manager §2.11. Это авторский результат; сводка Manager / DP не редактируется, DONE / APPROVED / gates не объявляются.
+
+### Публикация review TASK-T-003
+
+Owner отдельно поручил commit и push результата в `test/ui-chart-wheel`. Разрешена публикация только материалов этого review. Точный SourceSHA — commit, впервые добавивший этот заголовок: `git log --reverse --format=%H -G '^### Публикация review TASK-T-003$' -- docs/project_management/change_plans/ui-chart-wheel/tester_artifact.md` (первая строка). Успешный push проверяется совпадением локального SHA с `git ls-remote --heads origin refs/heads/test/ui-chart-wheel` и сообщается Owner после выполнения. PR не поручен. Предыдущая отметка о необходимости отдельного разрешения относится к событию STARTED до этого поручения.

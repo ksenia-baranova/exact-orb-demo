@@ -1,0 +1,333 @@
+{
+  "audit_result": "TASK_T003_INPUT_AUDIT_OK",
+  "pins": {
+    "input_head": "26b11e84884c50b6e70c62dbefaef9f90c18c827",
+    "assignment": "f0a58a544d358585c0a6dcee2b58bbe91fc84ff8",
+    "review_input": "3da42d64a736cecd9996d57cc4d39e814908fcf4",
+    "developer": "f9c70f75ea815b2f3bf7e01426ee5afe65b31606",
+    "analyst": "2634b224894b1046113557bfe241f0a5f2d46f8c",
+    "tester_v2": "7e95c0f680cc790fc8b45d9e25d69cc6e94fbc12",
+    "main_baseline": "535551026af6eedaf2a0aa5c0daa96fa94655ec1"
+  },
+  "developer_manifest": "9/9",
+  "analyst_manifest": "9/9",
+  "dp_patch": "5 recommendation cells only; original base matches; increments registered at assignment SHA",
+  "unchanged_shared_paths": [
+    "src",
+    "tests",
+    "docs/requirements",
+    "docs/sequence_diagrams",
+    "docs/development_approach"
+  ],
+  "sources": [
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/manager_artifact.md",
+      "sha": "f0a58a544d358585c0a6dcee2b58bbe91fc84ff8",
+      "sha256_lf": "545367c6c474f93f67ef080e6e2f73bf09380cddd2f1bded295ea3f778e2f978",
+      "lines": 550
+    },
+    {
+      "path": "AGENTS.md",
+      "sha": "f0a58a544d358585c0a6dcee2b58bbe91fc84ff8",
+      "sha256_lf": "e5737a9b86f96483e7bad691bbfb3e179b00763bcbc62077141b4618d1c37b95",
+      "lines": 89
+    },
+    {
+      "path": "docs/development_approach/skills/tester/SKILL.md",
+      "sha": "f0a58a544d358585c0a6dcee2b58bbe91fc84ff8",
+      "sha256_lf": "0bd3c2c436fce234cc90a1011b3d61db205d9db7eb90766b5f9eb577eb3725dc",
+      "lines": 127
+    },
+    {
+      "path": "docs/development_approach/process/process.md",
+      "sha": "f0a58a544d358585c0a6dcee2b58bbe91fc84ff8",
+      "sha256_lf": "02893a5d14d6e72d4af906155992a7829477902af823146b6f22eac8b1b354ab",
+      "lines": 517
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/implementation_plan.md",
+      "sha": "f9c70f75ea815b2f3bf7e01426ee5afe65b31606",
+      "sha256_lf": "a63474dfab606f3f213362e07642603cdde63025bd32a5277d27929c3ffc83b2",
+      "lines": 118
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/decision_input.patch",
+      "sha": "f9c70f75ea815b2f3bf7e01426ee5afe65b31606",
+      "sha256_lf": "2465ca8a257bc07bb76a159f0b38853f2dfcc76d4b19f96a16f21aa859150fcd",
+      "lines": 13
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/package_manifest.json",
+      "sha": "f9c70f75ea815b2f3bf7e01426ee5afe65b31606",
+      "sha256_lf": "0105a082dda449ed6811a1465c79c7fa31485a352af0575e37214d7a952984ee",
+      "lines": 27
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/prompts/01-renderer-decisions-and-spike.md",
+      "sha": "f9c70f75ea815b2f3bf7e01426ee5afe65b31606",
+      "sha256_lf": "8505896cc52b2de92a675e8d68216061955781a1bd2de71df7b7e45d2e9c2d62",
+      "lines": 34
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/prompts/02-svg-renderer.md",
+      "sha": "f9c70f75ea815b2f3bf7e01426ee5afe65b31606",
+      "sha256_lf": "50d1378802afeb6dd7be8dc1c6946b4be2bcbfc5d688c80b720596cb68600fb5",
+      "lines": 32
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/prompts/03-selection-and-tables.md",
+      "sha": "f9c70f75ea815b2f3bf7e01426ee5afe65b31606",
+      "sha256_lf": "6cffea3214032e7bfff7ad832e3a3fa3df4aef4528c217031a559a59864757cd",
+      "lines": 34
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/prompts/04-page-form-and-recovery.md",
+      "sha": "f9c70f75ea815b2f3bf7e01426ee5afe65b31606",
+      "sha256_lf": "59caf07d6454b04885d1c87863882b500635ed778d4d5f86af1d374e4902e024",
+      "lines": 37
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/analyst/requirements.md",
+      "sha": "2634b224894b1046113557bfe241f0a5f2d46f8c",
+      "sha256_lf": "3cfd3dadba7213465ffbec8da866cefd496905792ec971671bf920b4c2ddd684",
+      "lines": 291
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/analyst/scenarios.md",
+      "sha": "2634b224894b1046113557bfe241f0a5f2d46f8c",
+      "sha256_lf": "b3a7942f9feb76877f43f95f04a33ba44a7931620a5da6226f38991bb797dccd",
+      "lines": 433
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/analyst/sequence_diagrams/ui/001-chart-presentation.puml",
+      "sha": "2634b224894b1046113557bfe241f0a5f2d46f8c",
+      "sha256_lf": "a2062567689495f8a9a4b16bcb9616e7b8ef3d12a7421a44135a721bd25d7116",
+      "lines": 102
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/analyst/sequence_diagrams/ui/002-wheel-table-selection.puml",
+      "sha": "2634b224894b1046113557bfe241f0a5f2d46f8c",
+      "sha256_lf": "af1fb9396708bd728a336edcbe4e37ad6db04fdeba03d12f50483e90e0a915c5",
+      "lines": 86
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/analyst/sequence_diagrams/ui/003-edit-and-recovery.puml",
+      "sha": "2634b224894b1046113557bfe241f0a5f2d46f8c",
+      "sha256_lf": "a7bee13c5502ddde382630affe76c0cfb3ba3c81f9b3c622e40f27f1fbfac610",
+      "lines": 103
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/tester/defects.md",
+      "sha": "7e95c0f680cc790fc8b45d9e25d69cc6e94fbc12",
+      "sha256_lf": "32d3fa0d5fff8506ca0f6460a196874404552fba90ce2c626974d57c63a87767",
+      "lines": 112
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/tester/test_plan.md",
+      "sha": "7e95c0f680cc790fc8b45d9e25d69cc6e94fbc12",
+      "sha256_lf": "93c61b3ef3470b829454996c57da485915fadfb0f5c4c4392cdb6b08f7a7db42",
+      "lines": 104
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/tester/coverage_matrix.md",
+      "sha": "7e95c0f680cc790fc8b45d9e25d69cc6e94fbc12",
+      "sha256_lf": "d27aa2136254e53ddf10d8a2a2cd8383d0a65f66d24107d0d79b3d69274aaac5",
+      "lines": 64
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/tester/evidence/review.json",
+      "sha": "7e95c0f680cc790fc8b45d9e25d69cc6e94fbc12",
+      "sha256_lf": "16efff0b57ea911484852b71b73ff02118c2b4c162751ad5e6daceafba46cbfb",
+      "lines": 167
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/tester/evidence/validation.txt",
+      "sha": "7e95c0f680cc790fc8b45d9e25d69cc6e94fbc12",
+      "sha256_lf": "484dd84fdbd533e4a4a8c11f39f37d3184dbca8dfcd63d0dc451b800d885fd5c",
+      "lines": 46
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/tester/evidence/validate_review.py",
+      "sha": "7e95c0f680cc790fc8b45d9e25d69cc6e94fbc12",
+      "sha256_lf": "f501ac2291c69789349aeb5670f587794d7b0b872413f246221966088c3c85f7",
+      "lines": 197
+    },
+    {
+      "path": "docs/requirements/http_api.md",
+      "sha": "535551026af6eedaf2a0aa5c0daa96fa94655ec1",
+      "sha256_lf": "4e02a9db151b2fe728fef3ca3832c1a78c7dfebded26063053445541d920a55c",
+      "lines": 1157
+    },
+    {
+      "path": "src/exact_orb/http_api/projectors.py",
+      "sha": "535551026af6eedaf2a0aa5c0daa96fa94655ec1",
+      "sha256_lf": "f765a7c6b2417407133c1bc3f45d05c29943fab687817bb477f8c06015125311",
+      "lines": 257
+    },
+    {
+      "path": "src/exact_orb/http_api/dto.py",
+      "sha": "535551026af6eedaf2a0aa5c0daa96fa94655ec1",
+      "sha256_lf": "969ca07adf358b6d77d015a4d47ecc4ea028ee0cffd2427b3cf52c3c7f8d4b15",
+      "lines": 205
+    },
+    {
+      "path": "src/exact_orb/http_api/ui/response.mjs",
+      "sha": "535551026af6eedaf2a0aa5c0daa96fa94655ec1",
+      "sha256_lf": "045770e93485c9f8111c6bd03bf9ce9a16e19d05f5e9624931ae63f84bfcbb8d",
+      "lines": 66
+    },
+    {
+      "path": "src/exact_orb/http_api/ui/session.mjs",
+      "sha": "535551026af6eedaf2a0aa5c0daa96fa94655ec1",
+      "sha256_lf": "0eea63e3b4d0049b0f40f5fdce55fe20a8dc9430eb4cd05d7d0883bd5e895564",
+      "lines": 235
+    },
+    {
+      "path": "src/exact_orb/http_api/ui/recovery.mjs",
+      "sha": "535551026af6eedaf2a0aa5c0daa96fa94655ec1",
+      "sha256_lf": "405eae1bb36ee3387337fa1d34d5af48d7385bbfbc295ea5a9ae391d48d07414",
+      "lines": 48
+    },
+    {
+      "path": "src/exact_orb/http_api/ui/main.mjs",
+      "sha": "535551026af6eedaf2a0aa5c0daa96fa94655ec1",
+      "sha256_lf": "6c9e0abdf933b1394f14279fcb2ac80990700b50cc4b70cc1176cf887fc88e7e",
+      "lines": 257
+    },
+    {
+      "path": "src/exact_orb/http_api/ui/facts.mjs",
+      "sha": "535551026af6eedaf2a0aa5c0daa96fa94655ec1",
+      "sha256_lf": "5cfddc42b430b9d5847d7dd6446975b0a1d358615af98d401ba7cbae29edbc66",
+      "lines": 181
+    },
+    {
+      "path": "src/exact_orb/engine/aspects/finder.py",
+      "sha": "535551026af6eedaf2a0aa5c0daa96fa94655ec1",
+      "sha256_lf": "ac098d7fb1a38c7a5b13e9869a5903d626a604cb12e990c3d0c69948c3d9fb3a",
+      "lines": 157
+    },
+    {
+      "path": "src/exact_orb/engine/aspects/types.py",
+      "sha": "535551026af6eedaf2a0aa5c0daa96fa94655ec1",
+      "sha256_lf": "6c8a410936efb63cfb5c7470980dd74f7eced34015acc81f6fdc15610800bafa",
+      "lines": 228
+    },
+    {
+      "path": "src/exact_orb/engine/charts/natal.py",
+      "sha": "535551026af6eedaf2a0aa5c0daa96fa94655ec1",
+      "sha256_lf": "d8b072df9e51d45a7d62f6ba47894792391274b68df97059171d0ffe894e82be",
+      "lines": 1086
+    },
+    {
+      "path": "src/exact_orb/engine/charts/uncertainty.py",
+      "sha": "535551026af6eedaf2a0aa5c0daa96fa94655ec1",
+      "sha256_lf": "2223bc9f2eb83a5074c75b937680b56618f9533907f3d3c8e72a84d3dde071fa",
+      "lines": 207
+    },
+    {
+      "path": "tests/ui/facts.test.mjs",
+      "sha": "535551026af6eedaf2a0aa5c0daa96fa94655ec1",
+      "sha256_lf": "0e04d5bfac734f8fc8c9f91c42c35bc2415d59c6f133c1e6307128bd23cfa33c",
+      "lines": 325
+    },
+    {
+      "path": "tests/ui/session.test.mjs",
+      "sha": "535551026af6eedaf2a0aa5c0daa96fa94655ec1",
+      "sha256_lf": "653782c7fe284119490a5216ab6257838e62804384db9329e633dceb7bd730bf",
+      "lines": 625
+    },
+    {
+      "path": "tests/ui/recovery.test.mjs",
+      "sha": "535551026af6eedaf2a0aa5c0daa96fa94655ec1",
+      "sha256_lf": "96bbfb7f98f09ff0fc074eaf8fb32ee30684514195704da0671b8b99cf30c8c0",
+      "lines": 472
+    },
+    {
+      "path": "tests/ui/fixtures/dom.mjs",
+      "sha": "535551026af6eedaf2a0aa5c0daa96fa94655ec1",
+      "sha256_lf": "aee6dfc8e3b180e574d5732171884972a0730404fedd898a28c81b072b46004a",
+      "lines": 70
+    },
+    {
+      "path": "tests/ui/fixtures/natal_1985_chart_dto.json",
+      "sha": "535551026af6eedaf2a0aa5c0daa96fa94655ec1",
+      "sha256_lf": "31e125adf755093f489bad9a10b81bc677f811276600df1224a35af0e2db0627",
+      "lines": 594
+    },
+    {
+      "path": "tests/http_api/golden/session_view.json",
+      "sha": "535551026af6eedaf2a0aa5c0daa96fa94655ec1",
+      "sha256_lf": "a2306251cb2f87edf4e2167407c4ff1ed8054f9df97f33e57d32f60b326c5eab",
+      "lines": 69
+    },
+    {
+      "path": "tests/http_api/test_projectors.py",
+      "sha": "535551026af6eedaf2a0aa5c0daa96fa94655ec1",
+      "sha256_lf": "0afb8549da231379c9402e037a6847203afd4929be89160da97dac80d45c630b",
+      "lines": 438
+    },
+    {
+      "path": "tests/test_aspects.py",
+      "sha": "535551026af6eedaf2a0aa5c0daa96fa94655ec1",
+      "sha256_lf": "a6a19c1c8da7dc9175b3080a8c28c9f748daf268a54b8ba086d6cf9ff288072a",
+      "lines": 776
+    }
+  ],
+  "fixture_observations": {
+    "points": 16,
+    "houses": 12,
+    "aspects": 46,
+    "unique_keys": 46,
+    "from_lexically_after_to": 28,
+    "example_nonlexical_key": [
+      "moon",
+      "asc",
+      "square"
+    ],
+    "angle_endpoint_aspects": 15,
+    "categories": {
+      "exact": 9,
+      "working": 20,
+      "background": 17
+    }
+  },
+  "task_id": "TASK-T-003",
+  "author": "Codex / Tester",
+  "date": "2026-10-17",
+  "verdict": "CONFIRMED_IN_TESTER_SCOPE",
+  "runtime_status": "NOT_RUN",
+  "preserved_stash": "0c2eb3ba6e9b6d191830da6a0d1c132a34762679",
+  "allowed_output_paths": [
+    "docs/project_management/change_plans/ui-chart-wheel/tester_artifact.md",
+    "docs/project_management/change_plans/ui-chart-wheel/tester/task_t003_review.md",
+    "docs/project_management/change_plans/ui-chart-wheel/tester/evidence/task_t003_review.json"
+  ],
+  "output_sha256_lf": {
+    "docs/project_management/change_plans/ui-chart-wheel/tester_artifact.md": "2877de8f6b1143b96582656c4ce4185cf60b891fae9e4dd6870dd6778c9da6b4",
+    "docs/project_management/change_plans/ui-chart-wheel/tester/task_t003_review.md": "38b1876314d3904de7814d7915fc8b65a33141a40d54bfc9076e64a6eea013f1"
+  },
+  "document_validation": {
+    "result": "TASK_T003_REVIEW_DOC_OK",
+    "source_files": 42,
+    "old_tester_files": 8,
+    "old_index_prefix": "UNCHANGED",
+    "manager": "UNCHANGED",
+    "stash": "PRESERVED",
+    "local_links": 36,
+    "tables": 5,
+    "status": "PASS_DOCUMENTARY_ONLY",
+    "git_stash_list": "exit 0; checked separately with access to linked-worktree metadata"
+  },
+  "gap_owners": {
+    "T003-G01": "Developer TASK-D-003 / Technical Reviewer TASK-R-001; DP-O-010",
+    "T003-G02": "Developer / Analyst if semantic conflict; DP-O-010/013",
+    "T003-G03": "Developer / Analyst; DP-O-013",
+    "T003-G04": "Developer / Technical Reviewer / Analyst; DP-O-013",
+    "T003-G05": "Developer measurements, Tester evidence review, Analyst + Owner observable limit; DP-O-011/012/013"
+  },
+  "publication": {
+    "authorization": "Owner explicitly instructed commit and push of review to test/ui-chart-wheel",
+    "resolver": "git log --reverse --format=%H -G '^### Публикация review TASK-T-003$' -- docs/project_management/change_plans/ui-chart-wheel/tester_artifact.md",
+    "runtime_pass": false
+  }
+}
