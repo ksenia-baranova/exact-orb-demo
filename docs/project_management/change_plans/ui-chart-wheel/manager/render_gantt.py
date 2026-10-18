@@ -31,6 +31,9 @@ SOURCES = {
     "prestart_tester_review": "71aa21cb79b046d25c77f68c6e87a9e48bd4c7fe",
     "criteria_v2": "f6f289cda25e7f228dff064175805130cc770b63",
     "criteria_v2_integration": "8a05b73c2af2c36043f9ede04834dd3867f4a686",
+    "research_tester_review": "435337f49b200ca308ae9620efa9902adf1677f9",
+    "research_analyst_review": "5de9e66c26496880f714f61f78126972dee4fbdd",
+    "research_input": "7d11c41875fe1fbcfe0d6e72925f1240570c4b83",
 }
 
 def published_date(sha):
@@ -54,7 +57,7 @@ def render():
     xml = [
         '<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="1300" viewBox="0 0 1440 1300" role="img" aria-labelledby="title desc">',
         '<title id="title">ui-chart-wheel — факт, согласованная подготовка и условные оценки</title>',
-        '<desc id="desc">Факт до G1: 13–17 октября 2026, фактические человеко-дни не измерены. Owner-параметры TASK-D-003 2,5–3,5 чд и максимум 6 часов эксперимента внутри сохранены. TASK-D-004 передал критерии v2 на review, CriteriaSHA f6f289c. Оценка Developer 3–4 часа согласована Owner внутри слота критериев / 20–28, фактический расход не измерен. TASK-T-006 и TASK-A-004 ещё не начаты. До положительных адресных подтверждений / решения Manager TASK-D-003 BLOCKED, ResumeStatus NOT_STARTED; T0 отсутствует. Пакет до конца четвёртого рабочего дня от будущего STARTED. Исходные 8–12 / 3–5 не увеличены автоматически.</desc>',
+        '<desc id="desc">Факт до G1: 13–17 октября 2026, фактические человеко-дни не измерены. D004 и положительные T006 / A004 приняты, критерии v2 f6f289c пригодны для ограниченного исследования. Owner прямо разрешил TASK-D-003 без нового предстартового круга; блокировка снята, фактический STARTED / T0 ещё не зарегистрирован. Полный пакет 20–28 ч / 2,5–3,5 чд включая подготовку, весь эксперимент ≤6 ч внутри; handoff до конца четвёртого рабочего дня от T0. Затем TASK-T-004 / TASK-R-001 проверяют полученный технический пакет. Исходные 8–12 / 3–5 автоматически не увеличены.</desc>',
         '<style>text{font-family:"Segoe UI","DejaVu Sans",sans-serif;fill:#172536} .muted{fill:#586879} .small{font-size:16px} .label{font-size:18px} .section{font-size:23px;font-weight:650} .grid{stroke:#dce4ec;stroke-width:1} .estimate{stroke:#215dc2;stroke-dasharray:6 4;stroke-width:2}</style>',
         '<rect width="1440" height="1300" fill="#f1f5f9"/>',
     ]
@@ -104,8 +107,8 @@ def render():
     text(50, 414, "Окна ролей перекрываются. Часы / фактические чд Manager и Analyst отдельно не учитывались.", 17, color="#586879")
 
     rect(28, 456, 1384, 334, "#ffffff")
-    text(50, 492, "ОБЪЁМ СОГЛАСОВАН · TASK-D-003 BLOCKED · критерии v2 на review", 23, weight="650")
-    text(50, 520, "До T0: D004 передан (f6f289c); TASK-T-006 / TASK-A-004 — адресные review параллельно.", 17, color="#9a580b")
+    text(50, 492, "ИССЛЕДОВАНИЕ РАЗРЕШЕНО · TASK-D-003 · STARTED ожидается", 23, weight="650")
+    text(50, 520, "Без нового предстартового круга; TASK-T-004 / TASK-R-001 проверяют готовый пакет.", 17, color="#16745b")
     def preparation_x(value):
         return left + value / PACKAGE_DEADLINE_WORKING_DAY * (right-left)
     for value in range(5):
@@ -120,7 +123,7 @@ def render():
     line(left, 645, right, 645, "#16795d")
     diamond(right, 645, "#16795d")
     text(right-18, 633, "до конца 4-го рабочего дня", 17, color="#16795d", anchor="end")
-    text(left, 681, "T0 = фактический STARTED после предстартовых подтверждений; календарной даты пока нет.", 16, color="#586879")
+    text(left, 681, "T0 = фактический STARTED Developer; исследование разрешено, дата старта ещё не зарегистрирована.", 16, color="#586879")
     text(50, 756, "Полный труд включает оценочную подготовку; это не измеренный остаток после T0. Эксперимент ≤6 ч внутри.", 16, color="#586879")
 
     rect(28, 816, 1384, 354, "#ffffff")
@@ -155,7 +158,7 @@ def render():
         "calendar_actual": {"start": start.isoformat(), "g1_registration": G1_DATE.isoformat(), "analyst_v3_publication": analyst_end.isoformat(), "date_difference_days": 4, "inclusive_dates": 5},
         "actual_person_days": None,
         "role_estimates": {"developer_person_days": DEV_ESTIMATE, "tester_person_days": TEST_ESTIMATE, "serial_scenarios": [11, 17], "calendar_start": None, "developer_includes_pre_g3_preparation": True},
-        "technical_preparation": {"task": "TASK-D-003", "person_days": PREPARATION_ESTIMATE, "hours": [20, 28], "includes_estimation_preparation": True, "owner_approved_date": "2026-10-17", "experiment_max_hours": EXPERIMENT_MAX_HOURS, "deadline_end_working_day": PACKAGE_DEADLINE_WORKING_DAY, "t0": None, "status": "BLOCKED", "resume_status": "NOT_STARTED", "correction_task": "TASK-D-004", "correction_status": "READY_FOR_REVIEW", "criteria_artifact_status": "IN_REVIEW", "criteria_sha": SOURCES["criteria_v2"], "correction_estimate_hours": [3, 4], "correction_estimate_inside_preparation": True, "blocking_remarks": ["T005-R01", "T005-R02", "T005-R03"], "preflight_tasks": ["TASK-T-006", "TASK-A-004"], "preflight_status": "NOT_STARTED", "not_added_to_developer_total": True},
+        "technical_preparation": {"task": "TASK-D-003", "person_days": PREPARATION_ESTIMATE, "hours": [20, 28], "includes_estimation_preparation": True, "owner_approved_date": "2026-10-17", "experiment_max_hours": EXPERIMENT_MAX_HOURS, "deadline_end_working_day": PACKAGE_DEADLINE_WORKING_DAY, "t0": None, "status": "NOT_STARTED", "resume_status": None, "previous_status": "BLOCKED", "research_authorized_date": "2026-10-18", "start_authorization": "Owner explicit instruction", "correction_task": "TASK-D-004", "correction_status": "DONE", "criteria_artifact_status": "APPROVED", "criteria_approval_scope": "definitions_for_bounded_research", "criteria_sha": SOURCES["criteria_v2"], "correction_estimate_hours": [3, 4], "correction_estimate_inside_preparation": True, "blocking_remarks": [], "resolved_definition_remarks": ["T005-R01", "T005-R02", "T005-R03"], "preflight_tasks": ["TASK-T-006", "TASK-A-004"], "preflight_status": "DONE", "preflight_repeats_required": False, "research_review_tasks": ["TASK-T-004", "TASK-R-001"], "not_added_to_developer_total": True},
         "role_estimates_status": "historical_conditional_reestimate_after_research",
         "manager_registration_date": "2026-10-18",
         "sources": SOURCES,
