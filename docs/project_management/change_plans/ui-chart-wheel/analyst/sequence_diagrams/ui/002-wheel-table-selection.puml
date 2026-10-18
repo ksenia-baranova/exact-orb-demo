@@ -1,7 +1,9 @@
 @startuml
 ' Owner: Functional Analyst. TASK-A-001; draft package v3, 2026-10-15.
 ' InputSHA 2169845b770754e11ae8b5cb1e13ffcd780784c8; v2 at cb25422.
-' Owner evidence 2026-10-15; registration in Manager DP-O-012/013 pending.
+' Historical v3 evidence 2026-10-15; new TASK-A-007 S1 delta 2026-10-18.
+' AssignmentSHA b4418ae1c531ff4726be2769422056d8b059b96d; InputSHA 0e590fa23d6c3f31d59a59cd0f7cb5be3509d160.
+' Source: manager_artifact.md section 2.19 / DP-O-013; Analyst v3 2634b224894b1046113557bfe241f0a5f2d46f8c.
 ' REQ-WHEEL-04/05/06/07/08/09/10; REQ-UI-03/04/05/06/10
 ' AS-WHEEL-04/07/08/11/12/13/14/16/23/26/27/28/29/30
 ' Clean target: docs/sequence_diagrams/ui/002-wheel-table-selection.puml
@@ -19,6 +21,36 @@ note over Page, Facts
 Общие aspects и houses: первые 5 и отдельные Показать все;
 points сразу все, опубликованные angles - компактная таблица.
 end note
+opt принят новый DTO (только действующий accept gate)
+  Page -> Page : проверить адреса по полному aspects[]: неупорядоченная пара IDs + type
+  note right of Page
+  Category / orb не разделяют адрес; from/to в строках не меняются.
+  Unique reverse = 1 match; duplicate / reversed duplicate / mixed category-orb = >1.
+  Правило для каждой пары/type; five/all и planet-filter не меняют cardinality DTO.
+  end note
+  alt >1 matches у группы (S1)
+    Page -> Facts : сохранить все source rows / DTO order / from-to-category-orb
+    Page -> Wheel : убрать только линии / ☌ ambiguous группы
+    Page -> Facts : aspect-select этой группы недоступен; текст строк читается
+    Page --> User : доступный warning: пара/type, несколько записей; строки сохранены
+    alt ранее выбранный аспект стал ambiguous в сохраняющем состояние пути
+      Page -> Page : снять только aspect selection; не возвращать прежний planet-filter
+      Page -> Facts : общий список с прежним five/all; houses expansion / draft сохранены
+    else выбран присутствующий point / другой unique аспект
+      Page -> Page : сохранить текущий выбор и новые факты по его прежнему режиму
+    end
+  else 1 match / unique reverse
+    Page -> Page : обычная графика / selection; при сохранении использовать новые факты
+  else 0 matches для прежнего выбора
+    Page -> Page : absent по REQ-WHEEL-08; это не S1 ambiguity
+  end
+  note over Page, Facts
+  Натал / космограмма одинаковы; отсутствующие angles / houses не синтезируются.
+  Failed read не принимает новый DTO и не запускает этот reconcile.
+  Явный changed-birth build / F5 / empty-unavailable сохраняют прежние правила reset/removal.
+  После возврата к unique доступность восстановлена, снятый выбор сам не создаётся.
+  end note
+end
 alt активирован point на колесе либо его строка
   User -> Page : canonical point ID через Wheel / Facts, pointer / keyboard
   alt повторно выбран тот же point
@@ -32,8 +64,14 @@ alt активирован point на колесе либо его строка
   Page --> User : обновление без auto scroll / focus transfer
 else активирован опубликованный аспект на колесе либо его строка
   User -> Page : конкретная пара / type через Wheel / Facts, pointer / keyboard
-  alt повторно выбран тот же аспект
-    Page -> Wheel : снять выбор; вернуть обычные exact / working
+  alt ambiguous группа S1
+    Page --> User : выбор недоступен; warning и все source rows доступны
+    note right of Page
+    Не менять point / другой unique selection, expansion / draft.
+    Нет линии / ☌ только у этой группы; остальные адреса работают.
+    end note
+  else повторно выбран тот же однозначный аспект
+    Page -> Wheel : снять выбор; вернуть обычные exact / working кроме ambiguous S1
     Page -> Facts : общий список с прежним раскрытием: 5 либо все
     note right of Page
     Прежний отбор планеты не восстанавливается.
@@ -54,7 +92,7 @@ else активирован опубликованный аспект на ко�
 end
 opt Показать все у общего списка aspects
   User -> Facts : раскрыть остальные аспекты
-  Facts --> User : полный опубликованный набор; houses не меняются
+  Facts --> User : полный исходный набор, включая ambiguous строки; houses не меняются
 end
 opt Показать все у houses
   User -> Facts : раскрыть остальные рассчитанные дома
@@ -77,10 +115,13 @@ note over Page, Facts
 Resize сохраняет выбор / раскрытие. F5 их сбрасывает.
 Новая карта после явного build по измененным birth data: reset к 5 + 5.
 Automatic current сам по себе не сбрасывает состояние:
-существующий выбор адресует новый DTO, исчезнувший снимается,
+Присутствующий point / unique аспект адресует новый DTO;
+отсутствующий point / аспект либо ambiguous аспект снимается,
 раскрытие сохраняется. Старые факты не переносятся на новую identity.
 Mobile hit targets / keyboard order / recovery layout еще DP-O-013.
 Будущая интерпретация не добавляет LLM / нового блока в M1-8.
-U фиксирует actor, canonical ID / пару, источник, порядок и видимый исход.
+U фиксирует actor, canonical ID / пару/type, источник, acceptance и 0/1/>1 matches,
+source rows / warning / выбор / expansion / draft и видимый исход.
+Ambiguity не запускает HTTP / новый расчёт / dedup; whole-wheel failure не выбирается.
 end note
 @enduml

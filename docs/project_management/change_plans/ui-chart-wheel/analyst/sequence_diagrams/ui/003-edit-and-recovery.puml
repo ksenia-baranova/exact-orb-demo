@@ -59,8 +59,11 @@ else network потеря ответа / неизвестный 5xx
     Page --> User : сводка actual карты; измененный draft B в открытой форме
     note right of Page
     Automatic current без принятия нового результата своего build
-    сохраняет раскрытие / существующий выбор нового DTO;
-    исчезнувший выбор снимает без старых строк / сброса раскрытия.
+    сохраняет раскрытие / point или unique aspect нового DTO;
+    отсутствующий point / аспект либо ambiguous аспект снимает без сброса раскрытия / draft.
+    S1 warning / source rows / локальный запрет только ambiguous группы:
+    см. 002-wheel-table-selection.puml, REQ-WHEEL-04/08/10.
+    Это не изменение already_applied / recovery policy A006.
     end note
   else current empty / unavailable
     API --> Session : подтверждённое состояние без ChartDTO
@@ -94,8 +97,9 @@ Recovery/Retry-After/restart controls не скрыты свёрнутой фо�
 Late first commit не приписывается второму POST.
 Foreground читает actual current; draft не перезаписывается.
 Automatic current не скрывает открытый измененный draft.
-Выбор сохраняется только при наличии в новом DTO;
-при исчезновении снимается только выбор, раскрытие сохраняется.
+Выбор сохраняется для присутствующего point / unique аспекта нового DTO;
+При absent point / аспекте или ambiguous аспекте снимается только выбор, раскрытие сохраняется.
+S1 и различение 0/1/>1 matches - 002-wheel-table-selection.puml; draft сохранен.
 Сохранение несохраненного draft сквозь F5 / закрытие не требуется.
 Dispose исключает поздний accept; серверная отмена не заявляется.
 N не доказывает render, локальные переходы фиксируются U.

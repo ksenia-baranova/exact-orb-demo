@@ -451,3 +451,78 @@ Pending означает сохранённое актуальное локал�
 **Автор:** Codex / Functional Analyst, 18.10.2026. После локального review Owner отдельно поручил commit и push в `analysis/ui-chart-wheel`, затем merge в `change/ui-chart-wheel`. Публикуется только этот Analyst-артефакт; прежние отметки о локальном результате / отсутствии output commit описывают состояние до поручения.
 
 Публикационный SHA — первый commit, добавляющий этот заголовок: `git log --reverse --format=%H -G '^### Публикация TASK-A-005$' -- docs/project_management/change_plans/ui-chart-wheel/analyst_artifact.md`. После push и интеграции отдельно сверяются точные local / tracking / remote SHA и состав diff. Manager получает результат через Git. Прежние handoffs и закреплённые входы сохранены; публикация / merge не принимают предложение S1/S2, не изменяют Manager-owned статусы, Owner choices, результат исследования D003 или gates. PR / сообщения другим чатам не выполняются.
+
+
+<a id="task-a-007"></a>
+## TASK-A-007. Адресная дельта S1 для неоднозначных аспектов
+
+**Роль / автор:** Codex / Functional Analyst, 18.10.2026. **STARTED:** 18.10.2026 22:20:49 MSK / 19:20:49 UTC, после сообщения собственной оценки и подтверждения выполнимости целевого ответа за один рабочий день. **Оценка:** 0,5 чд (4 часа), confidence высокая; четыре собственных файла, опубликованный S1, без production / API / геометрии D005 / already_applied A006. Эскалация Manager → Owner через +1 рабочий день просрочки, заместителя нет; абсолютный рабочий календарь не назначаю. Начало независимой работы не ждёт ручного обновления Manager-сводки.
+
+**Точные входы / Git:** worktree `C:\Users\KateUser\.codex\worktrees\ui-chart-wheel-analysis\exact-orb-recovered`, ветка `analysis/ui-chart-wheel`. HEAD до обновления — `4057d6ed37b24e082a2a4089eb7104da80d17ee5`; после `git fetch origin change/ui-chart-wheel analysis/ui-chart-wheel` и `git merge --ff-only origin/change/ui-chart-wheel` — `b4418ae1c531ff4726be2769422056d8b059b96d`. **Фактический HEAD = b4418ae1c531ff4726be2769422056d8b059b96d; AssignmentSHA = b4418ae1c531ff4726be2769422056d8b059b96d; InputSHA из поручения = 0e590fa23d6c3f31d59a59cd0f7cb5be3509d160.** Предмет не заменён фактическим HEAD. [Полное поручение](manager/prompts/task-a-007-ambiguity-s1-contract-delta.md), [Manager §2.19](manager_artifact.md#219-выбор-owner-s1-и-узкая-дельта-analyst) / DP-O-013 @ AssignmentSHA — источник выбранного S1. A005 @ 4057d6e остаётся DONE / APPROVED по Manager; A006 — отдельное задание. Analyst v3 — `2634b224894b1046113557bfe241f0a5f2d46f8c`; нормативный MainBaseline — `535551026af6eedaf2a0aa5c0daa96fa94655ec1`.
+
+**Сохранность на старте:** рабочее дерево и staged diff пусты, несвязанных изменений нет. До fetch сохранена отдельная бинарная копия index вне репозитория, SHA-256 `c86c5ac5d5152a4ad123be6bf80a54e984dced46595782f77543b6acddd27c1f`; после fast-forward зафиксирован отпечаток staged entries для контроля до конца работы. Ничего не stash / reset / force / stage; чужие материалы получены только из опубликованной Git change. Прежние handoffs и исторический manifest v3 сохраняются; manifest не обновляется под новую адресную редакцию.
+
+### Точная дельта A007 и влияние
+
+**Подписанное смысловое подтверждение:** Codex / Functional Analyst подтверждает соответствие подготовленной адресной редакции выбранному S1 в DP-O-013 @ AssignmentSHA. Причина изменения — ранее не определённый cardinality>1 адрес принятого аспекта; это выбранное Owner узкое исключение, а не переоткрытие A005 или новый вопрос S1/S2. Новая редакция **DRAFT / локальный результат для review Manager**, не самостоятельные DONE / APPROVED / runtime PASS. Изменяется только контракт активного change; нормативный current/ / HTTP schema / frontend calculations остаются прежними.
+
+Действие **MODIFY ниже относится к пунктам change v3 @ 2634b22**, не меняет их исходный ADD/MODIFY относительно MainBaseline. Полные формулировки находятся в адресной редакции requirements; source Owner evidence хранится только в Manager DP-O-013 / §2.19 @ b4418ae, здесь приведены трассировка и влияние.
+
+| Пункт change | Точная дельта / сценарии |
+|---|---|
+| [REQ-WHEEL-04](analyst/requirements.md#req-wheel-04) | MODIFY: явно ограничено «все exact/working на колесе» для ambiguous группы. Адрес: неупорядоченная пара canonical endpoints + published type; 0/1/>1 matches по полному принятому DTO. Unique reverse обычен; одинаковый / обратный duplicate и mixed category-orb ambiguous. Только эта группа без линии / ☌ и aspect-select. AS-WHEEL-28/30 |
+| [REQ-WHEEL-07](analyst/requirements.md#req-wheel-07) | MODIFY: выбирается unique аспект; запрет ambiguous aspect-select не снимает присутствующий point / другой unique aspect. Planet-filter содержит все source rows без лимита пяти, включая ambiguous / background / разрешённые angle endpoints. AS-WHEEL-28/29 |
+| [REQ-WHEEL-08](analyst/requirements.md#req-wheel-08) | MODIFY: отдельное unique→ambiguous исключение при accepted DTO в сохраняющем состояние пути; снять только aspect selection, вернуть общий список с прежним expansion, сохранить houses / draft. Absent остаётся иной причиной; failed read не выполняет этот reconcile; восстановление unique не создаёт снятый выбор автоматически. Старые reset / removal сохраняются. AS-WHEEL-29/30 |
+| [REQ-WHEEL-10](analyst/requirements.md#req-wheel-10) | MODIFY: доступное без hover и распознавания цвета предупреждение с парой/type, несколькими записями и локально недоступными графикой / выбором; числовой текст строк читается, остальные keyboard / focus действия работают. Не whole-wheel failure DP-O-010. AS-WHEEL-28/30 |
+| [REQ-UI-06](analyst/requirements.md#req-ui-06) | MODIFY: все source rows / DTO order / from-to-type-category-orb сохраняются без dedup / first-match / перерасчёта. Five/all и planet-filter считают исходные строки, обычный unique aspect selection по-прежнему одна строка; в cosmogram смысл max orb и отсутствие angles/houses сохранены. AS-WHEEL-28/29/30 |
+
+**Сценарии:** [AS-WHEEL-28](analyst/scenarios.md#as-wheel-28) — активация / запрет / planet / unaffected; [AS-WHEEL-29](analyst/scenarios.md#as-wheel-29) — ручное снятие другого unique аспекта и восстановление исходных строк с прежним expansion при наличии ambiguous группы; [AS-WHEEL-30](analyst/scenarios.md#as-wheel-30) — accepted DTO, unique/absent/ambiguous, failed read и сохранность draft. [F5](analyst/scenarios.md#f5-s1) задаёт controlled U/R/D/V/M/L/T/P; это acceptance inputs / expected, не выполненные fixtures / production experiment. Всего сохранены 30 AS-WHEEL; прочие 27, MODIFY AS-UI-22 и все их baseline обязательства не переписаны.
+
+**Behavioral sequences:** [002](analyst/sequence_diagrams/ui/002-wheel-table-selection.puml) содержит основной S1 reconcile / warning / selection и U evidence. В [001](analyst/sequence_diagrams/ui/001-chart-presentation.puml) / [003](analyst/sequence_diagrams/ui/003-edit-and-recovery.puml) адресно уточнены только notes о «существующем выборе»: unique aspect / присутствующий point против absent / ambiguous; указана 002 как источник подробностей. Основание двух дополнительных путей — прежняя безусловная формулировка сохранения существующей пары противоречила бы S1. Messages / transport / recovery flow в 001/003 не меняются; already_applied не решается. Область — четыре основных файла плюс две такие ссылки, **0,5 чд / target один рабочий день остаются выполнимыми**.
+
+### Различающие случаи и сохранённые обязательства
+
+| Случай | Expected в подготовленной спецификации | REQ / AS / DP |
+|---|---|---|
+| 1 unique / единственная обратная строка | Обычные графика / выбор; from/to и новые факты не переписаны. Категория / orb при 1 match не создают ambiguity; unique background — два конца без линии / ☌ | W04/07/08, UI06; AS28/30; DP-O-013 |
+| Два одинаковых / обратных duplicate | Обе исходные строки сохранены; только их pair/type без линии / ☌ / aspect-select. Orientation не делит их на два адреса | W04/07/10, UI06; AS28; DP-O-013 S1 |
+| Mixed category / orb и отдельный type | Category / orb не разрешают >1 match, нельзя выбрать exact / меньший orb; иной type — отдельный адрес и работает. Одинаково для линейного аспекта и ☌ | W04/07/10, UI06; AS28/29; DP-O-012/013 |
+| Selected unique → accepted ambiguous | Снять только aspect selection; общий список с прежними five/all, houses expansion / draft сохранены, planet-filter не восстанавливается. Строки / warning от нового DTO | W08/10, UI06; AS29/30; DP-O-013 S1 |
+| Выбран присутствующий point / unrelated unique аспект | Выбор работает, planet показывает все свои source rows без лимита пяти; неудачная активация ambiguous не снимает другой выбор. Unique selected аспект сохраняет режим одной строки / пары | W04/07/08, UI06; AS28/30; DP-O-008/013 |
+| Failed / непринятый response против accepted DTO | Ошибка не меняет подтверждённую cardinality / выбор / warning; позитивный accepted контроль даёт S1. Уже принятый ambiguous набор при последующем failed read сохраняется | W08/10; AS30; DP-O-013, исходные safe-read gates |
+| Natal / cosmogram | Одно S1 правило; natal angle endpoint не теряется, самостоятельный выбор угла не появляется; в cosmogram нет вымышленных домов / angles, max orb не пересчитывается | W04/07/08, UI06; AS28/30; DP-O-009/013 |
+| Five/all / planet-filter / повтор unique аспекта | Число и порядок source rows не меняются из-за ambiguity; после снятия другого unique аспекта возвращается прежнее раскрытие, после снятия point — исходные пять; houses независимы | W07/08, UI06; AS28/29; DP-O-013 |
+| Unaffected / последующий unique / старые resets | Другие pair/type / points / данные работают, графическая семантика DP-O-012 сохранена; устранение ambiguity восстанавливает возможность, но не старый selection. Resize / F5 / changed-birth build / empty-unavailable не переопределены | W04/07/08/10; AS28/29/30; DP-O-010/012/013 |
+
+Все строки таблицы — **смысловая сверка требований / acceptance expected, не утверждение runtime PASS**. Local warning и поддержка source rows не требуют нового HTTP / API identity / validation, самостоятельного расчёта аспектов, S2 occurrence selection или whole-wheel rejection. По S1 нет нового Owner-вопроса / blocker. Остатки DP-O-010…013 / TEST-FIND-WHEEL-002 / feasibility / focus implementation и бюджеты сохраняют своё назначение; A006 не расширена и не признана выполненной.
+
+### Локальная версия и handoff Manager
+
+**Изменённые пути:** только `analyst/requirements.md`, `analyst/scenarios.md`, три собственных `analyst/sequence_diagrams/ui/001…003*.puml` и этот `analyst_artifact.md` в change ui-chart-wheel. Ни Manager / Developer / Tester / Owner choices, ни current/ / main ADR / src / tests / API не изменены. Исторические manifests и handoffs, включая принятый A005, сохраняются; новая полная Analysis не создаётся.
+
+**Точные версии пяти содержательных файлов** (UTF-8 / canonical LF; это не обновление исторического manifest):
+
+| Путь относительно change | SHA-256 |
+|---|---|
+| `analyst/requirements.md` | `71028bd69e874f4b2f6597a55973de04f638c619c8cdada5b13ccd67dc6c8f6c` |
+| `analyst/scenarios.md` | `ab3967b0c8655bcb8fb1f60ca0158b2ffb3edad2033d00a3d79f0e2d8ee48acd` |
+| `analyst/sequence_diagrams/ui/001-chart-presentation.puml` | `1e4f9041b722a3eb40e6c75a0d4dca317b4813ece66fb5dc49cfb8527befa7d5` |
+| `analyst/sequence_diagrams/ui/002-wheel-table-selection.puml` | `a4bc0f7fac487b4530251ecd10174f1dc14acdd47cbf833546c6c99201cee1f5` |
+| `analyst/sequence_diagrams/ui/003-edit-and-recovery.puml` | `fc97dbe39b8cde933c1f364165df23bfbedf55553e64c110315f134de178c152` |
+
+**Publication / reviewer:** OutputSHA отсутствует — результат локальный поверх b4418ae; commit / push / PR этим заданием не разрешены. Reviewer — Codex / Manager: полнота, точные версии и REQ-AS-DP traceability; Owner S1 повторно не согласовывать. STARTED является авторским evidence, текущий статус задания / артефакта регистрирует Manager. Git index / staged entries сохраняются без staging; сообщения другим чатам не отправляются.
+
+**Следующий шаг Manager:** после отдельно разрешённой публикации получить точный OutputSHA, проверить адресную дельту / source Owner evidence / affected-unaffected controls и зарегистрировать результат A007 в своей сводке. Передать принятую точную редакцию Developer / Tester как вход соответствующих назначенных работ, сохранив их отдельные gates / зависимости; S1 не блокирует независимую геометрию D005. A005 остаётся DONE, already_applied A006 — отдельный предмет; эта публикация не подтверждает G3 / production / бюджет / runtime readiness.
+
+**Проверки / ограничения:** фактические результаты документальной команды приводятся после её запуска ниже. Source code / существующее coverage изучены по опубликованному Git; исходные fixtures / evidence не переписывались. **NOT RUN:** production / browser / SVG / keyboard / screen-reader / Node / pytest / HTTP-HTTPS / PUML render, повтор saved source audits / Developer experiments. PUML проверяется структурно без заявления об успешной компиляции или визуальной читаемости; будущие fixtures / acceptance controls ещё должны быть реализованы и проверены ответственными ролями.
+
+**Фактическая документальная проверка A007, 18.10.2026:** `python -B -X utf8 C:\Users\KateUser\AppData\Local\Temp\ui_chart_wheel_task_a007_check.py C:\Users\KateUser\.codex\worktrees\ui-chart-wheel-analysis\exact-orb-recovered` — `TASK_A007_DOC_OK changed_paths=6 links=308 tables=13 stage=EMPTY index_entries=UNCHANGED`. Проверены точные HEAD / AssignmentSHA / InputSHA, опубликованный source Owner S1, 5 изменённых и 15 сохранённых REQ, 3 изменённых и 27 сохранённых AS-WHEEL (всего 30), неизменный AS-UI-22, исторический manifest **9/9 @ 2634b22**, полный прежний index / handoffs, неизменность protected путей / Manager decisions. Три PUML прошли проверку баланса блоков / notes / refs; сообщения 001/003 неизменны. Ссылки / anchors и 13 таблиц проверены. Это read-only checker документации, не новый project gate / поведенческий test.
+
+`git diff --check` — exit 0. `git diff --cached --name-only` — пусто; отпечатки `git ls-files --stage -z` и cached binary diff совпали со snapshot после fast-forward. `git status --short --untracked-files=all` — только шесть указанных собственных файлов, новых untracked нет. Проверка не утверждает успешную компиляцию / render PUML или исполнение acceptance scenarios; NOT RUN выше сохранено. Локальный OutputSHA по-прежнему отсутствует, commit / push / сообщения другим чатам не выполнялись.
+
+
+### Публикация TASK-A-007
+
+**Автор:** Codex / Functional Analyst. После локальной подготовки Owner отдельно поручил commit / push в `analysis/ui-chart-wheel`, затем merge в `change/ui-chart-wheel`. Публикуются только шесть перечисленных собственных файлов дельты S1; прежние отметки о локальном результате / отсутствии OutputSHA сохраняют состояние до этого поручения.
+
+Публикационный SHA — первый commit, добавляющий этот заголовок: `git log --reverse --format=%H -G '^### Публикация TASK-A-007$' -- docs/project_management/change_plans/ui-chart-wheel/analyst_artifact.md`. После push / интеграции сверяются точные local / tracking / remote SHA и состав diff. Manager получает результат через Git для назначенного review полноты / traceability. Прежние handoffs / исторический manifest v3 / Owner S1 сохранены; Git-публикация и merge не назначают DONE / APPROVED A007, новое решение Owner или gates. A005 остаётся принятым, A006 — отдельным заданием. PR / сообщения другим чатам не выполняются.

@@ -79,8 +79,11 @@ alt chart_ready с подтверждённым ChartDTO
   Новый принятый build по измененным birth data сбрасывает
   выбор / подсветку / раскрытие; одни edits / отказ этого не делают.
   F5: без выбора, первые 5 + 5; automatic current сохраняет состояние.
-  При другой identity - только новый DTO: существующий выбор сохраняется,
-  отсутствующий снимается без сброса раскрытия; старые факты не переносятся.
+  При другой identity - только новый DTO: point / unique аспект сохраняется,
+  Отсутствующий point / аспект либо ambiguous аспект снимается без сброса раскрытия / draft.
+  S1: только ambiguous группа без графики / выбора, все строки и warning;
+  cardinality / unaffected controls - 002-wheel-table-selection.puml, REQ-WHEEL-04/08/10.
+  Старые факты не переносятся; остальные правила принятия / reset сохранены.
   end note
 else empty / chart_unavailable подтверждённым current
   Page -> Wheel : убрать прежнее колесо и выбор
