@@ -1,0 +1,153 @@
+{
+  "task": "TASK-D-005",
+  "author": "Codex / Developer",
+  "revision": "assessment-v1-DRAFT-before-execution-approval",
+  "original_head": "d24a24e04be32d0522674735388e9d2ea3e65c93",
+  "actual_head": "0046ac75bd6582089b68a640f98fa65468c0607a",
+  "AssignmentSHA": "0046ac75bd6582089b68a640f98fa65468c0607a",
+  "initial_assignment_sha": "0e590fa23d6c3f31d59a59cd0f7cb5be3509d160",
+  "pins": {
+    "AssignmentSHA": "0046ac75bd6582089b68a640f98fa65468c0607a",
+    "AnalystContractSHA": "2736e2848c977ec4c770a9a4dec2a0d7c1b62a71",
+    "TechnicalPackageSHA_D003": "d24a24e04be32d0522674735388e9d2ea3e65c93",
+    "CriteriaSHA": "f6f289cda25e7f228dff064175805130cc770b63",
+    "AnalystV3": "2634b224894b1046113557bfe241f0a5f2d46f8c",
+    "A005": "4057d6ed37b24e082a2a4089eb7104da80d17ee5",
+    "T004": "ad5206e30d855e44a9535f89dced1d8fe4699d17",
+    "S1Owner": "b4418ae1c531ff4726be2769422056d8b059b96d",
+    "ManagerR001SummarySHA": "0e590fa23d6c3f31d59a59cd0f7cb5be3509d160",
+    "MainBaseline": "535551026af6eedaf2a0aa5c0daa96fa94655ec1"
+  },
+  "reviewer_OutputSHA": null,
+  "R001_provenance": "published Manager summary only, no original reviewer package",
+  "source_hashes_lf": {
+    "docs/project_management/change_plans/ui-chart-wheel/manager/prompts/task-d-005-drawing-feasibility-v2.md": "0067d3fbf7c8a51f629c81084b57b9d605509f152a8e638a63e772add5946ac4",
+    "docs/project_management/change_plans/ui-chart-wheel/manager/review_inputs/task-r-001-r2-summary.md": "36f7104a07e3cf06d9cf04c4681ed029ac4d6316eb9738de8e5071e4d1c0e998",
+    "docs/project_management/change_plans/ui-chart-wheel/manager_artifact.md": "cfb5654957d54e14b68b0b12dcd20c1cbf22cf67017960d4dd170d8c019b31ff",
+    "docs/project_management/change_plans/ui-chart-wheel/analyst_artifact.md": "a780e00e33a57fe03e42949cfeb09f1dd3f04ffacefa3a6da6dad7737b37d584",
+    "docs/project_management/change_plans/ui-chart-wheel/tester/task_t004_review.md": "a8d8c43ae22137f922cc22086654e9a3beab01e95ac72f92be22779fc3b5b5b8",
+    "docs/project_management/change_plans/ui-chart-wheel/developer/drawing_adr_draft.md": "d2d39f5bca9333caec80a9b6356da4d0002b5317854729043cf00fbb9454f227",
+    "docs/project_management/change_plans/ui-chart-wheel/developer/task_d003_research_report.md": "ff20a54829e1df8d49e0add5b5d6e6b1cb623543d69d761afcaccddec393673d",
+    "docs/project_management/change_plans/ui-chart-wheel/developer/implementation_plan.md": "d66ea5654baf4844f966cf1ded022863c52bf5ef89aa5b16abb53ac15dc22342",
+    "docs/project_management/change_plans/ui-chart-wheel/developer/sequence_diagrams/ui/001-result-renderer-lifecycle.puml": "63a7f3c3df9a3f1a3cea30333f7f91755bfbd24a24b5551d3b337679e000f383",
+    "docs/project_management/change_plans/ui-chart-wheel/developer/sequence_diagrams/ui/002-acceptance-selection-focus.puml": "8491a179b98390c5527101f07cd8cb2d4efd47f9a286a66ab4a93c4458bbd5e2",
+    "AGENTS.md": "e5737a9b86f96483e7bad691bbfb3e179b00763bcbc62077141b4618d1c37b95",
+    "docs/development_approach/skills/developer/SKILL.md": "a7486277c8d62654700878b7cf34d16c915eec3adccdc81e521db16d02298070",
+    "docs/development_approach/process/process.md": "02893a5d14d6e72d4af906155992a7829477902af823146b6f22eac8b1b354ab",
+    "docs/development_approach/roles.md": "da52c74c4c07de8006e745d62193ce6fc5dab490fc24282ba2f43b15aa8b3393",
+    "docs/development_approach/artifacts/developer.md": "340c8e1b48932e438694baece163ac0cf5aeef312a7a076ea4e2c0c758d0bcc5",
+    "docs/development_approach/artifacts/developer-prompt.md": "a6ecd78b0d86e4aa46a525a6f78c3d3e98870e3baa3215bd80e51378744a2e7e",
+    "docs/requirements/decisions/README.md": "d8d2f7fb2a5391cfe3e623d29c031a09a1a0cd108b92af20bb5bb5bd55a3b13d",
+    "src/exact_orb/http_api/ui/facts.mjs": "5cfddc42b430b9d5847d7dd6446975b0a1d358615af98d401ba7cbae29edbc66",
+    "src/exact_orb/http_api/ui/main.mjs": "6c9e0abdf933b1394f14279fcb2ac80990700b50cc4b70cc1176cf887fc88e7e",
+    "src/exact_orb/http_api/ui/session.mjs": "0eea63e3b4d0049b0f40f5fdce55fe20a8dc9430eb4cd05d7d0883bd5e895564",
+    "src/exact_orb/http_api/ui/recovery.mjs": "405eae1bb36ee3387337fa1d34d5af48d7385bbfbc295ea5a9ae391d48d07414",
+    "tests/ui/facts.test.mjs": "0e04d5bfac734f8fc8c9f91c42c35bc2415d59c6f133c1e6307128bd23cfa33c",
+    "tests/ui/session.test.mjs": "653782c7fe284119490a5216ab6257838e62804384db9329e633dceb7bd730bf",
+    "tests/ui/recovery.test.mjs": "96bbfb7f98f09ff0fc074eaf8fb32ee30684514195704da0671b8b99cf30c8c0",
+    "docs/project_management/change_plans/ui-chart-wheel/analyst/requirements.md": "71028bd69e874f4b2f6597a55973de04f638c619c8cdada5b13ccd67dc6c8f6c",
+    "docs/project_management/change_plans/ui-chart-wheel/analyst/scenarios.md": "ab3967b0c8655bcb8fb1f60ca0158b2ffb3edad2033d00a3d79f0e2d8ee48acd",
+    "docs/project_management/change_plans/ui-chart-wheel/analyst/sequence_diagrams/ui/001-chart-presentation.puml": "1e4f9041b722a3eb40e6c75a0d4dca317b4813ece66fb5dc49cfb8527befa7d5",
+    "docs/project_management/change_plans/ui-chart-wheel/analyst/sequence_diagrams/ui/002-wheel-table-selection.puml": "a4bc0f7fac487b4530251ecd10174f1dc14acdd47cbf833546c6c99201cee1f5",
+    "docs/project_management/change_plans/ui-chart-wheel/analyst/sequence_diagrams/ui/003-edit-and-recovery.puml": "fc97dbe39b8cde933c1f364165df23bfbedf55553e64c110315f134de178c152"
+  },
+  "contract_hashes_verified": 5,
+  "D003_manifest_payloads_verified": 164,
+  "D003_run03_old_ADR_sequences": "UNCHANGED",
+  "index_original": "EMPTY",
+  "index_after": "EMPTY",
+  "own_paths": [
+    "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_preparation.json",
+    "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_preparation_check.py",
+    "docs/project_management/change_plans/ui-chart-wheel/developer/task_d005_implementation_plan.md",
+    "docs/project_management/change_plans/ui-chart-wheel/developer_artifact.md"
+  ],
+  "estimate_hours": [
+    16,
+    24
+  ],
+  "estimate_person_days": [
+    2,
+    3
+  ],
+  "confidence": "medium bounded result; below medium positive 328 feasibility",
+  "phase_hours": {
+    "input_model_preparation": [
+      3,
+      4
+    ],
+    "analytical_comparison": [
+      3,
+      4
+    ],
+    "browser_and_harness": [
+      3,
+      4
+    ],
+    "draft_ADR_sequences_HTML_design": [
+      4,
+      6
+    ],
+    "package_handoff": [
+      3,
+      6
+    ]
+  },
+  "experiment_including_preparation_analytics_browser_hours_cap": 12,
+  "analytic_hours_cap": 4,
+  "browser_harness_hours_cap": 4,
+  "whole_forecast_hours": {
+    "D003_historical_preparation": [
+      20,
+      28
+    ],
+    "drawing_including_D005": [
+      28,
+      44
+    ],
+    "controller_including_HTML_and_D005": [
+      16,
+      24
+    ],
+    "integration_docs_including_D005": [
+      8,
+      16
+    ]
+  },
+  "whole_forecast_person_days": [
+    9,
+    14
+  ],
+  "HTML_presenter_parent": "controller",
+  "HTML_presenter_total_hours": [
+    6,
+    10
+  ],
+  "HTML_presenter_D005_design_hours": [
+    1,
+    2
+  ],
+  "D003_actual_remaining_hours": null,
+  "started_D005": false,
+  "deadline": "end of working day 3 from separate approved STARTED; no absolute calendar deadline",
+  "execution_approval": "REQUIRED from Owner for scope/estimate/timebox/deadline plus explicit start",
+  "local_links": 1247,
+  "markdown_documents": 43,
+  "markdown_tables": 107,
+  "git_diff_check_exit": 0,
+  "scope": "4 own Developer files; Manager/foreign roles/production/normative contracts unchanged",
+  "output_sha": "NOT_CREATED; local preparation",
+  "not_run": [
+    "SVG/browser/run04",
+    "F/E analytical certificates or solver",
+    "runtime F5/S1",
+    "ADR/sequence revision",
+    "Node/pytest/production/HTTPS",
+    "PUML render"
+  ],
+  "output_payload_sha256_lf": {
+    "docs/project_management/change_plans/ui-chart-wheel/developer/task_d005_implementation_plan.md": "ec315e1543cb484d5761af03abf345e42e9b65e0960e28c89b349b4afda99d1b",
+    "docs/project_management/change_plans/ui-chart-wheel/developer_artifact.md": "76a4de280400a181323a2e0ded420529f89cba62095f2b50d61e737e80b4f0c6",
+    "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_preparation_check.py": "86a39ffc3cee76a31c406426673b75174a8cdcb034479ceb6f2b09ab4771e259"
+  }
+}
