@@ -1,0 +1,721 @@
+{
+  "matrix": [
+    {
+      "name": "sparse",
+      "viewport": 1440,
+      "layout": "default",
+      "record": "run03/sparse-1440-default.json",
+      "C0": 0,
+      "moved": 0,
+      "movable_geometry_pass": true,
+      "fixed_collisions": [],
+      "complete_geometry_pass": true,
+      "hit_certified": 16,
+      "targets": 16,
+      "native_probes": 272,
+      "native_wrong": 0,
+      "keyboard_targets": 16,
+      "keyboard_fail": [],
+      "font_families": {
+        "Segoe UI Symbol": 22
+      },
+      "anchor_error_max": 3.79131343602744e-05,
+      "minimality": "ZERO_DISPLACEMENT",
+      "full_drawing_acceptance": "NOT_PROVEN (zodiac/sign labels and full styles not implemented by isolated geometry harness)"
+    },
+    {
+      "name": "sparse",
+      "viewport": 1440,
+      "layout": "candidate",
+      "record": "run03/sparse-1440-candidate.json",
+      "C0": 0,
+      "moved": 0,
+      "movable_geometry_pass": true,
+      "fixed_collisions": [],
+      "complete_geometry_pass": true,
+      "hit_certified": 16,
+      "targets": 16,
+      "native_probes": 272,
+      "native_wrong": 0,
+      "keyboard_targets": 16,
+      "keyboard_fail": [],
+      "font_families": {
+        "Segoe UI Symbol": 22
+      },
+      "anchor_error_max": 3.79131343602744e-05,
+      "minimality": "ZERO_DISPLACEMENT",
+      "full_drawing_acceptance": "NOT_PROVEN (zodiac/sign labels and full styles not implemented by isolated geometry harness)"
+    },
+    {
+      "name": "sparse",
+      "viewport": 768,
+      "layout": "default",
+      "record": "run03/sparse-768-default.json",
+      "C0": 0,
+      "moved": 0,
+      "movable_geometry_pass": true,
+      "fixed_collisions": [],
+      "complete_geometry_pass": true,
+      "hit_certified": 16,
+      "targets": 16,
+      "native_probes": 272,
+      "native_wrong": 0,
+      "keyboard_targets": 16,
+      "keyboard_fail": [],
+      "font_families": {
+        "Segoe UI Symbol": 22
+      },
+      "anchor_error_max": 3.79131343602744e-05,
+      "minimality": "ZERO_DISPLACEMENT",
+      "full_drawing_acceptance": "NOT_PROVEN (zodiac/sign labels and full styles not implemented by isolated geometry harness)"
+    },
+    {
+      "name": "sparse",
+      "viewport": 768,
+      "layout": "candidate",
+      "record": "run03/sparse-768-candidate.json",
+      "C0": 0,
+      "moved": 0,
+      "movable_geometry_pass": true,
+      "fixed_collisions": [],
+      "complete_geometry_pass": true,
+      "hit_certified": 16,
+      "targets": 16,
+      "native_probes": 272,
+      "native_wrong": 0,
+      "keyboard_targets": 16,
+      "keyboard_fail": [],
+      "font_families": {
+        "Segoe UI Symbol": 22
+      },
+      "anchor_error_max": 3.79131343602744e-05,
+      "minimality": "ZERO_DISPLACEMENT",
+      "full_drawing_acceptance": "NOT_PROVEN (zodiac/sign labels and full styles not implemented by isolated geometry harness)"
+    },
+    {
+      "name": "sparse",
+      "viewport": 360,
+      "layout": "default",
+      "record": "run03/sparse-360-default.json",
+      "C0": 0,
+      "moved": 0,
+      "movable_geometry_pass": true,
+      "fixed_collisions": [],
+      "complete_geometry_pass": true,
+      "hit_certified": 8,
+      "targets": 16,
+      "native_probes": 272,
+      "native_wrong": 8,
+      "keyboard_targets": 16,
+      "keyboard_fail": [],
+      "font_families": {
+        "Segoe UI Symbol": 22
+      },
+      "anchor_error_max": 4.394531254092726e-05,
+      "minimality": "ZERO_DISPLACEMENT",
+      "full_drawing_acceptance": "NOT_PROVEN (zodiac/sign labels and full styles not implemented by isolated geometry harness)"
+    },
+    {
+      "name": "sparse",
+      "viewport": 360,
+      "layout": "candidate",
+      "record": "run03/sparse-360-candidate.json",
+      "C0": 0,
+      "moved": 0,
+      "movable_geometry_pass": true,
+      "fixed_collisions": [],
+      "complete_geometry_pass": true,
+      "hit_certified": 8,
+      "targets": 16,
+      "native_probes": 272,
+      "native_wrong": 8,
+      "keyboard_targets": 16,
+      "keyboard_fail": [],
+      "font_families": {
+        "Segoe UI Symbol": 22
+      },
+      "anchor_error_max": 4.394531254092726e-05,
+      "minimality": "ZERO_DISPLACEMENT",
+      "full_drawing_acceptance": "NOT_PROVEN (zodiac/sign labels and full styles not implemented by isolated geometry harness)"
+    },
+    {
+      "name": "F1",
+      "viewport": 1440,
+      "layout": "default",
+      "record": "run03/F1-1440-default.json",
+      "C0": 8,
+      "moved": 0,
+      "movable_geometry_pass": false,
+      "fixed_collisions": [],
+      "complete_geometry_pass": false,
+      "hit_certified": 13,
+      "targets": 19,
+      "native_probes": 323,
+      "native_wrong": 43,
+      "keyboard_targets": 19,
+      "keyboard_fail": [],
+      "font_families": {
+        "Segoe UI Symbol": 24,
+        "Segoe UI": 3
+      },
+      "anchor_error_max": 4.4139572119252464e-05,
+      "minimality": "ZERO_DISPLACEMENT",
+      "full_drawing_acceptance": "NOT_PROVEN (zodiac/sign labels and full styles not implemented by isolated geometry harness)"
+    },
+    {
+      "name": "F1",
+      "viewport": 1440,
+      "layout": "candidate",
+      "record": "run03/F1-1440-candidate.json",
+      "C0": 8,
+      "moved": 8,
+      "movable_geometry_pass": false,
+      "fixed_collisions": [],
+      "complete_geometry_pass": false,
+      "hit_certified": 14,
+      "targets": 19,
+      "native_probes": 323,
+      "native_wrong": 41,
+      "keyboard_targets": 19,
+      "keyboard_fail": [],
+      "font_families": {
+        "Segoe UI Symbol": 24,
+        "Segoe UI": 3
+      },
+      "anchor_error_max": 4.4139572119252464e-05,
+      "minimality": "UNPROVEN",
+      "full_drawing_acceptance": "NOT_PROVEN (zodiac/sign labels and full styles not implemented by isolated geometry harness)"
+    },
+    {
+      "name": "F1",
+      "viewport": 768,
+      "layout": "default",
+      "record": "run03/F1-768-default.json",
+      "C0": 8,
+      "moved": 0,
+      "movable_geometry_pass": false,
+      "fixed_collisions": [],
+      "complete_geometry_pass": false,
+      "hit_certified": 13,
+      "targets": 19,
+      "native_probes": 323,
+      "native_wrong": 43,
+      "keyboard_targets": 19,
+      "keyboard_fail": [],
+      "font_families": {
+        "Segoe UI Symbol": 24,
+        "Segoe UI": 3
+      },
+      "anchor_error_max": 4.4139572119252464e-05,
+      "minimality": "ZERO_DISPLACEMENT",
+      "full_drawing_acceptance": "NOT_PROVEN (zodiac/sign labels and full styles not implemented by isolated geometry harness)"
+    },
+    {
+      "name": "F1",
+      "viewport": 768,
+      "layout": "candidate",
+      "record": "run03/F1-768-candidate.json",
+      "C0": 8,
+      "moved": 8,
+      "movable_geometry_pass": false,
+      "fixed_collisions": [],
+      "complete_geometry_pass": false,
+      "hit_certified": 14,
+      "targets": 19,
+      "native_probes": 323,
+      "native_wrong": 41,
+      "keyboard_targets": 19,
+      "keyboard_fail": [],
+      "font_families": {
+        "Segoe UI Symbol": 24,
+        "Segoe UI": 3
+      },
+      "anchor_error_max": 4.4139572119252464e-05,
+      "minimality": "UNPROVEN",
+      "full_drawing_acceptance": "NOT_PROVEN (zodiac/sign labels and full styles not implemented by isolated geometry harness)"
+    },
+    {
+      "name": "F1",
+      "viewport": 360,
+      "layout": "default",
+      "record": "run03/F1-360-default.json",
+      "C0": 11,
+      "moved": 0,
+      "movable_geometry_pass": false,
+      "fixed_collisions": [],
+      "complete_geometry_pass": false,
+      "hit_certified": 7,
+      "targets": 19,
+      "native_probes": 323,
+      "native_wrong": 91,
+      "keyboard_targets": 19,
+      "keyboard_fail": [],
+      "font_families": {
+        "Segoe UI Symbol": 24,
+        "Segoe UI": 3
+      },
+      "anchor_error_max": 3.137083463841537e-05,
+      "minimality": "ZERO_DISPLACEMENT",
+      "full_drawing_acceptance": "NOT_PROVEN (zodiac/sign labels and full styles not implemented by isolated geometry harness)"
+    },
+    {
+      "name": "F1",
+      "viewport": 360,
+      "layout": "candidate",
+      "record": "run03/F1-360-candidate.json",
+      "C0": 11,
+      "moved": 10,
+      "movable_geometry_pass": false,
+      "fixed_collisions": [],
+      "complete_geometry_pass": false,
+      "hit_certified": 9,
+      "targets": 19,
+      "native_probes": 323,
+      "native_wrong": 81,
+      "keyboard_targets": 19,
+      "keyboard_fail": [],
+      "font_families": {
+        "Segoe UI Symbol": 24,
+        "Segoe UI": 3
+      },
+      "anchor_error_max": 3.137083463841537e-05,
+      "minimality": "UNPROVEN",
+      "full_drawing_acceptance": "NOT_PROVEN (zodiac/sign labels and full styles not implemented by isolated geometry harness)"
+    },
+    {
+      "name": "F3",
+      "viewport": 1440,
+      "layout": "default",
+      "record": "run03/F3-1440-default.json",
+      "C0": 13,
+      "moved": 0,
+      "movable_geometry_pass": false,
+      "fixed_collisions": [],
+      "complete_geometry_pass": false,
+      "hit_certified": 8,
+      "targets": 18,
+      "native_probes": 306,
+      "native_wrong": 114,
+      "keyboard_targets": 18,
+      "keyboard_fail": [],
+      "font_families": {
+        "Segoe UI Symbol": 27,
+        "Segoe UI": 2
+      },
+      "anchor_error_max": 4.4139572119252464e-05,
+      "minimality": "ZERO_DISPLACEMENT",
+      "full_drawing_acceptance": "NOT_PROVEN (zodiac/sign labels and full styles not implemented by isolated geometry harness)"
+    },
+    {
+      "name": "F3",
+      "viewport": 1440,
+      "layout": "candidate",
+      "record": "run03/F3-1440-candidate.json",
+      "C0": 13,
+      "moved": 13,
+      "movable_geometry_pass": false,
+      "fixed_collisions": [],
+      "complete_geometry_pass": false,
+      "hit_certified": 16,
+      "targets": 18,
+      "native_probes": 306,
+      "native_wrong": 21,
+      "keyboard_targets": 18,
+      "keyboard_fail": [],
+      "font_families": {
+        "Segoe UI Symbol": 27,
+        "Segoe UI": 2
+      },
+      "anchor_error_max": 4.4139572119252464e-05,
+      "minimality": "UNPROVEN",
+      "full_drawing_acceptance": "NOT_PROVEN (zodiac/sign labels and full styles not implemented by isolated geometry harness)"
+    },
+    {
+      "name": "F3",
+      "viewport": 768,
+      "layout": "default",
+      "record": "run03/F3-768-default.json",
+      "C0": 13,
+      "moved": 0,
+      "movable_geometry_pass": false,
+      "fixed_collisions": [],
+      "complete_geometry_pass": false,
+      "hit_certified": 8,
+      "targets": 18,
+      "native_probes": 306,
+      "native_wrong": 114,
+      "keyboard_targets": 18,
+      "keyboard_fail": [],
+      "font_families": {
+        "Segoe UI Symbol": 27,
+        "Segoe UI": 2
+      },
+      "anchor_error_max": 4.4139572119252464e-05,
+      "minimality": "ZERO_DISPLACEMENT",
+      "full_drawing_acceptance": "NOT_PROVEN (zodiac/sign labels and full styles not implemented by isolated geometry harness)"
+    },
+    {
+      "name": "F3",
+      "viewport": 768,
+      "layout": "candidate",
+      "record": "run03/F3-768-candidate.json",
+      "C0": 13,
+      "moved": 13,
+      "movable_geometry_pass": false,
+      "fixed_collisions": [],
+      "complete_geometry_pass": false,
+      "hit_certified": 16,
+      "targets": 18,
+      "native_probes": 306,
+      "native_wrong": 21,
+      "keyboard_targets": 18,
+      "keyboard_fail": [],
+      "font_families": {
+        "Segoe UI Symbol": 27,
+        "Segoe UI": 2
+      },
+      "anchor_error_max": 4.4139572119252464e-05,
+      "minimality": "UNPROVEN",
+      "full_drawing_acceptance": "NOT_PROVEN (zodiac/sign labels and full styles not implemented by isolated geometry harness)"
+    },
+    {
+      "name": "F3",
+      "viewport": 360,
+      "layout": "default",
+      "record": "run03/F3-360-default.json",
+      "C0": 15,
+      "moved": 0,
+      "movable_geometry_pass": false,
+      "fixed_collisions": [],
+      "complete_geometry_pass": false,
+      "hit_certified": 6,
+      "targets": 18,
+      "native_probes": 306,
+      "native_wrong": 140,
+      "keyboard_targets": 18,
+      "keyboard_fail": [],
+      "font_families": {
+        "Segoe UI Symbol": 27,
+        "Segoe UI": 2
+      },
+      "anchor_error_max": 1.8041967198591327e-05,
+      "minimality": "ZERO_DISPLACEMENT",
+      "full_drawing_acceptance": "NOT_PROVEN (zodiac/sign labels and full styles not implemented by isolated geometry harness)"
+    },
+    {
+      "name": "F3",
+      "viewport": 360,
+      "layout": "candidate",
+      "record": "run03/F3-360-candidate.json",
+      "C0": 15,
+      "moved": 15,
+      "movable_geometry_pass": false,
+      "fixed_collisions": [],
+      "complete_geometry_pass": false,
+      "hit_certified": 5,
+      "targets": 18,
+      "native_probes": 306,
+      "native_wrong": 75,
+      "keyboard_targets": 18,
+      "keyboard_fail": [],
+      "font_families": {
+        "Segoe UI Symbol": 27,
+        "Segoe UI": 2
+      },
+      "anchor_error_max": 1.8041967198591327e-05,
+      "minimality": "UNPROVEN",
+      "full_drawing_acceptance": "NOT_PROVEN (zodiac/sign labels and full styles not implemented by isolated geometry harness)"
+    },
+    {
+      "name": "F3-max",
+      "viewport": 1440,
+      "layout": "default",
+      "record": "run03/F3-max-1440-default.json",
+      "C0": 20,
+      "moved": 0,
+      "movable_geometry_pass": false,
+      "fixed_collisions": [
+        {
+          "left": "asc",
+          "right": "mc",
+          "gap": 0.0
+        },
+        {
+          "left": "asc",
+          "right": "vertex",
+          "gap": 0.0
+        },
+        {
+          "left": "mc",
+          "right": "vertex",
+          "gap": 0.0
+        },
+        {
+          "left": "dsc",
+          "right": "ic",
+          "gap": 0.0
+        }
+      ],
+      "complete_geometry_pass": false,
+      "hit_certified": 2,
+      "targets": 20,
+      "native_probes": 340,
+      "native_wrong": 234,
+      "keyboard_targets": 20,
+      "keyboard_fail": [],
+      "font_families": {
+        "Segoe UI Symbol": 28,
+        "Segoe UI": 4
+      },
+      "anchor_error_max": 4.4920980523834446e-05,
+      "minimality": "ZERO_DISPLACEMENT",
+      "full_drawing_acceptance": "NOT_PROVEN (zodiac/sign labels and full styles not implemented by isolated geometry harness)"
+    },
+    {
+      "name": "F3-max",
+      "viewport": 1440,
+      "layout": "candidate",
+      "record": "run03/F3-max-1440-candidate.json",
+      "C0": 20,
+      "moved": 20,
+      "movable_geometry_pass": true,
+      "fixed_collisions": [
+        {
+          "left": "asc",
+          "right": "mc",
+          "gap": 0.0
+        },
+        {
+          "left": "asc",
+          "right": "vertex",
+          "gap": 0.0
+        },
+        {
+          "left": "mc",
+          "right": "vertex",
+          "gap": 0.0
+        },
+        {
+          "left": "dsc",
+          "right": "ic",
+          "gap": 0.0
+        }
+      ],
+      "complete_geometry_pass": false,
+      "hit_certified": 20,
+      "targets": 20,
+      "native_probes": 340,
+      "native_wrong": 0,
+      "keyboard_targets": 20,
+      "keyboard_fail": [],
+      "font_families": {
+        "Segoe UI Symbol": 28,
+        "Segoe UI": 4
+      },
+      "anchor_error_max": 4.4920980523834446e-05,
+      "minimality": "FAIL_WITH_WITNESS",
+      "full_drawing_acceptance": "NOT_PROVEN (zodiac/sign labels and full styles not implemented by isolated geometry harness)"
+    },
+    {
+      "name": "F3-max",
+      "viewport": 768,
+      "layout": "default",
+      "record": "run03/F3-max-768-default.json",
+      "C0": 20,
+      "moved": 0,
+      "movable_geometry_pass": false,
+      "fixed_collisions": [
+        {
+          "left": "asc",
+          "right": "mc",
+          "gap": 0.0
+        },
+        {
+          "left": "asc",
+          "right": "vertex",
+          "gap": 0.0
+        },
+        {
+          "left": "mc",
+          "right": "vertex",
+          "gap": 0.0
+        },
+        {
+          "left": "dsc",
+          "right": "ic",
+          "gap": 0.0
+        }
+      ],
+      "complete_geometry_pass": false,
+      "hit_certified": 2,
+      "targets": 20,
+      "native_probes": 340,
+      "native_wrong": 234,
+      "keyboard_targets": 20,
+      "keyboard_fail": [],
+      "font_families": {
+        "Segoe UI Symbol": 28,
+        "Segoe UI": 4
+      },
+      "anchor_error_max": 4.4920980523834446e-05,
+      "minimality": "ZERO_DISPLACEMENT",
+      "full_drawing_acceptance": "NOT_PROVEN (zodiac/sign labels and full styles not implemented by isolated geometry harness)"
+    },
+    {
+      "name": "F3-max",
+      "viewport": 768,
+      "layout": "candidate",
+      "record": "run03/F3-max-768-candidate.json",
+      "C0": 20,
+      "moved": 20,
+      "movable_geometry_pass": true,
+      "fixed_collisions": [
+        {
+          "left": "asc",
+          "right": "mc",
+          "gap": 0.0
+        },
+        {
+          "left": "asc",
+          "right": "vertex",
+          "gap": 0.0
+        },
+        {
+          "left": "mc",
+          "right": "vertex",
+          "gap": 0.0
+        },
+        {
+          "left": "dsc",
+          "right": "ic",
+          "gap": 0.0
+        }
+      ],
+      "complete_geometry_pass": false,
+      "hit_certified": 20,
+      "targets": 20,
+      "native_probes": 340,
+      "native_wrong": 0,
+      "keyboard_targets": 20,
+      "keyboard_fail": [],
+      "font_families": {
+        "Segoe UI Symbol": 28,
+        "Segoe UI": 4
+      },
+      "anchor_error_max": 4.4920980523834446e-05,
+      "minimality": "FAIL_WITH_WITNESS",
+      "full_drawing_acceptance": "NOT_PROVEN (zodiac/sign labels and full styles not implemented by isolated geometry harness)"
+    },
+    {
+      "name": "F3-max",
+      "viewport": 360,
+      "layout": "default",
+      "record": "run03/F3-max-360-default.json",
+      "C0": 20,
+      "moved": 0,
+      "movable_geometry_pass": false,
+      "fixed_collisions": [
+        {
+          "left": "asc",
+          "right": "mc",
+          "gap": 0.0
+        },
+        {
+          "left": "asc",
+          "right": "vertex",
+          "gap": 0.0
+        },
+        {
+          "left": "mc",
+          "right": "vertex",
+          "gap": 0.0
+        },
+        {
+          "left": "dsc",
+          "right": "ic",
+          "gap": 0.0
+        }
+      ],
+      "complete_geometry_pass": false,
+      "hit_certified": 2,
+      "targets": 20,
+      "native_probes": 340,
+      "native_wrong": 302,
+      "keyboard_targets": 20,
+      "keyboard_fail": [],
+      "font_families": {
+        "Segoe UI Symbol": 28,
+        "Segoe UI": 4
+      },
+      "anchor_error_max": 1.7612018233980213e-05,
+      "minimality": "ZERO_DISPLACEMENT",
+      "full_drawing_acceptance": "NOT_PROVEN (zodiac/sign labels and full styles not implemented by isolated geometry harness)"
+    },
+    {
+      "name": "F3-max",
+      "viewport": 360,
+      "layout": "candidate",
+      "record": "run03/F3-max-360-candidate.json",
+      "C0": 20,
+      "moved": 20,
+      "movable_geometry_pass": false,
+      "fixed_collisions": [
+        {
+          "left": "asc",
+          "right": "mc",
+          "gap": 0.0
+        },
+        {
+          "left": "asc",
+          "right": "vertex",
+          "gap": 0.0
+        },
+        {
+          "left": "mc",
+          "right": "vertex",
+          "gap": 0.0
+        },
+        {
+          "left": "dsc",
+          "right": "ic",
+          "gap": 0.0
+        }
+      ],
+      "complete_geometry_pass": false,
+      "hit_certified": 3,
+      "targets": 20,
+      "native_probes": 340,
+      "native_wrong": 68,
+      "keyboard_targets": 20,
+      "keyboard_fail": [],
+      "font_families": {
+        "Segoe UI Symbol": 28,
+        "Segoe UI": 4
+      },
+      "anchor_error_max": 1.7612018233980213e-05,
+      "minimality": "FAIL_WITH_WITNESS",
+      "full_drawing_acceptance": "NOT_PROVEN (zodiac/sign labels and full styles not implemented by isolated geometry harness)"
+    }
+  ],
+  "totals": {
+    "cells": 24,
+    "native_probes": 7446,
+    "native_wrong": 1679,
+    "keyboard_targets": 438,
+    "keyboard_failed": 0,
+    "complete_geometry_cells": 6,
+    "full_matrix_pass": false
+  },
+  "controls": {
+    "G01_actual_B_preserved": true,
+    "G01_old_callback_ignored": true,
+    "G01_alternate_live_toggle": true,
+    "G01_scope": "isolated proposed boundary; actual production coordinator not mounted to this port",
+    "fixed_obstacle_correction": "runner geometry verdict excluded fixed-fixed collisions; this audit adds them without changing prior records",
+    "partial_run01": "10 saved cells, filesystem UNKNOWN during large JSON rewrite; kept as partial, not the complete matrix",
+    "followup01": "aborted on research snapshot selector TypeError before evidence result; fixed in followup02",
+    "run02_fixture_limitation": "F3 angles were changed beyond Analyst definition; run03 v2 restores F1 angles and keeps DSC/IC opposite for close-angle F3max. run02 is exploratory only; no threshold/frame/algorithm tuning.",
+    "source_audit_first_attempt": "metadata JSON mistaken for binary payload, ValidationError; rerun on .bin; golden untouched"
+  },
+  "audited_utc": "2026-10-18T13:01:17.543227+00:00"
+}

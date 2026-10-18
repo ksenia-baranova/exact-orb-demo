@@ -1,0 +1,455 @@
+{
+  "controls": [
+    {
+      "variant": "solid44",
+      "requested": {
+        "x": 22,
+        "y": 22
+      },
+      "actual": {
+        "target": "target",
+        "x": 22,
+        "y": 22,
+        "trusted": true
+      }
+    },
+    {
+      "variant": "solid44",
+      "requested": {
+        "x": 33,
+        "y": 22
+      },
+      "actual": {
+        "target": "target",
+        "x": 33,
+        "y": 22,
+        "trusted": true
+      }
+    },
+    {
+      "variant": "solid44",
+      "requested": {
+        "x": 0,
+        "y": 0
+      },
+      "actual": {
+        "target": "target",
+        "x": 0,
+        "y": 0,
+        "trusted": true
+      }
+    },
+    {
+      "variant": "solid44",
+      "requested": {
+        "x": 43.5,
+        "y": 22
+      },
+      "actual": {
+        "target": "target",
+        "x": 43,
+        "y": 22,
+        "trusted": true
+      }
+    },
+    {
+      "variant": "solid44",
+      "requested": {
+        "x": 44,
+        "y": 22
+      },
+      "actual": {
+        "target": "target",
+        "x": 44,
+        "y": 22,
+        "trusted": true
+      }
+    },
+    {
+      "variant": "narrow",
+      "requested": {
+        "x": 22,
+        "y": 22
+      },
+      "actual": {
+        "target": "target",
+        "x": 22,
+        "y": 22,
+        "trusted": true
+      }
+    },
+    {
+      "variant": "narrow",
+      "requested": {
+        "x": 33,
+        "y": 22
+      },
+      "actual": {
+        "target": "",
+        "x": 33,
+        "y": 22,
+        "trusted": true
+      }
+    },
+    {
+      "variant": "narrow",
+      "requested": {
+        "x": 0,
+        "y": 0
+      },
+      "actual": {
+        "target": "",
+        "x": 0,
+        "y": 0,
+        "trusted": true
+      }
+    },
+    {
+      "variant": "narrow",
+      "requested": {
+        "x": 43.5,
+        "y": 22
+      },
+      "actual": {
+        "target": "",
+        "x": 43,
+        "y": 22,
+        "trusted": true
+      }
+    },
+    {
+      "variant": "narrow",
+      "requested": {
+        "x": 44,
+        "y": 22
+      },
+      "actual": {
+        "target": "",
+        "x": 44,
+        "y": 22,
+        "trusted": true
+      }
+    },
+    {
+      "variant": "overlay",
+      "requested": {
+        "x": 22,
+        "y": 22
+      },
+      "actual": {
+        "target": "target",
+        "x": 22,
+        "y": 22,
+        "trusted": true
+      }
+    },
+    {
+      "variant": "overlay",
+      "requested": {
+        "x": 33,
+        "y": 22
+      },
+      "actual": {
+        "target": "overlay",
+        "x": 33,
+        "y": 22,
+        "trusted": true
+      }
+    },
+    {
+      "variant": "overlay",
+      "requested": {
+        "x": 0,
+        "y": 0
+      },
+      "actual": {
+        "target": "target",
+        "x": 0,
+        "y": 0,
+        "trusted": true
+      }
+    },
+    {
+      "variant": "overlay",
+      "requested": {
+        "x": 43.5,
+        "y": 22
+      },
+      "actual": {
+        "target": "overlay",
+        "x": 43,
+        "y": 22,
+        "trusted": true
+      }
+    },
+    {
+      "variant": "overlay",
+      "requested": {
+        "x": 44,
+        "y": 22
+      },
+      "actual": {
+        "target": "overlay",
+        "x": 44,
+        "y": 22,
+        "trusted": true
+      }
+    },
+    {
+      "variant": "clip43",
+      "requested": {
+        "x": 22,
+        "y": 22
+      },
+      "actual": {
+        "target": "target",
+        "x": 22,
+        "y": 22,
+        "trusted": true
+      }
+    },
+    {
+      "variant": "clip43",
+      "requested": {
+        "x": 33,
+        "y": 22
+      },
+      "actual": {
+        "target": "target",
+        "x": 33,
+        "y": 22,
+        "trusted": true
+      }
+    },
+    {
+      "variant": "clip43",
+      "requested": {
+        "x": 0,
+        "y": 0
+      },
+      "actual": {
+        "target": "target",
+        "x": 0,
+        "y": 0,
+        "trusted": true
+      }
+    },
+    {
+      "variant": "clip43",
+      "requested": {
+        "x": 43.5,
+        "y": 22
+      },
+      "actual": {
+        "target": "",
+        "x": 43,
+        "y": 22,
+        "trusted": true
+      }
+    },
+    {
+      "variant": "clip43",
+      "requested": {
+        "x": 44,
+        "y": 22
+      },
+      "actual": {
+        "target": "",
+        "x": 44,
+        "y": 22,
+        "trusted": true
+      }
+    },
+    {
+      "variant": "without-overlay",
+      "requested": {
+        "x": 22,
+        "y": 22
+      },
+      "actual": {
+        "target": "target",
+        "x": 22,
+        "y": 22,
+        "trusted": true
+      }
+    },
+    {
+      "variant": "without-overlay",
+      "requested": {
+        "x": 33,
+        "y": 22
+      },
+      "actual": {
+        "target": "target",
+        "x": 33,
+        "y": 22,
+        "trusted": true
+      }
+    },
+    {
+      "variant": "without-overlay",
+      "requested": {
+        "x": 0,
+        "y": 0
+      },
+      "actual": {
+        "target": "target",
+        "x": 0,
+        "y": 0,
+        "trusted": true
+      }
+    },
+    {
+      "variant": "without-overlay",
+      "requested": {
+        "x": 43.5,
+        "y": 22
+      },
+      "actual": {
+        "target": "target",
+        "x": 43,
+        "y": 22,
+        "trusted": true
+      }
+    },
+    {
+      "variant": "without-overlay",
+      "requested": {
+        "x": 44,
+        "y": 22
+      },
+      "actual": {
+        "target": "target",
+        "x": 44,
+        "y": 22,
+        "trusted": true
+      }
+    }
+  ],
+  "fault": {
+    "trace": [
+      {
+        "kind": "draw",
+        "name": "F1",
+        "w": 768,
+        "layout": "default",
+        "generation": 1,
+        "C0": [
+          "mercury",
+          "mars",
+          "uranus",
+          "true_node",
+          "south_node",
+          "mean_apog",
+          "selena",
+          "pars_fortune"
+        ]
+      },
+      {
+        "kind": "dispose",
+        "generation": 1
+      },
+      {
+        "kind": "fault-hook-reached"
+      },
+      {
+        "kind": "local-svg-fault",
+        "html": "HTML B: новые подтверждённые факты",
+        "oldSVG": false,
+        "requiresReconciliation": false
+      },
+      {
+        "kind": "stale-callback-ignored",
+        "key": "sun",
+        "gen": 1,
+        "current": 2
+      }
+    ],
+    "html": "HTML B: новые подтверждённые факты",
+    "summary": "B confirmed",
+    "oldSVG": false,
+    "message": "Колесо недоступно; HTML B сохранён"
+  },
+  "live": {
+    "selected": {
+      "key": "sun",
+      "kind": "point"
+    },
+    "connected": true,
+    "trace": [
+      {
+        "kind": "stale-callback-ignored",
+        "key": "sun",
+        "gen": 1,
+        "current": 2
+      },
+      {
+        "kind": "dispose",
+        "generation": 2
+      },
+      {
+        "kind": "draw",
+        "name": "sparse",
+        "w": 768,
+        "layout": "default",
+        "generation": 3,
+        "C0": []
+      },
+      {
+        "kind": "activate",
+        "key": "sun",
+        "objectKind": "point",
+        "selected": {
+          "key": "sun",
+          "kind": "point"
+        },
+        "active": "point-0",
+        "connected": true,
+        "scrollY": 0
+      }
+    ]
+  },
+  "focus": {
+    "retained": {
+      "same": true,
+      "connected": true,
+      "callsSince": 0,
+      "selected": {
+        "key": "sun",
+        "kind": "point"
+      }
+    },
+    "detach": {
+      "oldConnected": false,
+      "active": "BODY"
+    },
+    "clone": {
+      "selected": {
+        "key": "sun",
+        "kind": "point"
+      },
+      "active": "point-0",
+      "connected": true,
+      "note": "clone has no handlers; same key is insufficient"
+    },
+    "reconcile": {
+      "key": "sun",
+      "selected": {
+        "key": "sun",
+        "kind": "point"
+      },
+      "connected": true
+    },
+    "collapse": {
+      "active": "edit",
+      "editorHidden": true,
+      "recoveryVisible": true
+    },
+    "recovery": {
+      "kind": "recovery-get-model",
+      "post": 0
+    }
+  },
+  "ended": "2026-10-18T12:52:03.751Z",
+  "duration_seconds": 18.432
+}

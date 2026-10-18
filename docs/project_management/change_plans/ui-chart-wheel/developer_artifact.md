@@ -114,3 +114,54 @@ Owner отдельно поручил в текущем чате: «Комит �
 **Обязательный следующий шаг:** Manager регистрирует точный опубликованный CriteriaSHA / комплект изменений для **TASK-T-006 и TASK-A-004**. После двух положительных адресных reviews Manager проверяет входы / среду и решает вопрос снятия блокировки. **TASK-D-003 остаётся BLOCKED, T0 не наступает**; Developer не меняет это состояние по результатам своего D004 и не запускает исследование / эксперимент.
 
 **Локальная передача содержательной редакции готова:** 2026-10-17 20:01:32 UTC / 23:01:32 MSK, тот же рабочий сеанс после STARTED. Проверки сохранённой редакции: 50/50 analytical controls; 23 Markdown-файла / 817 локальных ссылок / 72 таблицы и anchors, git diff --check — PASS. Это отметка события готовности, не timesheet / фактические чд всего слота. При публикации exact CriteriaSHA / remote parity передаются отдельно; T006 / A004 и решение Manager ещё впереди.
+
+
+## TASK-D-003 — фактический STARTED / T0 исследования
+
+**Автор / подпись:** Codex / Developer. **STARTED / T0:** 2026-10-18T12:17:04+00:00 / **2026-10-18T15:17:04+03:00 MSK**; системное UTC-время в момент записи начала разрешённой работы, не время старого commit или D004.
+
+**Разрешение:** прямое поручение Owner в текущем чате «обнови ветку; блокировка снята начинай исследование» и опубликованный [Manager §2.16 / промт исследования](manager/prompts/task-d-003-research-start.md) @ `8fb25770169166a3a4e94110eee684bd8b116474`. Повторного предстартового согласования нет. Сводка Manager, gates и чужие артефакты не редактируются; прежние BLOCKED / NOT_OCCURRED ниже относятся к историческим версиям.
+
+**Git-вход:** существующий worktree `ui-chart-wheel-dev/exact-orb-recovered`, `dev/ui-chart-wheel`; `git fetch origin change/ui-chart-wheel` и `git merge --ff-only FETCH_HEAD`, exit 0: `f6f289cda25e7f228dff064175805130cc770b63` → `8fb25770169166a3a4e94110eee684bd8b116474`. Дерево / index до и после чистые; несвязанных изменений нет. Reset / force / очистка не применялись. Материальный вход Manager — `7d11c41875fe1fbcfe0d6e72925f1240570c4b83`; HEAD добавляет только разрешение / оформление Manager, не подменяет критерии и контракт.
+
+**Предметы:** CriteriaSHA `f6f289cda25e7f228dff064175805130cc770b63`; T006 `435337f49b200ca308ae9620efa9902adf1677f9`; A004 `5de9e66c26496880f714f61f78126972dee4fbdd`; Analyst v3 `2634b224894b1046113557bfe241f0a5f2d46f8c`; MainBaseline `535551026af6eedaf2a0aa5c0daa96fa94655ec1`. Источники других ролей взяты из опубликованного Git.
+
+**Срок / бюджет:** целостный пакет до конца **4-го рабочего дня от указанного T0**; рабочий календарь не задан, абсолютный дедлайн не выдумывается. 20–28 рабочих часов всего включая подготовку; весь SVG-spike / harness / данные / измерения ≤6 часов внутри. Неизвестный прежний расход не вычитается как точный остаток; 2,5–3,5 чд не прибавляются к 8–12 чд реализации. Фактическое elapsed исследования будет записано отдельно от неизвестного timesheet; прогноз превышения — Manager до расширения.
+
+**Scope / выход:** T003-G01…05, isolated controls / SVG / реальные доступные измерения, evidence / ограничения, DRAFT drawing ADR / technical sequences, findings / варианты / оценка. Production / engine / API / golden / принятые ADR / нормативные требования / новые зависимости не меняются. После результата назначены TASK-T-004 / TASK-R-001; TechnicalPackageSHA появится после отдельно разрешённой публикации. Commit / push / PR текущего исследования не выполняются без отдельного поручения.
+
+
+## TASK-D-003 — локальный DRAFT technical package, результат исследования
+
+**Автор / подпись:** Codex / Developer, 18.10.2026. **InputSHA:** `8fb25770169166a3a4e94110eee684bd8b116474`. Фактический STARTED / T0 — **15:17:04 MSK**, авторское событие выше. CriteriaSHA `f6f289c` и принятые для исследования T006 `435337f` / A004 `5de9e66` не заменены новым HEAD.
+
+Материалы: [технический report](developer/task_d003_research_report.md), [план D003](developer/task_d003_implementation_plan.md), [DRAFT drawing ADR](developer/drawing_adr_draft.md), technical sequences [001](developer/sequence_diagrams/ui/001-result-renderer-lifecycle.puml) / [002](developer/sequence_diagrams/ui/002-acceptance-selection-focus.puml), [checks](developer/checks.md), [findings](developer/findings.md).
+
+**Результат T003-G01…05:** proposed leaf boundary сохраняет HTML points/aspects B при SVG-fault, блокирует поздний callback A и допускает альтернативный живой renderer. Реальный coordinator подтвердил повтор `source=build` и immutable submitted B при позднем draft C. Source/codec proof отделил уникальность нормального producer от validation-admissible дубликатов и направления пары. В authoritative browser matrix — **24 клетки, 25 снимков, 7 446 native probes / 1 679 неверных owner/outcome, 438 keyboard targets / 0 ошибок**. Дополнительно: 50 аналитических калибровок, 26 source controls, 8 codec/source records, 4 orientation records, 127 независимых arc-return records. Проверенный dense heuristic не прошёл; полного drawing или production PASS нет.
+
+Данные / actual coordinates / fonts / bounds / errors / screenshots: [матрица v2](developer/evidence/task_d003_research/matrix_v2.md), [inputs/spec v2](developer/evidence/task_d003_research/inputs_manifest_v2.json), [drawing post-audit](developer/evidence/task_d003_research/drawing_audit_v2.json). История partial run01 и exploratory run02 сохранена; authoritative run03 исправляет отклонение F3 fixture без изменения порогов / радиусов / heuristic. Полные факты и ограничения — в report.
+
+**Timebox / срок:** spike остановлен по достаточному evidence через **0,6023 elapsed часа** от 12:25:09 UTC; probe, harness, данные, исправления и измерения включены, лимит ≤6 часов соблюдён. [Stop record](developer/evidence/task_d003_research/experiment_stop.json). Это elapsed текущего опыта, не timesheet всей подготовки. Итоговый [session record](developer/evidence/task_d003_research/research_session.json) фиксирует длительность текущего сеанса отдельно. Пакет оформлен до конца четвёртого рабочего дня от T0; произвольный календарный дедлайн не назначен. Согласованные 20–28 часов D003 с прежней подготовкой сохранены, неизвестный расход не вычитается как точный остаток.
+
+**Оценка / вопросы Manager:** report предлагает заменить предварительный общий прогноз 8–12 на **9–14 чд**. Confidence средняя по controller / ниже средней по графике; непересекающаяся декомпозиция уже включает D003 2,5–3,5 чд и SVG timebox. Это предложение, не утверждённое увеличение бюджета и не прибавление к старой оценке. Конкретные новые вопросы: G03 fresh matched recovery двух вкладок — подтверждение локальной цели при неизвестном авторе commit; G02 policy для неоднозначной persisted pair. Drawing/Q44 варианты не являются принятым fallback. Адресаты и различающие примеры записаны в report / ADR; сообщения другим чатам не отправлялись, DP не редактировались.
+
+**Checks:** existing Node tests **141/141**, pytest projector/codec **66 passed**, остальные команды и фактические результаты — в checks. Full pytest, mounted production browser/HTTPS, полный zodiac/palette/styles, zoom/device, PlantUML render и непроверенные lifecycle/recovery ветви явно NOT RUN. Номер ADR не зарезервирован: реестр заканчивается 0041, кандидат 0042 проверяется заново перед нормативной публикацией.
+
+**Изменённые пути:** только developer_artifact.md; developer/task_d003_implementation_plan.md, implementation_plan.md, findings.md, checks.md; новые developer/task_d003_research_report.md, drawing_adr_draft.md, две sequences в developer/sequence_diagrams/ui/ и isolated developer/evidence/task_d003_research/**. Полный перечень и hashes — [package manifest](developer/evidence/task_d003_research/package_manifest.json). Старые handoffs / JSON / manifests, Manager / Analyst / Tester, gates, production и golden сохранены.
+
+**Публикация / следующий шаг:** пакет **локальный DRAFT, commit / push / PR не выполнялись**, TechnicalPackageSHA пока отсутствует. Прежние Git-поручения завершили D004; текущая задача разрешает обновление ветки и исследование. После отдельного разрешения публикации передать точный TechnicalPackageSHA Manager → уже назначенные **TASK-T-004 и TASK-R-001** на одной версии; Analyst адресно по новому G03 случаю, затем решение Manager перед G3. Самостоятельных регистраций READY / APPROVED / DONE, production, принятия fallback или закрытия DP / TEST-FIND-WHEEL-002 нет.
+
+
+## TASK-D-003 — публикационная версия технического пакета
+
+**Автор / подпись:** Codex / Developer, 18.10.2026. **Отдельное поручение Owner:** «Комит пуш в dev/ui-chart-wheel; merge в change». Разрешены commit / push этой версии и Git-интеграция в change/ui-chart-wheel. Scope остаётся собственным техническим пакетом TASK-D-003; поручение не принимает DRAFT ADR / оценку / fallback, не меняет Manager-owned статусы / gates и не разрешает production implementation.
+
+**Точная версия TechnicalPackageSHA** — commit, впервые добавляющий этот заголовок. Однозначный Git-resolver после создания коммита:
+
+```text
+git log --reverse --format=%H -G '^## TASK-D-003 — публикационная версия технического пакета$' -- docs/project_management/change_plans/ui-chart-wheel/developer_artifact.md
+```
+
+Исходные `local / NOT_CREATED / EMPTY index` в предыдущем handoff, package manifest и validation JSON описывают snapshot перед публикацией и сохраняются как evidence; они не подменяют фактические commit/push/merge. Публикационный проход пересчитывает hashes после добавления этой записи, проверяет точный staged scope / LF-or-binary blobs и передаёт фактические SHA / parity в итоговом Git-handoff. MergeSHA интеграции фиксируется отдельно от TechnicalPackageSHA и не является approval исследовательских выводов.
+
+**После публикации:** Manager получает [report / состав / ограничения / оценку](developer/task_d003_research_report.md) на точном TechnicalPackageSHA; следующие предметные проверки — TASK-T-004 и TASK-R-001 на одной версии, Analyst адресно по новому G03 случаю. В этом Developer-проходе сводка Manager / DP / чужие артефакты не редактируются.
