@@ -1,0 +1,650 @@
+{
+  "task_id": "TASK-T-006",
+  "author": "Codex / Tester",
+  "date": "2026-10-18",
+  "started_utc": "2026-10-18T10:48:35Z",
+  "started_msk": "2026-10-18 13:48:35",
+  "estimate_hours": [
+    2,
+    4
+  ],
+  "confidence": "MEDIUM",
+  "target_workdays": 1,
+  "feasible_confirmed_before_start": true,
+  "deadline": "one working day after exact handoff; working calendar not specified",
+  "verdict": "SUITABLE_FOR_BOUNDED_RESEARCH_IN_TESTER_SCOPE",
+  "pins": {
+    "head": "8b94195b8aa1c101b356ae860ebeb60a29c9b88a",
+    "review_input": "8a05b73c2af2c36043f9ede04834dd3867f4a686",
+    "criteria": "f6f289cda25e7f228dff064175805130cc770b63",
+    "developer_input": "aa067201dc509f19bbe670778a9fa9470cf0bfb0",
+    "v1": "11a703ed6a01eb368f0f0ba23dc23f1e90fac81f",
+    "tester_t005": "71aa21cb79b046d25c77f68c6e87a9e48bd4c7fe",
+    "analyst_a003": "4055a9cb2bb18919c776c9d4e8585e2408a638c7",
+    "analyst_v3": "2634b224894b1046113557bfe241f0a5f2d46f8c",
+    "main": "535551026af6eedaf2a0aa5c0daa96fa94655ec1",
+    "tester_t003": "c59cc3f68e7769841134801dc125633decade032",
+    "developer_consultation": "f9c70f75ea815b2f3bf7e01426ee5afe65b31606"
+  },
+  "independent_expected_order": "51 own analytic controls executed before first Developer controls source read / replay; definitions from T005/A003/pinned v2, no Developer imports",
+  "input_audit": {
+    "sources": [
+      {
+        "sha": "8b94195b8aa1c101b356ae860ebeb60a29c9b88a",
+        "path": "AGENTS.md",
+        "sha256_lf": "e5737a9b86f96483e7bad691bbfb3e179b00763bcbc62077141b4618d1c37b95"
+      },
+      {
+        "sha": "8b94195b8aa1c101b356ae860ebeb60a29c9b88a",
+        "path": "docs/development_approach/skills/tester/SKILL.md",
+        "sha256_lf": "0bd3c2c436fce234cc90a1011b3d61db205d9db7eb90766b5f9eb577eb3725dc"
+      },
+      {
+        "sha": "8b94195b8aa1c101b356ae860ebeb60a29c9b88a",
+        "path": "docs/development_approach/process/process.md",
+        "sha256_lf": "02893a5d14d6e72d4af906155992a7829477902af823146b6f22eac8b1b354ab"
+      },
+      {
+        "sha": "8b94195b8aa1c101b356ae860ebeb60a29c9b88a",
+        "path": "docs/development_approach/roles.md",
+        "sha256_lf": "da52c74c4c07de8006e745d62193ce6fc5dab490fc24282ba2f43b15aa8b3393"
+      },
+      {
+        "sha": "8b94195b8aa1c101b356ae860ebeb60a29c9b88a",
+        "path": "docs/development_approach/development-approach.md",
+        "sha256_lf": "0ace85fe9301a4c03e236786e95ab12803e58904e8255ad77f12c1751d83c567"
+      },
+      {
+        "sha": "8b94195b8aa1c101b356ae860ebeb60a29c9b88a",
+        "path": "docs/project_management/change_plans/ui-chart-wheel/manager_artifact.md",
+        "sha256_lf": "cefe701c1e116ffc532d0bcd8c85a07f6ad4c5f57108e504eda4ee3b96d35703"
+      },
+      {
+        "sha": "8b94195b8aa1c101b356ae860ebeb60a29c9b88a",
+        "path": "docs/project_management/change_plans/ui-chart-wheel/manager/prompts/task-t-006-criteria-v2-review.md",
+        "sha256_lf": "966513966a0412542a8173c8f89a4b96745ab5abc8030f935aa4e2896da8a56a"
+      },
+      {
+        "sha": "f6f289cda25e7f228dff064175805130cc770b63",
+        "path": "docs/project_management/change_plans/ui-chart-wheel/developer/task_d003_implementation_plan.md",
+        "sha256_lf": "4dfda5c1927335eeee3262904339e3271393ffb5b42ac6d6a95cb30369cb0b66"
+      },
+      {
+        "sha": "f6f289cda25e7f228dff064175805130cc770b63",
+        "path": "docs/project_management/change_plans/ui-chart-wheel/developer_artifact.md",
+        "sha256_lf": "ed4b55deb3483a05307506d570799b76503c9ef9025167b4d121622663b460c0"
+      },
+      {
+        "sha": "f6f289cda25e7f228dff064175805130cc770b63",
+        "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d004_controls.py",
+        "sha256_lf": "4a8524b046e9b9ff83a431e222a9a4e12b7f802fe9f2e77db76cc2bb0e021ce0"
+      },
+      {
+        "sha": "f6f289cda25e7f228dff064175805130cc770b63",
+        "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d004_controls.json",
+        "sha256_lf": "5e469a38d05f92d9f709f1f9c1e22aff3b923d07db1ee1d587fc26db854f31cc"
+      },
+      {
+        "sha": "71aa21cb79b046d25c77f68c6e87a9e48bd4c7fe",
+        "path": "docs/project_management/change_plans/ui-chart-wheel/tester_artifact.md",
+        "sha256_lf": "9a322cd321d0d6a47f3baf64f5d1d1bd5e79bbbd9dbccfc09c18c7fe8707f7db"
+      },
+      {
+        "sha": "71aa21cb79b046d25c77f68c6e87a9e48bd4c7fe",
+        "path": "docs/project_management/change_plans/ui-chart-wheel/tester/task_t005_review.md",
+        "sha256_lf": "358eeeacb355c953fc9cae3f86f23911baa28d6c67fcda032d8aa7e5bc3a4186"
+      },
+      {
+        "sha": "71aa21cb79b046d25c77f68c6e87a9e48bd4c7fe",
+        "path": "docs/project_management/change_plans/ui-chart-wheel/tester/evidence/task_t005_review.json",
+        "sha256_lf": "15c1925580b78b2d5cc9e691c1827c440e0402b799610bb1c6112375d6ea5ceb"
+      },
+      {
+        "sha": "4055a9cb2bb18919c776c9d4e8585e2408a638c7",
+        "path": "docs/project_management/change_plans/ui-chart-wheel/analyst_artifact.md",
+        "sha256_lf": "ac07b2beac454bc9795f9f4bca8a551cc202a9d0ba985502c830591466a5961e"
+      },
+      {
+        "sha": "2634b224894b1046113557bfe241f0a5f2d46f8c",
+        "path": "docs/project_management/change_plans/ui-chart-wheel/analyst/requirements.md",
+        "sha256_lf": "3cfd3dadba7213465ffbec8da866cefd496905792ec971671bf920b4c2ddd684"
+      },
+      {
+        "sha": "2634b224894b1046113557bfe241f0a5f2d46f8c",
+        "path": "docs/project_management/change_plans/ui-chart-wheel/analyst/scenarios.md",
+        "sha256_lf": "b3a7942f9feb76877f43f95f04a33ba44a7931620a5da6226f38991bb797dccd"
+      },
+      {
+        "sha": "2634b224894b1046113557bfe241f0a5f2d46f8c",
+        "path": "docs/project_management/change_plans/ui-chart-wheel/analyst/findings.md",
+        "sha256_lf": "4640af07d7b09a284e4cf5abfb28e79372199c823c7171d0d307325982b776f5"
+      },
+      {
+        "sha": "2634b224894b1046113557bfe241f0a5f2d46f8c",
+        "path": "docs/project_management/change_plans/ui-chart-wheel/analyst/package_manifest.json",
+        "sha256_lf": "ef672dd4935e8b15f2b14dbd7aed80aff0c4f8fd5e2c5e26bf1e3f9bb7640bf0"
+      },
+      {
+        "sha": "2634b224894b1046113557bfe241f0a5f2d46f8c",
+        "path": "docs/project_management/change_plans/ui-chart-wheel/analyst/sequence_diagrams/ui/001-chart-presentation.puml",
+        "sha256_lf": "a2062567689495f8a9a4b16bcb9616e7b8ef3d12a7421a44135a721bd25d7116"
+      },
+      {
+        "sha": "2634b224894b1046113557bfe241f0a5f2d46f8c",
+        "path": "docs/project_management/change_plans/ui-chart-wheel/analyst/sequence_diagrams/ui/002-wheel-table-selection.puml",
+        "sha256_lf": "af1fb9396708bd728a336edcbe4e37ad6db04fdeba03d12f50483e90e0a915c5"
+      },
+      {
+        "sha": "2634b224894b1046113557bfe241f0a5f2d46f8c",
+        "path": "docs/project_management/change_plans/ui-chart-wheel/analyst/sequence_diagrams/ui/003-edit-and-recovery.puml",
+        "sha256_lf": "a7bee13c5502ddde382630affe76c0cfb3ba3c81f9b3c622e40f27f1fbfac610"
+      },
+      {
+        "sha": "535551026af6eedaf2a0aa5c0daa96fa94655ec1",
+        "path": "docs/requirements/README.md",
+        "sha256_lf": "00e12680be96345feccb3b16e4efba64013ed97a72f724baf29cba57458e12bc"
+      },
+      {
+        "sha": "535551026af6eedaf2a0aa5c0daa96fa94655ec1",
+        "path": "docs/requirements/http_api.md",
+        "sha256_lf": "4e02a9db151b2fe728fef3ca3832c1a78c7dfebded26063053445541d920a55c"
+      },
+      {
+        "sha": "535551026af6eedaf2a0aa5c0daa96fa94655ec1",
+        "path": "docs/requirements/current/ui/birth-form-and-facts.md",
+        "sha256_lf": "36a534f92b826454c0f145c6ea1acc92ab95e08e31bef17221f4005bb18fac1b"
+      },
+      {
+        "sha": "535551026af6eedaf2a0aa5c0daa96fa94655ec1",
+        "path": "docs/requirements/current/ui/scenarios.md",
+        "sha256_lf": "ee737e0e7cbe20a8bdee3c85e9d6fa35155ef151069ec6057d1c757bbfd54353"
+      }
+    ],
+    "historical_checks": {
+      "T005": {
+        "source_hashes": 16,
+        "output_hashes": 2,
+        "output_sha": "71aa21cb79b046d25c77f68c6e87a9e48bd4c7fe"
+      },
+      "T003": {
+        "source_hashes": 42,
+        "output_hashes": 2,
+        "output_sha": "c59cc3f68e7769841134801dc125633decade032"
+      },
+      "preparation_output_hashes_at_v1": 3
+    },
+    "manifests": {
+      "analyst": 9,
+      "developer": 9
+    },
+    "d004_payload_hashes": 3,
+    "d004_historical_developer_files": 11,
+    "previous_tester_files": 12,
+    "previous_index_prefix_sha256_lf": "9a322cd321d0d6a47f3baf64f5d1d1bd5e79bbbd9dbccfc09c18c7fe8707f7db",
+    "developer_records_independently_compared": 50,
+    "shared_contract_code_tests": "UNCHANGED",
+    "manager": "UNCHANGED",
+    "registration_paths": 5,
+    "developer_scope_paths": 4,
+    "tester_scope_paths": 4
+  },
+  "independent_controls": [
+    {
+      "id": "G-anchor-0.5",
+      "expected": true,
+      "actual": true,
+      "status": "PASS_ANALYTIC_ONLY"
+    },
+    {
+      "id": "G-anchor-diagonal-outside",
+      "expected": false,
+      "actual": false,
+      "status": "PASS_ANALYTIC_ONLY"
+    },
+    {
+      "id": "G-anchor-3-4-5",
+      "expected": true,
+      "actual": true,
+      "status": "PASS_ANALYTIC_ONLY"
+    },
+    {
+      "id": "G-affine-css-frame",
+      "expected": [
+        24,
+        5
+      ],
+      "actual": [
+        24,
+        5
+      ],
+      "status": "PASS_ANALYTIC_ONLY"
+    },
+    {
+      "id": "G-diagonal-squared",
+      "expected": "9/2",
+      "actual": "9/2",
+      "status": "PASS_ANALYTIC_ONLY"
+    },
+    {
+      "id": "G-gap-boundary",
+      "expected": true,
+      "actual": true,
+      "status": "PASS_ANALYTIC_ONLY"
+    },
+    {
+      "id": "G-gap-1.99",
+      "expected": false,
+      "actual": false,
+      "status": "PASS_ANALYTIC_ONLY"
+    },
+    {
+      "id": "G-touch",
+      "expected": 0,
+      "actual": 0,
+      "status": "PASS_ANALYTIC_ONLY"
+    },
+    {
+      "id": "G-union-hole",
+      "expected": [
+        16,
+        0
+      ],
+      "actual": [
+        16,
+        0
+      ],
+      "status": "PASS_ANALYTIC_ONLY"
+    },
+    {
+      "id": "G-selected-contour",
+      "expected": false,
+      "actual": false,
+      "status": "PASS_ANALYTIC_ONLY"
+    },
+    {
+      "id": "G-region-boundary",
+      "expected": true,
+      "actual": true,
+      "status": "PASS_ANALYTIC_ONLY"
+    },
+    {
+      "id": "G-region-outer",
+      "expected": false,
+      "actual": false,
+      "status": "PASS_ANALYTIC_ONLY"
+    },
+    {
+      "id": "G-region-inner",
+      "expected": false,
+      "actual": false,
+      "status": "PASS_ANALYTIC_ONLY"
+    },
+    {
+      "id": "G-svg-clip",
+      "expected": false,
+      "actual": false,
+      "status": "PASS_ANALYTIC_ONLY"
+    },
+    {
+      "id": "G-svg-clip-edge",
+      "expected": true,
+      "actual": true,
+      "status": "PASS_ANALYTIC_ONLY"
+    },
+    {
+      "id": "G-page-vs-svg",
+      "expected": [
+        true,
+        false
+      ],
+      "actual": [
+        true,
+        false
+      ],
+      "status": "PASS_ANALYTIC_ONLY"
+    },
+    {
+      "id": "G-frozen-original-conflict-set",
+      "expected": [
+        "a",
+        "b"
+      ],
+      "actual": [
+        "a",
+        "b"
+      ],
+      "status": "PASS_ANALYTIC_ONLY"
+    },
+    {
+      "id": "G-hit-overlap-not-visual-conflict",
+      "expected": [],
+      "actual": [],
+      "status": "PASS_ANALYTIC_ONLY"
+    },
+    {
+      "id": "L-18",
+      "expected": [
+        "FEASIBLE",
+        "STEP_PASS",
+        "TIGHT_PASS"
+      ],
+      "actual": [
+        "FEASIBLE",
+        "STEP_PASS",
+        "TIGHT_PASS"
+      ],
+      "status": "PASS_ANALYTIC_ONLY"
+    },
+    {
+      "id": "L-20",
+      "expected": [
+        "FEASIBLE",
+        "STEP_FAIL",
+        "TIGHT_FAIL"
+      ],
+      "actual": [
+        "FEASIBLE",
+        "STEP_FAIL",
+        "TIGHT_FAIL"
+      ],
+      "status": "PASS_ANALYTIC_ONLY"
+    },
+    {
+      "id": "L-19",
+      "expected": [
+        "FEASIBLE",
+        "STEP_FAIL",
+        "TIGHT_FAIL"
+      ],
+      "actual": [
+        "FEASIBLE",
+        "STEP_FAIL",
+        "TIGHT_FAIL"
+      ],
+      "status": "PASS_ANALYTIC_ONLY"
+    },
+    {
+      "id": "L-fraction",
+      "expected": [
+        "FEASIBLE",
+        "STEP_PASS",
+        "TIGHT_FAIL"
+      ],
+      "actual": [
+        "FEASIBLE",
+        "STEP_PASS",
+        "TIGHT_FAIL"
+      ],
+      "status": "PASS_ANALYTIC_ONLY"
+    },
+    {
+      "id": "L-subpixel-tight",
+      "expected": [
+        "FEASIBLE",
+        "STEP_PASS",
+        "TIGHT_PASS"
+      ],
+      "actual": [
+        "FEASIBLE",
+        "STEP_PASS",
+        "TIGHT_PASS"
+      ],
+      "status": "PASS_ANALYTIC_ONLY"
+    },
+    {
+      "id": "L-subpixel-excess",
+      "expected": [
+        "FEASIBLE",
+        "STEP_PASS",
+        "TIGHT_FAIL"
+      ],
+      "actual": [
+        "FEASIBLE",
+        "STEP_PASS",
+        "TIGHT_FAIL"
+      ],
+      "status": "PASS_ANALYTIC_ONLY"
+    },
+    {
+      "id": "L-zero",
+      "expected": [
+        "FEASIBLE",
+        "N/A",
+        "N/A"
+      ],
+      "actual": [
+        "FEASIBLE",
+        "N/A",
+        "N/A"
+      ],
+      "status": "PASS_ANALYTIC_ONLY"
+    },
+    {
+      "id": "L-rational-circle-prefix",
+      "expected": true,
+      "actual": true,
+      "status": "PASS_ANALYTIC_ONLY"
+    },
+    {
+      "id": "L-chord-prefix-invalid",
+      "expected": false,
+      "actual": false,
+      "status": "PASS_ANALYTIC_ONLY"
+    },
+    {
+      "id": "F-glyph-equality",
+      "expected": true,
+      "actual": true,
+      "status": "PASS_ANALYTIC_ONLY"
+    },
+    {
+      "id": "F-R-equality",
+      "expected": true,
+      "actual": true,
+      "status": "PASS_ANALYTIC_ONLY"
+    },
+    {
+      "id": "F-glyph-below",
+      "expected": false,
+      "actual": false,
+      "status": "PASS_ANALYTIC_ONLY"
+    },
+    {
+      "id": "F-R-below",
+      "expected": false,
+      "actual": false,
+      "status": "PASS_ANALYTIC_ONLY"
+    },
+    {
+      "id": "F-scale-half",
+      "expected": false,
+      "actual": false,
+      "status": "PASS_ANALYTIC_ONLY"
+    },
+    {
+      "id": "F-em16-ink12",
+      "expected": true,
+      "actual": true,
+      "status": "PASS_ANALYTIC_ONLY"
+    },
+    {
+      "id": "F-translation-keeps-em",
+      "expected": 256,
+      "actual": 256,
+      "status": "PASS_ANALYTIC_ONLY"
+    },
+    {
+      "id": "F-tofu-readability",
+      "expected": "READABILITY_FAIL",
+      "actual": "READABILITY_FAIL",
+      "status": "PASS_ANALYTIC_ONLY"
+    },
+    {
+      "id": "F-unknown-font",
+      "expected": "UNPROVEN",
+      "actual": "UNPROVEN",
+      "status": "PASS_ANALYTIC_ONLY"
+    },
+    {
+      "id": "F-recorded-supported-fallback",
+      "expected": "SIZE_PASS",
+      "actual": "SIZE_PASS",
+      "status": "PASS_ANALYTIC_ONLY"
+    },
+    {
+      "id": "H-full44",
+      "expected": true,
+      "actual": true,
+      "status": "PASS_ANALYTIC_ONLY"
+    },
+    {
+      "id": "H-width43",
+      "expected": false,
+      "actual": false,
+      "status": "PASS_ANALYTIC_ONLY"
+    },
+    {
+      "id": "H-narrow",
+      "expected": false,
+      "actual": false,
+      "status": "PASS_ANALYTIC_ONLY"
+    },
+    {
+      "id": "H-overlay-off-centre",
+      "expected": false,
+      "actual": false,
+      "status": "PASS_ANALYTIC_ONLY"
+    },
+    {
+      "id": "H-no-overlay-pair",
+      "expected": true,
+      "actual": true,
+      "status": "PASS_ANALYTIC_ONLY"
+    },
+    {
+      "id": "H-tiny-overlay-between-samples",
+      "expected": false,
+      "actual": false,
+      "status": "PASS_ANALYTIC_ONLY"
+    },
+    {
+      "id": "H-half-open-edge",
+      "expected": [
+        true,
+        false
+      ],
+      "actual": [
+        true,
+        false
+      ],
+      "status": "PASS_ANALYTIC_ONLY"
+    },
+    {
+      "id": "H-wrong-owner",
+      "expected": false,
+      "actual": false,
+      "status": "PASS_ANALYTIC_ONLY"
+    },
+    {
+      "id": "H-focus-retained",
+      "expected": true,
+      "actual": true,
+      "status": "PASS_ANALYTIC_ONLY"
+    },
+    {
+      "id": "H-focus-recreated-same-key",
+      "expected": false,
+      "actual": false,
+      "status": "PASS_ANALYTIC_ONLY"
+    },
+    {
+      "id": "H-focus-detached",
+      "expected": false,
+      "actual": false,
+      "status": "PASS_ANALYTIC_ONLY"
+    },
+    {
+      "id": "H-focus-forbidden-transfer",
+      "expected": false,
+      "actual": false,
+      "status": "PASS_ANALYTIC_ONLY"
+    },
+    {
+      "id": "H-focus-external-same-key",
+      "expected": true,
+      "actual": true,
+      "status": "PASS_ANALYTIC_ONLY"
+    },
+    {
+      "id": "H-focus-removed-fallback",
+      "expected": true,
+      "actual": true,
+      "status": "PASS_ANALYTIC_ONLY"
+    }
+  ],
+  "independent_control_count": 51,
+  "developer_calibrations_replay": {
+    "command": "python -X utf8 docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d004_controls.py --calibrations-only",
+    "exit_code": 0,
+    "actual": "TASK_D004_ANALYTICAL_OK cases=50/50 no_layout_algorithm no_SVG no_browser"
+  },
+  "docs": {
+    "result": "TASK_T006_DOCS_OK",
+    "documents": 2,
+    "local_links": 44,
+    "tables": 4,
+    "anchors": "VALID"
+  },
+  "output_sha256_lf": {
+    "docs/project_management/change_plans/ui-chart-wheel/tester_artifact.md": "8b2c31454783323b91e73f44e890ec050fa7f6346fec5057b024d3caa0e19ac5",
+    "docs/project_management/change_plans/ui-chart-wheel/tester/task_t006_review.md": "28d1cb7607c05bfbcdadfa6c0a237992d933dc87918607171fea6a486d72c76d",
+    "docs/project_management/change_plans/ui-chart-wheel/tester/evidence/task_t006_checks.py": "ebde9728f5b317515740a14723bd5a8b4ce2d7940f83263489db655411ffff36"
+  },
+  "owner_numbers_preserved": [
+    0.5,
+    2,
+    1,
+    16,
+    12,
+    44
+  ],
+  "documentary_return_items": {
+    "T005-R01": "DEFINITION_RESOLVED",
+    "T005-R02": "DEFINITION_RESOLVED",
+    "T005-R03": "MEASURABLE_DEFINITION_RESOLVED; semantic choice remains A004",
+    "T005-N01": "PROTOCOL_DEFINED; native evidence future"
+  },
+  "not_run": [
+    "SVG/browser experiment",
+    "general curved-path verifier",
+    "actual fonts / glyph bounds",
+    "native pointer / keyboard",
+    "live DOM focus",
+    "production / mounted UI",
+    "Node / pytest / HTTPS",
+    "PUML rendering"
+  ],
+  "remaining_evidence_owners": {
+    "Developer_TASK_D003": "fixed fixture frame/radii/fonts, path certificate, full matrix / measurements and technical package",
+    "Analyst_TASK_A004": "compatibility of G/L/F/H choices with v3 / Owner scope",
+    "Manager": "register exact publication; decide D003 dependency only after positive T006/A004 and input/environment readiness",
+    "Tester_TASK_T004": "separate post-research review; TEST-FIND-WHEEL-002 remains OPEN"
+  },
+  "task_d003": "BLOCKED; ResumeStatus=NOT_STARTED; T0 absent",
+  "publication": {
+    "authorization": "Owner separately requested commit/push to test/ui-chart-wheel then merge into change/ui-chart-wheel",
+    "pre_authorization_snapshot": {
+      "commit": "NOT_CREATED",
+      "push": "NOT_RUN",
+      "pr": "NOT_CREATED"
+    },
+    "source_sha_resolver": "git log --reverse --format=%H -G '^### Публикация и интеграция review TASK-T-006$' -- docs/project_management/change_plans/ui-chart-wheel/tester_artifact.md (first line)",
+    "verification": "Compare local/remote test SHA; record PR and merge SHA; verify result SourceSHA is ancestor of origin/change/ui-chart-wheel; report actual results to Owner",
+    "change_before_integration": "5de9e66c26496880f714f61f78126972dee4fbdd",
+    "change_delta_from_review_input": [
+      "docs/project_management/change_plans/ui-chart-wheel/analyst_artifact.md"
+    ]
+  },
+  "historical_evidence": "CHECKED_AT_RECORDED_SHAS_NOT_REBASED",
+  "foreign_files_changed": false
+}
