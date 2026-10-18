@@ -1,0 +1,15 @@
+{
+  "stopped_utc": "2026-10-18T13:01:17.365150+00:00",
+  "started_utc": "2026-10-18T12:25:09.174356+00:00",
+  "elapsed_hours_including_harness_data_repairs_measurements": 0.6022752205555556,
+  "timebox_hours": 6,
+  "reason": "sufficient reproducible counterexamples; no further layout tuning after stop",
+  "author": "Codex / Developer",
+  "authoritative_matrix": "run03/browser_matrix.json",
+  "previous_attempts_preserved": [
+    "browser_matrix.json (run01 partial)",
+    "run02/ (exploratory fixture revision)",
+    "followup02/controls.json (actual fixture B port controls)"
+  ],
+  "production_changes": false
+}

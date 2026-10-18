@@ -1,0 +1,36 @@
+{
+  "task": "TASK-D-003",
+  "input_sha": "8fb25770169166a3a4e94110eee684bd8b116474",
+  "branch": "dev/ui-chart-wheel",
+  "published": false,
+  "pins_ancestry": 5,
+  "historical_manifests": "9/9 + 9/9 at source Git commits; manifests unchanged",
+  "sources": 18,
+  "docs": 31,
+  "links": 995,
+  "tables": 87,
+  "puml_structural": [
+    "001-result-renderer-lifecycle.puml",
+    "002-acceptance-selection-focus.puml"
+  ],
+  "puml_render": "NOT_RUN; Java/PlantUML unavailable in inspected environment",
+  "adr_current_max": 41,
+  "scope": "Developer only; Manager/foreign roles/production/contracts/golden unchanged",
+  "index": "EMPTY",
+  "git_diff_check": {
+    "exit": 0,
+    "stdout": "",
+    "stderr": "warning: in the working copy of 'docs/project_management/change_plans/ui-chart-wheel/developer/checks.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'docs/project_management/change_plans/ui-chart-wheel/developer_artifact.md', LF will be replaced by CRLF the next time Git touches it\n"
+  },
+  "matrix": {
+    "cells": 24,
+    "native_probes": 7446,
+    "native_wrong": 1679,
+    "keyboard_targets": 438,
+    "keyboard_failed": 0,
+    "complete_geometry_cells": 6,
+    "full_matrix_pass": false
+  },
+  "experiment_hours": 0.6022752205555556,
+  "limitations": "see report; no production acceptance or global layout impossibility claim"
+}

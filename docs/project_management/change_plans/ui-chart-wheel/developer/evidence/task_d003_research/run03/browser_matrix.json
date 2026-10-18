@@ -1,0 +1,189 @@
+{
+  "meta": {
+    "browser": "155.0.8059.40",
+    "headless": true,
+    "executable": "C:/Program Files/Google/Chrome/Application/chrome.exe",
+    "os": "win32 10.0.26200",
+    "node": "v24.19.0",
+    "viewportHeight": 1200,
+    "deviceScaleFactor": 1,
+    "zoom": "CSS visualViewport.scale measured per record",
+    "started": "2026-10-18T12:59:20.422Z",
+    "inputs_sha256": {
+      "fixtures_v2.json": "840e18fb459ef114c9d9a805f30eb6c668aa90eaaa012ae264be71f2a70cebc7",
+      "experiment_spec_v2.json": "1dc7597e3c84082bd75c3a334d08a6f901bef8a5bdb47a4e55eff29dd1e0b7e1"
+    },
+    "input_sha": "8fb25770169166a3a4e94110eee684bd8b116474",
+    "ended": "2026-10-18T12:59:41.391Z"
+  },
+  "records": [
+    {
+      "name": "sparse",
+      "viewport": 1440,
+      "layout": "default",
+      "file": "sparse-1440-default.json",
+      "sha256": "04abcd99a2a2bafe83a0f3a60bda3ae1936086ad8cf491f931f9816176396c71"
+    },
+    {
+      "name": "sparse",
+      "viewport": 1440,
+      "layout": "candidate",
+      "file": "sparse-1440-candidate.json",
+      "sha256": "49b5071c9815b6695a1984b5112b481bf703ea4eaaef1417ddb2628a365e09cd"
+    },
+    {
+      "name": "sparse",
+      "viewport": 768,
+      "layout": "default",
+      "file": "sparse-768-default.json",
+      "sha256": "5c05018eacd7aaad71497dc789d6b0eec2f88ebc9aa33274afa5d448788451c9"
+    },
+    {
+      "name": "sparse",
+      "viewport": 768,
+      "layout": "candidate",
+      "file": "sparse-768-candidate.json",
+      "sha256": "7bea08a1663c9b1e22f3edcbfef6e8ae5f14747d3d0713781e875c6cd15660c6"
+    },
+    {
+      "name": "sparse",
+      "viewport": 360,
+      "layout": "default",
+      "file": "sparse-360-default.json",
+      "sha256": "71c0114282d8c4045431b00204fb16e72d8e62b4766fb29d727749c45bef12fd"
+    },
+    {
+      "name": "sparse",
+      "viewport": 360,
+      "layout": "candidate",
+      "file": "sparse-360-candidate.json",
+      "sha256": "19f9809559920ce2297eca6022f4734c4654d1cdc841d12d71040f1b3b28499c"
+    },
+    {
+      "name": "F1",
+      "viewport": 1440,
+      "layout": "default",
+      "file": "F1-1440-default.json",
+      "sha256": "27295484b906c2a4c1e9a00d4a417bf6001eb4b3fe8759d4675e734a294424b3"
+    },
+    {
+      "name": "F1",
+      "viewport": 1440,
+      "layout": "candidate",
+      "file": "F1-1440-candidate.json",
+      "sha256": "109d8bdc76ac6fe353a1ec8647934d1e3c3e6f675484d31d454b751883a71b5f"
+    },
+    {
+      "name": "F1",
+      "viewport": 768,
+      "layout": "default",
+      "file": "F1-768-default.json",
+      "sha256": "1a47167f1f05764a6f1e0a7091c2e8c50bff676ab10e1bbbebdb03578e0b832f"
+    },
+    {
+      "name": "F1",
+      "viewport": 768,
+      "layout": "candidate",
+      "file": "F1-768-candidate.json",
+      "sha256": "a6b7420bb0b1f2c04b369e496c34c6b68f22284960e6b7fb9cb73510aa94d909"
+    },
+    {
+      "name": "F1",
+      "viewport": 360,
+      "layout": "default",
+      "file": "F1-360-default.json",
+      "sha256": "4e6529fcea39ce0192fd49d73c4a5a4708775b6c96b239beb1e58022bb7d0272"
+    },
+    {
+      "name": "F1",
+      "viewport": 360,
+      "layout": "candidate",
+      "file": "F1-360-candidate.json",
+      "sha256": "62ee1ae640e9b8286ddc53c8653642afd8296183055301a03e86c19ef87a346c"
+    },
+    {
+      "name": "F3",
+      "viewport": 1440,
+      "layout": "default",
+      "file": "F3-1440-default.json",
+      "sha256": "10a36b053fec470cf2d27195e2e5fb61d90557a38dad1e20eedf4830bcdcdaed"
+    },
+    {
+      "name": "F3",
+      "viewport": 1440,
+      "layout": "candidate",
+      "file": "F3-1440-candidate.json",
+      "sha256": "be8e6229788438571389890ebd5956ea38bff44713b9c685299a7059848a381a"
+    },
+    {
+      "name": "F3",
+      "viewport": 768,
+      "layout": "default",
+      "file": "F3-768-default.json",
+      "sha256": "5d4a7c2527074d77ff0550ab68a36db3d7551e6cce513836abacd03ccd31089b"
+    },
+    {
+      "name": "F3",
+      "viewport": 768,
+      "layout": "candidate",
+      "file": "F3-768-candidate.json",
+      "sha256": "71035cbe18bc9f8da232e0946e0ddfb71f015e022103d69a6f045d00017f71a2"
+    },
+    {
+      "name": "F3",
+      "viewport": 360,
+      "layout": "default",
+      "file": "F3-360-default.json",
+      "sha256": "e662a28ab50c4d3aa020fa25854a95b9ff8e08ab7766c69c52f61b85f46f4165"
+    },
+    {
+      "name": "F3",
+      "viewport": 360,
+      "layout": "candidate",
+      "file": "F3-360-candidate.json",
+      "sha256": "20f2fee218b2fff5120a967a7de1676067e8779c1f148b18f7e6731e6b29b610"
+    },
+    {
+      "name": "F3-max",
+      "viewport": 1440,
+      "layout": "default",
+      "file": "F3-max-1440-default.json",
+      "sha256": "e72d5be85b3b7113ab0b0e1b19d3d9d942395665614d63f569f8a1dd76529107"
+    },
+    {
+      "name": "F3-max",
+      "viewport": 1440,
+      "layout": "candidate",
+      "file": "F3-max-1440-candidate.json",
+      "sha256": "a669a9d97cb21d4fff13ea722cbabb7c2d0da65ef66b6e82b54608b655e33327"
+    },
+    {
+      "name": "F3-max",
+      "viewport": 768,
+      "layout": "default",
+      "file": "F3-max-768-default.json",
+      "sha256": "df4e342e1c9571c8447cf5a7252ada964e17a8507947dfdc1850132b188153d3"
+    },
+    {
+      "name": "F3-max",
+      "viewport": 768,
+      "layout": "candidate",
+      "file": "F3-max-768-candidate.json",
+      "sha256": "e80894d14231ef88d5177359fd7f41a29b66fb7f3fe7dfb792baab4504f4ee05"
+    },
+    {
+      "name": "F3-max",
+      "viewport": 360,
+      "layout": "default",
+      "file": "F3-max-360-default.json",
+      "sha256": "837c7ec038277c0f0b137a20ba9d83c7ff568548025a5cc42aa0e89ca1d0bf03"
+    },
+    {
+      "name": "F3-max",
+      "viewport": 360,
+      "layout": "candidate",
+      "file": "F3-max-360-candidate.json",
+      "sha256": "e30b0259972774d7f43181801162bf4c86c15a5702f2a87046f46d26b5594d86"
+    }
+  ]
+}

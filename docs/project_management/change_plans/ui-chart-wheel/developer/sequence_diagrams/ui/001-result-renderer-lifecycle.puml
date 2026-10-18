@@ -1,0 +1,46 @@
+@startuml
+' DRAFT. Developer / TASK-D-003. InputSHA 8fb25770169166a3a4e94110eee684bd8b116474.
+' REQ-WHEEL-01/10/11; AS-WHEEL-24; T003-G01. Not implemented production flow.
+title DRAFT: accepted B -> HTML B / isolated wheel lifecycle
+autonumber
+hide footbox
+participant "Session accept owner\nexisting coordinator, proposed internal seam" as Session
+control "ResultController (proposed)" as Result
+participant "HTML facts" as HTML
+participant "WheelPort factory / instance" as Wheel
+actor User
+Session -> Result : accepted B + acceptanceSeq/cause/snapshot
+Result -> Result : reconcile canonical selection against B once
+Result -> Wheel : revoke old instance/revision ownership
+Result -> Wheel : dispose A listeners / geometry
+Result -> HTML : publish confirmed B facts / summary
+Result -> Wheel : mount/update readonly B, guarded callback
+alt rendered B
+  Wheel --> Result : rendered(instance, revision)
+  User -> Wheel : native canonical activation
+  Wheel -> Result : intent + current instance/revision
+  Result -> HTML : selection using B facts
+  Result -> Wheel : update selection, retain active target
+else expected leaf SVG failure
+  Wheel --> Result : svg_unavailable(reason, instance, revision)
+  Result -> Result : ensure no old A image
+  Result --> User : visible local wheel error; HTML B accessible
+  note over Session, Result
+  No new HTTP / no coordinator requiresReconciliation from expected leaf failure.
+  Unexpected HTML/controller exception retains existing safe-read fallback.
+  end note
+end
+Wheel -> Result : late A callback / old B revision settlement
+Result -> Result : reject revoked instance/revision
+opt explicit replacement with alternative renderer on B
+  Result -> Wheel : revoke / dispose; mount alternative B
+  Wheel --> Result : rendered B
+  User -> Wheel : native activation on live B target
+  Wheel -> Result : valid canonical intent B
+  Result -> HTML : B facts, same canonical policy
+end
+note over Result, Wheel
+Evidence: minimal isolated factories / actual browser B HTML points+aspects.
+Async same-instance update / dispose throw / full production binding NOT RUN.
+end note
+@enduml

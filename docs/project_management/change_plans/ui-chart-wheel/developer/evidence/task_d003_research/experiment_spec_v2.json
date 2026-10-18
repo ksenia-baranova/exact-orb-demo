@@ -1,0 +1,150 @@
+{
+  "schema": 2,
+  "recorded_before_first_matrix_run_utc": "2026-10-18T12:59:20.054385+00:00",
+  "hypothesis": "fixed one-ring tangential spreading is a candidate only; no guarantee of feasibility/minimality/native area",
+  "source": "F1 unchanged public fixture; other records controlled UI data, not engine golden",
+  "ids": [
+    "sun",
+    "moon",
+    "mercury",
+    "venus",
+    "mars",
+    "jupiter",
+    "saturn",
+    "uranus",
+    "neptune",
+    "pluto",
+    "chiron",
+    "true_node",
+    "south_node",
+    "mean_apog",
+    "selena",
+    "pars_fortune"
+  ],
+  "viewports": [
+    1440,
+    768,
+    360
+  ],
+  "layouts": [
+    "default",
+    "candidate"
+  ],
+  "font": "Segoe UI Symbol, Segoe UI, sans-serif",
+  "font_point": 16,
+  "font_aux": 12,
+  "gap_css": 2,
+  "anchor_error_css": 0.5,
+  "return_probe_css": 1,
+  "hit_css": 44,
+  "scale": 1,
+  "dpr": 1,
+  "zoom": 1,
+  "candidate_point_step_degrees": 16,
+  "candidate_marker_step_degrees": 40,
+  "frames": {
+    "1440": {
+      "size": 720,
+      "C": [
+        360.0,
+        360.0
+      ],
+      "point": {
+        "r": 259.2,
+        "inner": 194.4,
+        "outer": 316.8
+      },
+      "marker": {
+        "r": 158.4,
+        "inner": 57.6,
+        "outer": 216.0
+      },
+      "angle_r": 93.60000000000001,
+      "clip": [
+        0,
+        0,
+        720,
+        720
+      ],
+      "M": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "path": "q(s)=C+r*(-cos(theta-sign(delta)*s/r), sin(theta-sign(delta)*s/r)); arc CSS length",
+      "fixed": "rings/cusp/true anchors/aspect ends/angle labels/non-C0 labels"
+    },
+    "768": {
+      "size": 720,
+      "C": [
+        360.0,
+        360.0
+      ],
+      "point": {
+        "r": 259.2,
+        "inner": 194.4,
+        "outer": 316.8
+      },
+      "marker": {
+        "r": 158.4,
+        "inner": 57.6,
+        "outer": 216.0
+      },
+      "angle_r": 93.60000000000001,
+      "clip": [
+        0,
+        0,
+        720,
+        720
+      ],
+      "M": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "path": "q(s)=C+r*(-cos(theta-sign(delta)*s/r), sin(theta-sign(delta)*s/r)); arc CSS length",
+      "fixed": "rings/cusp/true anchors/aspect ends/angle labels/non-C0 labels"
+    },
+    "360": {
+      "size": 328,
+      "C": [
+        164.0,
+        164.0
+      ],
+      "point": {
+        "r": 118.08,
+        "inner": 88.56,
+        "outer": 144.32
+      },
+      "marker": {
+        "r": 72.16,
+        "inner": 26.240000000000002,
+        "outer": 98.39999999999999
+      },
+      "angle_r": 42.64,
+      "clip": [
+        0,
+        0,
+        328,
+        328
+      ],
+      "M": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "path": "q(s)=C+r*(-cos(theta-sign(delta)*s/r), sin(theta-sign(delta)*s/r)); arc CSS length",
+      "fixed": "rings/cusp/true anchors/aspect ends/angle labels/non-C0 labels"
+    }
+  },
+  "fixture_correction": "F3 angles restored exactly to normative F1 copy; F3-max close ASC/MC/Vertex controlled; DSC/IC opposite. Same radii/fonts/layout heuristic, no threshold tuning."
+}

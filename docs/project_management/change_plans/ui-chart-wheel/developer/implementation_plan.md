@@ -1,5 +1,6 @@
 # Implementation Plan: ui-chart-wheel
 
+> **18.10.2026 / TASK-D-003:** исторический consultation v2 ниже сохранён. [Исследовательский report](task_d003_research_report.md) содержит фактический STARTED, контрпримеры и предлагаемую замену полного прогноза8–12 на9–14чд; это не утверждённое увеличение бюджета. Production DEV-WHEEL-02…04 не начинались, G3 не подтверждён.
 **Автор:** Codex / Developer, `TASK-D-002`, 2026-10-16; consultation v2 по Analyst v3.
 **InputSHA / DP baseline:** `543b7ec726ee96c951dc0abbf1067ca6ad47a1ba`, [Manager §3](../manager_artifact.md#3-единый-реестр-dp); применимы DP-O-001…014. Старый Developer input @ 04be207 уже зарегистрирован Manager; новый подписанный [patch](decision_input.patch) к DP-O-010…014 подготовлен, но не применялся.
 **Сводка / назначение:** [TASK-D-002](../manager_artifact.md#27-task-d-002--повторная-developer-consultation-по-analyst-v3); состояния ведёт Manager.
@@ -116,3 +117,10 @@ Tests в этой консультации только прочитаны. На
 Документальная TASK-D-002 / TASK-T-002 на общем InputSHA → регистрация рекомендаций / approvals и Change Plan Manager → отдельно разрешённые DEV-WHEEL-01 spike / ADR → уточнённый estimate / решения / G3 → 02 → 03 → 04 → checks на CandidateSHA → G4 → независимый Tester. Текущие сроки / G1 / статусы регистрирует Manager; прямое Owner-разрешение текущей редакции не является разрешением следующих этапов.
 
 При неоднозначном expected result вернуть вопрос Analyst через Manager; при недостижимой плотности — конкретный контрпример Owner и переоценку. Независимую уже разрешённую работу продолжать. Никакого скрытия фактов или статичного fallback вместо принятого интерактивного scope без решения Owner. Технические sequences переносятся после acceptance по отдельному назначению; публикация этой редакции разрешена отдельным поручением Owner в корневом Developer-индексе; PR / merge и запуск work items не поручены.
+
+
+## DEV-WHEEL-01 — исследовательский результат TASK-D-003
+
+Фактическая постановка — [Manager §2.16 / start prompt](../manager/prompts/task-d-003-research-start.md) @8fb2577; исторический prompt01 @f9c70f7 не переписан. Входы/критерии/STARTED и выполненные карточки — [план D003](task_d003_implementation_plan.md). [Report](task_d003_research_report.md), [DRAFT drawing ADR](drawing_adr_draft.md), [technical sequences](sequence_diagrams/ui/001-result-renderer-lifecycle.puml), [checks](checks.md) передают один bounded research package. Тесты production renderer не созданы; собственные isolated scripts находятся только в evidence. Результат не закрывает DP-O-010…013 / TEST-FIND-WHEEL-002.
+
+Рекомендация дальнейшего порядка: TASK-T-004 / TASK-R-001 на одном опубликованном TechnicalPackageSHA → адресный Analyst ответ по новому G03 случаю → Manager/Owner решения по конкретным последствиям → отдельный G3 / work item. Техническую hypothesis внутри принятого поведения можно исследовать без повторения прежнего предстартового круга; новый fallback/API не выбирается Developer. Общая переоценка и её непересекающиеся блоки находятся в report, не складываются с прежними8–12 и не вычитают неизвестный прошлый расход.

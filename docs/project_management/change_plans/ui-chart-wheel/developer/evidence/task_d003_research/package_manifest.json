@@ -1,0 +1,666 @@
+{
+  "task": "TASK-D-003",
+  "author": "Codex / Developer",
+  "input_sha": "8fb25770169166a3a4e94110eee684bd8b116474",
+  "technical_package_sha": "NOT_CREATED; local uncommitted worktree",
+  "state": "DRAFT local technical research, not G3",
+  "encoding": "sha256_lf for text, raw for PNG; manifest excludes itself",
+  "files": [
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/checks.md",
+      "sha256_lf_or_binary": "d404204b2e1f5d56d4cccfb7dbec18d94f90ca1408750539bc7f5f908de61688"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/drawing_adr_draft.md",
+      "sha256_lf_or_binary": "d2d39f5bca9333caec80a9b6356da4d0002b5317854729043cf00fbb9454f227"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/analyze_results.py",
+      "sha256_lf_or_binary": "e1c9e919e0c3f79dd9aa214b37b730eed9b861e959436e013cca98a938888008"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/analyze_results_v1.py",
+      "sha256_lf_or_binary": "3f94984f64e60f66a5f2ce5fc4d51013fbd1456ebdd977674a9ff15385ee08c6"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/audit_package.py",
+      "sha256_lf_or_binary": "5626e41a43c19ad4458d24f6a5d7f353e24afd54fb49c5ff08f75afe79939ef3"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/browser_matrix.json",
+      "sha256_lf_or_binary": "fb20e0dd53cd9a563cb278ccfcb281633b7a470f36089160af70b180a83ccbe3"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/drawing_audit.json",
+      "sha256_lf_or_binary": "18a8296a868df5b27aff87fafc528b544e1bf6e47694c97abbf484ef52bb3ac4"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/drawing_audit_v2.json",
+      "sha256_lf_or_binary": "c353e43873a017a6d3e69f29fc26f5aac5943f4eedc20f30075a346a8bd4b744"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/experiment_spec.json",
+      "sha256_lf_or_binary": "7aabe1b9736bed0e80307c3f281f622af4a15dcbb120287da964f2bbfd93da0a"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/experiment_spec_v2.json",
+      "sha256_lf_or_binary": "588c0dfe227de6f19698b058451d102ceaa58781c5685dcb5690f329472d714c"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/experiment_stop.json",
+      "sha256_lf_or_binary": "5679f1ab7c5a0206d01d8730489e5f47d64d9d6bbf846a72e03ea09316f8a31e"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/fixtures.json",
+      "sha256_lf_or_binary": "3515eafe3afed043ab58feba197bba7be5c5cbfb124b59c9dfb8f98678f2018a"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/fixtures_v2.json",
+      "sha256_lf_or_binary": "c581d2cfe0a6d69f918d1120b7e3aeeb195f44284ac51f1b3e0a826705d20b5f"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/followup02/B-alternate.png",
+      "sha256_lf_or_binary": "cf366dee5ca9f2b3c9cfb9997d72e65d374f0f592a5645ab36e122e725e37e90"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/followup02/B-fault-html.png",
+      "sha256_lf_or_binary": "72b12f8b74a2117b789538b2dc38e432da8f2dd9b5fc9196be08056a4aefa457"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/followup02/clip-positive-negative.png",
+      "sha256_lf_or_binary": "15f1750c15fe06b307bf0d29db83a4934bee236a78dc8eb8a997d76e0915ce31"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/followup02/controls.json",
+      "sha256_lf_or_binary": "1d0d1c2bb4066c3fb32d41d61a91c19eefe666cf7f5d666a25e71e8ca1a7f05b"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/harness.html",
+      "sha256_lf_or_binary": "9b5ae9f79988560f05746fff3a4d7a9f989f4e1a04bf50e8b3052e29f57f0981"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/harness.mjs",
+      "sha256_lf_or_binary": "ec8399470dbeb5e40c231b42e0d96ebefc27556ee42fd64df8cbc61ed5fe568e"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/inputs_manifest.json",
+      "sha256_lf_or_binary": "c963fba637071f813a234a50fbe71e717e1f740c85d9fceb023158ad4e032133"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/inputs_manifest_v2.json",
+      "sha256_lf_or_binary": "2deb2a545447dca50f0fe2b2840284fd1d620dc0c9515be601a6daa33f4906e6"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/lifecycle.html",
+      "sha256_lf_or_binary": "3e340940679dbdcf14c2d0fe3b4d8c99336fc230e657998b26de4a5086ea5242"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/matrix.md",
+      "sha256_lf_or_binary": "d31f53386004b9bf4fc72342c84f30238cf666482722ed808fb96985affa7628"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/matrix_v2.md",
+      "sha256_lf_or_binary": "c0d7c37f588e956f80e0714c7c61f9a0ed0112e0ff3cca77856df71e581dd62c"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/orientation_audit.json",
+      "sha256_lf_or_binary": "b6dc3498ac32042f168a885a07fe07775bf01fdcbae945181ba0b76319e1f5f0"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/orientation_audit.py",
+      "sha256_lf_or_binary": "d865674711e4cd9c5f9f710e8a2bdc38a982b0712c279695fd034ea86c5801aa"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/research_session.json",
+      "sha256_lf_or_binary": "8419739d327e01de4dc14b40ab04320f18f471fa9543f4eaadb214cd5e95a6a8"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/return_probe_audit.json",
+      "sha256_lf_or_binary": "160dbd4f50745c8a02f50736c267ca14c9b369da9531a056a96fe57573a532e2"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/return_probe_audit.py",
+      "sha256_lf_or_binary": "956b464fe68a56bbf0e97f106c6893c6404014aec37f169dab03ad7deec5ea5a"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run02/F1-1440-candidate.json",
+      "sha256_lf_or_binary": "109d8bdc76ac6fe353a1ec8647934d1e3c3e6f675484d31d454b751883a71b5f"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run02/F1-1440-default.json",
+      "sha256_lf_or_binary": "27295484b906c2a4c1e9a00d4a417bf6001eb4b3fe8759d4675e734a294424b3"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run02/F1-360-candidate.json",
+      "sha256_lf_or_binary": "62ee1ae640e9b8286ddc53c8653642afd8296183055301a03e86c19ef87a346c"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run02/F1-360-default.json",
+      "sha256_lf_or_binary": "4e6529fcea39ce0192fd49d73c4a5a4708775b6c96b239beb1e58022bb7d0272"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run02/F1-768-candidate.json",
+      "sha256_lf_or_binary": "a6b7420bb0b1f2c04b369e496c34c6b68f22284960e6b7fb9cb73510aa94d909"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run02/F1-768-default.json",
+      "sha256_lf_or_binary": "1a47167f1f05764a6f1e0a7091c2e8c50bff676ab10e1bbbebdb03578e0b832f"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run02/F3-1440-candidate.json",
+      "sha256_lf_or_binary": "b63bb19d95ffad64ebe55c0ab253ee3b9381c6c371e8dd97b8a46b2b813e2aa6"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run02/F3-1440-default.json",
+      "sha256_lf_or_binary": "968298663bfe2f2a1aad028bcc5df8389f13252c2a3e0666828f7df32fb020e6"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run02/F3-360-candidate.json",
+      "sha256_lf_or_binary": "a1297b9eed4648ba82d253e91d4f0f3899625e91c89f550e14167bc69cb6f9de"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run02/F3-360-default.json",
+      "sha256_lf_or_binary": "cd020f60bbf82e10095f67fd881fdcb350e6e63e8783e1c5d250871ac8a4d5a7"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run02/F3-768-candidate.json",
+      "sha256_lf_or_binary": "42f8ae4dab473a773e3c1321761045e79eff8df78e733be13572127bffe0cb7e"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run02/F3-768-default.json",
+      "sha256_lf_or_binary": "629dbbdd8cef7c939e44b2ccf3bdc8ce7110e6b708d9b97176ee6ed0a06a6b40"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run02/F3-max-1440-candidate.json",
+      "sha256_lf_or_binary": "d9bc8cf4ac9b8e88671bcbea1bf015686bcf8acb37fcd69b3c5dcd04a3df88ed"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run02/F3-max-1440-default.json",
+      "sha256_lf_or_binary": "f549d1e3102e5e690e2cb8afb59289985c46ef4ee6d5dcbebb44d1cab8211a95"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run02/F3-max-360-candidate.json",
+      "sha256_lf_or_binary": "e42f2eb61790fdff33f7b322ac5a126884e39c6eb448339a49592e5ac4d268a2"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run02/F3-max-360-default.json",
+      "sha256_lf_or_binary": "b28c3633e8f9d4d7201323b8a3381186b4f2bcbba19e74ac5ce48dec2437a6b4"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run02/F3-max-768-candidate.json",
+      "sha256_lf_or_binary": "c1100519a666596d55faf6f655832fdd01c272dbf4cb03c6caa021987cba5acc"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run02/F3-max-768-default.json",
+      "sha256_lf_or_binary": "4d7461ff7b73f9979745fd753b80f81436f4388f5fdee335b82f15410a522f33"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run02/browser_controls.json",
+      "sha256_lf_or_binary": "d60d5af8c680b646625ed8c59af054a88d4ec5a08163f4ab3b0a390d95970a58"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run02/browser_matrix.json",
+      "sha256_lf_or_binary": "1d9fcbc1a59d6629b77733e9325e40cb401bfe29e9082d4a2f8a4396eea5a01e"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run02/screenshots/F1-1440-candidate.png",
+      "sha256_lf_or_binary": "4717f25cbac842b004cd31a97c98602e64ffb32fa8056c96cec0fd28b3badee0"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run02/screenshots/F1-1440-default.png",
+      "sha256_lf_or_binary": "46258e220f32b6b9aed75a445dc5539f068b14aee1ebfa25672c5a8619a65ebc"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run02/screenshots/F1-360-candidate.png",
+      "sha256_lf_or_binary": "cf809fdb0ac566b5b3e51e34fd7410678763dcbc8a8efe78e61b8e62762df235"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run02/screenshots/F1-360-default.png",
+      "sha256_lf_or_binary": "ba0859c564d47af6bc2a7e057316c80bd7640b1527a0d880735df24b3fa6a36d"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run02/screenshots/F1-768-candidate.png",
+      "sha256_lf_or_binary": "4717f25cbac842b004cd31a97c98602e64ffb32fa8056c96cec0fd28b3badee0"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run02/screenshots/F1-768-default.png",
+      "sha256_lf_or_binary": "46258e220f32b6b9aed75a445dc5539f068b14aee1ebfa25672c5a8619a65ebc"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run02/screenshots/F3-1440-candidate.png",
+      "sha256_lf_or_binary": "0df230439f55e506c67c91b913e4bacad86e9d207e6c1f10a2bfd64476a026a8"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run02/screenshots/F3-1440-default.png",
+      "sha256_lf_or_binary": "98a6b946d508dd78b1e5c50d91f23eeadd4034605e103f1cea34649d0321a8a8"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run02/screenshots/F3-360-candidate.png",
+      "sha256_lf_or_binary": "b93132a69d5079764e9522091d95e18b5c4acc3d594bf16317f1ab234a35a8b2"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run02/screenshots/F3-360-default.png",
+      "sha256_lf_or_binary": "b4a0f9638a408c21f97e21181d7cbeb6e976efc5059a3af2e0c1926dd64538c1"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run02/screenshots/F3-768-candidate.png",
+      "sha256_lf_or_binary": "0df230439f55e506c67c91b913e4bacad86e9d207e6c1f10a2bfd64476a026a8"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run02/screenshots/F3-768-default.png",
+      "sha256_lf_or_binary": "98a6b946d508dd78b1e5c50d91f23eeadd4034605e103f1cea34649d0321a8a8"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run02/screenshots/F3-max-1440-candidate.png",
+      "sha256_lf_or_binary": "4bf7c4f861ef9012917865ee62530acff3d2c57538da57d1a9182a5ef994a9e9"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run02/screenshots/F3-max-1440-default.png",
+      "sha256_lf_or_binary": "00ebd1cf9db67b1c3c75d5bc980b1a800a45f4efbf89c9a62cd92b3864cace69"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run02/screenshots/F3-max-360-candidate.png",
+      "sha256_lf_or_binary": "f5f659fa64b17bded1f4a4fa55c7ef1690edca6735c44278d60e2c108af99c11"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run02/screenshots/F3-max-360-default.png",
+      "sha256_lf_or_binary": "49db21fcb4fafe22e2563779a594785a4d87f75a32b966dc6336b66436c5412b"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run02/screenshots/F3-max-768-candidate.png",
+      "sha256_lf_or_binary": "4bf7c4f861ef9012917865ee62530acff3d2c57538da57d1a9182a5ef994a9e9"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run02/screenshots/F3-max-768-default.png",
+      "sha256_lf_or_binary": "00ebd1cf9db67b1c3c75d5bc980b1a800a45f4efbf89c9a62cd92b3864cace69"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run02/screenshots/lifecycle-focus.png",
+      "sha256_lf_or_binary": "18eaf4d33c0b98dd21e666f36ca59163b06df4efffe93fc565d004fffcdccfc8"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run02/screenshots/sparse-1440-candidate.png",
+      "sha256_lf_or_binary": "0c4b10023d9165d19ef097fab623286b719f05b864769af35848702e64521ed7"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run02/screenshots/sparse-1440-default.png",
+      "sha256_lf_or_binary": "0c4b10023d9165d19ef097fab623286b719f05b864769af35848702e64521ed7"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run02/screenshots/sparse-360-candidate.png",
+      "sha256_lf_or_binary": "d258616def781a6f5b7fe92c929e13061e870548d82f0069baa136f5bdf7baca"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run02/screenshots/sparse-360-default.png",
+      "sha256_lf_or_binary": "d258616def781a6f5b7fe92c929e13061e870548d82f0069baa136f5bdf7baca"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run02/screenshots/sparse-768-candidate.png",
+      "sha256_lf_or_binary": "0c4b10023d9165d19ef097fab623286b719f05b864769af35848702e64521ed7"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run02/screenshots/sparse-768-default.png",
+      "sha256_lf_or_binary": "0c4b10023d9165d19ef097fab623286b719f05b864769af35848702e64521ed7"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run02/source_experiment_spec.json",
+      "sha256_lf_or_binary": "7aabe1b9736bed0e80307c3f281f622af4a15dcbb120287da964f2bbfd93da0a"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run02/source_fixtures.json",
+      "sha256_lf_or_binary": "3515eafe3afed043ab58feba197bba7be5c5cbfb124b59c9dfb8f98678f2018a"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run02/source_harness.html",
+      "sha256_lf_or_binary": "9b5ae9f79988560f05746fff3a4d7a9f989f4e1a04bf50e8b3052e29f57f0981"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run02/source_harness.mjs",
+      "sha256_lf_or_binary": "63769e80822941c358508c7147fe97266c8b921c482005b5d0f96a7f7c65f406"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run02/source_inputs_manifest.json",
+      "sha256_lf_or_binary": "c963fba637071f813a234a50fbe71e717e1f740c85d9fceb023158ad4e032133"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run02/source_run_browser.cjs",
+      "sha256_lf_or_binary": "4b9a6efc1dd23ff519d2f46f4de65016297ce639af6b15f324789f1027bd75f1"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run02/sparse-1440-candidate.json",
+      "sha256_lf_or_binary": "49b5071c9815b6695a1984b5112b481bf703ea4eaaef1417ddb2628a365e09cd"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run02/sparse-1440-default.json",
+      "sha256_lf_or_binary": "04abcd99a2a2bafe83a0f3a60bda3ae1936086ad8cf491f931f9816176396c71"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run02/sparse-360-candidate.json",
+      "sha256_lf_or_binary": "19f9809559920ce2297eca6022f4734c4654d1cdc841d12d71040f1b3b28499c"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run02/sparse-360-default.json",
+      "sha256_lf_or_binary": "71c0114282d8c4045431b00204fb16e72d8e62b4766fb29d727749c45bef12fd"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run02/sparse-768-candidate.json",
+      "sha256_lf_or_binary": "7bea08a1663c9b1e22f3edcbfef6e8ae5f14747d3d0713781e875c6cd15660c6"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run02/sparse-768-default.json",
+      "sha256_lf_or_binary": "5c05018eacd7aaad71497dc789d6b0eec2f88ebc9aa33274afa5d448788451c9"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/F1-1440-candidate.json",
+      "sha256_lf_or_binary": "109d8bdc76ac6fe353a1ec8647934d1e3c3e6f675484d31d454b751883a71b5f"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/F1-1440-default.json",
+      "sha256_lf_or_binary": "27295484b906c2a4c1e9a00d4a417bf6001eb4b3fe8759d4675e734a294424b3"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/F1-360-candidate.json",
+      "sha256_lf_or_binary": "62ee1ae640e9b8286ddc53c8653642afd8296183055301a03e86c19ef87a346c"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/F1-360-default.json",
+      "sha256_lf_or_binary": "4e6529fcea39ce0192fd49d73c4a5a4708775b6c96b239beb1e58022bb7d0272"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/F1-768-candidate.json",
+      "sha256_lf_or_binary": "a6b7420bb0b1f2c04b369e496c34c6b68f22284960e6b7fb9cb73510aa94d909"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/F1-768-default.json",
+      "sha256_lf_or_binary": "1a47167f1f05764a6f1e0a7091c2e8c50bff676ab10e1bbbebdb03578e0b832f"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/F3-1440-candidate.json",
+      "sha256_lf_or_binary": "be8e6229788438571389890ebd5956ea38bff44713b9c685299a7059848a381a"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/F3-1440-default.json",
+      "sha256_lf_or_binary": "10a36b053fec470cf2d27195e2e5fb61d90557a38dad1e20eedf4830bcdcdaed"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/F3-360-candidate.json",
+      "sha256_lf_or_binary": "20f2fee218b2fff5120a967a7de1676067e8779c1f148b18f7e6731e6b29b610"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/F3-360-default.json",
+      "sha256_lf_or_binary": "e662a28ab50c4d3aa020fa25854a95b9ff8e08ab7766c69c52f61b85f46f4165"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/F3-768-candidate.json",
+      "sha256_lf_or_binary": "71035cbe18bc9f8da232e0946e0ddfb71f015e022103d69a6f045d00017f71a2"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/F3-768-default.json",
+      "sha256_lf_or_binary": "5d4a7c2527074d77ff0550ab68a36db3d7551e6cce513836abacd03ccd31089b"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/F3-max-1440-candidate.json",
+      "sha256_lf_or_binary": "a669a9d97cb21d4fff13ea722cbabb7c2d0da65ef66b6e82b54608b655e33327"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/F3-max-1440-default.json",
+      "sha256_lf_or_binary": "e72d5be85b3b7113ab0b0e1b19d3d9d942395665614d63f569f8a1dd76529107"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/F3-max-360-candidate.json",
+      "sha256_lf_or_binary": "e30b0259972774d7f43181801162bf4c86c15a5702f2a87046f46d26b5594d86"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/F3-max-360-default.json",
+      "sha256_lf_or_binary": "837c7ec038277c0f0b137a20ba9d83c7ff568548025a5cc42aa0e89ca1d0bf03"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/F3-max-768-candidate.json",
+      "sha256_lf_or_binary": "e80894d14231ef88d5177359fd7f41a29b66fb7f3fe7dfb792baab4504f4ee05"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/F3-max-768-default.json",
+      "sha256_lf_or_binary": "df4e342e1c9571c8447cf5a7252ada964e17a8507947dfdc1850132b188153d3"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/browser_controls.json",
+      "sha256_lf_or_binary": "d31c364e213f36d8775514ee8247f1257bc77e77116cc3f0256e3bde04695bc4"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/browser_matrix.json",
+      "sha256_lf_or_binary": "2ae37bda313c60a70ec981a50e6302a1ef4014e9ad73c6f15a55565783101234"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/screenshots/F1-1440-candidate.png",
+      "sha256_lf_or_binary": "4717f25cbac842b004cd31a97c98602e64ffb32fa8056c96cec0fd28b3badee0"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/screenshots/F1-1440-default.png",
+      "sha256_lf_or_binary": "46258e220f32b6b9aed75a445dc5539f068b14aee1ebfa25672c5a8619a65ebc"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/screenshots/F1-360-candidate.png",
+      "sha256_lf_or_binary": "cf809fdb0ac566b5b3e51e34fd7410678763dcbc8a8efe78e61b8e62762df235"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/screenshots/F1-360-default.png",
+      "sha256_lf_or_binary": "ba0859c564d47af6bc2a7e057316c80bd7640b1527a0d880735df24b3fa6a36d"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/screenshots/F1-768-candidate.png",
+      "sha256_lf_or_binary": "4717f25cbac842b004cd31a97c98602e64ffb32fa8056c96cec0fd28b3badee0"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/screenshots/F1-768-default.png",
+      "sha256_lf_or_binary": "46258e220f32b6b9aed75a445dc5539f068b14aee1ebfa25672c5a8619a65ebc"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/screenshots/F3-1440-candidate.png",
+      "sha256_lf_or_binary": "c4640a17d34f540f2bbe2467b816c2544d27f04a33438016942cf8bfdd1d2889"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/screenshots/F3-1440-default.png",
+      "sha256_lf_or_binary": "b825d3df1f2113c67f7a02e89c02858c3ceaeb4b7df29c799a8d167051d7c0c3"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/screenshots/F3-360-candidate.png",
+      "sha256_lf_or_binary": "990ea5ee9ce6bae9f571d907c9c99e1557374188868231c7e23727ebdf127702"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/screenshots/F3-360-default.png",
+      "sha256_lf_or_binary": "8557d05f63092b3c61e9730302216b60f0f8a62eace56ceccd01c01e81ea5a30"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/screenshots/F3-768-candidate.png",
+      "sha256_lf_or_binary": "c4640a17d34f540f2bbe2467b816c2544d27f04a33438016942cf8bfdd1d2889"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/screenshots/F3-768-default.png",
+      "sha256_lf_or_binary": "b825d3df1f2113c67f7a02e89c02858c3ceaeb4b7df29c799a8d167051d7c0c3"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/screenshots/F3-max-1440-candidate.png",
+      "sha256_lf_or_binary": "b0f0d4441b6ca9595b8630fc92c28adbdcbfb691576bb3eb29b5791d347bd7da"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/screenshots/F3-max-1440-default.png",
+      "sha256_lf_or_binary": "2b8354a1f97b290f40c2dd855971973e464b43f3069dd3ab361e1d429baa59ec"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/screenshots/F3-max-360-candidate.png",
+      "sha256_lf_or_binary": "15490a4ad20ea24f77900621059e9be2621f767ee2d1f3d67e0f90d6233d8747"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/screenshots/F3-max-360-default.png",
+      "sha256_lf_or_binary": "5c35683384f4c5ec7775f6631f5a6ad5c4bd15ec1444736d8445643076fb0230"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/screenshots/F3-max-768-candidate.png",
+      "sha256_lf_or_binary": "b0f0d4441b6ca9595b8630fc92c28adbdcbfb691576bb3eb29b5791d347bd7da"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/screenshots/F3-max-768-default.png",
+      "sha256_lf_or_binary": "2b8354a1f97b290f40c2dd855971973e464b43f3069dd3ab361e1d429baa59ec"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/screenshots/lifecycle-focus.png",
+      "sha256_lf_or_binary": "18eaf4d33c0b98dd21e666f36ca59163b06df4efffe93fc565d004fffcdccfc8"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/screenshots/sparse-1440-candidate.png",
+      "sha256_lf_or_binary": "0c4b10023d9165d19ef097fab623286b719f05b864769af35848702e64521ed7"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/screenshots/sparse-1440-default.png",
+      "sha256_lf_or_binary": "0c4b10023d9165d19ef097fab623286b719f05b864769af35848702e64521ed7"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/screenshots/sparse-360-candidate.png",
+      "sha256_lf_or_binary": "d258616def781a6f5b7fe92c929e13061e870548d82f0069baa136f5bdf7baca"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/screenshots/sparse-360-default.png",
+      "sha256_lf_or_binary": "d258616def781a6f5b7fe92c929e13061e870548d82f0069baa136f5bdf7baca"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/screenshots/sparse-768-candidate.png",
+      "sha256_lf_or_binary": "0c4b10023d9165d19ef097fab623286b719f05b864769af35848702e64521ed7"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/screenshots/sparse-768-default.png",
+      "sha256_lf_or_binary": "0c4b10023d9165d19ef097fab623286b719f05b864769af35848702e64521ed7"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/sparse-1440-candidate.json",
+      "sha256_lf_or_binary": "49b5071c9815b6695a1984b5112b481bf703ea4eaaef1417ddb2628a365e09cd"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/sparse-1440-default.json",
+      "sha256_lf_or_binary": "04abcd99a2a2bafe83a0f3a60bda3ae1936086ad8cf491f931f9816176396c71"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/sparse-360-candidate.json",
+      "sha256_lf_or_binary": "19f9809559920ce2297eca6022f4734c4654d1cdc841d12d71040f1b3b28499c"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/sparse-360-default.json",
+      "sha256_lf_or_binary": "71c0114282d8c4045431b00204fb16e72d8e62b4766fb29d727749c45bef12fd"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/sparse-768-candidate.json",
+      "sha256_lf_or_binary": "7bea08a1663c9b1e22f3edcbfef6e8ae5f14747d3d0713781e875c6cd15660c6"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/sparse-768-default.json",
+      "sha256_lf_or_binary": "5c05018eacd7aaad71497dc789d6b0eec2f88ebc9aa33274afa5d448788451c9"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run_browser.cjs",
+      "sha256_lf_or_binary": "a394f4d7d6b53af355cba9feb0d5c5078865b89847c87e6b52783f3142201646"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run_browser_run01.cjs",
+      "sha256_lf_or_binary": "55d48c1117361230971cfb9912ab89c3668e82d103b5d3970b4db816bf8fcc6e"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run_followup.cjs",
+      "sha256_lf_or_binary": "66e49b46ab65a0d79ef80fca1eac7634a6320ce5c0a407ea3212e1018581e0af"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/screenshots/F1-1440-candidate.png",
+      "sha256_lf_or_binary": "4717f25cbac842b004cd31a97c98602e64ffb32fa8056c96cec0fd28b3badee0"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/screenshots/F1-1440-default.png",
+      "sha256_lf_or_binary": "46258e220f32b6b9aed75a445dc5539f068b14aee1ebfa25672c5a8619a65ebc"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/screenshots/F1-360-default.png",
+      "sha256_lf_or_binary": "1b9517b3d14996bc514de92a633c97a611fec58bb636f8d8f715133e3a14f982"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/screenshots/F1-768-candidate.png",
+      "sha256_lf_or_binary": "4717f25cbac842b004cd31a97c98602e64ffb32fa8056c96cec0fd28b3badee0"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/screenshots/F1-768-default.png",
+      "sha256_lf_or_binary": "46258e220f32b6b9aed75a445dc5539f068b14aee1ebfa25672c5a8619a65ebc"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/screenshots/sparse-1440-candidate.png",
+      "sha256_lf_or_binary": "0c4b10023d9165d19ef097fab623286b719f05b864769af35848702e64521ed7"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/screenshots/sparse-1440-default.png",
+      "sha256_lf_or_binary": "0c4b10023d9165d19ef097fab623286b719f05b864769af35848702e64521ed7"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/screenshots/sparse-360-candidate.png",
+      "sha256_lf_or_binary": "d258616def781a6f5b7fe92c929e13061e870548d82f0069baa136f5bdf7baca"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/screenshots/sparse-360-default.png",
+      "sha256_lf_or_binary": "d258616def781a6f5b7fe92c929e13061e870548d82f0069baa136f5bdf7baca"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/screenshots/sparse-768-candidate.png",
+      "sha256_lf_or_binary": "0c4b10023d9165d19ef097fab623286b719f05b864769af35848702e64521ed7"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/screenshots/sparse-768-default.png",
+      "sha256_lf_or_binary": "0c4b10023d9165d19ef097fab623286b719f05b864769af35848702e64521ed7"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/source_audit.json",
+      "sha256_lf_or_binary": "95b1095e7197b2d23ca350de510fe9486015c03373f3b23f4ef25728cb3b81aa"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/source_audit.py",
+      "sha256_lf_or_binary": "2224121f9366b71d981c0b3ac02f8de43f6d2f8cd8b40429110a6d33bdd0bbf3"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/source_controls.json",
+      "sha256_lf_or_binary": "323fcc8d67d8cb81278f67b1dac745744a2ea9c7e0e7dce14c87e280636ac3dc"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/source_controls.mjs",
+      "sha256_lf_or_binary": "85e39582fa3f1a6c73f40db4950b15db38bdd768a4d0e4ba8fcb6af15733af41"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/start.json",
+      "sha256_lf_or_binary": "0853e1c857747510438231bbe0e75b5d7f1b453e0d117030f3aae98acc2ad4e2"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/validation_results.json",
+      "sha256_lf_or_binary": "ebfb8fc8b0cf9f0e0d0637af73ad9c2bc196d5e7ad7a51f7b2be8fb06a6b0763"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/findings.md",
+      "sha256_lf_or_binary": "dfd345a44227f1bda9d4d3961ee9b9acd8a50b7742de3fcfe15ac83dcf8541ed"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/implementation_plan.md",
+      "sha256_lf_or_binary": "d66ea5654baf4844f966cf1ded022863c52bf5ef89aa5b16abb53ac15dc22342"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/sequence_diagrams/ui/001-result-renderer-lifecycle.puml",
+      "sha256_lf_or_binary": "63a7f3c3df9a3f1a3cea30333f7f91755bfbd24a24b5551d3b337679e000f383"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/sequence_diagrams/ui/002-acceptance-selection-focus.puml",
+      "sha256_lf_or_binary": "8491a179b98390c5527101f07cd8cb2d4efd47f9a286a66ab4a93c4458bbd5e2"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/task_d003_implementation_plan.md",
+      "sha256_lf_or_binary": "80829176ec203d097a694f6f742ce0af24b7ea913800ce6cca912fe5fb1a7625"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/task_d003_research_report.md",
+      "sha256_lf_or_binary": "ff20a54829e1df8d49e0add5b5d6e6b1cb623543d69d761afcaccddec393673d"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer_artifact.md",
+      "sha256_lf_or_binary": "8299716635685a7e0a3667cfb8d8c99b360280738cd0de90e3c95381707c0bcf"
+    }
+  ]
+}

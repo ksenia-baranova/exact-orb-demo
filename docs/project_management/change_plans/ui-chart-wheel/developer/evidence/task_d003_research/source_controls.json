@@ -1,0 +1,370 @@
+{
+  "input_sha": "8fb25770169166a3a4e94110eee684bd8b116474",
+  "records": [
+    {
+      "id": "G03-source-build-repeats",
+      "level": "actual coordinator; source is not an acceptance token",
+      "expected": 3,
+      "actual": 3
+    },
+    {
+      "id": "G03-no-extra-post-from-publish",
+      "level": "actual transport",
+      "expected": 1,
+      "actual": 1
+    },
+    {
+      "id": "G03-publication-trace",
+      "level": "actual coordinator",
+      "actual": [
+        {
+          "phase": "bootstrapping",
+          "source": null,
+          "submitted": null
+        },
+        {
+          "phase": "reading",
+          "source": null,
+          "submitted": null
+        },
+        {
+          "phase": "idle",
+          "source": "current",
+          "submitted": null
+        },
+        {
+          "phase": "building",
+          "source": "current",
+          "submitted": {
+            "birth_date": "1985-09-02",
+            "birth_time": "14:30",
+            "place_id": "524901"
+          }
+        },
+        {
+          "phase": "idle",
+          "source": "build",
+          "identity": "eo:calc:v2:471780444330e2d9108e7ae97652bb4a47d3142ffc14cb238a587a6002df8eee",
+          "submitted": {
+            "birth_date": "1985-09-02",
+            "birth_time": "14:30",
+            "place_id": "524901"
+          }
+        },
+        {
+          "phase": "idle",
+          "source": "build",
+          "identity": "eo:calc:v2:471780444330e2d9108e7ae97652bb4a47d3142ffc14cb238a587a6002df8eee",
+          "submitted": {
+            "birth_date": "1985-09-02",
+            "birth_time": "14:30",
+            "place_id": "524901"
+          }
+        },
+        {
+          "phase": "idle",
+          "source": "build",
+          "identity": "eo:calc:v2:471780444330e2d9108e7ae97652bb4a47d3142ffc14cb238a587a6002df8eee",
+          "submitted": {
+            "birth_date": "1985-09-02",
+            "birth_time": "14:30",
+            "place_id": "524901"
+          }
+        }
+      ],
+      "expected": "three idle/build publications but one accepted operation"
+    },
+    {
+      "id": "G03-submitted-snapshot",
+      "level": "actual coordinator",
+      "expected": "14:30",
+      "actual": "14:30"
+    },
+    {
+      "id": "G03-summary-not-late-draft",
+      "level": "actual coordinator",
+      "expected": "14:30",
+      "actual": "14:30"
+    },
+    {
+      "id": "G03-late-draft",
+      "level": "actual form",
+      "expected": "15:45",
+      "actual": "15:45"
+    },
+    {
+      "id": "G03-recovery-is-current",
+      "level": "actual coordinator",
+      "expected": "current",
+      "actual": "current"
+    },
+    {
+      "id": "G03-fresh-birth-match",
+      "level": "actual recovery policy",
+      "expected": "matched",
+      "actual": "matched"
+    },
+    {
+      "id": "G03-producer-ambiguity",
+      "level": "indistinguishability argument; two possible server histories, no simulated server commit",
+      "expected": "same public observation for own late winner vs other tab same birth; not proof of own commit",
+      "actual": {
+        "source": "current",
+        "recovery": "matched",
+        "birth": {
+          "birth_date": "1985-09-02",
+          "birth_time": "14:30",
+          "place": {
+            "place_id": "524901",
+            "display_name": "Moscow"
+          },
+          "tz_id": "Europe/Moscow",
+          "utc_offset_seconds": 14400,
+          "time_unknown": false,
+          "warnings": [
+            {
+              "source": "time",
+              "code": "pre_1970_offset_unverified"
+            }
+          ]
+        },
+        "identity": "eo:calc:v2:471780444330e2d9108e7ae97652bb4a47d3142ffc14cb238a587a6002df8eee",
+        "originalRequestId": null
+      }
+    },
+    {
+      "id": "G03-model-once-late-draft",
+      "level": "candidate event model",
+      "expected": {
+        "resets": 1,
+        "selection": null,
+        "aspectsAll": false,
+        "housesAll": false,
+        "editor": true
+      },
+      "actual": {
+        "resets": 1,
+        "selection": null,
+        "aspectsAll": false,
+        "housesAll": false,
+        "editor": true
+      }
+    },
+    {
+      "id": "G03-model-repeat-not-reset",
+      "level": "candidate event model",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "id": "G03-model-automatic_current_same",
+      "level": "candidate conservative event model; no attribution from GET",
+      "expected": {
+        "resets": 0,
+        "selection": "moon",
+        "aspectsAll": true,
+        "housesAll": true,
+        "editor": true
+      },
+      "actual": {
+        "resets": 0,
+        "selection": "moon",
+        "aspectsAll": true,
+        "housesAll": true,
+        "editor": true
+      }
+    },
+    {
+      "id": "G03-model-automatic_current_different",
+      "level": "candidate conservative event model; no attribution from GET",
+      "expected": {
+        "resets": 0,
+        "selection": "moon",
+        "aspectsAll": true,
+        "housesAll": true,
+        "editor": true
+      },
+      "actual": {
+        "resets": 0,
+        "selection": "moon",
+        "aspectsAll": true,
+        "housesAll": true,
+        "editor": true
+      }
+    },
+    {
+      "id": "G03-model-rejected_build",
+      "level": "candidate conservative event model; no attribution from GET",
+      "expected": {
+        "resets": 0,
+        "selection": "moon",
+        "aspectsAll": true,
+        "housesAll": true,
+        "editor": true
+      },
+      "actual": {
+        "resets": 0,
+        "selection": "moon",
+        "aspectsAll": true,
+        "housesAll": true,
+        "editor": true
+      }
+    },
+    {
+      "id": "G03-model-stale_recovery",
+      "level": "candidate conservative event model; no attribution from GET",
+      "expected": {
+        "resets": 0,
+        "selection": "moon",
+        "aspectsAll": true,
+        "housesAll": true,
+        "editor": true
+      },
+      "actual": {
+        "resets": 0,
+        "selection": "moon",
+        "aspectsAll": true,
+        "housesAll": true,
+        "editor": true
+      }
+    },
+    {
+      "id": "G03-model-different_recovery",
+      "level": "candidate conservative event model; no attribution from GET",
+      "expected": {
+        "resets": 0,
+        "selection": "moon",
+        "aspectsAll": true,
+        "housesAll": true,
+        "editor": true
+      },
+      "actual": {
+        "resets": 0,
+        "selection": "moon",
+        "aspectsAll": true,
+        "housesAll": true,
+        "editor": true
+      }
+    },
+    {
+      "id": "G03-model-old_recovery",
+      "level": "candidate conservative event model; no attribution from GET",
+      "expected": {
+        "resets": 0,
+        "selection": "moon",
+        "aspectsAll": true,
+        "housesAll": true,
+        "editor": true
+      },
+      "actual": {
+        "resets": 0,
+        "selection": "moon",
+        "aspectsAll": true,
+        "housesAll": true,
+        "editor": true
+      }
+    },
+    {
+      "id": "G03-model-failed_read",
+      "level": "candidate conservative event model; no attribution from GET",
+      "expected": {
+        "resets": 0,
+        "selection": "moon",
+        "aspectsAll": true,
+        "housesAll": true,
+        "editor": true
+      },
+      "actual": {
+        "resets": 0,
+        "selection": "moon",
+        "aspectsAll": true,
+        "housesAll": true,
+        "editor": true
+      }
+    },
+    {
+      "id": "G03-model-already_applied",
+      "level": "candidate conservative event model; no attribution from GET",
+      "expected": {
+        "resets": 0,
+        "selection": "moon",
+        "aspectsAll": true,
+        "housesAll": true,
+        "editor": true
+      },
+      "actual": {
+        "resets": 0,
+        "selection": "moon",
+        "aspectsAll": true,
+        "housesAll": true,
+        "editor": true
+      }
+    },
+    {
+      "id": "G03-model-result_superseded",
+      "level": "candidate conservative event model; no attribution from GET",
+      "expected": {
+        "resets": 0,
+        "selection": "moon",
+        "aspectsAll": true,
+        "housesAll": true,
+        "editor": true
+      },
+      "actual": {
+        "resets": 0,
+        "selection": "moon",
+        "aspectsAll": true,
+        "housesAll": true,
+        "editor": true
+      }
+    },
+    {
+      "id": "G03-model-edit-revert-collapses",
+      "level": "candidate snapshot equality model",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "id": "G03-model-missing-only",
+      "level": "candidate reconcile model",
+      "expected": {
+        "resets": 0,
+        "selection": null,
+        "aspectsAll": true,
+        "housesAll": true,
+        "editor": true
+      },
+      "actual": {
+        "resets": 0,
+        "selection": null,
+        "aspectsAll": true,
+        "housesAll": true,
+        "editor": true
+      }
+    },
+    {
+      "id": "G02-undirected-lookup-new-facts",
+      "level": "presentation key model; original direction retained",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "id": "G02-changed-type-is-new",
+      "level": "presentation key model",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "id": "G02-duplicate-does-not-select-first",
+      "level": "candidate local outcome, not new API constraint",
+      "expected": "ambiguous",
+      "actual": "ambiguous"
+    },
+    {
+      "id": "G02-cosmogram-missing",
+      "level": "candidate reconcile model",
+      "expected": "absent",
+      "actual": "absent"
+    }
+  ]
+}

@@ -1,0 +1,4266 @@
+{
+  "records": [
+    {
+      "fixture": "F1",
+      "viewport": 1440,
+      "layout": "candidate",
+      "key": "mercury",
+      "distance_arc_css": 5.982350813178604,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 170.0960865891084,
+        "y": 536.4118580799732
+      },
+      "q_boxes": [
+        {
+          "left": 162.0960865891084,
+          "top": 530.4118580799732,
+          "right": 171.0960865891084,
+          "bottom": 545.4118580799732
+        },
+        {
+          "left": 159.0960865891084,
+          "top": 527.4118580799732,
+          "right": 174.0960865891084,
+          "bottom": 548.4118580799732
+        }
+      ],
+      "start_min_margin": 36.93540857652411,
+      "endpoint_min_margin": 37.83430319076292,
+      "verdict": "FULL_PREFIX_UNPROVEN",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F1",
+      "viewport": 1440,
+      "layout": "candidate",
+      "key": "mars",
+      "distance_arc_css": 54.207840721019934,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 224.3699783285128,
+        "y": 580.8826322312188
+      },
+      "q_boxes": [
+        {
+          "left": 216.3699783285128,
+          "top": 576.8826322312188,
+          "right": 227.3699783285128,
+          "bottom": 587.8826322312188
+        },
+        {
+          "left": 213.3699783285128,
+          "top": 573.8826322312188,
+          "right": 230.3699783285128,
+          "bottom": 590.8826322312188
+        }
+      ],
+      "start_min_margin": -2.0,
+      "endpoint_min_margin": -2.0,
+      "verdict": "CANDIDATE_INADMISSIBLE",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F1",
+      "viewport": 1440,
+      "layout": "candidate",
+      "key": "uranus",
+      "distance_arc_css": 150.32149022522364,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 500.7552970648271,
+        "y": 577.6524439288295
+      },
+      "q_boxes": [
+        {
+          "left": 492.7552970648271,
+          "top": 571.6524439288295,
+          "right": 504.7552970648271,
+          "bottom": 584.6524439288295
+        },
+        {
+          "left": 489.7552970648271,
+          "top": 568.6524439288295,
+          "right": 507.7552970648271,
+          "bottom": 587.6524439288295
+        }
+      ],
+      "start_min_margin": 15.212081095507529,
+      "endpoint_min_margin": 16.05283503980604,
+      "verdict": "FULL_PREFIX_UNPROVEN",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F1",
+      "viewport": 1440,
+      "layout": "candidate",
+      "key": "true_node",
+      "distance_arc_css": 379.39148218331167,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 127.9292563859793,
+        "y": 475.44613444561696
+      },
+      "q_boxes": [
+        {
+          "left": 119.9292563859793,
+          "top": 469.44613444561696,
+          "right": 131.9292563859793,
+          "bottom": 482.44613444561696
+        },
+        {
+          "left": 135.9292563859793,
+          "top": 476.44613444561696,
+          "right": 143.9292563859793,
+          "bottom": 485.44613444561696
+        },
+        {
+          "left": 116.9292563859793,
+          "top": 466.44613444561696,
+          "right": 146.9292563859793,
+          "bottom": 488.44613444561696
+        }
+      ],
+      "start_min_margin": -2.0,
+      "endpoint_min_margin": -2.0,
+      "verdict": "CANDIDATE_INADMISSIBLE",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F1",
+      "viewport": 1440,
+      "layout": "candidate",
+      "key": "south_node",
+      "distance_arc_css": 217.7624494110361,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 292.4363898149904,
+        "y": 610.2394824538447
+      },
+      "q_boxes": [
+        {
+          "left": 284.4363898149904,
+          "top": 604.2394824538447,
+          "right": 296.4363898149904,
+          "bottom": 617.2394824538447
+        },
+        {
+          "left": 300.4363898149904,
+          "top": 611.2394824538447,
+          "right": 308.4363898149904,
+          "bottom": 620.2394824538447
+        },
+        {
+          "left": 281.4363898149904,
+          "top": 601.2394824538447,
+          "right": 311.4363898149904,
+          "bottom": 623.2394824538447
+        }
+      ],
+      "start_min_margin": 36.49875271345637,
+      "endpoint_min_margin": 37.48899187559338,
+      "verdict": "FULL_PREFIX_UNPROVEN",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F1",
+      "viewport": 1440,
+      "layout": "candidate",
+      "key": "mean_apog",
+      "distance_arc_css": 310.2203994586537,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 105.09801617803603,
+        "y": 407.00658085446355
+      },
+      "q_boxes": [
+        {
+          "left": 98.09801617803603,
+          "top": 401.00658085446355,
+          "right": 104.09801617803603,
+          "bottom": 413.00658085446355
+        },
+        {
+          "left": 95.09801617803603,
+          "top": 398.00658085446355,
+          "right": 107.09801617803603,
+          "bottom": 416.00658085446355
+        }
+      ],
+      "start_min_margin": 46.01627018016097,
+      "endpoint_min_margin": 46.04217807823238,
+      "verdict": "FULL_PREFIX_UNPROVEN",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F1",
+      "viewport": 1440,
+      "layout": "candidate",
+      "key": "selena",
+      "distance_arc_css": 166.15018761642816,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 364.0290387544343,
+        "y": 619.1686841551565
+      },
+      "q_boxes": [
+        {
+          "left": 357.0290387544343,
+          "top": 614.1686841551565,
+          "right": 368.0290387544343,
+          "bottom": 625.1686841551565
+        },
+        {
+          "left": 372.0290387544343,
+          "top": 620.1686841551565,
+          "right": 380.0290387544343,
+          "bottom": 629.1686841551565
+        },
+        {
+          "left": 354.0290387544343,
+          "top": 611.1686841551565,
+          "right": 383.0290387544343,
+          "bottom": 632.1686841551565
+        }
+      ],
+      "start_min_margin": 40.32298026160373,
+      "endpoint_min_margin": 39.32307357454715,
+      "verdict": "FULL_PREFIX_UNPROVEN",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F1",
+      "viewport": 1440,
+      "layout": "candidate",
+      "key": "pars_fortune",
+      "distance_arc_css": 203.60324429711832,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 435.30953143718716,
+        "y": 608.0183752763317
+      },
+      "q_boxes": [
+        {
+          "left": 428.30953143718716,
+          "top": 604.0183752763317,
+          "right": 439.30953143718716,
+          "bottom": 615.0183752763317
+        },
+        {
+          "left": 425.30953143718716,
+          "top": 601.0183752763317,
+          "right": 442.30953143718716,
+          "bottom": 618.0183752763317
+        }
+      ],
+      "start_min_margin": 14.350349696039643,
+      "endpoint_min_margin": 13.392930587833916,
+      "verdict": "FULL_PREFIX_UNPROVEN",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F1",
+      "viewport": 768,
+      "layout": "candidate",
+      "key": "mercury",
+      "distance_arc_css": 5.982350813178604,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 170.0960865891084,
+        "y": 536.4118580799732
+      },
+      "q_boxes": [
+        {
+          "left": 162.0960865891084,
+          "top": 530.4118580799732,
+          "right": 171.0960865891084,
+          "bottom": 545.4118580799732
+        },
+        {
+          "left": 159.0960865891084,
+          "top": 527.4118580799732,
+          "right": 174.0960865891084,
+          "bottom": 548.4118580799732
+        }
+      ],
+      "start_min_margin": 36.93540857652411,
+      "endpoint_min_margin": 37.83430319076292,
+      "verdict": "FULL_PREFIX_UNPROVEN",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F1",
+      "viewport": 768,
+      "layout": "candidate",
+      "key": "mars",
+      "distance_arc_css": 54.207840721019934,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 224.3699783285128,
+        "y": 580.8826322312188
+      },
+      "q_boxes": [
+        {
+          "left": 216.3699783285128,
+          "top": 576.8826322312188,
+          "right": 227.3699783285128,
+          "bottom": 587.8826322312188
+        },
+        {
+          "left": 213.3699783285128,
+          "top": 573.8826322312188,
+          "right": 230.3699783285128,
+          "bottom": 590.8826322312188
+        }
+      ],
+      "start_min_margin": -2.0,
+      "endpoint_min_margin": -2.0,
+      "verdict": "CANDIDATE_INADMISSIBLE",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F1",
+      "viewport": 768,
+      "layout": "candidate",
+      "key": "uranus",
+      "distance_arc_css": 150.32149022522364,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 500.7552970648271,
+        "y": 577.6524439288295
+      },
+      "q_boxes": [
+        {
+          "left": 492.7552970648271,
+          "top": 571.6524439288295,
+          "right": 504.7552970648271,
+          "bottom": 584.6524439288295
+        },
+        {
+          "left": 489.7552970648271,
+          "top": 568.6524439288295,
+          "right": 507.7552970648271,
+          "bottom": 587.6524439288295
+        }
+      ],
+      "start_min_margin": 15.212081095507529,
+      "endpoint_min_margin": 16.05283503980604,
+      "verdict": "FULL_PREFIX_UNPROVEN",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F1",
+      "viewport": 768,
+      "layout": "candidate",
+      "key": "true_node",
+      "distance_arc_css": 379.39148218331167,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 127.9292563859793,
+        "y": 475.44613444561696
+      },
+      "q_boxes": [
+        {
+          "left": 119.9292563859793,
+          "top": 469.44613444561696,
+          "right": 131.9292563859793,
+          "bottom": 482.44613444561696
+        },
+        {
+          "left": 135.9292563859793,
+          "top": 476.44613444561696,
+          "right": 143.9292563859793,
+          "bottom": 485.44613444561696
+        },
+        {
+          "left": 116.9292563859793,
+          "top": 466.44613444561696,
+          "right": 146.9292563859793,
+          "bottom": 488.44613444561696
+        }
+      ],
+      "start_min_margin": -2.0,
+      "endpoint_min_margin": -2.0,
+      "verdict": "CANDIDATE_INADMISSIBLE",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F1",
+      "viewport": 768,
+      "layout": "candidate",
+      "key": "south_node",
+      "distance_arc_css": 217.7624494110361,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 292.4363898149904,
+        "y": 610.2394824538447
+      },
+      "q_boxes": [
+        {
+          "left": 284.4363898149904,
+          "top": 604.2394824538447,
+          "right": 296.4363898149904,
+          "bottom": 617.2394824538447
+        },
+        {
+          "left": 300.4363898149904,
+          "top": 611.2394824538447,
+          "right": 308.4363898149904,
+          "bottom": 620.2394824538447
+        },
+        {
+          "left": 281.4363898149904,
+          "top": 601.2394824538447,
+          "right": 311.4363898149904,
+          "bottom": 623.2394824538447
+        }
+      ],
+      "start_min_margin": 36.49875271345637,
+      "endpoint_min_margin": 37.48899187559338,
+      "verdict": "FULL_PREFIX_UNPROVEN",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F1",
+      "viewport": 768,
+      "layout": "candidate",
+      "key": "mean_apog",
+      "distance_arc_css": 310.2203994586537,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 105.09801617803603,
+        "y": 407.00658085446355
+      },
+      "q_boxes": [
+        {
+          "left": 98.09801617803603,
+          "top": 401.00658085446355,
+          "right": 104.09801617803603,
+          "bottom": 413.00658085446355
+        },
+        {
+          "left": 95.09801617803603,
+          "top": 398.00658085446355,
+          "right": 107.09801617803603,
+          "bottom": 416.00658085446355
+        }
+      ],
+      "start_min_margin": 46.01627018016097,
+      "endpoint_min_margin": 46.04217807823238,
+      "verdict": "FULL_PREFIX_UNPROVEN",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F1",
+      "viewport": 768,
+      "layout": "candidate",
+      "key": "selena",
+      "distance_arc_css": 166.15018761642816,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 364.0290387544343,
+        "y": 619.1686841551565
+      },
+      "q_boxes": [
+        {
+          "left": 357.0290387544343,
+          "top": 614.1686841551565,
+          "right": 368.0290387544343,
+          "bottom": 625.1686841551565
+        },
+        {
+          "left": 372.0290387544343,
+          "top": 620.1686841551565,
+          "right": 380.0290387544343,
+          "bottom": 629.1686841551565
+        },
+        {
+          "left": 354.0290387544343,
+          "top": 611.1686841551565,
+          "right": 383.0290387544343,
+          "bottom": 632.1686841551565
+        }
+      ],
+      "start_min_margin": 40.32298026160373,
+      "endpoint_min_margin": 39.32307357454715,
+      "verdict": "FULL_PREFIX_UNPROVEN",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F1",
+      "viewport": 768,
+      "layout": "candidate",
+      "key": "pars_fortune",
+      "distance_arc_css": 203.60324429711832,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 435.30953143718716,
+        "y": 608.0183752763317
+      },
+      "q_boxes": [
+        {
+          "left": 428.30953143718716,
+          "top": 604.0183752763317,
+          "right": 439.30953143718716,
+          "bottom": 615.0183752763317
+        },
+        {
+          "left": 425.30953143718716,
+          "top": 601.0183752763317,
+          "right": 442.30953143718716,
+          "bottom": 618.0183752763317
+        }
+      ],
+      "start_min_margin": 14.350349696039643,
+      "endpoint_min_margin": 13.392930587833916,
+      "verdict": "FULL_PREFIX_UNPROVEN",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F1",
+      "viewport": 360,
+      "layout": "candidate",
+      "key": "mercury",
+      "distance_arc_css": 11.85035181380018,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 71.88169538930562,
+        "y": 237.8722163986659
+      },
+      "q_boxes": [
+        {
+          "left": 63.88169538930562,
+          "top": 231.8722163986659,
+          "right": 72.88169538930562,
+          "bottom": 246.8722163986659
+        },
+        {
+          "left": 60.88169538930562,
+          "top": 228.8722163986659,
+          "right": 75.88169538930562,
+          "bottom": 249.8722163986659
+        }
+      ],
+      "start_min_margin": -1.421186297880979,
+      "endpoint_min_margin": -0.6384118449606717,
+      "verdict": "CANDIDATE_INADMISSIBLE",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F1",
+      "viewport": 360,
+      "layout": "candidate",
+      "key": "mars",
+      "distance_arc_css": 15.569624329557035,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 94.18918209888274,
+        "y": 259.233062031928
+      },
+      "q_boxes": [
+        {
+          "left": 86.18918209888274,
+          "top": 255.233062031928,
+          "right": 97.18918209888274,
+          "bottom": 266.233062031928
+        },
+        {
+          "left": 83.18918209888274,
+          "top": 252.233062031928,
+          "right": 100.18918209888274,
+          "bottom": 269.233062031928
+        }
+      ],
+      "start_min_margin": -2.0,
+      "endpoint_min_margin": -2.0,
+      "verdict": "CANDIDATE_INADMISSIBLE",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F1",
+      "viewport": 360,
+      "layout": "candidate",
+      "key": "saturn",
+      "distance_arc_css": 33.52640257387279,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 220.7537557161874,
+        "y": 267.54659633279755
+      },
+      "q_boxes": [
+        {
+          "left": 212.7537557161874,
+          "top": 261.54659633279755,
+          "right": 221.7537557161874,
+          "bottom": 273.54659633279755
+        },
+        {
+          "left": 209.7537557161874,
+          "top": 258.54659633279755,
+          "right": 224.7537557161874,
+          "bottom": 276.54659633279755
+        }
+      ],
+      "start_min_margin": -1.1627377768225529,
+      "endpoint_min_margin": -0.28379404171545275,
+      "verdict": "CANDIDATE_INADMISSIBLE",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F1",
+      "viewport": 360,
+      "layout": "candidate",
+      "key": "uranus",
+      "distance_arc_css": 11.65653567290822,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 267.00125062736845,
+        "y": 221.7375854119137
+      },
+      "q_boxes": [
+        {
+          "left": 259.00125062736845,
+          "top": 215.7375854119137,
+          "right": 271.00125062736845,
+          "bottom": 228.7375854119137
+        },
+        {
+          "left": 256.00125062736845,
+          "top": 212.7375854119137,
+          "right": 274.00125062736845,
+          "bottom": 231.7375854119137
+        }
+      ],
+      "start_min_margin": -2.0,
+      "endpoint_min_margin": -2.0,
+      "verdict": "CANDIDATE_INADMISSIBLE",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F1",
+      "viewport": 360,
+      "layout": "candidate",
+      "key": "pluto",
+      "distance_arc_css": 91.31806705400311,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 125.02555771500008,
+        "y": 275.46245667745353
+      },
+      "q_boxes": [
+        {
+          "left": 118.02555771500008,
+          "top": 269.46245667745353,
+          "right": 126.02555771500008,
+          "bottom": 281.46245667745353
+        },
+        {
+          "left": 115.02555771500008,
+          "top": 266.46245667745353,
+          "right": 129.02555771500008,
+          "bottom": 284.46245667745353
+        }
+      ],
+      "start_min_margin": -2.0,
+      "endpoint_min_margin": -1.1522478244786072,
+      "verdict": "CANDIDATE_INADMISSIBLE",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F1",
+      "viewport": 360,
+      "layout": "candidate",
+      "key": "true_node",
+      "distance_arc_css": 163.70883877348996,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 54.33123462520011,
+        "y": 207.768119689645
+      },
+      "q_boxes": [
+        {
+          "left": 46.33123462520011,
+          "top": 201.768119689645,
+          "right": 58.33123462520011,
+          "bottom": 214.768119689645
+        },
+        {
+          "left": 62.33123462520011,
+          "top": 208.768119689645,
+          "right": 70.33123462520011,
+          "bottom": 217.768119689645
+        },
+        {
+          "left": 43.33123462520011,
+          "top": 198.768119689645,
+          "right": 73.33123462520011,
+          "bottom": 220.768119689645
+        }
+      ],
+      "start_min_margin": -2.0,
+      "endpoint_min_margin": -2.0,
+      "verdict": "CANDIDATE_INADMISSIBLE",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F1",
+      "viewport": 360,
+      "layout": "candidate",
+      "key": "south_node",
+      "distance_arc_css": 75.35379579407898,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 157.2585783423109,
+        "y": 281.8874023551
+      },
+      "q_boxes": [
+        {
+          "left": 149.2585783423109,
+          "top": 275.8874023551,
+          "right": 161.2585783423109,
+          "bottom": 288.8874023551
+        },
+        {
+          "left": 165.2585783423109,
+          "top": 282.8874023551,
+          "right": 173.2585783423109,
+          "bottom": 291.8874023551
+        },
+        {
+          "left": 146.2585783423109,
+          "top": 272.8874023551,
+          "right": 176.2585783423109,
+          "bottom": 294.8874023551
+        }
+      ],
+      "start_min_margin": 1.7770866541399641,
+      "endpoint_min_margin": 0.7789714155919683,
+      "verdict": "FULL_PREFIX_UNPROVEN",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F1",
+      "viewport": 360,
+      "layout": "candidate",
+      "key": "mean_apog",
+      "distance_arc_css": 132.19756775447908,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 46.515487824022586,
+        "y": 175.84380845727478
+      },
+      "q_boxes": [
+        {
+          "left": 39.515487824022586,
+          "top": 169.84380845727478,
+          "right": 45.515487824022586,
+          "bottom": 181.84380845727478
+        },
+        {
+          "left": 36.515487824022586,
+          "top": 166.84380845727478,
+          "right": 48.515487824022586,
+          "bottom": 184.84380845727478
+        }
+      ],
+      "start_min_margin": 11.856976938459212,
+      "endpoint_min_margin": 12.851497234009145,
+      "verdict": "FULL_PREFIX_UNPROVEN",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F1",
+      "viewport": 360,
+      "layout": "candidate",
+      "key": "selena",
+      "distance_arc_css": 51.84154319875746,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 190.013901453589,
+        "y": 279.1788319577993
+      },
+      "q_boxes": [
+        {
+          "left": 183.013901453589,
+          "top": 274.1788319577993,
+          "right": 194.013901453589,
+          "bottom": 285.1788319577993
+        },
+        {
+          "left": 198.013901453589,
+          "top": 280.1788319577993,
+          "right": 206.013901453589,
+          "bottom": 289.1788319577993
+        },
+        {
+          "left": 180.013901453589,
+          "top": 271.1788319577993,
+          "right": 209.013901453589,
+          "bottom": 292.1788319577993
+        }
+      ],
+      "start_min_margin": -1.1627377768225529,
+      "endpoint_min_margin": -2.0,
+      "verdict": "CANDIDATE_INADMISSIBLE",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F1",
+      "viewport": 360,
+      "layout": "candidate",
+      "key": "pars_fortune",
+      "distance_arc_css": 35.929334750104694,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 247.0965214876339,
+        "y": 247.89192164121164
+      },
+      "q_boxes": [
+        {
+          "left": 240.0965214876339,
+          "top": 243.89192164121164,
+          "right": 251.0965214876339,
+          "bottom": 254.89192164121164
+        },
+        {
+          "left": 237.0965214876339,
+          "top": 240.89192164121164,
+          "right": 254.0965214876339,
+          "bottom": 257.89192164121164
+        }
+      ],
+      "start_min_margin": 7.232820217803342,
+      "endpoint_min_margin": 6.403602369992523,
+      "verdict": "FULL_PREFIX_UNPROVEN",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3",
+      "viewport": 1440,
+      "layout": "candidate",
+      "key": "mercury",
+      "distance_arc_css": 239.10336895660726,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 586.7849723386594,
+        "y": 234.48818254302296
+      },
+      "q_boxes": [
+        {
+          "left": 578.7849723386594,
+          "top": 228.48818254302296,
+          "right": 587.7849723386594,
+          "bottom": 243.48818254302296
+        },
+        {
+          "left": 594.7849723386594,
+          "top": 235.48818254302296,
+          "right": 602.7849723386594,
+          "bottom": 244.48818254302296
+        },
+        {
+          "left": 575.7849723386594,
+          "top": 225.48818254302296,
+          "right": 605.7849723386594,
+          "bottom": 247.48818254302296
+        }
+      ],
+      "start_min_margin": 36.15587872594294,
+      "endpoint_min_margin": 35.16763467263884,
+      "verdict": "FULL_PREFIX_UNPROVEN",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3",
+      "viewport": 1440,
+      "layout": "candidate",
+      "key": "venus",
+      "distance_arc_css": 167.39965823107403,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 543.4039616359573,
+        "y": 176.83988737654622
+      },
+      "q_boxes": [
+        {
+          "left": 535.4039616359573,
+          "top": 170.83988737654622,
+          "right": 544.4039616359573,
+          "bottom": 182.83988737654622
+        },
+        {
+          "left": 551.4039616359573,
+          "top": 177.83988737654622,
+          "right": 559.4039616359573,
+          "bottom": 186.83988737654622
+        },
+        {
+          "left": 532.4039616359573,
+          "top": 167.83988737654622,
+          "right": 562.4039616359573,
+          "bottom": 189.83988737654622
+        }
+      ],
+      "start_min_margin": 32.957006073355615,
+      "endpoint_min_margin": 31.964289261948217,
+      "verdict": "FULL_PREFIX_UNPROVEN",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3",
+      "viewport": 1440,
+      "layout": "candidate",
+      "key": "mars",
+      "distance_arc_css": 95.69594750554022,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 485.8134340693139,
+        "y": 133.38221647962754
+      },
+      "q_boxes": [
+        {
+          "left": 477.8134340693139,
+          "top": 129.38221647962754,
+          "right": 488.8134340693139,
+          "bottom": 140.38221647962754
+        },
+        {
+          "left": 493.8134340693139,
+          "top": 134.38221647962754,
+          "right": 501.8134340693139,
+          "bottom": 143.38221647962754
+        },
+        {
+          "left": 474.8134340693139,
+          "top": 126.38221647962754,
+          "right": 504.8134340693139,
+          "bottom": 146.38221647962754
+        }
+      ],
+      "start_min_margin": 32.957006073355615,
+      "endpoint_min_margin": 33.94455036965634,
+      "verdict": "FULL_PREFIX_UNPROVEN",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3",
+      "viewport": 1440,
+      "layout": "candidate",
+      "key": "jupiter",
+      "distance_arc_css": 23.992236780006866,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 418.475308374628,
+        "y": 107.48212279030193
+      },
+      "q_boxes": [
+        {
+          "left": 410.475308374628,
+          "top": 101.48212279030193,
+          "right": 422.475308374628,
+          "bottom": 113.48212279030193
+        },
+        {
+          "left": 426.475308374628,
+          "top": 108.48212279030193,
+          "right": 434.475308374628,
+          "bottom": 117.48212279030193
+        },
+        {
+          "left": 407.475308374628,
+          "top": 98.48212279030193,
+          "right": 437.475308374628,
+          "bottom": 120.48212279030193
+        }
+      ],
+      "start_min_margin": 35.74371777458379,
+      "endpoint_min_margin": 36.74162451722572,
+      "verdict": "FULL_PREFIX_UNPROVEN",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3",
+      "viewport": 1440,
+      "layout": "candidate",
+      "key": "saturn",
+      "distance_arc_css": 47.71147394552671,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 348.6044212660757,
+        "y": 101.05062119147897
+      },
+      "q_boxes": [
+        {
+          "left": 340.6044212660757,
+          "top": 95.05062119147897,
+          "right": 349.6044212660757,
+          "bottom": 107.05062119147897
+        },
+        {
+          "left": 356.6044212660757,
+          "top": 102.05062119147897,
+          "right": 364.6044212660757,
+          "bottom": 111.05062119147897
+        },
+        {
+          "left": 337.6044212660757,
+          "top": 92.05062119147897,
+          "right": 367.6044212660757,
+          "bottom": 114.05062119147897
+        }
+      ],
+      "start_min_margin": -2.0,
+      "endpoint_min_margin": -2.0,
+      "verdict": "CANDIDATE_INADMISSIBLE",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3",
+      "viewport": 1440,
+      "layout": "candidate",
+      "key": "uranus",
+      "distance_arc_css": 166.6733143532781,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 613.0365344077208,
+        "y": 303.8114579746871
+      },
+      "q_boxes": [
+        {
+          "left": 605.0365344077208,
+          "top": 297.8114579746871,
+          "right": 617.0365344077208,
+          "bottom": 310.8114579746871
+        },
+        {
+          "left": 602.0365344077208,
+          "top": 294.8114579746871,
+          "right": 620.0365344077208,
+          "bottom": 313.8114579746871
+        }
+      ],
+      "start_min_margin": 43.4716008879528,
+      "endpoint_min_margin": 44.44740149920713,
+      "verdict": "FULL_PREFIX_UNPROVEN",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3",
+      "viewport": 1440,
+      "layout": "candidate",
+      "key": "true_node",
+      "distance_arc_css": 8.754486744079838,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 213.11373685823796,
+        "y": 146.43720899873725
+      },
+      "q_boxes": [
+        {
+          "left": 205.11373685823796,
+          "top": 140.43720899873725,
+          "right": 217.11373685823796,
+          "bottom": 153.43720899873725
+        },
+        {
+          "left": 221.11373685823796,
+          "top": 147.43720899873725,
+          "right": 229.11373685823796,
+          "bottom": 156.43720899873725
+        },
+        {
+          "left": 202.11373685823796,
+          "top": 137.43720899873725,
+          "right": 232.11373685823796,
+          "bottom": 159.43720899873725
+        }
+      ],
+      "start_min_margin": 36.269495643917146,
+      "endpoint_min_margin": 35.293538206866245,
+      "verdict": "FULL_PREFIX_UNPROVEN",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3",
+      "viewport": 1440,
+      "layout": "candidate",
+      "key": "south_node",
+      "distance_arc_css": 99.23235516746588,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 571.0707139564126,
+        "y": 510.44531800601254
+      },
+      "q_boxes": [
+        {
+          "left": 563.0707139564126,
+          "top": 504.44531800601254,
+          "right": 575.0707139564126,
+          "bottom": 517.4453180060125
+        },
+        {
+          "left": 579.0707139564126,
+          "top": 511.44531800601254,
+          "right": 587.0707139564126,
+          "bottom": 520.4453180060125
+        },
+        {
+          "left": 560.0707139564126,
+          "top": 501.44531800601254,
+          "right": 590.0707139564126,
+          "bottom": 523.4453180060125
+        }
+      ],
+      "start_min_margin": 34.580758267149236,
+      "endpoint_min_margin": 34.582166760319694,
+      "verdict": "FULL_PREFIX_UNPROVEN",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3",
+      "viewport": 1440,
+      "layout": "candidate",
+      "key": "mean_apog",
+      "distance_arc_css": 60.4165959805784,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 275.7757862425694,
+        "y": 114.86550259716071
+      },
+      "q_boxes": [
+        {
+          "left": 268.7757862425694,
+          "top": 108.86550259716071,
+          "right": 274.7757862425694,
+          "bottom": 120.86550259716071
+        },
+        {
+          "left": 265.7757862425694,
+          "top": 105.86550259716071,
+          "right": 277.7757862425694,
+          "bottom": 123.86550259716071
+        }
+      ],
+      "start_min_margin": 36.269495643917146,
+      "endpoint_min_margin": 35.27125507322634,
+      "verdict": "FULL_PREFIX_UNPROVEN",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3",
+      "viewport": 1440,
+      "layout": "candidate",
+      "key": "selena",
+      "distance_arc_css": 150.84461696207407,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 604.3625421108779,
+        "y": 446.43834804708735
+      },
+      "q_boxes": [
+        {
+          "left": 597.3625421108779,
+          "top": 441.43834804708735,
+          "right": 608.3625421108779,
+          "bottom": 452.43834804708735
+        },
+        {
+          "left": 612.3625421108779,
+          "top": 447.43834804708735,
+          "right": 620.3625421108779,
+          "bottom": 456.43834804708735
+        },
+        {
+          "left": 594.3625421108779,
+          "top": 438.43834804708735,
+          "right": 623.3625421108779,
+          "bottom": 459.43834804708735
+        }
+      ],
+      "start_min_margin": 29.87928899922008,
+      "endpoint_min_margin": 30.822686670317978,
+      "verdict": "FULL_PREFIX_UNPROVEN",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3",
+      "viewport": 1440,
+      "layout": "candidate",
+      "key": "pars_fortune",
+      "distance_arc_css": 113.39156028138365,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 618.7219893501899,
+        "y": 375.73442806968745
+      },
+      "q_boxes": [
+        {
+          "left": 611.7219893501899,
+          "top": 371.73442806968745,
+          "right": 622.7219893501899,
+          "bottom": 382.73442806968745
+        },
+        {
+          "left": 608.7219893501899,
+          "top": 368.73442806968745,
+          "right": 625.7219893501899,
+          "bottom": 385.73442806968745
+        }
+      ],
+      "start_min_margin": -2.0,
+      "endpoint_min_margin": -2.0,
+      "verdict": "CANDIDATE_INADMISSIBLE",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3",
+      "viewport": 1440,
+      "layout": "candidate",
+      "key": "[\"mercury\",\"venus\",\"conjunction\"]",
+      "distance_arc_css": 55.084685588043314,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 434.10541976262965,
+        "y": 220.00376161551887
+      },
+      "q_boxes": [
+        {
+          "left": 425.35541976262965,
+          "top": 213.25376161551887,
+          "right": 434.85541976262965,
+          "bottom": 224.75376161551887
+        },
+        {
+          "left": 441.10541976262965,
+          "top": 221.00376161551887,
+          "right": 484.64252913762965,
+          "bottom": 230.00376161551887
+        },
+        {
+          "left": 423.10541976262965,
+          "top": 211.00376161551887,
+          "right": 487.64252913762965,
+          "bottom": 233.00376161551887
+        }
+      ],
+      "start_min_margin": 19.585901531719713,
+      "endpoint_min_margin": 19.804958530100038,
+      "verdict": "FULL_PREFIX_UNPROVEN",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3",
+      "viewport": 1440,
+      "layout": "candidate",
+      "key": "[\"venus\",\"mars\",\"conjunction\"]",
+      "distance_arc_css": 55.084685588043314,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 328.738316128029,
+        "y": 204.7155283954994
+      },
+      "q_boxes": [
+        {
+          "left": 319.988316128029,
+          "top": 197.9655283954994,
+          "right": 329.488316128029,
+          "bottom": 209.4655283954994
+        },
+        {
+          "left": 336.738316128029,
+          "top": 205.7155283954994,
+          "right": 384.296909878029,
+          "bottom": 214.7155283954994
+        },
+        {
+          "left": 317.738316128029,
+          "top": 195.7155283954994,
+          "right": 387.296909878029,
+          "bottom": 217.7155283954994
+        }
+      ],
+      "start_min_margin": 35.67054366922139,
+      "endpoint_min_margin": 34.69084189596822,
+      "verdict": "FULL_PREFIX_UNPROVEN",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3",
+      "viewport": 768,
+      "layout": "candidate",
+      "key": "mercury",
+      "distance_arc_css": 239.10336895660726,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 586.7849723386594,
+        "y": 234.48818254302296
+      },
+      "q_boxes": [
+        {
+          "left": 578.7849723386594,
+          "top": 228.48818254302296,
+          "right": 587.7849723386594,
+          "bottom": 243.48818254302296
+        },
+        {
+          "left": 594.7849723386594,
+          "top": 235.48818254302296,
+          "right": 602.7849723386594,
+          "bottom": 244.48818254302296
+        },
+        {
+          "left": 575.7849723386594,
+          "top": 225.48818254302296,
+          "right": 605.7849723386594,
+          "bottom": 247.48818254302296
+        }
+      ],
+      "start_min_margin": 36.15587872594294,
+      "endpoint_min_margin": 35.16763467263884,
+      "verdict": "FULL_PREFIX_UNPROVEN",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3",
+      "viewport": 768,
+      "layout": "candidate",
+      "key": "venus",
+      "distance_arc_css": 167.39965823107403,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 543.4039616359573,
+        "y": 176.83988737654622
+      },
+      "q_boxes": [
+        {
+          "left": 535.4039616359573,
+          "top": 170.83988737654622,
+          "right": 544.4039616359573,
+          "bottom": 182.83988737654622
+        },
+        {
+          "left": 551.4039616359573,
+          "top": 177.83988737654622,
+          "right": 559.4039616359573,
+          "bottom": 186.83988737654622
+        },
+        {
+          "left": 532.4039616359573,
+          "top": 167.83988737654622,
+          "right": 562.4039616359573,
+          "bottom": 189.83988737654622
+        }
+      ],
+      "start_min_margin": 32.957006073355615,
+      "endpoint_min_margin": 31.964289261948217,
+      "verdict": "FULL_PREFIX_UNPROVEN",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3",
+      "viewport": 768,
+      "layout": "candidate",
+      "key": "mars",
+      "distance_arc_css": 95.69594750554022,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 485.8134340693139,
+        "y": 133.38221647962754
+      },
+      "q_boxes": [
+        {
+          "left": 477.8134340693139,
+          "top": 129.38221647962754,
+          "right": 488.8134340693139,
+          "bottom": 140.38221647962754
+        },
+        {
+          "left": 493.8134340693139,
+          "top": 134.38221647962754,
+          "right": 501.8134340693139,
+          "bottom": 143.38221647962754
+        },
+        {
+          "left": 474.8134340693139,
+          "top": 126.38221647962754,
+          "right": 504.8134340693139,
+          "bottom": 146.38221647962754
+        }
+      ],
+      "start_min_margin": 32.957006073355615,
+      "endpoint_min_margin": 33.94455036965634,
+      "verdict": "FULL_PREFIX_UNPROVEN",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3",
+      "viewport": 768,
+      "layout": "candidate",
+      "key": "jupiter",
+      "distance_arc_css": 23.992236780006866,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 418.475308374628,
+        "y": 107.48212279030193
+      },
+      "q_boxes": [
+        {
+          "left": 410.475308374628,
+          "top": 101.48212279030193,
+          "right": 422.475308374628,
+          "bottom": 113.48212279030193
+        },
+        {
+          "left": 426.475308374628,
+          "top": 108.48212279030193,
+          "right": 434.475308374628,
+          "bottom": 117.48212279030193
+        },
+        {
+          "left": 407.475308374628,
+          "top": 98.48212279030193,
+          "right": 437.475308374628,
+          "bottom": 120.48212279030193
+        }
+      ],
+      "start_min_margin": 35.74371777458379,
+      "endpoint_min_margin": 36.74162451722572,
+      "verdict": "FULL_PREFIX_UNPROVEN",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3",
+      "viewport": 768,
+      "layout": "candidate",
+      "key": "saturn",
+      "distance_arc_css": 47.71147394552671,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 348.6044212660757,
+        "y": 101.05062119147897
+      },
+      "q_boxes": [
+        {
+          "left": 340.6044212660757,
+          "top": 95.05062119147897,
+          "right": 349.6044212660757,
+          "bottom": 107.05062119147897
+        },
+        {
+          "left": 356.6044212660757,
+          "top": 102.05062119147897,
+          "right": 364.6044212660757,
+          "bottom": 111.05062119147897
+        },
+        {
+          "left": 337.6044212660757,
+          "top": 92.05062119147897,
+          "right": 367.6044212660757,
+          "bottom": 114.05062119147897
+        }
+      ],
+      "start_min_margin": -2.0,
+      "endpoint_min_margin": -2.0,
+      "verdict": "CANDIDATE_INADMISSIBLE",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3",
+      "viewport": 768,
+      "layout": "candidate",
+      "key": "uranus",
+      "distance_arc_css": 166.6733143532781,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 613.0365344077208,
+        "y": 303.8114579746871
+      },
+      "q_boxes": [
+        {
+          "left": 605.0365344077208,
+          "top": 297.8114579746871,
+          "right": 617.0365344077208,
+          "bottom": 310.8114579746871
+        },
+        {
+          "left": 602.0365344077208,
+          "top": 294.8114579746871,
+          "right": 620.0365344077208,
+          "bottom": 313.8114579746871
+        }
+      ],
+      "start_min_margin": 43.4716008879528,
+      "endpoint_min_margin": 44.44740149920713,
+      "verdict": "FULL_PREFIX_UNPROVEN",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3",
+      "viewport": 768,
+      "layout": "candidate",
+      "key": "true_node",
+      "distance_arc_css": 8.754486744079838,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 213.11373685823796,
+        "y": 146.43720899873725
+      },
+      "q_boxes": [
+        {
+          "left": 205.11373685823796,
+          "top": 140.43720899873725,
+          "right": 217.11373685823796,
+          "bottom": 153.43720899873725
+        },
+        {
+          "left": 221.11373685823796,
+          "top": 147.43720899873725,
+          "right": 229.11373685823796,
+          "bottom": 156.43720899873725
+        },
+        {
+          "left": 202.11373685823796,
+          "top": 137.43720899873725,
+          "right": 232.11373685823796,
+          "bottom": 159.43720899873725
+        }
+      ],
+      "start_min_margin": 36.269495643917146,
+      "endpoint_min_margin": 35.293538206866245,
+      "verdict": "FULL_PREFIX_UNPROVEN",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3",
+      "viewport": 768,
+      "layout": "candidate",
+      "key": "south_node",
+      "distance_arc_css": 99.23235516746588,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 571.0707139564126,
+        "y": 510.44531800601254
+      },
+      "q_boxes": [
+        {
+          "left": 563.0707139564126,
+          "top": 504.44531800601254,
+          "right": 575.0707139564126,
+          "bottom": 517.4453180060125
+        },
+        {
+          "left": 579.0707139564126,
+          "top": 511.44531800601254,
+          "right": 587.0707139564126,
+          "bottom": 520.4453180060125
+        },
+        {
+          "left": 560.0707139564126,
+          "top": 501.44531800601254,
+          "right": 590.0707139564126,
+          "bottom": 523.4453180060125
+        }
+      ],
+      "start_min_margin": 34.580758267149236,
+      "endpoint_min_margin": 34.582166760319694,
+      "verdict": "FULL_PREFIX_UNPROVEN",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3",
+      "viewport": 768,
+      "layout": "candidate",
+      "key": "mean_apog",
+      "distance_arc_css": 60.4165959805784,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 275.7757862425694,
+        "y": 114.86550259716071
+      },
+      "q_boxes": [
+        {
+          "left": 268.7757862425694,
+          "top": 108.86550259716071,
+          "right": 274.7757862425694,
+          "bottom": 120.86550259716071
+        },
+        {
+          "left": 265.7757862425694,
+          "top": 105.86550259716071,
+          "right": 277.7757862425694,
+          "bottom": 123.86550259716071
+        }
+      ],
+      "start_min_margin": 36.269495643917146,
+      "endpoint_min_margin": 35.27125507322634,
+      "verdict": "FULL_PREFIX_UNPROVEN",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3",
+      "viewport": 768,
+      "layout": "candidate",
+      "key": "selena",
+      "distance_arc_css": 150.84461696207407,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 604.3625421108779,
+        "y": 446.43834804708735
+      },
+      "q_boxes": [
+        {
+          "left": 597.3625421108779,
+          "top": 441.43834804708735,
+          "right": 608.3625421108779,
+          "bottom": 452.43834804708735
+        },
+        {
+          "left": 612.3625421108779,
+          "top": 447.43834804708735,
+          "right": 620.3625421108779,
+          "bottom": 456.43834804708735
+        },
+        {
+          "left": 594.3625421108779,
+          "top": 438.43834804708735,
+          "right": 623.3625421108779,
+          "bottom": 459.43834804708735
+        }
+      ],
+      "start_min_margin": 29.87928899922008,
+      "endpoint_min_margin": 30.822686670317978,
+      "verdict": "FULL_PREFIX_UNPROVEN",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3",
+      "viewport": 768,
+      "layout": "candidate",
+      "key": "pars_fortune",
+      "distance_arc_css": 113.39156028138365,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 618.7219893501899,
+        "y": 375.73442806968745
+      },
+      "q_boxes": [
+        {
+          "left": 611.7219893501899,
+          "top": 371.73442806968745,
+          "right": 622.7219893501899,
+          "bottom": 382.73442806968745
+        },
+        {
+          "left": 608.7219893501899,
+          "top": 368.73442806968745,
+          "right": 625.7219893501899,
+          "bottom": 385.73442806968745
+        }
+      ],
+      "start_min_margin": -2.0,
+      "endpoint_min_margin": -2.0,
+      "verdict": "CANDIDATE_INADMISSIBLE",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3",
+      "viewport": 768,
+      "layout": "candidate",
+      "key": "[\"mercury\",\"venus\",\"conjunction\"]",
+      "distance_arc_css": 55.084685588043314,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 434.10541976262965,
+        "y": 220.00376161551887
+      },
+      "q_boxes": [
+        {
+          "left": 425.35541976262965,
+          "top": 213.25376161551887,
+          "right": 434.85541976262965,
+          "bottom": 224.75376161551887
+        },
+        {
+          "left": 441.10541976262965,
+          "top": 221.00376161551887,
+          "right": 484.64252913762965,
+          "bottom": 230.00376161551887
+        },
+        {
+          "left": 423.10541976262965,
+          "top": 211.00376161551887,
+          "right": 487.64252913762965,
+          "bottom": 233.00376161551887
+        }
+      ],
+      "start_min_margin": 19.585901531719713,
+      "endpoint_min_margin": 19.804958530100038,
+      "verdict": "FULL_PREFIX_UNPROVEN",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3",
+      "viewport": 768,
+      "layout": "candidate",
+      "key": "[\"venus\",\"mars\",\"conjunction\"]",
+      "distance_arc_css": 55.084685588043314,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 328.738316128029,
+        "y": 204.7155283954994
+      },
+      "q_boxes": [
+        {
+          "left": 319.988316128029,
+          "top": 197.9655283954994,
+          "right": 329.488316128029,
+          "bottom": 209.4655283954994
+        },
+        {
+          "left": 336.738316128029,
+          "top": 205.7155283954994,
+          "right": 384.296909878029,
+          "bottom": 214.7155283954994
+        },
+        {
+          "left": 317.738316128029,
+          "top": 195.7155283954994,
+          "right": 387.296909878029,
+          "bottom": 217.7155283954994
+        }
+      ],
+      "start_min_margin": 35.67054366922139,
+      "endpoint_min_margin": 34.69084189596822,
+      "verdict": "FULL_PREFIX_UNPROVEN",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3",
+      "viewport": 360,
+      "layout": "candidate",
+      "key": "moon",
+      "distance_arc_css": 29.167920960041204,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 136.98193371008642,
+        "y": 49.05257508776529
+      },
+      "q_boxes": [
+        {
+          "left": 128.98193371008642,
+          "top": 43.05257508776529,
+          "right": 137.98193371008642,
+          "bottom": 56.05257508776529
+        },
+        {
+          "left": 125.98193371008642,
+          "top": 40.05257508776529,
+          "right": 140.98193371008642,
+          "bottom": 59.05257508776529
+        }
+      ],
+      "start_min_margin": 14.606702546348771,
+      "endpoint_min_margin": 14.673027390539005,
+      "verdict": "FULL_PREFIX_UNPROVEN",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3",
+      "viewport": 360,
+      "layout": "candidate",
+      "key": "mercury",
+      "distance_arc_css": 119.28801919453826,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 271.70519690969246,
+        "y": 115.60085787284686
+      },
+      "q_boxes": [
+        {
+          "left": 263.70519690969246,
+          "top": 109.60085787284686,
+          "right": 272.70519690969246,
+          "bottom": 124.60085787284686
+        },
+        {
+          "left": 279.70519690969246,
+          "top": 116.60085787284686,
+          "right": 287.70519690969246,
+          "bottom": 125.60085787284686
+        },
+        {
+          "left": 260.70519690969246,
+          "top": 106.60085787284686,
+          "right": 290.70519690969246,
+          "bottom": 128.60085787284686
+        }
+      ],
+      "start_min_margin": 3.9599899483715575,
+      "endpoint_min_margin": 3.0461277329300884,
+      "verdict": "FULL_PREFIX_UNPROVEN",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3",
+      "viewport": 360,
+      "layout": "candidate",
+      "key": "venus",
+      "distance_arc_css": 86.62299541957313,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 254.19226868304196,
+        "y": 87.78818287295617
+      },
+      "q_boxes": [
+        {
+          "left": 246.19226868304196,
+          "top": 81.78818287295617,
+          "right": 255.19226868304196,
+          "bottom": 93.78818287295617
+        },
+        {
+          "left": 262.19226868304196,
+          "top": 88.78818287295617,
+          "right": 270.19226868304196,
+          "bottom": 97.78818287295617
+        },
+        {
+          "left": 243.19226868304196,
+          "top": 78.78818287295617,
+          "right": 273.19226868304196,
+          "bottom": 100.78818287295617
+        }
+      ],
+      "start_min_margin": -2.0,
+      "endpoint_min_margin": -2.0,
+      "verdict": "CANDIDATE_INADMISSIBLE",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3",
+      "viewport": 360,
+      "layout": "candidate",
+      "key": "mars",
+      "distance_arc_css": 53.95797164460794,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 229.69154939987845,
+        "y": 65.88014096298686
+      },
+      "q_boxes": [
+        {
+          "left": 221.69154939987845,
+          "top": 61.88014096298686,
+          "right": 232.69154939987845,
+          "bottom": 72.88014096298686
+        },
+        {
+          "left": 237.69154939987845,
+          "top": 66.88014096298686,
+          "right": 245.69154939987845,
+          "bottom": 75.88014096298686
+        },
+        {
+          "left": 218.69154939987845,
+          "top": 58.88014096298686,
+          "right": 248.69154939987845,
+          "bottom": 78.88014096298686
+        }
+      ],
+      "start_min_margin": -2.0,
+      "endpoint_min_margin": -2.0,
+      "verdict": "CANDIDATE_INADMISSIBLE",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3",
+      "viewport": 360,
+      "layout": "candidate",
+      "key": "jupiter",
+      "distance_arc_css": 21.292947869642745,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 200.10127168684403,
+        "y": 51.5740929207477
+      },
+      "q_boxes": [
+        {
+          "left": 192.10127168684403,
+          "top": 45.5740929207477,
+          "right": 204.10127168684403,
+          "bottom": 57.5740929207477
+        },
+        {
+          "left": 208.10127168684403,
+          "top": 52.5740929207477,
+          "right": 216.10127168684403,
+          "bottom": 61.5740929207477
+        },
+        {
+          "left": 189.10127168684403,
+          "top": 42.5740929207477,
+          "right": 219.10127168684403,
+          "bottom": 64.5740929207477
+        }
+      ],
+      "start_min_margin": -2.0,
+      "endpoint_min_margin": -1.581127077029663,
+      "verdict": "CANDIDATE_INADMISSIBLE",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3",
+      "viewport": 360,
+      "layout": "candidate",
+      "key": "saturn",
+      "distance_arc_css": 11.372075905322555,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 169.7123720379652,
+        "y": 46.05825503368253
+      },
+      "q_boxes": [
+        {
+          "left": 161.7123720379652,
+          "top": 40.05825503368253,
+          "right": 170.7123720379652,
+          "bottom": 52.05825503368253
+        },
+        {
+          "left": 177.7123720379652,
+          "top": 47.05825503368253,
+          "right": 185.7123720379652,
+          "bottom": 56.05825503368253
+        },
+        {
+          "left": 158.7123720379652,
+          "top": 37.05825503368253,
+          "right": 188.7123720379652,
+          "bottom": 59.05825503368253
+        }
+      ],
+      "start_min_margin": 0.3387321339302787,
+      "endpoint_min_margin": -0.6602899153094199,
+      "verdict": "LOCAL_STEP_PASS_ENDPOINT_VIOLATION",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3",
+      "viewport": 360,
+      "layout": "candidate",
+      "key": "uranus",
+      "distance_arc_css": 65.56580320218708,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 281.1418878411662,
+        "y": 149.14521918681945
+      },
+      "q_boxes": [
+        {
+          "left": 273.1418878411662,
+          "top": 143.14521918681945,
+          "right": 285.1418878411662,
+          "bottom": 156.14521918681945
+        },
+        {
+          "left": 270.1418878411662,
+          "top": 140.14521918681945,
+          "right": 288.1418878411662,
+          "bottom": 159.14521918681945
+        }
+      ],
+      "start_min_margin": 7.638988371719506,
+      "endpoint_min_margin": 8.630499098531118,
+      "verdict": "FULL_PREFIX_UNPROVEN",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3",
+      "viewport": 360,
+      "layout": "candidate",
+      "key": "pluto",
+      "distance_arc_css": 18.878428313170655,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 228.70301226393525,
+        "y": 262.7745240635106
+      },
+      "q_boxes": [
+        {
+          "left": 221.70301226393525,
+          "top": 256.7745240635106,
+          "right": 229.70301226393525,
+          "bottom": 268.7745240635106
+        },
+        {
+          "left": 218.70301226393525,
+          "top": 253.77452406351063,
+          "right": 232.70301226393525,
+          "bottom": 271.7745240635106
+        }
+      ],
+      "start_min_margin": 7.53513662492972,
+      "endpoint_min_margin": 8.377853769024426,
+      "verdict": "FULL_PREFIX_UNPROVEN",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3",
+      "viewport": 360,
+      "layout": "candidate",
+      "key": "true_node",
+      "distance_arc_css": 26.59916045007527,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 80.1745254860177,
+        "y": 80.83644895445059
+      },
+      "q_boxes": [
+        {
+          "left": 72.1745254860177,
+          "top": 74.83644895445059,
+          "right": 84.1745254860177,
+          "bottom": 87.83644895445059
+        },
+        {
+          "left": 88.1745254860177,
+          "top": 81.83644895445059,
+          "right": 96.1745254860177,
+          "bottom": 90.83644895445059
+        },
+        {
+          "left": 69.1745254860177,
+          "top": 71.83644895445059,
+          "right": 99.1745254860177,
+          "bottom": 93.83644895445059
+        }
+      ],
+      "start_min_margin": 0.10473294728807048,
+      "endpoint_min_margin": -0.6081449286076008,
+      "verdict": "LOCAL_STEP_PASS_ENDPOINT_VIOLATION",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3",
+      "viewport": 360,
+      "layout": "candidate",
+      "key": "south_node",
+      "distance_arc_css": 34.84269957309485,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 253.42247593609687,
+        "y": 241.11359930296453
+      },
+      "q_boxes": [
+        {
+          "left": 245.42247593609687,
+          "top": 235.11359930296453,
+          "right": 257.4224759360969,
+          "bottom": 248.11359930296453
+        },
+        {
+          "left": 261.4224759360969,
+          "top": 242.11359930296453,
+          "right": 269.4224759360969,
+          "bottom": 251.11359930296453
+        },
+        {
+          "left": 242.42247593609687,
+          "top": 232.11359930296453,
+          "right": 272.4224759360969,
+          "bottom": 254.11359930296453
+        }
+      ],
+      "start_min_margin": 3.3206144965287763,
+      "endpoint_min_margin": 3.338107306474427,
+      "verdict": "FULL_PREFIX_UNPROVEN",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3",
+      "viewport": 360,
+      "layout": "candidate",
+      "key": "mean_apog",
+      "distance_arc_css": 4.912110568935706,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 104.60773471859517,
+        "y": 61.94391137838353
+      },
+      "q_boxes": [
+        {
+          "left": 97.60773471859517,
+          "top": 55.94391137838353,
+          "right": 103.60773471859517,
+          "bottom": 67.94391137838353
+        },
+        {
+          "left": 94.60773471859517,
+          "top": 52.94391137838353,
+          "right": 106.60773471859517,
+          "bottom": 70.94391137838353
+        }
+      ],
+      "start_min_margin": 0.10473294728807048,
+      "endpoint_min_margin": -0.3945845480372725,
+      "verdict": "LOCAL_STEP_PASS_ENDPOINT_VIOLATION",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3",
+      "viewport": 360,
+      "layout": "candidate",
+      "key": "selena",
+      "distance_arc_css": 58.35495216841625,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 271.21378948273673,
+        "y": 213.47817442824066
+      },
+      "q_boxes": [
+        {
+          "left": 264.21378948273673,
+          "top": 208.47817442824066,
+          "right": 275.21378948273673,
+          "bottom": 219.47817442824066
+        },
+        {
+          "left": 279.21378948273673,
+          "top": 214.47817442824066,
+          "right": 287.21378948273673,
+          "bottom": 223.47817442824066
+        },
+        {
+          "left": 261.21378948273673,
+          "top": 205.47817442824066,
+          "right": 290.21378948273673,
+          "bottom": 226.47817442824066
+        }
+      ],
+      "start_min_margin": 3.5167106999764997,
+      "endpoint_min_margin": 2.8753644391146906,
+      "verdict": "FULL_PREFIX_UNPROVEN",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3",
+      "viewport": 360,
+      "layout": "candidate",
+      "key": "pars_fortune",
+      "distance_arc_css": 41.29300412499061,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 280.6985422762019,
+        "y": 182.00934842268072
+      },
+      "q_boxes": [
+        {
+          "left": 273.6985422762019,
+          "top": 178.00934842268072,
+          "right": 284.6985422762019,
+          "bottom": 189.00934842268072
+        },
+        {
+          "left": 270.6985422762019,
+          "top": 175.00934842268072,
+          "right": 287.6985422762019,
+          "bottom": 192.00934842268072
+        }
+      ],
+      "start_min_margin": -2.0,
+      "endpoint_min_margin": -2.0,
+      "verdict": "CANDIDATE_INADMISSIBLE",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3",
+      "viewport": 360,
+      "layout": "candidate",
+      "key": "[\"mercury\",\"venus\",\"conjunction\"]",
+      "distance_arc_css": 25.094134545664176,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 197.27699137708777,
+        "y": 99.9710421380355
+      },
+      "q_boxes": [
+        {
+          "left": 188.52699137708777,
+          "top": 93.2210421380355,
+          "right": 198.02699137708777,
+          "bottom": 104.7210421380355
+        },
+        {
+          "left": 204.27699137708777,
+          "top": 100.9710421380355,
+          "right": 247.81410075208777,
+          "bottom": 109.9710421380355
+        },
+        {
+          "left": 186.27699137708777,
+          "top": 90.9710421380355,
+          "right": 250.81410075208777,
+          "bottom": 112.9710421380355
+        }
+      ],
+      "start_min_margin": -15.425170380461793,
+      "endpoint_min_margin": -15.045655605660968,
+      "verdict": "CANDIDATE_INADMISSIBLE",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3",
+      "viewport": 360,
+      "layout": "candidate",
+      "key": "[\"venus\",\"mars\",\"conjunction\"]",
+      "distance_arc_css": 25.094134545664176,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 150.29270243566265,
+        "y": 93.15385971358276
+      },
+      "q_boxes": [
+        {
+          "left": 141.54270243566265,
+          "top": 86.40385971358276,
+          "right": 151.04270243566265,
+          "bottom": 97.90385971358276
+        },
+        {
+          "left": 158.29270243566265,
+          "top": 94.15385971358276,
+          "right": 205.85129618566265,
+          "bottom": 103.15385971358276
+        },
+        {
+          "left": 139.29270243566265,
+          "top": 84.15385971358276,
+          "right": 208.85129618566265,
+          "bottom": 106.15385971358276
+        }
+      ],
+      "start_min_margin": -2.0,
+      "endpoint_min_margin": -2.0,
+      "verdict": "CANDIDATE_INADMISSIBLE",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3-max",
+      "viewport": 1440,
+      "layout": "candidate",
+      "key": "sun",
+      "distance_arc_css": 536.0813704085618,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 486.3700943289381,
+        "y": 133.69215820194103
+      },
+      "q_boxes": [
+        {
+          "left": 479.3700943289381,
+          "top": 128.69215820194103,
+          "right": 490.3700943289381,
+          "bottom": 139.69215820194103
+        },
+        {
+          "left": 494.3700943289381,
+          "top": 134.69215820194103,
+          "right": 502.3700943289381,
+          "bottom": 143.69215820194103
+        },
+        {
+          "left": 476.3700943289381,
+          "top": 125.69215820194103,
+          "right": 505.3700943289381,
+          "bottom": 146.69215820194103
+        }
+      ],
+      "start_min_margin": 41.01395334592195,
+      "endpoint_min_margin": 41.05985230063328,
+      "verdict": "LOCAL_STEP_FAIL_PREFIX_CERTIFIED",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3-max",
+      "viewport": 1440,
+      "layout": "candidate",
+      "key": "moon",
+      "distance_arc_css": 464.60385435408693,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 419.0958360766518,
+        "y": 107.62662153388385
+      },
+      "q_boxes": [
+        {
+          "left": 411.0958360766518,
+          "top": 101.62662153388385,
+          "right": 420.0958360766518,
+          "bottom": 114.62662153388385
+        },
+        {
+          "left": 408.0958360766518,
+          "top": 98.62662153388385,
+          "right": 423.0958360766518,
+          "bottom": 117.62662153388385
+        }
+      ],
+      "start_min_margin": 39.82714310878811,
+      "endpoint_min_margin": 38.853922599754696,
+      "verdict": "LOCAL_STEP_FAIL_PREFIX_CERTIFIED",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3-max",
+      "viewport": 1440,
+      "layout": "candidate",
+      "key": "mercury",
+      "distance_arc_css": 393.12633829961203,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 347.24303289093217,
+        "y": 101.11411821001485
+      },
+      "q_boxes": [
+        {
+          "left": 339.24303289093217,
+          "top": 95.11411821001485,
+          "right": 348.24303289093217,
+          "bottom": 110.11411821001485
+        },
+        {
+          "left": 355.24303289093217,
+          "top": 102.11411821001485,
+          "right": 363.24303289093217,
+          "bottom": 111.11411821001485
+        },
+        {
+          "left": 336.24303289093217,
+          "top": 92.11411821001485,
+          "right": 366.24303289093217,
+          "bottom": 114.11411821001485
+        }
+      ],
+      "start_min_margin": 39.82714310878811,
+      "endpoint_min_margin": 40.82602369475302,
+      "verdict": "LOCAL_STEP_FAIL_PREFIX_CERTIFIED",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3-max",
+      "viewport": 1440,
+      "layout": "candidate",
+      "key": "venus",
+      "distance_arc_css": 321.6488222451374,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 276.3785962467645,
+        "y": 114.65921489825962
+      },
+      "q_boxes": [
+        {
+          "left": 268.3785962467645,
+          "top": 108.65921489825962,
+          "right": 277.3785962467645,
+          "bottom": 120.65921489825962
+        },
+        {
+          "left": 265.3785962467645,
+          "top": 105.65921489825962,
+          "right": 280.3785962467645,
+          "bottom": 123.65921489825962
+        }
+      ],
+      "start_min_margin": 36.168563969784046,
+      "endpoint_min_margin": 35.17532392533497,
+      "verdict": "LOCAL_STEP_FAIL_PREFIX_CERTIFIED",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3-max",
+      "viewport": 1440,
+      "layout": "candidate",
+      "key": "mars",
+      "distance_arc_css": 250.17130619066225,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 211.9928623319115,
+        "y": 147.21248345050995
+      },
+      "q_boxes": [
+        {
+          "left": 203.9928623319115,
+          "top": 143.21248345050995,
+          "right": 214.9928623319115,
+          "bottom": 154.21248345050995
+        },
+        {
+          "left": 219.9928623319115,
+          "top": 148.21248345050995,
+          "right": 227.9928623319115,
+          "bottom": 157.21248345050995
+        },
+        {
+          "left": 200.9928623319115,
+          "top": 140.21248345050995,
+          "right": 230.9928623319115,
+          "bottom": 160.21248345050995
+        }
+      ],
+      "start_min_margin": 36.168563969784046,
+      "endpoint_min_margin": 37.15541449397716,
+      "verdict": "LOCAL_STEP_FAIL_PREFIX_CERTIFIED",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3-max",
+      "viewport": 1440,
+      "layout": "candidate",
+      "key": "jupiter",
+      "distance_arc_css": 178.69379013618737,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 159.0742194216297,
+        "y": 196.25180703600853
+      },
+      "q_boxes": [
+        {
+          "left": 151.0742194216297,
+          "top": 190.25180703600853,
+          "right": 163.0742194216297,
+          "bottom": 202.25180703600853
+        },
+        {
+          "left": 148.0742194216297,
+          "top": 187.25180703600853,
+          "right": 166.0742194216297,
+          "bottom": 205.25180703600853
+        }
+      ],
+      "start_min_margin": 42.18867455715092,
+      "endpoint_min_margin": 41.368970259408066,
+      "verdict": "LOCAL_STEP_FAIL_PREFIX_CERTIFIED",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3-max",
+      "viewport": 1440,
+      "layout": "candidate",
+      "key": "saturn",
+      "distance_arc_css": 107.21627408171223,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 121.72262447509885,
+        "y": 257.9777851986871
+      },
+      "q_boxes": [
+        {
+          "left": 113.72262447509885,
+          "top": 251.97778519868712,
+          "right": 122.72262447509885,
+          "bottom": 263.9777851986871
+        },
+        {
+          "left": 129.72262447509885,
+          "top": 258.9777851986871,
+          "right": 137.72262447509885,
+          "bottom": 267.9777851986871
+        },
+        {
+          "left": 110.72262447509885,
+          "top": 248.97778519868712,
+          "right": 140.72262447509885,
+          "bottom": 270.9777851986871
+        }
+      ],
+      "start_min_margin": 42.23731065380188,
+      "endpoint_min_margin": 42.25908422289561,
+      "verdict": "LOCAL_STEP_FAIL_PREFIX_CERTIFIED",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3-max",
+      "viewport": 1440,
+      "layout": "candidate",
+      "key": "uranus",
+      "distance_arc_css": 35.73875802723733,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 102.83195237677404,
+        "y": 327.6080985174043
+      },
+      "q_boxes": [
+        {
+          "left": 94.83195237677404,
+          "top": 321.6080985174043,
+          "right": 106.83195237677404,
+          "bottom": 334.6080985174043
+        },
+        {
+          "left": 91.83195237677404,
+          "top": 318.6080985174043,
+          "right": 109.83195237677404,
+          "bottom": 337.6080985174043
+        }
+      ],
+      "start_min_margin": 45.42856750983236,
+      "endpoint_min_margin": 45.45632258260065,
+      "verdict": "LOCAL_STEP_FAIL_PREFIX_CERTIFIED",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3-max",
+      "viewport": 1440,
+      "layout": "candidate",
+      "key": "neptune",
+      "distance_arc_css": 35.73875802723733,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 103.56671838102841,
+        "y": 397.77051863722835
+      },
+      "q_boxes": [
+        {
+          "left": 95.56671838102841,
+          "top": 391.77051863722835,
+          "right": 109.56671838102841,
+          "bottom": 405.77051863722835
+        },
+        {
+          "left": 111.56671838102841,
+          "top": 398.77051863722835,
+          "right": 119.56671838102841,
+          "bottom": 407.77051863722835
+        },
+        {
+          "left": 92.56671838102841,
+          "top": 388.77051863722835,
+          "right": 122.56671838102841,
+          "bottom": 410.77051863722835
+        }
+      ],
+      "start_min_margin": 44.548878838271264,
+      "endpoint_min_margin": 44.59014404289968,
+      "verdict": "LOCAL_STEP_FAIL_PREFIX_CERTIFIED",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3-max",
+      "viewport": 1440,
+      "layout": "candidate",
+      "key": "pluto",
+      "distance_arc_css": 107.21627408171223,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 123.9114747009211,
+        "y": 466.9899444906211
+      },
+      "q_boxes": [
+        {
+          "left": 116.9114747009211,
+          "top": 460.9899444906211,
+          "right": 124.9114747009211,
+          "bottom": 472.9899444906211
+        },
+        {
+          "left": 113.9114747009211,
+          "top": 457.9899444906211,
+          "right": 127.9114747009211,
+          "bottom": 475.9899444906211
+        }
+      ],
+      "start_min_margin": 44.731406344521076,
+      "endpoint_min_margin": 44.23038347001142,
+      "verdict": "LOCAL_STEP_FAIL_PREFIX_CERTIFIED",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3-max",
+      "viewport": 1440,
+      "layout": "candidate",
+      "key": "chiron",
+      "distance_arc_css": 178.69379013618737,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 162.5475691778331,
+        "y": 527.920152341574
+      },
+      "q_boxes": [
+        {
+          "left": 154.5475691778331,
+          "top": 521.920152341574,
+          "right": 163.5475691778331,
+          "bottom": 534.920152341574
+        },
+        {
+          "left": 170.5475691778331,
+          "top": 528.920152341574,
+          "right": 178.5475691778331,
+          "bottom": 537.920152341574
+        },
+        {
+          "left": 151.5475691778331,
+          "top": 518.920152341574,
+          "right": 181.5475691778331,
+          "bottom": 540.920152341574
+        }
+      ],
+      "start_min_margin": 33.25342544272862,
+      "endpoint_min_margin": 34.25236197865277,
+      "verdict": "LOCAL_STEP_FAIL_PREFIX_CERTIFIED",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3-max",
+      "viewport": 1440,
+      "layout": "candidate",
+      "key": "true_node",
+      "distance_arc_css": 250.17130619066225,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 216.48160826055928,
+        "y": 575.8404763535432
+      },
+      "q_boxes": [
+        {
+          "left": 208.48160826055928,
+          "top": 569.8404763535432,
+          "right": 220.48160826055928,
+          "bottom": 582.8404763535432
+        },
+        {
+          "left": 205.48160826055928,
+          "top": 566.8404763535432,
+          "right": 223.48160826055928,
+          "bottom": 585.8404763535432
+        }
+      ],
+      "start_min_margin": 33.25342544272862,
+      "endpoint_min_margin": 32.28110559945435,
+      "verdict": "LOCAL_STEP_FAIL_PREFIX_CERTIFIED",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3-max",
+      "viewport": 1440,
+      "layout": "candidate",
+      "key": "south_node",
+      "distance_arc_css": 321.6488222451374,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 281.53496553857747,
+        "y": 607.0382123619092
+      },
+      "q_boxes": [
+        {
+          "left": 273.53496553857747,
+          "top": 601.0382123619092,
+          "right": 285.53496553857747,
+          "bottom": 614.0382123619092
+        },
+        {
+          "left": 289.53496553857747,
+          "top": 608.0382123619092,
+          "right": 297.53496553857747,
+          "bottom": 617.0382123619092
+        },
+        {
+          "left": 270.53496553857747,
+          "top": 598.0382123619092,
+          "right": 300.53496553857747,
+          "bottom": 620.0382123619092
+        }
+      ],
+      "start_min_margin": 40.17855277561034,
+      "endpoint_min_margin": 41.13221388425529,
+      "verdict": "LOCAL_STEP_FAIL_PREFIX_CERTIFIED",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3-max",
+      "viewport": 1440,
+      "layout": "candidate",
+      "key": "mean_apog",
+      "distance_arc_css": 393.12633829961254,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 352.6675275429497,
+        "y": 619.0962655996157
+      },
+      "q_boxes": [
+        {
+          "left": 345.6675275429497,
+          "top": 613.0962655996157,
+          "right": 351.6675275429497,
+          "bottom": 625.0962655996157
+        },
+        {
+          "left": 342.6675275429497,
+          "top": 610.0962655996157,
+          "right": 354.6675275429497,
+          "bottom": 628.0962655996157
+        }
+      ],
+      "start_min_margin": 40.17855277561034,
+      "endpoint_min_margin": 39.17890089572728,
+      "verdict": "LOCAL_STEP_FAIL_PREFIX_CERTIFIED",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3-max",
+      "viewport": 1440,
+      "layout": "candidate",
+      "key": "selena",
+      "distance_arc_css": 464.6038543540876,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 424.3681846424521,
+        "y": 611.080419001234
+      },
+      "q_boxes": [
+        {
+          "left": 417.3681846424521,
+          "top": 606.080419001234,
+          "right": 428.3681846424521,
+          "bottom": 617.080419001234
+        },
+        {
+          "left": 432.3681846424521,
+          "top": 612.080419001234,
+          "right": 440.3681846424521,
+          "bottom": 621.080419001234
+        },
+        {
+          "left": 414.3681846424521,
+          "top": 603.080419001234,
+          "right": 443.3681846424521,
+          "bottom": 624.080419001234
+        }
+      ],
+      "start_min_margin": 36.844447379591585,
+      "endpoint_min_margin": 37.844446742913085,
+      "verdict": "LOCAL_STEP_FAIL_PREFIX_CERTIFIED",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3-max",
+      "viewport": 1440,
+      "layout": "candidate",
+      "key": "pars_fortune",
+      "distance_arc_css": 536.0813704085623,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 491.0818131247984,
+        "y": 583.6117131724441
+      },
+      "q_boxes": [
+        {
+          "left": 484.0818131247984,
+          "top": 579.6117131724441,
+          "right": 495.0818131247984,
+          "bottom": 590.6117131724441
+        },
+        {
+          "left": 481.0818131247984,
+          "top": 576.6117131724441,
+          "right": 498.0818131247984,
+          "bottom": 593.6117131724441
+        }
+      ],
+      "start_min_margin": 36.844447379591585,
+      "endpoint_min_margin": 35.88413705445691,
+      "verdict": "LOCAL_STEP_FAIL_PREFIX_CERTIFIED",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3-max",
+      "viewport": 1440,
+      "layout": "candidate",
+      "key": "[\"sun\",\"moon\",\"conjunction\"]",
+      "distance_arc_css": 164.21733118844574,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 280.41313360980485,
+        "y": 223.04566199572494
+      },
+      "q_boxes": [
+        {
+          "left": 271.66313360980485,
+          "top": 216.29566199572494,
+          "right": 281.16313360980485,
+          "bottom": 227.79566199572494
+        },
+        {
+          "left": 287.41313360980485,
+          "top": 224.04566199572494,
+          "right": 330.95024298480485,
+          "bottom": 233.04566199572494
+        },
+        {
+          "left": 269.41313360980485,
+          "top": 214.04566199572494,
+          "right": 333.95024298480485,
+          "bottom": 236.04566199572494
+        }
+      ],
+      "start_min_margin": 44.248470981960935,
+      "endpoint_min_margin": 44.21918283853333,
+      "verdict": "LOCAL_STEP_FAIL_PREFIX_CERTIFIED",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3-max",
+      "viewport": 1440,
+      "layout": "candidate",
+      "key": "[\"mercury\",\"venus\",\"conjunction\"]",
+      "distance_arc_css": 54.739110396148526,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 211.0003716945681,
+        "y": 306.2443420201824
+      },
+      "q_boxes": [
+        {
+          "left": 202.2503716945681,
+          "top": 299.4943420201824,
+          "right": 211.7503716945681,
+          "bottom": 310.9943420201824
+        },
+        {
+          "left": 219.0003716945681,
+          "top": 307.2443420201824,
+          "right": 266.5589654445681,
+          "bottom": 316.2443420201824
+        },
+        {
+          "left": 200.0003716945681,
+          "top": 297.2443420201824,
+          "right": 269.5589654445681,
+          "bottom": 319.2443420201824
+        }
+      ],
+      "start_min_margin": 30.695234721367797,
+      "endpoint_min_margin": 29.755657979817613,
+      "verdict": "LOCAL_STEP_FAIL_PREFIX_CERTIFIED",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3-max",
+      "viewport": 1440,
+      "layout": "candidate",
+      "key": "[\"mars\",\"jupiter\",\"conjunction\"]",
+      "distance_arc_css": 54.73911039614839,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 210.62872046956105,
+        "y": 412.71414280285194
+      },
+      "q_boxes": [
+        {
+          "left": 201.87872046956105,
+          "top": 405.96414280285194,
+          "right": 211.37872046956105,
+          "bottom": 417.46414280285194
+        },
+        {
+          "left": 217.62872046956105,
+          "top": 413.71414280285194,
+          "right": 261.165829844561,
+          "bottom": 422.71414280285194
+        },
+        {
+          "left": 199.62872046956105,
+          "top": 403.71414280285194,
+          "right": 264.165829844561,
+          "bottom": 425.71414280285194
+        }
+      ],
+      "start_min_margin": 42.33847600926814,
+      "endpoint_min_margin": 41.40498369819629,
+      "verdict": "LOCAL_STEP_FAIL_PREFIX_CERTIFIED",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3-max",
+      "viewport": 1440,
+      "layout": "candidate",
+      "key": "[\"saturn\",\"uranus\",\"conjunction\"]",
+      "distance_arc_css": 164.2173311884456,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 279.4589592030558,
+        "y": 496.39538389309575
+      },
+      "q_boxes": [
+        {
+          "left": 270.7089592030558,
+          "top": 489.64538389309575,
+          "right": 280.2089592030558,
+          "bottom": 501.14538389309575
+        },
+        {
+          "left": 287.4589592030558,
+          "top": 497.39538389309575,
+          "right": 335.0175529530558,
+          "bottom": 506.39538389309575
+        },
+        {
+          "left": 268.4589592030558,
+          "top": 487.39538389309575,
+          "right": 338.0175529530558,
+          "bottom": 509.39538389309575
+        }
+      ],
+      "start_min_margin": 40.806069584636646,
+      "endpoint_min_margin": 40.78943274233356,
+      "verdict": "LOCAL_STEP_FAIL_PREFIX_CERTIFIED",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3-max",
+      "viewport": 768,
+      "layout": "candidate",
+      "key": "sun",
+      "distance_arc_css": 536.0813704085618,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 486.3700943289381,
+        "y": 133.69215820194103
+      },
+      "q_boxes": [
+        {
+          "left": 479.3700943289381,
+          "top": 128.69215820194103,
+          "right": 490.3700943289381,
+          "bottom": 139.69215820194103
+        },
+        {
+          "left": 494.3700943289381,
+          "top": 134.69215820194103,
+          "right": 502.3700943289381,
+          "bottom": 143.69215820194103
+        },
+        {
+          "left": 476.3700943289381,
+          "top": 125.69215820194103,
+          "right": 505.3700943289381,
+          "bottom": 146.69215820194103
+        }
+      ],
+      "start_min_margin": 41.01395334592195,
+      "endpoint_min_margin": 41.05985230063328,
+      "verdict": "LOCAL_STEP_FAIL_PREFIX_CERTIFIED",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3-max",
+      "viewport": 768,
+      "layout": "candidate",
+      "key": "moon",
+      "distance_arc_css": 464.60385435408693,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 419.0958360766518,
+        "y": 107.62662153388385
+      },
+      "q_boxes": [
+        {
+          "left": 411.0958360766518,
+          "top": 101.62662153388385,
+          "right": 420.0958360766518,
+          "bottom": 114.62662153388385
+        },
+        {
+          "left": 408.0958360766518,
+          "top": 98.62662153388385,
+          "right": 423.0958360766518,
+          "bottom": 117.62662153388385
+        }
+      ],
+      "start_min_margin": 39.82714310878811,
+      "endpoint_min_margin": 38.853922599754696,
+      "verdict": "LOCAL_STEP_FAIL_PREFIX_CERTIFIED",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3-max",
+      "viewport": 768,
+      "layout": "candidate",
+      "key": "mercury",
+      "distance_arc_css": 393.12633829961203,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 347.24303289093217,
+        "y": 101.11411821001485
+      },
+      "q_boxes": [
+        {
+          "left": 339.24303289093217,
+          "top": 95.11411821001485,
+          "right": 348.24303289093217,
+          "bottom": 110.11411821001485
+        },
+        {
+          "left": 355.24303289093217,
+          "top": 102.11411821001485,
+          "right": 363.24303289093217,
+          "bottom": 111.11411821001485
+        },
+        {
+          "left": 336.24303289093217,
+          "top": 92.11411821001485,
+          "right": 366.24303289093217,
+          "bottom": 114.11411821001485
+        }
+      ],
+      "start_min_margin": 39.82714310878811,
+      "endpoint_min_margin": 40.82602369475302,
+      "verdict": "LOCAL_STEP_FAIL_PREFIX_CERTIFIED",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3-max",
+      "viewport": 768,
+      "layout": "candidate",
+      "key": "venus",
+      "distance_arc_css": 321.6488222451374,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 276.3785962467645,
+        "y": 114.65921489825962
+      },
+      "q_boxes": [
+        {
+          "left": 268.3785962467645,
+          "top": 108.65921489825962,
+          "right": 277.3785962467645,
+          "bottom": 120.65921489825962
+        },
+        {
+          "left": 265.3785962467645,
+          "top": 105.65921489825962,
+          "right": 280.3785962467645,
+          "bottom": 123.65921489825962
+        }
+      ],
+      "start_min_margin": 36.168563969784046,
+      "endpoint_min_margin": 35.17532392533497,
+      "verdict": "LOCAL_STEP_FAIL_PREFIX_CERTIFIED",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3-max",
+      "viewport": 768,
+      "layout": "candidate",
+      "key": "mars",
+      "distance_arc_css": 250.17130619066225,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 211.9928623319115,
+        "y": 147.21248345050995
+      },
+      "q_boxes": [
+        {
+          "left": 203.9928623319115,
+          "top": 143.21248345050995,
+          "right": 214.9928623319115,
+          "bottom": 154.21248345050995
+        },
+        {
+          "left": 219.9928623319115,
+          "top": 148.21248345050995,
+          "right": 227.9928623319115,
+          "bottom": 157.21248345050995
+        },
+        {
+          "left": 200.9928623319115,
+          "top": 140.21248345050995,
+          "right": 230.9928623319115,
+          "bottom": 160.21248345050995
+        }
+      ],
+      "start_min_margin": 36.168563969784046,
+      "endpoint_min_margin": 37.15541449397716,
+      "verdict": "LOCAL_STEP_FAIL_PREFIX_CERTIFIED",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3-max",
+      "viewport": 768,
+      "layout": "candidate",
+      "key": "jupiter",
+      "distance_arc_css": 178.69379013618737,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 159.0742194216297,
+        "y": 196.25180703600853
+      },
+      "q_boxes": [
+        {
+          "left": 151.0742194216297,
+          "top": 190.25180703600853,
+          "right": 163.0742194216297,
+          "bottom": 202.25180703600853
+        },
+        {
+          "left": 148.0742194216297,
+          "top": 187.25180703600853,
+          "right": 166.0742194216297,
+          "bottom": 205.25180703600853
+        }
+      ],
+      "start_min_margin": 42.18867455715092,
+      "endpoint_min_margin": 41.368970259408066,
+      "verdict": "LOCAL_STEP_FAIL_PREFIX_CERTIFIED",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3-max",
+      "viewport": 768,
+      "layout": "candidate",
+      "key": "saturn",
+      "distance_arc_css": 107.21627408171223,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 121.72262447509885,
+        "y": 257.9777851986871
+      },
+      "q_boxes": [
+        {
+          "left": 113.72262447509885,
+          "top": 251.97778519868712,
+          "right": 122.72262447509885,
+          "bottom": 263.9777851986871
+        },
+        {
+          "left": 129.72262447509885,
+          "top": 258.9777851986871,
+          "right": 137.72262447509885,
+          "bottom": 267.9777851986871
+        },
+        {
+          "left": 110.72262447509885,
+          "top": 248.97778519868712,
+          "right": 140.72262447509885,
+          "bottom": 270.9777851986871
+        }
+      ],
+      "start_min_margin": 42.23731065380188,
+      "endpoint_min_margin": 42.25908422289561,
+      "verdict": "LOCAL_STEP_FAIL_PREFIX_CERTIFIED",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3-max",
+      "viewport": 768,
+      "layout": "candidate",
+      "key": "uranus",
+      "distance_arc_css": 35.73875802723733,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 102.83195237677404,
+        "y": 327.6080985174043
+      },
+      "q_boxes": [
+        {
+          "left": 94.83195237677404,
+          "top": 321.6080985174043,
+          "right": 106.83195237677404,
+          "bottom": 334.6080985174043
+        },
+        {
+          "left": 91.83195237677404,
+          "top": 318.6080985174043,
+          "right": 109.83195237677404,
+          "bottom": 337.6080985174043
+        }
+      ],
+      "start_min_margin": 45.42856750983236,
+      "endpoint_min_margin": 45.45632258260065,
+      "verdict": "LOCAL_STEP_FAIL_PREFIX_CERTIFIED",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3-max",
+      "viewport": 768,
+      "layout": "candidate",
+      "key": "neptune",
+      "distance_arc_css": 35.73875802723733,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 103.56671838102841,
+        "y": 397.77051863722835
+      },
+      "q_boxes": [
+        {
+          "left": 95.56671838102841,
+          "top": 391.77051863722835,
+          "right": 109.56671838102841,
+          "bottom": 405.77051863722835
+        },
+        {
+          "left": 111.56671838102841,
+          "top": 398.77051863722835,
+          "right": 119.56671838102841,
+          "bottom": 407.77051863722835
+        },
+        {
+          "left": 92.56671838102841,
+          "top": 388.77051863722835,
+          "right": 122.56671838102841,
+          "bottom": 410.77051863722835
+        }
+      ],
+      "start_min_margin": 44.548878838271264,
+      "endpoint_min_margin": 44.59014404289968,
+      "verdict": "LOCAL_STEP_FAIL_PREFIX_CERTIFIED",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3-max",
+      "viewport": 768,
+      "layout": "candidate",
+      "key": "pluto",
+      "distance_arc_css": 107.21627408171223,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 123.9114747009211,
+        "y": 466.9899444906211
+      },
+      "q_boxes": [
+        {
+          "left": 116.9114747009211,
+          "top": 460.9899444906211,
+          "right": 124.9114747009211,
+          "bottom": 472.9899444906211
+        },
+        {
+          "left": 113.9114747009211,
+          "top": 457.9899444906211,
+          "right": 127.9114747009211,
+          "bottom": 475.9899444906211
+        }
+      ],
+      "start_min_margin": 44.731406344521076,
+      "endpoint_min_margin": 44.23038347001142,
+      "verdict": "LOCAL_STEP_FAIL_PREFIX_CERTIFIED",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3-max",
+      "viewport": 768,
+      "layout": "candidate",
+      "key": "chiron",
+      "distance_arc_css": 178.69379013618737,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 162.5475691778331,
+        "y": 527.920152341574
+      },
+      "q_boxes": [
+        {
+          "left": 154.5475691778331,
+          "top": 521.920152341574,
+          "right": 163.5475691778331,
+          "bottom": 534.920152341574
+        },
+        {
+          "left": 170.5475691778331,
+          "top": 528.920152341574,
+          "right": 178.5475691778331,
+          "bottom": 537.920152341574
+        },
+        {
+          "left": 151.5475691778331,
+          "top": 518.920152341574,
+          "right": 181.5475691778331,
+          "bottom": 540.920152341574
+        }
+      ],
+      "start_min_margin": 33.25342544272862,
+      "endpoint_min_margin": 34.25236197865277,
+      "verdict": "LOCAL_STEP_FAIL_PREFIX_CERTIFIED",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3-max",
+      "viewport": 768,
+      "layout": "candidate",
+      "key": "true_node",
+      "distance_arc_css": 250.17130619066225,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 216.48160826055928,
+        "y": 575.8404763535432
+      },
+      "q_boxes": [
+        {
+          "left": 208.48160826055928,
+          "top": 569.8404763535432,
+          "right": 220.48160826055928,
+          "bottom": 582.8404763535432
+        },
+        {
+          "left": 205.48160826055928,
+          "top": 566.8404763535432,
+          "right": 223.48160826055928,
+          "bottom": 585.8404763535432
+        }
+      ],
+      "start_min_margin": 33.25342544272862,
+      "endpoint_min_margin": 32.28110559945435,
+      "verdict": "LOCAL_STEP_FAIL_PREFIX_CERTIFIED",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3-max",
+      "viewport": 768,
+      "layout": "candidate",
+      "key": "south_node",
+      "distance_arc_css": 321.6488222451374,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 281.53496553857747,
+        "y": 607.0382123619092
+      },
+      "q_boxes": [
+        {
+          "left": 273.53496553857747,
+          "top": 601.0382123619092,
+          "right": 285.53496553857747,
+          "bottom": 614.0382123619092
+        },
+        {
+          "left": 289.53496553857747,
+          "top": 608.0382123619092,
+          "right": 297.53496553857747,
+          "bottom": 617.0382123619092
+        },
+        {
+          "left": 270.53496553857747,
+          "top": 598.0382123619092,
+          "right": 300.53496553857747,
+          "bottom": 620.0382123619092
+        }
+      ],
+      "start_min_margin": 40.17855277561034,
+      "endpoint_min_margin": 41.13221388425529,
+      "verdict": "LOCAL_STEP_FAIL_PREFIX_CERTIFIED",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3-max",
+      "viewport": 768,
+      "layout": "candidate",
+      "key": "mean_apog",
+      "distance_arc_css": 393.12633829961254,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 352.6675275429497,
+        "y": 619.0962655996157
+      },
+      "q_boxes": [
+        {
+          "left": 345.6675275429497,
+          "top": 613.0962655996157,
+          "right": 351.6675275429497,
+          "bottom": 625.0962655996157
+        },
+        {
+          "left": 342.6675275429497,
+          "top": 610.0962655996157,
+          "right": 354.6675275429497,
+          "bottom": 628.0962655996157
+        }
+      ],
+      "start_min_margin": 40.17855277561034,
+      "endpoint_min_margin": 39.17890089572728,
+      "verdict": "LOCAL_STEP_FAIL_PREFIX_CERTIFIED",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3-max",
+      "viewport": 768,
+      "layout": "candidate",
+      "key": "selena",
+      "distance_arc_css": 464.6038543540876,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 424.3681846424521,
+        "y": 611.080419001234
+      },
+      "q_boxes": [
+        {
+          "left": 417.3681846424521,
+          "top": 606.080419001234,
+          "right": 428.3681846424521,
+          "bottom": 617.080419001234
+        },
+        {
+          "left": 432.3681846424521,
+          "top": 612.080419001234,
+          "right": 440.3681846424521,
+          "bottom": 621.080419001234
+        },
+        {
+          "left": 414.3681846424521,
+          "top": 603.080419001234,
+          "right": 443.3681846424521,
+          "bottom": 624.080419001234
+        }
+      ],
+      "start_min_margin": 36.844447379591585,
+      "endpoint_min_margin": 37.844446742913085,
+      "verdict": "LOCAL_STEP_FAIL_PREFIX_CERTIFIED",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3-max",
+      "viewport": 768,
+      "layout": "candidate",
+      "key": "pars_fortune",
+      "distance_arc_css": 536.0813704085623,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 491.0818131247984,
+        "y": 583.6117131724441
+      },
+      "q_boxes": [
+        {
+          "left": 484.0818131247984,
+          "top": 579.6117131724441,
+          "right": 495.0818131247984,
+          "bottom": 590.6117131724441
+        },
+        {
+          "left": 481.0818131247984,
+          "top": 576.6117131724441,
+          "right": 498.0818131247984,
+          "bottom": 593.6117131724441
+        }
+      ],
+      "start_min_margin": 36.844447379591585,
+      "endpoint_min_margin": 35.88413705445691,
+      "verdict": "LOCAL_STEP_FAIL_PREFIX_CERTIFIED",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3-max",
+      "viewport": 768,
+      "layout": "candidate",
+      "key": "[\"sun\",\"moon\",\"conjunction\"]",
+      "distance_arc_css": 164.21733118844574,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 280.41313360980485,
+        "y": 223.04566199572494
+      },
+      "q_boxes": [
+        {
+          "left": 271.66313360980485,
+          "top": 216.29566199572494,
+          "right": 281.16313360980485,
+          "bottom": 227.79566199572494
+        },
+        {
+          "left": 287.41313360980485,
+          "top": 224.04566199572494,
+          "right": 330.95024298480485,
+          "bottom": 233.04566199572494
+        },
+        {
+          "left": 269.41313360980485,
+          "top": 214.04566199572494,
+          "right": 333.95024298480485,
+          "bottom": 236.04566199572494
+        }
+      ],
+      "start_min_margin": 44.248470981960935,
+      "endpoint_min_margin": 44.21918283853333,
+      "verdict": "LOCAL_STEP_FAIL_PREFIX_CERTIFIED",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3-max",
+      "viewport": 768,
+      "layout": "candidate",
+      "key": "[\"mercury\",\"venus\",\"conjunction\"]",
+      "distance_arc_css": 54.739110396148526,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 211.0003716945681,
+        "y": 306.2443420201824
+      },
+      "q_boxes": [
+        {
+          "left": 202.2503716945681,
+          "top": 299.4943420201824,
+          "right": 211.7503716945681,
+          "bottom": 310.9943420201824
+        },
+        {
+          "left": 219.0003716945681,
+          "top": 307.2443420201824,
+          "right": 266.5589654445681,
+          "bottom": 316.2443420201824
+        },
+        {
+          "left": 200.0003716945681,
+          "top": 297.2443420201824,
+          "right": 269.5589654445681,
+          "bottom": 319.2443420201824
+        }
+      ],
+      "start_min_margin": 30.695234721367797,
+      "endpoint_min_margin": 29.755657979817613,
+      "verdict": "LOCAL_STEP_FAIL_PREFIX_CERTIFIED",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3-max",
+      "viewport": 768,
+      "layout": "candidate",
+      "key": "[\"mars\",\"jupiter\",\"conjunction\"]",
+      "distance_arc_css": 54.73911039614839,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 210.62872046956105,
+        "y": 412.71414280285194
+      },
+      "q_boxes": [
+        {
+          "left": 201.87872046956105,
+          "top": 405.96414280285194,
+          "right": 211.37872046956105,
+          "bottom": 417.46414280285194
+        },
+        {
+          "left": 217.62872046956105,
+          "top": 413.71414280285194,
+          "right": 261.165829844561,
+          "bottom": 422.71414280285194
+        },
+        {
+          "left": 199.62872046956105,
+          "top": 403.71414280285194,
+          "right": 264.165829844561,
+          "bottom": 425.71414280285194
+        }
+      ],
+      "start_min_margin": 42.33847600926814,
+      "endpoint_min_margin": 41.40498369819629,
+      "verdict": "LOCAL_STEP_FAIL_PREFIX_CERTIFIED",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3-max",
+      "viewport": 768,
+      "layout": "candidate",
+      "key": "[\"saturn\",\"uranus\",\"conjunction\"]",
+      "distance_arc_css": 164.2173311884456,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 279.4589592030558,
+        "y": 496.39538389309575
+      },
+      "q_boxes": [
+        {
+          "left": 270.7089592030558,
+          "top": 489.64538389309575,
+          "right": 280.2089592030558,
+          "bottom": 501.14538389309575
+        },
+        {
+          "left": 287.4589592030558,
+          "top": 497.39538389309575,
+          "right": 335.0175529530558,
+          "bottom": 506.39538389309575
+        },
+        {
+          "left": 268.4589592030558,
+          "top": 487.39538389309575,
+          "right": 338.0175529530558,
+          "bottom": 509.39538389309575
+        }
+      ],
+      "start_min_margin": 40.806069584636646,
+      "endpoint_min_margin": 40.78943274233356,
+      "verdict": "LOCAL_STEP_FAIL_PREFIX_CERTIFIED",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3-max",
+      "viewport": 360,
+      "layout": "candidate",
+      "key": "sun",
+      "distance_arc_css": 244.21484651945596,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 221.0926331508509,
+        "y": 60.63986435814647
+      },
+      "q_boxes": [
+        {
+          "left": 214.0926331508509,
+          "top": 55.63986435814647,
+          "right": 225.0926331508509,
+          "bottom": 66.63986435814647
+        },
+        {
+          "left": 229.0926331508509,
+          "top": 61.63986435814647,
+          "right": 237.0926331508509,
+          "bottom": 70.63986435814647
+        },
+        {
+          "left": 211.0926331508509,
+          "top": 52.63986435814647,
+          "right": 240.0926331508509,
+          "bottom": 73.63986435814647
+        }
+      ],
+      "start_min_margin": 9.351270259758195,
+      "endpoint_min_margin": 9.445359574151269,
+      "verdict": "LOCAL_STEP_FAIL_PREFIX_CERTIFIED",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3-max",
+      "viewport": 360,
+      "layout": "candidate",
+      "key": "moon",
+      "distance_arc_css": 211.6528669835285,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 190.39104688296445,
+        "y": 48.90699828216674
+      },
+      "q_boxes": [
+        {
+          "left": 182.39104688296445,
+          "top": 42.90699828216674,
+          "right": 191.39104688296445,
+          "bottom": 55.90699828216674
+        },
+        {
+          "left": 179.39104688296445,
+          "top": 39.90699828216674,
+          "right": 194.39104688296445,
+          "bottom": 58.90699828216674
+        }
+      ],
+      "start_min_margin": 0.7212540828923295,
+      "endpoint_min_margin": -0.25249147873313404,
+      "verdict": "LOCAL_STEP_PASS_ENDPOINT_VIOLATION",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3-max",
+      "viewport": 360,
+      "layout": "candidate",
+      "key": "mercury",
+      "distance_arc_css": 179.09088744760106,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 157.6447718177612,
+        "y": 46.09114759802095
+      },
+      "q_boxes": [
+        {
+          "left": 149.6447718177612,
+          "top": 40.09114759802095,
+          "right": 158.6447718177612,
+          "bottom": 55.09114759802095
+        },
+        {
+          "left": 165.6447718177612,
+          "top": 47.09114759802095,
+          "right": 173.6447718177612,
+          "bottom": 56.09114759802095
+        },
+        {
+          "left": 146.6447718177612,
+          "top": 37.09114759802095,
+          "right": 176.6447718177612,
+          "bottom": 59.09114759802095
+        }
+      ],
+      "start_min_margin": 0.7212540828923295,
+      "endpoint_min_margin": 1.720020626828699,
+      "verdict": "FULL_PREFIX_UNPROVEN",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3-max",
+      "viewport": 360,
+      "layout": "candidate",
+      "key": "venus",
+      "distance_arc_css": 146.5289079116737,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 125.39087827596788,
+        "y": 52.41047486569866
+      },
+      "q_boxes": [
+        {
+          "left": 117.39087827596788,
+          "top": 46.41047486569866,
+          "right": 126.39087827596788,
+          "bottom": 58.41047486569866
+        },
+        {
+          "left": 114.39087827596788,
+          "top": 43.41047486569866,
+          "right": 129.39087827596788,
+          "bottom": 61.41047486569866
+        }
+      ],
+      "start_min_margin": -2.0,
+      "endpoint_min_margin": -2.0,
+      "verdict": "CANDIDATE_INADMISSIBLE",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3-max",
+      "viewport": 360,
+      "layout": "candidate",
+      "key": "mars",
+      "distance_arc_css": 113.96692837574615,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 96.12828852797445,
+        "y": 67.37538004287875
+      },
+      "q_boxes": [
+        {
+          "left": 88.12828852797445,
+          "top": 63.375380042878746,
+          "right": 99.12828852797445,
+          "bottom": 74.37538004287875
+        },
+        {
+          "left": 104.12828852797445,
+          "top": 68.37538004287875,
+          "right": 112.12828852797445,
+          "bottom": 77.37538004287875
+        },
+        {
+          "left": 85.12828852797445,
+          "top": 60.375380042878746,
+          "right": 115.12828852797445,
+          "bottom": 80.37538004287875
+        }
+      ],
+      "start_min_margin": -2.0,
+      "endpoint_min_margin": -1.7910037698906223,
+      "verdict": "CANDIDATE_INADMISSIBLE",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3-max",
+      "viewport": 360,
+      "layout": "candidate",
+      "key": "jupiter",
+      "distance_arc_css": 81.40494883981869,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 72.12416877236114,
+        "y": 89.82643303554548
+      },
+      "q_boxes": [
+        {
+          "left": 64.12416877236114,
+          "top": 83.82643303554548,
+          "right": 76.12416877236114,
+          "bottom": 95.82643303554548
+        },
+        {
+          "left": 61.124168772361145,
+          "top": 80.82643303554548,
+          "right": 79.12416877236114,
+          "bottom": 98.82643303554548
+        }
+      ],
+      "start_min_margin": 4.198312858257992,
+      "endpoint_min_margin": 4.900993934196012,
+      "verdict": "LOCAL_STEP_FAIL_PREFIX_CERTIFIED",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3-max",
+      "viewport": 360,
+      "layout": "candidate",
+      "key": "saturn",
+      "distance_arc_css": 48.84296930389113,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 55.23827678877973,
+        "y": 118.02420240902927
+      },
+      "q_boxes": [
+        {
+          "left": 47.23827678877973,
+          "top": 112.02420240902927,
+          "right": 56.23827678877973,
+          "bottom": 124.02420240902927
+        },
+        {
+          "left": 63.23827678877973,
+          "top": 119.02420240902927,
+          "right": 71.23827678877973,
+          "bottom": 128.02420240902927
+        },
+        {
+          "left": 44.23827678877973,
+          "top": 109.02420240902927,
+          "right": 74.23827678877973,
+          "bottom": 131.02420240902927
+        }
+      ],
+      "start_min_margin": 7.020379201439269,
+      "endpoint_min_margin": 6.767613547092196,
+      "verdict": "LOCAL_STEP_FAIL_PREFIX_CERTIFIED",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3-max",
+      "viewport": 360,
+      "layout": "candidate",
+      "key": "uranus",
+      "distance_arc_css": 16.280989767963675,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 46.77887421325566,
+        "y": 149.78402063562766
+      },
+      "q_boxes": [
+        {
+          "left": 38.77887421325566,
+          "top": 143.78402063562766,
+          "right": 50.77887421325566,
+          "bottom": 156.78402063562766
+        },
+        {
+          "left": 35.77887421325566,
+          "top": 140.78402063562766,
+          "right": 53.77887421325566,
+          "bottom": 159.78402063562766
+        }
+      ],
+      "start_min_margin": 7.687038882276255,
+      "endpoint_min_margin": 8.679243561782442,
+      "verdict": "LOCAL_STEP_FAIL_PREFIX_CERTIFIED",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3-max",
+      "viewport": 360,
+      "layout": "candidate",
+      "key": "neptune",
+      "distance_arc_css": 16.280989767963675,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 47.10229975213976,
+        "y": 180.66775560060248
+      },
+      "q_boxes": [
+        {
+          "left": 39.10229975213976,
+          "top": 174.66775560060248,
+          "right": 53.10229975213976,
+          "bottom": 188.66775560060248
+        },
+        {
+          "left": 55.10229975213976,
+          "top": 181.66775560060248,
+          "right": 63.10229975213976,
+          "bottom": 190.66775560060248
+        },
+        {
+          "left": 36.10229975213976,
+          "top": 171.66775560060248,
+          "right": 66.10229975213976,
+          "bottom": 193.66775560060248
+        }
+      ],
+      "start_min_margin": 7.497302596274892,
+      "endpoint_min_margin": 8.486680349505718,
+      "verdict": "LOCAL_STEP_FAIL_PREFIX_CERTIFIED",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3-max",
+      "viewport": 360,
+      "layout": "candidate",
+      "key": "pluto",
+      "distance_arc_css": 48.84296930389113,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 56.22497448960665,
+        "y": 212.24344801352885
+      },
+      "q_boxes": [
+        {
+          "left": 49.22497448960665,
+          "top": 206.24344801352885,
+          "right": 57.22497448960665,
+          "bottom": 218.24344801352885
+        },
+        {
+          "left": 46.22497448960665,
+          "top": 203.24344801352885,
+          "right": 60.22497448960665,
+          "bottom": 221.24344801352885
+        }
+      ],
+      "start_min_margin": 7.497302596274892,
+      "endpoint_min_margin": 6.586314659695546,
+      "verdict": "LOCAL_STEP_FAIL_PREFIX_CERTIFIED",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3-max",
+      "viewport": 360,
+      "layout": "candidate",
+      "key": "chiron",
+      "distance_arc_css": 81.40494883981869,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 73.6976926440277,
+        "y": 240.08140171019136
+      },
+      "q_boxes": [
+        {
+          "left": 65.6976926440277,
+          "top": 234.08140171019136,
+          "right": 74.6976926440277,
+          "bottom": 247.08140171019136
+        },
+        {
+          "left": 81.6976926440277,
+          "top": 241.08140171019136,
+          "right": 89.6976926440277,
+          "bottom": 250.08140171019136
+        },
+        {
+          "left": 62.6976926440277,
+          "top": 231.08140171019136,
+          "right": 92.6976926440277,
+          "bottom": 253.08140171019136
+        }
+      ],
+      "start_min_margin": -2.0,
+      "endpoint_min_margin": -1.5025660160483199,
+      "verdict": "CANDIDATE_INADMISSIBLE",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3-max",
+      "viewport": 360,
+      "layout": "candidate",
+      "key": "true_node",
+      "distance_arc_css": 113.96692837574615,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 98.16672727810275,
+        "y": 262.02482646107717
+      },
+      "q_boxes": [
+        {
+          "left": 90.16672727810275,
+          "top": 256.02482646107717,
+          "right": 102.16672727810275,
+          "bottom": 269.02482646107717
+        },
+        {
+          "left": 87.16672727810275,
+          "top": 253.02482646107717,
+          "right": 105.16672727810275,
+          "bottom": 272.02482646107717
+        }
+      ],
+      "start_min_margin": -2.0,
+      "endpoint_min_margin": -2.0,
+      "verdict": "CANDIDATE_INADMISSIBLE",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3-max",
+      "viewport": 360,
+      "layout": "candidate",
+      "key": "south_node",
+      "distance_arc_css": 146.5289079116737,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 127.73630058433076,
+        "y": 276.3736201458776
+      },
+      "q_boxes": [
+        {
+          "left": 119.73630058433076,
+          "top": 270.3736201458776,
+          "right": 131.73630058433076,
+          "bottom": 283.3736201458776
+        },
+        {
+          "left": 135.73630058433076,
+          "top": 277.3736201458776,
+          "right": 143.73630058433076,
+          "bottom": 286.3736201458776
+        },
+        {
+          "left": 116.73630058433076,
+          "top": 267.3736201458776,
+          "right": 146.73630058433076,
+          "bottom": 289.3736201458776
+        }
+      ],
+      "start_min_margin": 1.4257851533335781,
+      "endpoint_min_margin": 2.37874781940414,
+      "verdict": "LOCAL_STEP_FAIL_PREFIX_CERTIFIED",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3-max",
+      "viewport": 360,
+      "layout": "candidate",
+      "key": "mean_apog",
+      "distance_arc_css": 179.09088744760126,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 160.1154623192901,
+        "y": 282.0160868992323
+      },
+      "q_boxes": [
+        {
+          "left": 153.1154623192901,
+          "top": 276.0160868992323,
+          "right": 159.1154623192901,
+          "bottom": 288.0160868992323
+        },
+        {
+          "left": 150.1154623192901,
+          "top": 273.0160868992323,
+          "right": 162.1154623192901,
+          "bottom": 291.0160868992323
+        }
+      ],
+      "start_min_margin": 1.4257851533335781,
+      "endpoint_min_margin": 0.4261990688887636,
+      "verdict": "LOCAL_STEP_FAIL_PREFIX_CERTIFIED",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3-max",
+      "viewport": 360,
+      "layout": "candidate",
+      "key": "selena",
+      "distance_arc_css": 211.6528669835288,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 192.79558485787823,
+        "y": 278.5150675356424
+      },
+      "q_boxes": [
+        {
+          "left": 185.79558485787823,
+          "top": 273.5150675356424,
+          "right": 196.79558485787823,
+          "bottom": 284.5150675356424
+        },
+        {
+          "left": 200.79558485787823,
+          "top": 279.5150675356424,
+          "right": 208.79558485787823,
+          "bottom": 288.5150675356424
+        },
+        {
+          "left": 182.79558485787823,
+          "top": 270.5150675356424,
+          "right": 211.79558485787823,
+          "bottom": 291.5150675356424
+        }
+      ],
+      "start_min_margin": -0.6567394495431813,
+      "endpoint_min_margin": 0.31202551392578926,
+      "verdict": "CANDIDATE_INADMISSIBLE",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3-max",
+      "viewport": 360,
+      "layout": "candidate",
+      "key": "pars_fortune",
+      "distance_arc_css": 244.21484651945616,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 223.2447231527492,
+        "y": 266.1418091603732
+      },
+      "q_boxes": [
+        {
+          "left": 216.2447231527492,
+          "top": 262.1418091603732,
+          "right": 227.2447231527492,
+          "bottom": 273.1418091603732
+        },
+        {
+          "left": 213.2447231527492,
+          "top": 259.1418091603732,
+          "right": 230.2447231527492,
+          "bottom": 276.1418091603732
+        }
+      ],
+      "start_min_margin": -0.6567394495431813,
+      "endpoint_min_margin": -1.5196266685979936,
+      "verdict": "CANDIDATE_INADMISSIBLE",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3-max",
+      "viewport": 360,
+      "layout": "candidate",
+      "key": "[\"sun\",\"moon\",\"conjunction\"]",
+      "distance_arc_css": 74.81011754140305,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 127.27406479447777,
+        "y": 101.88501563004476
+      },
+      "q_boxes": [
+        {
+          "left": 118.52406479447777,
+          "top": 95.13501563004476,
+          "right": 128.02406479447777,
+          "bottom": 106.63501563004476
+        },
+        {
+          "left": 134.27406479447777,
+          "top": 102.88501563004476,
+          "right": 177.81117416947777,
+          "bottom": 111.88501563004476
+        },
+        {
+          "left": 116.27406479447777,
+          "top": 92.88501563004476,
+          "right": 180.81117416947777,
+          "bottom": 114.88501563004476
+        }
+      ],
+      "start_min_margin": 10.634093305042486,
+      "endpoint_min_margin": 11.084996107493343,
+      "verdict": "LOCAL_STEP_FAIL_PREFIX_CERTIFIED",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3-max",
+      "viewport": 360,
+      "layout": "candidate",
+      "key": "[\"mercury\",\"venus\",\"conjunction\"]",
+      "distance_arc_css": 24.936705847134327,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 95.93955908858179,
+        "y": 140.02413749323398
+      },
+      "q_boxes": [
+        {
+          "left": 87.18955908858179,
+          "top": 133.27413749323398,
+          "right": 96.68955908858179,
+          "bottom": 144.77413749323398
+        },
+        {
+          "left": 103.93955908858179,
+          "top": 141.02413749323398,
+          "right": 151.4981528385818,
+          "bottom": 150.02413749323398
+        },
+        {
+          "left": 84.93955908858179,
+          "top": 131.02413749323398,
+          "right": 154.4981528385818,
+          "bottom": 153.02413749323398
+        }
+      ],
+      "start_min_margin": -11.207705158287421,
+      "endpoint_min_margin": -11.722608455842245,
+      "verdict": "CANDIDATE_INADMISSIBLE",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3-max",
+      "viewport": 360,
+      "layout": "candidate",
+      "key": "[\"mars\",\"jupiter\",\"conjunction\"]",
+      "distance_arc_css": 24.936705847134263,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 95.77383593648945,
+        "y": 187.50013057791259
+      },
+      "q_boxes": [
+        {
+          "left": 87.02383593648945,
+          "top": 180.75013057791259,
+          "right": 96.52383593648945,
+          "bottom": 192.25013057791259
+        },
+        {
+          "left": 102.77383593648945,
+          "top": 188.50013057791259,
+          "right": 146.31094531148943,
+          "bottom": 197.50013057791259
+        },
+        {
+          "left": 84.77383593648945,
+          "top": 178.50013057791259,
+          "right": 149.31094531148943,
+          "bottom": 200.50013057791259
+        }
+      ],
+      "start_min_margin": -5.1540937347614,
+      "endpoint_min_margin": -5.5996968428617855,
+      "verdict": "CANDIDATE_INADMISSIBLE",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    },
+    {
+      "fixture": "F3-max",
+      "viewport": 360,
+      "layout": "candidate",
+      "key": "[\"saturn\",\"uranus\",\"conjunction\"]",
+      "distance_arc_css": 74.81011754140299,
+      "probe_arc_css": 1,
+      "q": {
+        "x": 126.84131890532203,
+        "y": 225.85707735824593
+      },
+      "q_boxes": [
+        {
+          "left": 118.09131890532203,
+          "top": 219.10707735824593,
+          "right": 127.59131890532203,
+          "bottom": 230.60707735824593
+        },
+        {
+          "left": 134.84131890532203,
+          "top": 226.85707735824593,
+          "right": 182.39991265532203,
+          "bottom": 235.85707735824593
+        },
+        {
+          "left": 115.84131890532203,
+          "top": 216.85707735824593,
+          "right": 185.39991265532203,
+          "bottom": 238.85707735824593
+        }
+      ],
+      "start_min_margin": 9.421701308083598,
+      "endpoint_min_margin": 9.38966017704847,
+      "verdict": "LOCAL_STEP_FAIL_PREFIX_CERTIFIED",
+      "method": "independent analytic arc formula; Lipschitz translation <= arc; whole-prefix certified only with margin > s and valid cyclic order; no global optimum claim"
+    }
+  ],
+  "precision": "binary64 post-analysis; no new tolerance; near-boundary / uncertified prefix -> UNPROVEN",
+  "browser": "NOT_RUN by this post-audit"
+}
