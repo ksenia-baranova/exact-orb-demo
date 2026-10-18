@@ -1,8 +1,9 @@
 # TASK-T-007 — проверка evidence feasibility v2
 
-Сначала обнови назначенную ролевую копию из опубликованной `change/ui-chart-wheel` через Git, сохрани несвязанные изменения / index. Чужие материалы получай только через Git. Прочитай AGENTS.md, [process.md](../../../../../development_approach/process/process.md), [roles.md](../../../../../development_approach/roles.md), [Manager §2.18](../../manager_artifact.md) и связанные DP.
+Сначала обнови назначенную ролевую копию из опубликованной `change/ui-chart-wheel` через Git, сохрани несвязанные изменения / index. Чужие материалы получай только через Git. Прочитай AGENTS.md, [process.md](../../../../../development_approach/process/process.md), [roles.md](../../../../../development_approach/roles.md), [Manager §2.20](../../manager_artifact.md#220-регистрация-a007-и-точная-редакция-s1-во-входах-следующих-заданий) и связанные DP.
 
-- Общий InputSHA: `072fc291f8b0db24aaa34ad7a29abc96b472162a`; версия постановки — первый опубликованный Manager commit, добавляющий §2.18 и этот промт. Фактический HEAD / AssignmentSHA запиши отдельно.
+- Исторический общий InputSHA постановки §2.18: `072fc291f8b0db24aaa34ad7a29abc96b472162a`; версия постановки — первый опубликованный Manager commit, добавляющий §2.18 и этот промт. Фактический HEAD / AssignmentSHA запиши отдельно.
+- Текущий InputSHA / **AnalystContractSHA (v3 + S1): `2736e2848c977ec4c770a9a4dec2a0d7c1b62a71`** — принятый Manager результат A007 (§2.20). [Requirements](../../analyst/requirements.md), [scenarios / F5 S1](../../analyst/scenarios.md#f5-s1), behavioral sequences [001](../../analyst/sequence_diagrams/ui/001-chart-presentation.puml) / [002](../../analyst/sequence_diagrams/ui/002-wheel-table-selection.puml) / [003](../../analyst/sequence_diagrams/ui/003-edit-and-recovery.puml). Прежний Analyst v3 @ 2634b22 сохраняется как baseline. Редакция поручения — первый опубликованный Manager commit с §2.20; фактический HEAD / AssignmentSHA фиксируй отдельно.
 - Пакет D003: `d24a24e04be32d0522674735388e9d2ea3e65c93`; CriteriaSHA `f6f289cda25e7f228dff064175805130cc770b63`; Analyst A005 `4057d6ed37b24e082a2a4089eb7104da80d17ee5`; Tester T004 `ad5206e30d855e44a9535f89dced1d8fe4699d17`.
 - [Сводка полученного R001 r2](../review_inputs/task-r-001-r2-summary.md) — дополнительный Manager-вход из сообщения Owner. Исходный reviewer package ещё не опубликован; это не его OutputSHA и не независимо проверенные scripts/logs. По получении исходного OutputSHA Manager закрепляет его отдельно; предмет самовольно не подменяй.
 
@@ -12,6 +13,8 @@
 Статус BLOCKED, ResumeStatus=NOT_STARTED: отсутствуют опубликованный D005 и закреплённый Manager TechnicalPackageV2SHA. До снятия зависимости допустимо прочитать постановку и дать собственную оценку; STARTED review / runtime PASS не объявляй. Manager снимает блокировку после проверки точной передачи. Выходов-заполнителей не создавай.
 
 После получения точного SHA независимо проверь только заявленные результаты D005: различие новой модели и прежней, предфиксацию входов, certificates / counterexamples на 720/448/328, C0 / fixed+movable / order / leaders / fonts, Q44 effective containment и native owner, keyboard / focused resize. Числа / радиусы, sampling / proof и discrete / continuous выводы различай. Проверяй сохранность run03 и границы negative outcomes.
+
+Ожидаемый контракт — тот же AnalystContractSHA 2736e28, включая S1 / F5. Проверь соответствие заявленного D005 scope этой редакции; если S1 runtime не заявлен, не требуй production-проверку S1 как условие приёмки bounded research. F5 — будущие acceptance cases, а не готовый runtime evidence. A006 / already_applied не считается выполненным A007; его новую версию получает и закрепляет Manager отдельно.
 
 Успешный production layout не является условием приёмки корректного отрицательного bounded research. Исходные факты R001 65 PASS / 1 FAIL сохраняй как reported с неизвестной причиной; если этот projector/codec запуск нужен для твоего вывода, сравни source baseline и package в одном окружении. Новое исправление или env-объяснение без evidence не выбирай.
 
