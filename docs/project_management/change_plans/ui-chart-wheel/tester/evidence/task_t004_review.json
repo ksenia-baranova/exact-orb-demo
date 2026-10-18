@@ -1,0 +1,918 @@
+{
+  "task_id": "TASK-T-004",
+  "author": "Codex / Tester",
+  "pins": {
+    "head": "f6c555c39e3371c8ed925b980cd0ce480e521dbf",
+    "review_input": "030826fd4e6bfa9613ad84ba7ed32adc15fddcd9",
+    "package": "d24a24e04be32d0522674735388e9d2ea3e65c93",
+    "developer_input": "8fb25770169166a3a4e94110eee684bd8b116474",
+    "criteria": "f6f289cda25e7f228dff064175805130cc770b63",
+    "analyst": "2634b224894b1046113557bfe241f0a5f2d46f8c",
+    "main": "535551026af6eedaf2a0aa5c0daa96fa94655ec1"
+  },
+  "input_audit": {
+    "manifest_payloads": 164,
+    "package_scope": 165,
+    "source_hashes": 18,
+    "input_hash_encodings": {
+      "CRLF": 19,
+      "LF": 1
+    },
+    "previous_tester_files": 15,
+    "previous_index_prefix_sha256_lf": "8b2c31454783323b91e73f44e890ec050fa7f6346fec5057b024d3caa0e19ac5",
+    "fixture_delta": [
+      "/F3/angles/asc/degree",
+      "/F3/angles/asc/longitude",
+      "/F3/angles/asc/minute",
+      "/F3/angles/asc/sign",
+      "/F3/angles/dsc/degree",
+      "/F3/angles/dsc/longitude",
+      "/F3/angles/dsc/minute",
+      "/F3/angles/dsc/sign",
+      "/F3/angles/ic/degree",
+      "/F3/angles/ic/longitude",
+      "/F3/angles/ic/minute",
+      "/F3/angles/ic/sign",
+      "/F3/angles/mc/degree",
+      "/F3/angles/mc/longitude",
+      "/F3/angles/mc/minute",
+      "/F3/angles/mc/sign",
+      "/F3/angles/vertex/degree",
+      "/F3/angles/vertex/longitude",
+      "/F3/angles/vertex/minute",
+      "/F3/angles/vertex/sign",
+      "/F3-max/angles/dsc/longitude",
+      "/F3-max/angles/dsc/minute",
+      "/F3-max/angles/dsc/sign",
+      "/F3-max/angles/ic/longitude",
+      "/F3-max/angles/ic/minute",
+      "/F3-max/angles/ic/sign",
+      "/F3-max/angles/vertex/longitude"
+    ],
+    "spec_delta": [
+      "/fixture_correction",
+      "/recorded_before_first_matrix_run_utc",
+      "/schema"
+    ],
+    "shared_contract_code_tests": "UNCHANGED"
+  },
+  "archived_run03_independent_audit": {
+    "totals": {
+      "native_probes": 7446,
+      "native_wrong": 1679,
+      "keyboard_targets": 438,
+      "keyboard_failed": 0,
+      "complete_geometry_cells": 6,
+      "cells": 24
+    },
+    "screenshots": 25,
+    "anchor_error_max": 4.4920980523834446e-05,
+    "platform_fonts": {
+      "Segoe UI Symbol": 606,
+      "Segoe UI": 54
+    },
+    "matrix": [
+      {
+        "fixture": "sparse",
+        "viewport": 1440,
+        "layout": "default",
+        "record": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/sparse-1440-default.json",
+        "C0": 0,
+        "moved": 0,
+        "movable_geometry": true,
+        "fixed_collisions": [],
+        "complete_geometry": true,
+        "order": {
+          "point": true,
+          "marker": true
+        },
+        "hit_certified": 16,
+        "targets": 16,
+        "native_wrong": 0,
+        "native_probes": 272,
+        "keyboard_targets": 16,
+        "keyboard_failed": 0,
+        "font_runs": 22,
+        "screenshot": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/screenshots/sparse-1440-default.png"
+      },
+      {
+        "fixture": "sparse",
+        "viewport": 1440,
+        "layout": "candidate",
+        "record": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/sparse-1440-candidate.json",
+        "C0": 0,
+        "moved": 0,
+        "movable_geometry": true,
+        "fixed_collisions": [],
+        "complete_geometry": true,
+        "order": {
+          "point": true,
+          "marker": true
+        },
+        "hit_certified": 16,
+        "targets": 16,
+        "native_wrong": 0,
+        "native_probes": 272,
+        "keyboard_targets": 16,
+        "keyboard_failed": 0,
+        "font_runs": 22,
+        "screenshot": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/screenshots/sparse-1440-candidate.png"
+      },
+      {
+        "fixture": "sparse",
+        "viewport": 768,
+        "layout": "default",
+        "record": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/sparse-768-default.json",
+        "C0": 0,
+        "moved": 0,
+        "movable_geometry": true,
+        "fixed_collisions": [],
+        "complete_geometry": true,
+        "order": {
+          "point": true,
+          "marker": true
+        },
+        "hit_certified": 16,
+        "targets": 16,
+        "native_wrong": 0,
+        "native_probes": 272,
+        "keyboard_targets": 16,
+        "keyboard_failed": 0,
+        "font_runs": 22,
+        "screenshot": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/screenshots/sparse-768-default.png"
+      },
+      {
+        "fixture": "sparse",
+        "viewport": 768,
+        "layout": "candidate",
+        "record": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/sparse-768-candidate.json",
+        "C0": 0,
+        "moved": 0,
+        "movable_geometry": true,
+        "fixed_collisions": [],
+        "complete_geometry": true,
+        "order": {
+          "point": true,
+          "marker": true
+        },
+        "hit_certified": 16,
+        "targets": 16,
+        "native_wrong": 0,
+        "native_probes": 272,
+        "keyboard_targets": 16,
+        "keyboard_failed": 0,
+        "font_runs": 22,
+        "screenshot": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/screenshots/sparse-768-candidate.png"
+      },
+      {
+        "fixture": "sparse",
+        "viewport": 360,
+        "layout": "default",
+        "record": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/sparse-360-default.json",
+        "C0": 0,
+        "moved": 0,
+        "movable_geometry": true,
+        "fixed_collisions": [],
+        "complete_geometry": true,
+        "order": {
+          "point": true,
+          "marker": true
+        },
+        "hit_certified": 8,
+        "targets": 16,
+        "native_wrong": 8,
+        "native_probes": 272,
+        "keyboard_targets": 16,
+        "keyboard_failed": 0,
+        "font_runs": 22,
+        "screenshot": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/screenshots/sparse-360-default.png"
+      },
+      {
+        "fixture": "sparse",
+        "viewport": 360,
+        "layout": "candidate",
+        "record": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/sparse-360-candidate.json",
+        "C0": 0,
+        "moved": 0,
+        "movable_geometry": true,
+        "fixed_collisions": [],
+        "complete_geometry": true,
+        "order": {
+          "point": true,
+          "marker": true
+        },
+        "hit_certified": 8,
+        "targets": 16,
+        "native_wrong": 8,
+        "native_probes": 272,
+        "keyboard_targets": 16,
+        "keyboard_failed": 0,
+        "font_runs": 22,
+        "screenshot": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/screenshots/sparse-360-candidate.png"
+      },
+      {
+        "fixture": "F1",
+        "viewport": 1440,
+        "layout": "default",
+        "record": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/F1-1440-default.json",
+        "C0": 8,
+        "moved": 0,
+        "movable_geometry": false,
+        "fixed_collisions": [],
+        "complete_geometry": false,
+        "order": {
+          "point": true,
+          "marker": true
+        },
+        "hit_certified": 13,
+        "targets": 19,
+        "native_wrong": 43,
+        "native_probes": 323,
+        "keyboard_targets": 19,
+        "keyboard_failed": 0,
+        "font_runs": 27,
+        "screenshot": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/screenshots/F1-1440-default.png"
+      },
+      {
+        "fixture": "F1",
+        "viewport": 1440,
+        "layout": "candidate",
+        "record": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/F1-1440-candidate.json",
+        "C0": 8,
+        "moved": 8,
+        "movable_geometry": false,
+        "fixed_collisions": [],
+        "complete_geometry": false,
+        "order": {
+          "point": false,
+          "marker": true
+        },
+        "hit_certified": 14,
+        "targets": 19,
+        "native_wrong": 41,
+        "native_probes": 323,
+        "keyboard_targets": 19,
+        "keyboard_failed": 0,
+        "font_runs": 27,
+        "screenshot": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/screenshots/F1-1440-candidate.png"
+      },
+      {
+        "fixture": "F1",
+        "viewport": 768,
+        "layout": "default",
+        "record": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/F1-768-default.json",
+        "C0": 8,
+        "moved": 0,
+        "movable_geometry": false,
+        "fixed_collisions": [],
+        "complete_geometry": false,
+        "order": {
+          "point": true,
+          "marker": true
+        },
+        "hit_certified": 13,
+        "targets": 19,
+        "native_wrong": 43,
+        "native_probes": 323,
+        "keyboard_targets": 19,
+        "keyboard_failed": 0,
+        "font_runs": 27,
+        "screenshot": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/screenshots/F1-768-default.png"
+      },
+      {
+        "fixture": "F1",
+        "viewport": 768,
+        "layout": "candidate",
+        "record": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/F1-768-candidate.json",
+        "C0": 8,
+        "moved": 8,
+        "movable_geometry": false,
+        "fixed_collisions": [],
+        "complete_geometry": false,
+        "order": {
+          "point": false,
+          "marker": true
+        },
+        "hit_certified": 14,
+        "targets": 19,
+        "native_wrong": 41,
+        "native_probes": 323,
+        "keyboard_targets": 19,
+        "keyboard_failed": 0,
+        "font_runs": 27,
+        "screenshot": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/screenshots/F1-768-candidate.png"
+      },
+      {
+        "fixture": "F1",
+        "viewport": 360,
+        "layout": "default",
+        "record": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/F1-360-default.json",
+        "C0": 11,
+        "moved": 0,
+        "movable_geometry": false,
+        "fixed_collisions": [],
+        "complete_geometry": false,
+        "order": {
+          "point": true,
+          "marker": true
+        },
+        "hit_certified": 7,
+        "targets": 19,
+        "native_wrong": 91,
+        "native_probes": 323,
+        "keyboard_targets": 19,
+        "keyboard_failed": 0,
+        "font_runs": 27,
+        "screenshot": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/screenshots/F1-360-default.png"
+      },
+      {
+        "fixture": "F1",
+        "viewport": 360,
+        "layout": "candidate",
+        "record": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/F1-360-candidate.json",
+        "C0": 11,
+        "moved": 10,
+        "movable_geometry": false,
+        "fixed_collisions": [],
+        "complete_geometry": false,
+        "order": {
+          "point": false,
+          "marker": true
+        },
+        "hit_certified": 9,
+        "targets": 19,
+        "native_wrong": 81,
+        "native_probes": 323,
+        "keyboard_targets": 19,
+        "keyboard_failed": 0,
+        "font_runs": 27,
+        "screenshot": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/screenshots/F1-360-candidate.png"
+      },
+      {
+        "fixture": "F3",
+        "viewport": 1440,
+        "layout": "default",
+        "record": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/F3-1440-default.json",
+        "C0": 13,
+        "moved": 0,
+        "movable_geometry": false,
+        "fixed_collisions": [],
+        "complete_geometry": false,
+        "order": {
+          "point": true,
+          "marker": true
+        },
+        "hit_certified": 8,
+        "targets": 18,
+        "native_wrong": 114,
+        "native_probes": 306,
+        "keyboard_targets": 18,
+        "keyboard_failed": 0,
+        "font_runs": 29,
+        "screenshot": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/screenshots/F3-1440-default.png"
+      },
+      {
+        "fixture": "F3",
+        "viewport": 1440,
+        "layout": "candidate",
+        "record": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/F3-1440-candidate.json",
+        "C0": 13,
+        "moved": 13,
+        "movable_geometry": false,
+        "fixed_collisions": [],
+        "complete_geometry": false,
+        "order": {
+          "point": false,
+          "marker": true
+        },
+        "hit_certified": 16,
+        "targets": 18,
+        "native_wrong": 21,
+        "native_probes": 306,
+        "keyboard_targets": 18,
+        "keyboard_failed": 0,
+        "font_runs": 29,
+        "screenshot": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/screenshots/F3-1440-candidate.png"
+      },
+      {
+        "fixture": "F3",
+        "viewport": 768,
+        "layout": "default",
+        "record": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/F3-768-default.json",
+        "C0": 13,
+        "moved": 0,
+        "movable_geometry": false,
+        "fixed_collisions": [],
+        "complete_geometry": false,
+        "order": {
+          "point": true,
+          "marker": true
+        },
+        "hit_certified": 8,
+        "targets": 18,
+        "native_wrong": 114,
+        "native_probes": 306,
+        "keyboard_targets": 18,
+        "keyboard_failed": 0,
+        "font_runs": 29,
+        "screenshot": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/screenshots/F3-768-default.png"
+      },
+      {
+        "fixture": "F3",
+        "viewport": 768,
+        "layout": "candidate",
+        "record": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/F3-768-candidate.json",
+        "C0": 13,
+        "moved": 13,
+        "movable_geometry": false,
+        "fixed_collisions": [],
+        "complete_geometry": false,
+        "order": {
+          "point": false,
+          "marker": true
+        },
+        "hit_certified": 16,
+        "targets": 18,
+        "native_wrong": 21,
+        "native_probes": 306,
+        "keyboard_targets": 18,
+        "keyboard_failed": 0,
+        "font_runs": 29,
+        "screenshot": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/screenshots/F3-768-candidate.png"
+      },
+      {
+        "fixture": "F3",
+        "viewport": 360,
+        "layout": "default",
+        "record": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/F3-360-default.json",
+        "C0": 15,
+        "moved": 0,
+        "movable_geometry": false,
+        "fixed_collisions": [],
+        "complete_geometry": false,
+        "order": {
+          "point": true,
+          "marker": true
+        },
+        "hit_certified": 6,
+        "targets": 18,
+        "native_wrong": 140,
+        "native_probes": 306,
+        "keyboard_targets": 18,
+        "keyboard_failed": 0,
+        "font_runs": 29,
+        "screenshot": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/screenshots/F3-360-default.png"
+      },
+      {
+        "fixture": "F3",
+        "viewport": 360,
+        "layout": "candidate",
+        "record": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/F3-360-candidate.json",
+        "C0": 15,
+        "moved": 15,
+        "movable_geometry": false,
+        "fixed_collisions": [],
+        "complete_geometry": false,
+        "order": {
+          "point": false,
+          "marker": true
+        },
+        "hit_certified": 5,
+        "targets": 18,
+        "native_wrong": 75,
+        "native_probes": 306,
+        "keyboard_targets": 18,
+        "keyboard_failed": 0,
+        "font_runs": 29,
+        "screenshot": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/screenshots/F3-360-candidate.png"
+      },
+      {
+        "fixture": "F3-max",
+        "viewport": 1440,
+        "layout": "default",
+        "record": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/F3-max-1440-default.json",
+        "C0": 20,
+        "moved": 0,
+        "movable_geometry": false,
+        "fixed_collisions": [
+          {
+            "keys": [
+              "asc",
+              "mc"
+            ],
+            "gap": 0.0
+          },
+          {
+            "keys": [
+              "asc",
+              "vertex"
+            ],
+            "gap": 0.0
+          },
+          {
+            "keys": [
+              "mc",
+              "vertex"
+            ],
+            "gap": 0.0
+          },
+          {
+            "keys": [
+              "dsc",
+              "ic"
+            ],
+            "gap": 0.0
+          }
+        ],
+        "complete_geometry": false,
+        "order": {
+          "point": true,
+          "marker": true
+        },
+        "hit_certified": 2,
+        "targets": 20,
+        "native_wrong": 234,
+        "native_probes": 340,
+        "keyboard_targets": 20,
+        "keyboard_failed": 0,
+        "font_runs": 32,
+        "screenshot": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/screenshots/F3-max-1440-default.png"
+      },
+      {
+        "fixture": "F3-max",
+        "viewport": 1440,
+        "layout": "candidate",
+        "record": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/F3-max-1440-candidate.json",
+        "C0": 20,
+        "moved": 20,
+        "movable_geometry": true,
+        "fixed_collisions": [
+          {
+            "keys": [
+              "asc",
+              "mc"
+            ],
+            "gap": 0.0
+          },
+          {
+            "keys": [
+              "asc",
+              "vertex"
+            ],
+            "gap": 0.0
+          },
+          {
+            "keys": [
+              "mc",
+              "vertex"
+            ],
+            "gap": 0.0
+          },
+          {
+            "keys": [
+              "dsc",
+              "ic"
+            ],
+            "gap": 0.0
+          }
+        ],
+        "complete_geometry": false,
+        "order": {
+          "point": true,
+          "marker": true
+        },
+        "hit_certified": 20,
+        "targets": 20,
+        "native_wrong": 0,
+        "native_probes": 340,
+        "keyboard_targets": 20,
+        "keyboard_failed": 0,
+        "font_runs": 32,
+        "screenshot": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/screenshots/F3-max-1440-candidate.png"
+      },
+      {
+        "fixture": "F3-max",
+        "viewport": 768,
+        "layout": "default",
+        "record": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/F3-max-768-default.json",
+        "C0": 20,
+        "moved": 0,
+        "movable_geometry": false,
+        "fixed_collisions": [
+          {
+            "keys": [
+              "asc",
+              "mc"
+            ],
+            "gap": 0.0
+          },
+          {
+            "keys": [
+              "asc",
+              "vertex"
+            ],
+            "gap": 0.0
+          },
+          {
+            "keys": [
+              "mc",
+              "vertex"
+            ],
+            "gap": 0.0
+          },
+          {
+            "keys": [
+              "dsc",
+              "ic"
+            ],
+            "gap": 0.0
+          }
+        ],
+        "complete_geometry": false,
+        "order": {
+          "point": true,
+          "marker": true
+        },
+        "hit_certified": 2,
+        "targets": 20,
+        "native_wrong": 234,
+        "native_probes": 340,
+        "keyboard_targets": 20,
+        "keyboard_failed": 0,
+        "font_runs": 32,
+        "screenshot": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/screenshots/F3-max-768-default.png"
+      },
+      {
+        "fixture": "F3-max",
+        "viewport": 768,
+        "layout": "candidate",
+        "record": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/F3-max-768-candidate.json",
+        "C0": 20,
+        "moved": 20,
+        "movable_geometry": true,
+        "fixed_collisions": [
+          {
+            "keys": [
+              "asc",
+              "mc"
+            ],
+            "gap": 0.0
+          },
+          {
+            "keys": [
+              "asc",
+              "vertex"
+            ],
+            "gap": 0.0
+          },
+          {
+            "keys": [
+              "mc",
+              "vertex"
+            ],
+            "gap": 0.0
+          },
+          {
+            "keys": [
+              "dsc",
+              "ic"
+            ],
+            "gap": 0.0
+          }
+        ],
+        "complete_geometry": false,
+        "order": {
+          "point": true,
+          "marker": true
+        },
+        "hit_certified": 20,
+        "targets": 20,
+        "native_wrong": 0,
+        "native_probes": 340,
+        "keyboard_targets": 20,
+        "keyboard_failed": 0,
+        "font_runs": 32,
+        "screenshot": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/screenshots/F3-max-768-candidate.png"
+      },
+      {
+        "fixture": "F3-max",
+        "viewport": 360,
+        "layout": "default",
+        "record": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/F3-max-360-default.json",
+        "C0": 20,
+        "moved": 0,
+        "movable_geometry": false,
+        "fixed_collisions": [
+          {
+            "keys": [
+              "asc",
+              "mc"
+            ],
+            "gap": 0.0
+          },
+          {
+            "keys": [
+              "asc",
+              "vertex"
+            ],
+            "gap": 0.0
+          },
+          {
+            "keys": [
+              "mc",
+              "vertex"
+            ],
+            "gap": 0.0
+          },
+          {
+            "keys": [
+              "dsc",
+              "ic"
+            ],
+            "gap": 0.0
+          }
+        ],
+        "complete_geometry": false,
+        "order": {
+          "point": true,
+          "marker": true
+        },
+        "hit_certified": 2,
+        "targets": 20,
+        "native_wrong": 302,
+        "native_probes": 340,
+        "keyboard_targets": 20,
+        "keyboard_failed": 0,
+        "font_runs": 32,
+        "screenshot": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/screenshots/F3-max-360-default.png"
+      },
+      {
+        "fixture": "F3-max",
+        "viewport": 360,
+        "layout": "candidate",
+        "record": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/F3-max-360-candidate.json",
+        "C0": 20,
+        "moved": 20,
+        "movable_geometry": false,
+        "fixed_collisions": [
+          {
+            "keys": [
+              "asc",
+              "mc"
+            ],
+            "gap": 0.0
+          },
+          {
+            "keys": [
+              "asc",
+              "vertex"
+            ],
+            "gap": 0.0
+          },
+          {
+            "keys": [
+              "mc",
+              "vertex"
+            ],
+            "gap": 0.0
+          },
+          {
+            "keys": [
+              "dsc",
+              "ic"
+            ],
+            "gap": 0.0
+          }
+        ],
+        "complete_geometry": false,
+        "order": {
+          "point": true,
+          "marker": true
+        },
+        "hit_certified": 3,
+        "targets": 20,
+        "native_wrong": 68,
+        "native_probes": 340,
+        "keyboard_targets": 20,
+        "keyboard_failed": 0,
+        "font_runs": 32,
+        "screenshot": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run03/screenshots/F3-max-360-candidate.png"
+      }
+    ],
+    "local_witness": {
+      "fixture": "F3-max",
+      "viewport": 1440,
+      "key": "sun",
+      "return_css": 0.25,
+      "start_margin": 41.01395334592195,
+      "end_margin": 41.02540602103596,
+      "nearest_reference_crossing_distance": 72.38229473870865,
+      "arc_displacement": 536.0813704085618,
+      "scope": "one label, fixed measured component boxes; Lipschitz prefix bound; independent fixed-fixed violations remain, so no whole-map feasibility claim"
+    },
+    "return_post_audit_records": {
+      "FULL_PREFIX_UNPROVEN": 44,
+      "CANDIDATE_INADMISSIBLE": 29,
+      "LOCAL_STEP_PASS_ENDPOINT_VIOLATION": 4,
+      "LOCAL_STEP_FAIL_PREFIX_CERTIFIED": 50
+    },
+    "return_post_audit_independently_recomputed": 127
+  },
+  "criterion_numbers_unchanged": [
+    0.5,
+    2,
+    1,
+    16,
+    12,
+    44
+  ],
+  "full_matrix_browser_replay": "NOT_RUN",
+  "not_proven": [
+    "general curved-path verifier",
+    "whole-map feasibility",
+    "production integration/acceptance",
+    "global layout impossibility",
+    "new Owner fallback",
+    "full visual readability/touch"
+  ],
+  "started_utc": "2026-10-18T15:28:08Z",
+  "estimate_hours": [
+    3,
+    5
+  ],
+  "confidence": "MEDIUM",
+  "target_workdays": 1,
+  "fresh_selective_replay": {
+    "fresh_replay_verified_utc": "2026-10-18T15:42:14Z",
+    "environment": {
+      "python": "3.14.0",
+      "node": "v24.19.0",
+      "browser": "155.0.8059.40",
+      "os": "Windows",
+      "browser_mode": "headless; isolated loopback controls",
+      "production_network": "NOT_USED"
+    },
+    "source_codec_records": 8,
+    "orientation_records": 4,
+    "coordinator_controls": 26,
+    "actual_component_records_in_coordinator_controls": 8,
+    "coordinator_models": 17,
+    "indistinguishability_arguments": 1,
+    "browser_followup_records": 6,
+    "screenshots": 3,
+    "screenshots_identical_to_archive": 3,
+    "json_payloads_identical_to_archive": 4,
+    "archived_hit_controls": 25,
+    "archived_focus_control_scope": "retained/detach/same-key clone/reconcile/collapse; recovery callback is model, not HTTP",
+    "experiment_elapsed_hours": 0.6022752205555556,
+    "session_elapsed_reported": 1.9473019444444446,
+    "execution_record": "docs/project_management/change_plans/ui-chart-wheel/tester/evidence/task_t004_replay/execution.json",
+    "copied_sources": "6 unmodified Git blobs; replay has own namespace / actual HEAD"
+  },
+  "historical_evidence": "PINNED_SHA_LF_TEXT_RAW_PNG; originals not rewritten",
+  "publication": {
+    "authorization": "Owner separately requested commit/push to test/ui-chart-wheel then merge into change/ui-chart-wheel",
+    "pre_authorization_snapshot": {
+      "commit": "NOT_CREATED",
+      "push": "NOT_RUN",
+      "pr": "NOT_CREATED"
+    },
+    "source_sha_resolver": "git log --reverse --format=%H -G '^### Публикация и интеграция review TASK-T-004$' -- docs/project_management/change_plans/ui-chart-wheel/tester_artifact.md (first line)",
+    "verification": "Verify local and remote test SHA; normal Git merge preserves current change; verify SourceSHA ancestry, merge parents/tree, remote refs and clean worktree; report actual SHAs to Owner",
+    "change_before_integration": "4057d6ed37b24e082a2a4089eb7104da80d17ee5",
+    "change_delta_from_review_head": [
+      "docs/project_management/change_plans/ui-chart-wheel/analyst_artifact.md"
+    ]
+  },
+  "document_audit": {
+    "documents": 2,
+    "local_links": 55,
+    "tables": 4,
+    "anchors": "VALID",
+    "changed_paths": 19,
+    "scope": "pinned HEAD to checkout plus worktree",
+    "index": "EMPTY",
+    "output_sha256_lf_or_raw": {
+      "docs/project_management/change_plans/ui-chart-wheel/tester_artifact.md": "1d7ebaeab0e234b4ae9d3d44bfd40d60dda9ae0a1c7eab8e2371034e9a0ffac8",
+      "docs/project_management/change_plans/ui-chart-wheel/tester/evidence/task_t004_replay/run_followup.cjs": "66e49b46ab65a0d79ef80fca1eac7634a6320ce5c0a407ea3212e1018581e0af",
+      "docs/project_management/change_plans/ui-chart-wheel/tester/task_t004_review.md": "a8d8c43ae22137f922cc22086654e9a3beab01e95ac72f92be22779fc3b5b5b8",
+      "docs/project_management/change_plans/ui-chart-wheel/tester/evidence/task_t004_checks.py": "de84800da0541e8253ecdd2e19189edb79bd76a7f01832fdf3bd3a09307903c2",
+      "docs/project_management/change_plans/ui-chart-wheel/tester/evidence/task_t004_replay/followup02/B-alternate.png": "cf366dee5ca9f2b3c9cfb9997d72e65d374f0f592a5645ab36e122e725e37e90",
+      "docs/project_management/change_plans/ui-chart-wheel/tester/evidence/task_t004_replay/orientation_audit.py": "d865674711e4cd9c5f9f710e8a2bdc38a982b0712c279695fd034ea86c5801aa",
+      "docs/project_management/change_plans/ui-chart-wheel/tester/evidence/task_t004_replay/source_controls.mjs": "85e39582fa3f1a6c73f40db4950b15db38bdd768a4d0e4ba8fcb6af15733af41",
+      "docs/project_management/change_plans/ui-chart-wheel/tester/evidence/task_t004_replay/execution.json": "052698b6ca6df4638774d14af8ef4310f828327f4dee20fb84911819c54b8d41",
+      "docs/project_management/change_plans/ui-chart-wheel/tester/evidence/task_t004_replay/source_audit.py": "2224121f9366b71d981c0b3ac02f8de43f6d2f8cd8b40429110a6d33bdd0bbf3",
+      "docs/project_management/change_plans/ui-chart-wheel/tester/evidence/task_t004_replay/source_audit.json": "95b1095e7197b2d23ca350de510fe9486015c03373f3b23f4ef25728cb3b81aa",
+      "docs/project_management/change_plans/ui-chart-wheel/tester/evidence/task_t004_replay/followup02/controls.json": "1d0d1c2bb4066c3fb32d41d61a91c19eefe666cf7f5d666a25e71e8ca1a7f05b",
+      "docs/project_management/change_plans/ui-chart-wheel/tester/evidence/task_t004_replay/provenance.json": "615eaa1d6930c8532315aa74750e87c3ebd350c3c358dcbfb2e86a2c90ae4e00",
+      "docs/project_management/change_plans/ui-chart-wheel/tester/evidence/task_t004_replay/followup02/clip-positive-negative.png": "15f1750c15fe06b307bf0d29db83a4934bee236a78dc8eb8a997d76e0915ce31",
+      "docs/project_management/change_plans/ui-chart-wheel/tester/evidence/task_t004_replay/lifecycle.html": "3e340940679dbdcf14c2d0fe3b4d8c99336fc230e657998b26de4a5086ea5242",
+      "docs/project_management/change_plans/ui-chart-wheel/tester/evidence/task_t004_replay/fixtures.json": "3515eafe3afed043ab58feba197bba7be5c5cbfb124b59c9dfb8f98678f2018a",
+      "docs/project_management/change_plans/ui-chart-wheel/tester/evidence/task_t004_replay/source_controls.json": "323fcc8d67d8cb81278f67b1dac745744a2ea9c7e0e7dce14c87e280636ac3dc",
+      "docs/project_management/change_plans/ui-chart-wheel/tester/evidence/task_t004_replay/followup02/B-fault-html.png": "72b12f8b74a2117b789538b2dc38e432da8f2dd9b5fc9196be08056a4aefa457",
+      "docs/project_management/change_plans/ui-chart-wheel/tester/evidence/task_t004_replay/orientation_audit.json": "b6dc3498ac32042f168a885a07fe07775bf01fdcbae945181ba0b76319e1f5f0"
+    }
+  },
+  "verdict": "RESEARCH_EVIDENCE_SUFFICIENT_WITH_LIMITS",
+  "blocking_returns": []
+}

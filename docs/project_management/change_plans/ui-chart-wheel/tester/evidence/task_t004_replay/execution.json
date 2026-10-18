@@ -1,0 +1,48 @@
+{
+  "task_id": "TASK-T-004",
+  "author": "Codex / Tester",
+  "verified_utc": "2026-10-18T15:42:14Z",
+  "actual_checkout_head": "f6c555c39e3371c8ed925b980cd0ce480e521dbf",
+  "reviewed_package_sha": "d24a24e04be32d0522674735388e9d2ea3e65c93",
+  "source_input_sha": "8fb25770169166a3a4e94110eee684bd8b116474",
+  "environment": {
+    "python": "3.14.0",
+    "node": "v24.19.0",
+    "browser": "155.0.8059.40",
+    "os": "Windows",
+    "browser_mode": "headless; isolated loopback controls",
+    "production_network": "NOT_USED"
+  },
+  "commands": [
+    {
+      "command": "python -B -X utf8 docs/project_management/change_plans/ui-chart-wheel/tester/evidence/task_t004_replay/source_audit.py",
+      "exit_code": 0,
+      "output": "D003_SOURCE_AUDIT_OK records=8 golden=UNCHANGED calculation=NOT_RUN",
+      "wall_seconds": 1.1679965
+    },
+    {
+      "command": "python -B -X utf8 docs/project_management/change_plans/ui-chart-wheel/tester/evidence/task_t004_replay/orientation_audit.py",
+      "exit_code": 0,
+      "output": "D003_ORIENTATION_AUDIT_OK [{\"kind\": \"natal\", \"configs\": \"saved\", \"accepted\": false, \"errors\": [{\"loc\": [\"chart\"], \"type\": \"value_error\", \"msg\": \"Value error, configurations[0].aspects[0] must exactly materialize an aspect from NatalChart.aspects\"}]}, {\"kind\": \"natal\", \"configs\": \"empty\", \"accepted\": true, \"first\": {\"from\": \"pars_fortune\", \"to\": \"mean_apog\", \"type\": \"quincunx\", \"orb\": 0.4200378038607937, \"category\": \"exact\"}}, {\"kind\": \"cosmogram\", \"configs\": \"saved\", \"accepted\": false, \"errors\": [{\"loc\": [\"chart\"], \"type\": \"value_error\", \"msg\": \"Value error, configurations[0].aspects[0] must exactly materialize an aspect from NatalChart.aspects\"}]}, {\"kind\": \"cosmogram\", \"configs\": \"empty\", \"accepted\": true, \"first\": {\"from\": \"chiron\", \"to\": \"uranus\", \"type\": \"opposition\", \"orb\": 0.45438143185427293, \"category\": \"exact\"}}]",
+      "wall_seconds": 0.535318
+    },
+    {
+      "command": "& 'C:/Users/KateUser/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node.exe' docs/project_management/change_plans/ui-chart-wheel/tester/evidence/task_t004_replay/source_controls.mjs",
+      "exit_code": 0,
+      "output": "D003_SOURCE_CONTROLS_OK records=26 actual_coordinator=YES models=EXPLICIT own_recovery_producer=UNPROVEN",
+      "wall_seconds": 0.2014867
+    },
+    {
+      "command": "& 'C:/Users/KateUser/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node.exe' docs/project_management/change_plans/ui-chart-wheel/tester/evidence/task_t004_replay/run_followup.cjs",
+      "exit_code": 0,
+      "output": "D003_FOLLOWUP_OK records=6 screenshots=3 port=ISOLATED html_B=ACTUAL_FIXTURE",
+      "wall_seconds": 2.8949258
+    }
+  ],
+  "limits": [
+    "Not a full 24-cell browser replay",
+    "Not a new layout / placement tuning",
+    "No production mounted UI / API / calculation",
+    "Existing source scripts replayed unchanged; independent expected and archived numeric recalculation are separate"
+  ]
+}
