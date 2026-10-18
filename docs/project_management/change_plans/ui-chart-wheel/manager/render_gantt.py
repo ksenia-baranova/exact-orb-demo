@@ -36,6 +36,9 @@ SOURCES = {
     "research_input": "8fb25770169166a3a4e94110eee684bd8b116474",
     "technical_package": "d24a24e04be32d0522674735388e9d2ea3e65c93",
     "technical_package_integration": "030826fd4e6bfa9613ad84ba7ed32adc15fddcd9",
+    "a005_review": "4057d6ed37b24e082a2a4089eb7104da80d17ee5",
+    "t004_review": "ad5206e30d855e44a9535f89dced1d8fe4699d17",
+    "post_research_integration": "072fc291f8b0db24aaa34ad7a29abc96b472162a",
 }
 
 def published_date(sha):
@@ -57,11 +60,11 @@ def render():
     assert tuple(a+b for a,b in zip(DEV_ESTIMATE, TEST_ESTIMATE)) == (11, 17)
 
     xml = [
-        '<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="1300" viewBox="0 0 1440 1300" role="img" aria-labelledby="title desc">',
+        '<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="1628" viewBox="0 0 1440 1628" role="img" aria-labelledby="title desc">',
         '<title id="title">ui-chart-wheel — факт, согласованная подготовка и условные оценки</title>',
-        '<desc id="desc">Факт до G1: 13–17 октября 2026, фактический труд отдельно не измерен. TASK-D-003 передал исследование d24a24e / merge 030826f. T0 18.10.2026 15:17:04 MSK, текущий сеанс 1,9473 elapsed часа, SVG-spike 0,6023 часа внутри 6; это не полный timesheet подготовки. Измеренный heuristic не прошёл dense / native hit / минимальность. Пакет на review T004 / R001, два новых semantic cases — A005 параллельно. Согласованные 20–28 ч сохранены; Developer предлагает 9–14 чд вместо 8–12, Owner новый бюджет ещё не согласовал. Нового предстартового круга нет.</desc>',
+        '<desc id="desc">Факт до G1: 13–17 октября 2026, фактический труд отдельно не измерен. TASK-D-003 передал исследование d24a24e / merge 030826f. T0 18.10.2026 15:17:04 MSK, текущий сеанс 1,9473 elapsed часа, SVG-spike 0,6023 часа внутри 6; это не полный timesheet подготовки. Измеренный heuristic не прошёл dense / native hit / минимальность. T004 и A005 приняты; исходный R001 r2 ожидается через Git. Созданы A006 / D005, T007 / R002 ждут D005; scope / бюджет нового research ещё не согласованы. Согласованные 20–28 ч сохранены; Developer предлагает 9–14 чд вместо 8–12, Owner новый бюджет ещё не согласовал. Нового предстартового круга нет.</desc>',
         '<style>text{font-family:"Segoe UI","DejaVu Sans",sans-serif;fill:#172536} .muted{fill:#586879} .small{font-size:16px} .label{font-size:18px} .section{font-size:23px;font-weight:650} .grid{stroke:#dce4ec;stroke-width:1} .estimate{stroke:#215dc2;stroke-dasharray:6 4;stroke-width:2}</style>',
-        '<rect width="1440" height="1300" fill="#f1f5f9"/>',
+        '<rect width="1440" height="1628" fill="#f1f5f9"/>',
     ]
     def text(x, y, value, size=18, color=None, weight=None, anchor=None):
         attrs = f'x="{x}" y="{y}" font-size="{size}"'
@@ -110,7 +113,7 @@ def render():
 
     rect(28, 456, 1384, 334, "#ffffff")
     text(50, 492, "РЕЗУЛЬТАТ ИССЛЕДОВАНИЯ · TASK-D-003 · пакет на review", 23, weight="650")
-    text(50, 520, "T004 / R001 проверяют evidence / границу; A005 — два новых случая поведения параллельно.", 17, color="#9a580b")
+    text(50, 520, "T004 / A005 приняты; исходный R001 r2 ожидается через Git. Следующие задания показаны ниже.", 17, color="#9a580b")
     def preparation_x(value):
         return left + value / PACKAGE_DEADLINE_WORKING_DAY * (right-left)
     for value in range(5):
@@ -156,14 +159,37 @@ def render():
     text(50, 1206, "TASK-D-003 входит в подготовку исходного Developer-плана; 8–12 + 2,5–3,5 и вычитание остатка не обоснованы.", 17)
     text(50, 1235, "Developer предлагает 9–14 чд вместо 8–12, подготовка внутри; Owner новый бюджет ещё не согласовал.", 17)
     text(50, 1264, "В исходной сумме нет Manager / Analyst / Technical Reviewer, ожиданий, дополнительных reviews, приёмки и переноса.", 16, color="#586879")
+    rect(28, 1290, 1384, 310, "#ffffff")
+    text(50, 1326, "СЛЕДУЮЩИЕ ШАГИ · reviews зарегистрированы, новый research назначен", 23, weight="650")
+    text(50, 1362, "T004 / A005 · DONE / APPROVED. Исследовательский FAIL выбранного heuristic подтверждён.", 18, color="#16795d")
+    text(50, 1392, "R001 r2 · готовность сообщена Owner; исходный reviewer package ещё не опубликован.", 18, color="#9a580b")
+    text(50, 1422, "A006 · NOT_STARTED · только already_applied versus pending-target recovery.", 18)
+    text(50, 1452, "D005 · NOT_STARTED · собственная оценка / план; исполнение после согласования Owner.", 18)
+    text(50, 1482, "T007 / R002 · BLOCKED до опубликованного D005 / точного SHA; затем параллельно.", 18)
+    text(50, 1518, "Reviewer: 1,25–2,25 чд на v2 — ориентир; собственной оценки / бюджета Developer ещё нет.", 17, color="#586879")
+    text(50, 1548, "Owner: выбор S1/S2 по ambiguity и рамки D005. Общие 9–14 чд / G3 ещё не утверждены.", 17, color="#586879")
+    text(50, 1578, "Новые календарные даты не назначены. Проверки нового результата идут после исследования.", 17, color="#586879")
     metadata = {
         "timezone": "Europe/Moscow",
         "calendar_actual": {"start": start.isoformat(), "g1_registration": G1_DATE.isoformat(), "analyst_v3_publication": analyst_end.isoformat(), "date_difference_days": 4, "inclusive_dates": 5},
         "actual_person_days": None,
         "role_estimates": {"developer_person_days": DEV_ESTIMATE, "tester_person_days": TEST_ESTIMATE, "serial_scenarios": [11, 17], "calendar_start": None, "developer_includes_pre_g3_preparation": True},
-        "technical_preparation": {"task": "TASK-D-003", "person_days": PREPARATION_ESTIMATE, "hours": [20, 28], "includes_estimation_preparation": True, "owner_approved_date": "2026-10-17", "experiment_max_hours": EXPERIMENT_MAX_HOURS, "deadline_end_working_day": PACKAGE_DEADLINE_WORKING_DAY, "t0": "2026-10-18T15:17:04+03:00", "status": "READY_FOR_REVIEW", "resume_status": None, "previous_status": "BLOCKED", "research_authorized_date": "2026-10-18", "start_authorization": "Owner explicit instruction", "correction_task": "TASK-D-004", "correction_status": "DONE", "criteria_artifact_status": "APPROVED", "criteria_approval_scope": "definitions_for_bounded_research", "criteria_sha": SOURCES["criteria_v2"], "correction_estimate_hours": [3, 4], "correction_estimate_inside_preparation": True, "blocking_remarks": [], "resolved_definition_remarks": ["T005-R01", "T005-R02", "T005-R03"], "preflight_tasks": ["TASK-T-006", "TASK-A-004"], "preflight_status": "DONE", "preflight_repeats_required": False, "research_review_tasks": ["TASK-T-004", "TASK-R-001"], "technical_package_sha": SOURCES["technical_package"], "research_package_artifact_status": "IN_REVIEW", "research_session_elapsed_hours": 1.9473019444444446, "experiment_elapsed_hours": 0.6022752205555556, "semantic_review_task": "TASK-A-005", "post_research_review_status": "NOT_STARTED", "not_added_to_developer_total": True},
+        "technical_preparation": {"task": "TASK-D-003", "person_days": PREPARATION_ESTIMATE, "hours": [20, 28], "includes_estimation_preparation": True, "owner_approved_date": "2026-10-17", "experiment_max_hours": EXPERIMENT_MAX_HOURS, "deadline_end_working_day": PACKAGE_DEADLINE_WORKING_DAY, "t0": "2026-10-18T15:17:04+03:00", "status": "READY_FOR_REVIEW", "resume_status": None, "previous_status": "BLOCKED", "research_authorized_date": "2026-10-18", "start_authorization": "Owner explicit instruction", "correction_task": "TASK-D-004", "correction_status": "DONE", "criteria_artifact_status": "APPROVED", "criteria_approval_scope": "definitions_for_bounded_research", "criteria_sha": SOURCES["criteria_v2"], "correction_estimate_hours": [3, 4], "correction_estimate_inside_preparation": True, "blocking_remarks": [], "resolved_definition_remarks": ["T005-R01", "T005-R02", "T005-R03"], "preflight_tasks": ["TASK-T-006", "TASK-A-004"], "preflight_status": "DONE", "preflight_repeats_required": False, "research_review_tasks": ["TASK-T-004", "TASK-R-001"], "technical_package_sha": SOURCES["technical_package"], "research_package_artifact_status": "IN_REVIEW", "research_session_elapsed_hours": 1.9473019444444446, "experiment_elapsed_hours": 0.6022752205555556, "semantic_review_task": "TASK-A-005", "post_research_review_status": "T004_DONE_R001_AWAITING_GIT", "semantic_review_status": "DONE", "semantic_review_artifact_status": "APPROVED", "semantic_followup_task": "TASK-A-006", "not_added_to_developer_total": True},
         "role_estimates_status": "historical_conditional_reestimate_after_research",
         "developer_forecast_proposal": {"person_days": [9, 14], "replaces_historical": [8, 12], "includes_preparation": True, "owner_approved": False, "source_sha": SOURCES["technical_package"]},
+        "registered_reviews": {
+            "TASK-T-004": {"task_status": "DONE", "artifact_status": "APPROVED", "source_sha": SOURCES["t004_review"]},
+            "TASK-A-005": {"task_status": "DONE", "artifact_status": "APPROVED", "source_sha": SOURCES["a005_review"]},
+        },
+        "received_external_review": {"task": "TASK-R-001", "revision": "r2", "source": "Owner message; Manager summary", "task_status": "IN_PROGRESS", "artifact_status": "DRAFT", "source_output_sha": None, "source_package_published": False, "manager_summary_path": "manager/review_inputs/task-r-001-r2-summary.md"},
+        "next_tasks": {
+            "TASK-A-006": {"status": "NOT_STARTED", "subject": "already_applied semantics"},
+            "TASK-D-005": {"status": "NOT_STARTED", "estimate_received": False, "execution_authorized": False, "subject": "drawing feasibility v2 and DRAFT ADR"},
+            "TASK-T-007": {"status": "BLOCKED", "resume_status": "NOT_STARTED", "depends_on": "published D005 / exact SHA"},
+            "TASK-R-002": {"status": "BLOCKED", "resume_status": "NOT_STARTED", "depends_on": "published D005 / exact SHA"},
+        },
+        "reviewer_feasibility_v2_guidance": {"person_days": [1.25, 2.25], "owner_approved": False, "developer_estimate_received": False, "source": "R001 r2 via Owner; arithmetic of reviewer blocks"},
+        "owner_ambiguity_choice": None,
         "manager_registration_date": "2026-10-18",
         "sources": SOURCES,
     }

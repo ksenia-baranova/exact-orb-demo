@@ -1,6 +1,33 @@
 # TASK-R-001 — техническое review полученного исследования и DRAFT ADR
 
+**Текущий шаг после r2:** содержательный результат уже передан Owner текстом. Для завершения существующего R001 используй [поручение Git-передачи](task-r-001-publication-handoff.md); повтор исследования не назначается. Ниже сохранён предмет исходного review и его Git-параметры.
+
 Сначала обнови назначенную ролевую копию из опубликованной `change/ui-chart-wheel` через Git; сохрани несвязанные изменения / index, без reset / force / очистки. Проверь фактический HEAD и [Manager §2.17](../../manager_artifact.md). Получай чужие материалы только из опубликованного Git.
+
+## Git-параметры для внешнего reviewer
+
+- Репозиторий (актуальный HTTPS URL): `https://github.com/ksenia-baranova/exact-orb-demo.git`.
+- Интеграционная ветка: `change/ui-chart-wheel`; опубликованная постановка / **AssignmentSHA: f6c555c39e3371c8ed925b980cd0ce480e521dbf**.
+- Ветка источника исследования: `dev/ui-chart-wheel`; закреплённый **TechnicalPackageSHA: d24a24e04be32d0522674735388e9d2ea3e65c93**.
+- **ReviewInputSHA: 030826fd4e6bfa9613ad84ba7ed32adc15fddcd9** — интеграция пакета до Manager-регистрации; AssignmentSHA дополнительно содержит задания / промты.
+- **DeveloperInputSHA: 8fb25770169166a3a4e94110eee684bd8b116474** — исходный commit для сравнения изменений исследования.
+- Область diff: `8fb25770169166a3a4e94110eee684bd8b116474..d24a24e04be32d0522674735388e9d2ea3e65c93`, 165 Developer paths, включая manifest. Требования / текущий код читаются как контекст.
+- Корень change: `docs/project_management/change_plans/ui-chart-wheel/`; постановка Manager — `manager_artifact.md`, §2.17.
+- Главный отчёт: `developer/task_d003_research_report.md`; доказательства: `developer/evidence/task_d003_research/`; authoritative matrix: `run03/browser_matrix.json` внутри evidence.
+- Выход Reviewer: `docs/project_management/change_plans/ui-chart-wheel/manager/technical_review.md`.
+
+Адрес репозитория и обе ветки проверены через `git ls-remote` 18.10.2026: change на AssignmentSHA, dev на TechnicalPackageSHA. Локально проверена достижимость пакета из AssignmentSHA. Последующее движение веток не меняет закреплённый предмет review.
+
+Для новой отдельной reviewer-копии:
+
+```sh
+git clone --branch change/ui-chart-wheel https://github.com/ksenia-baranova/exact-orb-demo.git exact-orb-ui-chart-wheel-review
+git -C exact-orb-ui-chart-wheel-review checkout --detach f6c555c39e3371c8ed925b980cd0ce480e521dbf
+git -C exact-orb-ui-chart-wheel-review merge-base --is-ancestor d24a24e04be32d0522674735388e9d2ea3e65c93 HEAD
+git -C exact-orb-ui-chart-wheel-review diff --stat 8fb25770169166a3a4e94110eee684bd8b116474 d24a24e04be32d0522674735388e9d2ea3e65c93
+```
+
+После clone / обновления проверь HEAD / рабочее дерево и прочитай полное поручение ниже. Для уже существующей копии сохраняй её изменения и следуй безопасному обновлению из первого абзаца.
 
 Задание относится к **уже выполненному исследованию**, без повторного общего предстартового review критериев. Оно не назначает production implementation, G3 или независимое тестирование production кандидата.
 
