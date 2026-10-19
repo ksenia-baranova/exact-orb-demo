@@ -135,3 +135,35 @@ Tests в этой консультации только прочитаны. На
 Новая order-preserving construction и Q geometry имеют конкретные отрицательные witnesses на720/448/328;14/24 partial geometry,241/438 Q,238/2190 native mismatch и256 compactness failures не дают feasible drawing. Успешные isolated boundary/HTML controls и438 keyboard traces поддерживают проект шва, не acceptance. Forecast9–14 не подтверждён до выбора drawing; HTML-presenter6–10 внутри controller, D005 design1–2 внутри4–6, D00516–24 не прибавляется повторно. Unknown D003 остаток не восстановлен.
 
 Следующий шаг после отдельной публикации D005 — T007/R002 на точном TechnicalPackageV2SHA, Manager/Owner выбирают следующий drawing work item при необходимости. Дополнительный эксперимент/implementation/new dependencies не разрешены молча; G3 остаётся отдельным. Старые критерии/план D003 не изменены, прежний report/run03/manifests неизменны.
+
+
+## TASK-D-006 — первый этап после выбора пассивного SVG
+
+Актуальное поручение/InputSHA/AssignmentSHA 07bb56ba5d49ec76de64df41ad80d175fbe90a2d, Manager §2.22/2.23. Owner принял HTML-only selection / passive SVG; новый AnalystContractSHA A008 ожидается,2736e28 остаётся baseline исследования. [Конкретный CH-01…05 план/оценка/зависимости](task_d006_controller_html_plan.md) и [handoff D006](../developer_artifact.md#task-d-006--подготовка-первого-controllerhtml-этапа).
+
+Подготовка 0,5–1,5 ч / STARTED 19.10.2026 13:01:09 MSK, high confidence / ответ в этом проходе. Future implementation 14–22 ч / до 3 рабочих дней от отдельного STARTED — предложение, confidence medium. Первый scope controller/canonical state/retained HTML/editor/recovery, без SVG renderer/geometry/hit/callback API/full writer. A006 блокирует только затронутую cause-policy; A008/применимые решения/G3 нужны для допуска, новый общий review D006 не назначен. Старые D005 планы/evidence/ADR не переписываются; исторические оценки не являются остатком, полная9–14 не подтверждена. Реализация/commit/push/PR текущим documentary проходом не выполнялись; Manager-owned статусы/gates сохранены.
+
+
+## Геометрия v3 — отдельное прямое поручение Owner, 19.10.2026
+
+После D006 Owner прямо поручил переработать геометрию и предложить альтернативы. [Новый proposal / сравнение / exact controls и native evidence](drawing_geometry_v3.md) сохраняет D003/D005/D006, прежние manifests и submitted versions. Это не STARTED controller/HTML implementation и не новый Manager TaskId.
+
+V3-H: real component boxes, joint radial placement, bounded CSP и precision-aware coordinates; geometry/annulus/clip/order12/12 native, local tight108/110, полные изученные predicates10/12. Остались F3/720 Jupiter и F3-max/720 true_node, каждый с допустимым full prefix0,5px и LOCAL_STEP_FAIL. Не принимать drawing целиком; новая техническая основа / два адресных исправления вместо общего исследования. Внешние callout-подписи — NOT RUN / отдельное Owner domain/composition решение.
+
+Исследование остановлено по достаточности в пределах90мин; дальнейший post-audit без новых моделей. D00614–22ч остаётся предложением своего scope, full9–14 не подтверждён и неизвестный остаток не пересчитан. Геометрия не препятствует разрешению независимых CH-02/03 по текущему контракту и ограниченному G3. Production / gates / Manager / чужие артефакты не изменены.
+
+
+## Решение Owner — условная выносная колонка, 19.10.2026
+
+[Прямое подтверждение Owner / точный scope / влияние на DP-O-011/012](owner_decision_drawing_2026-10-19.md) supersedes прежнее ожидание продуктового выбора внешней колонки и подписи категории. Содержание выбора хранится в source evidence для интеграции в единый Manager-реестр, не дублируется этим планом.
+
+Следующая адресная проработка: новая область вынесенных меток / её bounds/clip/order/resize и локальные ☌/angle controls, затем соответствующая ревизия technical proposal и сравнение по актуальному контракту. Старые H certificates не переиспользуются как PASS нового domain; прежние отчёты/FAIL сохраняются. Оценка или implementation STARTED этим документальным обновлением не назначены, независимый D006 controller/HTML scope не расширен. Manager-owned сводка/DP/gates/requirements Analyst и production не менялись.
+
+
+## Полное колесо — колонка, композиция и renderer, прямое поручение Owner
+
+Codex / Developer,19.10.2026. InputSHA07bb56ba5d49ec76de64df41ad80d175fbe90a2d; fetch change exit0, HEAD тот же, index сохранён. [Правила/полная матрица/граница](column_renderer_design_v1.md), [DRAFT ADR](drawing_adr_column_draft.md), [полный план40–64ч](full_wheel_implementation_plan.md), [постановка05](prompts/05-full-wheel-passive-column.md). Это завершённая подготовка по прямому поручению, не STARTED production или новый Manager TaskId.
+
+Финал run07:29/29 измеренных configurations и C0/order/row/clip/no-shared-route checks,28/28 isolated renderer controls,13 native+7 analytic controls. Предыдущие shared-route/validator/fallback контрпримеры и остановки сохранены; целиком применим только новый DRAFT column domain, не старые annular certificates. Окончательный stop71,8126мин wall в90мин, не timesheet.
+
+Прогноз оставшейся реализации всего scope40–64ч /5–8чд, confidence medium, передача≤8 рабочих дней от отдельного STARTED — предложение Owner. Уже включает D00614–22 и поднабор7–10, текущая подготовка повторно не начисляется; unknown D003 остаток и lifetime9–14 не вычисляются. Exact target contract/узкая дельта/technical owner/G3 и затронутый A006 нужны для соответствующей реализации. Manager/DP/gates/чужие материалы/production не менялись, публикация не поручена.

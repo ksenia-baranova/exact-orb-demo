@@ -1,0 +1,43 @@
+@startuml
+' DRAFT Developer,19.10.2026; no product fact recomputation.
+title DRAFT: measured conditional column, local aux and safe revision publish
+autonumber
+hide footbox
+control "ResultController" as Result
+participant "Renderer revision" as Wheel
+participant "Native measurement surface" as Metrics
+participant "Pure layout" as Layout
+participant "Private adapter" as DOM
+Result -> Result : width/font/selection change; revoke old revision
+Result -> Wheel : immutable accepted facts + full-DTO S1 + CSS width
+Wheel -> Metrics : glyph/R/angle/conjunction/sign getBBox and font/CTM
+Metrics --> Wheel : numeric measured bounds
+Wheel -> Layout : ideal references, bounds, immutable source keys
+Layout -> Layout : default full conflict graph + foreign true anchors
+alt no conflicting point
+  Layout -> Layout : no column; keep default point anchors
+else point conflict
+  Layout -> Layout : reserve measured column/gutter; recompute final C0
+  Layout -> Layout : C0 points only, cyclic order, asymmetric row separation
+  Layout -> Layout : isotonic row objective; grow height, keep16/12 em
+end
+Layout -> Layout : freeze nonconflicting labels; local aux bounded candidates
+Layout -> Layout : contact compactness; preserve all anchors
+Layout -> Layout : route owner paths with ports/detours, no shared segments
+alt complete predicates valid
+  Layout --> Wheel : measured composition, source identity and coordinates
+  Wheel -> Metrics : paint zodiac/cusps/aspects/anchors below labels
+  Wheel -> DOM : publish passive own SVG
+  DOM -> DOM : guard, validate, clone, recheck, synchronous install
+else bounded layout failure
+  Layout --> Wheel : concrete counterexample, no glyph hiding/font shrink
+  Wheel --> Result : local svg_unavailable
+  Result -> DOM : keep current HTML facts; visible local SVG warning
+end
+note over Wheel, DOM
+Exact rational verifier belongs to evidence/tests, not a new runtime dependency.
+New column domain is a DRAFT revision; old annular certificates not reused.
+29 saved compositions and independent C0/order/row/route audits.
+No proof for arbitrary DTO, platform or unlimited conjunction count.
+end note
+@enduml

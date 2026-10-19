@@ -1,0 +1,62 @@
+@startuml
+' DRAFT Developer,19.10.2026; InputSHA07bb56b; direct Owner preparation, no G3.
+title DRAFT: passive SVG, revision-local surface and guarded clone/install
+autonumber
+hide footbox
+participant "Session accept owner" as Session
+control "ResultController" as Result
+participant "Retained HTML presenter" as HTML
+participant "Private live DOM adapter" as DOM
+participant "Revision-local surface" as Surface
+participant "Passive renderer" as Wheel
+actor User
+Session -> Result : accepted B, acceptanceSeq/cause/submitted snapshot
+Result -> DOM : revoke old instance/revision; remove imagery A
+Result -> Surface : detach retired surface
+Result -> Result : full-B S1 index; once policy/reconcile
+Result -> HTML : publish B facts/summary, retained keyed controls
+alt instance replacement
+  Result -> Wheel : guarded synchronous dispose retired leaf, once
+  alt dispose throws
+    Wheel --> Result : retired diagnostic
+    Result -> Result : retain HTML B; continue new draw
+  end
+else same instance, new revision
+  Result -> Result : keep instance; old revision already revoked
+end
+Result -> Surface : create private connected measurement surface
+Result -> Wheel : update deep copied/frozen B, surface, captured publish
+Wheel -> Surface : measure native SVG/fonts; draw own root
+Wheel -> DOM : publish(own SVG, captured lease)
+DOM -> DOM : current guard; validate passive SVG; clone
+DOM -> DOM : recheck lease after clone; synchronous install copy
+alt current valid
+  DOM --> Wheel : committed
+else revoked/reentrant invalidation
+  DOM --> Wheel : revoked; no live write
+end
+alt current factory/sync update/async rejection
+  Wheel --> Result : typed local SVG failure
+  Result -> DOM : revoke failed lease; clear only imagery
+  Result -> HTML : local warning; keep HTML B
+else stale failure / callback
+  Wheel --> Result : retired revision diagnostic
+  Result -> Result : no B warning/state/DOM mutation
+else success
+  Wheel --> Result : update completed
+  Result -> Surface : retain current surface until revoke
+end
+Wheel -> DOM : current late font callback publish
+DOM -> DOM : same guards + fresh clone; stale lease always refused
+User -> HTML : native point/aspect action
+HTML -> Result : canonical intent from live control
+Result -> HTML : keyed patch, no planet focus/scroll
+Result -> Result : new presentation revision, same acceptanceSeq
+Result -> Wheel : display updated selection through new lease
+note over Session, Wheel
+SVG has no selection controls, tabindex or Q44.
+Selection/resize/SVG leaf fault does not issue HTTP.
+HTML/controller unexpected fault uses existing safe-read.
+28 isolated controls; actual production path still future.
+end note
+@enduml

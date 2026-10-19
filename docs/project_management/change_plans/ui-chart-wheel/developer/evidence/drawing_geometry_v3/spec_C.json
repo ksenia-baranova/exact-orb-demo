@@ -1,0 +1,23 @@
+{
+  "author": "Codex / Developer",
+  "recorded_utc": "2026-10-19T10:51:00.347595+00:00",
+  "variant": "C",
+  "reason": "A/B beam truncation loses placements leaving enough room before frozen moon in F3; search failure is not infeasibility",
+  "unchanged": "all spec.json geometric thresholds/annuli/C0/order/fonts and Owner passive SVG delta",
+  "construction": "finite-domain CSP, forward checking across all groups, minimum-remaining-values variable choice, closest candidate order; no greedy beam truncation; no external solver",
+  "candidate_angles": "integer degrees +/-179 from reference",
+  "candidate_radial_lanes": "r0 + frame * {-0.06,-0.04,-0.02,0,0.02,0.04,0.06}; same declared annuli",
+  "displacement_caps": [
+    16,
+    32,
+    64,
+    128,
+    256,
+    1440
+  ],
+  "cap_meaning": "first feasible bounded result, not globally optimal; max distance caps are search ordering only",
+  "node_cap_per_distance": 15000,
+  "wall_cap_per_cell_seconds": 15,
+  "parent_deadline": "2026-10-19T12:14:01.335468+00:00",
+  "compression": "same chord-return/axis contact prototype as A/B; all remaining positive prefixes reported, no tolerance accepted as proof"
+}

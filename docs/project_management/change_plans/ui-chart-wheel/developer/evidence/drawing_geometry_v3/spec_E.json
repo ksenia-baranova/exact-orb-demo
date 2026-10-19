@@ -1,0 +1,13 @@
+{
+  "variant": "E",
+  "recorded_utc": "2026-10-19T11:01:04.142283+00:00",
+  "reason": "real SVG transform rounding makes exact contacts fail and flips near-collinear same-kind origins in D",
+  "reference": "physical default reference Af32 = IEEE binary32 rendering of ideal A, compared against same physical default, ideal anchor retained separately; max error <=0.5; recompute C0 and assert unchanged membership",
+  "grid": "moved seed positions quantized to 1/1024 CSS px, representable by SVG binary32 within tested frames; fixed positions remain physical default",
+  "order": "avoid nearly equal polar rays using 0.0001 rad constructive separation when repairing seed; not a new acceptance tolerance",
+  "repair": "up to48 passes; candidate grid offsets up to0.25 CSS px around an invalid group; no moving non-C0; full predicates remain strict",
+  "compression": "only exactly representable axis contacts, at most24 sweeps; no epsilon substitutes for local tightness",
+  "input": "D verified seeds; no new source fact, font/annulus/2px gap altered",
+  "browser": "integer SVG origin and 1:1 scale, record real CTM; explicit limit, not cross-platform/zoom proof",
+  "serialization": "full exact decimal spelling of binary positions; native actual verification uses exact IEEE binary64 rational, no tolerance"
+}

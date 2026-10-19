@@ -1,0 +1,2054 @@
+{
+  "author": "Codex / Developer",
+  "baseline": "07bb56ba5d49ec76de64df41ad80d175fbe90a2d",
+  "stop": {
+    "stopped_utc": "2026-10-19T11:27:48.942725+00:00",
+    "reason": "sufficient comparative evidence:108 models/native records, final H geometry12/12; two exact compactness counterexamples remain; no further placement iterations",
+    "wall_minutes": 43.79400433333333,
+    "wall_limit_minutes": 90,
+    "effort_timesheet": false,
+    "future": "post-audit and documentation only"
+  },
+  "summary": {
+    "A": {
+      "cells": 12,
+      "geometry_pass": 9,
+      "tight_cells": 5,
+      "moved": 89,
+      "tight_pass": 49,
+      "tight_fail": 40,
+      "tight_unproven": 0
+    },
+    "B": {
+      "cells": 12,
+      "geometry_pass": 10,
+      "tight_cells": 5,
+      "moved": 97,
+      "tight_pass": 62,
+      "tight_fail": 32,
+      "tight_unproven": 3
+    },
+    "BASE": {
+      "cells": 12,
+      "geometry_pass": 3,
+      "tight_cells": 3,
+      "moved": 0,
+      "tight_pass": 0,
+      "tight_fail": 0,
+      "tight_unproven": 0
+    },
+    "C": {
+      "cells": 12,
+      "geometry_pass": 9,
+      "tight_cells": 7,
+      "moved": 34,
+      "tight_pass": 32,
+      "tight_fail": 2,
+      "tight_unproven": 0
+    },
+    "D": {
+      "cells": 12,
+      "geometry_pass": 12,
+      "tight_cells": 8,
+      "moved": 112,
+      "tight_pass": 103,
+      "tight_fail": 3,
+      "tight_unproven": 6
+    },
+    "E": {
+      "cells": 12,
+      "geometry_pass": 9,
+      "tight_cells": 7,
+      "moved": 118,
+      "tight_pass": 57,
+      "tight_fail": 17,
+      "tight_unproven": 44
+    },
+    "F": {
+      "cells": 12,
+      "geometry_pass": 12,
+      "tight_cells": 8,
+      "moved": 114,
+      "tight_pass": 102,
+      "tight_fail": 12,
+      "tight_unproven": 0
+    },
+    "G": {
+      "cells": 12,
+      "geometry_pass": 12,
+      "tight_cells": 10,
+      "moved": 114,
+      "tight_pass": 108,
+      "tight_fail": 6,
+      "tight_unproven": 0
+    },
+    "H": {
+      "cells": 12,
+      "geometry_pass": 12,
+      "tight_cells": 10,
+      "moved": 110,
+      "tight_pass": 108,
+      "tight_fail": 2,
+      "tight_unproven": 0
+    }
+  },
+  "actual_summary": {
+    "A": {
+      "cells": 12,
+      "geometry_pass": 9,
+      "anchor_pass": 12,
+      "size_pass": 12
+    },
+    "B": {
+      "cells": 12,
+      "geometry_pass": 10,
+      "anchor_pass": 12,
+      "size_pass": 12
+    },
+    "BASE": {
+      "cells": 12,
+      "geometry_pass": 3,
+      "anchor_pass": 12,
+      "size_pass": 12
+    },
+    "C": {
+      "cells": 12,
+      "geometry_pass": 8,
+      "anchor_pass": 12,
+      "size_pass": 12
+    },
+    "D": {
+      "cells": 12,
+      "geometry_pass": 8,
+      "anchor_pass": 12,
+      "size_pass": 12
+    },
+    "E": {
+      "cells": 12,
+      "geometry_pass": 9,
+      "anchor_pass": 12,
+      "size_pass": 12
+    },
+    "F": {
+      "cells": 12,
+      "geometry_pass": 12,
+      "anchor_pass": 12,
+      "size_pass": 12
+    },
+    "G": {
+      "cells": 12,
+      "geometry_pass": 12,
+      "anchor_pass": 12,
+      "size_pass": 12
+    },
+    "H": {
+      "cells": 12,
+      "geometry_pass": 12,
+      "anchor_pass": 12,
+      "size_pass": 12
+    }
+  },
+  "H_cells": [
+    {
+      "file": "sparse-720-H.json",
+      "fixture": "sparse",
+      "frame": 720,
+      "variant": "H",
+      "found": true,
+      "C0": 0,
+      "moved": 0,
+      "max_displacement": 0.0,
+      "sum_displacement": 0.0,
+      "geometry_pass": true,
+      "errors": [],
+      "local": [],
+      "local_tight_pass": 0,
+      "local_tight_fail": 0,
+      "local_tight_unproven": 0,
+      "full_declared_visual_pass": true,
+      "actual": {
+        "file": "sparse-720-H.json",
+        "fixture": "sparse",
+        "frame": 720,
+        "variant": "H",
+        "geometry_pass": true,
+        "errors": [],
+        "component_drift": 0,
+        "SVG_translation_drift": 0,
+        "anchor_max_error": 4.315837287515549e-05,
+        "anchor_pass": true,
+        "font_size_pass": true,
+        "page_overflow": false,
+        "svg_no_controls": true,
+        "DPR": 1,
+        "zoom": 1,
+        "screenshot": "screenshots/sparse-720-H.png"
+      }
+    },
+    {
+      "file": "sparse-448-H.json",
+      "fixture": "sparse",
+      "frame": 448,
+      "variant": "H",
+      "found": true,
+      "C0": 0,
+      "moved": 0,
+      "max_displacement": 0.0,
+      "sum_displacement": 0.0,
+      "geometry_pass": true,
+      "errors": [],
+      "local": [],
+      "local_tight_pass": 0,
+      "local_tight_fail": 0,
+      "local_tight_unproven": 0,
+      "full_declared_visual_pass": true,
+      "actual": {
+        "file": "sparse-448-H.json",
+        "fixture": "sparse",
+        "frame": 448,
+        "variant": "H",
+        "geometry_pass": true,
+        "errors": [],
+        "component_drift": 0,
+        "SVG_translation_drift": 0,
+        "anchor_max_error": 1.5377536293599222e-05,
+        "anchor_pass": true,
+        "font_size_pass": true,
+        "page_overflow": false,
+        "svg_no_controls": true,
+        "DPR": 1,
+        "zoom": 1,
+        "screenshot": "screenshots/sparse-448-H.png"
+      }
+    },
+    {
+      "file": "sparse-328-H.json",
+      "fixture": "sparse",
+      "frame": 328,
+      "variant": "H",
+      "found": true,
+      "C0": 0,
+      "moved": 0,
+      "max_displacement": 0.0,
+      "sum_displacement": 0.0,
+      "geometry_pass": true,
+      "errors": [],
+      "local": [],
+      "local_tight_pass": 0,
+      "local_tight_fail": 0,
+      "local_tight_unproven": 0,
+      "full_declared_visual_pass": true,
+      "actual": {
+        "file": "sparse-328-H.json",
+        "fixture": "sparse",
+        "frame": 328,
+        "variant": "H",
+        "geometry_pass": true,
+        "errors": [],
+        "component_drift": 0,
+        "SVG_translation_drift": 0,
+        "anchor_max_error": 1.5377536293599222e-05,
+        "anchor_pass": true,
+        "font_size_pass": true,
+        "page_overflow": false,
+        "svg_no_controls": true,
+        "DPR": 1,
+        "zoom": 1,
+        "screenshot": "screenshots/sparse-328-H.png"
+      }
+    },
+    {
+      "file": "F1-720-H.json",
+      "fixture": "F1",
+      "frame": 720,
+      "variant": "H",
+      "found": true,
+      "C0": 4,
+      "moved": 3,
+      "max_displacement": 8.156813447398843,
+      "sum_displacement": 15.755196231536841,
+      "geometry_pass": true,
+      "errors": [],
+      "local": [
+        {
+          "key": "mars",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "mercury",
+            "axis": 0,
+            "signed_velocity": "-93889/32768"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "true_node",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "mean_apog",
+            "axis": 0,
+            "signed_velocity": "236199/32768"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "mean_apog",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "true_node",
+            "axis": 0,
+            "signed_velocity": "-140277/32768"
+          },
+          "initial_geometry": "entire cell independently valid"
+        }
+      ],
+      "local_tight_pass": 3,
+      "local_tight_fail": 0,
+      "local_tight_unproven": 0,
+      "full_declared_visual_pass": true,
+      "actual": {
+        "file": "F1-720-H.json",
+        "fixture": "F1",
+        "frame": 720,
+        "variant": "H",
+        "geometry_pass": true,
+        "errors": [],
+        "component_drift": 0,
+        "SVG_translation_drift": 0,
+        "anchor_max_error": 4.315837287515549e-05,
+        "anchor_pass": true,
+        "font_size_pass": true,
+        "page_overflow": false,
+        "svg_no_controls": true,
+        "DPR": 1,
+        "zoom": 1,
+        "screenshot": "screenshots/F1-720-H.png"
+      }
+    },
+    {
+      "file": "F1-448-H.json",
+      "fixture": "F1",
+      "frame": 448,
+      "variant": "H",
+      "found": true,
+      "C0": 8,
+      "moved": 6,
+      "max_displacement": 8.294839364263709,
+      "sum_displacement": 26.15272831942538,
+      "geometry_pass": true,
+      "errors": [],
+      "local": [
+        {
+          "key": "mercury",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "mars",
+            "axis": 0,
+            "signed_velocity": "8815/4096"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "mars",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "mercury",
+            "axis": 0,
+            "signed_velocity": "-570551/131072"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "uranus",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "pars_fortune",
+            "axis": 1,
+            "signed_velocity": "87013/32768"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "true_node",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "mean_apog",
+            "axis": 0,
+            "signed_velocity": "170299/32768"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "south_node",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "selena",
+            "axis": 0,
+            "signed_velocity": "90279/32768"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "mean_apog",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "true_node",
+            "axis": 0,
+            "signed_velocity": "-486897/65536"
+          },
+          "initial_geometry": "entire cell independently valid"
+        }
+      ],
+      "local_tight_pass": 6,
+      "local_tight_fail": 0,
+      "local_tight_unproven": 0,
+      "full_declared_visual_pass": true,
+      "actual": {
+        "file": "F1-448-H.json",
+        "fixture": "F1",
+        "frame": 448,
+        "variant": "H",
+        "geometry_pass": true,
+        "errors": [],
+        "component_drift": 0,
+        "SVG_translation_drift": 0,
+        "anchor_max_error": 2.1579186437577746e-05,
+        "anchor_pass": true,
+        "font_size_pass": true,
+        "page_overflow": false,
+        "svg_no_controls": true,
+        "DPR": 1,
+        "zoom": 1,
+        "screenshot": "screenshots/F1-448-H.png"
+      }
+    },
+    {
+      "file": "F1-328-H.json",
+      "fixture": "F1",
+      "frame": 328,
+      "variant": "H",
+      "found": true,
+      "C0": 9,
+      "moved": 8,
+      "max_displacement": 8.279437401624778,
+      "sum_displacement": 40.20233321627516,
+      "geometry_pass": true,
+      "errors": [],
+      "local": [
+        {
+          "key": "mercury",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "mars",
+            "axis": 0,
+            "signed_velocity": "204641/65536"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "mars",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "mercury",
+            "axis": 0,
+            "signed_velocity": "-653823/131072"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "saturn",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "selena",
+            "axis": 1,
+            "signed_velocity": "70659/16384"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "uranus",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "pars_fortune",
+            "axis": 1,
+            "signed_velocity": "190975/32768"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "true_node",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "mean_apog",
+            "axis": 0,
+            "signed_velocity": "743677/131072"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "south_node",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "selena",
+            "axis": 0,
+            "signed_velocity": "127521/32768"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "mean_apog",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "true_node",
+            "axis": 0,
+            "signed_velocity": "-977087/131072"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "selena",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "south_node",
+            "axis": 0,
+            "signed_velocity": "-131689/65536"
+          },
+          "initial_geometry": "entire cell independently valid"
+        }
+      ],
+      "local_tight_pass": 8,
+      "local_tight_fail": 0,
+      "local_tight_unproven": 0,
+      "full_declared_visual_pass": true,
+      "actual": {
+        "file": "F1-328-H.json",
+        "fixture": "F1",
+        "frame": 328,
+        "variant": "H",
+        "geometry_pass": true,
+        "errors": [],
+        "component_drift": 0,
+        "SVG_translation_drift": 0,
+        "anchor_max_error": 1.7059844799040144e-05,
+        "anchor_pass": true,
+        "font_size_pass": true,
+        "page_overflow": false,
+        "svg_no_controls": true,
+        "DPR": 1,
+        "zoom": 1,
+        "screenshot": "screenshots/F1-328-H.png"
+      }
+    },
+    {
+      "file": "F3-720-H.json",
+      "fixture": "F3",
+      "frame": 720,
+      "variant": "H",
+      "found": true,
+      "C0": 9,
+      "moved": 6,
+      "max_displacement": 31.63913010252095,
+      "sum_displacement": 137.8681931240951,
+      "geometry_pass": true,
+      "errors": [],
+      "local": [
+        {
+          "key": "mercury",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "mars",
+            "axis": 0,
+            "signed_velocity": "-87653/4096"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "venus",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "jupiter",
+            "axis": 0,
+            "signed_velocity": "-479123/16384"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "mars",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "mercury",
+            "axis": 0,
+            "signed_velocity": "126419/32768"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "jupiter",
+          "displacement_interval": [
+            "28800083283198747227537316272741/1000000000000000000000000000000",
+            "14400041641599373613768658136371/500000000000000000000000000000"
+          ],
+          "step": "LOCAL_STEP_FAIL",
+          "step_parameter_interval": [
+            "500000000000000000000000000000/14400041641599373613768658136371",
+            "1000000000000000000000000000000/28800083283198747227537316272741"
+          ],
+          "step_detail": {
+            "predicate": "whole_prefix_gap_annulus_clip_order",
+            "u": "1000000000000000000000000000000/28800083283198747227537316272741"
+          },
+          "tight": "LOCAL_TIGHT_FAIL",
+          "positive_prefix_parameter": "250000000000000000000000000000/14400041641599373613768658136371",
+          "witness_distance_squared": "51840299819948995718732476234436035156250000000000000000000000/207361199279795982874929904937753813827929901287455338833049641",
+          "prefix_detail": {
+            "predicate": "whole_prefix_gap_annulus_clip_order",
+            "u": "250000000000000000000000000000/14400041641599373613768658136371"
+          }
+        },
+        {
+          "key": "true_node",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "mean_apog",
+            "axis": 0,
+            "signed_velocity": "94119/8192"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "[\"venus\",\"mars\",\"conjunction\"]",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "[\"mercury\",\"venus\",\"conjunction\"]",
+            "axis": 1,
+            "signed_velocity": "-444319/32768"
+          },
+          "initial_geometry": "entire cell independently valid"
+        }
+      ],
+      "local_tight_pass": 5,
+      "local_tight_fail": 1,
+      "local_tight_unproven": 0,
+      "full_declared_visual_pass": false,
+      "actual": {
+        "file": "F3-720-H.json",
+        "fixture": "F3",
+        "frame": 720,
+        "variant": "H",
+        "geometry_pass": true,
+        "errors": [],
+        "component_drift": 0,
+        "SVG_translation_drift": 0,
+        "anchor_max_error": 4.315837287515549e-05,
+        "anchor_pass": true,
+        "font_size_pass": true,
+        "page_overflow": false,
+        "svg_no_controls": true,
+        "DPR": 1,
+        "zoom": 1,
+        "screenshot": "screenshots/F3-720-H.png"
+      }
+    },
+    {
+      "file": "F3-448-H.json",
+      "fixture": "F3",
+      "frame": 448,
+      "variant": "H",
+      "found": true,
+      "C0": 13,
+      "moved": 9,
+      "max_displacement": 24.977907285639706,
+      "sum_displacement": 127.46473979341306,
+      "geometry_pass": true,
+      "errors": [],
+      "local": [
+        {
+          "key": "mercury",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "jupiter",
+            "axis": 1,
+            "signed_velocity": "-334231/262144"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "venus",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "jupiter",
+            "axis": 0,
+            "signed_velocity": "-104399/8192"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "mars",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "mercury",
+            "axis": 1,
+            "signed_velocity": "-2347463/131072"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "jupiter",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "mercury",
+            "axis": 1,
+            "signed_velocity": "4528469/262144"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "saturn",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "moon",
+            "axis": 1,
+            "signed_velocity": "-1945749/131072"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "uranus",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "pars_fortune",
+            "axis": 1,
+            "signed_velocity": "87013/32768"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "true_node",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "mean_apog",
+            "axis": 1,
+            "signed_velocity": "-937739/65536"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "selena",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "south_node",
+            "axis": 0,
+            "signed_velocity": "-90279/32768"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "[\"venus\",\"mars\",\"conjunction\"]",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "[\"mercury\",\"venus\",\"conjunction\"]",
+            "axis": 1,
+            "signed_velocity": "-221791/16384"
+          },
+          "initial_geometry": "entire cell independently valid"
+        }
+      ],
+      "local_tight_pass": 9,
+      "local_tight_fail": 0,
+      "local_tight_unproven": 0,
+      "full_declared_visual_pass": true,
+      "actual": {
+        "file": "F3-448-H.json",
+        "fixture": "F3",
+        "frame": 448,
+        "variant": "H",
+        "geometry_pass": true,
+        "errors": [],
+        "component_drift": 0,
+        "SVG_translation_drift": 0,
+        "anchor_max_error": 2.1579186437577746e-05,
+        "anchor_pass": true,
+        "font_size_pass": true,
+        "page_overflow": false,
+        "svg_no_controls": true,
+        "DPR": 1,
+        "zoom": 1,
+        "screenshot": "screenshots/F3-448-H.png"
+      }
+    },
+    {
+      "file": "F3-328-H.json",
+      "fixture": "F3",
+      "frame": 328,
+      "variant": "H",
+      "found": true,
+      "C0": 13,
+      "moved": 8,
+      "max_displacement": 28.14971094604044,
+      "sum_displacement": 125.30400698935192,
+      "geometry_pass": true,
+      "errors": [],
+      "local": [
+        {
+          "key": "mercury",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "venus",
+            "axis": 1,
+            "signed_velocity": "-386355/32768"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "venus",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "mercury",
+            "axis": 1,
+            "signed_velocity": "479673/131072"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "mars",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "saturn",
+            "axis": 1,
+            "signed_velocity": "-3514019/262144"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "jupiter",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "saturn",
+            "axis": 1,
+            "signed_velocity": "2037789/131072"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "mean_apog",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "true_node",
+            "axis": 1,
+            "signed_velocity": "3834601/262144"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "selena",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "south_node",
+            "axis": 0,
+            "signed_velocity": "-386731/65536"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "pars_fortune",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "uranus",
+            "axis": 1,
+            "signed_velocity": "-190975/32768"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "[\"mercury\",\"venus\",\"conjunction\"]",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "[\"venus\",\"mars\",\"conjunction\"]",
+            "axis": 1,
+            "signed_velocity": "-1765917/131072"
+          },
+          "initial_geometry": "entire cell independently valid"
+        }
+      ],
+      "local_tight_pass": 8,
+      "local_tight_fail": 0,
+      "local_tight_unproven": 0,
+      "full_declared_visual_pass": true,
+      "actual": {
+        "file": "F3-328-H.json",
+        "fixture": "F3",
+        "frame": 328,
+        "variant": "H",
+        "geometry_pass": true,
+        "errors": [],
+        "component_drift": 0,
+        "SVG_translation_drift": 0,
+        "anchor_max_error": 1.7059844799040144e-05,
+        "anchor_pass": true,
+        "font_size_pass": true,
+        "page_overflow": false,
+        "svg_no_controls": true,
+        "DPR": 1,
+        "zoom": 1,
+        "screenshot": "screenshots/F3-328-H.png"
+      }
+    },
+    {
+      "file": "F3-max-720-H.json",
+      "fixture": "F3-max",
+      "frame": 720,
+      "variant": "H",
+      "found": true,
+      "C0": 25,
+      "moved": 21,
+      "max_displacement": 55.7715779411177,
+      "sum_displacement": 681.9494237828309,
+      "geometry_pass": true,
+      "errors": [],
+      "local": [
+        {
+          "key": "moon",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "sun",
+            "axis": 0,
+            "signed_velocity": "94093/8192"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "mercury",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "mars",
+            "axis": 0,
+            "signed_velocity": "-34531/131072"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "venus",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "mars",
+            "axis": 0,
+            "signed_velocity": "5109125/131072"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "mars",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "mercury",
+            "axis": 0,
+            "signed_velocity": "3470265/131072"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "jupiter",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "mercury",
+            "axis": 0,
+            "signed_velocity": "-3542087/131072"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "saturn",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "mercury",
+            "axis": 1,
+            "signed_velocity": "-950011/32768"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "uranus",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "pluto",
+            "axis": 0,
+            "signed_velocity": "3343773/131072"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "neptune",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "saturn",
+            "axis": 0,
+            "signed_velocity": "-3699967/131072"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "pluto",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "saturn",
+            "axis": 0,
+            "signed_velocity": "1446449/131072"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "chiron",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "uranus",
+            "axis": 0,
+            "signed_velocity": "4987693/131072"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "true_node",
+          "displacement_interval": [
+            "22596227630358109976129106660127/500000000000000000000000000000",
+            "9038491052143243990451642664051/200000000000000000000000000000"
+          ],
+          "step": "LOCAL_STEP_FAIL",
+          "step_parameter_interval": [
+            "200000000000000000000000000000/9038491052143243990451642664051",
+            "500000000000000000000000000000/22596227630358109976129106660127"
+          ],
+          "step_detail": {
+            "predicate": "whole_prefix_gap_annulus_clip_order",
+            "u": "500000000000000000000000000000/22596227630358109976129106660127"
+          },
+          "tight": "LOCAL_TIGHT_FAIL",
+          "positive_prefix_parameter": "100000000000000000000000000000/9038491052143243990451642664051",
+          "witness_distance_squared": "20423580124918371438980102539062500000000000000000000000000000/81694320499673485755920410156253321438013770702971084447730601",
+          "prefix_detail": {
+            "predicate": "whole_prefix_gap_annulus_clip_order",
+            "u": "100000000000000000000000000000/9038491052143243990451642664051"
+          }
+        },
+        {
+          "key": "south_node",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "mean_apog",
+            "axis": 0,
+            "signed_velocity": "-484015/16384"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "mean_apog",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "saturn",
+            "axis": 1,
+            "signed_velocity": "-666929/16384"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "selena",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "true_node",
+            "axis": 1,
+            "signed_velocity": "-415305/8192"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "pars_fortune",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "true_node",
+            "axis": 1,
+            "signed_velocity": "-1816715/32768"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "[\"mercury\",\"venus\",\"conjunction\"]",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "[\"sun\",\"moon\",\"conjunction\"]",
+            "axis": 1,
+            "signed_velocity": "-203067/16384"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "[\"mars\",\"jupiter\",\"conjunction\"]",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "[\"mercury\",\"venus\",\"conjunction\"]",
+            "axis": 0,
+            "signed_velocity": "380109/32768"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "[\"saturn\",\"uranus\",\"conjunction\"]",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "[\"mars\",\"jupiter\",\"conjunction\"]",
+            "axis": 1,
+            "signed_velocity": "-568239/16384"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "angle:mc",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "angle:asc",
+            "axis": 1,
+            "signed_velocity": "-177959/16384"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "angle:vertex",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "angle:mc",
+            "axis": 1,
+            "signed_velocity": "-711837/32768"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "angle:ic",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "angle:dsc",
+            "axis": 1,
+            "signed_velocity": "177959/16384"
+          },
+          "initial_geometry": "entire cell independently valid"
+        }
+      ],
+      "local_tight_pass": 20,
+      "local_tight_fail": 1,
+      "local_tight_unproven": 0,
+      "full_declared_visual_pass": false,
+      "actual": {
+        "file": "F3-max-720-H.json",
+        "fixture": "F3-max",
+        "frame": 720,
+        "variant": "H",
+        "geometry_pass": true,
+        "errors": [],
+        "component_drift": 0,
+        "SVG_translation_drift": 0,
+        "anchor_max_error": 7.62939453125e-06,
+        "anchor_pass": true,
+        "font_size_pass": true,
+        "page_overflow": false,
+        "svg_no_controls": true,
+        "DPR": 1,
+        "zoom": 1,
+        "screenshot": "screenshots/F3-max-720-H.png"
+      }
+    },
+    {
+      "file": "F3-max-448-H.json",
+      "fixture": "F3-max",
+      "frame": 448,
+      "variant": "H",
+      "found": true,
+      "C0": 25,
+      "moved": 24,
+      "max_displacement": 77.74225373107392,
+      "sum_displacement": 849.0731626007771,
+      "geometry_pass": true,
+      "errors": [],
+      "local": [
+        {
+          "key": "sun",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "moon",
+            "axis": 1,
+            "signed_velocity": "102427/16384"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "moon",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "sun",
+            "axis": 1,
+            "signed_velocity": "-565109/65536"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "mercury",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "moon",
+            "axis": 0,
+            "signed_velocity": "435107/16384"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "venus",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "sun",
+            "axis": 0,
+            "signed_velocity": "-6998601/262144"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "mars",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "venus",
+            "axis": 1,
+            "signed_velocity": "-1282065/65536"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "jupiter",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "moon",
+            "axis": 1,
+            "signed_velocity": "-1482479/65536"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "saturn",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "jupiter",
+            "axis": 1,
+            "signed_velocity": "-1949389/65536"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "uranus",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "jupiter",
+            "axis": 1,
+            "signed_velocity": "-2416299/65536"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "neptune",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "saturn",
+            "axis": 1,
+            "signed_velocity": "-3096203/65536"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "pluto",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "mars",
+            "axis": 1,
+            "signed_velocity": "-576475/16384"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "chiron",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "uranus",
+            "axis": 1,
+            "signed_velocity": "-210917/4096"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "true_node",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "neptune",
+            "axis": 1,
+            "signed_velocity": "-4202039/65536"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "south_node",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "pluto",
+            "axis": 1,
+            "signed_velocity": "-3198753/65536"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "mean_apog",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "chiron",
+            "axis": 1,
+            "signed_velocity": "-2240263/32768"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "selena",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "true_node",
+            "axis": 1,
+            "signed_velocity": "-9951/128"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "pars_fortune",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "south_node",
+            "axis": 1,
+            "signed_velocity": "-2086779/32768"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "[\"sun\",\"moon\",\"conjunction\"]",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "angle:vertex",
+            "axis": 1,
+            "signed_velocity": "-441127/32768"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "[\"mercury\",\"venus\",\"conjunction\"]",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "[\"sun\",\"moon\",\"conjunction\"]",
+            "axis": 1,
+            "signed_velocity": "-1721899/65536"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "[\"mars\",\"jupiter\",\"conjunction\"]",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "[\"saturn\",\"uranus\",\"conjunction\"]",
+            "axis": 0,
+            "signed_velocity": "-111575/16384"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "[\"saturn\",\"uranus\",\"conjunction\"]",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "[\"mars\",\"jupiter\",\"conjunction\"]",
+            "axis": 0,
+            "signed_velocity": "307521/65536"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "angle:asc",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "angle:mc",
+            "axis": 1,
+            "signed_velocity": "715259/65536"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "angle:vertex",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "angle:mc",
+            "axis": 1,
+            "signed_velocity": "-178815/16384"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "angle:dsc",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "angle:ic",
+            "axis": 1,
+            "signed_velocity": "-5275/1024"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "angle:ic",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "angle:dsc",
+            "axis": 1,
+            "signed_velocity": "377659/65536"
+          },
+          "initial_geometry": "entire cell independently valid"
+        }
+      ],
+      "local_tight_pass": 24,
+      "local_tight_fail": 0,
+      "local_tight_unproven": 0,
+      "full_declared_visual_pass": true,
+      "actual": {
+        "file": "F3-max-448-H.json",
+        "fixture": "F3-max",
+        "frame": 448,
+        "variant": "H",
+        "geometry_pass": true,
+        "errors": [],
+        "component_drift": 0,
+        "SVG_translation_drift": 0,
+        "anchor_max_error": 1.7059844799040144e-05,
+        "anchor_pass": true,
+        "font_size_pass": true,
+        "page_overflow": false,
+        "svg_no_controls": true,
+        "DPR": 1,
+        "zoom": 1,
+        "screenshot": "screenshots/F3-max-448-H.png"
+      }
+    },
+    {
+      "file": "F3-max-328-H.json",
+      "fixture": "F3-max",
+      "frame": 328,
+      "variant": "H",
+      "found": true,
+      "C0": 25,
+      "moved": 25,
+      "max_displacement": 125.02838435213685,
+      "sum_displacement": 1158.5767147489428,
+      "geometry_pass": true,
+      "errors": [],
+      "local": [
+        {
+          "key": "sun",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "moon",
+            "axis": 1,
+            "signed_velocity": "299951/65536"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "moon",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "sun",
+            "axis": 1,
+            "signed_velocity": "-342923/32768"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "mercury",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "sun",
+            "axis": 1,
+            "signed_velocity": "-434413/32768"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "venus",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "moon",
+            "axis": 0,
+            "signed_velocity": "3290379/262144"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "mars",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "moon",
+            "axis": 1,
+            "signed_velocity": "-1546079/65536"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "jupiter",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "mars",
+            "axis": 1,
+            "signed_velocity": "-2744865/65536"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "saturn",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "mars",
+            "axis": 1,
+            "signed_velocity": "-2714851/65536"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "uranus",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "jupiter",
+            "axis": 1,
+            "signed_velocity": "-1850323/32768"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "neptune",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "saturn",
+            "axis": 1,
+            "signed_velocity": "-1941813/32768"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "pluto",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "uranus",
+            "axis": 1,
+            "signed_velocity": "-4721967/65536"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "chiron",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "true_node",
+            "axis": 1,
+            "signed_velocity": "-2812923/32768"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "true_node",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "neptune",
+            "axis": 1,
+            "signed_velocity": "-5022399/65536"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "south_node",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "true_node",
+            "axis": 0,
+            "signed_velocity": "-15507139/262144"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "mean_apog",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "chiron",
+            "axis": 1,
+            "signed_velocity": "-845579/8192"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "selena",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "mean_apog",
+            "axis": 1,
+            "signed_velocity": "-7684905/65536"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "pars_fortune",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "mean_apog",
+            "axis": 0,
+            "signed_velocity": "-7944521/131072"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "[\"sun\",\"moon\",\"conjunction\"]",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "angle:vertex",
+            "axis": 1,
+            "signed_velocity": "-224459/16384"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "[\"mercury\",\"venus\",\"conjunction\"]",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "[\"sun\",\"moon\",\"conjunction\"]",
+            "axis": 1,
+            "signed_velocity": "-1749559/65536"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "[\"mars\",\"jupiter\",\"conjunction\"]",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "[\"mercury\",\"venus\",\"conjunction\"]",
+            "axis": 0,
+            "signed_velocity": "273285/32768"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "[\"saturn\",\"uranus\",\"conjunction\"]",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "[\"mars\",\"jupiter\",\"conjunction\"]",
+            "axis": 1,
+            "signed_velocity": "-3633225/65536"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "angle:asc",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "angle:mc",
+            "axis": 1,
+            "signed_velocity": "10555/1024"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "angle:mc",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "angle:asc",
+            "axis": 1,
+            "signed_velocity": "-41249/65536"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "angle:vertex",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "angle:mc",
+            "axis": 1,
+            "signed_velocity": "-379009/32768"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "angle:dsc",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "angle:ic",
+            "axis": 1,
+            "signed_velocity": "-2571/512"
+          },
+          "initial_geometry": "entire cell independently valid"
+        },
+        {
+          "key": "angle:ic",
+          "step": "LOCAL_STEP_PASS",
+          "tight": "LOCAL_TIGHT_PASS",
+          "certificate": {
+            "predicate": "axis_gap2_contact_closing",
+            "other": "angle:dsc",
+            "axis": 1,
+            "signed_velocity": "387681/65536"
+          },
+          "initial_geometry": "entire cell independently valid"
+        }
+      ],
+      "local_tight_pass": 25,
+      "local_tight_fail": 0,
+      "local_tight_unproven": 0,
+      "full_declared_visual_pass": true,
+      "actual": {
+        "file": "F3-max-328-H.json",
+        "fixture": "F3-max",
+        "frame": 328,
+        "variant": "H",
+        "geometry_pass": true,
+        "errors": [],
+        "component_drift": 0,
+        "SVG_translation_drift": 0,
+        "anchor_max_error": 1.7059844799040144e-05,
+        "anchor_pass": true,
+        "font_size_pass": true,
+        "page_overflow": false,
+        "svg_no_controls": true,
+        "DPR": 1,
+        "zoom": 1,
+        "screenshot": "screenshots/F3-max-328-H.png"
+      }
+    }
+  ],
+  "H_residual_counterexamples": [
+    {
+      "fixture": "F3",
+      "frame": 720,
+      "key": "jupiter",
+      "P": [
+        "403.84765625",
+        "46.2490234375"
+      ],
+      "A": [
+        "399.861419677734375",
+        "74.77190399169921875"
+      ],
+      "prefix_parameter": "250000000000000000000000000000/14400041641599373613768658136371",
+      "admissible_prefix_css_px": 0.5,
+      "step": "LOCAL_STEP_FAIL",
+      "tight": "LOCAL_TIGHT_FAIL",
+      "certificate": {
+        "predicate": "whole_prefix_gap_annulus_clip_order",
+        "u": "250000000000000000000000000000/14400041641599373613768658136371"
+      },
+      "source": "F3-720-H.json"
+    },
+    {
+      "fixture": "F3-max",
+      "frame": 720,
+      "key": "true_node",
+      "P": [
+        "76.640625",
+        "411.4951171875"
+      ],
+      "A": [
+        "72.074127197265625",
+        "366.533966064453125"
+      ],
+      "prefix_parameter": "100000000000000000000000000000/9038491052143243990451642664051",
+      "admissible_prefix_css_px": 0.5,
+      "step": "LOCAL_STEP_FAIL",
+      "tight": "LOCAL_TIGHT_FAIL",
+      "certificate": {
+        "predicate": "whole_prefix_gap_annulus_clip_order",
+        "u": "100000000000000000000000000000/9038491052143243990451642664051"
+      },
+      "source": "F3-max-720-H.json"
+    }
+  ],
+  "H_native_model_identity": [
+    {
+      "file": "sparse-720-H.json",
+      "native_and_declared_coordinates_equal": true,
+      "components_equal": true
+    },
+    {
+      "file": "sparse-448-H.json",
+      "native_and_declared_coordinates_equal": true,
+      "components_equal": true
+    },
+    {
+      "file": "sparse-328-H.json",
+      "native_and_declared_coordinates_equal": true,
+      "components_equal": true
+    },
+    {
+      "file": "F1-720-H.json",
+      "native_and_declared_coordinates_equal": true,
+      "components_equal": true
+    },
+    {
+      "file": "F1-448-H.json",
+      "native_and_declared_coordinates_equal": true,
+      "components_equal": true
+    },
+    {
+      "file": "F1-328-H.json",
+      "native_and_declared_coordinates_equal": true,
+      "components_equal": true
+    },
+    {
+      "file": "F3-720-H.json",
+      "native_and_declared_coordinates_equal": true,
+      "components_equal": true
+    },
+    {
+      "file": "F3-448-H.json",
+      "native_and_declared_coordinates_equal": true,
+      "components_equal": true
+    },
+    {
+      "file": "F3-328-H.json",
+      "native_and_declared_coordinates_equal": true,
+      "components_equal": true
+    },
+    {
+      "file": "F3-max-720-H.json",
+      "native_and_declared_coordinates_equal": true,
+      "components_equal": true
+    },
+    {
+      "file": "F3-max-448-H.json",
+      "native_and_declared_coordinates_equal": true,
+      "components_equal": true
+    },
+    {
+      "file": "F3-max-328-H.json",
+      "native_and_declared_coordinates_equal": true,
+      "components_equal": true
+    }
+  ],
+  "physical_reference_max_error_vs_ideal": 3.4600291484934294e-05,
+  "control_count_exact": 10,
+  "browser_control_counts": [
+    8,
+    8,
+    8
+  ],
+  "no_acceptance_epsilon": true,
+  "final_candidate": "H",
+  "production_approval": false
+}

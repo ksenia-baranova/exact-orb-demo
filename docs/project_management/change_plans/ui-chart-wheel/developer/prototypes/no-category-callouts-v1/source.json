@@ -1,0 +1,12 @@
+{
+  "author": "Codex / Developer",
+  "time": "2026-10-19T15:48:27.248249+00:00",
+  "Owner_request": "1. убрать надписи точный - рабочий; 2. покажи альтернативу",
+  "scope": "visual previews only; category words removed from wheel; original DTO facts and research runs unchanged; no production/gates/contract files modified",
+  "inputs": {
+    "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/drawing_geometry_v3/models/F1-328-H.json": "b73da2f1b0032c6c0d1a8a9d4d0418554886f70cb1cc3220a6e6b7b9a08c7823",
+    "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/drawing_geometry_v3/models/F3-max-328-H.json": "2803a783dae8f6bad164518d96bcc9d9ccf35125e3bd016163aebfe6af4c34c5"
+  },
+  "new_layout": "external single column for the all-conflicting F3-max case; 328x440 canvas,200px wheel,16/12px labels,needs domain/composition review before adoption",
+  "limitations": "inside retains H coordinates after text removal, no new compactness claim; callouts intentionally outside former annulus; no full geometry/runtime acceptance; previous research stop unchanged"
+}

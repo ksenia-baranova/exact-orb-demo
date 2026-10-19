@@ -1,0 +1,7877 @@
+{
+  "summary": {
+    "A": {
+      "cells": 12,
+      "geometry_pass": 8,
+      "anchor_pass": 12,
+      "size_pass": 12
+    },
+    "B": {
+      "cells": 12,
+      "geometry_pass": 9,
+      "anchor_pass": 12,
+      "size_pass": 12
+    },
+    "BASE": {
+      "cells": 12,
+      "geometry_pass": 3,
+      "anchor_pass": 12,
+      "size_pass": 12
+    },
+    "C": {
+      "cells": 12,
+      "geometry_pass": 7,
+      "anchor_pass": 12,
+      "size_pass": 12
+    },
+    "D": {
+      "cells": 12,
+      "geometry_pass": 7,
+      "anchor_pass": 12,
+      "size_pass": 12
+    }
+  },
+  "actual_fonts": [
+    "Segoe UI",
+    "Segoe UI Symbol"
+  ],
+  "browser": "155.0.8059.40",
+  "controls": [
+    {
+      "id": "em16-boundary",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "em16-below",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "id": "em12-boundary",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "em12-below",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "id": "passive-no-SVG-tabindex",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "passive-no-SVG-buttons",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "font-texts-present",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "DTO-unchanged",
+      "actual": true,
+      "expected": true
+    }
+  ],
+  "cells": [
+    {
+      "file": "sparse-720-BASE.json",
+      "fixture": "sparse",
+      "frame": 720,
+      "variant": "BASE",
+      "geometry_pass": true,
+      "errors": [],
+      "component_drift": 0,
+      "SVG_translation_drift": 3.4600291484934294e-05,
+      "anchor_max_error": 5.900144268246873e-05,
+      "anchor_pass": true,
+      "font_size_pass": true,
+      "page_overflow": false,
+      "svg_no_controls": true,
+      "DPR": 1,
+      "zoom": 1,
+      "screenshot": "screenshots/sparse-720-BASE.png"
+    },
+    {
+      "file": "sparse-720-A.json",
+      "fixture": "sparse",
+      "frame": 720,
+      "variant": "A",
+      "geometry_pass": true,
+      "errors": [],
+      "component_drift": 0,
+      "SVG_translation_drift": 3.4600291484934294e-05,
+      "anchor_max_error": 5.900144268246873e-05,
+      "anchor_pass": true,
+      "font_size_pass": true,
+      "page_overflow": false,
+      "svg_no_controls": true,
+      "DPR": 1,
+      "zoom": 1,
+      "screenshot": "screenshots/sparse-720-A.png"
+    },
+    {
+      "file": "sparse-720-B.json",
+      "fixture": "sparse",
+      "frame": 720,
+      "variant": "B",
+      "geometry_pass": true,
+      "errors": [],
+      "component_drift": 0,
+      "SVG_translation_drift": 3.4600291484934294e-05,
+      "anchor_max_error": 5.900144268246873e-05,
+      "anchor_pass": true,
+      "font_size_pass": true,
+      "page_overflow": false,
+      "svg_no_controls": true,
+      "DPR": 1,
+      "zoom": 1,
+      "screenshot": "screenshots/sparse-720-B.png"
+    },
+    {
+      "file": "sparse-448-BASE.json",
+      "fixture": "sparse",
+      "frame": 448,
+      "variant": "BASE",
+      "geometry_pass": true,
+      "errors": [],
+      "component_drift": 0,
+      "SVG_translation_drift": 1.2207031204525265e-05,
+      "anchor_max_error": 1.954078438758596e-05,
+      "anchor_pass": true,
+      "font_size_pass": true,
+      "page_overflow": false,
+      "svg_no_controls": true,
+      "DPR": 1,
+      "zoom": 1,
+      "screenshot": "screenshots/sparse-448-BASE.png"
+    },
+    {
+      "file": "sparse-448-A.json",
+      "fixture": "sparse",
+      "frame": 448,
+      "variant": "A",
+      "geometry_pass": true,
+      "errors": [],
+      "component_drift": 0,
+      "SVG_translation_drift": 1.2207031204525265e-05,
+      "anchor_max_error": 1.954078438758596e-05,
+      "anchor_pass": true,
+      "font_size_pass": true,
+      "page_overflow": false,
+      "svg_no_controls": true,
+      "DPR": 1,
+      "zoom": 1,
+      "screenshot": "screenshots/sparse-448-A.png"
+    },
+    {
+      "file": "sparse-448-B.json",
+      "fixture": "sparse",
+      "frame": 448,
+      "variant": "B",
+      "geometry_pass": true,
+      "errors": [],
+      "component_drift": 0,
+      "SVG_translation_drift": 1.2207031204525265e-05,
+      "anchor_max_error": 1.954078438758596e-05,
+      "anchor_pass": true,
+      "font_size_pass": true,
+      "page_overflow": false,
+      "svg_no_controls": true,
+      "DPR": 1,
+      "zoom": 1,
+      "screenshot": "screenshots/sparse-448-B.png"
+    },
+    {
+      "file": "sparse-328-BASE.json",
+      "fixture": "sparse",
+      "frame": 328,
+      "variant": "BASE",
+      "geometry_pass": true,
+      "errors": [],
+      "component_drift": 0,
+      "SVG_translation_drift": 1.3844205092629228e-05,
+      "anchor_max_error": 1.954078438758596e-05,
+      "anchor_pass": true,
+      "font_size_pass": true,
+      "page_overflow": false,
+      "svg_no_controls": true,
+      "DPR": 1,
+      "zoom": 1,
+      "screenshot": "screenshots/sparse-328-BASE.png"
+    },
+    {
+      "file": "sparse-328-A.json",
+      "fixture": "sparse",
+      "frame": 328,
+      "variant": "A",
+      "geometry_pass": true,
+      "errors": [],
+      "component_drift": 0,
+      "SVG_translation_drift": 1.3844205092629228e-05,
+      "anchor_max_error": 1.954078438758596e-05,
+      "anchor_pass": true,
+      "font_size_pass": true,
+      "page_overflow": false,
+      "svg_no_controls": true,
+      "DPR": 1,
+      "zoom": 1,
+      "screenshot": "screenshots/sparse-328-A.png"
+    },
+    {
+      "file": "sparse-328-B.json",
+      "fixture": "sparse",
+      "frame": 328,
+      "variant": "B",
+      "geometry_pass": true,
+      "errors": [],
+      "component_drift": 0,
+      "SVG_translation_drift": 1.3844205092629228e-05,
+      "anchor_max_error": 1.954078438758596e-05,
+      "anchor_pass": true,
+      "font_size_pass": true,
+      "page_overflow": false,
+      "svg_no_controls": true,
+      "DPR": 1,
+      "zoom": 1,
+      "screenshot": "screenshots/sparse-328-B.png"
+    },
+    {
+      "file": "F1-720-BASE.json",
+      "fixture": "F1",
+      "frame": 720,
+      "variant": "BASE",
+      "geometry_pass": false,
+      "errors": [
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "mars",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "true_node",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        }
+      ],
+      "component_drift": 0,
+      "SVG_translation_drift": 2.947934636613439e-05,
+      "anchor_max_error": 7.036112099729453e-05,
+      "anchor_pass": true,
+      "font_size_pass": true,
+      "page_overflow": false,
+      "svg_no_controls": true,
+      "DPR": 1,
+      "zoom": 1,
+      "screenshot": "screenshots/F1-720-BASE.png"
+    },
+    {
+      "file": "F1-720-A.json",
+      "fixture": "F1",
+      "frame": 720,
+      "variant": "A",
+      "geometry_pass": true,
+      "errors": [],
+      "component_drift": 0,
+      "SVG_translation_drift": 2.947934636613439e-05,
+      "anchor_max_error": 7.036112099729453e-05,
+      "anchor_pass": true,
+      "font_size_pass": true,
+      "page_overflow": false,
+      "svg_no_controls": true,
+      "DPR": 1,
+      "zoom": 1,
+      "screenshot": "screenshots/F1-720-A.png"
+    },
+    {
+      "file": "F1-720-B.json",
+      "fixture": "F1",
+      "frame": 720,
+      "variant": "B",
+      "geometry_pass": true,
+      "errors": [],
+      "component_drift": 0,
+      "SVG_translation_drift": 2.947934636613439e-05,
+      "anchor_max_error": 7.036112099729453e-05,
+      "anchor_pass": true,
+      "font_size_pass": true,
+      "page_overflow": false,
+      "svg_no_controls": true,
+      "DPR": 1,
+      "zoom": 1,
+      "screenshot": "screenshots/F1-720-B.png"
+    },
+    {
+      "file": "F1-448-BASE.json",
+      "fixture": "F1",
+      "frame": 448,
+      "variant": "BASE",
+      "geometry_pass": false,
+      "errors": [
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "mars",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "uranus",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "true_node",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "south_node",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        }
+      ],
+      "component_drift": 0,
+      "SVG_translation_drift": 1.649199974137643e-05,
+      "anchor_max_error": 2.165639199240432e-05,
+      "anchor_pass": true,
+      "font_size_pass": true,
+      "page_overflow": false,
+      "svg_no_controls": true,
+      "DPR": 1,
+      "zoom": 1,
+      "screenshot": "screenshots/F1-448-BASE.png"
+    },
+    {
+      "file": "F1-448-A.json",
+      "fixture": "F1",
+      "frame": 448,
+      "variant": "A",
+      "geometry_pass": true,
+      "errors": [],
+      "component_drift": 0,
+      "SVG_translation_drift": 1.649199974137643e-05,
+      "anchor_max_error": 2.165639199240432e-05,
+      "anchor_pass": true,
+      "font_size_pass": true,
+      "page_overflow": false,
+      "svg_no_controls": true,
+      "DPR": 1,
+      "zoom": 1,
+      "screenshot": "screenshots/F1-448-A.png"
+    },
+    {
+      "file": "F1-448-B.json",
+      "fixture": "F1",
+      "frame": 448,
+      "variant": "B",
+      "geometry_pass": true,
+      "errors": [],
+      "component_drift": 0,
+      "SVG_translation_drift": 1.649199974137643e-05,
+      "anchor_max_error": 2.165639199240432e-05,
+      "anchor_pass": true,
+      "font_size_pass": true,
+      "page_overflow": false,
+      "svg_no_controls": true,
+      "DPR": 1,
+      "zoom": 1,
+      "screenshot": "screenshots/F1-448-B.png"
+    },
+    {
+      "file": "F1-328-BASE.json",
+      "fixture": "F1",
+      "frame": 328,
+      "variant": "BASE",
+      "geometry_pass": false,
+      "errors": [
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "mars",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "saturn",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "uranus",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "true_node",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "south_node",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        }
+      ],
+      "component_drift": 0,
+      "SVG_translation_drift": 1.4426887552907448e-05,
+      "anchor_max_error": 2.5094890861825987e-05,
+      "anchor_pass": true,
+      "font_size_pass": true,
+      "page_overflow": false,
+      "svg_no_controls": true,
+      "DPR": 1,
+      "zoom": 1,
+      "screenshot": "screenshots/F1-328-BASE.png"
+    },
+    {
+      "file": "F1-328-A.json",
+      "fixture": "F1",
+      "frame": 328,
+      "variant": "A",
+      "geometry_pass": true,
+      "errors": [],
+      "component_drift": 0,
+      "SVG_translation_drift": 9.44724958403244e-06,
+      "anchor_max_error": 2.5094890861825987e-05,
+      "anchor_pass": true,
+      "font_size_pass": true,
+      "page_overflow": false,
+      "svg_no_controls": true,
+      "DPR": 1,
+      "zoom": 1,
+      "screenshot": "screenshots/F1-328-A.png"
+    },
+    {
+      "file": "F1-328-B.json",
+      "fixture": "F1",
+      "frame": 328,
+      "variant": "B",
+      "geometry_pass": true,
+      "errors": [],
+      "component_drift": 0,
+      "SVG_translation_drift": 9.44724958403244e-06,
+      "anchor_max_error": 2.5094890861825987e-05,
+      "anchor_pass": true,
+      "font_size_pass": true,
+      "page_overflow": false,
+      "svg_no_controls": true,
+      "DPR": 1,
+      "zoom": 1,
+      "screenshot": "screenshots/F1-328-B.png"
+    },
+    {
+      "file": "F3-720-BASE.json",
+      "fixture": "F3",
+      "frame": 720,
+      "variant": "BASE",
+      "geometry_pass": false,
+      "errors": [
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "venus",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "mars",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "jupiter",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "saturn",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "mars",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "jupiter",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "saturn",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "jupiter",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "saturn",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "jupiter",
+          "right": "saturn",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "true_node",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"mercury\",\"venus\",\"conjunction\"]",
+          "right": "[\"venus\",\"mars\",\"conjunction\"]",
+          "gap2": "0",
+          "gap_px": 0.0
+        }
+      ],
+      "component_drift": 0,
+      "SVG_translation_drift": 2.947934636613439e-05,
+      "anchor_max_error": 7.036112099729453e-05,
+      "anchor_pass": true,
+      "font_size_pass": true,
+      "page_overflow": false,
+      "svg_no_controls": true,
+      "DPR": 1,
+      "zoom": 1,
+      "screenshot": "screenshots/F3-720-BASE.png"
+    },
+    {
+      "file": "F3-720-A.json",
+      "fixture": "F3",
+      "frame": 720,
+      "variant": "A",
+      "geometry_pass": false,
+      "errors": [
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "venus",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "mars",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "jupiter",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "saturn",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "mars",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "jupiter",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "saturn",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "jupiter",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "saturn",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "jupiter",
+          "right": "saturn",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "true_node",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"mercury\",\"venus\",\"conjunction\"]",
+          "right": "[\"venus\",\"mars\",\"conjunction\"]",
+          "gap2": "0",
+          "gap_px": 0.0
+        }
+      ],
+      "component_drift": 0,
+      "SVG_translation_drift": 2.947934636613439e-05,
+      "anchor_max_error": 7.036112099729453e-05,
+      "anchor_pass": true,
+      "font_size_pass": true,
+      "page_overflow": false,
+      "svg_no_controls": true,
+      "DPR": 1,
+      "zoom": 1,
+      "screenshot": "screenshots/F3-720-A.png"
+    },
+    {
+      "file": "F3-720-B.json",
+      "fixture": "F3",
+      "frame": 720,
+      "variant": "B",
+      "geometry_pass": false,
+      "errors": [
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "venus",
+          "gap2": "249999999999999000000000000001/62500000000000000000000000000",
+          "gap_px": 1.999999999999996
+        }
+      ],
+      "component_drift": 0,
+      "SVG_translation_drift": 2.947934636613439e-05,
+      "anchor_max_error": 7.036112099729453e-05,
+      "anchor_pass": true,
+      "font_size_pass": true,
+      "page_overflow": false,
+      "svg_no_controls": true,
+      "DPR": 1,
+      "zoom": 1,
+      "screenshot": "screenshots/F3-720-B.png"
+    },
+    {
+      "file": "F3-448-BASE.json",
+      "fixture": "F3",
+      "frame": 448,
+      "variant": "BASE",
+      "geometry_pass": false,
+      "errors": [
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "venus",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "mars",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "jupiter",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "saturn",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "mars",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "jupiter",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "saturn",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "jupiter",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "saturn",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "jupiter",
+          "right": "saturn",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "uranus",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "true_node",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "south_node",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"mercury\",\"venus\",\"conjunction\"]",
+          "right": "[\"venus\",\"mars\",\"conjunction\"]",
+          "gap2": "0",
+          "gap_px": 0.0
+        }
+      ],
+      "component_drift": 0,
+      "SVG_translation_drift": 1.649199974137643e-05,
+      "anchor_max_error": 2.165639199240432e-05,
+      "anchor_pass": true,
+      "font_size_pass": true,
+      "page_overflow": false,
+      "svg_no_controls": true,
+      "DPR": 1,
+      "zoom": 1,
+      "screenshot": "screenshots/F3-448-BASE.png"
+    },
+    {
+      "file": "F3-448-A.json",
+      "fixture": "F3",
+      "frame": 448,
+      "variant": "A",
+      "geometry_pass": false,
+      "errors": [
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "venus",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "mars",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "jupiter",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "saturn",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "mars",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "jupiter",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "saturn",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "jupiter",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "saturn",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "jupiter",
+          "right": "saturn",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "uranus",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "true_node",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "south_node",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"mercury\",\"venus\",\"conjunction\"]",
+          "right": "[\"venus\",\"mars\",\"conjunction\"]",
+          "gap2": "0",
+          "gap_px": 0.0
+        }
+      ],
+      "component_drift": 0,
+      "SVG_translation_drift": 1.649199974137643e-05,
+      "anchor_max_error": 2.165639199240432e-05,
+      "anchor_pass": true,
+      "font_size_pass": true,
+      "page_overflow": false,
+      "svg_no_controls": true,
+      "DPR": 1,
+      "zoom": 1,
+      "screenshot": "screenshots/F3-448-A.png"
+    },
+    {
+      "file": "F3-448-B.json",
+      "fixture": "F3",
+      "frame": 448,
+      "variant": "B",
+      "geometry_pass": false,
+      "errors": [
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "venus",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "mars",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "jupiter",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "saturn",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "mars",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "jupiter",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "saturn",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "jupiter",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "saturn",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "jupiter",
+          "right": "saturn",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "uranus",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "true_node",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "south_node",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"mercury\",\"venus\",\"conjunction\"]",
+          "right": "[\"venus\",\"mars\",\"conjunction\"]",
+          "gap2": "0",
+          "gap_px": 0.0
+        }
+      ],
+      "component_drift": 0,
+      "SVG_translation_drift": 1.649199974137643e-05,
+      "anchor_max_error": 2.165639199240432e-05,
+      "anchor_pass": true,
+      "font_size_pass": true,
+      "page_overflow": false,
+      "svg_no_controls": true,
+      "DPR": 1,
+      "zoom": 1,
+      "screenshot": "screenshots/F3-448-B.png"
+    },
+    {
+      "file": "F3-328-BASE.json",
+      "fixture": "F3",
+      "frame": 328,
+      "variant": "BASE",
+      "geometry_pass": false,
+      "errors": [
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "venus",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "mars",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "jupiter",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "saturn",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "mars",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "jupiter",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "saturn",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "jupiter",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "saturn",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "jupiter",
+          "right": "saturn",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "uranus",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "true_node",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "south_node",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"mercury\",\"venus\",\"conjunction\"]",
+          "right": "[\"venus\",\"mars\",\"conjunction\"]",
+          "gap2": "0",
+          "gap_px": 0.0
+        }
+      ],
+      "component_drift": 0,
+      "SVG_translation_drift": 1.0400521591934954e-05,
+      "anchor_max_error": 2.5094890861825987e-05,
+      "anchor_pass": true,
+      "font_size_pass": true,
+      "page_overflow": false,
+      "svg_no_controls": true,
+      "DPR": 1,
+      "zoom": 1,
+      "screenshot": "screenshots/F3-328-BASE.png"
+    },
+    {
+      "file": "F3-328-A.json",
+      "fixture": "F3",
+      "frame": 328,
+      "variant": "A",
+      "geometry_pass": false,
+      "errors": [
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "venus",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "mars",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "jupiter",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "saturn",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "mars",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "jupiter",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "saturn",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "jupiter",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "saturn",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "jupiter",
+          "right": "saturn",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "uranus",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "true_node",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "south_node",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"mercury\",\"venus\",\"conjunction\"]",
+          "right": "[\"venus\",\"mars\",\"conjunction\"]",
+          "gap2": "0",
+          "gap_px": 0.0
+        }
+      ],
+      "component_drift": 0,
+      "SVG_translation_drift": 1.0400521591934954e-05,
+      "anchor_max_error": 2.5094890861825987e-05,
+      "anchor_pass": true,
+      "font_size_pass": true,
+      "page_overflow": false,
+      "svg_no_controls": true,
+      "DPR": 1,
+      "zoom": 1,
+      "screenshot": "screenshots/F3-328-A.png"
+    },
+    {
+      "file": "F3-328-B.json",
+      "fixture": "F3",
+      "frame": 328,
+      "variant": "B",
+      "geometry_pass": false,
+      "errors": [
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "venus",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "mars",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "jupiter",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "saturn",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "mars",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "jupiter",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "saturn",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "jupiter",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "saturn",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "jupiter",
+          "right": "saturn",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "uranus",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "true_node",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "south_node",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"mercury\",\"venus\",\"conjunction\"]",
+          "right": "[\"venus\",\"mars\",\"conjunction\"]",
+          "gap2": "0",
+          "gap_px": 0.0
+        }
+      ],
+      "component_drift": 0,
+      "SVG_translation_drift": 1.0400521591934954e-05,
+      "anchor_max_error": 2.5094890861825987e-05,
+      "anchor_pass": true,
+      "font_size_pass": true,
+      "page_overflow": false,
+      "svg_no_controls": true,
+      "DPR": 1,
+      "zoom": 1,
+      "screenshot": "screenshots/F3-328-B.png"
+    },
+    {
+      "file": "F3-max-720-BASE.json",
+      "fixture": "F3-max",
+      "frame": 720,
+      "variant": "BASE",
+      "geometry_pass": false,
+      "errors": [
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "moon",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "mercury",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "venus",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "mars",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "jupiter",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "saturn",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "uranus",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "neptune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "pluto",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "chiron",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "true_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "south_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "selena",
+          "gap2": "61812475905751706600189209/25000000000000000000000000",
+          "gap_px": 1.5724182128906
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "mercury",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "venus",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "mars",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "jupiter",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "saturn",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "uranus",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "neptune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "pluto",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "chiron",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "true_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "south_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "pars_fortune",
+          "gap2": "988308731093971286315917969/400000000000000000000000000",
+          "gap_px": 1.57186889648435
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "venus",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "mars",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "jupiter",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "saturn",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "uranus",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "neptune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "pluto",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "chiron",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "true_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "south_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "mars",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "jupiter",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "saturn",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "uranus",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "neptune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "pluto",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "chiron",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "true_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "south_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "pars_fortune",
+          "gap2": "492348388070152907371521/1562500000000000000000000",
+          "gap_px": 0.5613403320312
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "jupiter",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "saturn",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "uranus",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "neptune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "pluto",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "chiron",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "true_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "south_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "jupiter",
+          "right": "saturn",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "jupiter",
+          "right": "uranus",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "jupiter",
+          "right": "neptune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "jupiter",
+          "right": "pluto",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "jupiter",
+          "right": "chiron",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "jupiter",
+          "right": "true_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "jupiter",
+          "right": "south_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "jupiter",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "jupiter",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "jupiter",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "saturn",
+          "right": "uranus",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "saturn",
+          "right": "neptune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "saturn",
+          "right": "pluto",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "saturn",
+          "right": "chiron",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "saturn",
+          "right": "true_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "saturn",
+          "right": "south_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "saturn",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "saturn",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "saturn",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "uranus",
+          "right": "neptune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "uranus",
+          "right": "pluto",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "uranus",
+          "right": "chiron",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "uranus",
+          "right": "true_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "uranus",
+          "right": "south_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "uranus",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "uranus",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "uranus",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "neptune",
+          "right": "pluto",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "neptune",
+          "right": "chiron",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "neptune",
+          "right": "true_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "neptune",
+          "right": "south_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "neptune",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "neptune",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "neptune",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "pluto",
+          "right": "chiron",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "pluto",
+          "right": "true_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "pluto",
+          "right": "south_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "pluto",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "pluto",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "pluto",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "chiron",
+          "right": "true_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "chiron",
+          "right": "south_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "chiron",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "chiron",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "chiron",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "true_node",
+          "right": "south_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "true_node",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "true_node",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "true_node",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "south_node",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "south_node",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "south_node",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mean_apog",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mean_apog",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "selena",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"sun\",\"moon\",\"conjunction\"]",
+          "right": "[\"mercury\",\"venus\",\"conjunction\"]",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"sun\",\"moon\",\"conjunction\"]",
+          "right": "[\"mars\",\"jupiter\",\"conjunction\"]",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"sun\",\"moon\",\"conjunction\"]",
+          "right": "[\"saturn\",\"uranus\",\"conjunction\"]",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"mercury\",\"venus\",\"conjunction\"]",
+          "right": "[\"mars\",\"jupiter\",\"conjunction\"]",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"mercury\",\"venus\",\"conjunction\"]",
+          "right": "[\"saturn\",\"uranus\",\"conjunction\"]",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"mars\",\"jupiter\",\"conjunction\"]",
+          "right": "[\"saturn\",\"uranus\",\"conjunction\"]",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "angle:asc",
+          "right": "angle:mc",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "angle:asc",
+          "right": "angle:vertex",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "angle:mc",
+          "right": "angle:vertex",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "angle:dsc",
+          "right": "angle:ic",
+          "gap2": "0",
+          "gap_px": 0.0
+        }
+      ],
+      "component_drift": 0,
+      "SVG_translation_drift": 1.815768948144438e-05,
+      "anchor_max_error": 1.815768948144438e-05,
+      "anchor_pass": true,
+      "font_size_pass": true,
+      "page_overflow": false,
+      "svg_no_controls": true,
+      "DPR": 1,
+      "zoom": 1,
+      "screenshot": "screenshots/F3-max-720-BASE.png"
+    },
+    {
+      "file": "F3-max-720-A.json",
+      "fixture": "F3-max",
+      "frame": 720,
+      "variant": "A",
+      "geometry_pass": true,
+      "errors": [],
+      "component_drift": 0,
+      "SVG_translation_drift": 2.7654777545017907e-05,
+      "anchor_max_error": 1.815768948144438e-05,
+      "anchor_pass": true,
+      "font_size_pass": true,
+      "page_overflow": false,
+      "svg_no_controls": true,
+      "DPR": 1,
+      "zoom": 1,
+      "screenshot": "screenshots/F3-max-720-A.png"
+    },
+    {
+      "file": "F3-max-720-B.json",
+      "fixture": "F3-max",
+      "frame": 720,
+      "variant": "B",
+      "geometry_pass": true,
+      "errors": [],
+      "component_drift": 0,
+      "SVG_translation_drift": 1.8157689435668565e-05,
+      "anchor_max_error": 1.815768948144438e-05,
+      "anchor_pass": true,
+      "font_size_pass": true,
+      "page_overflow": false,
+      "svg_no_controls": true,
+      "DPR": 1,
+      "zoom": 1,
+      "screenshot": "screenshots/F3-max-720-B.png"
+    },
+    {
+      "file": "F3-max-448-BASE.json",
+      "fixture": "F3-max",
+      "frame": 448,
+      "variant": "BASE",
+      "geometry_pass": false,
+      "errors": [
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "moon",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "mercury",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "venus",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "mars",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "jupiter",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "saturn",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "uranus",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "neptune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "pluto",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "chiron",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "true_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "south_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "mercury",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "venus",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "mars",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "jupiter",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "saturn",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "uranus",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "neptune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "pluto",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "chiron",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "true_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "south_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "venus",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "mars",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "jupiter",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "saturn",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "uranus",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "neptune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "pluto",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "chiron",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "true_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "south_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "mars",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "jupiter",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "saturn",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "uranus",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "neptune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "pluto",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "chiron",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "true_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "south_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "jupiter",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "saturn",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "uranus",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "neptune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "pluto",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "chiron",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "true_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "south_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "jupiter",
+          "right": "saturn",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "jupiter",
+          "right": "uranus",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "jupiter",
+          "right": "neptune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "jupiter",
+          "right": "pluto",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "jupiter",
+          "right": "chiron",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "jupiter",
+          "right": "true_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "jupiter",
+          "right": "south_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "jupiter",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "jupiter",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "jupiter",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "saturn",
+          "right": "uranus",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "saturn",
+          "right": "neptune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "saturn",
+          "right": "pluto",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "saturn",
+          "right": "chiron",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "saturn",
+          "right": "true_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "saturn",
+          "right": "south_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "saturn",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "saturn",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "saturn",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "uranus",
+          "right": "neptune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "uranus",
+          "right": "pluto",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "uranus",
+          "right": "chiron",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "uranus",
+          "right": "true_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "uranus",
+          "right": "south_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "uranus",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "uranus",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "uranus",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "neptune",
+          "right": "pluto",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "neptune",
+          "right": "chiron",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "neptune",
+          "right": "true_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "neptune",
+          "right": "south_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "neptune",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "neptune",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "neptune",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "pluto",
+          "right": "chiron",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "pluto",
+          "right": "true_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "pluto",
+          "right": "south_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "pluto",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "pluto",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "pluto",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "chiron",
+          "right": "true_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "chiron",
+          "right": "south_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "chiron",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "chiron",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "chiron",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "true_node",
+          "right": "south_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "true_node",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "true_node",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "true_node",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "south_node",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "south_node",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "south_node",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mean_apog",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mean_apog",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "selena",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"sun\",\"moon\",\"conjunction\"]",
+          "right": "[\"mercury\",\"venus\",\"conjunction\"]",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"sun\",\"moon\",\"conjunction\"]",
+          "right": "[\"mars\",\"jupiter\",\"conjunction\"]",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"sun\",\"moon\",\"conjunction\"]",
+          "right": "[\"saturn\",\"uranus\",\"conjunction\"]",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"sun\",\"moon\",\"conjunction\"]",
+          "right": "angle:asc",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"sun\",\"moon\",\"conjunction\"]",
+          "right": "angle:mc",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"sun\",\"moon\",\"conjunction\"]",
+          "right": "angle:vertex",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"mercury\",\"venus\",\"conjunction\"]",
+          "right": "[\"mars\",\"jupiter\",\"conjunction\"]",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"mercury\",\"venus\",\"conjunction\"]",
+          "right": "[\"saturn\",\"uranus\",\"conjunction\"]",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"mercury\",\"venus\",\"conjunction\"]",
+          "right": "angle:asc",
+          "gap2": "243235474918029854965209961/2500000000000000000000000000",
+          "gap_px": 0.31192016601562
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"mercury\",\"venus\",\"conjunction\"]",
+          "right": "angle:mc",
+          "gap2": "7974013897183415025472641/156250000000000000000000000",
+          "gap_px": 0.22590637207032
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"mercury\",\"venus\",\"conjunction\"]",
+          "right": "angle:vertex",
+          "gap2": "48935507074928024959564209/2500000000000000000000000000",
+          "gap_px": 0.13990783691406
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"mars\",\"jupiter\",\"conjunction\"]",
+          "right": "[\"saturn\",\"uranus\",\"conjunction\"]",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"mars\",\"jupiter\",\"conjunction\"]",
+          "right": "angle:asc",
+          "gap2": "1",
+          "gap_px": 1.0
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"mars\",\"jupiter\",\"conjunction\"]",
+          "right": "angle:mc",
+          "gap2": "83537078485826452693939209/100000000000000000000000000",
+          "gap_px": 0.9139862060547
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"mars\",\"jupiter\",\"conjunction\"]",
+          "right": "angle:vertex",
+          "gap2": "428477239474889615797996521/625000000000000000000000000",
+          "gap_px": 0.8279876708984399
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"saturn\",\"uranus\",\"conjunction\"]",
+          "right": "angle:asc",
+          "gap2": "7124033814761829854965209961/2500000000000000000000000000",
+          "gap_px": 1.68807983398438
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"saturn\",\"uranus\",\"conjunction\"]",
+          "right": "angle:mc",
+          "gap2": "1604134747904061926054954529/625000000000000000000000000",
+          "gap_px": 1.60206604003908
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"saturn\",\"uranus\",\"conjunction\"]",
+          "right": "angle:vertex",
+          "gap2": "5746151698404048611354827881/2500000000000000000000000000",
+          "gap_px": 1.51606750488282
+        },
+        {
+          "predicate": "gap",
+          "left": "angle:asc",
+          "right": "angle:mc",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "angle:asc",
+          "right": "angle:vertex",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "angle:mc",
+          "right": "angle:vertex",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "angle:dsc",
+          "right": "angle:ic",
+          "gap2": "0",
+          "gap_px": 0.0
+        }
+      ],
+      "component_drift": 0,
+      "SVG_translation_drift": 1.3415818931278738e-05,
+      "anchor_max_error": 2.313554882308235e-05,
+      "anchor_pass": true,
+      "font_size_pass": true,
+      "page_overflow": false,
+      "svg_no_controls": true,
+      "DPR": 1,
+      "zoom": 1,
+      "screenshot": "screenshots/F3-max-448-BASE.png"
+    },
+    {
+      "file": "F3-max-448-A.json",
+      "fixture": "F3-max",
+      "frame": 448,
+      "variant": "A",
+      "geometry_pass": false,
+      "errors": [
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "venus",
+          "gap2": "9999999999999800000000000001/2500000000000000000000000000",
+          "gap_px": 1.99999999999998
+        }
+      ],
+      "component_drift": 0,
+      "SVG_translation_drift": 1.3200913031141681e-05,
+      "anchor_max_error": 2.313554882308235e-05,
+      "anchor_pass": true,
+      "font_size_pass": true,
+      "page_overflow": false,
+      "svg_no_controls": true,
+      "DPR": 1,
+      "zoom": 1,
+      "screenshot": "screenshots/F3-max-448-A.png"
+    },
+    {
+      "file": "F3-max-448-B.json",
+      "fixture": "F3-max",
+      "frame": 448,
+      "variant": "B",
+      "geometry_pass": true,
+      "errors": [],
+      "component_drift": 0,
+      "SVG_translation_drift": 1.2929646249781044e-05,
+      "anchor_max_error": 2.313554882308235e-05,
+      "anchor_pass": true,
+      "font_size_pass": true,
+      "page_overflow": false,
+      "svg_no_controls": true,
+      "DPR": 1,
+      "zoom": 1,
+      "screenshot": "screenshots/F3-max-448-B.png"
+    },
+    {
+      "file": "F3-max-328-BASE.json",
+      "fixture": "F3-max",
+      "frame": 328,
+      "variant": "BASE",
+      "geometry_pass": false,
+      "errors": [
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "moon",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "mercury",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "venus",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "mars",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "jupiter",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "saturn",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "uranus",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "neptune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "pluto",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "chiron",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "true_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "south_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "mercury",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "venus",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "mars",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "jupiter",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "saturn",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "uranus",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "neptune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "pluto",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "chiron",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "true_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "south_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "venus",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "mars",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "jupiter",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "saturn",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "uranus",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "neptune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "pluto",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "chiron",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "true_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "south_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "mars",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "jupiter",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "saturn",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "uranus",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "neptune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "pluto",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "chiron",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "true_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "south_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "jupiter",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "saturn",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "uranus",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "neptune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "pluto",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "chiron",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "true_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "south_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "jupiter",
+          "right": "saturn",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "jupiter",
+          "right": "uranus",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "jupiter",
+          "right": "neptune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "jupiter",
+          "right": "pluto",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "jupiter",
+          "right": "chiron",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "jupiter",
+          "right": "true_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "jupiter",
+          "right": "south_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "jupiter",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "jupiter",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "jupiter",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "saturn",
+          "right": "uranus",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "saturn",
+          "right": "neptune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "saturn",
+          "right": "pluto",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "saturn",
+          "right": "chiron",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "saturn",
+          "right": "true_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "saturn",
+          "right": "south_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "saturn",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "saturn",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "saturn",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "uranus",
+          "right": "neptune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "uranus",
+          "right": "pluto",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "uranus",
+          "right": "chiron",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "uranus",
+          "right": "true_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "uranus",
+          "right": "south_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "uranus",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "uranus",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "uranus",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "neptune",
+          "right": "pluto",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "neptune",
+          "right": "chiron",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "neptune",
+          "right": "true_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "neptune",
+          "right": "south_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "neptune",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "neptune",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "neptune",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "pluto",
+          "right": "chiron",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "pluto",
+          "right": "true_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "pluto",
+          "right": "south_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "pluto",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "pluto",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "pluto",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "chiron",
+          "right": "true_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "chiron",
+          "right": "south_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "chiron",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "chiron",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "chiron",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "true_node",
+          "right": "south_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "true_node",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "true_node",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "true_node",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "south_node",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "south_node",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "south_node",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mean_apog",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mean_apog",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "selena",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"sun\",\"moon\",\"conjunction\"]",
+          "right": "[\"mercury\",\"venus\",\"conjunction\"]",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"sun\",\"moon\",\"conjunction\"]",
+          "right": "[\"mars\",\"jupiter\",\"conjunction\"]",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"sun\",\"moon\",\"conjunction\"]",
+          "right": "[\"saturn\",\"uranus\",\"conjunction\"]",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"sun\",\"moon\",\"conjunction\"]",
+          "right": "angle:asc",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"sun\",\"moon\",\"conjunction\"]",
+          "right": "angle:mc",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"sun\",\"moon\",\"conjunction\"]",
+          "right": "angle:vertex",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"mercury\",\"venus\",\"conjunction\"]",
+          "right": "[\"mars\",\"jupiter\",\"conjunction\"]",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"mercury\",\"venus\",\"conjunction\"]",
+          "right": "[\"saturn\",\"uranus\",\"conjunction\"]",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"mercury\",\"venus\",\"conjunction\"]",
+          "right": "angle:asc",
+          "gap2": "153903302416436686110496521/625000000000000000000000000",
+          "gap_px": 0.49623107910156
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"mercury\",\"venus\",\"conjunction\"]",
+          "right": "angle:mc",
+          "gap2": "469281359110016720199584961/2500000000000000000000000000",
+          "gap_px": 0.43325805664062
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"mercury\",\"venus\",\"conjunction\"]",
+          "right": "angle:vertex",
+          "gap2": "5355898692869015072286129/39062500000000000000000000",
+          "gap_px": 0.37028503417968
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"mars\",\"jupiter\",\"conjunction\"]",
+          "right": "[\"saturn\",\"uranus\",\"conjunction\"]",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"mars\",\"jupiter\",\"conjunction\"]",
+          "right": "angle:asc",
+          "gap2": "1",
+          "gap_px": 1.0
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"mars\",\"jupiter\",\"conjunction\"]",
+          "right": "angle:mc",
+          "gap2": "2195048891589965134334564209/2500000000000000000000000000",
+          "gap_px": 0.9370269775390601
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"mars\",\"jupiter\",\"conjunction\"]",
+          "right": "angle:vertex",
+          "gap2": "477481447742315134334564209/625000000000000000000000000",
+          "gap_px": 0.87405395507812
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"saturn\",\"uranus\",\"conjunction\"]",
+          "right": "angle:asc",
+          "gap2": "1413325604662536686110496521/625000000000000000000000000",
+          "gap_px": 1.50376892089844
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"saturn\",\"uranus\",\"conjunction\"]",
+          "right": "angle:mc",
+          "gap2": "139310809/67108864",
+          "gap_px": 1.4407958984375
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"saturn\",\"uranus\",\"conjunction\"]",
+          "right": "angle:vertex",
+          "gap2": "296624355869424849933385849/156250000000000000000000000",
+          "gap_px": 1.37782287597656
+        },
+        {
+          "predicate": "gap",
+          "left": "angle:asc",
+          "right": "angle:mc",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "angle:asc",
+          "right": "angle:vertex",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "angle:mc",
+          "right": "angle:vertex",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "angle:dsc",
+          "right": "angle:ic",
+          "gap2": "0",
+          "gap_px": 0.0
+        }
+      ],
+      "component_drift": 0,
+      "SVG_translation_drift": 7.602646622657571e-06,
+      "anchor_max_error": 2.2754148423833224e-05,
+      "anchor_pass": true,
+      "font_size_pass": true,
+      "page_overflow": false,
+      "svg_no_controls": true,
+      "DPR": 1,
+      "zoom": 1,
+      "screenshot": "screenshots/F3-max-328-BASE.png"
+    },
+    {
+      "file": "F3-max-328-A.json",
+      "fixture": "F3-max",
+      "frame": 328,
+      "variant": "A",
+      "geometry_pass": true,
+      "errors": [],
+      "component_drift": 0,
+      "SVG_translation_drift": 1.0286649249700158e-05,
+      "anchor_max_error": 2.2754148423833224e-05,
+      "anchor_pass": true,
+      "font_size_pass": true,
+      "page_overflow": false,
+      "svg_no_controls": true,
+      "DPR": 1,
+      "zoom": 1,
+      "screenshot": "screenshots/F3-max-328-A.png"
+    },
+    {
+      "file": "F3-max-328-B.json",
+      "fixture": "F3-max",
+      "frame": 328,
+      "variant": "B",
+      "geometry_pass": true,
+      "errors": [],
+      "component_drift": 0,
+      "SVG_translation_drift": 8.57210824278809e-06,
+      "anchor_max_error": 2.2754148423833224e-05,
+      "anchor_pass": true,
+      "font_size_pass": true,
+      "page_overflow": false,
+      "svg_no_controls": true,
+      "DPR": 1,
+      "zoom": 1,
+      "screenshot": "screenshots/F3-max-328-B.png"
+    },
+    {
+      "file": "sparse-720-C.json",
+      "fixture": "sparse",
+      "frame": 720,
+      "variant": "C",
+      "geometry_pass": true,
+      "errors": [],
+      "component_drift": 0,
+      "SVG_translation_drift": 3.4600291484934294e-05,
+      "anchor_max_error": 5.900144268246873e-05,
+      "anchor_pass": true,
+      "font_size_pass": true,
+      "page_overflow": false,
+      "svg_no_controls": true,
+      "DPR": 1,
+      "zoom": 1,
+      "screenshot": "screenshots/sparse-720-C.png"
+    },
+    {
+      "file": "sparse-448-C.json",
+      "fixture": "sparse",
+      "frame": 448,
+      "variant": "C",
+      "geometry_pass": true,
+      "errors": [],
+      "component_drift": 0,
+      "SVG_translation_drift": 1.2207031204525265e-05,
+      "anchor_max_error": 1.954078438758596e-05,
+      "anchor_pass": true,
+      "font_size_pass": true,
+      "page_overflow": false,
+      "svg_no_controls": true,
+      "DPR": 1,
+      "zoom": 1,
+      "screenshot": "screenshots/sparse-448-C.png"
+    },
+    {
+      "file": "sparse-328-C.json",
+      "fixture": "sparse",
+      "frame": 328,
+      "variant": "C",
+      "geometry_pass": true,
+      "errors": [],
+      "component_drift": 0,
+      "SVG_translation_drift": 1.3844205092629228e-05,
+      "anchor_max_error": 1.954078438758596e-05,
+      "anchor_pass": true,
+      "font_size_pass": true,
+      "page_overflow": false,
+      "svg_no_controls": true,
+      "DPR": 1,
+      "zoom": 1,
+      "screenshot": "screenshots/sparse-328-C.png"
+    },
+    {
+      "file": "F1-720-C.json",
+      "fixture": "F1",
+      "frame": 720,
+      "variant": "C",
+      "geometry_pass": true,
+      "errors": [],
+      "component_drift": 0,
+      "SVG_translation_drift": 2.947934636613439e-05,
+      "anchor_max_error": 7.036112099729453e-05,
+      "anchor_pass": true,
+      "font_size_pass": true,
+      "page_overflow": false,
+      "svg_no_controls": true,
+      "DPR": 1,
+      "zoom": 1,
+      "screenshot": "screenshots/F1-720-C.png"
+    },
+    {
+      "file": "F1-448-C.json",
+      "fixture": "F1",
+      "frame": 448,
+      "variant": "C",
+      "geometry_pass": true,
+      "errors": [],
+      "component_drift": 0,
+      "SVG_translation_drift": 1.649199974137643e-05,
+      "anchor_max_error": 2.165639199240432e-05,
+      "anchor_pass": true,
+      "font_size_pass": true,
+      "page_overflow": false,
+      "svg_no_controls": true,
+      "DPR": 1,
+      "zoom": 1,
+      "screenshot": "screenshots/F1-448-C.png"
+    },
+    {
+      "file": "F1-328-C.json",
+      "fixture": "F1",
+      "frame": 328,
+      "variant": "C",
+      "geometry_pass": true,
+      "errors": [],
+      "component_drift": 0,
+      "SVG_translation_drift": 9.44724958403244e-06,
+      "anchor_max_error": 2.5094890861825987e-05,
+      "anchor_pass": true,
+      "font_size_pass": true,
+      "page_overflow": false,
+      "svg_no_controls": true,
+      "DPR": 1,
+      "zoom": 1,
+      "screenshot": "screenshots/F1-328-C.png"
+    },
+    {
+      "file": "F3-720-C.json",
+      "fixture": "F3",
+      "frame": 720,
+      "variant": "C",
+      "geometry_pass": false,
+      "errors": [
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "saturn",
+          "gap2": "39999807566055707179164886481/10000000000000000000000000000",
+          "gap_px": 1.9999951891456065
+        }
+      ],
+      "component_drift": 0,
+      "SVG_translation_drift": 2.947934636613439e-05,
+      "anchor_max_error": 7.036112099729453e-05,
+      "anchor_pass": true,
+      "font_size_pass": true,
+      "page_overflow": false,
+      "svg_no_controls": true,
+      "DPR": 1,
+      "zoom": 1,
+      "screenshot": "screenshots/F3-720-C.png"
+    },
+    {
+      "file": "F3-448-C.json",
+      "fixture": "F3",
+      "frame": 448,
+      "variant": "C",
+      "geometry_pass": false,
+      "errors": [
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "jupiter",
+          "gap2": "9999999999999800000000000001/2500000000000000000000000000",
+          "gap_px": 1.99999999999998
+        }
+      ],
+      "component_drift": 0,
+      "SVG_translation_drift": 1.4394971875442664e-05,
+      "anchor_max_error": 2.165639199240432e-05,
+      "anchor_pass": true,
+      "font_size_pass": true,
+      "page_overflow": false,
+      "svg_no_controls": true,
+      "DPR": 1,
+      "zoom": 1,
+      "screenshot": "screenshots/F3-448-C.png"
+    },
+    {
+      "file": "F3-328-C.json",
+      "fixture": "F3",
+      "frame": 328,
+      "variant": "C",
+      "geometry_pass": true,
+      "errors": [],
+      "component_drift": 0,
+      "SVG_translation_drift": 1.0400521591934954e-05,
+      "anchor_max_error": 2.5094890861825987e-05,
+      "anchor_pass": true,
+      "font_size_pass": true,
+      "page_overflow": false,
+      "svg_no_controls": true,
+      "DPR": 1,
+      "zoom": 1,
+      "screenshot": "screenshots/F3-328-C.png"
+    },
+    {
+      "file": "F3-max-720-C.json",
+      "fixture": "F3-max",
+      "frame": 720,
+      "variant": "C",
+      "geometry_pass": false,
+      "errors": [
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "moon",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "mercury",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "venus",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "mars",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "jupiter",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "saturn",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "uranus",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "neptune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "pluto",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "chiron",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "true_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "south_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "selena",
+          "gap2": "61812475905751706600189209/25000000000000000000000000",
+          "gap_px": 1.5724182128906
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "mercury",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "venus",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "mars",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "jupiter",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "saturn",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "uranus",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "neptune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "pluto",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "chiron",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "true_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "south_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "pars_fortune",
+          "gap2": "988308731093971286315917969/400000000000000000000000000",
+          "gap_px": 1.57186889648435
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "venus",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "mars",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "jupiter",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "saturn",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "uranus",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "neptune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "pluto",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "chiron",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "true_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "south_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "mars",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "jupiter",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "saturn",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "uranus",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "neptune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "pluto",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "chiron",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "true_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "south_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "pars_fortune",
+          "gap2": "492348388070152907371521/1562500000000000000000000",
+          "gap_px": 0.5613403320312
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "jupiter",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "saturn",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "uranus",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "neptune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "pluto",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "chiron",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "true_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "south_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "jupiter",
+          "right": "saturn",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "jupiter",
+          "right": "uranus",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "jupiter",
+          "right": "neptune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "jupiter",
+          "right": "pluto",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "jupiter",
+          "right": "chiron",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "jupiter",
+          "right": "true_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "jupiter",
+          "right": "south_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "jupiter",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "jupiter",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "jupiter",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "saturn",
+          "right": "uranus",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "saturn",
+          "right": "neptune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "saturn",
+          "right": "pluto",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "saturn",
+          "right": "chiron",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "saturn",
+          "right": "true_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "saturn",
+          "right": "south_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "saturn",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "saturn",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "saturn",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "uranus",
+          "right": "neptune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "uranus",
+          "right": "pluto",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "uranus",
+          "right": "chiron",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "uranus",
+          "right": "true_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "uranus",
+          "right": "south_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "uranus",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "uranus",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "uranus",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "neptune",
+          "right": "pluto",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "neptune",
+          "right": "chiron",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "neptune",
+          "right": "true_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "neptune",
+          "right": "south_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "neptune",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "neptune",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "neptune",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "pluto",
+          "right": "chiron",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "pluto",
+          "right": "true_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "pluto",
+          "right": "south_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "pluto",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "pluto",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "pluto",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "chiron",
+          "right": "true_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "chiron",
+          "right": "south_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "chiron",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "chiron",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "chiron",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "true_node",
+          "right": "south_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "true_node",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "true_node",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "true_node",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "south_node",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "south_node",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "south_node",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mean_apog",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mean_apog",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "selena",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"sun\",\"moon\",\"conjunction\"]",
+          "right": "[\"mercury\",\"venus\",\"conjunction\"]",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"sun\",\"moon\",\"conjunction\"]",
+          "right": "[\"mars\",\"jupiter\",\"conjunction\"]",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"sun\",\"moon\",\"conjunction\"]",
+          "right": "[\"saturn\",\"uranus\",\"conjunction\"]",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"mercury\",\"venus\",\"conjunction\"]",
+          "right": "[\"mars\",\"jupiter\",\"conjunction\"]",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"mercury\",\"venus\",\"conjunction\"]",
+          "right": "[\"saturn\",\"uranus\",\"conjunction\"]",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"mars\",\"jupiter\",\"conjunction\"]",
+          "right": "[\"saturn\",\"uranus\",\"conjunction\"]",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "angle:asc",
+          "right": "angle:mc",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "angle:asc",
+          "right": "angle:vertex",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "angle:mc",
+          "right": "angle:vertex",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "angle:dsc",
+          "right": "angle:ic",
+          "gap2": "0",
+          "gap_px": 0.0
+        }
+      ],
+      "component_drift": 0,
+      "SVG_translation_drift": 1.815768948144438e-05,
+      "anchor_max_error": 1.815768948144438e-05,
+      "anchor_pass": true,
+      "font_size_pass": true,
+      "page_overflow": false,
+      "svg_no_controls": true,
+      "DPR": 1,
+      "zoom": 1,
+      "screenshot": "screenshots/F3-max-720-C.png"
+    },
+    {
+      "file": "F3-max-448-C.json",
+      "fixture": "F3-max",
+      "frame": 448,
+      "variant": "C",
+      "geometry_pass": false,
+      "errors": [
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "moon",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "mercury",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "venus",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "mars",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "jupiter",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "saturn",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "uranus",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "neptune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "pluto",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "chiron",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "true_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "south_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "mercury",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "venus",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "mars",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "jupiter",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "saturn",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "uranus",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "neptune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "pluto",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "chiron",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "true_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "south_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "venus",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "mars",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "jupiter",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "saturn",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "uranus",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "neptune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "pluto",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "chiron",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "true_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "south_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "mars",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "jupiter",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "saturn",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "uranus",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "neptune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "pluto",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "chiron",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "true_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "south_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "jupiter",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "saturn",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "uranus",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "neptune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "pluto",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "chiron",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "true_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "south_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "jupiter",
+          "right": "saturn",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "jupiter",
+          "right": "uranus",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "jupiter",
+          "right": "neptune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "jupiter",
+          "right": "pluto",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "jupiter",
+          "right": "chiron",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "jupiter",
+          "right": "true_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "jupiter",
+          "right": "south_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "jupiter",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "jupiter",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "jupiter",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "saturn",
+          "right": "uranus",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "saturn",
+          "right": "neptune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "saturn",
+          "right": "pluto",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "saturn",
+          "right": "chiron",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "saturn",
+          "right": "true_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "saturn",
+          "right": "south_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "saturn",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "saturn",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "saturn",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "uranus",
+          "right": "neptune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "uranus",
+          "right": "pluto",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "uranus",
+          "right": "chiron",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "uranus",
+          "right": "true_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "uranus",
+          "right": "south_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "uranus",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "uranus",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "uranus",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "neptune",
+          "right": "pluto",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "neptune",
+          "right": "chiron",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "neptune",
+          "right": "true_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "neptune",
+          "right": "south_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "neptune",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "neptune",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "neptune",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "pluto",
+          "right": "chiron",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "pluto",
+          "right": "true_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "pluto",
+          "right": "south_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "pluto",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "pluto",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "pluto",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "chiron",
+          "right": "true_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "chiron",
+          "right": "south_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "chiron",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "chiron",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "chiron",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "true_node",
+          "right": "south_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "true_node",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "true_node",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "true_node",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "south_node",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "south_node",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "south_node",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mean_apog",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mean_apog",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "selena",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"sun\",\"moon\",\"conjunction\"]",
+          "right": "[\"mercury\",\"venus\",\"conjunction\"]",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"sun\",\"moon\",\"conjunction\"]",
+          "right": "[\"mars\",\"jupiter\",\"conjunction\"]",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"sun\",\"moon\",\"conjunction\"]",
+          "right": "[\"saturn\",\"uranus\",\"conjunction\"]",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"sun\",\"moon\",\"conjunction\"]",
+          "right": "angle:asc",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"sun\",\"moon\",\"conjunction\"]",
+          "right": "angle:mc",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"sun\",\"moon\",\"conjunction\"]",
+          "right": "angle:vertex",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"mercury\",\"venus\",\"conjunction\"]",
+          "right": "[\"mars\",\"jupiter\",\"conjunction\"]",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"mercury\",\"venus\",\"conjunction\"]",
+          "right": "[\"saturn\",\"uranus\",\"conjunction\"]",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"mercury\",\"venus\",\"conjunction\"]",
+          "right": "angle:asc",
+          "gap2": "243235474918029854965209961/2500000000000000000000000000",
+          "gap_px": 0.31192016601562
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"mercury\",\"venus\",\"conjunction\"]",
+          "right": "angle:mc",
+          "gap2": "7974013897183415025472641/156250000000000000000000000",
+          "gap_px": 0.22590637207032
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"mercury\",\"venus\",\"conjunction\"]",
+          "right": "angle:vertex",
+          "gap2": "48935507074928024959564209/2500000000000000000000000000",
+          "gap_px": 0.13990783691406
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"mars\",\"jupiter\",\"conjunction\"]",
+          "right": "[\"saturn\",\"uranus\",\"conjunction\"]",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"mars\",\"jupiter\",\"conjunction\"]",
+          "right": "angle:asc",
+          "gap2": "1",
+          "gap_px": 1.0
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"mars\",\"jupiter\",\"conjunction\"]",
+          "right": "angle:mc",
+          "gap2": "83537078485826452693939209/100000000000000000000000000",
+          "gap_px": 0.9139862060547
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"mars\",\"jupiter\",\"conjunction\"]",
+          "right": "angle:vertex",
+          "gap2": "428477239474889615797996521/625000000000000000000000000",
+          "gap_px": 0.8279876708984399
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"saturn\",\"uranus\",\"conjunction\"]",
+          "right": "angle:asc",
+          "gap2": "7124033814761829854965209961/2500000000000000000000000000",
+          "gap_px": 1.68807983398438
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"saturn\",\"uranus\",\"conjunction\"]",
+          "right": "angle:mc",
+          "gap2": "1604134747904061926054954529/625000000000000000000000000",
+          "gap_px": 1.60206604003908
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"saturn\",\"uranus\",\"conjunction\"]",
+          "right": "angle:vertex",
+          "gap2": "5746151698404048611354827881/2500000000000000000000000000",
+          "gap_px": 1.51606750488282
+        },
+        {
+          "predicate": "gap",
+          "left": "angle:asc",
+          "right": "angle:mc",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "angle:asc",
+          "right": "angle:vertex",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "angle:mc",
+          "right": "angle:vertex",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "angle:dsc",
+          "right": "angle:ic",
+          "gap2": "0",
+          "gap_px": 0.0
+        }
+      ],
+      "component_drift": 0,
+      "SVG_translation_drift": 1.3415818931278738e-05,
+      "anchor_max_error": 2.313554882308235e-05,
+      "anchor_pass": true,
+      "font_size_pass": true,
+      "page_overflow": false,
+      "svg_no_controls": true,
+      "DPR": 1,
+      "zoom": 1,
+      "screenshot": "screenshots/F3-max-448-C.png"
+    },
+    {
+      "file": "F3-max-328-C.json",
+      "fixture": "F3-max",
+      "frame": 328,
+      "variant": "C",
+      "geometry_pass": false,
+      "errors": [
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "moon",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "mercury",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "venus",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "mars",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "jupiter",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "saturn",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "uranus",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "neptune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "pluto",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "chiron",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "true_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "south_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "sun",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "mercury",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "venus",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "mars",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "jupiter",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "saturn",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "uranus",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "neptune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "pluto",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "chiron",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "true_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "south_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "moon",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "venus",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "mars",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "jupiter",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "saturn",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "uranus",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "neptune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "pluto",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "chiron",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "true_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "south_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mercury",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "mars",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "jupiter",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "saturn",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "uranus",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "neptune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "pluto",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "chiron",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "true_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "south_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "jupiter",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "saturn",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "uranus",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "neptune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "pluto",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "chiron",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "true_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "south_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mars",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "jupiter",
+          "right": "saturn",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "jupiter",
+          "right": "uranus",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "jupiter",
+          "right": "neptune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "jupiter",
+          "right": "pluto",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "jupiter",
+          "right": "chiron",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "jupiter",
+          "right": "true_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "jupiter",
+          "right": "south_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "jupiter",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "jupiter",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "jupiter",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "saturn",
+          "right": "uranus",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "saturn",
+          "right": "neptune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "saturn",
+          "right": "pluto",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "saturn",
+          "right": "chiron",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "saturn",
+          "right": "true_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "saturn",
+          "right": "south_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "saturn",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "saturn",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "saturn",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "uranus",
+          "right": "neptune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "uranus",
+          "right": "pluto",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "uranus",
+          "right": "chiron",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "uranus",
+          "right": "true_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "uranus",
+          "right": "south_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "uranus",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "uranus",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "uranus",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "neptune",
+          "right": "pluto",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "neptune",
+          "right": "chiron",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "neptune",
+          "right": "true_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "neptune",
+          "right": "south_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "neptune",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "neptune",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "neptune",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "pluto",
+          "right": "chiron",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "pluto",
+          "right": "true_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "pluto",
+          "right": "south_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "pluto",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "pluto",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "pluto",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "chiron",
+          "right": "true_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "chiron",
+          "right": "south_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "chiron",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "chiron",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "chiron",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "true_node",
+          "right": "south_node",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "true_node",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "true_node",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "true_node",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "south_node",
+          "right": "mean_apog",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "south_node",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "south_node",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mean_apog",
+          "right": "selena",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "mean_apog",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "selena",
+          "right": "pars_fortune",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"sun\",\"moon\",\"conjunction\"]",
+          "right": "[\"mercury\",\"venus\",\"conjunction\"]",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"sun\",\"moon\",\"conjunction\"]",
+          "right": "[\"mars\",\"jupiter\",\"conjunction\"]",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"sun\",\"moon\",\"conjunction\"]",
+          "right": "[\"saturn\",\"uranus\",\"conjunction\"]",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"sun\",\"moon\",\"conjunction\"]",
+          "right": "angle:asc",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"sun\",\"moon\",\"conjunction\"]",
+          "right": "angle:mc",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"sun\",\"moon\",\"conjunction\"]",
+          "right": "angle:vertex",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"mercury\",\"venus\",\"conjunction\"]",
+          "right": "[\"mars\",\"jupiter\",\"conjunction\"]",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"mercury\",\"venus\",\"conjunction\"]",
+          "right": "[\"saturn\",\"uranus\",\"conjunction\"]",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"mercury\",\"venus\",\"conjunction\"]",
+          "right": "angle:asc",
+          "gap2": "153903302416436686110496521/625000000000000000000000000",
+          "gap_px": 0.49623107910156
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"mercury\",\"venus\",\"conjunction\"]",
+          "right": "angle:mc",
+          "gap2": "469281359110016720199584961/2500000000000000000000000000",
+          "gap_px": 0.43325805664062
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"mercury\",\"venus\",\"conjunction\"]",
+          "right": "angle:vertex",
+          "gap2": "5355898692869015072286129/39062500000000000000000000",
+          "gap_px": 0.37028503417968
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"mars\",\"jupiter\",\"conjunction\"]",
+          "right": "[\"saturn\",\"uranus\",\"conjunction\"]",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"mars\",\"jupiter\",\"conjunction\"]",
+          "right": "angle:asc",
+          "gap2": "1",
+          "gap_px": 1.0
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"mars\",\"jupiter\",\"conjunction\"]",
+          "right": "angle:mc",
+          "gap2": "2195048891589965134334564209/2500000000000000000000000000",
+          "gap_px": 0.9370269775390601
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"mars\",\"jupiter\",\"conjunction\"]",
+          "right": "angle:vertex",
+          "gap2": "477481447742315134334564209/625000000000000000000000000",
+          "gap_px": 0.87405395507812
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"saturn\",\"uranus\",\"conjunction\"]",
+          "right": "angle:asc",
+          "gap2": "1413325604662536686110496521/625000000000000000000000000",
+          "gap_px": 1.50376892089844
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"saturn\",\"uranus\",\"conjunction\"]",
+          "right": "angle:mc",
+          "gap2": "139310809/67108864",
+          "gap_px": 1.4407958984375
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"saturn\",\"uranus\",\"conjunction\"]",
+          "right": "angle:vertex",
+          "gap2": "296624355869424849933385849/156250000000000000000000000",
+          "gap_px": 1.37782287597656
+        },
+        {
+          "predicate": "gap",
+          "left": "angle:asc",
+          "right": "angle:mc",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "angle:asc",
+          "right": "angle:vertex",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "angle:mc",
+          "right": "angle:vertex",
+          "gap2": "0",
+          "gap_px": 0.0
+        },
+        {
+          "predicate": "gap",
+          "left": "angle:dsc",
+          "right": "angle:ic",
+          "gap2": "0",
+          "gap_px": 0.0
+        }
+      ],
+      "component_drift": 0,
+      "SVG_translation_drift": 7.602646622657571e-06,
+      "anchor_max_error": 2.2754148423833224e-05,
+      "anchor_pass": true,
+      "font_size_pass": true,
+      "page_overflow": false,
+      "svg_no_controls": true,
+      "DPR": 1,
+      "zoom": 1,
+      "screenshot": "screenshots/F3-max-328-C.png"
+    },
+    {
+      "file": "sparse-720-D.json",
+      "fixture": "sparse",
+      "frame": 720,
+      "variant": "D",
+      "geometry_pass": true,
+      "errors": [],
+      "component_drift": 0,
+      "SVG_translation_drift": 3.4600291484934294e-05,
+      "anchor_max_error": 5.900144268246873e-05,
+      "anchor_pass": true,
+      "font_size_pass": true,
+      "page_overflow": false,
+      "svg_no_controls": true,
+      "DPR": 1,
+      "zoom": 1,
+      "screenshot": "screenshots/sparse-720-D.png"
+    },
+    {
+      "file": "sparse-448-D.json",
+      "fixture": "sparse",
+      "frame": 448,
+      "variant": "D",
+      "geometry_pass": true,
+      "errors": [],
+      "component_drift": 0,
+      "SVG_translation_drift": 1.2207031204525265e-05,
+      "anchor_max_error": 1.954078438758596e-05,
+      "anchor_pass": true,
+      "font_size_pass": true,
+      "page_overflow": false,
+      "svg_no_controls": true,
+      "DPR": 1,
+      "zoom": 1,
+      "screenshot": "screenshots/sparse-448-D.png"
+    },
+    {
+      "file": "sparse-328-D.json",
+      "fixture": "sparse",
+      "frame": 328,
+      "variant": "D",
+      "geometry_pass": true,
+      "errors": [],
+      "component_drift": 0,
+      "SVG_translation_drift": 1.3844205092629228e-05,
+      "anchor_max_error": 1.954078438758596e-05,
+      "anchor_pass": true,
+      "font_size_pass": true,
+      "page_overflow": false,
+      "svg_no_controls": true,
+      "DPR": 1,
+      "zoom": 1,
+      "screenshot": "screenshots/sparse-328-D.png"
+    },
+    {
+      "file": "F1-720-D.json",
+      "fixture": "F1",
+      "frame": 720,
+      "variant": "D",
+      "geometry_pass": true,
+      "errors": [],
+      "component_drift": 0,
+      "SVG_translation_drift": 2.947934636613439e-05,
+      "anchor_max_error": 7.036112099729453e-05,
+      "anchor_pass": true,
+      "font_size_pass": true,
+      "page_overflow": false,
+      "svg_no_controls": true,
+      "DPR": 1,
+      "zoom": 1,
+      "screenshot": "screenshots/F1-720-D.png"
+    },
+    {
+      "file": "F1-448-D.json",
+      "fixture": "F1",
+      "frame": 448,
+      "variant": "D",
+      "geometry_pass": true,
+      "errors": [],
+      "component_drift": 0,
+      "SVG_translation_drift": 1.649199974137643e-05,
+      "anchor_max_error": 2.165639199240432e-05,
+      "anchor_pass": true,
+      "font_size_pass": true,
+      "page_overflow": false,
+      "svg_no_controls": true,
+      "DPR": 1,
+      "zoom": 1,
+      "screenshot": "screenshots/F1-448-D.png"
+    },
+    {
+      "file": "F1-328-D.json",
+      "fixture": "F1",
+      "frame": 328,
+      "variant": "D",
+      "geometry_pass": true,
+      "errors": [],
+      "component_drift": 0,
+      "SVG_translation_drift": 9.44724958403244e-06,
+      "anchor_max_error": 2.5094890861825987e-05,
+      "anchor_pass": true,
+      "font_size_pass": true,
+      "page_overflow": false,
+      "svg_no_controls": true,
+      "DPR": 1,
+      "zoom": 1,
+      "screenshot": "screenshots/F1-328-D.png"
+    },
+    {
+      "file": "F3-720-D.json",
+      "fixture": "F3",
+      "frame": 720,
+      "variant": "D",
+      "geometry_pass": false,
+      "errors": [
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "saturn",
+          "gap2": "39999807566055707179164886481/10000000000000000000000000000",
+          "gap_px": 1.9999951891456065
+        }
+      ],
+      "component_drift": 0,
+      "SVG_translation_drift": 2.947934636613439e-05,
+      "anchor_max_error": 7.036112099729453e-05,
+      "anchor_pass": true,
+      "font_size_pass": true,
+      "page_overflow": false,
+      "svg_no_controls": true,
+      "DPR": 1,
+      "zoom": 1,
+      "screenshot": "screenshots/F3-720-D.png"
+    },
+    {
+      "file": "F3-448-D.json",
+      "fixture": "F3",
+      "frame": 448,
+      "variant": "D",
+      "geometry_pass": false,
+      "errors": [
+        {
+          "predicate": "gap",
+          "left": "venus",
+          "right": "jupiter",
+          "gap2": "9999999999999800000000000001/2500000000000000000000000000",
+          "gap_px": 1.99999999999998
+        }
+      ],
+      "component_drift": 0,
+      "SVG_translation_drift": 1.4394971875442664e-05,
+      "anchor_max_error": 2.165639199240432e-05,
+      "anchor_pass": true,
+      "font_size_pass": true,
+      "page_overflow": false,
+      "svg_no_controls": true,
+      "DPR": 1,
+      "zoom": 1,
+      "screenshot": "screenshots/F3-448-D.png"
+    },
+    {
+      "file": "F3-328-D.json",
+      "fixture": "F3",
+      "frame": 328,
+      "variant": "D",
+      "geometry_pass": true,
+      "errors": [],
+      "component_drift": 0,
+      "SVG_translation_drift": 1.0400521591934954e-05,
+      "anchor_max_error": 2.5094890861825987e-05,
+      "anchor_pass": true,
+      "font_size_pass": true,
+      "page_overflow": false,
+      "svg_no_controls": true,
+      "DPR": 1,
+      "zoom": 1,
+      "screenshot": "screenshots/F3-328-D.png"
+    },
+    {
+      "file": "F3-max-720-D.json",
+      "fixture": "F3-max",
+      "frame": 720,
+      "variant": "D",
+      "geometry_pass": false,
+      "errors": [
+        {
+          "predicate": "order",
+          "kind": "point"
+        }
+      ],
+      "component_drift": 0,
+      "SVG_translation_drift": 1.8157689435668565e-05,
+      "anchor_max_error": 1.815768948144438e-05,
+      "anchor_pass": true,
+      "font_size_pass": true,
+      "page_overflow": false,
+      "svg_no_controls": true,
+      "DPR": 1,
+      "zoom": 1,
+      "screenshot": "screenshots/F3-max-720-D.png"
+    },
+    {
+      "file": "F3-max-448-D.json",
+      "fixture": "F3-max",
+      "frame": 448,
+      "variant": "D",
+      "geometry_pass": false,
+      "errors": [
+        {
+          "predicate": "gap",
+          "left": "jupiter",
+          "right": "uranus",
+          "gap2": "9999999999999800000000000001/2500000000000000000000000000",
+          "gap_px": 1.99999999999998
+        },
+        {
+          "predicate": "gap",
+          "left": "saturn",
+          "right": "neptune",
+          "gap2": "9999999999999800000000000001/2500000000000000000000000000",
+          "gap_px": 1.99999999999998
+        },
+        {
+          "predicate": "gap",
+          "left": "[\"mercury\",\"venus\",\"conjunction\"]",
+          "right": "[\"mars\",\"jupiter\",\"conjunction\"]",
+          "gap2": "1599975586030652257308959961/400000000000000000000000000",
+          "gap_px": 1.9999847412109502
+        }
+      ],
+      "component_drift": 0,
+      "SVG_translation_drift": 1.12467152462159e-05,
+      "anchor_max_error": 2.313554882308235e-05,
+      "anchor_pass": true,
+      "font_size_pass": true,
+      "page_overflow": false,
+      "svg_no_controls": true,
+      "DPR": 1,
+      "zoom": 1,
+      "screenshot": "screenshots/F3-max-448-D.png"
+    },
+    {
+      "file": "F3-max-328-D.json",
+      "fixture": "F3-max",
+      "frame": 328,
+      "variant": "D",
+      "geometry_pass": false,
+      "errors": [
+        {
+          "predicate": "order",
+          "kind": "point"
+        }
+      ],
+      "component_drift": 0,
+      "SVG_translation_drift": 1.3748922299328115e-05,
+      "anchor_max_error": 2.2754148423833224e-05,
+      "anchor_pass": true,
+      "font_size_pass": true,
+      "page_overflow": false,
+      "svg_no_controls": true,
+      "DPR": 1,
+      "zoom": 1,
+      "screenshot": "screenshots/F3-max-328-D.png"
+    }
+  ],
+  "acceptance_epsilon": 0,
+  "limits": "Strict rational test of actual finite coordinates; normal/selected component union only, full zodiac/palette/live application not tested. Tiny failures remain FAIL."
+}

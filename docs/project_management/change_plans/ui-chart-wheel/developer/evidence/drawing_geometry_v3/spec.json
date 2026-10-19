@@ -1,0 +1,60 @@
+{
+  "run": "drawing-v3-01",
+  "author": "Codex / Developer",
+  "started_utc": "2026-10-19T10:44:01.302465+00:00",
+  "authorization": "Owner: Переработай и предложи альтернативные варианты если они есть",
+  "baseline": "07bb56ba5d49ec76de64df41ad80d175fbe90a2d",
+  "assignment": "direct Owner request in current chat; not a new Manager TaskId or G3",
+  "preserved_local_D006_sha256": {
+    "docs/project_management/change_plans/ui-chart-wheel/developer_artifact.md": "9b5e0b38f1e4f286455d73117624c8d40ae9ebebdbf4803688ae48d0f272e0fe",
+    "docs/project_management/change_plans/ui-chart-wheel/developer/implementation_plan.md": "0fba9dab1ad22ce79c575588fe3fcde4b975b151a067a0403da3573c89221786",
+    "docs/project_management/change_plans/ui-chart-wheel/developer/task_d006_controller_html_plan.md": "3b38be185e215ab85f9e6a6160552bde0f985458fe1e3c8d3e93534a457b01ec"
+  },
+  "limit": "one bounded A/B comparison, no production, no new dependency; stop at sufficient evidence or 90 minutes",
+  "deadline_utc": "2026-10-19T12:14:01.335468+00:00",
+  "inputs": "unchanged D005 analytic F files / published D003 fixtures; browser remeasures actual bounds",
+  "fixtures": [
+    "sparse",
+    "F1",
+    "F3",
+    "F3-max"
+  ],
+  "frames": {
+    "1440": 720,
+    "768": 448,
+    "360": 328
+  },
+  "thresholds": {
+    "gap": 2,
+    "anchor_error": 0.5,
+    "point_em": 16,
+    "aux_em": 12,
+    "return_step": 1
+  },
+  "bounds": "actual ink components + 0.75 selected glyph contour; no SVG focus/hit after accepted passive SVG Owner delta; angle labels retain D005 bounds and are checked against remeasured ink/bbox",
+  "C0": "all originally conflicting point/marker/angle labels by real component union; all other groups frozen; compute before placement",
+  "unchanged": "DTO, true longitudes/anchors, category text, 16/12 fonts, sizes, D005 annuli and radii, clipping, cyclic order; no glyph hiding; no point movement due to hit targets",
+  "A": "joint all-kind beam search using actual components; seeds only original ring, angular candidates 1 degree within +/-179 degrees; then local chord return inside annulus",
+  "B": "same as A with three radial seed lanes r0 and r0 +/-0.06 frame; same annuli, fonts, order, clipping and frozen labels; no new outer labels or fallback",
+  "search": {
+    "beam_width": 96,
+    "angle_degrees": 1,
+    "max_delta_degrees": 179,
+    "radial_delta_frame": 0.06,
+    "return_sweeps": 3
+  },
+  "certificates": "independent exact decimal/rational static predicates and full-prefix witness checks; exact axis-contact blocking may establish local tightness; numerical near-contact is UNPROVEN, never PASS",
+  "alternatives_not_run": [
+    "external callout columns or larger mobile canvas alter composition/domain; propose for Owner only",
+    "new third-party solver/dependencies excluded"
+  ],
+  "non_goals": [
+    "production",
+    "formal G3",
+    "new approved contract/ADR",
+    "Q44/SVG keyboard",
+    "complete zodiac/palette",
+    "global optimum",
+    "cross-platform/zoom/touch acceptance"
+  ]
+}

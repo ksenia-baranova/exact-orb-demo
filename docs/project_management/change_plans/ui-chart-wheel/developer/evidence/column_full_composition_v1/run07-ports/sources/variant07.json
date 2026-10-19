@@ -1,0 +1,7 @@
+{
+  "candidate": "v7 routing graph completeness correction",
+  "registered_utc": "2026-10-19T17:22:06.257527+00:00",
+  "counterexample": "run06 rejects shared edges but drops the original2.25 corners in favour of large per-owner clearance. F3-max328 loses12 point routes; all foreground geometry and certificates still pass. This is a finite graph failure, not a geometric impossibility proof.",
+  "fix": "Retain original narrow-corridor corners for every path, add per-owner clearance corners and1.5/3px normal detour midpoint vertices around prior edges. Keep exact no-shared-centerline check and all foreign-label, clipping and ownership predicates. Snap new vertices to1/64 producer precision.",
+  "stop": "Original90min deadline unchanged; fixed matrix then independent shared-segment audit, no wider search."
+}

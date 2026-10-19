@@ -1,0 +1,172 @@
+{
+  "author": "Codex / Developer",
+  "started": "2026-10-19T17:22:13.006Z",
+  "finished": "2026-10-19T17:22:36.960Z",
+  "browser": "155.0.8059.40",
+  "node": "v24.19.0",
+  "scale": "SVG 1 unit = CSS px; page zoom1; browser headless; recorded DPR1/2",
+  "sources": {
+    "composition.mjs": "195bb57d7bb66ff653976f670b2d19f462e8f61897fece5fd6a126ac16de7ea3",
+    "harness.html": "5971130a72d8a2fb30cba3d953c4c233027afa05611ee55379ffe3811336df3b",
+    "browser.cjs": "82e1af523f930e95e5613953790dc579aef4eed09996eb4a185c407606a67bd3",
+    "boundary.mjs": "3c10999c36206d8641bcc1041c643ba812df1ac7e14a771341a02945346e900c",
+    "boundary.html": "91745d176cd5909a3ba81bea5d6128ee6c0e1784fc1701ec289243dcb0b2bf94",
+    "calibration.html": "5ba9e67cb59e56f36057b11bbd88c6c8547ba462fe64ccc33ea420e1936f80c5",
+    "spec.json": "9741c43f6521f6d02f39aaf0185209d9b38ce69c6576e9a8dcc34d766db18301",
+    "variant02.json": "09f393f227c562c7a05516982c207b44cf41b96b6efec27bad33d21901954f70",
+    "variant03.json": "0ff902074be6f8b428aea88a00660dceb977f8dff249ec01b96d6499f9be6be0",
+    "variant04.json": "188aeb574ae17f8592990ea860886f05158e2509c4210d6385322f1cfb641852",
+    "variant05.json": "c43c48d76f75a5311e8be89c8cdb932f5cc6072f4a22f2e88ac566342cb175ee",
+    "variant06.json": "22ed0beb30311a4b57e081ee10491c176c49cd724f4c65e4f9f9ae06cc343448",
+    "variant07.json": "c2e2e2d8cb67c615dd6023ba15d8cabd77c8a352f0fe3add11dc9d408c2c3585",
+    "data.json": "51e54af23cbdcd030ffbab910f83d8d609f712678d1d2329686bbc974847f41d"
+  },
+  "records": [
+    {
+      "id": "sparse-720-normal-none-dpr1",
+      "status": "MEASURED",
+      "elapsed_ms": 303
+    },
+    {
+      "id": "sparse-448-normal-none-dpr1",
+      "status": "MEASURED",
+      "elapsed_ms": 151
+    },
+    {
+      "id": "sparse-328-normal-none-dpr1",
+      "status": "MEASURED",
+      "elapsed_ms": 148
+    },
+    {
+      "id": "F1-720-normal-none-dpr1",
+      "status": "MEASURED",
+      "elapsed_ms": 249
+    },
+    {
+      "id": "F1-448-normal-none-dpr1",
+      "status": "MEASURED",
+      "elapsed_ms": 350
+    },
+    {
+      "id": "F1-328-normal-none-dpr1",
+      "status": "MEASURED",
+      "elapsed_ms": 707
+    },
+    {
+      "id": "F3-720-normal-none-dpr1",
+      "status": "MEASURED",
+      "elapsed_ms": 575
+    },
+    {
+      "id": "F3-448-normal-none-dpr1",
+      "status": "MEASURED",
+      "elapsed_ms": 503
+    },
+    {
+      "id": "F3-328-normal-none-dpr1",
+      "status": "MEASURED",
+      "elapsed_ms": 674
+    },
+    {
+      "id": "F3-max-720-normal-none-dpr1",
+      "status": "MEASURED",
+      "elapsed_ms": 2447
+    },
+    {
+      "id": "F3-max-448-normal-none-dpr1",
+      "status": "MEASURED",
+      "elapsed_ms": 1116
+    },
+    {
+      "id": "F3-max-328-normal-none-dpr1",
+      "status": "MEASURED",
+      "elapsed_ms": 2150
+    },
+    {
+      "id": "published-natal-720-normal-none-dpr1",
+      "status": "MEASURED",
+      "elapsed_ms": 233
+    },
+    {
+      "id": "published-natal-448-normal-none-dpr1",
+      "status": "MEASURED",
+      "elapsed_ms": 340
+    },
+    {
+      "id": "published-natal-328-normal-none-dpr1",
+      "status": "MEASURED",
+      "elapsed_ms": 708
+    },
+    {
+      "id": "cosmogram-720-normal-none-dpr1",
+      "status": "MEASURED",
+      "elapsed_ms": 155
+    },
+    {
+      "id": "cosmogram-448-normal-none-dpr1",
+      "status": "MEASURED",
+      "elapsed_ms": 162
+    },
+    {
+      "id": "cosmogram-328-normal-none-dpr1",
+      "status": "MEASURED",
+      "elapsed_ms": 146
+    },
+    {
+      "id": "multigroup-control-720-normal-none-dpr1",
+      "status": "MEASURED",
+      "elapsed_ms": 2562
+    },
+    {
+      "id": "multigroup-control-448-normal-none-dpr1",
+      "status": "MEASURED",
+      "elapsed_ms": 1392
+    },
+    {
+      "id": "multigroup-control-328-normal-none-dpr1",
+      "status": "MEASURED",
+      "elapsed_ms": 1809
+    },
+    {
+      "id": "F3-max-328-fallback-none-dpr1",
+      "status": "MEASURED",
+      "elapsed_ms": 2107
+    },
+    {
+      "id": "F1-328-normal-point-dpr2",
+      "status": "MEASURED",
+      "elapsed_ms": 750
+    },
+    {
+      "id": "F3-max-328-normal-conjunction-dpr2",
+      "status": "MEASURED",
+      "elapsed_ms": 2173
+    },
+    {
+      "id": "F1-448-normal-aspect-dpr1",
+      "status": "MEASURED",
+      "elapsed_ms": 346
+    },
+    {
+      "id": "published-natal-328-normal-background-dpr1",
+      "status": "MEASURED",
+      "elapsed_ms": 705
+    },
+    {
+      "id": "S1-control-328-normal-none-dpr1",
+      "status": "MEASURED",
+      "elapsed_ms": 705
+    },
+    {
+      "id": "palette-control-328-normal-none-dpr1",
+      "status": "MEASURED",
+      "elapsed_ms": 144
+    },
+    {
+      "id": "empty-cosmogram-328-normal-none-dpr1",
+      "status": "MEASURED",
+      "elapsed_ms": 144
+    }
+  ],
+  "boundaryControls": 28
+}
