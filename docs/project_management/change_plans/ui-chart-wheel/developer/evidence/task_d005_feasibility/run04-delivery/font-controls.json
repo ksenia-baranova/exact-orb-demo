@@ -1,0 +1,32 @@
+[
+  {
+    "size": 16,
+    "scale": 1,
+    "effective": 16,
+    "bbox": 21
+  },
+  {
+    "size": 15.99,
+    "scale": 1,
+    "effective": 15.99,
+    "bbox": 21
+  },
+  {
+    "size": 12,
+    "scale": 1,
+    "effective": 12,
+    "bbox": 16
+  },
+  {
+    "size": 11.99,
+    "scale": 1,
+    "effective": 11.99,
+    "bbox": 16
+  },
+  {
+    "size": 16,
+    "scale": 0.5,
+    "effective": 8,
+    "bbox": 22
+  }
+]

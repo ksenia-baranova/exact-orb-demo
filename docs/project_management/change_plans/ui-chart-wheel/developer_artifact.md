@@ -202,3 +202,49 @@ git log --reverse --format=%H -G '^## TASK-D-005 — публикация оце
 ```
 
 Это версия оценки / плана, **не TechnicalPackageV2SHA** будущего исполнения. Commit/push dev и MergeSHA change проверяются отдельно; точные SHA и remote parity передаются в итоговом Git-handoff. Исходные local / NOT_CREATED / EMPTY index в preparation JSON и предыдущем handoff сохраняют snapshot до публикации. После добавления этой записи новый preparation audit пересчитывает hashes текущего пакета до staging; прежние D003 audits/manifests остаются неизменными. Разрешение на публикацию не заменяет требуемое решение Owner о начале D005.
+
+
+## TASK-D-005 — STARTED после согласования Owner
+
+**Автор / подпись:** Codex / Developer. Источник допуска — прямое сообщение Owner в этом чате 19.10.2026: «Как Owner согласовываю scope и оценку TASK-D-005: 16–24 часа, эксперимент до 12 часов внутри оценки, передача до конца третьего рабочего дня от STARTED. Начинай TASK-D-005, зафиксируй STARTED и срок передачи».
+
+**STARTED: 19.10.2026 00:15:25 MSK (UTC+03:00). Срок передачи: до конца 21.10.2026, Europe/Moscow**, третий рабочий день, считая 19.10 днём 1 (пн–пт; час окончания рабочего дня не задан). Согласованы assessment v1 / 16–24 рабочих часа / 2–3 чд, единый эксперимент ≤12 часов внутри, вложенные лимиты аналитики ≤4 и browser+harness ≤4. Подготовка учитывается один раз внутри оценки; достоверный суммарный труд до STARTED и остаток D003 не вычисляются. При прогнозе превышения — конкретное влияние Manager до лимита; эскалация Manager → Owner через +1 рабочий день просрочки.
+
+**InputSHA / фактический HEAD:** `34f187aa81ddad7760089f54c1dc23d4d9e59d59`; прежний локальный HEAD `5eba30f74ce9af85fc13be048d3c0898f9d1a2cb`, fetch и fast-forward — exit 0. **AssignmentSHA:** `0046ac75bd6582089b68a640f98fa65468c0607a`; **AssessmentSHA:** `5eba30f74ce9af85fc13be048d3c0898f9d1a2cb`; **AnalystContractSHA:** `2736e2848c977ec4c770a9a4dec2a0d7c1b62a71`. Новый merge не изменил существенные входы. Index и дерево до начала чистые, несвязанных изменений нет. A007 принят; A006 / отсутствующий reviewer OutputSHA не блокируют независимую работу. Исторические «не начат / требуется согласование» относятся к snapshot оценки, superseded этим Owner-допуском.
+
+Начато исполнение ограниченного исследования / ревизии DRAFT ADR по §2.20 и плану. [Исходный журнал](developer/evidence/task_d005_feasibility/execution_start.json) фиксирует источник, сроки и хеши baseline. D003/run03/старые manifests остаются неизменными. Это авторское подтверждение; сводка Manager / gates / чужие материалы не редактируются, G3 / production не разрешены. Новый результат остаётся локальным до отдельного поручения commit/push/PR.
+
+
+## TASK-D-005 — результат ограниченного исполнения, локальный DRAFT
+
+**Автор / подпись:** Codex / Developer, 19.10.2026. Owner scope/16–24/experiment≤12/третий рабочий день согласовал прямым сообщением; STARTED **19.10.2026 00:15:25 MSK**, передача **до конца21.10.2026 Europe/Moscow**. Предыдущий STARTED / assessment handoff сохранены, время commit не использовано как STARTED.
+
+**InputSHA:** `34f187aa81ddad7760089f54c1dc23d4d9e59d59`; **AssignmentSHA:** `0046ac75bd6582089b68a640f98fa65468c0607a`; **AssessmentSHA:** `5eba30f74ce9af85fc13be048d3c0898f9d1a2cb`; **AnalystContractSHA:** `2736e2848c977ec4c770a9a4dec2a0d7c1b62a71`. D003d24a24e/run03/report/старые manifests сохранены; текущий DRAFT ADR/sequences явно ревизированы для D005, исходные D003 версии остаются на d24a24e. Source R001r2 только Manager summary, исходного reviewer OutputSHA нет. A007 принят, A005 использован, A006 already_applied условный отдельный вход.
+
+**Результат:** [report / критерий→данные→actual→вывод](developer/task_d005_feasibility_report.md), [новые findings](developer/task_d005_findings.md), [ревизия DRAFT ADR](developer/drawing_adr_draft.md), [sequence001](developer/sequence_diagrams/ui/001-result-renderer-lifecycle.puml) / [002](developer/sequence_diagrams/ui/002-acceptance-selection-focus.puml), [обновлённый план](developer/task_d005_implementation_plan.md). Revoke→removal→HTML B→guarded dispose→draw; revision-scoped value-frame sink до settlement; sync/async local faults; retained HTML и принятие S1 по полному DTO до filters. Runtime S1/F5 не выполнялись; no producer-provenance claim.
+
+**Drawing negative:**24 F/E клетки720/448/328,14/24 measured-component geometry,241/438 conditional Q certificates,238/2190 native owner/outcome mismatch;438/438 keyboard-проверок без потери active target.256 full positive return-prefix witnesses отклоняют compactness projection. Новая модель явно отличается от D004 chord path/radii/movable angles, thresholds0,5/2/1/16/12/44 сохранены. Zodiac/sign text/palette не моделировались, partial успех не whole drawing PASS. Текущий candidate не рекомендуется к реализации, глобальная невозможность / исключительность E не доказаны.
+
+**Evidence:** [raw final run04-delivery](developer/evidence/task_d005_feasibility/run04-delivery/index.json), [independent actual audit](developer/evidence/task_d005_feasibility/browser_audit.json), analytic exact controls9, isolated boundary12/12 и browser/HTML/focus controls12/12, все2190 native deliveries записаны глобальным capture. Первый run04 и исходники сохранены; повтор тех же inputs исправил отсутствие delivered coordinates у10 промахов, без изменения model spec. Helper zero-prefix/variable-shadowing исправления и исходный partial audit честно описаны в report. Реальные Segoe UI Symbol/Segoe UI, M/scale/DPR1, coordinates/bbox/screenshots/hashes сохранены. Parent experiment окончательно stopped `2026-10-19T11:12:57.167959+03:00`, wall bound10.9589h<12 включает ожидания и не является effort/timesheet; новые эксперименты после final stop не выполняются.
+
+**Оценка / ограничения:** дополнительного расхода не запрошено; D005 включён один раз в9–14 proposal, HTML-presenter6–10 внутри controller, D005 design1–2. Полная реализация9–14 **не подтверждена** без принятого drawing, confidence низкая; конкретные контрпримеры подтверждены с высокой уверенностью. Неизвестный остаток D003 не вычислен. Следующий новый model/scope требует адресной постановки/оценки через Manager; семантика — Analyst/Owner. Full production/mounted HTTP/HTTPS, runtime F5/S1, cross-platform/touch/zoom/full overflow, full product tests и PUML render NOT RUN.
+
+**Публикация / следующий шаг:** новый TechnicalPackageV2SHA **NOT_CREATED**, результат локальный, index сохранён пустым, commit/push/PR не выполнялись. Точный перечень путей/hash/scope/командных actual — [manifest](developer/evidence/task_d005_feasibility/package_manifest.json) / [package audit](developer/evidence/task_d005_feasibility/package_audit.json). После отдельного поручения публикации Manager закрепляет один TechnicalPackageV2SHA → **TASK-T-007 / TASK-R-002**, затем решение по следующей геометрии и отдельный G3 для production. Manager-owned task statuses / gates / DP / чужие артефакты не изменены. Developer first triage за1 рабочий день; escalation Manager→Owner через+1 рабочий день просрочки.
+
+
+**D005 — фактические проверки исполнения:** `python -B -X utf8 docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/audit_package.py --write`, затем без `--write` и `git diff --check` — итоговый проверяемый проход. Первый успешный package audit: **D005_PACKAGE_OK**, payloads162 (ещё2 self-metadata отдельно), baseline604 unchanged, D003 archive164/164, native2190 / keyboard438, controls9+12+12, docs45 / links1301 / tables111, Python AST6 / Node syntax3 / PUML structure2, diff_check0 / indexEMPTY / publicationNOT_RUN. После этой записи audit/manifest пересчитываются и повторно сверяются. Binary `.bin`/PNG сравниваются raw, text — LF; первоначальная ошибочная нормализация golden остановила helper, сам golden не изменён. Structural PUML не называется render PASS. Локальные OutputSHA/TechnicalPackageV2SHA по-прежнему NOT_CREATED.
+
+
+## TASK-D-005 — публикационная версия результата
+
+**Автор / подпись:** Codex / Developer. Основание — отдельное прямое поручение Owner в этом чате: «Комит пуш в dev затем merge в сhangs»; существующая интеграционная ветка — `change/ui-chart-wheel`, ролевая — `dev/ui-chart-wheel`. Публикуется только проверенный результат TASK-D-005: восемь собственных документов и новое task_d005_feasibility evidence, без изменений Manager/gates/чужих артефактов/production. InputSHA до публикации `34f187aa81ddad7760089f54c1dc23d4d9e59d59`; AssignmentSHA0046ac7 / AnalystContractSHA2736e28 остаются закреплёнными предметами.
+
+**TechnicalPackageV2SHA:** коммит, впервые добавивший этот заголовок. Воспроизводимый resolver:
+
+```text
+git log --reverse --format=%H -G '^## TASK-D-005 — публикационная версия результата$' -- docs/project_management/change_plans/ui-chart-wheel/developer_artifact.md
+```
+
+Это новый результат исполнения D005, **не AssessmentSHA5eba30f и не D003d24a24e**. MergeSHA интеграции фиксируется отдельно и не означает принятия drawing/ADR/G3. Фактические commit/push/merge и remote parity передаются в итоговом Git-handoff после выполнения. Локальные NOT_CREATED / publicationNOT_RUN / EMPTY index в report, audit и прежнем handoff — сохранённый snapshot до этой публикации, superseded её проверенным Git-результатом. Manifest/audit перед staging пересчитываются только для текущей записи; raw research runs/spec/старые manifests остаются неизменными. Staged scope и каждый blob сверяются с manifest до коммита, опубликованные refs — после push.
+
+**После публикации:** Manager закрепляет этот TechnicalPackageV2SHA для адресных TASK-T-007 / TASK-R-002. Конкретный drawing-кандидат остаётся отрицательным результатом, DRAFT ADR не становится принятым, следующий geometry-route / G3 решаются отдельно. Developer не изменяет статусы этих reviews, сводку Manager и чужое авторство.

@@ -1,0 +1,352 @@
+{
+  "pointBefore": {
+    "selected": null,
+    "active": "html-moon",
+    "key": "moon",
+    "token": 440,
+    "connected": true,
+    "visible": true,
+    "calls": 72,
+    "scroll": [
+      0,
+      0
+    ],
+    "all": false,
+    "housesAll": false,
+    "draft": "10:30"
+  },
+  "pointAfter": {
+    "selected": "moon",
+    "active": "html-moon",
+    "key": "moon",
+    "token": 440,
+    "connected": true,
+    "visible": true,
+    "calls": 72,
+    "scroll": [
+      0,
+      0
+    ],
+    "all": false,
+    "housesAll": false,
+    "draft": "10:30"
+  },
+  "pointToggle": {
+    "selected": null,
+    "active": "html-moon",
+    "key": "moon",
+    "token": 440,
+    "connected": true,
+    "visible": true,
+    "calls": 72,
+    "scroll": [
+      0,
+      0
+    ],
+    "all": false,
+    "housesAll": false,
+    "draft": "10:30"
+  },
+  "rowBefore": {
+    "selected": null,
+    "active": "row-0",
+    "key": "[\"mean_apog\",\"pars_fortune\",\"quincunx\"]",
+    "token": 441,
+    "connected": true,
+    "visible": true,
+    "calls": 72,
+    "scroll": [
+      0,
+      1026
+    ],
+    "all": true,
+    "housesAll": true,
+    "draft": "10:30"
+  },
+  "rowAfter": {
+    "selected": "[\"mean_apog\",\"pars_fortune\",\"quincunx\"]",
+    "active": "row-0",
+    "key": "[\"mean_apog\",\"pars_fortune\",\"quincunx\"]",
+    "token": 441,
+    "connected": true,
+    "visible": true,
+    "calls": 72,
+    "scroll": [
+      0,
+      12
+    ],
+    "all": true,
+    "housesAll": true,
+    "draft": "10:30"
+  },
+  "rowToggle": {
+    "selected": null,
+    "active": "row-0",
+    "key": "[\"mean_apog\",\"pars_fortune\",\"quincunx\"]",
+    "token": 441,
+    "connected": true,
+    "visible": true,
+    "calls": 72,
+    "scroll": [
+      0,
+      1026
+    ],
+    "all": true,
+    "housesAll": true,
+    "draft": "10:30"
+  },
+  "beforeRecreate": {
+    "selected": null,
+    "active": "html-moon",
+    "key": "moon",
+    "token": 440,
+    "connected": true,
+    "visible": true,
+    "calls": 72,
+    "scroll": [
+      0,
+      197
+    ],
+    "all": true,
+    "housesAll": true,
+    "draft": "10:30"
+  },
+  "recreated": {
+    "snapshot": {
+      "selected": null,
+      "active": "",
+      "token": 1,
+      "connected": true,
+      "visible": true,
+      "calls": 72,
+      "scroll": [
+        0,
+        197
+      ],
+      "all": true,
+      "housesAll": true,
+      "draft": "10:30"
+    },
+    "oldConnected": false
+  },
+  "restored": {
+    "selected": null,
+    "active": "html-moon",
+    "key": "moon",
+    "token": 442,
+    "connected": true,
+    "visible": true,
+    "calls": 73,
+    "scroll": [
+      0,
+      197
+    ],
+    "all": true,
+    "housesAll": true,
+    "draft": "10:30"
+  },
+  "restoredAction": {
+    "selected": "moon",
+    "active": "html-moon",
+    "key": "moon",
+    "token": 442,
+    "connected": true,
+    "visible": true,
+    "calls": 73,
+    "scroll": [
+      0,
+      156
+    ],
+    "all": true,
+    "housesAll": true,
+    "draft": "10:30"
+  },
+  "resizeBefore": {
+    "selected": null,
+    "active": "target-1",
+    "key": "moon",
+    "token": 443,
+    "connected": true,
+    "visible": true,
+    "calls": 73,
+    "scroll": [
+      0,
+      152
+    ],
+    "all": false,
+    "housesAll": false,
+    "draft": "10:30"
+  },
+  "resizeAfter": {
+    "selected": null,
+    "active": "target-1",
+    "key": "moon",
+    "token": 443,
+    "connected": true,
+    "visible": true,
+    "calls": 73,
+    "scroll": [
+      0,
+      176
+    ],
+    "all": false,
+    "housesAll": false,
+    "draft": "10:30"
+  },
+  "resizeAction": {
+    "selected": "moon",
+    "active": "target-1",
+    "key": "moon",
+    "token": 443,
+    "connected": true,
+    "visible": true,
+    "calls": 73,
+    "scroll": [
+      0,
+      176
+    ],
+    "all": false,
+    "housesAll": false,
+    "draft": "10:30"
+  },
+  "collapseBefore": {
+    "selected": "moon",
+    "active": "draft",
+    "token": 444,
+    "connected": true,
+    "visible": true,
+    "calls": 73,
+    "scroll": [
+      0,
+      0
+    ],
+    "all": false,
+    "housesAll": false,
+    "draft": "10:30"
+  },
+  "collapse": {
+    "selected": "moon",
+    "active": "edit",
+    "token": 445,
+    "connected": true,
+    "visible": true,
+    "calls": 74,
+    "scroll": [
+      0,
+      0
+    ],
+    "all": false,
+    "housesAll": false,
+    "draft": "10:30"
+  },
+  "controls": [
+    {
+      "id": "HTML-point-retained-native",
+      "actual": [
+        "html-moon",
+        true,
+        true,
+        "moon",
+        null,
+        true
+      ],
+      "expected": [
+        "html-moon",
+        true,
+        true,
+        "moon",
+        null,
+        true
+      ],
+      "pass": true
+    },
+    {
+      "id": "HTML-row-retained-native",
+      "actual": [
+        "row-0",
+        true,
+        true,
+        null,
+        true,
+        true,
+        true
+      ],
+      "expected": [
+        "row-0",
+        true,
+        true,
+        null,
+        true,
+        true,
+        true
+      ],
+      "pass": true
+    },
+    {
+      "id": "recreated-key-is-not-retained",
+      "actual": [
+        false,
+        false
+      ],
+      "expected": [
+        false,
+        false
+      ],
+      "pass": true
+    },
+    {
+      "id": "external-current-cause-restore-model",
+      "actual": [
+        "html-moon",
+        true,
+        "moon",
+        true
+      ],
+      "expected": [
+        "html-moon",
+        true,
+        "moon",
+        true
+      ],
+      "pass": true
+    },
+    {
+      "id": "resize-focused-live-target",
+      "actual": [
+        true,
+        "target-1",
+        "moon",
+        true
+      ],
+      "expected": [
+        true,
+        "target-1",
+        "moon",
+        true
+      ],
+      "pass": true
+    },
+    {
+      "id": "collapse-focus-before-hide",
+      "actual": [
+        "edit",
+        true,
+        true,
+        1
+      ],
+      "expected": [
+        "edit",
+        true,
+        true,
+        1
+      ],
+      "pass": true
+    },
+    {
+      "id": "recovery-native-control",
+      "actual": "recovery-control-native",
+      "expected": "recovery-control-native",
+      "pass": true
+    }
+  ]
+}

@@ -1,54 +1,60 @@
 @startuml
-' DRAFT. Developer / TASK-D-003. InputSHA 8fb25770169166a3a4e94110eee684bd8b116474.
-' REQ-WHEEL-07/08/09/10; REQ-UI-09/11; AS-WHEEL-18/21/28/29/30; T003-G02/03/04.
-title DRAFT: one acceptance event, new DTO facts and cause-aware live focus
+' DRAFT Developer TASK-D-005. InputSHA34f187a; AnalystContractSHA2736e28 (accepted v3+S1).
+' R001-04; A005 applied; A006 conditional. REQ-WHEEL-04/07/08/10; AS-WHEEL-28/29/30.
+title DRAFT v2: full accepted DTO index before filters, once cause and live focus
 autonumber
 hide footbox
 actor User
-participant "Session / internal accept seam" as Session
-control "ResultController (proposed)" as Result
-participant "Readonly new DTO / key index" as Index
-participant "Retained HTML/SVG DOM" as DOM
-User -> Session : explicit submit immutable B
-Session -> Session : attemptId + submitted B; draft can become C
-alt accepted own committed result; B differs from confirmed birth
-  Session -> Result : new acceptanceSeq, own_committed_changed, B
-  Result -> Result : once reset selection / expansion to 5/5
-  Result -> DOM : collapse fields iff current draft equals B
-  opt focused field will be hidden
-    Result -> DOM : focus existing Edit without scroll before hide
+participant "Session accept owner" as Session
+control "ResultController" as Result
+participant "Full accepted DTO index" as Index
+participant "Retained HTML/SVG controls" as DOM
+User -> Session : explicit submit immutable B; attemptId
+Session -> Session : draft can change independently
+Session -> Result : accepted DTO + unique acceptanceSeq + cause
+Result -> Index : all source rows, unordered endpoints + published type
+Index -> Index : cardinality BEFORE category/five-all/planet-filter
+Index --> Result : rows/order/from-to/category/orb unchanged; 0/1/>1 matches
+alt own committed changed-birth OR active pending-goal fresh matched recovery (A005)
+  Result -> Result : apply reset once per accepted attempt/event
+  Result -> DOM : selection none, five/five
+  opt current draft equals submitted snapshot
+    opt focused field will be hidden
+      Result -> DOM : focus existing live Edit without scroll BEFORE hide
+    end
+    Result -> DOM : collapse fields; recovery controls remain outside
   end
 else automatic current / reconcile
-  Session -> Result : new acceptanceSeq, actual DTO / birth / relation
-  Result -> Index : unique canonical pair/point lookup in new facts
-  alt object exists uniquely
-    Index --> Result : NEW record incl category/orb/endpoints
-    Result -> DOM : preserve selection / expansion, replace old facts
-  else absent in accepted DTO
-    Index --> Result : absent
-    Result -> DOM : clear only missing selection, preserve expansion
-  else ambiguous duplicated key
-    Index --> Result : ambiguous (proposed tagged outcome)
-    note over Result, DOM
-    Observable ambiguity policy requires technical / semantic review.
-    No first-match or new API validation rule accepted in this DRAFT.
-    end note
+  alt selected key has exactly one match
+    Result -> DOM : retain same key, update NEW facts/direction/category/orb
+  else selected aspect has >1 accepted source matches (S1)
+    Result -> DOM : clear only aspect; restore prior general five/all, not planet filter
+    Result -> DOM : preserve houses/draft; all original HTML rows + local accessible warning
+    Result -> DOM : no affected line/conjunction/aspect-select; unaffected point/pairs continue
+  else absent selected key
+    Result -> DOM : clear only missing selection, preserve expansion/draft
   end
+else target_confirmed_already_applied
+  note over Session, Result
+  Separate TASK-A-006 / R001-05; apply only published owner policy when available.
+  No invented default or producer-provenance claim; geometry independent.
+  end note
 end
-note over Session, Result
-Fresh matched recovery after lost POST cannot prove producer tab.
-Pending-attempt presentation confirmation is a concrete open semantic branch;
-stale/different/old recovery is not own committed success.
+Session -> Result : failed/rejected read or repeated phase/publish
+Result -> Result : no new full index from unaccepted data; no repeated reset
+note over Index, DOM
+Unique reverse / different type / other pairs and present point are unaffected.
+Background unique keeps two endpoints, not an old line.
+After accepted ambiguity, later unique enables selection, never auto-reselects.
+F5 runtime NOT RUN in D005; these are accepted contract design invariants.
 end note
-Session -> Result : repeated phase/publish with same acceptanceSeq
-Result -> Result : do not reset again
-User -> DOM : native point Enter / Space / pointer
-DOM -> Result : canonical point intent
-Result -> DOM : filter aspects; retain SAME live point node
+User -> DOM : native point/unique-row Enter, Space, pointer
+DOM -> Result : canonical intent, live current capability
+Result -> DOM : keyed patch, SAME connected control, preserve tab order
 note over Result, DOM
-No programmatic focus/scroll caused by planet activation.
-External-current recreation may restore same canonical key;
-removed key uses allowed live cause-specific fallback.
-Recovery controls remain outside hidden fields and preserve existing gates.
+Planet activation: no programmatic focus/scroll.
+Same-key recreation is not retention.
+External accepted recreation may restore live permitted key without scroll;
+removed/disabled key follows existing H5 cause-specific live fallback.
 end note
 @enduml
