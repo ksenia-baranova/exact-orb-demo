@@ -19,6 +19,7 @@ export function documentPort() {
       get textContent() { return ownText + this.children.map((child) => child.textContent).join(""); },
       set textContent(value) { ownText = value; this.replaceChildren(); },
       addEventListener(type, listener) { listeners.set(type, listener); },
+      removeEventListener(type, listener) { if (listeners.get(type) === listener) listeners.delete(type); },
       emit(type, detail = {}) { return listeners.get(type)?.({ preventDefault() {}, ...detail }); },
       click() { if (!this.disabled) return this.emit("click"); },
       setAttribute(name, value) { attributes.set(name, String(value)); },
@@ -32,6 +33,11 @@ export function documentPort() {
         const index = this.children.indexOf(before);
         this.children.splice(index < 0 ? this.children.length : index, 0, child);
         child.parentNode = this;
+      },
+      removeChild(child) {
+        this.children = this.children.filter((item) => item !== child);
+        child.parentNode = null;
+        return child;
       },
       after(child) { const siblings = this.parentNode.children; this.parentNode.insertBefore(child, siblings[siblings.indexOf(this) + 1]); },
       replaceChildren(...items) {

@@ -82,3 +82,40 @@ Performance SLA не установлен. Browser job0,14–2,56с включа
 Предлагаемый ответ назначенных technical/criteria reviewers на exact package —1 рабочий день; они подтверждают свои сроки. Первичный Developer triage возврата —1 рабочий день. Эскалация Manager→Owner через+1 рабочий день просрочки, заместитель не назначен; ожидание не равно approval. G4/G5/acceptance независимы от этого плана.
 
 **Следующее конкретное решение Owner:** принять предложенный полный scope40–64ч и передачу≤8 рабочих дней от отдельного STARTED, с указанными зависимостями/исключениями. Для технического допуска Manager закрепляет target contract и applicable DP/ADR approvals. Продуктовый выбор колонки/table-only повторять не нужно. Commit/push/PR/merge не выполнялись и требуют отдельного поручения; до публикации Criteria/TechnicalPackage/CandidateSHA нового результата отсутствуют.
+
+
+## 7. TASK-D-007 — фактическое начало / первый участок CH-02/03
+
+**Автор / подпись: Codex, Developer, 19.10.2026.** Прямое поручение Owner в текущем чате: «Отходим от процесса / Давай стартовать разработку». Предыдущие условия ожидания G3 / A008 / T007 / R002 в §§3–6 описывают состояние до этого более позднего исключения. [Manager §2.25](../manager_artifact.md#225-прямой-старт-разработки-по-решению-owner) регистрирует прямое разрешение, не выдаёт отсутствующие approvals за полученные.
+
+**STARTED:19.10.2026 22:11:37MSK /19:11:37UTC.** InputSHA502589dbadd382fbe39e3cf1fd763abb52ffc620, текущий detached checkout79e1; семь локальных Manager-owned путей прошлого прохода сохранены. Ветка / commit / push не создавались. Первый самостоятельный участок CH-02/03 внутри FW-01 реализован в локальном дереве; весь D007 остаётся **IN_PROGRESS / DRAFT**. Ориентир первого участка7–10ч уже внутри40–64ч; его не подменяем elapsed длительностью сеанса и не выдумываем отдельное численное budget approval.
+
+**Основание / источники:** фактические facts.mjs / main.mjs / session.mjs, tests/ui/facts / session / recovery / fixture DOM, test_ui_delivery; Analyst v3+S1@2736e28 REQ-WHEEL-04/07/08/09/10, AS-WHEEL-11/12/13/16/23/28/29/30 и baseline current UI / ADR-0029 / component boundaries. Источники domain data не пересчитываются. Техническая behavioral sequence002 сохраняет источник; её SVG-activation / category-text заменены принятыми более поздними Owner-дельтами, сами Analyst-файлы не редактировались.
+
+**Реализовано:**
+
+- Реально используемый внутренний chart_state.mjs: индекс unordered endpoints + опубликованный type по полному DTO до five/all / planet-filter; 0/1/>1 matches. S1 не объединяет строки; одинаковый / reversed / category / orb duplicate блокирует лишь неоднозначный адрес. Остальные point / aspect controls действуют.
+- Взаимоисключающие point / aspect toggles. Планета показывает все связанные source rows, включая background / angles / ambiguous, в DTO order; другая заменяет прежнюю. Повтор планеты возвращает общий список первых5; повтор аспекта сохраняет прежнее general five/all и не восстанавливает planet-filter. Background сохраняет свои опубликованные факты.
+- Retained HTML: все points / первые5 aspects / первые5 houses видны сразу, отдельные native show-all, компактная таблица angles. Общая details-кнопка удалена по изменённому контракту AS-UI-22. Кнопки / строки сохраняются по ключу, источник / source occurrence не превращаются в API identity. Текст обновляется через textContent, не HTML. CSS targets ≥44px / visible focus; planet activation без программного focus / scroll.
+- Automatic accepted update сохраняет только адресуемый выбор, использует новые category/orb/направление; absent/ambiguous снимает только affected selection и сохраняет раскрытие. Подтверждённый empty/unavailable удаляет числовые строки. Dispose / удаление строки отключают старые callbacks; main использует реальный result.dispose.
+- Новый модуль включён в проверку HTTP / installed-wheel delivery. Engine/API/projector/golden, зависимости и HTTP/cause/recovery semantics не изменены. SVG leaf / placeholder не добавлялись.
+
+**Выбранный подход / чувствительность:** три первые mounted-проверки нового поведения сначала дали RED на существующем корректно загруженном приложении: глобально скрытые facts / отсутствующие disclosure и selection controls, затем GREEN после реализации. Formatting/source/golden/HTTP assertions переиспользованы. Старые tests глобального details gate намеренно изменены только для принятой Owner-дельты. Новые state/mounted controls проверяют U/R/D/V/M/L/T/P через уникальность / reverse / duplicates / variants / mode / loss / type / point. В существующих safe-read tests DOM fault перенесён с создания таблицы на реальный retained-control patch: таблицы больше не пересоздаются при каждой identity. Assertions safe-read / submit prohibition не ослаблены; добавлены числовые rows и равенство UI identity принятому ответу.
+
+**Технический regression:** неуспешный частичный DOM patch должен инвалидировать прежний render-cache. Иначе возврат safe-read к прежней A мог пропустить восстановление после partial B из-за совпадения старого cache key. Cache инвалидируется до patch и отмечается успешным только после завершения; positive recovery и три controlled fault сценария проверены.
+
+| Команда / проверка | Фактический результат |
+|---|---|
+| node --test tests/ui/chart_selection.test.mjs | 12 PASS /0 FAIL; реальные public source fixtures, state и mounted main/session |
+| node --test --test-reporter=spec tests/ui/*.test.mjs | **200 PASS /0 FAIL** |
+| python -m pytest tests/test_module_boundaries.py -q | **46 passed**, sandbox |
+| python -m pytest tests/http_api/test_ui_delivery.py tests/test_module_boundaries.py -q | **53 passed**,14,75с, повтор вне sandbox; включает installed wheel |
+| python -m pytest -q | **2959 passed,1 skipped**,143,91с; skip только существующий DEBT-CALC-001 |
+| node docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d007_html/browser.cjs | **D007_HTML_BROWSER_OK**: Chrome155.0.8059.40 / Windows, widths1440/768/360; Enter/Space,24 видимые native targets ≥44×44 по каждой ширине, same-node/live-focus / source reorder / automatic category update / S1 / resize / отсутствие horizontal overflow |
+| Browser activation / network positive controls | Только boot/current на bootstrap и двух явно вызванных online updates. Выбор / раскрытие / resize не добавляют HTTP; реальный main/session/form/facts, листовая контролируемая сеть |
+
+**Среда / пределы:** sandbox блокировал loopback браузера и Windows asyncio socketpair (faulthandler: _fallback_socketpair→accept при создании event loop). Разрешённые повторы вне sandbox прошли; три собственных зависших sandbox pytest-процесса остановлены по проверенным PID, процесс успешного прогона не затронут. Это не product failure / не основание менять код event loop. Native checks — Windows Chrome на трёх ширинах, не независимый Tester / другие ОС/engine / HTTPS.
+
+**Что ещё не реализовано / следующий код:** CH-01/04 — accepted-event once / собственный changed-birth reset / сводка / collapse editor и полная recovery integration; already_applied policy не выбрана по предположению. Текущий facts.update выполняет обычный сохраняющий reconcile принятого ChartDTO; отдельная причина собственного build будет подключена в CH-01/04, поэтому целиком REQ-WHEEL-08 / full FW-01 не объявляются готовыми. Следующий независимый участок — реальный passive renderer / boundary FW-03 и SVG FW-02 по опубликованному column design, затем cause wiring / FW-04. Ни G4, ни готовность всего колеса / CandidateSHA / independent acceptance не заявлены.
+
+**Публикация:** NOT RUN, index не изменялся, OutputSHA / CandidateSHA отсутствуют. Исходные D003/D005/v3/column research raw и их manifests не пересчитаны. [Native evidence / команды](evidence/task_d007_html/README.md); handoff дополняется по факту следующего участка. Оценки остаются ориентирами; до прогнозируемого превышения сообщать Owner влияние.

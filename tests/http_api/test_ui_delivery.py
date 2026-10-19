@@ -23,7 +23,7 @@ from tests.http_api.conftest import http_settings
 
 UI_RESOURCES = (
     "index.html", "styles.css", "main.mjs", "transport.mjs", "form.mjs",
-    "places.mjs", "session.mjs", "facts.mjs", "recovery.mjs", "response.mjs",
+    "places.mjs", "session.mjs", "facts.mjs", "chart_state.mjs", "recovery.mjs", "response.mjs",
 )
 
 

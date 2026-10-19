@@ -44,6 +44,9 @@ SOURCES = {
     "d005_package": "8b8c4c818147b037cb90f93a42e64eb86d809183",
     "d005_integration": "cc4ecfff0208a15c64ae976bf5d6463cd47636ae",
     "table_only_manager_baseline": "dff5757e1b7b4896f8e1e9395fe61aaaaa4327e3",
+    "table_only_publication": "07bb56ba5d49ec76de64df41ad80d175fbe90a2d",
+    "full_wheel_first_publication": "5fdc4771d97307b2803fbe0f20a4833abfec645b",
+    "full_wheel_package": "502589dbadd382fbe39e3cf1fd763abb52ffc620",
 }
 
 def published_date(sha):
@@ -67,7 +70,7 @@ def render():
     xml = [
         '<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="1778" viewBox="0 0 1440 1778" role="img" aria-labelledby="title desc">',
         '<title id="title">ui-chart-wheel — факт, согласованная подготовка и условные оценки</title>',
-        '<desc id="desc">Факт до G1: 13–17 октября 2026, фактический труд отдельно не измерен. TASK-D-003 передал исследование d24a24e / merge 030826f. T0 18.10.2026 15:17:04 MSK, текущий сеанс 1,9473 elapsed часа, SVG-spike 0,6023 часа внутри 6; это не полный timesheet подготовки. Измеренный heuristic не прошёл dense / native hit / минимальность. T004 / A005 / A007 приняты; контракт v3 + S1 закреплён на 2736e28. Исходный R001 r2 ожидается через Git. D005 опубликован на 8b8c4c8, текущая F/E construction отклонена. Owner принял пассивное SVG с управлением только из HTML; A008 готовит новую адресную редакцию, старые measurement FAIL не становятся PASS. T007/R002 разблокированы; D006 готовит первый scope controller/HTML. D00516–24 и experiment≤12 согласованы по handoff; общий бюджет / G3 не утверждены. Согласованные 20–28 ч сохранены; Developer предлагает 9–14 чд вместо 8–12, Owner новый бюджет ещё не согласовал. Нового предстартового круга нет.</desc>',
+        '<desc id="desc">Факт до G1: 13–17 октября 2026, фактический труд отдельно не измерен. D003 и D005 сохранены исторически. Получен полный пассивный column package502589d, author run07:29/29 изученных конфигураций и isolated28/28; это не production PASS. D006 DONE / APPROVED как подготовка. A008 / T007 / R002 NOT_STARTED, одна адресная дельта / reviews на новом пакете. D007 IN_PROGRESS / DRAFT по прямому исключению Owner: предложение Developer40–64 рабочих часа /5–8чд / до конца8-го рабочего дня от будущего STARTED, Owner бюджет ещё не согласовал. CH-02/03 7–10ч внутри FW-01, не дополнительная сумма. Owner уже выбрал table-only / условную колонку / отсутствие SVG-текста категорий. Формальный G3 отсутствует; реализация CH-02/03 начата19.10 22:11:37MSK.</desc>',
         '<style>text{font-family:"Segoe UI","DejaVu Sans",sans-serif;fill:#172536} .muted{fill:#586879} .small{font-size:16px} .label{font-size:18px} .section{font-size:23px;font-weight:650} .grid{stroke:#dce4ec;stroke-width:1} .estimate{stroke:#215dc2;stroke-dasharray:6 4;stroke-width:2}</style>',
         '<rect width="1440" height="1778" fill="#f1f5f9"/>',
     ]
@@ -137,48 +140,49 @@ def render():
     text(50, 756, "Полный труд включает оценочную подготовку; это не измеренный остаток после T0. Эксперимент ≤6 ч внутри.", 16, color="#586879")
     text(50, 778, "Сеанс research: 1,9473 elapsed ч; spike: 0,6023 ч. Полный фактический труд подготовки отдельно неизвестен.", 16, color="#586879")
 
+
     rect(28, 816, 1384, 354, "#ffffff")
-    text(50, 852, "ИСХОДНЫЕ ОЦЕНКИ РОЛЕЙ · условный полный объём до переоценки", 23, weight="650")
-    text(50, 880, "Исторический сценарий 8–12 + 3–5 чд; подготовка отдельно не прибавляется. Даты поставки нет.", 17, color="#586879")
+    text(50, 852, "РЕАЛИЗАЦИЯ · предложение Developer · TASK-D-007", 23, weight="650")
+    text(50, 880, "FW-01…06 · 40–64 часа / 5–8 чд · medium · оценка-ориентир; код уже начат.", 17, color="#9a580b")
     def estimate_x(value):
-        return left + value/17*(right-left)
-    for value in [0, 4, 8, 11, 12, 17]:
+        return left + value/64*(right-left)
+    for value in [0, 8, 16, 32, 40, 48, 64]:
         x = estimate_x(value)
         line(x, 896, x, 1110)
         text(x, 1138, str(value), 16, color="#586879", anchor="middle")
     estimates = [
-        ("Нижний сценарий · Developer", 0, 8, 908, "#e6efff", "#215dc2", "Developer · 8 чд"),
-        ("Нижний сценарий · Tester", 8, 3, 958, "#e1f2ec", "#16795d", "Tester · 3 чд"),
-        ("Верхний сценарий · Developer", 0, 12, 1024, "#e6efff", "#215dc2", "Developer · 12 чд"),
-        ("Верхний сценарий · Tester", 12, 5, 1074, "#e1f2ec", "#16795d", "Tester · 5 чд"),
+        ("Полный объём · нижняя оценка", 40, 908, "#e6efff", "#215dc2", "40 рабочих часов"),
+        ("Полный объём · верхняя оценка", 64, 974, "#e6efff", "#215dc2", "64 рабочих часа"),
     ]
-    for label, begin, duration, y, fill, color, inside in estimates:
+    for label, duration, y, fill, color, inside in estimates:
         text(50, y+25, label, 18)
-        x, end_x = estimate_x(begin), estimate_x(begin+duration)
+        x, end_x = estimate_x(0), estimate_x(duration)
         rect(x, y, end_x-x, 36, fill, color, dash=True)
         text((x+end_x)/2, y+24, inside, 16, color=color, weight="650", anchor="middle")
-    line(estimate_x(8), 944, estimate_x(8), 958, "#738297", dash=True)
-    line(estimate_x(12), 1060, estimate_x(12), 1074, "#738297", dash=True)
-    text(estimate_x(11)+14, 983, "Σ 11", 16, color="#16795d", weight="650")
-    text(estimate_x(17)+14, 1099, "Σ 17", 16, color="#16795d", weight="650")
-    text(50, 1206, "TASK-D-003 входит в подготовку исходного Developer-плана; 8–12 + 2,5–3,5 и вычитание остатка не обоснованы.", 17)
-    text(50, 1235, "Developer предлагает 9–14 чд вместо 8–12, подготовка внутри; Owner новый бюджет ещё не согласовал.", 17)
-    text(50, 1264, "В исходной сумме нет Manager / Analyst / Technical Reviewer, ожиданий, дополнительных reviews, приёмки и переноса.", 16, color="#586879")
+    text(50, 1065, "Срок · от отдельного STARTED", 18)
+    line(left, 1058, right, 1058, "#738297", dash=True)
+    diamond(right, 1058, "#738297")
+    text(left+14, 1046, "Предложение: передача до конца восьмого рабочего дня", 17, color="#586879")
+    text(left, 1094, "CH-02/03: 7–10 ч внутри FW-01. D006: 14–22 ч внутри полного объёма.", 16, color="#586879")
+    text(50, 1206, "Прошлые исследования / подготовка повторно не начисляются. Независимый Tester в 40–64 ч не входит.", 17)
+    text(50, 1235, "Исходные Developer 8–12 / Tester 3–5 чд и прогноз 9–14 сохранены для истории своих версий.", 17)
+    text(50, 1264, "Код начат по прямому исключению Owner; G3 / численный бюджет / дата полной передачи не выдуманы.", 16, color="#586879")
     rect(28, 1290, 1384, 460, "#ffffff")
-    text(50, 1326, "СЛЕДУЮЩИЕ ШАГИ · Owner выбрал управление только через таблицы", 23, weight="650")
-    text(50, 1362, "Owner · ACCEPTED · SVG пассивно, выбор в HTML; подсветка колеса сохраняется.", 18, color="#16795d")
-    text(50, 1392, "A008 · NOT_STARTED · узкая дельта требований / AS / sequences, новый SHA ожидается.", 18)
-    text(50, 1422, "T007 / R002 · NOT_STARTED · D005 по старому контракту + применимость к новому scope.", 18)
-    text(50, 1452, "D006 · NOT_STARTED · обновлённая оценка / план HTML → selection → пассивное SVG.", 18)
-    text(50, 1482, "D005 · READY_FOR_REVIEW / IN_REVIEW · 8b8c4c8; прежние actual / FAIL сохранены.", 18, color="#9a580b")
-    text(50, 1512, "D00516–24 ч / experiment ≤12; STARTED / stop / прежний бюджет не переписаны.", 18)
-    text(50, 1542, "A006 · NOT_STARTED · отдельная already_applied-policy; независимая работа доступна.", 18)
-    text(50, 1572, "A007 · DONE / APPROVED · 2736e28 — прежний контракт v3 + S1, не возврат Analyst.", 18, color="#16795d")
-    text(50, 1608, "SVG hit-Q44 / отдельная SVG навигация исключены; доступные HTML controls сохраняются.", 17, color="#586879")
-    text(50, 1638, "Visual gap / шрифты / долготы / минимальный разнос / R / ☌ / S1 остаются обязательными.", 17, color="#586879")
-    text(50, 1668, "Экономия и новый срок ещё не оценены. Актуальные версии / approvals нужны перед G3.", 17, color="#586879")
-    text(50, 1698, "Owner разрешил commit / push регистрации; роли получают новый вход через Git.", 17, color="#586879")
-    text(50, 1728, "Notes №9: предлагать более дешёвые альтернативы / компромиссы; skills пока не менялись.", 17, color="#586879")
+
+    text(50, 1326, "ПЕРЕХОД К КОДУ · одна адресная передача · пакет 502589d", 23, weight="650")
+    text(50, 1362, "Owner · выбор принят: HTML → SVG; условная колонка; без текста категорий на SVG.", 18, color="#16795d")
+    text(50, 1392, "D006 · DONE / APPROVED · подготовка плана, без runtime / ADR / бюджетного approval.", 18, color="#16795d")
+    text(50, 1422, "A008 · NOT_STARTED · единая узкая дельта требований / AS / sequences, target SHA ожидается.", 18)
+    text(50, 1452, "T007 / R002 · NOT_STARTED · адресный review нового пакета, параллельно A008.", 18)
+    text(50, 1482, "D007 · IN_PROGRESS / DRAFT · STARTED19.10 22:11:37MSK по прямому решению Owner.", 18, color="#9a580b")
+    text(50, 1512, "Первый код: canonical state / retained HTML, CH-02/03; SVG / wiring следующие.", 18)
+    text(50, 1542, "A006 · отдельная already_applied-policy; задерживает только связанную интеграцию.", 18)
+    text(50, 1572, "Run07: 29/29 изученных конфигураций / isolated boundary28/28 — evidence Developer.", 18)
+    text(50, 1608, "Research PASS ограничен матрицей; будущие production checks / acceptance ещё NOT RUN.", 17, color="#586879")
+    text(50, 1638, "Old D003 / R001 / D005 сохраняют историю и не останавливают независимый код.", 17, color="#586879")
+    text(50, 1668, "Owner снял прежнее ожидание A008 / T007 / R002 как условие старта; review параллельно.", 17, color="#586879")
+    text(50, 1698, "Manager §2.25 / Change Plan v14 / Gantt v13. Owner разрешил commit / push и передачу Developer.", 17, color="#586879")
+    text(50, 1728, "Первые state / HTML regressions и native browser checks; весь D007 ещё IN_PROGRESS.", 17, color="#586879")
     metadata = {
         "timezone": "Europe/Moscow",
         "calendar_actual": {"start": start.isoformat(), "g1_registration": G1_DATE.isoformat(), "analyst_v3_publication": analyst_end.isoformat(), "date_difference_days": 4, "inclusive_dates": 5},
@@ -195,10 +199,11 @@ def render():
         "received_external_review": {"task": "TASK-R-001", "revision": "r2", "source": "Owner message; Manager summary", "task_status": "IN_PROGRESS", "artifact_status": "DRAFT", "source_output_sha": None, "source_package_published": False, "manager_summary_path": "manager/review_inputs/task-r-001-r2-summary.md"},
         "next_tasks": {
             "TASK-A-006": {"status": "NOT_STARTED", "subject": "already_applied semantics"},
-            "TASK-A-008": {"status": "NOT_STARTED", "subject": "table-only selection contract delta", "input_sha": SOURCES["table_only_manager_baseline"], "published_output_sha": None},
-            "TASK-D-006": {"status": "NOT_STARTED", "subject": "controller HTML stage scope and own estimate", "implementation_authorized": False, "analyst_contract_sha": SOURCES["analyst_contract_s1"]},
-            "TASK-T-007": {"status": "NOT_STARTED", "previous_status": "BLOCKED", "dependency_resolved": True, "technical_package_sha": SOURCES["d005_package"], "review_input_sha": SOURCES["d005_integration"], "analyst_contract_sha": SOURCES["analyst_contract_s1"]},
-            "TASK-R-002": {"status": "NOT_STARTED", "previous_status": "BLOCKED", "dependency_resolved": True, "technical_package_sha": SOURCES["d005_package"], "review_input_sha": SOURCES["d005_integration"], "analyst_contract_sha": SOURCES["analyst_contract_s1"]},
+            "TASK-A-008": {"status": "NOT_STARTED", "subject": "table-only plus column and no SVG category text contract delta", "input_sha": SOURCES["full_wheel_package"], "published_output_sha": None},
+            "TASK-D-006": {"status": "DONE", "artifact_status": "APPROVED", "approval_scope": "preparation_completeness_only", "subject": "controller HTML plan and own estimate", "source_sha": SOURCES["full_wheel_package"], "started": "2026-10-19T13:01:09+03:00", "preparation_estimate_hours": [0.5, 1.5], "implementation_authorized": False, "analyst_contract_sha": SOURCES["analyst_contract_s1"]},
+            "TASK-D-007": {"status": "IN_PROGRESS", "artifact_status": "DRAFT", "resume_status": None, "started": "2026-10-19T22:11:37+03:00", "subject": "full passive wheel implementation FW-01 to FW-06", "input_sha": SOURCES["full_wheel_package"], "implementation_authorized": True, "authorization": "Owner direct process exception, Manager section 2.25", "g3_confirmed": False},
+            "TASK-T-007": {"status": "NOT_STARTED", "previous_status": "BLOCKED", "dependency_resolved": True, "technical_package_sha": SOURCES["full_wheel_package"], "review_input_sha": SOURCES["full_wheel_package"], "previous_assignment_sha": SOURCES["table_only_publication"], "analyst_contract_sha": SOURCES["analyst_contract_s1"]},
+            "TASK-R-002": {"status": "NOT_STARTED", "previous_status": "BLOCKED", "dependency_resolved": True, "technical_package_sha": SOURCES["full_wheel_package"], "review_input_sha": SOURCES["full_wheel_package"], "previous_assignment_sha": SOURCES["table_only_publication"], "analyst_contract_sha": SOURCES["analyst_contract_s1"]},
         },
         "d005_research": {
             "task_status": "READY_FOR_REVIEW", "artifact_status": "IN_REVIEW",
@@ -212,14 +217,17 @@ def render():
             "reported_actual": {"component_geometry_pass": [14, 24], "q44_certificates": [241, 438], "pointer_mismatch": [238, 2190], "keyboard_pass": [438, 438], "local_return_witnesses": 256},
             "independent_manager_browser_replay": False, "full_forecast_confirmed": False,
         },
-        "limited_g3_preparation": {"task": "TASK-D-006", "status": "NOT_STARTED", "scope": "HTML selection to passive SVG plan and own estimate only", "implementation_authorized": False, "g3_confirmed": False, "estimate_received": False},
-        "manager_registration_publication": {"status": "OWNER_AUTHORIZED", "source": "Owner: Комит пуш и распечатай промты", "registration_commit": "first commit adding Manager section 2.23 and DP-O-008 revision", "remote_verification": "performed after push; exact SHA reported in Git handoff", "previous_registration_sha": SOURCES["table_only_manager_baseline"]},
+        "limited_g3_preparation": {"task": "TASK-D-006", "status": "DONE", "artifact_status": "APPROVED", "scope": "HTML selection to passive SVG plan and own estimate only", "implementation_authorized": False, "g3_confirmed": False, "estimate_received": True, "future_hours": [14, 22], "independent_subset_hours": [7, 10], "subset_included_in_future_hours": True, "included_in_full_implementation": True},
+        "manager_registration_publication": {"status": "OWNER_AUTHORIZED", "source": "Owner requested commit push and handoff to existing Developer thread; Manager section 2.26", "previous_registration_sha": SOURCES["table_only_publication"]},
+        "full_implementation_proposal": {"task": "TASK-D-007", "source_sha": SOURCES["full_wheel_package"], "work_items": ["FW-01", "FW-02", "FW-03", "FW-04", "FW-05", "FW-06"], "hours": [40, 64], "person_days": [5, 8], "confidence": "medium", "deadline_end_working_day": 8, "started": "2026-10-19T22:11:37+03:00", "owner_approved": False, "owner_question_pending": False, "start_authorization_independent_of_budget_approval": True, "includes_d006_controller_html": True, "previous_research_added_again": False, "independent_tester_included": False},
+        "owner_column_decision": {"accepted": True, "source_sha": SOURCES["full_wheel_package"], "source_path": "developer/owner_decision_drawing_2026-10-19.md", "decision_refs": ["DP-O-011", "DP-O-012"], "conditional_column": True, "svg_category_text": False, "numeric_layout_approved_by_owner": False},
+        "column_preparation": {"source_sha": SOURCES["full_wheel_package"], "run": "run07-ports", "studied_configurations_pass": [29, 29], "isolated_boundary_pass": [28, 28], "elapsed_minutes": 71.8126, "actual_effort_hours": None, "production_pass": False, "independent_manager_replay": False},
         "reviewer_feasibility_v2_guidance": {"person_days": [1.25, 2.25], "owner_approved": False, "developer_estimate_received": True, "status": "historical reviewer guidance; own D005 estimate registered separately", "source": "R001 r2 via Owner; arithmetic of reviewer blocks"},
         "owner_table_only_selection": {"accepted": True, "decision_ref": "DP-O-008 / Manager section 2.23", "source": "Owner: Да принимаем такое решение; current chat 2026-10-19", "svg_selectable": False, "html_selection_updates_svg": True, "svg_pointer_q44_required": False, "svg_keyboard_controls_required": False, "html_accessibility_required": True, "visual_requirements_preserved": True},
-        "pending_analyst_contract_update": {"task": "TASK-A-008", "published_baseline_sha": SOURCES["analyst_contract_s1"], "target_contract_sha": None, "blocks_final_g3_on_affected_scope": True, "blocks_independent_preparation_or_historical_reviews": False},
+        "pending_analyst_contract_update": {"task": "TASK-A-008", "published_baseline_sha": SOURCES["analyst_contract_s1"], "target_contract_sha": None, "blocks_final_g3_on_affected_scope": True, "blocks_direct_owner_start": False, "blocks_independent_preparation_or_historical_reviews": False},
         "process_notes_added": {"item": 9, "subject": "propose lower-cost alternatives and explicit compromises", "actual_skill_files_modified": False},
         "analyst_contract_sha": SOURCES["analyst_contract_s1"],
-        "snapshot_version": 11,
+        "snapshot_version": 13,
         "owner_ambiguity_choice": "S1",
         "owner_ambiguity_choice_source": "Owner message S1; Manager section 2.19",
         "manager_registration_date": "2026-10-19",
@@ -228,7 +236,7 @@ def render():
     xml.append("<metadata>"+escape(json.dumps(metadata, ensure_ascii=False))+"</metadata>")
     xml.append("</svg>")
     OUT.write_text("\n".join(xml)+"\n", encoding="utf-8")
-    print(f"GANTT_RENDER_OK actual_date_difference=4 inclusive_dates=5 preparation=2.5-3.5_person_days experiment_max_hours=6 deadline_end_working_day=4 t0=2026-10-18T15:17:04+03:00 package=d24a24e forecast=9-14_PROPOSED estimates=8-12/3-5 totals=11-17 output={OUT}")
+    print(f"GANTT_RENDER_OK actual_date_difference=4 inclusive_dates=5 preparation=2.5-3.5_person_days experiment_max_hours=6 deadline_end_working_day=4 t0=2026-10-18T15:17:04+03:00 package=d24a24e snapshot=13 full_wheel_hours=40-64_REFERENCE d006=DONE d007=IN_PROGRESS owner_direct_start=true formal_g3=false output={OUT}")
 
 if __name__ == "__main__":
     render()

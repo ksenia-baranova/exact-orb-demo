@@ -1,5 +1,6 @@
 // REQ-UI-03–07/10, AS-UI-07/08/09/15/19/22; approved contract @ ce25dd0.
-// docs/requirements/changes/ui-birth-form-and-facts/{requirements,scenarios}.md.
+// Baseline formatting assertions retained; M1-8 Owner delta removes the global details gate.
+// docs/project_management/change_plans/ui-chart-wheel/analyst/{requirements,scenarios}.md.
 // Oracle — existing HTTP golden; UI не использует внутренний artifact или расчёт.
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
@@ -44,7 +45,6 @@ test("REQ-UI-04 / AS-UI-07 / TEST-FIND-UI-013: mounted current orb 1.025 rounds 
     assert.equal(await ui.ready, true);
     assert.deepEqual(h.calls.map(({ path }) => path), [bootstrapPath, currentPath]);
     assert.deepEqual(ui.session.snapshot().view.chart, before);
-    document.getElementById("chart-details-button").click();
     const table = document.getElementById("chart-facts").querySelectorAll("table")
       .find((node) => node.querySelector("caption").textContent === "Все опубликованные аспекты");
     const rows = table.querySelector("tbody").children;
@@ -161,18 +161,16 @@ test("all seven public aspect types and three categories retain stable localized
   assert.deepEqual(rows.slice(0, 3).map((row) => row.categoryLabel), ["Точный", "Рабочий", "Фоновый"]);
 });
 
-test("DOM reader has three accessible groups and a native details button; future data stays private", () => {
+test("REQ-WHEEL-09: DOM reader has three immediately accessible groups; future data stays private", () => {
   const document = documentPort(), result = mountChartResult(document);
   document.root.append(result.element);
   const chart = natal(); chart.strength = "PRIVATE_STRENGTH"; chart.configurations = "PRIVATE_CONFIGURATION";
   result.update(ready(chart));
-  const root = result.element, button = root.querySelector("#chart-details-button"), details = root.querySelector("#chart-facts");
+  const root = result.element, details = root.querySelector("#chart-facts");
   assert.equal(root.hidden, false);
   assert.equal(root.dataset.chartIdentity, chart.chart_identity);
-  assert.equal(button.type, "button"); assert.equal(button.disabled, false);
-  assert.equal(button.getAttribute("aria-expanded"), "false"); assert.equal(details.hidden, true);
-  button.click();
-  assert.equal(button.getAttribute("aria-expanded"), "true"); assert.equal(details.hidden, false);
+  assert.equal(root.querySelector("#chart-details-button"), null);
+  assert.equal(details.hidden, false);
   assert.deepEqual(details.querySelectorAll("section").map((item) => item.dataset.factGroup), ["facts-points", "facts-houses", "facts-aspects"]);
   assert.equal(details.querySelectorAll("table").length, 4); // Углы внутри группы домов.
   assert.ok(details.querySelectorAll("table").every((item) => item.getAttribute("role") === "table"));
@@ -181,7 +179,6 @@ test("DOM reader has three accessible groups and a native details button; future
   assert.ok(details.querySelectorAll("tbody th").every((item) => item.getAttribute("scope") === "row"));
   assert.ok(details.textContent.includes("09°20′") && details.textContent.includes("Луна") && details.textContent.includes("Точный"));
   assert.doesNotMatch(root.textContent, /PRIVATE_|Конфигурации|Сила|Особые градусы|Стихии/);
-  button.click(); assert.equal(details.hidden, true);
 });
 
 for (const kind of ["natal", "cosmogram"]) {
@@ -222,8 +219,6 @@ for (const kind of ["natal", "cosmogram"]) {
       assert.equal(chat.disabled, true); assert.equal(chat.tabIndex, -1);
       chat.click(); chat.emit("keydown", { key: "Enter" }); chat.emit("keydown", { key: " " });
       assert.equal(root.querySelectorAll("dialog").length, 0);
-      root.querySelector("#chart-details-button").focus();
-      root.querySelector("#chart-details-button").click();
       assert.equal(root.querySelector("#chart-facts").hidden, false);
       const factsText = root.querySelector("#chart-facts").textContent;
       assert.ok(factsText.includes(kind === "natal" ? "09°20′" : "14°00′"));
@@ -244,15 +239,13 @@ for (const kind of ["natal", "cosmogram"]) {
   });
 }
 
-test("switching identity closes details and removes old rows instead of mixing two charts", () => {
+test("automatic identity replacement keeps facts visible and removes old rows without mixing charts", () => {
   const document = documentPort(), result = mountChartResult(document); document.root.append(result.element);
   result.update(ready());
-  const button = result.element.querySelector("#chart-details-button"); button.click();
   assert.ok(result.element.querySelector("#chart-facts").textContent.includes("09°20′"));
   result.update(ready(cosmogram()));
   assert.equal(result.element.dataset.chartIdentity, charts.cosmogram.chart_identity);
-  assert.equal(result.element.querySelector("#chart-facts").hidden, true);
-  button.click();
+  assert.equal(result.element.querySelector("#chart-facts").hidden, false);
   assert.ok(result.element.querySelector("#chart-facts").textContent.includes("14°00′"));
   assert.ok(!result.element.querySelector("#chart-facts").textContent.includes("09°20′"));
 });
@@ -260,20 +253,20 @@ test("switching identity closes details and removes old rows instead of mixing t
 test("empty/unavailable/current removal hides result and clears all numeric facts", () => {
   const document = documentPort(), result = mountChartResult(document); document.root.append(result.element);
   for (const view of [views.empty, views.known_unavailable, null]) {
-    result.update(ready()); result.element.querySelector("#chart-details-button").click();
+    result.update(ready());
     assert.equal(result.element.hidden, false);
     result.update(view);
     assert.equal(result.element.hidden, true);
     assert.equal(result.element.dataset.chartIdentity, undefined);
-    assert.equal(result.element.querySelectorAll("table").length, 0);
-    assert.equal(result.element.querySelector("#chart-details-button").disabled, true);
+    assert.equal(result.element.querySelectorAll("tbody tr").length, 0);
+    assert.ok(result.element.querySelectorAll("table").every((table) => table.hidden));
     assert.ok(!result.element.textContent.includes("09°20′"));
   }
 });
 
 test("stale current keeps original facts and local details without implying a new build", () => {
   const document = documentPort(), result = mountChartResult(document); document.root.append(result.element);
-  result.update(ready()); result.element.querySelector("#chart-details-button").click();
+  result.update(ready());
   const before = result.element.querySelector("#chart-facts").textContent;
   result.update(ready(natal(), true));
   assert.match(result.element.querySelector("#chart-result-title").textContent, /устарела/);
@@ -284,11 +277,10 @@ test("stale current keeps original facts and local details without implying a ne
 test("DOM cosmogram distinguishes inapplicable houses and calculated empty aspects", () => {
   const document = documentPort(), result = mountChartResult(document); document.root.append(result.element);
   const chart = cosmogram(); chart.aspects = []; result.update(ready(chart));
-  result.element.querySelector("#chart-details-button").click();
   const houses = result.element.querySelector("#facts-houses").parentNode;
-  assert.ok(houses.textContent.includes("Для домов нужно время рождения")); assert.equal(houses.querySelectorAll("table").length, 0);
+  assert.ok(houses.textContent.includes("Для домов нужно время рождения")); assert.ok(houses.querySelectorAll("table").every((table) => table.hidden));
   const aspects = result.element.querySelector("#facts-aspects").parentNode;
-  assert.ok(aspects.textContent.includes("Аспекты не найдены")); assert.equal(aspects.querySelectorAll("table").length, 0);
+  assert.ok(aspects.textContent.includes("Аспекты не найдены")); assert.ok(aspects.querySelectorAll("table").every((table) => table.hidden));
   assert.ok(result.element.querySelector("#facts-points").parentNode.querySelectorAll("tbody tr").length > 0);
   assert.match(result.element.textContent, /консервативные/);
   assert.doesNotMatch(result.element.textContent, /ASC|UTC|полдень/);
@@ -298,7 +290,7 @@ test("DTO strings render as text, never as executable HTML", () => {
   const document = documentPort(), result = mountChartResult(document); document.root.append(result.element);
   const chart = natal(); chart.house_system = '<img src=x onerror="alert(1)">';
   chart.aspects[0].type = '<script>alert(1)</script>';
-  result.update(ready(chart)); result.element.querySelector("#chart-details-button").click();
+  result.update(ready(chart));
   assert.ok(result.element.textContent.includes(chart.house_system));
   assert.ok(result.element.textContent.includes(chart.aspects[0].type));
   assert.equal(result.element.querySelectorAll("img").length, 0); assert.equal(result.element.querySelectorAll("script").length, 0);
@@ -307,7 +299,9 @@ test("DTO strings render as text, never as executable HTML", () => {
 test("full golden natal renders every published point, all twelve houses and every aspect", () => {
   const document = documentPort(), result = mountChartResult(document); document.root.append(result.element);
   const before = structuredClone(fullNatal);
-  result.update(ready(fullNatal)); result.element.querySelector("#chart-details-button").click();
+  result.update(ready(fullNatal));
+  result.element.querySelector("#aspects-show-all").click();
+  result.element.querySelector("#houses-show-all").click();
   const points = result.element.querySelector("#facts-points").parentNode.querySelectorAll("tbody tr");
   assert.equal(points.length, 16);
   const houses = result.element.querySelector("#facts-houses").parentNode.querySelectorAll("table")[0].querySelectorAll("tbody tr");

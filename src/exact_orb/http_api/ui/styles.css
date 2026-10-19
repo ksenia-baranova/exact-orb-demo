@@ -323,6 +323,29 @@ button:disabled {
   font-variant-numeric: tabular-nums;
 }
 
+.fact-select {
+  min-width: 44px;
+  max-width: 100%;
+  padding: 8px;
+  color: var(--text);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+
+.fact-select[aria-pressed="true"] {
+  color: var(--gold);
+  border-color: var(--gold);
+  background: rgb(240 205 115 / 10%);
+}
+
+.fact-select:disabled {
+  opacity: 1;
+  color: var(--muted);
+}
+
 @media (max-width: 620px) {
   .birth-form,
   .chart-result {

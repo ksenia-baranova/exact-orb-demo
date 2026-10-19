@@ -250,7 +250,7 @@ export function mountBirthForm(document, { apiClient = api, clock } = {}) {
     dispose() {
       document.removeEventListener("visibilitychange", visible);
       document.defaultView.removeEventListener("online", online);
-      places.dispose(); session.dispose();
+      places.dispose(); session.dispose(); result.dispose();
     } });
 }
 
