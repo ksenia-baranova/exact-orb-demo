@@ -21,7 +21,7 @@ def representation(raw, name):
     assert b"\0" not in raw, name
     parts = raw.split(b"\n")
     crlf = [i for i, line in enumerate(parts[:-1]) if line.endswith(b"\r")]
-    clean = b"\n".join(line[:-1] if i in set(crlf) else line for i, line in enumerate(parts))
+    clean = raw.replace(b"\r\n", b"\n")
     return clean, crlf
 
 def oid(b):
@@ -57,7 +57,7 @@ else:
         listing = git("ls-tree", "-r", "-z", target)
         blobs = {r.split(b"\t", 1)[1].decode(): r.split(b"\t", 1)[0].split()[2].decode() for r in listing.split(b"\0") if r}
     else:
-        changed = set(git("diff", "--cached", "--name-only", "-z").decode().split("\0"))
+        changed = set(git("diff", "--cached", "--name-only", "-z", data["baseline"]).decode().split("\0"))
         listing = git("ls-files", "--stage", "-z")
         blobs = {r.split(b"\t", 1)[1].decode(): r.split(b"\t", 1)[0].split()[1].decode() for r in listing.split(b"\0") if r}
     changed.discard("")

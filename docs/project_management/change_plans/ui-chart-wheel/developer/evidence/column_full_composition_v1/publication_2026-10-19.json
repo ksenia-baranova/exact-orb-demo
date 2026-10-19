@@ -6174,9 +6174,9 @@
       "crlf_line_indices": []
     },
     "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/column_full_composition_v1/publication_audit.py": {
-      "raw_sha256": "fb2a058aa7bd426232254c698bd2bc813f2c6ce5f331e7ec1aa4bc3b8bc48c60",
-      "git_lf_sha256": "fb2a058aa7bd426232254c698bd2bc813f2c6ce5f331e7ec1aa4bc3b8bc48c60",
-      "git_blob_oid": "2e3a75fdd9b49611ae319ba859d5e2c72bd3d8d7",
+      "raw_sha256": "5e081d5e636e502983f5dc742764127b9960baea8c7e6d2e8b8a94f73917b2ea",
+      "git_lf_sha256": "5e081d5e636e502983f5dc742764127b9960baea8c7e6d2e8b8a94f73917b2ea",
+      "git_blob_oid": "8f3633555479fd21725c371e69cb2975e40f5801",
       "crlf_line_indices": []
     },
     "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/column_full_composition_v1/run01-audit.json": {
@@ -333493,9 +333493,9 @@
       "crlf_line_indices": []
     },
     "docs/project_management/change_plans/ui-chart-wheel/developer_artifact.md": {
-      "raw_sha256": "8fddcb5e0e370a2f94c8f27b8ca18f6c4cd5f732f59fc0899eb57c9877083e22",
-      "git_lf_sha256": "c8866f304ccabb0aab1c210520fb42b22210e17651b0c49c89bfa8ea1ab4d966",
-      "git_blob_oid": "c2ed98e67bc4233046ecda0d6856fef6baa3f02e",
+      "raw_sha256": "13576b787c64df16d44e83fae7acfdff068d5a5bfc0d12a73c94da65a722a7b9",
+      "git_lf_sha256": "c9c5dca58f40b72242b0385ba70d1cc5061a063d0d2116b5ec3dcbabcdc5eebd",
+      "git_blob_oid": "0de4799d40bab8a1b9b0c23acfcebeab8a069d12",
       "crlf_line_indices": [
         298,
         299,

@@ -23,8 +23,8 @@
   "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/column_full_composition_v1/post-audit.json": "2a4a58dda17296f53fa189003fc524e073c14d70596aede28ec7485ed73c0389",
   "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/column_full_composition_v1/postaudit.py": "f626c1c9e92e39d105bd4dcf93680d55be9509c36385d8b339e01be99a50e288",
   "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/column_full_composition_v1/postaudit_final.py": "d8cb580c1b38b772cbe090273b7607da07cf79863c4df3b02b123ce9a3c4170f",
-  "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/column_full_composition_v1/publication_2026-10-19.json": "699958abe7020840d88afa42b8fbd0fd4fad5904eb6a989f1c170bdf8da3367d",
-  "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/column_full_composition_v1/publication_audit.py": "fb2a058aa7bd426232254c698bd2bc813f2c6ce5f331e7ec1aa4bc3b8bc48c60",
+  "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/column_full_composition_v1/publication_2026-10-19.json": "5719d3bdf80d37867677bd7f8e2d29b176ee66cbda58dbcc51e4041b96e7b2f1",
+  "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/column_full_composition_v1/publication_audit.py": "5e081d5e636e502983f5dc742764127b9960baea8c7e6d2e8b8a94f73917b2ea",
   "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/column_full_composition_v1/run01-audit.json": "f44a1d82d9d64af9e9b07533b2ed78989bcea7c1cdfe66ffc287ec72d080a4cc",
   "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/column_full_composition_v1/run01/F1-328-normal-none-dpr1.json": "b007589d5012edc14bdc7ecd9181317fbf9e53bcf39bb37aa61d92c95e2945f5",
   "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/column_full_composition_v1/run01/F1-328-normal-point-dpr2.json": "1a10e374b4de77997efbea326383f4bf1579523c48e985307dc1b52a2c7e3606",
@@ -477,5 +477,5 @@
   "docs/project_management/change_plans/ui-chart-wheel/developer/prompts/05-full-wheel-passive-column.md": "c3e0d41a98798a5522cdedd985923d4a0c13e068977f09d31909671d4e50c2d3",
   "docs/project_management/change_plans/ui-chart-wheel/developer/sequence_diagrams/ui/003-passive-copy-install.puml": "da066806803d810cf977bab5d15f7606e746ca864f06becaa4986df586c92360",
   "docs/project_management/change_plans/ui-chart-wheel/developer/sequence_diagrams/ui/004-column-layout-revision.puml": "49101d226d8f047bc746cc354461efc11550d3291154fa20dc86bfc313943732",
-  "docs/project_management/change_plans/ui-chart-wheel/developer_artifact.md": "8fddcb5e0e370a2f94c8f27b8ca18f6c4cd5f732f59fc0899eb57c9877083e22"
+  "docs/project_management/change_plans/ui-chart-wheel/developer_artifact.md": "13576b787c64df16d44e83fae7acfdff068d5a5bfc0d12a73c94da65a722a7b9"
 }
