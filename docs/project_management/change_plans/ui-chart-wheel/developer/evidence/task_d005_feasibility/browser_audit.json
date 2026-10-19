@@ -1,0 +1,643 @@
+{
+  "author": "Codex / Developer",
+  "rows": [
+    {
+      "fixture": "sparse",
+      "frame": 720,
+      "variant": "F",
+      "record": "sparse-720-F.json",
+      "static_measured_component_pass": true,
+      "gap_counterexamples": [],
+      "containment_counterexamples": [],
+      "pinned_point_marker_ink_drift": [],
+      "conditional_Q_certified": 16,
+      "targets": 16,
+      "native_wrong": 0,
+      "native_probes": 80,
+      "keyboard_fail": 0,
+      "keyboard_targets": 16,
+      "anchor_css_error_max": 3.4600291484934294e-05,
+      "LOCAL_TIGHT_FAIL": 0,
+      "LOCAL_TIGHT_UNPROVEN": 0,
+      "scope": "measured point/R/conjunction/category/angle union only; zodiac/sign text/full palette NOT MODELLED; no whole drawing/production PASS"
+    },
+    {
+      "fixture": "sparse",
+      "frame": 720,
+      "variant": "E",
+      "record": "sparse-720-E.json",
+      "static_measured_component_pass": true,
+      "gap_counterexamples": [],
+      "containment_counterexamples": [],
+      "pinned_point_marker_ink_drift": [],
+      "conditional_Q_certified": 16,
+      "targets": 16,
+      "native_wrong": 0,
+      "native_probes": 80,
+      "keyboard_fail": 0,
+      "keyboard_targets": 16,
+      "anchor_css_error_max": 3.4600291484934294e-05,
+      "LOCAL_TIGHT_FAIL": 0,
+      "LOCAL_TIGHT_UNPROVEN": 0,
+      "scope": "measured point/R/conjunction/category/angle union only; zodiac/sign text/full palette NOT MODELLED; no whole drawing/production PASS"
+    },
+    {
+      "fixture": "sparse",
+      "frame": 448,
+      "variant": "F",
+      "record": "sparse-448-F.json",
+      "static_measured_component_pass": true,
+      "gap_counterexamples": [],
+      "containment_counterexamples": [],
+      "pinned_point_marker_ink_drift": [],
+      "conditional_Q_certified": 16,
+      "targets": 16,
+      "native_wrong": 0,
+      "native_probes": 80,
+      "keyboard_fail": 0,
+      "keyboard_targets": 16,
+      "anchor_css_error_max": 3.441096861670868e-05,
+      "LOCAL_TIGHT_FAIL": 0,
+      "LOCAL_TIGHT_UNPROVEN": 0,
+      "scope": "measured point/R/conjunction/category/angle union only; zodiac/sign text/full palette NOT MODELLED; no whole drawing/production PASS"
+    },
+    {
+      "fixture": "sparse",
+      "frame": 448,
+      "variant": "E",
+      "record": "sparse-448-E.json",
+      "static_measured_component_pass": true,
+      "gap_counterexamples": [],
+      "containment_counterexamples": [],
+      "pinned_point_marker_ink_drift": [],
+      "conditional_Q_certified": 16,
+      "targets": 16,
+      "native_wrong": 0,
+      "native_probes": 80,
+      "keyboard_fail": 0,
+      "keyboard_targets": 16,
+      "anchor_css_error_max": 3.441096861670868e-05,
+      "LOCAL_TIGHT_FAIL": 0,
+      "LOCAL_TIGHT_UNPROVEN": 0,
+      "scope": "measured point/R/conjunction/category/angle union only; zodiac/sign text/full palette NOT MODELLED; no whole drawing/production PASS"
+    },
+    {
+      "fixture": "sparse",
+      "frame": 328,
+      "variant": "F",
+      "record": "sparse-328-F.json",
+      "static_measured_component_pass": true,
+      "gap_counterexamples": [],
+      "containment_counterexamples": [],
+      "pinned_point_marker_ink_drift": [],
+      "conditional_Q_certified": 8,
+      "targets": 16,
+      "native_wrong": 8,
+      "native_probes": 80,
+      "keyboard_fail": 0,
+      "keyboard_targets": 16,
+      "anchor_css_error_max": 1.8205275780304866e-05,
+      "LOCAL_TIGHT_FAIL": 0,
+      "LOCAL_TIGHT_UNPROVEN": 0,
+      "scope": "measured point/R/conjunction/category/angle union only; zodiac/sign text/full palette NOT MODELLED; no whole drawing/production PASS"
+    },
+    {
+      "fixture": "sparse",
+      "frame": 328,
+      "variant": "E",
+      "record": "sparse-328-E.json",
+      "static_measured_component_pass": true,
+      "gap_counterexamples": [],
+      "containment_counterexamples": [],
+      "pinned_point_marker_ink_drift": [],
+      "conditional_Q_certified": 12,
+      "targets": 16,
+      "native_wrong": 4,
+      "native_probes": 80,
+      "keyboard_fail": 0,
+      "keyboard_targets": 16,
+      "anchor_css_error_max": 1.8205275780304866e-05,
+      "LOCAL_TIGHT_FAIL": 0,
+      "LOCAL_TIGHT_UNPROVEN": 0,
+      "scope": "measured point/R/conjunction/category/angle union only; zodiac/sign text/full palette NOT MODELLED; no whole drawing/production PASS"
+    },
+    {
+      "fixture": "F1",
+      "frame": 720,
+      "variant": "F",
+      "record": "F1-720-F.json",
+      "static_measured_component_pass": false,
+      "gap_counterexamples": [
+        {
+          "left": "south_node",
+          "right": "selena",
+          "actual_gap2": "29288350720776708131306761/100000000000000000000000000"
+        }
+      ],
+      "containment_counterexamples": [],
+      "pinned_point_marker_ink_drift": [],
+      "conditional_Q_certified": 13,
+      "targets": 19,
+      "native_wrong": 7,
+      "native_probes": 95,
+      "keyboard_fail": 0,
+      "keyboard_targets": 19,
+      "anchor_css_error_max": 4.191316412356161e-05,
+      "LOCAL_TIGHT_FAIL": 4,
+      "LOCAL_TIGHT_UNPROVEN": 0,
+      "scope": "measured point/R/conjunction/category/angle union only; zodiac/sign text/full palette NOT MODELLED; no whole drawing/production PASS"
+    },
+    {
+      "fixture": "F1",
+      "frame": 720,
+      "variant": "E",
+      "record": "F1-720-E.json",
+      "static_measured_component_pass": false,
+      "gap_counterexamples": [
+        {
+          "left": "south_node",
+          "right": "selena",
+          "actual_gap2": "29288350720776708131306761/100000000000000000000000000"
+        }
+      ],
+      "containment_counterexamples": [],
+      "pinned_point_marker_ink_drift": [],
+      "conditional_Q_certified": 13,
+      "targets": 19,
+      "native_wrong": 7,
+      "native_probes": 95,
+      "keyboard_fail": 0,
+      "keyboard_targets": 19,
+      "anchor_css_error_max": 4.191316412356161e-05,
+      "LOCAL_TIGHT_FAIL": 4,
+      "LOCAL_TIGHT_UNPROVEN": 0,
+      "scope": "measured point/R/conjunction/category/angle union only; zodiac/sign text/full palette NOT MODELLED; no whole drawing/production PASS"
+    },
+    {
+      "fixture": "F1",
+      "frame": 448,
+      "variant": "F",
+      "record": "F1-448-F.json",
+      "static_measured_component_pass": false,
+      "gap_counterexamples": [
+        {
+          "left": "saturn",
+          "right": "pars_fortune",
+          "actual_gap2": "0"
+        }
+      ],
+      "containment_counterexamples": [],
+      "pinned_point_marker_ink_drift": [],
+      "conditional_Q_certified": 11,
+      "targets": 19,
+      "native_wrong": 13,
+      "native_probes": 95,
+      "keyboard_fail": 0,
+      "keyboard_targets": 19,
+      "anchor_css_error_max": 4.156503126365962e-05,
+      "LOCAL_TIGHT_FAIL": 7,
+      "LOCAL_TIGHT_UNPROVEN": 0,
+      "scope": "measured point/R/conjunction/category/angle union only; zodiac/sign text/full palette NOT MODELLED; no whole drawing/production PASS"
+    },
+    {
+      "fixture": "F1",
+      "frame": 448,
+      "variant": "E",
+      "record": "F1-448-E.json",
+      "static_measured_component_pass": false,
+      "gap_counterexamples": [
+        {
+          "left": "saturn",
+          "right": "pars_fortune",
+          "actual_gap2": "0"
+        }
+      ],
+      "containment_counterexamples": [],
+      "pinned_point_marker_ink_drift": [],
+      "conditional_Q_certified": 12,
+      "targets": 19,
+      "native_wrong": 12,
+      "native_probes": 95,
+      "keyboard_fail": 0,
+      "keyboard_targets": 19,
+      "anchor_css_error_max": 4.156503126365962e-05,
+      "LOCAL_TIGHT_FAIL": 7,
+      "LOCAL_TIGHT_UNPROVEN": 0,
+      "scope": "measured point/R/conjunction/category/angle union only; zodiac/sign text/full palette NOT MODELLED; no whole drawing/production PASS"
+    },
+    {
+      "fixture": "F1",
+      "frame": 328,
+      "variant": "F",
+      "record": "F1-328-F.json",
+      "static_measured_component_pass": false,
+      "gap_counterexamples": [
+        {
+          "left": "mercury",
+          "right": "venus",
+          "actual_gap2": "33946126431180060840518169/16000000000000000000000000"
+        },
+        {
+          "left": "mercury",
+          "right": "mars",
+          "actual_gap2": "312922616972258760497714923009/250000000000000000000000000000"
+        },
+        {
+          "left": "neptune",
+          "right": "[\"saturn\",\"vertex\",\"conjunction\"]",
+          "actual_gap2": "0"
+        },
+        {
+          "left": "[\"saturn\",\"vertex\",\"conjunction\"]",
+          "right": "angle:vertex",
+          "actual_gap2": "0"
+        }
+      ],
+      "containment_counterexamples": [
+        {
+          "key": "[\"saturn\",\"vertex\",\"conjunction\"]",
+          "predicate": "annulus"
+        },
+        {
+          "key": "[\"saturn\",\"vertex\",\"conjunction\"]",
+          "predicate": "annulus"
+        }
+      ],
+      "pinned_point_marker_ink_drift": [],
+      "conditional_Q_certified": 11,
+      "targets": 19,
+      "native_wrong": 14,
+      "native_probes": 95,
+      "keyboard_fail": 0,
+      "keyboard_targets": 19,
+      "anchor_css_error_max": 3.647994782919345e-05,
+      "LOCAL_TIGHT_FAIL": 8,
+      "LOCAL_TIGHT_UNPROVEN": 0,
+      "scope": "measured point/R/conjunction/category/angle union only; zodiac/sign text/full palette NOT MODELLED; no whole drawing/production PASS"
+    },
+    {
+      "fixture": "F1",
+      "frame": 328,
+      "variant": "E",
+      "record": "F1-328-E.json",
+      "static_measured_component_pass": false,
+      "gap_counterexamples": [
+        {
+          "left": "mercury",
+          "right": "venus",
+          "actual_gap2": "33946126431180060840518169/16000000000000000000000000"
+        },
+        {
+          "left": "mercury",
+          "right": "mars",
+          "actual_gap2": "312922616972258760497714923009/250000000000000000000000000000"
+        },
+        {
+          "left": "neptune",
+          "right": "[\"saturn\",\"vertex\",\"conjunction\"]",
+          "actual_gap2": "0"
+        },
+        {
+          "left": "[\"saturn\",\"vertex\",\"conjunction\"]",
+          "right": "angle:vertex",
+          "actual_gap2": "0"
+        }
+      ],
+      "containment_counterexamples": [
+        {
+          "key": "[\"saturn\",\"vertex\",\"conjunction\"]",
+          "predicate": "annulus"
+        },
+        {
+          "key": "[\"saturn\",\"vertex\",\"conjunction\"]",
+          "predicate": "annulus"
+        }
+      ],
+      "pinned_point_marker_ink_drift": [],
+      "conditional_Q_certified": 9,
+      "targets": 19,
+      "native_wrong": 14,
+      "native_probes": 95,
+      "keyboard_fail": 0,
+      "keyboard_targets": 19,
+      "anchor_css_error_max": 3.647994782919345e-05,
+      "LOCAL_TIGHT_FAIL": 8,
+      "LOCAL_TIGHT_UNPROVEN": 0,
+      "scope": "measured point/R/conjunction/category/angle union only; zodiac/sign text/full palette NOT MODELLED; no whole drawing/production PASS"
+    },
+    {
+      "fixture": "F3",
+      "frame": 720,
+      "variant": "F",
+      "record": "F3-720-F.json",
+      "static_measured_component_pass": true,
+      "gap_counterexamples": [],
+      "containment_counterexamples": [],
+      "pinned_point_marker_ink_drift": [],
+      "conditional_Q_certified": 11,
+      "targets": 18,
+      "native_wrong": 8,
+      "native_probes": 90,
+      "keyboard_fail": 0,
+      "keyboard_targets": 18,
+      "anchor_css_error_max": 4.191316412356161e-05,
+      "LOCAL_TIGHT_FAIL": 11,
+      "LOCAL_TIGHT_UNPROVEN": 0,
+      "scope": "measured point/R/conjunction/category/angle union only; zodiac/sign text/full palette NOT MODELLED; no whole drawing/production PASS"
+    },
+    {
+      "fixture": "F3",
+      "frame": 720,
+      "variant": "E",
+      "record": "F3-720-E.json",
+      "static_measured_component_pass": true,
+      "gap_counterexamples": [],
+      "containment_counterexamples": [],
+      "pinned_point_marker_ink_drift": [],
+      "conditional_Q_certified": 11,
+      "targets": 18,
+      "native_wrong": 8,
+      "native_probes": 90,
+      "keyboard_fail": 0,
+      "keyboard_targets": 18,
+      "anchor_css_error_max": 4.191316412356161e-05,
+      "LOCAL_TIGHT_FAIL": 11,
+      "LOCAL_TIGHT_UNPROVEN": 0,
+      "scope": "measured point/R/conjunction/category/angle union only; zodiac/sign text/full palette NOT MODELLED; no whole drawing/production PASS"
+    },
+    {
+      "fixture": "F3",
+      "frame": 448,
+      "variant": "F",
+      "record": "F3-448-F.json",
+      "static_measured_component_pass": true,
+      "gap_counterexamples": [],
+      "containment_counterexamples": [],
+      "pinned_point_marker_ink_drift": [],
+      "conditional_Q_certified": 10,
+      "targets": 18,
+      "native_wrong": 9,
+      "native_probes": 90,
+      "keyboard_fail": 0,
+      "keyboard_targets": 18,
+      "anchor_css_error_max": 4.156503126365962e-05,
+      "LOCAL_TIGHT_FAIL": 13,
+      "LOCAL_TIGHT_UNPROVEN": 0,
+      "scope": "measured point/R/conjunction/category/angle union only; zodiac/sign text/full palette NOT MODELLED; no whole drawing/production PASS"
+    },
+    {
+      "fixture": "F3",
+      "frame": 448,
+      "variant": "E",
+      "record": "F3-448-E.json",
+      "static_measured_component_pass": true,
+      "gap_counterexamples": [],
+      "containment_counterexamples": [],
+      "pinned_point_marker_ink_drift": [],
+      "conditional_Q_certified": 10,
+      "targets": 18,
+      "native_wrong": 9,
+      "native_probes": 90,
+      "keyboard_fail": 0,
+      "keyboard_targets": 18,
+      "anchor_css_error_max": 4.156503126365962e-05,
+      "LOCAL_TIGHT_FAIL": 13,
+      "LOCAL_TIGHT_UNPROVEN": 0,
+      "scope": "measured point/R/conjunction/category/angle union only; zodiac/sign text/full palette NOT MODELLED; no whole drawing/production PASS"
+    },
+    {
+      "fixture": "F3",
+      "frame": 328,
+      "variant": "F",
+      "record": "F3-328-F.json",
+      "static_measured_component_pass": false,
+      "gap_counterexamples": [
+        {
+          "left": "mercury",
+          "right": "[\"mercury\",\"venus\",\"conjunction\"]",
+          "actual_gap2": "0"
+        }
+      ],
+      "containment_counterexamples": [
+        {
+          "key": "[\"mercury\",\"venus\",\"conjunction\"]",
+          "predicate": "annulus"
+        }
+      ],
+      "pinned_point_marker_ink_drift": [],
+      "conditional_Q_certified": 8,
+      "targets": 18,
+      "native_wrong": 12,
+      "native_probes": 90,
+      "keyboard_fail": 0,
+      "keyboard_targets": 18,
+      "anchor_css_error_max": 3.647994782919345e-05,
+      "LOCAL_TIGHT_FAIL": 13,
+      "LOCAL_TIGHT_UNPROVEN": 0,
+      "scope": "measured point/R/conjunction/category/angle union only; zodiac/sign text/full palette NOT MODELLED; no whole drawing/production PASS"
+    },
+    {
+      "fixture": "F3",
+      "frame": 328,
+      "variant": "E",
+      "record": "F3-328-E.json",
+      "static_measured_component_pass": false,
+      "gap_counterexamples": [
+        {
+          "left": "mercury",
+          "right": "[\"mercury\",\"venus\",\"conjunction\"]",
+          "actual_gap2": "0"
+        }
+      ],
+      "containment_counterexamples": [
+        {
+          "key": "[\"mercury\",\"venus\",\"conjunction\"]",
+          "predicate": "annulus"
+        }
+      ],
+      "pinned_point_marker_ink_drift": [],
+      "conditional_Q_certified": 8,
+      "targets": 18,
+      "native_wrong": 12,
+      "native_probes": 90,
+      "keyboard_fail": 0,
+      "keyboard_targets": 18,
+      "anchor_css_error_max": 3.647994782919345e-05,
+      "LOCAL_TIGHT_FAIL": 13,
+      "LOCAL_TIGHT_UNPROVEN": 0,
+      "scope": "measured point/R/conjunction/category/angle union only; zodiac/sign text/full palette NOT MODELLED; no whole drawing/production PASS"
+    },
+    {
+      "fixture": "F3-max",
+      "frame": 720,
+      "variant": "F",
+      "record": "F3-max-720-F.json",
+      "static_measured_component_pass": true,
+      "gap_counterexamples": [],
+      "containment_counterexamples": [],
+      "pinned_point_marker_ink_drift": [],
+      "conditional_Q_certified": 5,
+      "targets": 20,
+      "native_wrong": 16,
+      "native_probes": 100,
+      "keyboard_fail": 0,
+      "keyboard_targets": 20,
+      "anchor_css_error_max": 4.3435746612745187e-05,
+      "LOCAL_TIGHT_FAIL": 25,
+      "LOCAL_TIGHT_UNPROVEN": 0,
+      "scope": "measured point/R/conjunction/category/angle union only; zodiac/sign text/full palette NOT MODELLED; no whole drawing/production PASS"
+    },
+    {
+      "fixture": "F3-max",
+      "frame": 720,
+      "variant": "E",
+      "record": "F3-max-720-E.json",
+      "static_measured_component_pass": true,
+      "gap_counterexamples": [],
+      "containment_counterexamples": [],
+      "pinned_point_marker_ink_drift": [],
+      "conditional_Q_certified": 5,
+      "targets": 20,
+      "native_wrong": 16,
+      "native_probes": 100,
+      "keyboard_fail": 0,
+      "keyboard_targets": 20,
+      "anchor_css_error_max": 4.3435746612745187e-05,
+      "LOCAL_TIGHT_FAIL": 25,
+      "LOCAL_TIGHT_UNPROVEN": 0,
+      "scope": "measured point/R/conjunction/category/angle union only; zodiac/sign text/full palette NOT MODELLED; no whole drawing/production PASS"
+    },
+    {
+      "fixture": "F3-max",
+      "frame": 448,
+      "variant": "F",
+      "record": "F3-max-448-F.json",
+      "static_measured_component_pass": true,
+      "gap_counterexamples": [],
+      "containment_counterexamples": [],
+      "pinned_point_marker_ink_drift": [],
+      "conditional_Q_certified": 5,
+      "targets": 20,
+      "native_wrong": 16,
+      "native_probes": 100,
+      "keyboard_fail": 0,
+      "keyboard_targets": 20,
+      "anchor_css_error_max": 2.3070637206392625e-05,
+      "LOCAL_TIGHT_FAIL": 25,
+      "LOCAL_TIGHT_UNPROVEN": 0,
+      "scope": "measured point/R/conjunction/category/angle union only; zodiac/sign text/full palette NOT MODELLED; no whole drawing/production PASS"
+    },
+    {
+      "fixture": "F3-max",
+      "frame": 448,
+      "variant": "E",
+      "record": "F3-max-448-E.json",
+      "static_measured_component_pass": true,
+      "gap_counterexamples": [],
+      "containment_counterexamples": [],
+      "pinned_point_marker_ink_drift": [],
+      "conditional_Q_certified": 5,
+      "targets": 20,
+      "native_wrong": 16,
+      "native_probes": 100,
+      "keyboard_fail": 0,
+      "keyboard_targets": 20,
+      "anchor_css_error_max": 2.3070637206392625e-05,
+      "LOCAL_TIGHT_FAIL": 25,
+      "LOCAL_TIGHT_UNPROVEN": 0,
+      "scope": "measured point/R/conjunction/category/angle union only; zodiac/sign text/full palette NOT MODELLED; no whole drawing/production PASS"
+    },
+    {
+      "fixture": "F3-max",
+      "frame": 328,
+      "variant": "F",
+      "record": "F3-max-328-F.json",
+      "static_measured_component_pass": false,
+      "gap_counterexamples": [
+        {
+          "left": "[\"mercury\",\"venus\",\"conjunction\"]",
+          "right": "angle:asc",
+          "actual_gap2": "0"
+        }
+      ],
+      "containment_counterexamples": [
+        {
+          "key": "[\"saturn\",\"uranus\",\"conjunction\"]",
+          "predicate": "annulus"
+        }
+      ],
+      "pinned_point_marker_ink_drift": [],
+      "conditional_Q_certified": 5,
+      "targets": 20,
+      "native_wrong": 18,
+      "native_probes": 100,
+      "keyboard_fail": 0,
+      "keyboard_targets": 20,
+      "anchor_css_error_max": 2.0113318911454074e-05,
+      "LOCAL_TIGHT_FAIL": 22,
+      "LOCAL_TIGHT_UNPROVEN": 0,
+      "scope": "measured point/R/conjunction/category/angle union only; zodiac/sign text/full palette NOT MODELLED; no whole drawing/production PASS"
+    },
+    {
+      "fixture": "F3-max",
+      "frame": 328,
+      "variant": "E",
+      "record": "F3-max-328-E.json",
+      "static_measured_component_pass": false,
+      "gap_counterexamples": [
+        {
+          "left": "[\"mercury\",\"venus\",\"conjunction\"]",
+          "right": "angle:asc",
+          "actual_gap2": "0"
+        }
+      ],
+      "containment_counterexamples": [
+        {
+          "key": "[\"saturn\",\"uranus\",\"conjunction\"]",
+          "predicate": "annulus"
+        }
+      ],
+      "pinned_point_marker_ink_drift": [],
+      "conditional_Q_certified": 5,
+      "targets": 20,
+      "native_wrong": 19,
+      "native_probes": 100,
+      "keyboard_fail": 0,
+      "keyboard_targets": 20,
+      "anchor_css_error_max": 2.0113318911454074e-05,
+      "LOCAL_TIGHT_FAIL": 22,
+      "LOCAL_TIGHT_UNPROVEN": 0,
+      "scope": "measured point/R/conjunction/category/angle union only; zodiac/sign text/full palette NOT MODELLED; no whole drawing/production PASS"
+    }
+  ],
+  "totals": {
+    "cells": 24,
+    "native_probes": 2190,
+    "native_wrong": 238,
+    "keyboard_targets": 438,
+    "keyboard_fail": 0,
+    "measured_component_geometry_pass": 14,
+    "max_anchor_css_error": 4.3435746612745187e-05,
+    "point_marker_ink_drift_records": 0,
+    "conditional_Q_certified": 241,
+    "target_occurrences": 438,
+    "local_tight_fail_records": 256,
+    "local_tight_unproven_records": 0,
+    "browser_controls": 12,
+    "boundary_controls": 12,
+    "whole_drawing_PASS": false
+  },
+  "resolved_font_glyph_counts": {
+    "Segoe UI Symbol": 894,
+    "Segoe UI": 354
+  },
+  "scope": "independent measured-component verification, no placement/browser calls",
+  "unverified": [
+    "whole zodiac/sign text/palette",
+    "production mounted page",
+    "HTTPS/recovery integration",
+    "runtime F5/S1",
+    "cross-platform/touch/zoom",
+    "global optimum or general impossibility"
+  ]
+}

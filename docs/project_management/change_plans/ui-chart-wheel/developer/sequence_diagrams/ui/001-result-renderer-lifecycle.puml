@@ -1,46 +1,66 @@
 @startuml
-' DRAFT. Developer / TASK-D-003. InputSHA 8fb25770169166a3a4e94110eee684bd8b116474.
-' REQ-WHEEL-01/10/11; AS-WHEEL-24; T003-G01. Not implemented production flow.
-title DRAFT: accepted B -> HTML B / isolated wheel lifecycle
+' DRAFT Developer TASK-D-005. InputSHA34f187a; AssignmentSHA0046ac7; AnalystContractSHA2736e28.
+' R001-01/02/03/04; REQ-WHEEL-01/10/11; AS-WHEEL-24. Isolated proof only, not production.
+title DRAFT v2: revoke -> remove -> HTML B -> guarded dispose -> guarded draw
 autonumber
 hide footbox
-participant "Session accept owner\nexisting coordinator, proposed internal seam" as Session
-control "ResultController (proposed)" as Result
-participant "HTML facts" as HTML
-participant "WheelPort factory / instance" as Wheel
+participant "Existing accept owner" as Session
+control "ResultController" as Result
+participant "Keyed HTML presenter" as HTML
+participant "Revision-gated DOM adapter" as DOM
+participant "Wheel renderer (value frames)" as Wheel
 actor User
 Session -> Result : accepted B + acceptanceSeq/cause/snapshot
-Result -> Result : reconcile canonical selection against B once
-Result -> Wheel : revoke old instance/revision ownership
-Result -> Wheel : dispose A listeners / geometry
-Result -> HTML : publish confirmed B facts / summary
-Result -> Wheel : mount/update readonly B, guarded callback
-alt rendered B
-  Wheel --> Result : rendered(instance, revision)
-  User -> Wheel : native canonical activation
-  Wheel -> Result : intent + current instance/revision
-  Result -> HTML : selection using B facts
-  Result -> Wheel : update selection, retain active target
-else expected leaf SVG failure
-  Wheel --> Result : svg_unavailable(reason, instance, revision)
-  Result -> Result : ensure no old A image
-  Result --> User : visible local wheel error; HTML B accessible
+Result -> DOM : revoke old instance/revision and native capabilities
+Result -> DOM : remove imagery A
+Result -> Result : full-B index, once policy / reconcile
+Result -> HTML : publish B facts/source rows/summary, retained controls
+alt retiring instance (replacement)
+  Result -> Wheel : guarded synchronous dispose A, once
+  alt dispose throw
+    Wheel --> Result : retired failure
+    Result -> Result : diagnostic; B remains published; continue
+  end
+else same instance, new revision
+  Result -> Result : retain instance; prior revision already revoked
+end
+Result -> Wheel : update readonly B + fresh RevisionSink
+note over DOM, Wheel
+Leaf receives no live host/node or mutable currentHost.
+Only closed, copied value frames and readonly numeric metrics.
+Same-origin contract discipline, not a security sandbox.
+end note
+Wheel -> DOM : publish(frame, captured revision token)
+DOM -> DOM : validate/copy frame; guard immediately before synchronous keyed patch
+alt current token
+  DOM -> DOM : patch B, retain live keyed controls; no await in write transaction
+  DOM --> Wheel : committed
+else revoked token, even before old promise settles
+  DOM --> Wheel : revoked, no DOM write
+end
+alt current factory/update sync throw or async rejection
+  Wheel --> Result : leaf failure, current token
+  Result -> DOM : clear only wheel imagery
+  Result -> HTML : visible local SVG warning; HTML B stays
   note over Session, Result
-  No new HTTP / no coordinator requiresReconciliation from expected leaf failure.
-  Unexpected HTML/controller exception retains existing safe-read fallback.
+  Expected SVG leaf failure does not set requiresReconciliation or issue HTTP.
+  Unexpected HTML/controller failure uses existing safe-read/fallback.
   end note
+else stale async rejection
+  Wheel --> Result : retired token + failure
+  Result -> Result : diagnostic only; do not replace B warning/state
+else current update completed with valid frame
+  Wheel --> Result : completion
+  Result -> Result : rendered current revision
 end
-Wheel -> Result : late A callback / old B revision settlement
-Result -> Result : reject revoked instance/revision
-opt explicit replacement with alternative renderer on B
-  Result -> Wheel : revoke / dispose; mount alternative B
-  Wheel --> Result : rendered B
-  User -> Wheel : native activation on live B target
-  Wheel -> Result : valid canonical intent B
-  Result -> HTML : B facts, same canonical policy
-end
-note over Result, Wheel
-Evidence: minimal isolated factories / actual browser B HTML points+aspects.
-Async same-instance update / dispose throw / full production binding NOT RUN.
+User -> DOM : native canonical activation on live node
+DOM -> DOM : current token + connected capability + canonical key
+DOM -> Result : canonical intent
+Result -> HTML : selection uses accepted B, keyed patch
+Result -> DOM : selection frame, retain active point/row
+note over Result, DOM
+Planet activation does not focus()/scroll.
+Frame patch/resize does not remount focused control.
+Bounded run04 proves principle; full mounted integration NOT RUN.
 end note
 @enduml

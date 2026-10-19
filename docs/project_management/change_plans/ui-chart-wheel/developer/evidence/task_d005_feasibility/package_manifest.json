@@ -1,0 +1,824 @@
+{
+  "task": "TASK-D-005",
+  "author": "Codex / Developer",
+  "InputSHA": "34f187aa81ddad7760089f54c1dc23d4d9e59d59",
+  "AssignmentSHA": "0046ac75bd6582089b68a640f98fa65468c0607a",
+  "AnalystContractSHA": "2736e2848c977ec4c770a9a4dec2a0d7c1b62a71",
+  "TechnicalPackageV2SHA": "NOT_CREATED; local DRAFT",
+  "excluded_self_metadata": [
+    "package_audit.json",
+    "package_manifest.json"
+  ],
+  "files": [
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/drawing_adr_draft.md",
+      "sha256_lf_or_binary": "e3ffd12772899a66abe64d4d109bea8c2b0346f79d07d2beaa27b6d82a470795",
+      "bytes": 20091
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/analytic/F1-328-E.json",
+      "sha256_lf_or_binary": "a35ab5431e95b634e336a47bfdc19ab823b784006268652d30668b523e1d754c",
+      "bytes": 58911
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/analytic/F1-328-F.json",
+      "sha256_lf_or_binary": "2f46f3769eaaa04a8816b17d77e9e7949eae7e0e1c692b967b67befbd67388ad",
+      "bytes": 58907
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/analytic/F1-448-E.json",
+      "sha256_lf_or_binary": "7eaecd4d531ad59ba5d26b64f7c76299129645e5cb153101494e44e413184bf6",
+      "bytes": 58673
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/analytic/F1-448-F.json",
+      "sha256_lf_or_binary": "7311b969f3d622dbdea106b085dba45ecfee08cc1e6db3a4eef512a4d803daa7",
+      "bytes": 58677
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/analytic/F1-720-E.json",
+      "sha256_lf_or_binary": "7fd138d24f6de3736c8aac837138d8aab0adbe6cf6f9a51869de458cf2fa7e92",
+      "bytes": 58332
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/analytic/F1-720-F.json",
+      "sha256_lf_or_binary": "070539257613e87c6f0f5401442569ac0925c60b38d5f34129ecf27ab8bbec78",
+      "bytes": 58338
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/analytic/F3-328-E.json",
+      "sha256_lf_or_binary": "52517cc401ff795089285a2694de9dd0803b705b4cff5cabb66567d2719d5e27",
+      "bytes": 52002
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/analytic/F3-328-F.json",
+      "sha256_lf_or_binary": "1e0e0c1717dec2e047544897849dfb0748d714ae094947c55eed7a502f4f0fdf",
+      "bytes": 52034
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/analytic/F3-448-E.json",
+      "sha256_lf_or_binary": "f6a35ef096796a54057841a2a0bfb5a8064620ee1da864a17ba043e2a93e3af9",
+      "bytes": 51828
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/analytic/F3-448-F.json",
+      "sha256_lf_or_binary": "0ad94b764463a034e53d01315a4d00eae04c7b75c49a457d4b6b32189708b62f",
+      "bytes": 51826
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/analytic/F3-720-E.json",
+      "sha256_lf_or_binary": "1b0c06f698ca2092e077be90db97075160145be7b3be3351335efcfd9a93365d",
+      "bytes": 51551
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/analytic/F3-720-F.json",
+      "sha256_lf_or_binary": "fbce77636a7de6d43154e40c71a5cbbd766c4b313e4df41cc67c5ad484372cfa",
+      "bytes": 51549
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/analytic/F3-max-328-E.json",
+      "sha256_lf_or_binary": "6e059ad6e15f57347391959db5c5d5bbb830cbe9f242f5e882845b954f7575b1",
+      "bytes": 56625
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/analytic/F3-max-328-F.json",
+      "sha256_lf_or_binary": "449ee2c7312830a23580e4926151a0f9cb787addf44933bf0786c45b8421ed67",
+      "bytes": 56653
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/analytic/F3-max-448-E.json",
+      "sha256_lf_or_binary": "233429b392277f14c10a3481a0e68623c11d53b33956fb370079cf6ebb46cdf9",
+      "bytes": 56442
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/analytic/F3-max-448-F.json",
+      "sha256_lf_or_binary": "a539c4f3035eff2cc64af046bfb9c295bd539165d05b0462331bdb2ee3140cd7",
+      "bytes": 56456
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/analytic/F3-max-720-E.json",
+      "sha256_lf_or_binary": "de12d65d05e43e96314a7711452ba1c0a1e9dd72aa1f05dc67d10669f97ba808",
+      "bytes": 56105
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/analytic/F3-max-720-F.json",
+      "sha256_lf_or_binary": "c9bdcd8199776927d3d4f51b422b069dc40c570420bf898af2e7bfb00569be87",
+      "bytes": 56091
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/analytic/index.json",
+      "sha256_lf_or_binary": "3400e19d8373af6c9f296bf1aa688629fc3479095285c74935051f6f7caf8427",
+      "bytes": 5398
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/analytic/sparse-328-E.json",
+      "sha256_lf_or_binary": "8e2427c8cee20f84b7ebcc641032e3b1844490c78e623a4764c18442d842a476",
+      "bytes": 38387
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/analytic/sparse-328-F.json",
+      "sha256_lf_or_binary": "0ee5539ce6e366f1940fb9e1a94e4af6ba9fd8cb2809134194851b9398c3fb5b",
+      "bytes": 38389
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/analytic/sparse-448-E.json",
+      "sha256_lf_or_binary": "43143a1a49ec50efa30ad092cbeacc5439e6129efcfdd79bb50d26ff553e99d6",
+      "bytes": 38389
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/analytic/sparse-448-F.json",
+      "sha256_lf_or_binary": "f1d65264f83b13f6626646f4b933417dfcb02ed2e8ef1507c395af544921efa0",
+      "bytes": 38385
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/analytic/sparse-720-E.json",
+      "sha256_lf_or_binary": "d7971279ec4e04d81ef0856d2511dda582fda024cc36c2f792a1843fea52feb1",
+      "bytes": 37506
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/analytic/sparse-720-F.json",
+      "sha256_lf_or_binary": "24818874f897df36fe5109a12c6fae7d0749ad8790333c0db41f70ecaf04dd74",
+      "bytes": 37512
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/analytic/verification.json",
+      "sha256_lf_or_binary": "59330a03507bd28b0b0faef32fe98791cec54150c51c5034c79df46a76b0c980",
+      "bytes": 651175
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/analytic/verification_initial-helper-defect.json",
+      "sha256_lf_or_binary": "2e205c41d5d870ffdf2ccc4502125fdffa42e67eb25f6a104b5f2512a6086d8c",
+      "bytes": 402992
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/analyze_browser.py",
+      "sha256_lf_or_binary": "3a092652dee999f6358d38509e7756e6d7048eec5decbb9a718daf6f2c5fe7be",
+      "bytes": 5843
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/audit_package.py",
+      "sha256_lf_or_binary": "845a6b72129762bf739a4b172443c6162829d9d4303d003b6f71fa1cea1f3f5e",
+      "bytes": 11067
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/boundary.html",
+      "sha256_lf_or_binary": "f30854610efc90ad4f4305eba631441f9bfff1b6a38936133cbd56fdc0a75d38",
+      "bytes": 631
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/boundary.mjs",
+      "sha256_lf_or_binary": "583ef6d63a7c16d3c2306d74d679542cb83410b80f75e5648f746d881c3dd73c",
+      "bytes": 5274
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/browser_audit.json",
+      "sha256_lf_or_binary": "8db9583d13d6252e582530695e8e47cc9832ba5acb1ac5ca2a2f0c5ff43dafc7",
+      "bytes": 21371
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/build_models.py",
+      "sha256_lf_or_binary": "0e3abb23119d76b471c67c9dcf9f2c8fdb8d2d2c72d2304d36b621b4ec5db06b",
+      "bytes": 5173
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/execution_start.json",
+      "sha256_lf_or_binary": "9304ced863d1de17fce8329b72d1237ce1081fa04de393f325b05fcd778f60b5",
+      "bytes": 90045
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/experiment_stop.json",
+      "sha256_lf_or_binary": "8676b8733b759e901dac3e7470a5fbc85feea3f4f072772d5d57a34d0448d1af",
+      "bytes": 986
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/experiment_stop_final.json",
+      "sha256_lf_or_binary": "685b722e43a89c36063ab54a42b0bb6eb16326744916d0cbc72936f448f6af84",
+      "bytes": 1338
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/harness.html",
+      "sha256_lf_or_binary": "5e871801e467fc85cb1bcc51921bba475ac0ee75f3e174167f87a3e21fdd0fa0",
+      "bytes": 1836
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/harness.mjs",
+      "sha256_lf_or_binary": "df45bd24deea95880ae0805f37d1f18df143985fcd6642bbdb4b7b07b4ec84a1",
+      "bytes": 9367
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/model_spec.json",
+      "sha256_lf_or_binary": "80b73cda18ae50bd1a5b05f1cd2ddb291ce0ccda5d8549c2b73815a0e5ed9ec0",
+      "bytes": 5450
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04-delivery/F1-328-E.json",
+      "sha256_lf_or_binary": "84c180657491dfe3665a655f82347439eb727db85d5576859fc560ea11425dc4",
+      "bytes": 350165
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04-delivery/F1-328-F.json",
+      "sha256_lf_or_binary": "cb8cb26b23d26a44a6b62e4aa1a2acf0438445256191075c0627db76bda7cd90",
+      "bytes": 353403
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04-delivery/F1-448-E.json",
+      "sha256_lf_or_binary": "e0604def641aa975e65e1d384f5fcc05d3928076ba3b14a722ad3a68e4370c41",
+      "bytes": 352753
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04-delivery/F1-448-F.json",
+      "sha256_lf_or_binary": "9f5f33f9a175a1de01cecfb7942a21d5a8969d1b5bfc8d85f5837427f2c625b0",
+      "bytes": 352952
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04-delivery/F1-720-E.json",
+      "sha256_lf_or_binary": "7c0cba6292514f7841ad45549cc7ba0daa8d5a6ebabdb0378a9bfc4de4312de4",
+      "bytes": 352474
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04-delivery/F1-720-F.json",
+      "sha256_lf_or_binary": "7de4f0c5e603688e8eb0491dd440f71227f355e9dcd14558bec1801569b4d88f",
+      "bytes": 352366
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04-delivery/F3-328-E.json",
+      "sha256_lf_or_binary": "b2eeaff5d90460082837a9d4ca0cb960fcf3fc1378fa4298144b6f016c58be53",
+      "bytes": 333139
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04-delivery/F3-328-F.json",
+      "sha256_lf_or_binary": "d50eeb4c5653a4f6182a69fc3738a1f75f6fcac4f4a41da5fa96fbc9164e35df",
+      "bytes": 335668
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04-delivery/F3-448-E.json",
+      "sha256_lf_or_binary": "0dd8375335460afd3dca9d2379d4c01f3cdb4ab96967dfcf38b0f410157340cd",
+      "bytes": 335426
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04-delivery/F3-448-F.json",
+      "sha256_lf_or_binary": "37afe79bc07a0347a17f7da1967935848598cfd15d6d3cccd748e350772ec5cd",
+      "bytes": 335331
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04-delivery/F3-720-E.json",
+      "sha256_lf_or_binary": "41905ba69d6f477e62d8955c2a860117941bea09d9ee8c3b0c69eaaa0275454e",
+      "bytes": 335266
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04-delivery/F3-720-F.json",
+      "sha256_lf_or_binary": "6d1095066f771683c192a5991a43fe1e33a12a908a3e8c581ac2776bbd627cc4",
+      "bytes": 335116
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04-delivery/F3-max-328-E.json",
+      "sha256_lf_or_binary": "72ae9737a8a7327e693eddc2bed47bddc9f59ba7bfb1223618a06a0067e94559",
+      "bytes": 374267
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04-delivery/F3-max-328-F.json",
+      "sha256_lf_or_binary": "2776ec0ed480d8480ae12fa194fb7aec0af19a26f1e1376da239c491d51cdd1f",
+      "bytes": 377307
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04-delivery/F3-max-448-E.json",
+      "sha256_lf_or_binary": "da8ddb324f8c4eca9ebb6d21b0e505f5ba62e3a148c1c98d3c3e9ee045930ef4",
+      "bytes": 376419
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04-delivery/F3-max-448-F.json",
+      "sha256_lf_or_binary": "c294844faf904cc03ef476744465025b9859ae99b5d2dde1a2d3c1dca6e40b64",
+      "bytes": 376184
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04-delivery/F3-max-720-E.json",
+      "sha256_lf_or_binary": "46ce135e34b0db223c8a182af7bd9ee35a735573a31faca4dba74d271b414cfd",
+      "bytes": 376453
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04-delivery/F3-max-720-F.json",
+      "sha256_lf_or_binary": "6c5f83550ddaeccd1da7c88bd7fa43e33ef398ed4e3bc67daea41167d569172e",
+      "bytes": 376270
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04-delivery/boundary-controls.json",
+      "sha256_lf_or_binary": "eb3478a92c7dbc9737b28b7cc62e9c06e67a6b4fd32623422330932bc82100a0",
+      "bytes": 10298
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04-delivery/font-controls.json",
+      "sha256_lf_or_binary": "b0fb096a8c9f5243daa0bcbee95ebc2fc1de4a9a6f2fadce28f0f7f897234317",
+      "bytes": 401
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04-delivery/html-focus-controls.json",
+      "sha256_lf_or_binary": "fc1d116ba8148c40aaa9cc0130d9ad653429466494375733fc3cc25b2d3e7705",
+      "bytes": 6050
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04-delivery/index.json",
+      "sha256_lf_or_binary": "85dbc1c75e2fbb85f82c0fc2e352fd0434b2ea7620a25bcd29838b4312bea43d",
+      "bytes": 14413
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04-delivery/screenshots/F1-328-E.png",
+      "sha256_lf_or_binary": "c9841b8d5cd2bab8f6cd5d0d859ec1a45d8749e94af767cc49414ab917bcef17",
+      "bytes": 94596
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04-delivery/screenshots/F1-328-F.png",
+      "sha256_lf_or_binary": "791907c06edf8b2d3d0864a70364c23ca10d76a04c71bb091cb05be03bf7c90b",
+      "bytes": 94737
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04-delivery/screenshots/F1-448-E.png",
+      "sha256_lf_or_binary": "2e90d817122aa70e6bd60683a0d2d5fa6a5eb8d7587221fabc49d2d9e911cfdc",
+      "bytes": 125595
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04-delivery/screenshots/F1-448-F.png",
+      "sha256_lf_or_binary": "063b138e9d01b39079e7c23415a59d3cf142cc88474ff54aba5d56ddc29f065b",
+      "bytes": 125530
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04-delivery/screenshots/F1-720-E.png",
+      "sha256_lf_or_binary": "ca2ccfc7dc0b221bd062274d2975e83833f1e24034ef1ad0d2950c208c56eb0f",
+      "bytes": 168518
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04-delivery/screenshots/F1-720-F.png",
+      "sha256_lf_or_binary": "724206c704f89ccf2cc3defae137b30ac1b7a3b1815375b1ce2573ba1c5a2c58",
+      "bytes": 168452
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04-delivery/screenshots/F3-328-E.png",
+      "sha256_lf_or_binary": "f1f730ceca69e45cf6c1f35580ca01e80906f0c81f1803eac7ecbb3e0b6d75c1",
+      "bytes": 74680
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04-delivery/screenshots/F3-328-F.png",
+      "sha256_lf_or_binary": "d0414bb06125da0ec23469813d9a65bb2ac1c99bee9169d3a637785cf3dfc18c",
+      "bytes": 74645
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04-delivery/screenshots/F3-448-E.png",
+      "sha256_lf_or_binary": "6728aaf4dc17a91ed9330f787e531e00d2fc38d3d849b24fb42bcc6bbc5cc28d",
+      "bytes": 94126
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04-delivery/screenshots/F3-448-F.png",
+      "sha256_lf_or_binary": "e5bd698bfeaf87f32f83096e099b8170079b60123e1bbab3520c64370fb6daba",
+      "bytes": 94100
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04-delivery/screenshots/F3-720-E.png",
+      "sha256_lf_or_binary": "a4eb9ca8e65d83e9b8c7f32ac8be0992eff44c0465dfc90daf411fb621de47fa",
+      "bytes": 111819
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04-delivery/screenshots/F3-720-F.png",
+      "sha256_lf_or_binary": "14facd4c58e54728ed25da1228391a89d5a54b4ea007c383e672f2786a6e370a",
+      "bytes": 111748
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04-delivery/screenshots/F3-max-328-E.png",
+      "sha256_lf_or_binary": "7913e466373a01e25fe9f37e41da2562fb772bee81f41da345aebf847c232e52",
+      "bytes": 92285
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04-delivery/screenshots/F3-max-328-F.png",
+      "sha256_lf_or_binary": "bf354f4ae28770227f1eeaa4d491a71e1fa507cb82ca55012653307f2c1ccdab",
+      "bytes": 92106
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04-delivery/screenshots/F3-max-448-E.png",
+      "sha256_lf_or_binary": "f07f9504dca2678caa220c0cb9aa422c0e4729202df04813798e85232629bd9a",
+      "bytes": 115229
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04-delivery/screenshots/F3-max-448-F.png",
+      "sha256_lf_or_binary": "5a65bf7a67f12f1f025dd42c6d3bc0b9d155df3b7b08a2704ef16833ce4c55bc",
+      "bytes": 115127
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04-delivery/screenshots/F3-max-720-E.png",
+      "sha256_lf_or_binary": "3e0a5bda0d24dbd650051e16c19a08031171f1970ff318125103600bff3b3222",
+      "bytes": 132342
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04-delivery/screenshots/F3-max-720-F.png",
+      "sha256_lf_or_binary": "e6da18bdba9f4057532f0abc86fc60c789e033543c3507e5ab10024e80f1813c",
+      "bytes": 132193
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04-delivery/screenshots/boundary-positive.png",
+      "sha256_lf_or_binary": "cba544097ecbde11f943a6253d27d9105f5dd54307d1a3eafbc2ff63f8426f6e",
+      "bytes": 11924
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04-delivery/screenshots/sparse-328-E.png",
+      "sha256_lf_or_binary": "8b25f48686f9cf74f7d3b7fd8b3ad1b1f2ad0f88c33cdb30896b908ae71d812d",
+      "bytes": 60886
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04-delivery/screenshots/sparse-328-F.png",
+      "sha256_lf_or_binary": "15f6f1f9d9e268f6b3c186fea84878eff6dbb232d25435e2598edf317eb4d175",
+      "bytes": 60700
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04-delivery/screenshots/sparse-448-E.png",
+      "sha256_lf_or_binary": "94206843cef0d18dcc536398e2840af2f91bc5d3d1d0afdc0c3a233250e07971",
+      "bytes": 73325
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04-delivery/screenshots/sparse-448-F.png",
+      "sha256_lf_or_binary": "be993354ee2b678c6fee8e986b93dff962fb8600b57030a5e862d90b2c368efd",
+      "bytes": 73089
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04-delivery/screenshots/sparse-720-E.png",
+      "sha256_lf_or_binary": "216837079855193e85461b866a786664824a1a48f91a2d92af82a8bd34111cb2",
+      "bytes": 90652
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04-delivery/screenshots/sparse-720-F.png",
+      "sha256_lf_or_binary": "de67a36df75149d6971d5f4205295d97d30d0ae35bd632155d2ebf24eb32ef23",
+      "bytes": 90382
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04-delivery/sparse-328-E.json",
+      "sha256_lf_or_binary": "4d5dbcc99244bc07e8cc55d0aa164686b457ab1d5d20e7d10b99c335252390b7",
+      "bytes": 276948
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04-delivery/sparse-328-F.json",
+      "sha256_lf_or_binary": "f274b8bbd13e894a9e2daedf9ed4d5f32d9264471c76ae2292943a5f8fc8dadf",
+      "bytes": 282294
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04-delivery/sparse-448-E.json",
+      "sha256_lf_or_binary": "1a0dc743219863f458765e6e617a7cd82f4570d5875dd511ebad79dd7a8f2409",
+      "bytes": 281932
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04-delivery/sparse-448-F.json",
+      "sha256_lf_or_binary": "4299c6d4e296624b12a11e54155d2bd6f0bad2ce5d72123e2dd6188136fa97e3",
+      "bytes": 281534
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04-delivery/sparse-720-E.json",
+      "sha256_lf_or_binary": "d87ec07032f2e0a095ee0c8542aaff64ef591656aa2f64eb955ce284ad234870",
+      "bytes": 280686
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04-delivery/sparse-720-F.json",
+      "sha256_lf_or_binary": "1a2bfc8d917592afea570dddd0990c716b39a2a9ee779bb0f1bb455eec45ee32",
+      "bytes": 280381
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04/F1-328-E.json",
+      "sha256_lf_or_binary": "2d235b90cdf46eba0761aba933acddb47453ac30b8bf8d1f2e662c90b99179ae",
+      "bytes": 279502
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04/F1-328-F.json",
+      "sha256_lf_or_binary": "e21f4e2cefdb4387b1503421f1468eb8555780272fa3f5df1dfa798aa5cacef4",
+      "bytes": 280150
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04/F1-448-E.json",
+      "sha256_lf_or_binary": "c35f96cd4d8a56ca40bf2157ae19bdfbc4d4afca380be7115c3f3ef4ffa889a6",
+      "bytes": 279732
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04/F1-448-F.json",
+      "sha256_lf_or_binary": "b92ebd61de49541b8584852c76f19f66d504c44eae0a61018287fa7a8a252367",
+      "bytes": 279819
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04/F1-720-E.json",
+      "sha256_lf_or_binary": "26a57acf4f9c4f349aa1d9eab9a456707ce3712686a405c0f54ac3ca5eba1ab9",
+      "bytes": 279405
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04/F1-720-F.json",
+      "sha256_lf_or_binary": "225f5fb0cc719a7de3f8ccbd3e865a0c9b6206b62f8e7f1bc04b7247cc039672",
+      "bytes": 279328
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04/F3-328-E.json",
+      "sha256_lf_or_binary": "9a2b2e9755547593f7fe395d13d5d3226541239db929b0eeea69486f888de5b6",
+      "bytes": 266912
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04/F3-328-F.json",
+      "sha256_lf_or_binary": "0c40c3aadf91b284b5b7f9c45fe0eac4ac472866e5b090ed41a5a1d6dc0cc52d",
+      "bytes": 267047
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04/F3-448-E.json",
+      "sha256_lf_or_binary": "00c51655eb5e705e9d3fc76e81785c40d59d35f70f5730580212de8bb1cae24b",
+      "bytes": 266894
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04/F3-448-F.json",
+      "sha256_lf_or_binary": "4909aeb84cfd1cda67a9bca2443995afedfc5a7d4433cda4693a795a18c07a47",
+      "bytes": 266778
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04/F3-720-E.json",
+      "sha256_lf_or_binary": "8502bfa722daafe3ec22e06da1d8b9703fb84708ea268dc58ac6653de76a30d3",
+      "bytes": 266721
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04/F3-720-F.json",
+      "sha256_lf_or_binary": "5de165235b19b2987852951a472fb756381b32b2ec01ee7ef6608981412041f5",
+      "bytes": 266606
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04/F3-max-328-E.json",
+      "sha256_lf_or_binary": "ac7aca7c13661d16d050e9c8937ab6d945dde2bae62f1d5f9c0e62afb75b376c",
+      "bytes": 299251
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04/F3-max-328-F.json",
+      "sha256_lf_or_binary": "07354a5e9e034573b5ab4302573935970c7e64f29bf56ab50cc748a1ca152a52",
+      "bytes": 299810
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04/F3-max-448-E.json",
+      "sha256_lf_or_binary": "14ed275932b0734d29953c9fae8873fb90562cc1f2589317c6ba31124f8ab4f2",
+      "bytes": 299190
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04/F3-max-448-F.json",
+      "sha256_lf_or_binary": "31ae6207338d2e117c91f9a5e1f8f568519e8dd32a77db7865c9e80ff3bedbfd",
+      "bytes": 299036
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04/F3-max-720-E.json",
+      "sha256_lf_or_binary": "390559a51cd93954af45b9c286294af612fcf46074e47ea44578ee27b0e75b18",
+      "bytes": 299189
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04/F3-max-720-F.json",
+      "sha256_lf_or_binary": "1633f0571994327f39cb4e2771480fcdf2abd346ce35ae72fe8f5f093c24897c",
+      "bytes": 298982
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04/boundary-controls.json",
+      "sha256_lf_or_binary": "eb3478a92c7dbc9737b28b7cc62e9c06e67a6b4fd32623422330932bc82100a0",
+      "bytes": 10298
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04/font-controls.json",
+      "sha256_lf_or_binary": "b0fb096a8c9f5243daa0bcbee95ebc2fc1de4a9a6f2fadce28f0f7f897234317",
+      "bytes": 401
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04/html-focus-controls.json",
+      "sha256_lf_or_binary": "fc1d116ba8148c40aaa9cc0130d9ad653429466494375733fc3cc25b2d3e7705",
+      "bytes": 6050
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04/index.json",
+      "sha256_lf_or_binary": "96efe887e91ab048521ff8c946ffccf1403782d74f3c941714f23ba66e2f09a9",
+      "bytes": 14413
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04/screenshots/F1-328-E.png",
+      "sha256_lf_or_binary": "876ea6a6c6324d8673659b1f523e6e295ffca8ed9af7d08cf08a6cdf4eb8e40b",
+      "bytes": 94589
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04/screenshots/F1-328-F.png",
+      "sha256_lf_or_binary": "329c085c0d3af3bb512f598a71cfeaacba506e5db991458299157e664a5c4c84",
+      "bytes": 94737
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04/screenshots/F1-448-E.png",
+      "sha256_lf_or_binary": "2e90d817122aa70e6bd60683a0d2d5fa6a5eb8d7587221fabc49d2d9e911cfdc",
+      "bytes": 125595
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04/screenshots/F1-448-F.png",
+      "sha256_lf_or_binary": "063b138e9d01b39079e7c23415a59d3cf142cc88474ff54aba5d56ddc29f065b",
+      "bytes": 125530
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04/screenshots/F1-720-E.png",
+      "sha256_lf_or_binary": "ca2ccfc7dc0b221bd062274d2975e83833f1e24034ef1ad0d2950c208c56eb0f",
+      "bytes": 168518
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04/screenshots/F1-720-F.png",
+      "sha256_lf_or_binary": "724206c704f89ccf2cc3defae137b30ac1b7a3b1815375b1ce2573ba1c5a2c58",
+      "bytes": 168452
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04/screenshots/F3-328-E.png",
+      "sha256_lf_or_binary": "f1f730ceca69e45cf6c1f35580ca01e80906f0c81f1803eac7ecbb3e0b6d75c1",
+      "bytes": 74680
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04/screenshots/F3-328-F.png",
+      "sha256_lf_or_binary": "d0414bb06125da0ec23469813d9a65bb2ac1c99bee9169d3a637785cf3dfc18c",
+      "bytes": 74645
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04/screenshots/F3-448-E.png",
+      "sha256_lf_or_binary": "c1ad380191ebbc973c9f7fa0a86e0bb77bacbd6fe4ebe5f2aa6247a34967673d",
+      "bytes": 94127
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04/screenshots/F3-448-F.png",
+      "sha256_lf_or_binary": "4ca73ea97d6198f2175f5023f51b0faf192c90da0087c2e0f72a2fa3d97b9f5a",
+      "bytes": 94098
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04/screenshots/F3-720-E.png",
+      "sha256_lf_or_binary": "a4eb9ca8e65d83e9b8c7f32ac8be0992eff44c0465dfc90daf411fb621de47fa",
+      "bytes": 111819
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04/screenshots/F3-720-F.png",
+      "sha256_lf_or_binary": "14facd4c58e54728ed25da1228391a89d5a54b4ea007c383e672f2786a6e370a",
+      "bytes": 111748
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04/screenshots/F3-max-328-E.png",
+      "sha256_lf_or_binary": "7913e466373a01e25fe9f37e41da2562fb772bee81f41da345aebf847c232e52",
+      "bytes": 92285
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04/screenshots/F3-max-328-F.png",
+      "sha256_lf_or_binary": "bf354f4ae28770227f1eeaa4d491a71e1fa507cb82ca55012653307f2c1ccdab",
+      "bytes": 92106
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04/screenshots/F3-max-448-E.png",
+      "sha256_lf_or_binary": "f07f9504dca2678caa220c0cb9aa422c0e4729202df04813798e85232629bd9a",
+      "bytes": 115229
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04/screenshots/F3-max-448-F.png",
+      "sha256_lf_or_binary": "5a65bf7a67f12f1f025dd42c6d3bc0b9d155df3b7b08a2704ef16833ce4c55bc",
+      "bytes": 115127
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04/screenshots/F3-max-720-E.png",
+      "sha256_lf_or_binary": "3e0a5bda0d24dbd650051e16c19a08031171f1970ff318125103600bff3b3222",
+      "bytes": 132342
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04/screenshots/F3-max-720-F.png",
+      "sha256_lf_or_binary": "e6da18bdba9f4057532f0abc86fc60c789e033543c3507e5ab10024e80f1813c",
+      "bytes": 132193
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04/screenshots/boundary-positive.png",
+      "sha256_lf_or_binary": "cba544097ecbde11f943a6253d27d9105f5dd54307d1a3eafbc2ff63f8426f6e",
+      "bytes": 11924
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04/screenshots/sparse-328-E.png",
+      "sha256_lf_or_binary": "8b25f48686f9cf74f7d3b7fd8b3ad1b1f2ad0f88c33cdb30896b908ae71d812d",
+      "bytes": 60886
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04/screenshots/sparse-328-F.png",
+      "sha256_lf_or_binary": "15f6f1f9d9e268f6b3c186fea84878eff6dbb232d25435e2598edf317eb4d175",
+      "bytes": 60700
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04/screenshots/sparse-448-E.png",
+      "sha256_lf_or_binary": "94206843cef0d18dcc536398e2840af2f91bc5d3d1d0afdc0c3a233250e07971",
+      "bytes": 73325
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04/screenshots/sparse-448-F.png",
+      "sha256_lf_or_binary": "be993354ee2b678c6fee8e986b93dff962fb8600b57030a5e862d90b2c368efd",
+      "bytes": 73089
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04/screenshots/sparse-720-E.png",
+      "sha256_lf_or_binary": "216837079855193e85461b866a786664824a1a48f91a2d92af82a8bd34111cb2",
+      "bytes": 90652
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04/screenshots/sparse-720-F.png",
+      "sha256_lf_or_binary": "de67a36df75149d6971d5f4205295d97d30d0ae35bd632155d2ebf24eb32ef23",
+      "bytes": 90382
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04/sparse-328-E.json",
+      "sha256_lf_or_binary": "f0fabe17870f139a432c86042bf97e4cfc9b0bf133b8768b09c0dbbffd70ec43",
+      "bytes": 222039
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04/sparse-328-F.json",
+      "sha256_lf_or_binary": "850461ee3a0e092b431b0f21572a45e035f098fa06923e8f180373a0b6da10ec",
+      "bytes": 222625
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04/sparse-448-E.json",
+      "sha256_lf_or_binary": "7c18735a834e243fc7f8edd29c45c0a4dbccde9af455f69ae0b1ac1d5adabed6",
+      "bytes": 222369
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04/sparse-448-F.json",
+      "sha256_lf_or_binary": "4baa2660d8b8bbe6c8a8dfdb2383be7bff6e9e33b566f5af528d6735be596fb2",
+      "bytes": 221933
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04/sparse-720-E.json",
+      "sha256_lf_or_binary": "3a629fcaf6fd9127bbe5222bee3dda64817620a07416dab1d00b489c3faf3420",
+      "bytes": 221286
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run04/sparse-720-F.json",
+      "sha256_lf_or_binary": "cc8a5dce0d2f5bf10d475f07dc0c1579fe0e16fa9a5ade6c2900fdc6d4daa19f",
+      "bytes": 220963
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/run_browser.cjs",
+      "sha256_lf_or_binary": "3067580a84ed06934d42e35bcd631031f3787f4e7dd0062a8c3199a267ee9327",
+      "bytes": 13483
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/sources-run04-initial/boundary.html",
+      "sha256_lf_or_binary": "f30854610efc90ad4f4305eba631441f9bfff1b6a38936133cbd56fdc0a75d38",
+      "bytes": 631
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/sources-run04-initial/boundary.mjs",
+      "sha256_lf_or_binary": "583ef6d63a7c16d3c2306d74d679542cb83410b80f75e5648f746d881c3dd73c",
+      "bytes": 5274
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/sources-run04-initial/harness.html",
+      "sha256_lf_or_binary": "5e871801e467fc85cb1bcc51921bba475ac0ee75f3e174167f87a3e21fdd0fa0",
+      "bytes": 1836
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/sources-run04-initial/harness.mjs",
+      "sha256_lf_or_binary": "5fef464d878375e07dd96afd0d4e3308dc801551ff4b2d688bea823f0767392f",
+      "bytes": 8962
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/sources-run04-initial/run_browser.cjs",
+      "sha256_lf_or_binary": "2047011d516f3ec24136caf4fe36bfea642f1d21ed96f3a7ef475f33e55b10c5",
+      "bytes": 13188
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/sources-run04-initial/verify_models.py",
+      "sha256_lf_or_binary": "f0c1e70bc229df3593d6267f69676224d5e89c3f43f7e832c6019933fe4afa65",
+      "bytes": 10180
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/stop_experiment.py",
+      "sha256_lf_or_binary": "15fcd0a440ffc4f06e3324f3a6873b8a88de36f5730231716e8b09543185d150",
+      "bytes": 2386
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d005_feasibility/verify_models.py",
+      "sha256_lf_or_binary": "f0c1e70bc229df3593d6267f69676224d5e89c3f43f7e832c6019933fe4afa65",
+      "bytes": 10180
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/implementation_plan.md",
+      "sha256_lf_or_binary": "e59ab3ad80dbf6e4e263eaad652dee78d44921169afe58170f84628d53f61210",
+      "bytes": 28787
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/sequence_diagrams/ui/001-result-renderer-lifecycle.puml",
+      "sha256_lf_or_binary": "b483e6050ff43fc53b812c0ffedf06f68f41659271100b13bd0a1bef90d28ec0",
+      "bytes": 2919
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/sequence_diagrams/ui/002-acceptance-selection-focus.puml",
+      "sha256_lf_or_binary": "66675a279664c0d63e8c67b0964e0db6c4d433b8eccb6b14768f1d90e5ff0c8a",
+      "bytes": 3070
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/task_d005_feasibility_report.md",
+      "sha256_lf_or_binary": "d3a26971d1c3e32295859d012151598fa6b6fcff1acff4c7faf61e0cea03cabc",
+      "bytes": 26705
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/task_d005_findings.md",
+      "sha256_lf_or_binary": "08c75d13b6e9fae0c865d1da415989f227589e5b2bf7f4f422cd87982c226bc6",
+      "bytes": 4377
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/task_d005_implementation_plan.md",
+      "sha256_lf_or_binary": "57be73ffa5367856488d658795c112f34f5f8a4e59d99552e3840e6984b5b880",
+      "bytes": 46334
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer_artifact.md",
+      "sha256_lf_or_binary": "98b771398aeb5c104456a4c4103620f1ccc8b4e96c7ea2bb765b636ddbe3baad",
+      "bytes": 67221
+    }
+  ]
+}

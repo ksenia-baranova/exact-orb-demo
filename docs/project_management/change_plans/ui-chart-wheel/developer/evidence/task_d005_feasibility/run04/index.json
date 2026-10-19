@@ -1,0 +1,641 @@
+{
+  "meta": {
+    "started": "2026-10-19T07:56:32.263Z",
+    "browserHarnessWallCapHours": 4,
+    "parentExperimentStopUTC": "2026-10-19T09:15:25Z",
+    "node": "v24.19.0",
+    "os": "win32 10.0.26200",
+    "spec_sha256": "80b73cda18ae50bd1a5b05f1cd2ddb291ce0ccda5d8549c2b73815a0e5ed9ec0",
+    "input_sha": "34f187aa81ddad7760089f54c1dc23d4d9e59d59",
+    "sources": {
+      "harness.html": "5e871801e467fc85cb1bcc51921bba475ac0ee75f3e174167f87a3e21fdd0fa0",
+      "harness.mjs": "5fef464d878375e07dd96afd0d4e3308dc801551ff4b2d688bea823f0767392f",
+      "boundary.html": "f30854610efc90ad4f4305eba631441f9bfff1b6a38936133cbd56fdc0a75d38",
+      "boundary.mjs": "583ef6d63a7c16d3c2306d74d679542cb83410b80f75e5648f746d881c3dd73c",
+      "run_browser.cjs": "2047011d516f3ec24136caf4fe36bfea642f1d21ed96f3a7ef475f33e55b10c5",
+      "verify_models.py": "f0c1e70bc229df3593d6267f69676224d5e89c3f43f7e832c6019933fe4afa65"
+    },
+    "browser": "155.0.8059.40",
+    "executable": "C:/Program Files/Google/Chrome/Application/chrome.exe",
+    "ended": "2026-10-19T07:56:43.818Z",
+    "browserWallSeconds": 11.555
+  },
+  "records": [
+    {
+      "file": "sparse-720-F.json",
+      "sha256": "cc8a5dce0d2f5bf10d475f07dc0c1579fe0e16fa9a5ade6c2900fdc6d4daa19f"
+    },
+    {
+      "file": "sparse-720-E.json",
+      "sha256": "3a629fcaf6fd9127bbe5222bee3dda64817620a07416dab1d00b489c3faf3420"
+    },
+    {
+      "file": "sparse-448-F.json",
+      "sha256": "4baa2660d8b8bbe6c8a8dfdb2383be7bff6e9e33b566f5af528d6735be596fb2"
+    },
+    {
+      "file": "sparse-448-E.json",
+      "sha256": "7c18735a834e243fc7f8edd29c45c0a4dbccde9af455f69ae0b1ac1d5adabed6"
+    },
+    {
+      "file": "sparse-328-F.json",
+      "sha256": "850461ee3a0e092b431b0f21572a45e035f098fa06923e8f180373a0b6da10ec"
+    },
+    {
+      "file": "sparse-328-E.json",
+      "sha256": "f0fabe17870f139a432c86042bf97e4cfc9b0bf133b8768b09c0dbbffd70ec43"
+    },
+    {
+      "file": "F1-720-F.json",
+      "sha256": "225f5fb0cc719a7de3f8ccbd3e865a0c9b6206b62f8e7f1bc04b7247cc039672"
+    },
+    {
+      "file": "F1-720-E.json",
+      "sha256": "26a57acf4f9c4f349aa1d9eab9a456707ce3712686a405c0f54ac3ca5eba1ab9"
+    },
+    {
+      "file": "F1-448-F.json",
+      "sha256": "b92ebd61de49541b8584852c76f19f66d504c44eae0a61018287fa7a8a252367"
+    },
+    {
+      "file": "F1-448-E.json",
+      "sha256": "c35f96cd4d8a56ca40bf2157ae19bdfbc4d4afca380be7115c3f3ef4ffa889a6"
+    },
+    {
+      "file": "F1-328-F.json",
+      "sha256": "e21f4e2cefdb4387b1503421f1468eb8555780272fa3f5df1dfa798aa5cacef4"
+    },
+    {
+      "file": "F1-328-E.json",
+      "sha256": "2d235b90cdf46eba0761aba933acddb47453ac30b8bf8d1f2e662c90b99179ae"
+    },
+    {
+      "file": "F3-720-F.json",
+      "sha256": "5de165235b19b2987852951a472fb756381b32b2ec01ee7ef6608981412041f5"
+    },
+    {
+      "file": "F3-720-E.json",
+      "sha256": "8502bfa722daafe3ec22e06da1d8b9703fb84708ea268dc58ac6653de76a30d3"
+    },
+    {
+      "file": "F3-448-F.json",
+      "sha256": "4909aeb84cfd1cda67a9bca2443995afedfc5a7d4433cda4693a795a18c07a47"
+    },
+    {
+      "file": "F3-448-E.json",
+      "sha256": "00c51655eb5e705e9d3fc76e81785c40d59d35f70f5730580212de8bb1cae24b"
+    },
+    {
+      "file": "F3-328-F.json",
+      "sha256": "0c40c3aadf91b284b5b7f9c45fe0eac4ac472866e5b090ed41a5a1d6dc0cc52d"
+    },
+    {
+      "file": "F3-328-E.json",
+      "sha256": "9a2b2e9755547593f7fe395d13d5d3226541239db929b0eeea69486f888de5b6"
+    },
+    {
+      "file": "F3-max-720-F.json",
+      "sha256": "1633f0571994327f39cb4e2771480fcdf2abd346ce35ae72fe8f5f093c24897c"
+    },
+    {
+      "file": "F3-max-720-E.json",
+      "sha256": "390559a51cd93954af45b9c286294af612fcf46074e47ea44578ee27b0e75b18"
+    },
+    {
+      "file": "F3-max-448-F.json",
+      "sha256": "31ae6207338d2e117c91f9a5e1f8f568519e8dd32a77db7865c9e80ff3bedbfd"
+    },
+    {
+      "file": "F3-max-448-E.json",
+      "sha256": "14ed275932b0734d29953c9fae8873fb90562cc1f2589317c6ba31124f8ab4f2"
+    },
+    {
+      "file": "F3-max-328-F.json",
+      "sha256": "07354a5e9e034573b5ab4302573935970c7e64f29bf56ab50cc748a1ca152a52"
+    },
+    {
+      "file": "F3-max-328-E.json",
+      "sha256": "ac7aca7c13661d16d050e9c8937ab6d945dde2bae62f1d5f9c0e62afb75b376c"
+    }
+  ],
+  "controls": [
+    {
+      "id": "HTML-point-retained-native",
+      "actual": [
+        "html-moon",
+        true,
+        true,
+        "moon",
+        null,
+        true
+      ],
+      "expected": [
+        "html-moon",
+        true,
+        true,
+        "moon",
+        null,
+        true
+      ],
+      "pass": true
+    },
+    {
+      "id": "HTML-row-retained-native",
+      "actual": [
+        "row-0",
+        true,
+        true,
+        null,
+        true,
+        true,
+        true
+      ],
+      "expected": [
+        "row-0",
+        true,
+        true,
+        null,
+        true,
+        true,
+        true
+      ],
+      "pass": true
+    },
+    {
+      "id": "recreated-key-is-not-retained",
+      "actual": [
+        false,
+        false
+      ],
+      "expected": [
+        false,
+        false
+      ],
+      "pass": true
+    },
+    {
+      "id": "external-current-cause-restore-model",
+      "actual": [
+        "html-moon",
+        true,
+        "moon",
+        true
+      ],
+      "expected": [
+        "html-moon",
+        true,
+        "moon",
+        true
+      ],
+      "pass": true
+    },
+    {
+      "id": "resize-focused-live-target",
+      "actual": [
+        true,
+        "target-1",
+        "moon",
+        true
+      ],
+      "expected": [
+        true,
+        "target-1",
+        "moon",
+        true
+      ],
+      "pass": true
+    },
+    {
+      "id": "collapse-focus-before-hide",
+      "actual": [
+        "edit",
+        true,
+        true,
+        1
+      ],
+      "expected": [
+        "edit",
+        true,
+        true,
+        1
+      ],
+      "pass": true
+    },
+    {
+      "id": "recovery-native-control",
+      "actual": "recovery-control-native",
+      "expected": "recovery-control-native",
+      "pass": true
+    },
+    {
+      "id": "em-boundary-real",
+      "actual": [
+        true,
+        false,
+        true,
+        false,
+        false
+      ],
+      "expected": [
+        true,
+        false,
+        true,
+        false,
+        false
+      ],
+      "pass": true
+    },
+    {
+      "id": "alternate-native-positive",
+      "actual": "mars",
+      "expected": "mars",
+      "pass": true
+    },
+    {
+      "id": "native-overlay-positive-negative",
+      "actual": [
+        0,
+        1
+      ],
+      "expected": [
+        0,
+        1
+      ],
+      "pass": true
+    },
+    {
+      "id": "native-clipping-negative",
+      "actual": false,
+      "expected": false,
+      "pass": true
+    },
+    {
+      "id": "native-clip-boundary-positive",
+      "actual": 2,
+      "expected": 2,
+      "pass": true
+    }
+  ],
+  "boundary": {
+    "controls": [
+      {
+        "id": "R001-01-HTML-before-dispose-fault",
+        "actual": "HTML B",
+        "expected": "HTML B",
+        "pass": true
+      },
+      {
+        "id": "R001-02-write-before-old-settlement",
+        "actual": false,
+        "expected": false,
+        "pass": true
+      },
+      {
+        "id": "R001-02-live-B-survives",
+        "actual": "B",
+        "expected": "B",
+        "pass": true
+      },
+      {
+        "id": "R001-02-write-after-old-settlement",
+        "actual": false,
+        "expected": false,
+        "pass": true
+      },
+      {
+        "id": "R001-01-order",
+        "actual": [
+          "revoke",
+          "remove-imagery",
+          "html-published",
+          "draw-entered"
+        ],
+        "expected": [
+          "revoke",
+          "remove-imagery",
+          "html-published",
+          "draw-entered"
+        ],
+        "pass": true
+      },
+      {
+        "id": "R001-02-same-instance-new-revision",
+        "actual": 3,
+        "expected": 3,
+        "pass": true
+      },
+      {
+        "id": "R001-02-old-revision-write",
+        "actual": false,
+        "expected": false,
+        "pass": true
+      },
+      {
+        "id": "R001-03-stale-rejection-keeps-D",
+        "actual": [
+          "HTML D",
+          "D",
+          ""
+        ],
+        "expected": [
+          "HTML D",
+          "D",
+          ""
+        ],
+        "pass": true
+      },
+      {
+        "id": "R001-03-sync-local",
+        "actual": [
+          "HTML E-sync",
+          0,
+          "Колесо недоступно: E-sync"
+        ],
+        "expected": [
+          "HTML E-sync",
+          0,
+          "Колесо недоступно: E-sync"
+        ],
+        "pass": true
+      },
+      {
+        "id": "R001-03-async-local",
+        "actual": [
+          "HTML F-async",
+          0,
+          "Колесо недоступно: F-async"
+        ],
+        "expected": [
+          "HTML F-async",
+          0,
+          "Колесо недоступно: F-async"
+        ],
+        "pass": true
+      },
+      {
+        "id": "R001-03-factory-local",
+        "actual": [
+          "HTML G-factory",
+          "Колесо недоступно: G-factory"
+        ],
+        "expected": [
+          "HTML G-factory",
+          "Колесо недоступно: G-factory"
+        ],
+        "pass": true
+      },
+      {
+        "id": "alternate-positive",
+        "actual": [
+          "HTML H-alternate",
+          "H alternative"
+        ],
+        "expected": [
+          "HTML H-alternate",
+          "H alternative"
+        ],
+        "pass": true
+      }
+    ],
+    "trace": [
+      {
+        "event": "revoke",
+        "identity": "A"
+      },
+      {
+        "event": "remove-imagery",
+        "identity": "A"
+      },
+      {
+        "event": "html-published",
+        "identity": "A",
+        "html": "HTML A"
+      },
+      {
+        "event": "draw-entered",
+        "identity": "A"
+      },
+      {
+        "event": "frame-published",
+        "identity": "A",
+        "epoch": 1
+      },
+      {
+        "event": "revoke",
+        "identity": "B",
+        "prior": "A"
+      },
+      {
+        "event": "remove-imagery",
+        "identity": "B"
+      },
+      {
+        "event": "html-published",
+        "identity": "B",
+        "html": "HTML B"
+      },
+      {
+        "event": "dispose-fault",
+        "identity": "A",
+        "error": "controlled dispose throw",
+        "html": "HTML B"
+      },
+      {
+        "event": "draw-entered",
+        "identity": "B"
+      },
+      {
+        "event": "frame-published",
+        "identity": "B",
+        "epoch": 2
+      },
+      {
+        "event": "rendered",
+        "identity": "B"
+      },
+      {
+        "event": "stale-write-refused",
+        "identity": "A",
+        "epoch": 1
+      },
+      {
+        "event": "stale-write-refused",
+        "identity": "A",
+        "epoch": 1
+      },
+      {
+        "event": "revoke",
+        "identity": "C",
+        "prior": "B"
+      },
+      {
+        "event": "remove-imagery",
+        "identity": "C"
+      },
+      {
+        "event": "html-published",
+        "identity": "C",
+        "html": "HTML C"
+      },
+      {
+        "event": "dispose",
+        "identity": "B"
+      },
+      {
+        "event": "draw-entered",
+        "identity": "C"
+      },
+      {
+        "event": "revoke",
+        "identity": "D",
+        "prior": "C"
+      },
+      {
+        "event": "remove-imagery",
+        "identity": "D"
+      },
+      {
+        "event": "html-published",
+        "identity": "D",
+        "html": "HTML D"
+      },
+      {
+        "event": "draw-entered",
+        "identity": "D"
+      },
+      {
+        "event": "frame-published",
+        "identity": "D",
+        "epoch": 4
+      },
+      {
+        "event": "rendered",
+        "identity": "D"
+      },
+      {
+        "event": "stale-write-refused",
+        "identity": "C",
+        "epoch": 3
+      },
+      {
+        "event": "stale-rejection-diagnostic",
+        "identity": "C",
+        "error": "controlled stale reject"
+      },
+      {
+        "event": "revoke",
+        "identity": "E-sync",
+        "prior": "D"
+      },
+      {
+        "event": "remove-imagery",
+        "identity": "E-sync"
+      },
+      {
+        "event": "html-published",
+        "identity": "E-sync",
+        "html": "HTML E-sync"
+      },
+      {
+        "event": "dispose",
+        "identity": "D"
+      },
+      {
+        "event": "draw-entered",
+        "identity": "E-sync"
+      },
+      {
+        "event": "local-svg-unavailable",
+        "identity": "E-sync",
+        "error": "controlled sync update",
+        "html": "HTML E-sync"
+      },
+      {
+        "event": "revoke",
+        "identity": "F-async",
+        "prior": "E-sync"
+      },
+      {
+        "event": "remove-imagery",
+        "identity": "F-async"
+      },
+      {
+        "event": "html-published",
+        "identity": "F-async",
+        "html": "HTML F-async"
+      },
+      {
+        "event": "dispose",
+        "identity": "E-sync"
+      },
+      {
+        "event": "draw-entered",
+        "identity": "F-async"
+      },
+      {
+        "event": "local-svg-unavailable",
+        "identity": "F-async",
+        "error": "controlled async reject",
+        "html": "HTML F-async"
+      },
+      {
+        "event": "revoke",
+        "identity": "G-factory",
+        "prior": "F-async"
+      },
+      {
+        "event": "remove-imagery",
+        "identity": "G-factory"
+      },
+      {
+        "event": "html-published",
+        "identity": "G-factory",
+        "html": "HTML G-factory"
+      },
+      {
+        "event": "dispose",
+        "identity": "F-async"
+      },
+      {
+        "event": "local-svg-unavailable",
+        "identity": "G-factory",
+        "error": "controlled factory throw",
+        "html": "HTML G-factory"
+      },
+      {
+        "event": "revoke",
+        "identity": "H-alternate",
+        "prior": "G-factory"
+      },
+      {
+        "event": "remove-imagery",
+        "identity": "H-alternate"
+      },
+      {
+        "event": "html-published",
+        "identity": "H-alternate",
+        "html": "HTML H-alternate"
+      },
+      {
+        "event": "dispose",
+        "identity": "G-factory"
+      },
+      {
+        "event": "draw-entered",
+        "identity": "H-alternate"
+      },
+      {
+        "event": "frame-published",
+        "identity": "H-alternate",
+        "epoch": 8
+      },
+      {
+        "event": "rendered",
+        "identity": "H-alternate"
+      }
+    ],
+    "selected": null,
+    "html": "HTML H-alternate"
+  },
+  "pageErrors": []
+}
