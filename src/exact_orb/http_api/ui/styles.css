@@ -439,7 +439,8 @@ main[data-page-mode="chart"] .chart-result { margin-top: 0; padding: 20px; }
 .chart-result[data-aspect-focus="true"] .wheel-panel { max-width: min(940px, calc(100svh - 200px)); }
 .facts-table { width: auto; max-width: 100%; table-layout: auto; }
 .facts-table th, .facts-table td { padding: 4px 12px; vertical-align: middle; }
-.facts-table .fact-select { padding: 0; font: inherit; line-height: inherit; display: inline-flex; align-items: center; min-width: 44px; min-height: 44px; }
+/* Rectangular native target: Q44 has a 1px inset, including fractional table positions. */
+.facts-table .fact-select { padding: 0; font: inherit; line-height: inherit; display: inline-flex; align-items: center; min-width: 46px; min-height: 46px; border-radius: 0; }
 .aspect-legend { margin-top: 16px; color: var(--text); font-size: 14px; }
 .aspect-legend h3 { margin: 0 0 8px; font-size: 16px; font-weight: 500; }
 .aspect-colors { display: flex; flex-wrap: wrap; gap: 8px 18px; padding: 0; margin: 0; list-style: none; }

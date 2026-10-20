@@ -301,3 +301,13 @@ Codex / Developer:после уточнения Owner «Исправить вс�
 **Решение о переносе:** прямое поручение Owner принимается как выбор отложенного исправления читаемости. Баг остаётся OPEN;это не FIXED/CLOSED и не новое gate-исключение. Developer UI — ответственный слой;Manager назначает конкретного исполнителя/приоритет/условие возврата и публикует общий реестр в main;Tester проверяет результат. ПриоритетP3 и возврат при следующей итерации читаемости колеса — предложения Developer,не выдуманные согласованные сроки. Погашающий change и оценка пока не назначены.
 
 Текущий scope — только запись bug/debt/собственный handoff. Production code,размеры16/12,тесты,engine/API/golden,Manager/Analyst/Tester artifacts и gates не менялись;browser/runtime/full pytest не запускались. Проверены источники,уникальность IDs,ссылки и git diff --check. Commit/push не поручены.
+
+
+<a id="tester-004-developer-response"></a>
+## Ответ Developer — TEST-FIND-WHEEL-004
+
+Codex / Developer,20.10.2026. По текущему прямому Owner-поручению после Git-only update3c2744e→3b95934c884caa9f40ea70e935991457058b87b9 изучен [опубликованный Tester возврат](../tester/defects.md#test-find-wheel-004),OutputSHA1cfbe3156761da1cfba1ef66133febd7c7bae265. Это одна новая подтверждённая runtime-находка;исторические001/003 CLOSED,002 — открытый requirement gap,не новый implementation defect.
+
+На обновлённой базе reproduced lower native aperture41.75/42.75/41.25 при height44 на1440/768/360. Исправлен styles.css:fact-select rectangle с min46 и внутренним Q44. Native positive pointer controls теперь достигают владельца;keyboard/focus/Owner first-five иcompactness сохранены. [Пакет10](prompts/10-tester-hit-area.md),[before/after/regression](evidence/task_d007_tester004/README.md). Собственный результат — локальное исправление,ожидает публикации и независимого Tester retest;официальный TEST-FIND status не переписан.
+
+Отдельное Tester наблюдение зазора gap=1.9999923706054688 остаётся INDETERMINATE:без независимого precision budget нельзя выдать PASS или новый численный порог. Geometry/опубликованные координаты не менялись;TEST-FIND-WHEEL-002/gates не закрываются. Старые Owner debts009/010 не погашаются CSS-исправлением HTML target. Изменений glyph size/даты этим не сделано. [Scope/исходные hashes](evidence/task_d007_tester004/baseline.json).
