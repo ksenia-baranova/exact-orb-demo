@@ -62,3 +62,13 @@
 - Все прогоны NOT RUN. Наличие baseline теста или исторического PASS M1-7 не подтверждает новую wheel acceptance и не создаёт TestedSHA.
 
 Документальная traceability и runtime evidence разделены: все 22 требования / 30 AS-WHEEL / MODIFY AS-UI-22 / три sequences сверены на ReviewSHA; закрытие двух requirement gaps не повышает состав или run status проверок до SUFFICIENT / PASS. Сопоставление sequences с T-WHEEL — [в плане](test_plan.md#прослеживаемость-последовательностей). Источник прежнего assertion audit B01…B11 сохранён: соответствующие src/tests совпадают с нормативным baseline; полного нового аудита старых data classes и запусков не было.
+
+## Runtime-дополнение — 2026-10-20
+
+**Автор:** Codex / Tester; TestedSHA0da99518ada67603b08ab4220d337e3a5e3aae60, прямое поручение Owner тестировать текущий снимок. Верхние totals22 / NOT RUN — исторический documentary baseline T002, не текущий результат. Они не переписаны на новую модель молча; поздние passive / house-row / aspect-view / already_applied Owner choices явно применены в [адресном отчёте](runtime_review_2026_10_20.md). Отчёт содержит текущую единую runtime matrix REQ/AS → independent expected/data/control → actual/evidence → limits/owner; новые общие требования или approvals не создаются.
+
+- Scope выполнения:39 targeted /227 all UI;53 delivery+boundaries;300 HTTP API;full2959PASS+1known skip. Наборы вложены, не суммируются. Exact argv и [raw suite logs / hashes](evidence/runtime_2026_10_20/suites.json).
+- Native:24 composition configurations /3 lifecycle,555 assertions,528PASS/27rawFAIL;24 относятся к одному [TEST-FIND-WHEEL-004](defects.md#test-find-wheel-004),3 — INDETERMINATE gap2 на native floating boundary. Сохранены corrected counter native02 и исходный ошибочный native01; product criterion не ослаблялся.
+- Дополнительно6/6 viewport heights PASS и3 независимых target proofs /44positive+43negative controls. Нативные point focus/toggle/filter/current/draft/S1, leaf-fault B/restoration/empty и aspect Escape выполнены в перечисленных классах; они не сертифицируют все AS-WHEEL / все valid DTO.
+- Остатки: effective44 defect OPEN; gap2 precision и независимый радиальный anchor oracle не сертифицированы; actual already_applied submit проверен existing Node tests, собственный native submit NOT RUN; полный native boundary / browser/OS/touch/zoom/font matrix и live HTTPS NOT RUN.
+- Runtime verdict — FAIL затронутого H44, без безусловной readiness. TEST-FIND-WHEEL-002 остаётся OPEN; formal Candidate/G4/G5 и текущая Manager-сводка не менялись. Следующий шаг: Developer fixes004 / Manager адресует numerical evidence, затем exact-SHA retest. Исторические SourceSHA / manifests и прежние handoffs сохранены.
