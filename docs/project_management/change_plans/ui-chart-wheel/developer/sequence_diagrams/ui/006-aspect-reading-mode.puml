@@ -11,7 +11,7 @@ participant "passive SVG + pure layout" as SVG
 participant "HTML wheel region" as Focus
 User -> Facts : native unique aspect activation
 Facts -> Facts : S1 full-DТО cardinality remains authoritative
-Facts -> Facts : preserve general five/all and house disclosure
+Facts -> Facts : preserve independent points / houses / aspects disclosure
 Facts -> Main : aspectMode=true
 Main -> Main : hide unrelated heading/editor; keep recovery if needed
 Facts -> Facts : one aspect row, endpoint points, their published house numbers

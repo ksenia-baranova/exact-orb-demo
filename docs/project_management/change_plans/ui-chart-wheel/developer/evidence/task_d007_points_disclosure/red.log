@@ -1,0 +1,84 @@
+✖ Owner aspect view focuses wheel, shows source endpoints/houses only, and restores full tables on exit (13.5376ms)
+✔ Owner aspect view does not invent a house for unknown time or an angle (10.0732ms)
+✔ mounted aspect view hides unrelated form; planet activation still keeps native focus and no HTTP (30.5119ms)
+✖ Owner: all three fact tables have independent first-five disclosure (13.9181ms)
+✔ AS-WHEEL-11/13: one point replaces another; toggle resets only the general aspects disclosure (12.8361ms)
+✔ AS-WHEEL-28: S1 counts the full DTO before filtering; all source rows survive (4.1677ms)
+✔ AS-WHEEL-12/13: a unique aspect focuses its wheel; closing it restores general five/all (10.2597ms)
+✔ AS-WHEEL-30: automatic accepted DTO reconciles unordered pair/type and displays its new facts (6.7274ms)
+✔ AS-WHEEL-29/30: duplicate/reversed/category variants disable only their full-source group (2.3858ms)
+✔ AS-WHEEL-28: different published type is a different address; sole reverse and background are ordinary (2.5961ms)
+✔ AS-WHEEL-11/28: point filter includes background, angles and ambiguous occurrences in DTO order (3.4059ms)
+✔ AS-WHEEL-30: absent selection alone clears on acceptance; point selection and expansions otherwise persist (0.8094ms)
+✔ accepted addressing state does not share mutable DTO or snapshots (0.6992ms)
+✔ AS-WHEEL-23/30: point controls and focus survive updates; detached/disposed callbacks cannot select B (6.43ms)
+✔ REQ-WHEEL-11: mounted HTML activation and reveal perform no HTTP or draft changes (29.3785ms)
+✖ Owner points disclosure: preserve automatic updates and aspect endpoints; reset new accepted birth once (2.0504ms)
+✖ Owner points disclosure: no redundant button for five or fewer and safe focus after collapse (0.8733ms)
+ℹ tests 17
+ℹ suites 0
+ℹ pass 13
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 202.9988
+
+✖ failing tests:
+
+test at tests\ui\aspect_view.test.mjs:12:1
+✖ Owner aspect view focuses wheel, shows source endpoints/houses only, and restores full tables on exit (13.5376ms)
+  TypeError: Cannot read properties of null (reading 'click')
+      at TestContext.<anonymous> (file:///C:/Users/KateUser/.codex/worktrees/ui-chart-wheel-dev/exact-orb-recovered/tests/ui/aspect_view.test.mjs:14:161)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17)
+
+test at tests\ui\chart_selection.test.mjs:25:1
+✖ Owner: all three fact tables have independent first-five disclosure (13.9181ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+  16 !== 5
+
+      at TestContext.<anonymous> (file:///C:/Users/KateUser/.codex/worktrees/ui-chart-wheel-dev/exact-orb-recovered/tests/ui/chart_selection.test.mjs:29:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 16,
+    expected: 5,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests\ui\chart_selection.test.mjs:240:1
+✖ Owner points disclosure: preserve automatic updates and aspect endpoints; reset new accepted birth once (2.0504ms)
+  AssertionError [ERR_ASSERTION]: points expose their own native disclosure
+      at TestContext.<anonymous> (file:///C:/Users/KateUser/.codex/worktrees/ui-chart-wheel-dev/exact-orb-recovered/tests/ui/chart_selection.test.mjs:243:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: null,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests\ui\chart_selection.test.mjs:272:1
+✖ Owner points disclosure: no redundant button for five or fewer and safe focus after collapse (0.8733ms)
+  TypeError: Cannot read properties of null (reading 'hidden')
+      at TestContext.<anonymous> (file:///C:/Users/KateUser/.codex/worktrees/ui-chart-wheel-dev/exact-orb-recovered/tests/ui/chart_selection.test.mjs:277:56)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)

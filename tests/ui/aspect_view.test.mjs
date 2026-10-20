@@ -11,7 +11,7 @@ const rows=(d,id)=>[...d.getElementById(id).querySelector("tbody").children].fil
 const mount=chart=>{const document=documentPort(),result=mountChartResult(document);document.root.append(result.element);result.update({status:"chart_ready",chart,chart_stale:false});return{document,result}};
 test("Owner aspect view focuses wheel, shows source endpoints/houses only, and restores full tables on exit",()=>{
  const chart=structuredClone(natal),{document,result}=mount(chart),aspect=chart.aspects[0],ends=new Set([aspect.from,aspect.to]);
- const all=document.getElementById("aspects-show-all");all.click();document.getElementById("houses-show-all").click();
+ const all=document.getElementById("aspects-show-all");all.click();document.getElementById("houses-show-all").click();document.getElementById("points-show-all").click();
  const button=rows(document,"aspects-table")[0].querySelector("button");button.focus();button.click();
  assert.equal(document.activeElement===document.getElementById("chart-wheel"),true);
  assert.equal(result.element.dataset.aspectFocus,"true");

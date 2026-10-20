@@ -1,0 +1,17 @@
+{
+  "TLS": "verified",
+  "UTC": "2026-10-20T18:27:02.0000667Z",
+  "Assets": [
+    {
+      "File": "chart_state.mjs",
+      "Status": 200,
+      "MatchesCurrentSource": true
+    },
+    {
+      "File": "facts.mjs",
+      "Status": 200,
+      "MatchesCurrentSource": true
+    }
+  ],
+  "RealBuildPerformed": false
+}

@@ -5,7 +5,7 @@ export function aspectKey({ from, to, type }) {
 
 export function createChartSelection() {
   let pointIds = new Set(), rows = [], groups = new Map();
-  let selection = null, aspectsExpanded = false, housesExpanded = false;
+  let selection = null, aspectsExpanded = false, housesExpanded = false, pointsExpanded = false;
 
   function accept(chart) {
     pointIds = new Set(chart?.points.map(({ id }) => id) ?? []);
@@ -21,6 +21,7 @@ export function createChartSelection() {
       selection = null;
       aspectsExpanded = false;
       housesExpanded = false;
+      pointsExpanded = false;
     } else if (selection?.kind === "point" && !pointIds.has(selection.id)
       || selection?.kind === "aspect" && groups.get(selection.key)?.length !== 1) {
       selection = null;
@@ -42,6 +43,7 @@ export function createChartSelection() {
     },
     toggleAspects() { if (selection === null) aspectsExpanded = !aspectsExpanded; },
     toggleHouses() { housesExpanded = !housesExpanded; },
+    togglePoints() { if (selection?.kind !== "aspect") pointsExpanded = !pointsExpanded; },
     snapshot() {
       const sourceRows = rows.map((row, index) => {
         const key = aspectKey(row);
@@ -52,7 +54,7 @@ export function createChartSelection() {
         rows[index].from === selection.id || rows[index].to === selection.id)
         : selection?.kind === "aspect" ? sourceRows.filter(({ selected }) => selected) : sourceRows;
       const visible = selection !== null || aspectsExpanded ? filtered : filtered.slice(0, 5);
-      return { selection: selection === null ? null : { ...selection }, aspectsExpanded, housesExpanded,
+      return { selection: selection === null ? null : { ...selection }, aspectsExpanded, housesExpanded, pointsExpanded,
         sourceRows, visibleAspectIndices: visible.map(({ index }) => index),
         ambiguousGroups: [...groups].filter(([, indices]) => indices.length > 1)
           .map(([key, indices]) => ({ key, indices: [...indices] })) };

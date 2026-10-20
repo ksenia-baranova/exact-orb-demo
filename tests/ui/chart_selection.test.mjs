@@ -22,11 +22,18 @@ function mounted(chart = structuredClone(natal)) {
   return { document, result, root: result.element, chart };
 }
 
-test("AS-WHEEL-16: facts are immediately visible, with independent five/all and all points", () => {
+test("Owner: all three fact tables have independent first-five disclosure", () => {
   const { root, chart } = mounted();
   assert.equal(root.querySelector("#chart-facts").hidden, false);
   assert.equal(root.querySelector("#chart-details-button"), null);
+  assert.equal(visibleRows(root, "points").length, 5);
+  assert.deepEqual(visibleRows(root, "points").map(row => row.querySelector("button").dataset.pointId), chart.points.slice(0,5).map(row => row.id));
+  const points = root.querySelector("#points-show-all");
+  assert.equal(points.getAttribute("aria-controls"), "points-table");
+  assert.equal(points.getAttribute("aria-expanded"), "false");
+  points.click();
   assert.equal(visibleRows(root, "points").length, chart.points.length);
+  assert.equal(points.getAttribute("aria-expanded"), "true");
   assert.equal(visibleRows(root, "aspects").length, 5);
   assert.equal(visibleRows(root, "houses").length, 5);
   root.querySelector("#aspects-show-all").click();
@@ -34,6 +41,10 @@ test("AS-WHEEL-16: facts are immediately visible, with independent five/all and 
   assert.equal(visibleRows(root, "houses").length, 5);
   root.querySelector("#houses-show-all").click();
   assert.equal(visibleRows(root, "houses").length, 12);
+  points.click();
+  assert.equal(visibleRows(root, "points").length, 5);
+  assert.equal(visibleRows(root, "houses").length, 12);
+  assert.equal(visibleRows(root, "aspects").length, chart.aspects.length);
 });
 
 test("AS-WHEEL-11/13: one point replaces another; toggle resets only the general aspects disclosure", () => {
@@ -223,4 +234,55 @@ test("REQ-WHEEL-11: mounted HTML activation and reveal perform no HTTP or draft 
     root.querySelector("#houses-show-all").click();
     assert.deepEqual(requests(), calls); assert.deepEqual(ui.form.snapshot(), draft);
   } finally { ui.dispose(); }
+});
+
+
+test("Owner points disclosure: preserve automatic updates and aspect endpoints; reset new accepted birth once", () => {
+  const chart=structuredClone(natal),{root,result,document}=mounted(chart);
+  const reveal=root.querySelector("#points-show-all");
+  assert.ok(reveal,"points expose their own native disclosure");
+  reveal.focus(); reveal.click();
+  assert.equal(document.activeElement,reveal);
+  result.update(ready({...chart,chart_identity:"automatic-update"}),{acceptance:{seq:1,reset:false}});
+  assert.equal(visibleRows(root,"points").length,chart.points.length);
+  assert.equal(root.querySelector("#points-show-all"),reveal);
+  reveal.click();
+  const late=chart.points[chart.points.length-1].id;
+  root.querySelector("#aspects-show-all").click();
+  const chosen=visibleRows(root,"aspects").find(row=>{
+    const index=root.querySelector("#aspects-table").querySelector("tbody").children.indexOf(row);
+    const aspect=chart.aspects[index]; return aspect.from===late || aspect.to===late;
+  });
+  assert.ok(chosen,"positive late-point aspect exists in source fixture");
+  chosen.querySelector("button").click();
+  assert.equal(reveal.hidden,true);
+  assert.ok(visibleRows(root,"points").some(row=>row.querySelector("button").dataset.pointId===late));
+  root.querySelector("#aspect-close").click();
+  assert.equal(visibleRows(root,"points").length,5);
+  reveal.click();
+  result.update(ready({...chart,chart_identity:"new-birth"}),{acceptance:{seq:2,reset:true}});
+  assert.equal(visibleRows(root,"points").length,5);
+  reveal.click();
+  result.update(ready({...chart,chart_identity:"new-birth"}),{acceptance:{seq:2,reset:true}});
+  assert.equal(visibleRows(root,"points").length,chart.points.length,"same accepted event does not collapse twice");
+  result.dispose(); reveal.click();
+  assert.equal(visibleRows(root,"points").length,chart.points.length,"disposed disclosure has no listener");
+});
+
+test("Owner points disclosure: no redundant button for five or fewer and safe focus after collapse", () => {
+  for(const count of [0,2,5]) {
+    const chart=structuredClone(natal); chart.points=chart.points.slice(0,count); chart.aspects=[];
+    const {root,result}=mounted(chart);
+    assert.equal(visibleRows(root,"points").length,count);
+    assert.equal(root.querySelector("#points-show-all").hidden,true);
+    result.dispose();
+  }
+  const {root,result,document,chart}=mounted(),reveal=root.querySelector("#points-show-all");
+  reveal.click();
+  const late=point(root,chart.points[chart.points.length-1].id); late.focus(); late.click();
+  assert.equal(document.activeElement,late,"planet selection does not move focus");
+  reveal.click();
+  assert.equal(document.activeElement,reveal,"hidden focused row falls back to live disclosure");
+  assert.equal(late.getAttribute("aria-pressed"),"true","collapsing presentation preserves selection");
+  result.dispose();
 });

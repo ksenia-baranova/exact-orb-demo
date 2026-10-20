@@ -282,6 +282,8 @@ export function mountChartResult(document, { rendererFactory = createWheelRender
     button.addEventListener("click", click);
     return { button, dispose: () => button.removeEventListener("click", click) };
   }
+  const pointDisclosure = disclosure("points", "points-table", () => state.togglePoints());
+  points.node.append(pointDisclosure.button);
   const houseDisclosure = disclosure("houses", "houses-table", () => state.toggleHouses());
   const aspectDisclosure = disclosure("aspects", "aspects-table", () => state.toggleAspects());
   houses.node.append(houseTable.node, houseDisclosure.button, angleTable.node);
@@ -317,12 +319,13 @@ export function mountChartResult(document, { rendererFactory = createWheelRender
     setText(aspectTitle, aspect ? endpointName(aspect.from) + " — " + endpointName(aspect.to) + " · " + label(aspectNames, aspect.type) : "");
     onAspectModeChange(Boolean(aspect));
     setSection(points, facts.points); setSection(houses, facts.houses); setSection(aspects, facts.aspects);
-    pointTable.patch(facts.points.rows.map((row) => ({ key: row.id, data: row,
-      hidden: Boolean(aspect && !endpoints.has(row.id)),
+    pointTable.patch(facts.points.rows.map((row, index) => ({ key: row.id, data: row,
+      hidden: aspect ? !endpoints.has(row.id) : !snapshot.pointsExpanded && index >= 5,
       selected: selected?.kind === "point" && selected.id === row.id, label: "Выбрать точку: " + row.name })));
     houseTable.patch((facts.houses.rows ?? []).map((row, index) => ({ key: row.number, data: row,
       hidden: aspect ? !endpointHouses.has(row.number) : !snapshot.housesExpanded && index >= 5 })));
     angleTable.patch((facts.houses.angles ?? []).filter(row => !aspect || endpoints.has(row.id)).map((row) => ({ key: row.id, data: row })));
+    setDisclosure(pointDisclosure, facts.points.rows.length, snapshot.pointsExpanded, !aspect);
     setDisclosure(houseDisclosure, facts.houses.rows?.length ?? 0, snapshot.housesExpanded, !aspect);
     if (aspect) {
       setText(aspects.headingNode, "Выбранный аспект");
@@ -376,7 +379,7 @@ export function mountChartResult(document, { rendererFactory = createWheelRender
       aspects.empty.hidden = false;
     }
     if(ownedFocus && !available(active)) {
-      const candidates=[aspectClose,aspectDisclosure.button,houseDisclosure.button,...aspectTable.node.querySelectorAll("button"),
+      const candidates=[aspectClose,pointDisclosure.button,aspectDisclosure.button,houseDisclosure.button,...aspectTable.node.querySelectorAll("button"),
         ...pointTable.node.querySelectorAll("button"),editButton];
       candidates.find(available)?.focus();
     }
@@ -442,7 +445,7 @@ export function mountChartResult(document, { rendererFactory = createWheelRender
       disposed = true;
       drawing.close(); observer?.disconnect(); document.fonts?.removeEventListener("loadingdone", fontChanged);
       for (const table of tables) table.dispose();
-      houseDisclosure.dispose(); aspectDisclosure.dispose(); aspectClose.removeEventListener("click", closeAspect); imageHost.removeEventListener("keydown", wheelKey);
+      pointDisclosure.dispose(); houseDisclosure.dispose(); aspectDisclosure.dispose(); aspectClose.removeEventListener("click", closeAspect); imageHost.removeEventListener("keydown", wheelKey);
     },
   });
 }

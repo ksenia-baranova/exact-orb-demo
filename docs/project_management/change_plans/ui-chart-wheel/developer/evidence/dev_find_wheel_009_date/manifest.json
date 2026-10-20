@@ -1,0 +1,31 @@
+{
+  "bug_id": "DEV-FIND-WHEEL-009",
+  "debt_id": "DEBT-UI-002",
+  "author": "Codex / Developer",
+  "reported_by": "Owner",
+  "date": "2026-10-20",
+  "owner_instruction": "заведи баг и в тех долг положи",
+  "input_sha": "0da99518ada67603b08ab4220d337e3a5e3aae60",
+  "branch": "dev/ui-chart-wheel",
+  "published_main_sha": "bba8d6cfb22f586f86c3035423f2535ede158b9f",
+  "published_change_sha": "0da99518ada67603b08ab4220d337e3a5e3aae60",
+  "reported_url": "https://exact-orb.localhost/",
+  "screenshot": {
+    "source": "C:\\Users\\KateUser\\AppData\\Local\\Temp\\codex-clipboard-9da8c18e-9d26-4400-9fed-82523e9b4c52.png",
+    "file": "date-six-digit-year-owner.png",
+    "sha256": "ad17768956583651401502acc1c570fd1be071da53061b705bd5738a4ee4aa03",
+    "width": 631,
+    "height": 556,
+    "modified": false
+  },
+  "observed_date_display": "20.03.146464",
+  "browser": "NOT_ESTABLISHED: screenshot excludes browser chrome",
+  "browser_reproduction": "NOT_RUN",
+  "real_http_post": "NOT_RUN",
+  "source_hashes_sha256_raw": {
+    "src/exact_orb/http_api/ui/index.html": "87d9d939ed69089167055b44ba65e53107dd1ade88c7a81041304985a98bf532",
+    "src/exact_orb/http_api/ui/form.mjs": "01c67968c92569cfa039c08a29b097bee8f9e7d06b335a9d58575b0fb31bdad3"
+  },
+  "scope": "Document bug and Owner debt decision; no implementation or gate changes",
+  "registry_publication": "LOCAL_ONLY; Manager publication in main and registry SHA pending"
+}

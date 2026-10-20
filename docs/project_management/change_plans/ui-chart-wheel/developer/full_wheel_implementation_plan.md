@@ -199,3 +199,13 @@ Codex / Developer,20.10.2026. STARTED текущей корректирующе�
 Реальные production files:main.mjs,facts.mjs,styles.css,wheel_layout.mjs,wheel_svg.mjs,result_controller.mjs;tests/ui/owner_feedback.test.mjs новый и facts.test.mjs (только подпись). Свои DRAFT ADR/sequence008/plan/findings/handoff/пакет08/evidence. Scope Session/HTTP/engine/projector/cache/golden/LLM/new dependencies не менялся. Старые evidence и незакоммиченные изменения сохранены,index остаётся пуст.
 
 Оперативная оценка корректирующей дельты4–8ч,medium confidence;это Developer forecast,не новое численное Owner budget approval и не автоматическая сумма к40–64. Неизвестный historical effort/D003 остаток не вычислялся. Новой даты передачи/TaskId/Manager gate самостоятельно не назначено. Точные финальные commands/results/source hashes/ограничения — evidence README. Нового commit/OutputSHA/CandidateSHA нет;официальный FIXED_PENDING_RETEST требует опубликованной исправленной версии,поэтому текущий Developer результат — **локальное исправление,ожидание публикации и независимого retest**.
+
+
+<a id="owner-points-disclosure"></a>
+## 12. TASK-D-007 — первые пять планет по Owner20.10
+
+STARTED текущей корректирующей итерации — прямое поручение Owner «исправь сейчас - планеты тоже должны быть первые 5 отображаться»; исходный STARTED D007 сохранён. [Owner-дельта](owner_decision_points_disclosure_2026-10-20.md) к прежнему all-points правилу REQ-UI-03/04/05; [исполняемый пакет09](prompts/09-owner-points-disclosure.md), [evidence](evidence/task_d007_points_disclosure/README.md). InputSHA0da99518ada67603b08ab4220d337e3a5e3aae60,dev/ui-chart-wheel.
+
+Подход TDD: новая независимая pointsExpanded в существующем selection owner,retained point rows с hidden,собственная native кнопка. Reset/null acceptance использует существующий единый путь;automatic current и выборы сохраняют раскрытие. Aspect subset не ограничивается первыми пятью,а full SVG не меняется. Focus fallback включает points disclosure,dispose снимает его listener. Исходная причина поведения — предыдущее явное all-points правило и отсутствие соответствующего disclosure,не ошибка DTO/движка.
+
+Две regression плюс намеренно обновлённые прежние ожидания RED4/17 → GREEN17/17. Related UI229/229;Python delivery/boundaries53/53;Chrome/Yandex widths1440/360 —4/4cases. Счётчики/исходные source hashes/actual и полная регрессия — в evidence. Normative/foreign role docs не переписаны;для их синхронизации передаётся точное Owner evidence. Глобальные статусы/gates не меняются. Предыдущая локальная регистрация даты/долга и index сохранены;commit/push этим поручением не разрешены.
