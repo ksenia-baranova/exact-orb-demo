@@ -1,0 +1,794 @@
+{
+  "cases": [
+    {
+      "id": "Chrome-natal-1440x900",
+      "browser": "155.0.8059.40",
+      "checks": [
+        {
+          "name": "renderer-ready",
+          "pass": false,
+          "actual": {
+            "svg": false,
+            "error": "Не удалось показать колесо. Все подтверждённые данные доступны в таблицах."
+          }
+        },
+        {
+          "name": "height-only-resize-fits",
+          "pass": true,
+          "actual": [
+            661,
+            116.09375,
+            1141,
+            596.09375
+          ]
+        },
+        {
+          "name": "height-only-resize-retains-selection",
+          "pass": true,
+          "actual": "true"
+        },
+        {
+          "name": "resize-no-HTTP",
+          "pass": true,
+          "actual": [
+            "POST /session/bootstrap",
+            "GET /charts/current"
+          ]
+        },
+        {
+          "name": "actual-color-palette",
+          "pass": true,
+          "actual": [
+            {
+              "type": "conjunction",
+              "expected": "rgb(147, 185, 242)",
+              "actual": "rgb(147, 185, 242)"
+            },
+            {
+              "type": "semisextile",
+              "expected": "rgb(231, 181, 120)",
+              "actual": "rgb(231, 181, 120)"
+            },
+            {
+              "type": "sextile",
+              "expected": "rgb(112, 199, 173)",
+              "actual": "rgb(112, 199, 173)"
+            },
+            {
+              "type": "square",
+              "expected": "rgb(239, 125, 132)",
+              "actual": "rgb(239, 125, 132)"
+            },
+            {
+              "type": "trine",
+              "expected": "rgb(121, 169, 237)",
+              "actual": "rgb(121, 169, 237)"
+            },
+            {
+              "type": "quincunx",
+              "expected": "rgb(177, 201, 120)",
+              "actual": "rgb(177, 201, 120)"
+            },
+            {
+              "type": "opposition",
+              "expected": "rgb(211, 151, 209)",
+              "actual": "rgb(211, 151, 209)"
+            }
+          ]
+        },
+        {
+          "name": "no-page-errors",
+          "pass": true,
+          "actual": []
+        }
+      ],
+      "errors": [],
+      "actual": {
+        "svg": false,
+        "error": "Не удалось показать колесо. Все подтверждённые данные доступны в таблицах."
+      },
+      "resize": {
+        "box": [
+          661,
+          116.09375,
+          1141,
+          596.09375
+        ],
+        "selected": "true",
+        "colors": [
+          {
+            "type": "conjunction",
+            "expected": "rgb(147, 185, 242)",
+            "actual": "rgb(147, 185, 242)"
+          },
+          {
+            "type": "semisextile",
+            "expected": "rgb(231, 181, 120)",
+            "actual": "rgb(231, 181, 120)"
+          },
+          {
+            "type": "sextile",
+            "expected": "rgb(112, 199, 173)",
+            "actual": "rgb(112, 199, 173)"
+          },
+          {
+            "type": "square",
+            "expected": "rgb(239, 125, 132)",
+            "actual": "rgb(239, 125, 132)"
+          },
+          {
+            "type": "trine",
+            "expected": "rgb(121, 169, 237)",
+            "actual": "rgb(121, 169, 237)"
+          },
+          {
+            "type": "quincunx",
+            "expected": "rgb(177, 201, 120)",
+            "actual": "rgb(177, 201, 120)"
+          },
+          {
+            "type": "opposition",
+            "expected": "rgb(211, 151, 209)",
+            "actual": "rgb(211, 151, 209)"
+          }
+        ]
+      },
+      "pass": false
+    },
+    {
+      "id": "Yandex-natal-1440x900",
+      "browser": "26.8.0.0",
+      "checks": [
+        {
+          "name": "renderer-ready",
+          "pass": true,
+          "actual": {
+            "svg": true,
+            "box": [
+              531,
+              116.09375,
+              1271,
+              856.09375
+            ],
+            "frame": [
+              1440,
+              900
+            ],
+            "overflow": false,
+            "points": 16,
+            "vectors": [
+              {
+                "id": "chiron",
+                "box": [
+                  7.199999809265137,
+                  13.699999809265137
+                ],
+                "shape": 2
+              },
+              {
+                "id": "selena",
+                "box": [
+                  14.599998474121094,
+                  13.500000953674316
+                ],
+                "shape": 2
+              },
+              {
+                "id": "pars_fortune",
+                "box": [
+                  13,
+                  13
+                ],
+                "shape": 2
+              }
+            ],
+            "legend": 7,
+            "names": "Южный узел",
+            "baselines": [
+              {
+                "y": 1240.859375,
+                "x": 82,
+                "h": 19
+              },
+              {
+                "y": 1240.859375,
+                "x": 203.65625,
+                "h": 19
+              },
+              {
+                "y": 1240.859375,
+                "x": 292.21875,
+                "h": 19
+              },
+              {
+                "y": 1240.859375,
+                "x": 380.5625,
+                "h": 19
+              },
+              {
+                "y": 1240.859375,
+                "x": 428.34375,
+                "h": 19
+              }
+            ],
+            "rowHeight": 53,
+            "tableWidth": 489.734375,
+            "targets": [
+              [
+                50.0625,
+                44
+              ],
+              [
+                44,
+                44
+              ],
+              [
+                68.359375,
+                44
+              ],
+              [
+                48.109375,
+                44
+              ],
+              [
+                44,
+                44
+              ],
+              [
+                53.78125,
+                44
+              ],
+              [
+                46.625,
+                44
+              ],
+              [
+                44,
+                44
+              ],
+              [
+                47.9375,
+                44
+              ],
+              [
+                48.15625,
+                44
+              ],
+              [
+                44,
+                44
+              ],
+              [
+                98.65625,
+                44
+              ],
+              [
+                84.40625,
+                44
+              ],
+              [
+                44,
+                44
+              ],
+              [
+                47.890625,
+                44
+              ],
+              [
+                94.78125,
+                44
+              ],
+              [
+                44,
+                44
+              ],
+              [
+                44,
+                44
+              ],
+              [
+                50.0625,
+                44
+              ],
+              [
+                44,
+                44
+              ],
+              [
+                68.359375,
+                44
+              ]
+            ]
+          }
+        },
+        {
+          "name": "005-whole-wheel",
+          "pass": true,
+          "actual": [
+            531,
+            116.09375,
+            1271,
+            856.09375
+          ]
+        },
+        {
+          "name": "005-round",
+          "pass": true,
+          "actual": [
+            531,
+            116.09375,
+            1271,
+            856.09375
+          ]
+        },
+        {
+          "name": "006-seven-color-entries",
+          "pass": true,
+          "actual": 7
+        },
+        {
+          "name": "007-concise-node",
+          "pass": true,
+          "actual": "Южный узел"
+        },
+        {
+          "name": "007-row-align",
+          "pass": true,
+          "actual": [
+            {
+              "y": 1240.859375,
+              "x": 82,
+              "h": 19
+            },
+            {
+              "y": 1240.859375,
+              "x": 203.65625,
+              "h": 19
+            },
+            {
+              "y": 1240.859375,
+              "x": 292.21875,
+              "h": 19
+            },
+            {
+              "y": 1240.859375,
+              "x": 380.5625,
+              "h": 19
+            },
+            {
+              "y": 1240.859375,
+              "x": 428.34375,
+              "h": 19
+            }
+          ]
+        },
+        {
+          "name": "007-compact-rows",
+          "pass": true,
+          "actual": 53
+        },
+        {
+          "name": "007-targets",
+          "pass": true,
+          "actual": [
+            [
+              50.0625,
+              44
+            ],
+            [
+              44,
+              44
+            ],
+            [
+              68.359375,
+              44
+            ],
+            [
+              48.109375,
+              44
+            ],
+            [
+              44,
+              44
+            ],
+            [
+              53.78125,
+              44
+            ],
+            [
+              46.625,
+              44
+            ],
+            [
+              44,
+              44
+            ],
+            [
+              47.9375,
+              44
+            ],
+            [
+              48.15625,
+              44
+            ],
+            [
+              44,
+              44
+            ],
+            [
+              98.65625,
+              44
+            ],
+            [
+              84.40625,
+              44
+            ],
+            [
+              44,
+              44
+            ],
+            [
+              47.890625,
+              44
+            ],
+            [
+              94.78125,
+              44
+            ],
+            [
+              44,
+              44
+            ],
+            [
+              44,
+              44
+            ],
+            [
+              50.0625,
+              44
+            ],
+            [
+              44,
+              44
+            ],
+            [
+              68.359375,
+              44
+            ]
+          ]
+        },
+        {
+          "name": "008-three-real-vector-symbols",
+          "pass": true,
+          "actual": [
+            {
+              "id": "chiron",
+              "box": [
+                7.199999809265137,
+                13.699999809265137
+              ],
+              "shape": 2
+            },
+            {
+              "id": "selena",
+              "box": [
+                14.599998474121094,
+                13.500000953674316
+              ],
+              "shape": 2
+            },
+            {
+              "id": "pars_fortune",
+              "box": [
+                13,
+                13
+              ],
+              "shape": 2
+            }
+          ]
+        },
+        {
+          "name": "all-source-points",
+          "pass": true,
+          "actual": 16
+        },
+        {
+          "name": "no-page-overflow",
+          "pass": true,
+          "actual": false
+        },
+        {
+          "name": "height-only-resize-fits",
+          "pass": true,
+          "actual": [
+            661,
+            116.09375,
+            1141,
+            596.09375
+          ]
+        },
+        {
+          "name": "height-only-resize-retains-selection",
+          "pass": true,
+          "actual": "true"
+        },
+        {
+          "name": "resize-no-HTTP",
+          "pass": true,
+          "actual": [
+            "POST /session/bootstrap",
+            "GET /charts/current"
+          ]
+        },
+        {
+          "name": "actual-color-palette",
+          "pass": true,
+          "actual": [
+            {
+              "type": "conjunction",
+              "expected": "rgb(147, 185, 242)",
+              "actual": "rgb(147, 185, 242)"
+            },
+            {
+              "type": "semisextile",
+              "expected": "rgb(231, 181, 120)",
+              "actual": "rgb(231, 181, 120)"
+            },
+            {
+              "type": "sextile",
+              "expected": "rgb(112, 199, 173)",
+              "actual": "rgb(112, 199, 173)"
+            },
+            {
+              "type": "square",
+              "expected": "rgb(239, 125, 132)",
+              "actual": "rgb(239, 125, 132)"
+            },
+            {
+              "type": "trine",
+              "expected": "rgb(121, 169, 237)",
+              "actual": "rgb(121, 169, 237)"
+            },
+            {
+              "type": "quincunx",
+              "expected": "rgb(177, 201, 120)",
+              "actual": "rgb(177, 201, 120)"
+            },
+            {
+              "type": "opposition",
+              "expected": "rgb(211, 151, 209)",
+              "actual": "rgb(211, 151, 209)"
+            }
+          ]
+        },
+        {
+          "name": "no-page-errors",
+          "pass": true,
+          "actual": []
+        }
+      ],
+      "errors": [],
+      "actual": {
+        "svg": true,
+        "box": [
+          531,
+          116.09375,
+          1271,
+          856.09375
+        ],
+        "frame": [
+          1440,
+          900
+        ],
+        "overflow": false,
+        "points": 16,
+        "vectors": [
+          {
+            "id": "chiron",
+            "box": [
+              7.199999809265137,
+              13.699999809265137
+            ],
+            "shape": 2
+          },
+          {
+            "id": "selena",
+            "box": [
+              14.599998474121094,
+              13.500000953674316
+            ],
+            "shape": 2
+          },
+          {
+            "id": "pars_fortune",
+            "box": [
+              13,
+              13
+            ],
+            "shape": 2
+          }
+        ],
+        "legend": 7,
+        "names": "Южный узел",
+        "baselines": [
+          {
+            "y": 1240.859375,
+            "x": 82,
+            "h": 19
+          },
+          {
+            "y": 1240.859375,
+            "x": 203.65625,
+            "h": 19
+          },
+          {
+            "y": 1240.859375,
+            "x": 292.21875,
+            "h": 19
+          },
+          {
+            "y": 1240.859375,
+            "x": 380.5625,
+            "h": 19
+          },
+          {
+            "y": 1240.859375,
+            "x": 428.34375,
+            "h": 19
+          }
+        ],
+        "rowHeight": 53,
+        "tableWidth": 489.734375,
+        "targets": [
+          [
+            50.0625,
+            44
+          ],
+          [
+            44,
+            44
+          ],
+          [
+            68.359375,
+            44
+          ],
+          [
+            48.109375,
+            44
+          ],
+          [
+            44,
+            44
+          ],
+          [
+            53.78125,
+            44
+          ],
+          [
+            46.625,
+            44
+          ],
+          [
+            44,
+            44
+          ],
+          [
+            47.9375,
+            44
+          ],
+          [
+            48.15625,
+            44
+          ],
+          [
+            44,
+            44
+          ],
+          [
+            98.65625,
+            44
+          ],
+          [
+            84.40625,
+            44
+          ],
+          [
+            44,
+            44
+          ],
+          [
+            47.890625,
+            44
+          ],
+          [
+            94.78125,
+            44
+          ],
+          [
+            44,
+            44
+          ],
+          [
+            44,
+            44
+          ],
+          [
+            50.0625,
+            44
+          ],
+          [
+            44,
+            44
+          ],
+          [
+            68.359375,
+            44
+          ]
+        ]
+      },
+      "resize": {
+        "box": [
+          661,
+          116.09375,
+          1141,
+          596.09375
+        ],
+        "selected": "true",
+        "colors": [
+          {
+            "type": "conjunction",
+            "expected": "rgb(147, 185, 242)",
+            "actual": "rgb(147, 185, 242)"
+          },
+          {
+            "type": "semisextile",
+            "expected": "rgb(231, 181, 120)",
+            "actual": "rgb(231, 181, 120)"
+          },
+          {
+            "type": "sextile",
+            "expected": "rgb(112, 199, 173)",
+            "actual": "rgb(112, 199, 173)"
+          },
+          {
+            "type": "square",
+            "expected": "rgb(239, 125, 132)",
+            "actual": "rgb(239, 125, 132)"
+          },
+          {
+            "type": "trine",
+            "expected": "rgb(121, 169, 237)",
+            "actual": "rgb(121, 169, 237)"
+          },
+          {
+            "type": "quincunx",
+            "expected": "rgb(177, 201, 120)",
+            "actual": "rgb(177, 201, 120)"
+          },
+          {
+            "type": "opposition",
+            "expected": "rgb(211, 151, 209)",
+            "actual": "rgb(211, 151, 209)"
+          }
+        ]
+      },
+      "pass": true
+    }
+  ],
+  "sources": {
+    "chart_state.mjs": "4b01e6623624b3027d1b45c07f8185afded2558eca5e2e352d22c183a172e63d",
+    "facts.mjs": "6bc4d4d832f4fada7917480895f801143f96bc7c24cb2e10aeef9d3cffe46ef4",
+    "form.mjs": "4f44f1289e8aa46e463e4d517161df474ea4c94b008f0616b9e01bd65b590ebd",
+    "index.html": "87d9d939ed69089167055b44ba65e53107dd1ade88c7a81041304985a98bf532",
+    "main.mjs": "4ce682697f3eee4da81415e8857f8d8cfd3f909a1c7bc039cb7818130f7ec1d7",
+    "places.mjs": "857593b5b335c4612823dc1d4b58e5dca628671cd3ff51e371ac8641bb820bfb",
+    "recovery.mjs": "405eae1bb36ee3387337fa1d34d5af48d7385bbfbc295ea5a9ae391d48d07414",
+    "response.mjs": "045770e93485c9f8111c6bd03bf9ce9a16e19d05f5e9624931ae63f84bfcbb8d",
+    "result_controller.mjs": "8b2193feaa39664b27d251e44d7f1746b37e18c4b32aa8546dbddca97b21d905",
+    "session.mjs": "cff830d2f6e490290696cd2846cabd53d17b1f49a8b624c6765bf289cc162088",
+    "styles.css": "24058567d56cef73806d58aa1fb8d9b7d11779851337de9b6a54fee613d73cf3",
+    "transport.mjs": "18b46104d161eb6ca3c094c507e2011bbba3aec91ad62622c38cae234693dc60",
+    "wheel_layout.mjs": "e47e7878b2781dde5e76c4ff4bc7e7d8c6f9e144e29d855789b3969ac57248c8",
+    "wheel_svg.mjs": "39619b4750f9934f71177f3dade18f358d0e5ef2c5ac6cd728658efa29c7cf3d"
+  }
+}

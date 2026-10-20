@@ -1,0 +1,37 @@
+@startuml
+title DRAFT: accepted-view sizing before first draw; native vector symbols
+participant "Session" as Session
+participant "main" as Main
+participant "facts / selection" as Facts
+participant "private drawing controller" as Port
+participant "SVG leaf" as Leaf
+participant "native layout / fonts" as Metrics
+Session -> Main : accepted ChartDTO + acceptance cause
+Main -> Main : set current session state
+Main -> Facts : update accepted view
+Facts -> Main : onAspectModeChange (including false)
+Main -> Main : data-page-mode from accepted chart_ready, before snapshot
+note over Main, Facts
+Form mode is centered. Accepted chart mode uses full container width.
+Editor collapse still consumes accepted cause once; no new policy.
+end note
+Facts -> Facts : retained tables, concise south_node label; palette legend
+Facts -> Metrics : measure native image frame, CSS width + viewport height
+Metrics --> Facts : CSS pixel width (no viewBox/font shrink)
+Facts -> Port : immutable snapshot with actual final frame width
+Port -> Leaf : update(snapshot, publish, connected revision surface)
+Leaf -> Metrics : text getBBox; R3 vectors getBBox for chiron/pars_fortune/selena
+Metrics --> Leaf : actual shape/text bounds
+Leaf -> Leaf : source house rows, source aspect/true anchors, no fact recalculation
+Leaf -> Port : passive SVG (closed data-symbol metadata)
+Port -> Port : validate / clone / recheck / install
+alt height-only resize changes CSS width
+ Metrics -> Facts : ResizeObserver; retained selection
+ Facts -> Port : new width revision; no HTTP
+end
+note over Facts, Leaf
+Colors share ASPECT_COLORS; HTML text explains category/type.
+R3 symbol definitions are immutable; vector geometry is font independent.
+Local failure preserves full accepted HTML. Session/API/engine unchanged.
+end note
+@enduml

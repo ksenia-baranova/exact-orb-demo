@@ -1,0 +1,48 @@
+{
+  "Ready": 200,
+  "UTC": "2026-10-20T12:02:53.8286877Z",
+  "TLS": "verified",
+  "Assets": [
+    {
+      "MatchesCurrentSource": true,
+      "File": "index.html",
+      "Status": 200
+    },
+    {
+      "MatchesCurrentSource": true,
+      "File": "main.mjs",
+      "Status": 200
+    },
+    {
+      "MatchesCurrentSource": true,
+      "File": "session.mjs",
+      "Status": 200
+    },
+    {
+      "MatchesCurrentSource": true,
+      "File": "facts.mjs",
+      "Status": 200
+    },
+    {
+      "MatchesCurrentSource": true,
+      "File": "wheel_layout.mjs",
+      "Status": 200
+    },
+    {
+      "MatchesCurrentSource": true,
+      "File": "wheel_svg.mjs",
+      "Status": 200
+    },
+    {
+      "MatchesCurrentSource": true,
+      "File": "result_controller.mjs",
+      "Status": 200
+    },
+    {
+      "MatchesCurrentSource": true,
+      "File": "styles.css",
+      "Status": 200
+    }
+  ],
+  "URL": "https://exact-orb.localhost"
+}

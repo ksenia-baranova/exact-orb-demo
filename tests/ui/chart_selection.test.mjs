@@ -74,7 +74,7 @@ test("AS-WHEEL-28: S1 counts the full DTO before filtering; all source rows surv
   assert.deepEqual(chart, before);
 });
 
-test("AS-WHEEL-12/13: a unique aspect replaces a planet; repeating it restores general five/all", () => {
+test("AS-WHEEL-12/13: a unique aspect focuses its wheel; closing it restores general five/all", () => {
   const { root, document, chart } = mounted();
   root.querySelector("#aspects-show-all").click();
   point(root, "moon").click();
@@ -82,10 +82,10 @@ test("AS-WHEEL-12/13: a unique aspect replaces a planet; repeating it restores g
   const chosen = chosenRow.querySelector("button"); chosen.focus(); chosen.click();
   assert.equal(visibleRows(root, "aspects").length, 1);
   assert.equal(visibleRows(root, "aspects")[0], chosenRow);
-  assert.equal(document.activeElement, chosen);
+  assert.equal(document.activeElement === root.querySelector("#chart-wheel"), true);
   assert.equal(chosen.getAttribute("aria-pressed"), "true");
   assert.equal(point(root, "moon").getAttribute("aria-pressed"), "false");
-  chosen.click();
+  root.querySelector("#aspect-close").click();
   assert.equal(visibleRows(root, "aspects").length, chart.aspects.length);
   assert.equal(document.activeElement, chosen);
   assert.equal(chosen.getAttribute("aria-pressed"), "false");
@@ -94,9 +94,9 @@ test("AS-WHEEL-12/13: a unique aspect replaces a planet; repeating it restores g
 
 test("AS-WHEEL-30: automatic accepted DTO reconciles unordered pair/type and displays its new facts", () => {
   const chart = structuredClone(natal), { result, root, document } = mounted(chart);
+  root.querySelector("#houses-show-all").click();
   const selected = visibleRows(root, "aspects")[0].querySelector("button");
   selected.focus(); selected.click();
-  root.querySelector("#houses-show-all").click();
   const next = structuredClone(chart), row = next.aspects[0];
   [row.from, row.to] = [row.to, row.from]; row.category = "background"; row.orb = 1.025;
   next.chart_identity += "-automatic";
@@ -104,9 +104,13 @@ test("AS-WHEEL-30: automatic accepted DTO reconciles unordered pair/type and dis
   const current = visibleRows(root, "aspects");
   assert.equal(current.length, 1);
   assert.equal(current[0].querySelector("button"), selected);
-  assert.equal(document.activeElement, selected);
+  assert.equal(document.activeElement === root.querySelector("#chart-wheel"), true);
   assert.equal(current[0].children[3].textContent, "Фоновый");
   assert.equal(current[0].children[4].textContent, "1°02′");
+  const endpoints=new Set([row.from,row.to]);
+  const endpointHouses=new Set(next.points.filter(p=>endpoints.has(p.id)).map(p=>p.house).filter(n=>n!==null));
+  assert.equal(visibleRows(root, "houses").length, endpointHouses.size);
+  root.querySelector("#aspect-close").click();
   assert.equal(visibleRows(root, "houses").length, 12);
   assert.deepEqual(chart, natal);
 });

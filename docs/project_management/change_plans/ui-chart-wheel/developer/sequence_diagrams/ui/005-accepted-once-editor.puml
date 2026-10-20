@@ -1,0 +1,55 @@
+@startuml
+' DRAFT Developer,20.10.2026; direct Owner A006 decision in Developer chat.
+title DRAFT: submitted target, accepted-once reset and conditional editor collapse
+autonumber
+hide footbox
+actor User
+participant "main.mjs / draft" as Main
+control "session.mjs" as Session
+participant "Existing HTTP client" as HTTP
+control "facts/chart_state" as Facts
+User -> Main : explicit submit B, manual gate
+Main -> Session : submit()
+Session -> Session : capture immutable intent B / attempt / changed birth
+Session -> HTTP : POST B
+User -> Main : optional edit draft C while request pending
+alt committed POST
+  HTTP --> Session : valid committed ChartDTO
+  Session -> Session : own_committed; consume live target once
+else uncertain outcome
+  HTTP --> Session : existing recovery outcome
+  Session -> HTTP : existing bounded safe GET/bootstrap
+  HTTP --> Session : current view
+  Session -> Session : fresh matched live recovery target?
+else already_applied
+  HTTP --> Session : already_applied
+  Session -> Session : mark live target as awaiting current confirmation
+  Session -> HTTP : GET current
+  HTTP --> Session : current view
+  Session -> Session : fresh chart_ready and birth=B?
+  note right of Session
+  Confirm once as already_applied_target_confirmed.
+  Source facts/summary remain GET; no producer provenance.
+  Stale/different/failed does not consume the target.
+  end note
+end
+Session -> Main : accepted view + new acceptanceSeq + policy
+Main -> Facts : accepted facts + same acceptance envelope
+Facts -> Facts : consume seq once; reset if confirmed changed birth; otherwise reconcile
+Facts -> Facts : source index / HTML / passive SVG revision
+Main -> Main : consume seq once
+alt allowCollapse and current draft equals submitted B
+  Main -> Main : collapse fields; move focus only if hiding focused editor control
+else draft C
+  Main -> Main : preserve open editor and draft C
+end
+Session -> HTTP : later explicit/foreground safe GET
+HTTP --> Session : accepted current B
+Session -> Main : new ordinary acceptance, reset=false / allowCollapse=false
+Main -> Facts : preserve addressable selection and expansions
+Main -> Main : keep user-opened editor; no second collapse
+note over Main, HTTP
+No automatic POST. Recovery/recheck and manual build remain reachable outside collapsed fields.
+RESULT_SUPERSEDED is a distinct ordinary current cause; identity does not prove own goal.
+end note
+@enduml

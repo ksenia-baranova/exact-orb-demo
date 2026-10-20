@@ -1,0 +1,48 @@
+@startuml
+' DRAFT Codex / Developer,20.10.2026. Direct Owner feedback and explicit endpoint-house clarification.
+title Aspect reading mode: same accepted DTO, focused HTML region, relevant facts only
+autonumber
+hide footbox
+actor User
+control "facts / full source index" as Facts
+participant "main / page mode" as Main
+control "drawing controller" as Controller
+participant "passive SVG + pure layout" as SVG
+participant "HTML wheel region" as Focus
+User -> Facts : native unique aspect activation
+Facts -> Facts : S1 full-DТО cardinality remains authoritative
+Facts -> Facts : preserve general five/all and house disclosure
+Facts -> Main : aspectMode=true
+Main -> Main : hide unrelated heading/editor; keep recovery if needed
+Facts -> Facts : one aspect row, endpoint points, their published house numbers
+Facts -> Controller : new presentation revision, same acceptanceSeq
+Controller -> SVG : immutable full facts + selected aspect key
+SVG -> SVG : index full source first; display subset second
+SVG -> SVG : source cusp band, numbered relevant houses, two endpoints
+SVG -> Controller : guarded clone/install of current SVG
+Facts -> Focus : focus({preventScroll:true}); initial scroll
+Controller --> Facts : current frame settled
+alt same selection and user still focuses wheel
+  Facts -> Focus : scroll again after reflow, leave sticky return control visible
+else retired frame or user left
+  Facts -> Facts : no delayed focus or scroll
+end
+alt button or Escape
+  User -> Facts : close aspect
+  Facts -> Main : aspectMode=false
+  Facts -> Controller : restore full composition
+  Facts -> Facts : restore full tables / previous disclosure values
+  Facts -> User : focus retained original aspect control if live
+else automatic source becomes absent or ambiguous
+  Facts -> Facts : reconcile selection to none; preserve source rows
+  Facts -> Main : restore complete view, expose S1 warning
+else safe-read error
+  Main -> Main : show existing recovery controls
+  Main -> Focus : return to live wheel when recheck control becomes hidden
+end
+note over Facts, SVG
+Point selection keeps its prior no-focus/no-scroll rule.
+No HTTP from selection/close. No house membership, DSC/IC or aspect recalculation.
+Unknown time and angle endpoints never receive an invented house.
+end note
+@enduml

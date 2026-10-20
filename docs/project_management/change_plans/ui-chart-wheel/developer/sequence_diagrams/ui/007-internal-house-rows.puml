@@ -1,0 +1,34 @@
+@startuml
+title DRAFT: internal house rows, immutable source facts
+participant "facts / controller" as Owner
+participant "passive SVG leaf" as Leaf
+participant "native SVG metrics" as Metrics
+participant "pure layout" as Layout
+Owner -> Leaf : full immutable accepted DTO, CSS width, selection, font revision
+Leaf -> Metrics : getBBox glyph16 / R12 / aux / signs
+Metrics --> Leaf : measured component bounds
+Leaf -> Layout : full DTO + measurements + aspect-view key
+Layout -> Layout : full-source S1 index before display subset
+Layout -> Layout : source house from points[].house; cusp sector geometry only
+alt natal
+ Layout -> Layout : candidates inside source house, outer-to-inner radial rows
+else cosmogram
+ Layout -> Layout : circular rows without houses
+end
+Layout -> Layout : complete component bounds / gap2 / no clipping
+Layout -> Layout : stable source order within each occupied radial lane
+Layout -> Layout : bounded search, local aux contacts and aux-only routes
+alt fit
+ Layout --> Leaf : glyph positions + exact source anchors/aspect endpoints
+ Leaf -> Owner : passive SVG, no point column or leaders
+ Owner -> Owner : guard / validate / clone / recheck / install
+else capacity or auxiliary failure
+ Layout --> Leaf : typed local layout error
+ Leaf --> Owner : image unavailable; current HTML facts retained
+end
+note over Owner, Layout
+No domain fact is recomputed. Source DTO is unchanged.
+Old column/PAV point rules are superseded by Owner20.10.
+Passive renderer boundary and existing recovery policy remain.
+end note
+@enduml

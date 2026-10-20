@@ -1,0 +1,312 @@
+{
+  "id": "F3-360",
+  "fixture": "F3",
+  "width": 360,
+  "dpr": 1,
+  "font": "normal",
+  "errors": [],
+  "requests": [
+    "bootstrap",
+    "current"
+  ],
+  "chart": {
+    "chart_identity": "controlled-ui-F3",
+    "kind": "natal",
+    "zodiac": "tropical",
+    "house_system": "P",
+    "points": [
+      {
+        "id": "sun",
+        "longitude": 159.34074778029736,
+        "sign": "Virgo",
+        "degree": 9,
+        "minute": 20,
+        "house": 4,
+        "retrograde": false
+      },
+      {
+        "id": "moon",
+        "longitude": 7.664949064158727,
+        "sign": "Aries",
+        "degree": 7,
+        "minute": 39,
+        "house": 11,
+        "retrograde": false
+      },
+      {
+        "id": "mercury",
+        "longitude": 359.7,
+        "sign": "Pisces",
+        "degree": 29,
+        "minute": 42,
+        "house": 3,
+        "retrograde": true
+      },
+      {
+        "id": "venus",
+        "longitude": 359.85,
+        "sign": "Pisces",
+        "degree": 29,
+        "minute": 51,
+        "house": 2,
+        "retrograde": true
+      },
+      {
+        "id": "mars",
+        "longitude": 0,
+        "sign": "Aries",
+        "degree": 0,
+        "minute": 0,
+        "house": 3,
+        "retrograde": true
+      },
+      {
+        "id": "jupiter",
+        "longitude": 0.15,
+        "sign": "Aries",
+        "degree": 0,
+        "minute": 9,
+        "house": 9,
+        "retrograde": true
+      },
+      {
+        "id": "saturn",
+        "longitude": 0.3,
+        "sign": "Aries",
+        "degree": 0,
+        "minute": 18,
+        "house": 6,
+        "retrograde": true
+      },
+      {
+        "id": "uranus",
+        "longitude": 254.00365980527386,
+        "sign": "Sagittarius",
+        "degree": 14,
+        "minute": 0,
+        "house": 6,
+        "retrograde": false
+      },
+      {
+        "id": "neptune",
+        "longitude": 270.87690779987076,
+        "sign": "Capricorn",
+        "degree": 0,
+        "minute": 52,
+        "house": 6,
+        "retrograde": true
+      },
+      {
+        "id": "pluto",
+        "longitude": 212.65770399299151,
+        "sign": "Scorpio",
+        "degree": 2,
+        "minute": 39,
+        "house": 5,
+        "retrograde": false
+      },
+      {
+        "id": "chiron",
+        "longitude": 74.44553413224777,
+        "sign": "Gemini",
+        "degree": 14,
+        "minute": 26,
+        "house": 12,
+        "retrograde": false
+      },
+      {
+        "id": "true_node",
+        "longitude": 40.9113848348305,
+        "sign": "Taurus",
+        "degree": 10,
+        "minute": 54,
+        "house": 11,
+        "retrograde": true
+      },
+      {
+        "id": "south_node",
+        "longitude": 220.9113848348305,
+        "sign": "Scorpio",
+        "degree": 10,
+        "minute": 54,
+        "house": 5,
+        "retrograde": true
+      },
+      {
+        "id": "mean_apog",
+        "longitude": 40.201551132952346,
+        "sign": "Taurus",
+        "degree": 10,
+        "minute": 12,
+        "house": 11,
+        "retrograde": false
+      },
+      {
+        "id": "selena",
+        "longitude": 225.50257012821265,
+        "sign": "Scorpio",
+        "degree": 15,
+        "minute": 30,
+        "house": 5,
+        "retrograde": true
+      },
+      {
+        "id": "pars_fortune",
+        "longitude": 249.78151332909155,
+        "sign": "Sagittarius",
+        "degree": 9,
+        "minute": 46,
+        "house": 6,
+        "retrograde": false
+      }
+    ],
+    "angles": {
+      "asc": {
+        "longitude": 98.10571461295291,
+        "sign": "Cancer",
+        "degree": 8,
+        "minute": 6
+      },
+      "mc": {
+        "longitude": 327.62940719926064,
+        "sign": "Aquarius",
+        "degree": 27,
+        "minute": 37
+      },
+      "vertex": {
+        "longitude": 229.73871832539606,
+        "sign": "Scorpio",
+        "degree": 19,
+        "minute": 44
+      },
+      "dsc": {
+        "longitude": 278.1057146129529,
+        "sign": "Capricorn",
+        "degree": 8,
+        "minute": 6
+      },
+      "ic": {
+        "longitude": 147.62940719926064,
+        "sign": "Leo",
+        "degree": 27,
+        "minute": 37
+      }
+    },
+    "houses": [
+      {
+        "number": 1,
+        "cusp_longitude": 98.10571461295291,
+        "sign": "Cancer",
+        "degree": 8,
+        "minute": 6
+      },
+      {
+        "number": 2,
+        "cusp_longitude": 111.86113073362736,
+        "sign": "Cancer",
+        "degree": 21,
+        "minute": 51
+      },
+      {
+        "number": 3,
+        "cusp_longitude": 127.21128222848128,
+        "sign": "Leo",
+        "degree": 7,
+        "minute": 12
+      },
+      {
+        "number": 4,
+        "cusp_longitude": 147.62940719926064,
+        "sign": "Leo",
+        "degree": 27,
+        "minute": 37
+      },
+      {
+        "number": 5,
+        "cusp_longitude": 179.74928469285112,
+        "sign": "Virgo",
+        "degree": 29,
+        "minute": 44
+      },
+      {
+        "number": 6,
+        "cusp_longitude": 231.38720474173113,
+        "sign": "Scorpio",
+        "degree": 21,
+        "minute": 23
+      },
+      {
+        "number": 7,
+        "cusp_longitude": 278.1057146129529,
+        "sign": "Capricorn",
+        "degree": 8,
+        "minute": 6
+      },
+      {
+        "number": 8,
+        "cusp_longitude": 291.86113073362736,
+        "sign": "Capricorn",
+        "degree": 21,
+        "minute": 51
+      },
+      {
+        "number": 9,
+        "cusp_longitude": 307.2112822284813,
+        "sign": "Aquarius",
+        "degree": 7,
+        "minute": 12
+      },
+      {
+        "number": 10,
+        "cusp_longitude": 327.62940719926064,
+        "sign": "Aquarius",
+        "degree": 27,
+        "minute": 37
+      },
+      {
+        "number": 11,
+        "cusp_longitude": 359.7492846928511,
+        "sign": "Pisces",
+        "degree": 29,
+        "minute": 44
+      },
+      {
+        "number": 12,
+        "cusp_longitude": 51.38720474173114,
+        "sign": "Taurus",
+        "degree": 21,
+        "minute": 23
+      }
+    ],
+    "aspects": [
+      {
+        "from": "mercury",
+        "to": "venus",
+        "type": "conjunction",
+        "category": "exact",
+        "orb": 0.15
+      },
+      {
+        "from": "venus",
+        "to": "mars",
+        "type": "conjunction",
+        "category": "working",
+        "orb": 0.15
+      },
+      {
+        "from": "sun",
+        "to": "moon",
+        "type": "conjunction",
+        "category": "background",
+        "orb": 5
+      }
+    ]
+  },
+  "actual": {
+    "svg": false,
+    "error": "Не удалось показать колесо. Все подтверждённые данные доступны в таблицах.",
+    "html": "Планеты и точки · 16Опубликованные точки отсутствуютПоложения планет и точекНазваниеЗнакПоложениеДомДвижениеСолнцеДева09°20′4—ЛунаОвен07°39′11—МеркурийРыбы29°42′3R — ретрограднаяВенераРыбы29°51′2R — ретрограднаяМарсОвен00°00′3R — ретрограднаяЮпитерОвен00°09′9R — ретрограднаяСатурнОвен00°18′6R — ретрограднаяУранСтрелец14°00′6—НептунКозерог00°52′6R — ретрограднаяПлутонСкорпион02°39′5—ХиронБлизнецы14°26′12—Северный узелТелец10°54′11R — ретрограднаяЮжный узел (производная позиция)Скорпион10°54′5R — ретрограднаяЛилитТелец10°12′11—СеленаСкорпион15°30′5R — ретрограднаяПарс ФортуныСтрелец09°46′6—Дома · 12Опубликованные дома отсутствуютКуспиды домовНомерЗнакКуспид1Рак08°06′2Рак21°51′3Лев07°12′4Лев27°37′5Дева29°44′6Скорпион21°23′7Козерог08°06′8Козерог21°51′9Водолей07°12′10Водолей27°37′11Рыбы29°44′12Телец21°23′Показать всеУглы картыУголЗнакПоложениеASC — АсцендентРак08°06′MC — Середина небаВодолей27°37′Vertex — ВертексСкорпион19°44′DSC — ДесцендентКозерог08°06′IC — НадирЛев27°37′Аспекты · 3Аспекты не найденыВсе опубликованные аспектыОтКВидКатегорияОрбисМеркурийВенераСоединениеТочный0°09′ВенераМарсСоединениеРабочий0°09′СолнцеЛунаСоединениеФоновый5°00′Показать все"
+  },
+  "pass": false,
+  "error": "AssertionError [ERR_ASSERTION]: Не удалось показать колесо. Все подтверждённые данные доступны в таблицах.\n\nfalse !== true\n"
+}

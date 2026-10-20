@@ -9,7 +9,10 @@ export const api = createApiClient();
 
 export function mountBirthForm(document, { apiClient = api, clock } = {}) {
   const element = document.getElementById("birth-form");
-  const result = mountChartResult(document);
+  let aspectMode = false;
+  const pageHeading = document.getElementById("birth-page-heading"), pageIntro = document.getElementById("birth-page-intro");
+  const result = mountChartResult(document, { onFatal: () => session?.presentationFailed(),
+    onAspectModeChange(mode) { aspectMode = mode; applyPageMode(); } });
   element.after(result.element);
   const form = createBirthForm();
   const date = document.getElementById("birth-date");
@@ -41,7 +44,40 @@ export function mountBirthForm(document, { apiClient = api, clock } = {}) {
   element.insertBefore(submitted, overallError);
   element.insertBefore(readAgain, overallError);
   let places, session, sessionState;
-  let draftEdited = false, birthRestored = false;
+  let draftEdited = false, birthRestored = false, consumedAcceptance = 0;
+  const editor = document.createElement("div");
+  editor.id = "birth-editor"; editor.className = "birth-editor";
+  for (const child of [...element.children]) {
+    if (![overallError, build, sessionStatus, submitted, readAgain].includes(child)) editor.append(child);
+  }
+  element.insertBefore(editor, sessionStatus);
+  result.editButton.setAttribute("aria-controls", "birth-editor");
+  result.editButton.setAttribute("aria-expanded", "true");
+  const inEditor = node => { for (let at = node; at; at = at.parentNode) if (at === editor) return true; return false; };
+  function applyPageMode() {
+    const recoveryVisible = sessionState?.error || sessionState?.requiresReconciliation
+      || sessionState?.recovery && sessionState.recovery.status !== "matched";
+    element.hidden = !recoveryVisible && (aspectMode || editor.hidden && sessionState?.view?.status === "chart_ready");
+    const reading=aspectMode || editor.hidden && sessionState?.view?.status==='chart_ready';
+    if (pageHeading) pageHeading.hidden = reading;
+    if (pageIntro) pageIntro.hidden = reading;
+    // Use accepted view before the first immutable drawing snapshot, even before editor collapse.
+    element.parentNode?.setAttribute('data-page-mode',sessionState?.view?.status==='chart_ready'?'chart':'form');
+  }
+  function setEditorOpen(open) {
+    editor.hidden = !open;
+    result.editButton.setAttribute("aria-expanded", String(open));
+    result.editButton.textContent = open ? "Свернуть редактор" : "Изменить данные";
+    if (!open && inEditor(document.activeElement)) result.editButton.focus();
+    applyPageMode();
+  }
+  const edit = () => setEditorOpen(editor.hidden);
+  result.editButton.addEventListener("click", edit);
+  function matchesDraft(intent) {
+    const draft = form.snapshot();
+    return intent && draft.date === intent.birth_date && draft.place?.place_id === intent.place_id
+      && (draft.timeUnknown ? null : draft.time) === intent.birth_time;
+  }
 
   function renderErrors() {
     const draft = form.snapshot();
@@ -62,6 +98,7 @@ export function mountBirthForm(document, { apiClient = api, clock } = {}) {
   }
 
   function renderSession(state) {
+    const recheckHadFocus = document.activeElement === readAgain;
     sessionState = state;
     const view = state.view;
     // Восстановление не затирает ввод, сделанный во время запроса или после него.
@@ -114,8 +151,25 @@ export function mountBirthForm(document, { apiClient = api, clock } = {}) {
     readAgain.textContent = state.recovery?.kind === "timeout" && !state.recovery.restartConfirmed
       ? "Проверить после перезапуска" : "Повторить проверку карты";
     readAgain.disabled = !state.canRecheck;
-    result.update(view);
-    renderErrors();
+    const summaryText = summary ? "Дата: " + summary.birthDate + ". Место: " + summary.placeName + ". "
+      + (summary.birthTime === null ? "Точное время неизвестно." : "Время: " + summary.birthTime + ".") : "";
+    const focusedResult = (() => { for(let at=document.activeElement;at;at=at.parentNode)if(at===result.element)return true;return false; })();
+    result.update(view, { acceptance: state.acceptance, summary: summaryText });
+    if (state.acceptance && state.acceptance.seq !== consumedAcceptance) {
+      consumedAcceptance = state.acceptance.seq;
+      if (state.acceptance.allowCollapse) {
+        const collapse = state.acceptance.submitted ? matchesDraft(state.acceptance.submitted) : !draftEdited;
+        setEditorOpen(!collapse);
+      }
+    }
+    if (view?.status !== "chart_ready") {
+      setEditorOpen(true);
+      if (focusedResult) date.focus();
+    } else if (recheckHadFocus && readAgain.hidden) {
+      if (aspectMode) document.getElementById("chart-wheel").focus({ preventScroll: true });
+      else result.editButton.focus();
+    }
+    renderErrors(); applyPageMode();
   }
 
   function renderFailure(state) {
@@ -130,10 +184,12 @@ export function mountBirthForm(document, { apiClient = api, clock } = {}) {
     readAgain.disabled = !state.canRecheck;
     readAgain.textContent = state.recovery?.kind === "timeout" && !state.recovery.restartConfirmed
       ? "Проверить после перезапуска" : "Повторить проверку карты";
+    applyPageMode();
   }
 
   function edited(field) {
     draftEdited = true;
+    setEditorOpen(true);
     session.clearFieldError(field);
     renderErrors();
   }
@@ -238,18 +294,20 @@ export function mountBirthForm(document, { apiClient = api, clock } = {}) {
     const result = form.prepareSubmission();
     renderErrors();
     if (!result.ok) {
+      setEditorOpen(true);
       fields[Object.keys(result.errors)[0]].focus();
       return;
     }
     await session.submit();
     const issueField = Object.keys(session.snapshot().fieldIssues)[0];
-    if (issueField) fields[issueField].focus();
+    if (issueField) { setEditorOpen(true); fields[issueField].focus(); }
   });
   const ready = session.open();
   return Object.freeze({ form, places, session, result, ready,
     dispose() {
       document.removeEventListener("visibilitychange", visible);
       document.defaultView.removeEventListener("online", online);
+      result.editButton.removeEventListener("click", edit);
       places.dispose(); session.dispose(); result.dispose();
     } });
 }

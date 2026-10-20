@@ -1,0 +1,94 @@
+{
+  "id": "F3-max-360",
+  "width": 360,
+  "fixture": "F3-max",
+  "checks": [
+    {
+      "name": "numbered-houses",
+      "actual": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "expected": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "pass": true
+    },
+    {
+      "name": "published-cusps",
+      "actual": 12,
+      "expected": 12,
+      "pass": true
+    },
+    {
+      "name": "ruler",
+      "actual": 360,
+      "expected": 360,
+      "pass": true
+    },
+    {
+      "name": "no-page-overflow",
+      "actual": false,
+      "expected": false,
+      "pass": true
+    },
+    {
+      "name": "collapsed-form-does-not-duplicate-summary",
+      "actual": true,
+      "expected": true,
+      "pass": true
+    }
+  ],
+  "requests": [
+    "bootstrap",
+    "current"
+  ],
+  "errors": [],
+  "normal": {
+    "width": 318,
+    "height": 406,
+    "houseNumbers": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ],
+    "cuspCount": 12,
+    "ticks": 360,
+    "aspectRatio": 0.27000000676498037,
+    "overflow": false,
+    "zoom": 1,
+    "formHidden": true
+  },
+  "pass": false,
+  "error": "TimeoutError: locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#aspects-show-all')\u001b[22m\n\u001b[2m    - locator resolved to <button hidden=\"\" type=\"button\" id=\"aspects-show-all\" aria-expanded=\"false\" class=\"secondary-button\" aria-controls=\"aspects-table\">Показать все</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    59 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is not visible\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n"
+}

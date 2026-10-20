@@ -88,7 +88,7 @@ test("reader uses canonical point order and localizes every published point/sign
   assert.ok(facts.points.rows.every((row) => row.name !== row.id));
   assert.ok(facts.points.rows.every((row, index) => row.retrograde === (index % 2 === 1)
     && row.movement === (index % 2 === 1 ? "R — ретроградная" : "—")));
-  assert.match(facts.points.rows.find((row) => row.id === "south_node").name, /производная/);
+  assert.equal(facts.points.rows.find((row) => row.id === "south_node").name, "Южный узел"); // Owner20.10: concise label; source derived semantics unchanged.
 });
 
 test("natal houses sort numerically; five published angles belong to the houses group", () => {

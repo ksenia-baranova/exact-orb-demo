@@ -1,0 +1,14 @@
+{
+  "HEAD": "e0daa0e814d3d1fd34cadb8c17d064f19c4810f5",
+  "branch": "dev/ui-chart-wheel",
+  "Owner": "Исправить все баги и доработки",
+  "files": {
+    "src/exact_orb/http_api/ui/main.mjs": "db6610257167f73f809c224dba9ec3ca734de707768a1783ff11b18fe5164253",
+    "src/exact_orb/http_api/ui/facts.mjs": "0f168bfeae5b7a4dd10021103a29d7a5d9e9291e36065e733ca817683b81a753",
+    "src/exact_orb/http_api/ui/styles.css": "3a37eff6cb8f9b94184102ac5817eaf2d2a4a561e2f3198422c6eca9c3d0cc5d",
+    "src/exact_orb/http_api/ui/wheel_layout.mjs": "bd78348f94ccd81d4b133ccafb65a9cd491b63377219d65523f203cd32b7526f",
+    "src/exact_orb/http_api/ui/wheel_svg.mjs": "9926075fcc42112090f64c5c01b216f6969f96899ca8d614806db75598c8efc3",
+    "src/exact_orb/http_api/ui/result_controller.mjs": "143f3279232c55902b76c67d7b8a5dc7494c419572cc041840f7288060188a5c",
+    "tests/ui/facts.test.mjs": "92824f823de01bbd0a1d0cc1039308bdaedd668ca522ed0063639bbc85e461b4"
+  }
+}

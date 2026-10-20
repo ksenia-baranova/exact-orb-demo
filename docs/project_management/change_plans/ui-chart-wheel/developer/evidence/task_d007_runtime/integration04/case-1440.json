@@ -1,0 +1,860 @@
+{
+  "width": 1440,
+  "checks": [
+    {
+      "id": "initial-editor-collapsed",
+      "actual": true,
+      "expected": true,
+      "pass": true
+    },
+    {
+      "id": "manual-gate-unchecked",
+      "actual": false,
+      "expected": false,
+      "pass": true
+    },
+    {
+      "id": "pointer-44-native-hit",
+      "actual": false,
+      "expected": true,
+      "pass": false
+    }
+  ],
+  "requests": [
+    {
+      "method": "bootstrap"
+    },
+    {
+      "method": "current",
+      "identity": "eo:calc:v2:471780444330e2d9108e7ae97652bb4a47d3142ffc14cb238a587a6002df8eee"
+    }
+  ],
+  "errors": [],
+  "pointerHit": {
+    "width": 66.0625,
+    "height": 44,
+    "coords": [
+      {
+        "x": 256.04125,
+        "y": 478.35375,
+        "hit": true,
+        "element": "<button class=\"fact-select\" type=\"button\" aria-pressed=\"false\" aria-label=\"Выбрать точку: Солнце\" data-point-id=\"sun\">Солнце</button>"
+      },
+      {
+        "x": 256.04125,
+        "y": 500.34375,
+        "hit": true,
+        "element": "<button class=\"fact-select\" type=\"button\" aria-pressed=\"false\" aria-label=\"Выбрать точку: Солнце\" data-point-id=\"sun\">Солнце</button>"
+      },
+      {
+        "x": 256.04125,
+        "y": 522.33375,
+        "hit": false,
+        "element": "<th class=\"\" role=\"rowheader\" scope=\"row\" data-label=\"Название\"><button class=\"fact-select\" type=\"button\" aria-pressed=\"false\" aria-label=\"Выбрать точку: Солнце\" data-point-id=\"sun"
+      },
+      {
+        "x": 278.03125,
+        "y": 478.35375,
+        "hit": true,
+        "element": "<button class=\"fact-select\" type=\"button\" aria-pressed=\"false\" aria-label=\"Выбрать точку: Солнце\" data-point-id=\"sun\">Солнце</button>"
+      },
+      {
+        "x": 278.03125,
+        "y": 500.34375,
+        "hit": true,
+        "element": "<button class=\"fact-select\" type=\"button\" aria-pressed=\"false\" aria-label=\"Выбрать точку: Солнце\" data-point-id=\"sun\">Солнце</button>"
+      },
+      {
+        "x": 278.03125,
+        "y": 522.33375,
+        "hit": false,
+        "element": "<th class=\"\" role=\"rowheader\" scope=\"row\" data-label=\"Название\"><button class=\"fact-select\" type=\"button\" aria-pressed=\"false\" aria-label=\"Выбрать точку: Солнце\" data-point-id=\"sun"
+      },
+      {
+        "x": 300.02125,
+        "y": 478.35375,
+        "hit": true,
+        "element": "<button class=\"fact-select\" type=\"button\" aria-pressed=\"false\" aria-label=\"Выбрать точку: Солнце\" data-point-id=\"sun\">Солнце</button>"
+      },
+      {
+        "x": 300.02125,
+        "y": 500.34375,
+        "hit": true,
+        "element": "<button class=\"fact-select\" type=\"button\" aria-pressed=\"false\" aria-label=\"Выбрать точку: Солнце\" data-point-id=\"sun\">Солнце</button>"
+      },
+      {
+        "x": 300.02125,
+        "y": 522.33375,
+        "hit": false,
+        "element": "<th class=\"\" role=\"rowheader\" scope=\"row\" data-label=\"Название\"><button class=\"fact-select\" type=\"button\" aria-pressed=\"false\" aria-label=\"Выбрать точку: Солнце\" data-point-id=\"sun"
+      }
+    ],
+    "occluded": true,
+    "x": 278.03125,
+    "y": 500.34375,
+    "scan": [
+      [
+        -23,
+        false
+      ],
+      [
+        -22.75,
+        true
+      ],
+      [
+        -22.5,
+        true
+      ],
+      [
+        -22.25,
+        true
+      ],
+      [
+        -22,
+        true
+      ],
+      [
+        -21.75,
+        true
+      ],
+      [
+        -21.5,
+        true
+      ],
+      [
+        -21.25,
+        true
+      ],
+      [
+        -21,
+        true
+      ],
+      [
+        -20.75,
+        true
+      ],
+      [
+        -20.5,
+        true
+      ],
+      [
+        -20.25,
+        true
+      ],
+      [
+        -20,
+        true
+      ],
+      [
+        -19.75,
+        true
+      ],
+      [
+        -19.5,
+        true
+      ],
+      [
+        -19.25,
+        true
+      ],
+      [
+        -19,
+        true
+      ],
+      [
+        -18.75,
+        true
+      ],
+      [
+        -18.5,
+        true
+      ],
+      [
+        -18.25,
+        true
+      ],
+      [
+        -18,
+        true
+      ],
+      [
+        -17.75,
+        true
+      ],
+      [
+        -17.5,
+        true
+      ],
+      [
+        -17.25,
+        true
+      ],
+      [
+        -17,
+        true
+      ],
+      [
+        -16.75,
+        true
+      ],
+      [
+        -16.5,
+        true
+      ],
+      [
+        -16.25,
+        true
+      ],
+      [
+        -16,
+        true
+      ],
+      [
+        -15.75,
+        true
+      ],
+      [
+        -15.5,
+        true
+      ],
+      [
+        -15.25,
+        true
+      ],
+      [
+        -15,
+        true
+      ],
+      [
+        -14.75,
+        true
+      ],
+      [
+        -14.5,
+        true
+      ],
+      [
+        -14.25,
+        true
+      ],
+      [
+        -14,
+        true
+      ],
+      [
+        -13.75,
+        true
+      ],
+      [
+        -13.5,
+        true
+      ],
+      [
+        -13.25,
+        true
+      ],
+      [
+        -13,
+        true
+      ],
+      [
+        -12.75,
+        true
+      ],
+      [
+        -12.5,
+        true
+      ],
+      [
+        -12.25,
+        true
+      ],
+      [
+        -12,
+        true
+      ],
+      [
+        -11.75,
+        true
+      ],
+      [
+        -11.5,
+        true
+      ],
+      [
+        -11.25,
+        true
+      ],
+      [
+        -11,
+        true
+      ],
+      [
+        -10.75,
+        true
+      ],
+      [
+        -10.5,
+        true
+      ],
+      [
+        -10.25,
+        true
+      ],
+      [
+        -10,
+        true
+      ],
+      [
+        -9.75,
+        true
+      ],
+      [
+        -9.5,
+        true
+      ],
+      [
+        -9.25,
+        true
+      ],
+      [
+        -9,
+        true
+      ],
+      [
+        -8.75,
+        true
+      ],
+      [
+        -8.5,
+        true
+      ],
+      [
+        -8.25,
+        true
+      ],
+      [
+        -8,
+        true
+      ],
+      [
+        -7.75,
+        true
+      ],
+      [
+        -7.5,
+        true
+      ],
+      [
+        -7.25,
+        true
+      ],
+      [
+        -7,
+        true
+      ],
+      [
+        -6.75,
+        true
+      ],
+      [
+        -6.5,
+        true
+      ],
+      [
+        -6.25,
+        true
+      ],
+      [
+        -6,
+        true
+      ],
+      [
+        -5.75,
+        true
+      ],
+      [
+        -5.5,
+        true
+      ],
+      [
+        -5.25,
+        true
+      ],
+      [
+        -5,
+        true
+      ],
+      [
+        -4.75,
+        true
+      ],
+      [
+        -4.5,
+        true
+      ],
+      [
+        -4.25,
+        true
+      ],
+      [
+        -4,
+        true
+      ],
+      [
+        -3.75,
+        true
+      ],
+      [
+        -3.5,
+        true
+      ],
+      [
+        -3.25,
+        true
+      ],
+      [
+        -3,
+        true
+      ],
+      [
+        -2.75,
+        true
+      ],
+      [
+        -2.5,
+        true
+      ],
+      [
+        -2.25,
+        true
+      ],
+      [
+        -2,
+        true
+      ],
+      [
+        -1.75,
+        true
+      ],
+      [
+        -1.5,
+        true
+      ],
+      [
+        -1.25,
+        true
+      ],
+      [
+        -1,
+        true
+      ],
+      [
+        -0.75,
+        true
+      ],
+      [
+        -0.5,
+        true
+      ],
+      [
+        -0.25,
+        true
+      ],
+      [
+        0,
+        true
+      ],
+      [
+        0.25,
+        true
+      ],
+      [
+        0.5,
+        true
+      ],
+      [
+        0.75,
+        true
+      ],
+      [
+        1,
+        true
+      ],
+      [
+        1.25,
+        true
+      ],
+      [
+        1.5,
+        true
+      ],
+      [
+        1.75,
+        true
+      ],
+      [
+        2,
+        true
+      ],
+      [
+        2.25,
+        true
+      ],
+      [
+        2.5,
+        true
+      ],
+      [
+        2.75,
+        true
+      ],
+      [
+        3,
+        true
+      ],
+      [
+        3.25,
+        true
+      ],
+      [
+        3.5,
+        true
+      ],
+      [
+        3.75,
+        true
+      ],
+      [
+        4,
+        true
+      ],
+      [
+        4.25,
+        true
+      ],
+      [
+        4.5,
+        true
+      ],
+      [
+        4.75,
+        true
+      ],
+      [
+        5,
+        true
+      ],
+      [
+        5.25,
+        true
+      ],
+      [
+        5.5,
+        true
+      ],
+      [
+        5.75,
+        true
+      ],
+      [
+        6,
+        true
+      ],
+      [
+        6.25,
+        true
+      ],
+      [
+        6.5,
+        true
+      ],
+      [
+        6.75,
+        true
+      ],
+      [
+        7,
+        true
+      ],
+      [
+        7.25,
+        true
+      ],
+      [
+        7.5,
+        true
+      ],
+      [
+        7.75,
+        true
+      ],
+      [
+        8,
+        true
+      ],
+      [
+        8.25,
+        true
+      ],
+      [
+        8.5,
+        true
+      ],
+      [
+        8.75,
+        true
+      ],
+      [
+        9,
+        true
+      ],
+      [
+        9.25,
+        true
+      ],
+      [
+        9.5,
+        true
+      ],
+      [
+        9.75,
+        true
+      ],
+      [
+        10,
+        true
+      ],
+      [
+        10.25,
+        true
+      ],
+      [
+        10.5,
+        true
+      ],
+      [
+        10.75,
+        true
+      ],
+      [
+        11,
+        true
+      ],
+      [
+        11.25,
+        true
+      ],
+      [
+        11.5,
+        true
+      ],
+      [
+        11.75,
+        true
+      ],
+      [
+        12,
+        true
+      ],
+      [
+        12.25,
+        true
+      ],
+      [
+        12.5,
+        true
+      ],
+      [
+        12.75,
+        true
+      ],
+      [
+        13,
+        true
+      ],
+      [
+        13.25,
+        true
+      ],
+      [
+        13.5,
+        true
+      ],
+      [
+        13.75,
+        true
+      ],
+      [
+        14,
+        true
+      ],
+      [
+        14.25,
+        true
+      ],
+      [
+        14.5,
+        true
+      ],
+      [
+        14.75,
+        true
+      ],
+      [
+        15,
+        true
+      ],
+      [
+        15.25,
+        true
+      ],
+      [
+        15.5,
+        true
+      ],
+      [
+        15.75,
+        true
+      ],
+      [
+        16,
+        true
+      ],
+      [
+        16.25,
+        true
+      ],
+      [
+        16.5,
+        true
+      ],
+      [
+        16.75,
+        true
+      ],
+      [
+        17,
+        true
+      ],
+      [
+        17.25,
+        true
+      ],
+      [
+        17.5,
+        true
+      ],
+      [
+        17.75,
+        true
+      ],
+      [
+        18,
+        true
+      ],
+      [
+        18.25,
+        true
+      ],
+      [
+        18.5,
+        true
+      ],
+      [
+        18.75,
+        true
+      ],
+      [
+        19,
+        true
+      ],
+      [
+        19.25,
+        true
+      ],
+      [
+        19.5,
+        true
+      ],
+      [
+        19.75,
+        true
+      ],
+      [
+        20,
+        true
+      ],
+      [
+        20.25,
+        true
+      ],
+      [
+        20.5,
+        true
+      ],
+      [
+        20.75,
+        true
+      ],
+      [
+        21,
+        true
+      ],
+      [
+        21.25,
+        true
+      ],
+      [
+        21.5,
+        true
+      ],
+      [
+        21.75,
+        false
+      ],
+      [
+        22,
+        false
+      ],
+      [
+        22.25,
+        false
+      ],
+      [
+        22.5,
+        false
+      ],
+      [
+        22.75,
+        false
+      ],
+      [
+        23,
+        false
+      ]
+    ],
+    "rect": {
+      "x": 245,
+      "y": 478.34375,
+      "width": 66.0625,
+      "height": 44,
+      "top": 478.34375,
+      "right": 311.0625,
+      "bottom": 522.34375,
+      "left": 245
+    },
+    "parent": {
+      "x": 237,
+      "y": 465.84375,
+      "width": 193.1875,
+      "height": 69,
+      "top": 465.84375,
+      "right": 430.1875,
+      "bottom": 534.84375,
+      "left": 237
+    }
+  },
+  "pass": false,
+  "error": "AssertionError [ERR_ASSERTION]: pointer-44-native-hit\n\nfalse !== true\n"
+}

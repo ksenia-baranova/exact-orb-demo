@@ -1,0 +1,55 @@
+{
+  "finding": "DEV-FIND-WHEEL-008",
+  "reported_by": "Owner",
+  "registered_by": "Codex / Developer",
+  "date": "2026-10-20",
+  "URL": "https://exact-orb.localhost/",
+  "browser": null,
+  "browser_version": null,
+  "zoom": null,
+  "head": "e0daa0e814d3d1fd34cadb8c17d064f19c4810f5",
+  "branch": "dev/ui-chart-wheel",
+  "version": "HEAD plus uncommitted local UI; screenshot not independently bound to CandidateSHA",
+  "runtime_reproduction_performed": false,
+  "evidence": {
+    "Owner_screenshot": {
+      "file": "chart-symbols-owner.png",
+      "sha256": "f49bc5e5b4f261df0d3fc671f2a942b0c684e948c23980d12840312d88aae9ba",
+      "source_filename": "codex-clipboard-475c78f5-9f05-4e59-9c04-168d071f61cd.png",
+      "capture_pixels": [
+        614,
+        453
+      ]
+    },
+    "Owner_reference": {
+      "file": "r3-symbols-reference.png",
+      "sha256": "c8dc5725048e8a5d6050d894f4344a2c440b60a62a16590fb7c0f181d2a8ba17",
+      "source_path": "docs/ui_ux/renders/r3-symbols.png",
+      "capture_pixels": [
+        1440,
+        1880
+      ]
+    }
+  },
+  "current_glyph_mapping": {
+    "chiron": "⚷",
+    "pars_fortune": "⊗",
+    "selena": "○"
+  },
+  "codepoints": {
+    "chiron": [
+      "U+26B7"
+    ],
+    "pars_fortune": [
+      "U+2297"
+    ],
+    "selena": [
+      "U+25CB"
+    ]
+  },
+  "source_fingerprints": {
+    "src/exact_orb/http_api/ui/wheel_layout.mjs": "bd78348f94ccd81d4b133ccafb65a9cd491b63377219d65523f203cd32b7526f",
+    "src/exact_orb/http_api/ui/wheel_svg.mjs": "9926075fcc42112090f64c5c01b216f6969f96899ca8d614806db75598c8efc3",
+    "src/exact_orb/http_api/ui/facts.mjs": "0f168bfeae5b7a4dd10021103a29d7a5d9e9291e36065e733ca817683b81a753"
+  }
+}

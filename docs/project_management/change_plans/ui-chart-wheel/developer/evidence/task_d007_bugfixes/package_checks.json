@@ -1,0 +1,53 @@
+{
+  "runs": {
+    "run04": {
+      "cases": 16,
+      "assertions": 164,
+      "boundary": 0
+    },
+    "resize02": {
+      "cases": 2,
+      "assertions": 34,
+      "boundary": 0
+    },
+    "native03": {
+      "cases": 35,
+      "assertions": 0,
+      "boundary": 0
+    },
+    "boundary03": {
+      "cases": 0,
+      "assertions": 0,
+      "boundary": 37
+    },
+    "focus03": {
+      "cases": 12,
+      "assertions": 290,
+      "boundary": 0
+    },
+    "compact03": {
+      "cases": 2,
+      "assertions": 48,
+      "boundary": 0
+    }
+  },
+  "all_final_source_hashes_match": true,
+  "positive_install_copy_controls": true,
+  "pytest_final": "2959 passed, 1 skipped",
+  "diagram_rendered": false,
+  "source_hashes": {
+    "chart_state.mjs": "8169df4fac3681231cd2a36b588f6c5e792987cf5e196f33e889ec3e2aec0c66",
+    "facts.mjs": "cbce793b8c2b7aa97e1d55dfc753022eeb1dab80a9928a263f36715a88f8ca00",
+    "form.mjs": "01c67968c92569cfa039c08a29b097bee8f9e7d06b335a9d58575b0fb31bdad3",
+    "main.mjs": "fa7f4e9f4c8835f724b8b822a4908229cffbcc01b7ad06cbaaa8f5f492ea660e",
+    "places.mjs": "9261d46e9c716db979ee4dc7454a4a656c6d350f78f5883c7635103af56b9dcb",
+    "recovery.mjs": "b5d3cd889cd12ae42b9461429c1eef98d1ddc737cde2ce7e83189cb2e3ff81b5",
+    "response.mjs": "124eed92a2be48598eb38f2deaae6f826bced0491e0acf82384c681fca27942c",
+    "result_controller.mjs": "30918ddbc17243cf21c90a9a9e381813811e489d2235ec8b2e23159b8a5ed7bf",
+    "session.mjs": "cff830d2f6e490290696cd2846cabd53d17b1f49a8b624c6765bf289cc162088",
+    "transport.mjs": "bc1ca991d76af8ec6af63cdf69cb25bc00053a77cb1d12d8ae67fccea4140fdb",
+    "wheel_layout.mjs": "1fd3396dff20c6e97d077373e877fd3705d7e838b77cbe2d1592b422f8efff0b",
+    "wheel_svg.mjs": "9019f48e338899d53ed414ffe989f75ed59c682a6a789f537869eb71980f4678"
+  },
+  "new_document_local_links": 20
+}
