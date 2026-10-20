@@ -1,0 +1,42 @@
+@startuml
+title exact-orb — Статусы Decision Point (простой процесс)
+
+' Источник: «Процесс работы над изменением v2», раздел «DP и правила ALIGNMENT».
+' Один DP — один файл dp/DP-*.md. Кто решает, задаёт поле addressed_to.
+
+hide empty description
+skinparam shadowing false
+skinparam state {
+    BackgroundColor #F8FAFC
+    BorderColor #64748B
+    FontColor #0F172A
+    ArrowColor #2563EB
+    ArrowFontColor #334155
+}
+skinparam legend {
+    BackgroundColor #FFFBEB
+    BorderColor #D97706
+}
+
+state OPEN : вопрос, варианты,\nрекомендация и почему
+state ACCEPTED : выбран вариант;\nрешение записано
+state DECLINED : предложение отклонено
+state ON_HOLD : отложено;\nвнесено в risks.md
+
+[*] --> OPEN : поднят в задаче\n(raised_by)
+OPEN --> OPEN : Analyst переадресовал owner'у\n(addressed_to: analyst → owner)
+OPEN --> ACCEPTED : решение addressed_to
+OPEN --> DECLINED : решение addressed_to
+OPEN --> ON_HOLD : решение addressed_to
+
+legend bottom left
+  addressed_to = analyst:
+  технический вопрос, решает Analyst.
+  Меняет скоуп или видимое поведение —
+  переадресуется owner'у.
+
+  addressed_to = owner:
+  уходит в анкету answer_dp.
+endlegend
+
+@enduml

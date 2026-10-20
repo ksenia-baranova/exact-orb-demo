@@ -1,9 +1,9 @@
 @startuml
-title exact-orb — Статусы ролевого задания
+title exact-orb — Статусы задачи (простой процесс)
 
-' Источник: docs/development_approach/process/process.md, раздел 2 «Ролевое задание».
-' Текущий статус записывается только в сводке manager_artifact.md.
-' Review требований и проверка реализации — разные задания.
+' Источник: «Процесс работы над изменением v2», раздел «Задача (Task)».
+' Задачу создаёт оркестратор, статус и резолюцию меняет только исполнитель.
+' Резолюция ставится только вместе с DONE и говорит оркестратору, куда идти дальше.
 
 hide empty description
 skinparam shadowing false
@@ -13,43 +13,36 @@ skinparam state {
     FontColor #0F172A
     ArrowColor #2563EB
     ArrowFontColor #334155
-    BackgroundColor<<return>> #FFF7ED
-    BorderColor<<return>> #EA580C
+}
+skinparam legend {
+    BackgroundColor #FFFBEB
+    BorderColor #D97706
 }
 
-state "Незавершённое задание" as OPEN_TASK {
-    state NOT_STARTED : назначены вход, reviewer,\nкритерий и сроки
-    state IN_PROGRESS : роль выполняет задание
-    state READY_FOR_REVIEW : результат передан\nна точной версии
-    state REWORK <<return>> : причина и условие\nповторной передачи
+state NEW : создана оркестратором,\nзаполнены role, kind, gate,\ncycle, inputs
+state IN_PROGRESS : агент роли работает\nв отдельной сессии
+state DONE {
+    state "done" as R_DONE : работа завершена,\nоткрытых вопросов нет
+    state "needs_decision" as R_DEC : подняты DP в OPEN,\nraised_dp не пуст
+    state "has_bugs" as R_BUG : заведены баги в OPEN,\nraised_bugs не пуст
+    state "cancelled" as R_CAN : задача снята
 }
-state DONE : результат принят
-state BLOCKED : записаны зависимость\nи ResumeStatus
 
-[*] --> NOT_STARTED : Manager назначил задание
-NOT_STARTED --> IN_PROGRESS : исполнитель подтвердил\nначало разрешённой работы
-IN_PROGRESS --> READY_FOR_REVIEW : передан результат
-READY_FOR_REVIEW --> DONE : назначенные reviewers\nприняли по критерию
-READY_FOR_REVIEW -[#EA580C]-> REWORK : возврат
-REWORK --> IN_PROGRESS : исправление возобновлено
-REWORK --> READY_FOR_REVIEW : повторная передача
-DONE -[#EA580C]-> REWORK : reviewer подтвердил нарушение\nисходного критерия
+[*] --> NEW : оркестратор
+NEW --> IN_PROGRESS : исполнитель начал
+IN_PROGRESS --> R_DONE : resolution = done
+IN_PROGRESS --> R_DEC : resolution = needs_decision
+IN_PROGRESS --> R_BUG : resolution = has_bugs
+NEW --> R_CAN : изменение отменено
+IN_PROGRESS --> R_CAN : изменение отменено
 
-OPEN_TASK -[#475569]-> BLOCKED : продолжать невозможно
-BLOCKED -[#475569]-> OPEN_TASK[H] : зависимость устранена,\nвходы пригодны → ResumeStatus
+legend bottom left
+  Из DONE задача не возвращается.
+  Нужна доработка — оркестратор
+  создаёт новую задачу.
+  needs_decision без DP и has_bugs без багов —
+  ошибка, переход не засчитывается.
+  has_bugs ставят только test и accept.
+endlegend
 
-note right of BLOCKED
-  Изменение входного контракта
-  требует пересмотра затронутого
-  результата, а не простого возврата.
-end note
-
-note right of DONE
-  При DONE → REWORK прежняя
-  версия и её приёмка
-  сохраняются в истории.
-  Новые входы / scope после корректного DONE:
-  новое связанное TaskId, прежнее остаётся DONE.
-  Manager фиксирует применимость evidence / gates.
-end note
 @enduml

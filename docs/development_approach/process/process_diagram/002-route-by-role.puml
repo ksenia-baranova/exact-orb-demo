@@ -1,0 +1,150 @@
+@startuml
+title exact-orb — Маршрут изменения по ролям: от запроса до ACCEPTED
+
+' Источник: «Процесс работы над изменением v2».
+' Ромбы — проверки оркестратора по таблице переходов (сейчас оркестратор — человек).
+' Подписи «N ·» на стрелках — строки таблицы переходов.
+
+skinparam shadowing false
+skinparam ArrowColor #2563EB
+skinparam ArrowFontColor #334155
+skinparam activity {
+    BackgroundColor #F8FAFC
+    BorderColor #64748B
+    FontColor #0F172A
+    DiamondBackgroundColor #FFFFFF
+    DiamondBorderColor #64748B
+}
+skinparam swimlane {
+    BorderColor #CBD5E1
+    TitleFontColor #0F172A
+}
+
+|Owner|
+|Manager|
+|Analyst|
+|Developer|
+|Tester|
+|Оркестратор|
+
+|Owner|
+start
+:Приходит с запросом;
+|Оркестратор|
+:1 · INTAKE
+папка изменения, change.md,
+задача intake;
+|Manager|
+:**intake**
+цель, скоуп, вне скоупа,
+результат, источники в change.md;
+|Оркестратор|
+while (Есть OPEN DP для owner'а?) is (да)
+  |Owner|
+  :**answer_dp**
+  анкета DP пакетом;
+  |Manager|
+  :**apply_decisions**;
+  |Оркестратор|
+endwhile (нет)
+-> 2 · ANALYSIS;
+
+repeat
+  |Analyst|
+  :**analysis**, **resolve_findings**
+  или **apply_decisions**
+  REQ с source, оценка;
+  |Оркестратор|
+  while (Есть OPEN DP для owner'а?) is (да)
+    |Owner|
+    :**answer_dp**;
+    |Analyst|
+    :**apply_decisions**;
+    |Оркестратор|
+  endwhile (нет)
+  -> 3 · ALIGNMENT, cycle + 1;
+  fork
+    |Developer|
+    :**review**
+    spike в timebox,
+    implementation_plan, оценка;
+  fork again
+    |Tester|
+    :**review**
+    тестируемость,
+    test_plan, оценка;
+  end fork
+  |Оркестратор|
+  if (Ревью вернули DP и cycle = 2?) then (да)
+    |Owner|
+    :**escalation**
+    принять риск / сократить скоуп / отменить;
+    if (Отменить?) then (да)
+      :8 · CANCELLED;
+      stop
+    else (нет)
+    endif
+  else (нет)
+  endif
+  |Оркестратор|
+  if (Оба ревью done\nили owner принял риск?) then (да · 5)
+    |Manager|
+    :**summary**
+    скоуп, оценки, риски;
+    |Owner|
+    :**approve**;
+  else (нет · 4)
+  endif
+  |Оркестратор|
+repeat while (Возврат в ANALYSIS?\n4 — findings или сокращение скоупа\n7 — замечания на approve) is (да)
+-> нет · 6;
+:READY_FOR_DEVELOPMENT
+задача implement;
+
+|Developer|
+-> 9 · IN_DEVELOPMENT;
+:**implement**
+код и тесты по implementation_plan,
+target → related → full pytest;
+|Оркестратор|
+while (Есть OPEN DP для owner'а?) is (да)
+  |Owner|
+  :**answer_dp**;
+  |Developer|
+  :**implement** с учётом решений;
+  |Оркестратор|
+endwhile (нет)
+-> 10 · READY_FOR_TEST;
+
+|Tester|
+:**test**
+по test_plan и матрице покрытия,
+баги в bugs/;
+repeat
+  |Оркестратор|
+  while (Есть баги в OPEN?) is (да · 11 BUG_FIX)
+    |Developer|
+    :**bug_fix**
+    root cause, regression-тест;
+    |Tester|
+    :**test** (retest);
+    |Оркестратор|
+  endwhile (нет · 13 DONE)
+  |Manager|
+  :**summary**
+  что поставлено, результаты тестов,
+  DEFERRED-баги;
+  |Analyst|
+  :**transfer**
+  контракт в current/,
+  если менялся;
+  |Owner|
+  :**accept**;
+  |Оркестратор|
+repeat while (Owner нашёл дефект?) is (да · 15, баг заведён)
+-> нет · 14;
+:ACCEPTED
+слияние в main;
+stop
+
+@enduml

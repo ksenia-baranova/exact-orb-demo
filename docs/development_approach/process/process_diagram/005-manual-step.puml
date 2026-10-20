@@ -1,0 +1,52 @@
+@startuml
+title exact-orb — Один шаг в ручном режиме
+
+' Источник: «Процесс работы над изменением v2», разделы «Ручной режим: отладка»
+' и «Хранение и оркестратор». Всё в git, одна рабочая ветка.
+
+skinparam shadowing false
+skinparam sequence {
+    ArrowColor #2563EB
+    LifeLineBorderColor #94A3B8
+    ParticipantBorderColor #64748B
+    ParticipantBackgroundColor #F8FAFC
+    ActorBorderColor #64748B
+    ActorBackgroundColor #F8FAFC
+    GroupBorderColor #94A3B8
+}
+skinparam note {
+    BackgroundColor #FFFBEB
+    BorderColor #D97706
+}
+
+actor "Оркестратор\n(вы)" as O
+participant "Агент роли\n(новая сессия)" as A
+database "git\n(рабочая ветка)" as G
+
+O -> O : следующий шаг по таблице переходов\nи правилам внутри гейта
+O -> G : задача tasks/TASK-*.md из шаблона:\nполя оркестратора + «Задание»\nкоммит [CH-042][orchestrator]
+note right of G : рабочая копия\nчистая
+
+O -> A : промпт роли + путь к задаче
+activate A
+A -> G : читает задачу и inputs
+A -> A : работа роли
+A -> G : свои файлы, status, resolution,\nraised_dp\nодин коммит [CH-042][TASK-A-01]
+A --> O : отчёт +\n«Следующий шаг: …»
+deactivate A
+
+O -> G : git show --stat коммита агента
+O -> O : проверить: только свои файлы;\nstatus и resolution из словаря;\nусловие перехода выполнено
+
+alt всё в порядке
+    O -> G : events.jsonl + статус в change.md\n+ задачи следующего шага\nотдельный коммит оркестратора
+else результат годится, условие не выполнено
+    O -> G : задача тому же исполнителю\nна исправление с текстом ошибки
+else запуск неудачный
+    O -> G : git revert коммита агента
+    O -> O : поправить промпт, перезапустить
+end
+
+O -> G : строка в debug_log.md:\nзадача, версия промпта,\nчто пошло не так, что поменяли
+
+@enduml
