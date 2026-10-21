@@ -2,8 +2,8 @@
 title exact-orb — Статусы бага (простой процесс)
 
 ' Источник: «Процесс работы над изменением v2», раздел «Баги».
-' Один баг — один файл bugs/BUG-*.md. Заводит Tester (в READY_FOR_TEST)
-' или Manager со слов owner'а (в DONE). Статус FIXED ставит Developer, CLOSED — Tester.
+' Один баг — один файл bugs/BUG-*.md. Заводит Tester (test), Reviewer (code_review)
+' или Manager со слов owner'а (accept). FIXED ставит Developer, CLOSED — автор бага.
 
 hide empty description
 skinparam shadowing false
@@ -23,15 +23,15 @@ skinparam legend {
     BorderColor #D97706
 }
 
-state OPEN : REQ, шаги, expected / actual,\nseverity, commit проверки
+state OPEN : REQ или место в коде,\nшаги или сценарий поломки,\nseverity, commit проверки
 state FIXED : исправлен,\nесть regression-тест
-state CLOSED <<final>> : retest прошёл
+state CLOSED <<final>> : перепроверка прошла
 state DEFERRED <<stop>> : owner решил не чинить\nсейчас; внесён в risks.md
 
-[*] --> OPEN : Tester (test)\nили Manager со слов owner'а
+[*] --> OPEN : Tester, Reviewer\nили Manager со слов owner'а
 OPEN --> FIXED : Developer (bug_fix)
-FIXED --> CLOSED : Tester: retest прошёл
-FIXED -[#EA580C]-> OPEN : Tester: retest не прошёл
+FIXED --> CLOSED : автор бага:\nперепроверка прошла
+FIXED -[#EA580C]-> OPEN : автор бага:\nперепроверка не прошла
 OPEN --> DEFERRED : решение owner'а\n(answer_dp)
 
 legend bottom left

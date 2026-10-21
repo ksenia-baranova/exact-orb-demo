@@ -42,7 +42,8 @@ legend bottom left
   создаёт новую задачу.
   needs_decision без DP и has_bugs без багов —
   ошибка, переход не засчитывается.
-  has_bugs ставят только test и accept.
+  has_bugs ставят только test,
+  code_review и accept.
 endlegend
 
 @enduml

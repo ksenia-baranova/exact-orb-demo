@@ -34,7 +34,7 @@ state "Подготовка" as PREP {
 state READY_FOR_DEVELOPMENT <<milestone>> : требования утверждены,\nзадача implement создана
 state "Реализация" as BUILD {
     state IN_DEVELOPMENT : Developer реализует\nпо implementation_plan
-    state READY_FOR_TEST : Tester проверяет\nпо test_plan
+    state READY_FOR_TEST : Tester проверяет поведение,\nReviewer — код; параллельно
     state BUG_FIX : Developer исправляет\nоткрытые баги
     state DONE : Manager готовит сводку;\nAnalyst переносит контракт\n<i>owner: accept</i>
 }
@@ -46,14 +46,15 @@ INTAKE --> ANALYSIS : 2 · intake done,\nowner подтвердил описан
 ANALYSIS --> ALIGNMENT : 3 · analysis done,\nнет OPEN DP, у REQ есть source\n[cycle + 1]
 ALIGNMENT -[#EA580C]-> ANALYSIS : 4 · ревью вернули DP при cycle < 2\nили owner: «сократить скоуп» [cycle = 0]
 ALIGNMENT --> APPROVAL : 5 · оба ревью done\nили owner: «принять риск»
+INTAKE -[#7C3AED]-> ALIGNMENT : 16 · тип refactor:\nбез ANALYSIS
 APPROVAL -[#EA580C]-> ANALYSIS : 7 · замечания owner'а\nоформлены как DP [cycle = 0]
 APPROVAL --> READY_FOR_DEVELOPMENT : 6 · owner утвердил
 
 READY_FOR_DEVELOPMENT --> IN_DEVELOPMENT : 9 · Developer\nвзял implement
-IN_DEVELOPMENT --> READY_FOR_TEST : 10 · implement done,\nпроверки Developer прошли
-READY_FOR_TEST -[#EA580C]-> BUG_FIX : 11 · test: has_bugs
+IN_DEVELOPMENT --> READY_FOR_TEST : 10 · все implement done,\nпроверки Developer прошли
+READY_FOR_TEST -[#EA580C]-> BUG_FIX : 11 · test или code_review:\nhas_bugs
 BUG_FIX --> READY_FOR_TEST : 12 · bug_fix done,\nбаги FIXED + regression-тесты
-READY_FOR_TEST --> DONE : 13 · test done,\nнет багов в OPEN и FIXED
+READY_FOR_TEST --> DONE : 13 · test и code_review done,\nнет багов в OPEN и FIXED
 DONE -[#EA580C]-> BUG_FIX : 15 · accept: has_bugs\n(owner нашёл дефект)
 DONE --> ACCEPTED : 14 · owner принял
 ACCEPTED --> [*]
@@ -66,6 +67,7 @@ legend bottom left
   answer_dp — пакет DP для owner'а; технические DP Analyst закрывает сам.
   escalation: принять риск → 5, сократить скоуп → 4, отменить → 8.
   В реализации DP тоже решаются внутри гейта: implement / needs_decision → answer_dp → новая задача implement.
+  Рефакторинг (16): в ALIGNMENT план проверяет Reviewer вместо Tester.
   Баг, который owner решил не чинить, получает DEFERRED и уходит в risks.md — не блокирует 13.
 endlegend
 

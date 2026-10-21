@@ -1,4 +1,4 @@
-# Процесс работы над изменением v3
+# Процесс работы над изменением v2
 
 Версия: 2026-10-20 · согласовано как рабочий вариант для следующего прогона
 
@@ -7,7 +7,7 @@
 Агенты тратят токены на анализ и ревью, а переходы статусов, теги и создание задач выполняет код. Гейты и DP из v1 сохраняются, убирается ручная бухгалтерия.
 
 1. **Оркестратор — это код.** Он проверяет каждый переход по таблице, пишет лог событий, создаёт следующие задачи и будит агентов. Агент меняет только статус и резолюцию своей задачи. На время отладки роль оркестратора выполняет человек, в целевом виде — сервис на событиях Jira.
-2. **Один голос для owner'а.** Всё общение с owner'ом идёт через Manager. Вопросы уходят пакетом: анкета с вариантами ответа и рекомендацией по каждому DP. DP по одному обсуждаются с owner в чате, опрашивающий вносит решения и предлагает альтернативы.
+2. **Два голоса для owner'а, у каждого своя тема.** Manager говорит о скоупе, приоритетах, сроках, апруве и приёмке (DP-M-\*). Analyst — о требованиях, включая вопросы Developer и Tester. Вопросы уходят пакетом: анкета с вариантами ответа и рекомендацией по каждому DP. DP по одному обсуждаются с owner в чате, опрашивающий вносит решения и предлагает альтернативы.
 3. **Один файл — один автор.** У каждой задачи свой файл, общий статус изменения собирается из лога. Параллельная работа Developer и Tester не даёт конфликтов.
 4. **Один словарь.** У задачи 3 статуса и 4 резолюции, у изменения 11 статусов (гейты подготовки и реализации плюс READY\_FOR\_DEVELOPMENT, ACCEPTED и CANCELLED), у DP и у бага по 4 статуса. Тегов вида dev\_review\_started больше нет. Ожидание owner'а не выделяется в отдельный статус: изменение остаётся в текущем статусе, а owner получает задачу — ответить на вопросы (answer\_dp), решить эскалацию, утвердить требования или принять работу. Пока эта задача не закрыта, изменение дальше не идёт.
 5. **У каждого требования есть источник:** слова owner'а, документ или решённый DP. Требование без источника не проходит гейт.
@@ -21,23 +21,24 @@
 | Роль | Кто | Делает | Пишет | Не трогает |
 | --- | --- | --- | --- | --- |
 | Owner | человек | Формулирует запрос, отвечает на анкеты DP, утверждает итог | Ничего напрямую: отвечает в чате или анкете, файлы за него ведёт Manager | — |
-| Manager | агент | Первичная сортировка. Менеджер проверяет запрос на полноту, пакеты DP для owner'а, агрегация findings, сводка для апрува.<br>Предлагаемые варианты решения DP должны включать в себя вариант отказа от DP и альтернативы по сценарию, оценивать требования пользователя гибко, учитывая реальную выгоду от них. | change.md, tasks/TASK-M-\*, раздел «Решение» в DP от owner'а, risks.md | requirements.md, чужие задачи |
-| Analyst | агент | Анализ, требования с источниками, решение технических DP, sequence diagrams, оценка. | requirements.md, sequence diagrams, tasks/TASK-A-\*, новые DP, раздел «Решение» в технических DP, current/ при transfer | Статус изменения |
+| Manager | агент | Первичная сортировка. Менеджер проверяет запрос на полноту, пакеты DP для owner'а, агрегация findings, сводка для апрува.<br>Предлагаемые варианты решения DP должны включать в себя вариант отказа от DP и альтернативы по сценарию, оценивать требования пользователя гибко, учитывая реальную выгоду от них. | change.md, roadmap.md, tasks/TASK-M-\*, раздел «Решение» в DP от owner'а, risks.md | requirements.md, чужие задачи |
+| Analyst | агент | Анализ, требования с источниками, решение технических DP, разговор с owner'ом о требованиях (в том числе по вопросам Developer и Tester), sequence diagrams, оценка | requirements.md, sequences/, tasks/TASK-A-\*, новые DP, раздел «Решение» в технических DP, current/ при transfer | Статус изменения |
 | Developer | агент | Ревью требований, findings, план реализации, оценка, промты | tasks/TASK-D-\*, новые DP, plans/implementation\_plan.md, prompts, код и тесты, статус FIXED в bugs/ | requirements.md |
-| Tester | агент | Ревью на тестируемость, findings, тест-план, оценка | tasks/TASK-T-\*, новые DP, plans/test\_plan.md, bugs/, матрица покрытия | requirements.md |
+| Tester | агент | Ревью на тестируемость, findings, тест-план, оценка | tasks/TASK-T-\*, новые DP, plans/test\_plan.md, tests/acceptance/, bugs/ | requirements.md |
+| Reviewer | сторонний агент с подключённой моделью или агент с пулом моделей; модель не та, что у Developer | Ревью кода: ошибки, риски, недостающие тесты, лишний и запутанный код | tasks/TASK-R-\*, bugs/ | код, тесты, requirements.md |
 | Оркестратор | сейчас человек, потом сервис | Валидирует переходы, ведёт лог, создаёт задачи, будит агентов | events.jsonl, decisions.md, статус в change.md | Содержание любых документов |
 
 ## Маршрут по ролям
 
 Маршрут изменения по ролям от запроса до ACCEPTED. Дорожки — роли, ромбы — проверки оркестратора, подписи «N ·» — строки таблицы переходов. Боковые циклы: пакет вопросов owner'у, эскалация после второго круга ревью и цикл багов между тестированием и исправлением.
 
-Схема: [process_diagram/002-route-by-role.puml](process_diagram/002-route-by-role.puml)
+Схема: [process_diagram_v2/002-route-by-role.puml](process_diagram_v2/002-route-by-role.puml)
 
 ## Машина состояний изменения
 
 У изменения 11 статусов: четыре гейта подготовки, READY\_FOR\_DEVELOPMENT, четыре статуса реализации, ACCEPTED и CANCELLED. Пока owner отвечает на анкету, решает эскалацию или принимает работу, статус не меняется — в гейте открыта его задача. В подготовке все возвраты ведут в ANALYSIS, потому что требования правит только Analyst; в реализации — в BUG\_FIX.
 
-Схема: [process_diagram/001-change-states.puml](process_diagram/001-change-states.puml)
+Схема: [process_diagram_v2/001-change-states.puml](process_diagram_v2/001-change-states.puml)
 
 Статус изменения никто не пишет руками: оркестратор выводит его из статусов задач по таблице ниже.
 
@@ -52,22 +53,24 @@
 | 3 | ANALYSIS | ALIGNMENT | TASK-A → DONE / done | Нет OPEN DP; у каждого REQ есть source; оценка заполнена | cycle + 1; TASK-D и TASK-T по правилу повторного ревью |
 | 4 | ALIGNMENT | ANALYSIS | Ревью вернули DP при cycle < 2, или owner на эскалации выбрал «сократить скоуп» | — | TASK-A «Разобрать findings»; при сокращении скоупа cycle = 0 |
 | 5 | ALIGNMENT | APPROVAL | Оба ревью DONE / done, или owner на эскалации выбрал «принять риск» | Есть оба плана и оценки; непринятые DP в ON\_HOLD и в рисках | TASK-M «Сводка», затем TASK-O «Утвердить» |
-| 6 | APPROVAL | READY\_FOR\_DEVELOPMENT | TASK-O «Утвердить» → DONE / done | — | Git-тег требований, TASK-D implement |
+| 6 | APPROVAL | READY\_FOR\_DEVELOPMENT | TASK-O «Утвердить» → DONE / done | — | Git-тег требований; по задаче TASK-D implement на каждый промт плана |
 | 7 | APPROVAL | ANALYSIS | TASK-O «Утвердить» → DONE / needs\_decision | Замечания owner'а оформлены как DP | cycle = 0, TASK-A «Учесть решения» |
 | 8 | любой до ACCEPTED | CANCELLED | Owner отменил изменение | — | Открытые задачи → DONE / cancelled |
-| 9 | READY\_FOR\_DEVELOPMENT | IN\_DEVELOPMENT | TASK-D implement → IN\_PROGRESS | — | — |
-| 10 | IN\_DEVELOPMENT | READY\_FOR\_TEST | TASK-D implement → DONE / done | Проверки Developer прошли: команды и результаты в задаче; указан commit | TASK-T test |
-| 11 | READY\_FOR\_TEST | BUG\_FIX | TASK-T test → DONE / has\_bugs | У каждого бага есть REQ, шаги, expected / actual, severity | TASK-D bug\_fix со списком багов |
-| 12 | BUG\_FIX | READY\_FOR\_TEST | TASK-D bug\_fix → DONE / done | Баги из задачи в FIXED, у каждого есть regression-тест | TASK-T test (retest) |
-| 13 | READY\_FOR\_TEST | DONE | TASK-T test → DONE / done | Нет багов в OPEN и FIXED; матрица покрытия закрывает все REQ | TASK-M «Сводка поставки», TASK-A transfer (если контракт менялся), затем TASK-O accept |
+| 9 | READY\_FOR\_DEVELOPMENT | IN\_DEVELOPMENT | Первая задача implement → IN\_PROGRESS | — | — |
+| 10 | IN\_DEVELOPMENT | READY\_FOR\_TEST | Все задачи implement в DONE / done | Проверки Developer прошли: команды и результаты в задаче; указан commit | TASK-T test и TASK-R code\_review параллельно |
+| 11 | READY\_FOR\_TEST | BUG\_FIX | test и code\_review в DONE, хотя бы одна has\_bugs | У каждого бага есть REQ или место в коде, шаги или сценарий поломки, severity | TASK-D bug\_fix со списком багов |
+| 12 | BUG\_FIX | READY\_FOR\_TEST | TASK-D bug\_fix → DONE / done | Баги из задачи в FIXED, у каждого есть regression-тест | Повторная проверка теми, кто завёл баги: TASK-T test и/или TASK-R code\_review |
+| 13 | READY\_FOR\_TEST | DONE | test и code\_review в DONE / done | Нет багов в OPEN и FIXED; матрица покрытия закрывает все REQ | TASK-M «Сводка поставки», TASK-A transfer (если контракт менялся), затем TASK-O accept |
 | 14 | DONE | ACCEPTED | TASK-O accept → DONE / done | transfer done, если был | Слияние в main (делает человек), тег |
 | 15 | DONE | BUG\_FIX | TASK-O accept → DONE / has\_bugs | Дефект owner'а оформлен как баг | TASK-D bug\_fix |
+| 16 | INTAKE | ALIGNMENT | TASK-M «Intake» → DONE / done, в change.md тип refactor | Owner подтвердил цель и метрику; внешний контракт не меняется | cycle + 1; TASK-D review (план и промты) и TASK-R code\_review плана |
 
 Задачи TASK-O закрывает Manager после ответа owner'а в чате. В лог пишется, кто фактически принял решение.
 
 **Внутри гейта статус не меняется**, оркестратор только создаёт задачи:
 
 - Задача закрыта с needs\_decision, и есть DP для owner'а → TASK-O «Ответить на анкету». После ответа исполнитель гейта получает задачу «Учесть решения».
+- В READY\_FOR\_TEST переход срабатывает, только когда обе задачи, test и code\_review, в DONE. Повторную проверку после bug\_fix получает только та роль, которая завела исправленные баги.
 - В ALIGNMENT при cycle = 2 ревью снова вернули DP → TASK-O «Эскалация» с тремя вариантами. Ответ owner'а запускает переход 4, 5 или 8.
 
 ## Задача (Task)
@@ -78,20 +81,21 @@
 
 | Поле | Значения | Заполняет | Смысл | Потом в Jira |
 | --- | --- | --- | --- | --- |
-| id | TASK-\<R>-\<nn>, R = O, M, A, D, T | оркестратор | Уникален в рамках изменения | Ключ issue |
+| id | TASK-\<R>-\<nn>, R = O, M, A, D, T, R | оркестратор | Уникален в рамках изменения | Ключ issue |
 | change | id изменения | оркестратор | К какому изменению относится | Epic |
-| role | owner, manager, analyst, developer, tester | оркестратор | Кто исполняет | Поле Role |
+| role | owner, manager, analyst, developer, tester, reviewer | оркестратор | Кто исполняет | Поле Role |
 | kind | см. «Виды задач» | оркестратор | Что сделать; задаёт промпт и критерий done | Поле Kind |
 | gate | статус изменения, в котором создана | оркестратор | В каком гейте создана | Поле Gate |
 | cycle | число | оркестратор | Номер цикла ALIGNMENT на момент создания | Поле Cycle |
 | inputs | ссылки на документы, DP и баги | оркестратор | Всё, что агенту надо учесть | Описание и связи |
+| agent, model | агент и модель, на которых запущена задача | оркестратор | Кто фактически выполнял; для code\_review — проверка независимости | Поля Agent, Model |
 | status | NEW, IN\_PROGRESS, DONE | NEW — оркестратор при создании; IN\_PROGRESS и DONE — исполнитель | Где задача в жизненном цикле | Статус workflow |
 | resolution | done, needs\_decision, has\_bugs, cancelled | исполнитель | Только вместе с DONE | Resolution |
 | raised\_dp | список DP | исполнитель | DP, поднятые в задаче | Связи |
-| raised\_bugs | список BUG | Tester, Manager в accept | Баги, заведённые в задаче | Связи |
+| raised\_bugs | список BUG | Tester, Reviewer, Manager в accept | Баги, заведённые в задаче | Связи |
 | changed\_reqs | список REQ | Analyst | Какие требования изменены | Поле |
 | reviewed\_reqs | список REQ | Developer, Tester | Какие требования проверены | Поле |
-| estimate | значение и confidence: low, medium, high | Analyst, Developer, Tester | Оценка реализации | Original estimate и поле Confidence |
+| estimate | чч, мч и confidence: low, medium, high | Analyst, Developer, Tester | Оценка своей работы: чч — у человека, мч — у агента | Original estimate и поле Confidence |
 | commit | SHA | Developer в implement и bug\_fix, Tester в test | Какую версию сделали или проверили | Поле |
 
 У задачи есть тело: раздел «Задание» пишет оркестратор из шаблона вида, разделы «Результат», «Findings» и «Риски» — исполнитель.
@@ -100,17 +104,18 @@
 
 | kind | Роль | Гейт | Создаётся | Done, когда |
 | --- | --- | --- | --- | --- |
-| intake | Manager | INTAKE | Переход 1 | change.md заполнен, owner подтвердил описание |
-| analysis | Analyst | ANALYSIS | Переход 2 | requirements.md с источниками, оценка заполнена |
-| answer\_dp | Owner, закрывает Manager | любой, где подняты DP для owner'а | Задача закрыта с needs\_decision | Все DP пакета в ACCEPTED, DECLINED или ON\_HOLD |
+| intake | Manager | INTAKE | Переход 1 | change.md заполнен, owner подтвердил описание; roadmap.md создан с оценкой анализа 2 чд |
+| analysis | Analyst | ANALYSIS | Переход 2 | requirements.md с источниками, оценка в чч и мч заполнена |
+| answer\_dp | Owner; DP-M-\* ведёт и закрывает Manager, остальные — Analyst | любой, где подняты DP для owner'а | Задача закрыта с needs\_decision | Все DP пакета в ACCEPTED, DECLINED или ON\_HOLD |
 | apply\_decisions | Исполнитель гейта | INTAKE, ANALYSIS, IN\_DEVELOPMENT | После answer\_dp; переход 7 | Решения отражены в документах или коде |
 | resolve\_findings | Analyst | ANALYSIS | Переход 4 | Каждый DP из inputs решён или отправлен owner'у |
-| review | Developer, Tester | ALIGNMENT | Переход 3 | reviewed\_reqs заполнен, план и оценка готовы |
+| review | Developer, Tester | ALIGNMENT | Переходы 3 и 16 | reviewed\_reqs заполнен, план и оценка готовы; у Developer в плане есть «Структура кода» и промты; оценки в чч и мч |
 | escalation | Owner, закрывает Manager | ALIGNMENT | cycle = 2 и новые DP | Выбран один из трёх вариантов |
-| summary | Manager | APPROVAL, DONE | Переходы 5 и 13 | Перед апрувом: скоуп, оценки, риски. Перед приёмкой: что поставлено, результаты тестов, DEFERRED-баги |
+| summary | Manager | APPROVAL, DONE | Переходы 5 и 13 | roadmap.md обновлён. Перед апрувом: скоуп, оценки, риски. Перед приёмкой: что поставлено, результаты тестов, DEFERRED-баги |
 | approve | Owner, закрывает Manager | APPROVAL | После summary | Owner утвердил или вернул замечания |
-| implement | Developer | IN\_DEVELOPMENT | Переход 6 | Промты -> код и тесты по implementation\_plan; target → related → full pytest прошли; указан commit |
-| test | Tester | READY\_FOR\_TEST | Переходы 10 и 12 | Все REQ в матрице покрытия; баги заведены в bugs/; исправленные перепроверены |
+| implement | Developer | IN\_DEVELOPMENT | Переход 6, по одной на промт плана | Промт выполнен, включая шаг упрощения; target → related → full pytest прошли; указан commit; сложность изменённых функций до и после |
+| test | Tester | READY\_FOR\_TEST | Переходы 10 и 12 | Приёмочные автотесты в tests/acceptance/ по тест-плану; у каждого теста статус; скрипт покрытия по маркеру req не находит REQ без тестов; баги заведены; свои исправленные баги перепроверены |
+| code\_review | Reviewer, модель не та, что у Developer | READY\_FOR\_TEST | Переходы 10 и 12 | Прочитаны diff и затронутый код; у каждой находки есть место, сценарий поломки, исправление и последствия; находки «обязательно» и «желательно» заведены в bugs/, «мелочи» — в отчёте; исправленные баги перепроверены |
 | bug\_fix | Developer | BUG\_FIX | Переходы 11 и 15 | Каждый баг из inputs в FIXED, у каждого regression-тест |
 | transfer | Analyst | DONE | Переход 13, если контракт менялся | Требования и sequences перенесены в current/ |
 | accept | Owner, закрывает Manager | DONE | После summary и transfer | Owner принял или назвал дефект |
@@ -119,39 +124,19 @@
 
 - Из DONE задача не возвращается. Нужна доработка — оркестратор создаёт новую задачу, старая остаётся в истории.
 - Одна задача — один запуск агента с чистым контекстом. Всё нужное агенту перечислено в inputs.
+- code\_review засчитывается, только если: это отдельная сессия без контекста Developer; модель в поле model не та, что в задачах implement и bug\_fix; ревьюер сам читает diff и код и сам заводит баги. Вызов другой модели как инструмента из сессии Developer — самопроверка автора, а не code\_review.
 - Исполнитель меняет только status, resolution и свои поля. Поля оркестратора для него только для чтения.
-- needs\_decision без DP в raised\_dp и has\_bugs без багов в raised\_bugs — ошибка, переход не засчитывается. has\_bugs ставят только test и accept.
+- needs\_decision без DP в raised\_dp и has\_bugs без багов в raised\_bugs — ошибка, переход не засчитывается. has\_bugs ставят только test, code\_review и accept.
 
-Статусы задачи — схема: [process_diagram/003-task-states.puml](process_diagram/003-task-states.puml)
+Статусы задачи — схема: [process_diagram_v2/003-task-states.puml](process_diagram_v2/003-task-states.puml)
 
-**Шаблон задачи** — tasks/TASK-D-02.md
-
-```yaml
----
-id: TASK-D-02
-change: CH-042
-role: developer
-kind: review
-gate: ALIGNMENT
-cycle: 2
-inputs: [requirements.md, DP-A-02]
-status: DONE                  # NEW | IN_PROGRESS | DONE
-resolution: needs_decision    # done | needs_decision | has_bugs | cancelled
-raised_dp: [DP-D-03]
-reviewed_reqs: [REQ-001, REQ-002, REQ-007]
-estimate: { value: 5d, confidence: medium }   # low | medium | high
----
-## Задание        # пишет оркестратор из шаблона kind
-## Результат
-## Findings
-## Риски
-```
+**Шаблон задачи** — `docs/development_approach/artifacts/task.md`.
 
 ## DP и правила ALIGNMENT
 
 DP живёт по схеме OPEN → ACCEPTED, DECLINED или ON\_HOLD. Поле addressed\_to решает, кто отвечает: owner или analyst. Analyst закрывает технические DP сам, но переадресует owner'у всё, что меняет скоуп или видимое пользователю поведение.
 
-Схема: [process_diagram/004-dp-states.puml](process_diagram/004-dp-states.puml)
+Схема: [process_diagram_v2/004-dp-states.puml](process_diagram_v2/004-dp-states.puml)
 
 **Правила ALIGNMENT**
 
@@ -159,62 +144,43 @@ DP живёт по схеме OPEN → ACCEPTED, DECLINED или ON\_HOLD. По�
 - **Повторное ревью.** В новом цикле его получают роль, поднявшая DP, и роль, чьи проверенные REQ изменились. Остальные сохраняют done прошлого цикла. Оркестратор сверяет changed\_reqs из задачи аналитика с reviewed\_reqs ревьюера.
 - **Лимит.** cycle растёт на каждом переходе ANALYSIS → ALIGNMENT. При cycle = 2 и новых DP owner получает задачу эскалации, статус остаётся ALIGNMENT. Owner выбирает: принять риск, сократить скоуп или отменить.
 
-**Шаблон DP** — dp/DP-D-03.md
+**Шаблон DP** — `docs/development_approach/artifacts/dp.md`: вопрос, «почему это важно», варианты с ценой сейчас и потом, рекомендация, решение, риски.
 
-```yaml
----
-id: DP-D-03
-raised_by: TASK-D-02
-addressed_to: owner           # owner | analyst
-status: OPEN                  # OPEN | ACCEPTED | DECLINED | ON_HOLD
-reqs: [REQ-007]
----
-## Вопрос
-## Варианты
-## Рекомендация и почему
-## Решение                    # кто, когда, какой вариант
-```
+**Формат требования** — `docs/development_approach/artifacts/requirements.md`: глоссарий, поля action, base, target, source, goal, priority, сценарии Given / When / Then, таблицы условий, sequence-диаграммы и правила переноса в current/.
 
-**Формат требования** — requirements.md
-
-```markdown
-### REQ-007 Экспорт отчёта
-Текст требования.
-source: owner (TASK-M-01); DP-A-02
-```
+Отдельной карты переноса нет: поля action, base и target и есть карта.
 
 ## Баги
 
-Баг — подтверждённое расхождение реализации с утверждённым REQ. Заводит его Tester в задаче test или Manager со слов owner'а в accept; один баг — один файл bugs/BUG-\*.md. Если ожидаемое поведение не определено, это не баг, а DP.
+Баг — подтверждённое расхождение реализации с утверждённым REQ или находка ревью кода с конкретным сценарием поломки. Заводит его Tester в задаче test, Reviewer в задаче code\_review или Manager со слов owner'а в accept; один баг — один файл bugs/BUG-\*.md. Если ожидаемое поведение не определено, это не баг, а DP.
 
 | Статус | Кто ставит | Значение |
 | --- | --- | --- |
-| OPEN | Tester или Manager | Заведён; при неудачном retest Tester возвращает баг в OPEN |
+| OPEN | Tester, Reviewer или Manager | Заведён; при неудачной перепроверке автор бага возвращает его в OPEN |
 | FIXED | Developer | Исправлен, есть regression-тест |
-| CLOSED | Tester | Retest прошёл |
+| CLOSED | Автор бага: Tester или Reviewer | Перепроверка прошла; баги со слов owner'а перепроверяет Tester |
 | DEFERRED | Owner через answer\_dp | Решено не чинить сейчас; баг внесён в risks.md |
 
 Переход 13 требует, чтобы не было багов в OPEN и FIXED. DEFERRED не блокирует, но в сводке перед accept такие баги перечислены отдельно. Лимита на число циклов BUG\_FIX нет: остановить их может только owner, отложив баги или отменив изменение.
 
-Схема: [process_diagram/006-bug-states.puml](process_diagram/006-bug-states.puml)
+Схема: [process_diagram_v2/006-bug-states.puml](process_diagram_v2/006-bug-states.puml)
 
-**Шаблон бага** — bugs/BUG-003.md
+**Шаблон бага** — `docs/development_approach/artifacts/bug.md`: поля, severity, разделы для бага из теста и для находки ревью, пример.
 
-```yaml
----
-id: BUG-003
-raised_by: TASK-T-04
-req: REQ-007
-status: OPEN                  # OPEN | FIXED | CLOSED | DEFERRED
-severity: major               # critical | major | minor
-commit: 5fdc477               # где воспроизведён
-fixed_in: null                # commit исправления, ставит Developer
----
-## Шаги
-## Ожидалось
-## Получено
-## Evidence
-```
+## Тип изменения «рефакторинг»
+
+Перестройка существующего кода без изменения поведения идёт отдельным изменением, а не внутри фичи. Так у каждого изменения один риск: либо новое поведение, либо новая структура.
+
+| Где | Что можно |
+| --- | --- |
+| Фича | Новый код по правилам дизайна; мелкое упрощение строк, которые фича и так меняет |
+| Рефакторинг | Перестройка существующей структуры: переписать функцию, разрезать модуль, удалить неподключённый код |
+
+Если фича упирается в запутанный код и без перестройки станет хуже, Developer поднимает DP для owner'а: сначала рефакторинг или фича как есть с записью в risks.md.
+
+**Условия рефакторинга.** Внешний контракт, схемы, коды ошибок и вычислительное поведение не меняются. Тесты публичного поведения остаются зелёными без правки: если их пришлось менять, это уже не рефакторинг, задача закрывается с needs\_decision. Результат измерим: сложность, объём, удалённый код — до и после.
+
+**Маршрут.** INTAKE → ALIGNMENT (переход 16) → APPROVAL → READY\_FOR\_DEVELOPMENT → IN\_DEVELOPMENT → READY\_FOR\_TEST → DONE → ACCEPTED. ANALYSIS нет: требования не меняются. В ALIGNMENT Developer пишет план со «Структурой кода» и метриками до, план проверяет Reviewer вместо Tester. В READY\_FOR\_TEST главная проверка — code\_review; Tester прогоняет существующий набор тестов и сравнивает метрики с планом.
 
 ## Хранение и оркестратор
 
@@ -239,21 +205,26 @@ fixed_in: null                # commit исправления, ставит Deve
 | Запуск агента | Вы запускаете сессию роли | Сервис |
 | Требования и планы | git | git |
 
+Шаблоны всех артефактов — `docs/development_approach/artifacts/`, их список и назначение — в `artifacts/README.md`.
+
 **Структура в git**
 
 ```text
 project_management/changes/<change_id>/
   change.md            # запрос, скоуп; статус изменения (до переезда в Jira)
+  roadmap.md           # Manager: оценки ролей в чч и мч, Gantt, отклонения
   events.jsonl         # лог переходов (ручной режим)
   debug_log.md         # журнал отладки (ручной режим)
   decisions.md         # сводная таблица DP
-  requirements.md      # Analyst
+  requirements.md      # Analyst: глоссарий и инкремент требований
+  sequences/*.puml     # Analyst: поведенческие sequence-диаграммы
   risks.md             # DP в ON_HOLD, DEFERRED-баги и принятые риски; ведёт Manager
   tasks/TASK-*.md      # задачи (ручной режим, потом Jira)
   dp/DP-*.md           # один DP — один файл
   bugs/BUG-*.md        # один баг — один файл
   plans/implementation_plan.md   # Developer
-  plans/test_plan.md             # Tester
+  plans/prompts/*.md             # Developer: промты, по одной задаче implement на промт
+  plans/test_plan.md             # Tester; шаблон — docs/development_approach/artifacts/test-plan.md
 ```
 
 **Цикл сервиса на одно событие Jira**
@@ -286,14 +257,8 @@ project_management/changes/<change_id>/
 6. Запишите событие в events.jsonl и обновите статус в change.md.
 7. Запишите в debug\_log.md, где пришлось вмешаться.
 
-Схема: [process_diagram/005-manual-step.puml](process_diagram/005-manual-step.puml)
+Схема: [process_diagram_v2/005-manual-step.puml](process_diagram_v2/005-manual-step.puml)
 
-**Журнал отладки** — одна строка на запуск агента:
-
-```markdown
-| Задача | Версия промпта | Что пошло не так | Что поменяли |
-| --- | --- | --- | --- |
-| TASK-A-01 | analyst v3 | Требования без source | Добавили пример REQ в промпт |
-```
+**Журнал отладки** — `docs/development_approach/artifacts/debug-log.md`: одна строка на запуск агента.
 
 Шаги 1, 2, 5 и 6 — это и есть логика будущего сервиса. Их удобно сразу оформить скриптом: он ускорит отладку и потом переедет в сервис почти без изменений. Переходить к сервису стоит, когда несколько изменений подряд прошли от INTAKE до READY без ручных правок файлов.
