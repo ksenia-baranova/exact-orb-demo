@@ -9,7 +9,7 @@
 | [TEST-FIND-WHEEL-001](#test-find-wheel-001) | requirement gap: рассогласование версий после Owner decisions | N/A | P2, PROPOSED исторически | CLOSED | Нет по этому gap; полные gates отдельно | Tester подтвердил; Manager регистрирует результат |
 | [TEST-FIND-WHEEL-002](#test-find-wheel-002) | requirement gap: измерительные критерии в DP-O-011/012 | N/A | P2, PROPOSED | OPEN | Окончательный oracle плотности / размещения / fallback и затронутая acceptance | Developer + Analyst / Owner |
 | [TEST-FIND-WHEEL-003](#test-find-wheel-003) | requirement gap: переходы выбора внутри DP-O-013 | N/A | P2, PROPOSED исторически | CLOSED | Нет по этому gap; runtime tests ещё NOT RUN | Tester подтвердил; Manager регистрирует результат |
-| [TEST-FIND-WHEEL-004](#test-find-wheel-004) | implementation defect: effective HTML hit-area меньше Q44 | S3 | P2, PROPOSED | OPEN | H44 / затронутая accessibility acceptance | Developer / D007; Tester retest |
+| [TEST-FIND-WHEEL-004](#test-find-wheel-004) | implementation defect: effective HTML hit-area меньше Q44 | S3 | P2, PROPOSED | CLOSED | Нет по004;002/общие gates отдельно | Tester / Codex retest9974195 PASS;Developer fix9974195 |
 
 Закрытие requirement gap означает проверенный текст expected result и зарегистрированный источник, не исправление runtime bug / PASS продукта. Priority не подтверждался Manager. Исходные примеры / условия ниже сохранены; актуальные результаты сверки добавлены с автором, датой и точными версиями.
 
@@ -115,7 +115,7 @@ REQ-WHEEL-06 / AS-WHEEL-07/08 / sequence 002 и DP-O-012 @ `543b7ec726ee96c951dc
 <a id="test-find-wheel-004"></a>
 ## TEST-FIND-WHEEL-004. Rounded HTML button не содержит effective Q44
 
-**Тип / автор:** bug (implementation defect), обнаружил Codex / Tester,20.10.2026, прямой runtime test Owner. **Статус OPEN / воспроизведён. Severity S3** — край активного элемента не выполняет действие, основной путь через центр / keyboard доступен; данные не теряются. **Priority P2 PROPOSED**, подтверждает Manager. **Owner исправления:** Developer / TASK-D-007. **Blocks:** положительный verdict по H44 / затронутой accessibility acceptance; самостоятельно весь change / чужие gates не переключаю.
+**Тип / автор:** bug (implementation defect), обнаружил Codex / Tester,20.10.2026, прямой runtime test Owner. **Статус CLOSED / независимый retest9974195 PASS20.10.2026**;первоначальный OPEN / воспроизведён на0da9951 сохранён ниже. **Severity S3** — исторически край активного элемента не выполнял действие, основной путь через центр / keyboard был доступен; данные не терялись. **Priority P2 PROPOSED**, подтверждает Manager. **Owner исправления:** Developer / TASK-D-007. **Blocks сейчас:** нет по004;002/общие gates остаются отдельными.
 
 **Требование / источник:** REQ-UI-10, REQ-WHEEL-10, AS-WHEEL-16/23; effective native H / half-open Q≥44×44 по [T006, строка H1–H5](task_t006_review.md) / [Developer criteria H](../developer/task_d003_implementation_plan.md#d004-hit-focus). Поздний Owner007 compactness сохраняет44px targets; правило не заменялось одним bbox. **TestedSHA:**0da99518ada67603b08ab4220d337e3a5e3aae60. Chrome155.0.8059.40 / Windows / CSS scale1 / viewport1440,768,360.
 
@@ -133,3 +133,13 @@ REQ-WHEEL-06 / AS-WHEEL-07/08 / sequence 002 и DP-O-012 @ `543b7ec726ee96c951dc
 **Evidence:** [probe02 actual / все raw sections и trusted events](evidence/runtime_2026_10_20/probe02/actual.json), [native02](evidence/runtime_2026_10_20/native02/actual.json), [screenshot360](evidence/runtime_2026_10_20/probe02/target-360.png). Позитивный контроль — живой центр Sun / клавиатура и независимый solid44; negative control — solid43. Получение карты и путь controls фактически выполнялись; отсутствие действия не выведено из невыполненного пути.
 
 **Условие закрытия / retest:** Developer передаёт точный исправленный SourceSHA, deterministic regression и actual native H evidence. Tester повторяет effective44 containment / trusted coordinate outcome на affected controls и трёх widths, с44/43 paired controls и сохранением live focus / source rows / компактности / отсутствия overflow. До этого OPEN; весь TEST-FIND-WHEEL-002 и Manager gates не закрываются автоматически.
+
+### Retest closure — 2026-10-20, RetestedSHA9974195
+
+**Codex / Tester,23:03:56MSK /20:03:56UTC: CLOSED / RETEST PASS.** Опубликованное исправление **99741958b4bbee8884505920f4a02f2f19dea3e3**, styles LF SHA256e4b4539fbe051e66c9f8226bc6834828e925eb3b12aea6f93e6fdfa20d53bfec, изменяет rounded44 на rectangle min46 с Q44 inset≥1. Полный исходный контрпример0da9951 / его raw evidence выше сохраняются; это новая проверка,не переписывание старого FAIL.
+
+[Адресный отчёт](retest_2026_10_20_004.md),[native green02](evidence/retest_2026_10_20_004/green02/actual.json):Chrome155.0.8059.40 / Yandex26.8.0.0 ×1440/768/360,**6/6cases,672/672checks**. Проверены372 normal+36 selected HTML controls:явные Q44,actual box/radii,ancestor clips/paint partition и121 native owner probes на запись;независимые44/43/overlay/clip/thin-overlay+paired removal controls.30trusted pointer toggles Sun и12 Enter/Space,connected visible focus/scroll,source IDs/first-five/all,desktop55≤56 иno horizontal overflow — PASS. First-five/current/changed-goal once regressions также проходят;результат не подменён Developer self-check.
+
+[Старый CSS sensitivity](evidence/retest_2026_10_20_004/red03/actual.json) на текущем UI даёт ожидаемый RED;все независимые калибровки достигнуты. Исходный собственный probe повторён в новом namespace с обновлённой metadata;legacy possible44 не принят как самостоятельный certificate. Ранние ошибки классификации paint в новом harness исправлены адресно,все промежуточные runs сохранены.
+
+Regression:targeted UI41PASS/all UI229PASS;Python delivery/boundaries53PASS;fullpytest2959PASS+1known DEBT-CALC-001 skip. **Blocks сейчас:** нет по004;PriorityP2 остаётся PROPOSED,Manager не приписано её подтверждение. TEST-FIND-WHEEL-002 / gap2 native precision остаются OPEN/INDETERMINATE;global Candidate/G4/G5 / Owner acceptance не объявлены. Повторно открыть004 при подтверждённой потере Q44/owner/outcome в новой версии с exact SHA и paired control.

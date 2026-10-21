@@ -72,3 +72,12 @@
 - Дополнительно6/6 viewport heights PASS и3 независимых target proofs /44positive+43negative controls. Нативные point focus/toggle/filter/current/draft/S1, leaf-fault B/restoration/empty и aspect Escape выполнены в перечисленных классах; они не сертифицируют все AS-WHEEL / все valid DTO.
 - Остатки: effective44 defect OPEN; gap2 precision и независимый радиальный anchor oracle не сертифицированы; actual already_applied submit проверен existing Node tests, собственный native submit NOT RUN; полный native boundary / browser/OS/touch/zoom/font matrix и live HTTPS NOT RUN.
 - Runtime verdict — FAIL затронутого H44, без безусловной readiness. TEST-FIND-WHEEL-002 остаётся OPEN; formal Candidate/G4/G5 и текущая Manager-сводка не менялись. Следующий шаг: Developer fixes004 / Manager адресует numerical evidence, затем exact-SHA retest. Исторические SourceSHA / manifests и прежние handoffs сохранены.
+
+## Ретест004 — 2026-10-20
+
+**Codex / Tester,RetestedSHA99741958b4bbee8884505920f4a02f2f19dea3e3.** Актуальная узкая runtime matrix — [retest report](retest_2026_10_20_004.md),source/input/commands/evidence перечислены там. Предыдущие matrices и counts остаются историей своих TestedSHA;не заменяются новой широкой readiness.
+
+- **H44 / REQ-UI-10,REQ-WHEEL-10 / AS-WHEEL-16/23:**SUFFICIENT/PASS в проверенном DOM/CSS/F1/Chrome/Yandex ×3widths;372normal+36selected measurements,конкретныйQ44 иnative owner/outcome,independent44/43/overlay/clip/thin-overlay controls. [004 CLOSED](defects.md#test-find-wheel-004) по независимому ретесту,не по Developer self-check.
+- **Owner first-five / REQ-UI-03/04/05,REQ-WHEEL-08:**PASS по проверенным source rows / independent disclosures / SVG16 / aspect participants после пятой / return5или16 / current-preserve / changed-goal once. Actual native committed+late draft,already_applied fresh иstale→fresh включены;предыдущее NOT RUN этой узкой native ветви не переносится на9974195.
+- **Регрессии:**41targeted/229allUI,53delivery-boundaries,full2959PASS+1known skip. Native6/6cases,672/672checks. Наборы вложены;не суммируются. Точные argv / logs / source hashes — в новом evidence/retest_2026_10_20_004.
+- **Остатки:**TEST-FIND-WHEEL-002 OPEN;native gap2 / precision / independent radial oracle INDETERMINATE/не сертифицированы. Geometry matrices,другаяOS/engine/touch/screen reader/zoom/DPR/font variants/live HTTPS/real backendPOST/full two-tab system не перепроверялись. All-requirements SUFFICIENT / global readiness / G4/G5 не объявляются.

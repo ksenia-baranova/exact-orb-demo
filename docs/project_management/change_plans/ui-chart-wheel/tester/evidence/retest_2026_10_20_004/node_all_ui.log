@@ -1,0 +1,1384 @@
+TAP version 13
+# Subtest: acceptance sequence changes only on valid acceptance, not phase/clear/render; attempt is immutable
+ok 1 - acceptance sequence changes only on valid acceptance, not phase/clear/render; attempt is immutable
+  ---
+  duration_ms: 30.2678
+  type: 'test'
+  ...
+# Subtest: same birth but changed chart identity does not reset an own committed target
+ok 2 - same birth but changed chart identity does not reset an own committed target
+  ---
+  duration_ms: 2.3407
+  type: 'test'
+  ...
+# Subtest: fresh matched recovery consumes the active changed-birth target once; later matched is automatic
+ok 3 - fresh matched recovery consumes the active changed-birth target once; later matched is automatic
+  ---
+  duration_ms: 5.4691
+  type: 'test'
+  ...
+# Subtest: stale match and failed safe GET do not consume pending goal; fresh positive control later does
+ok 4 - stale match and failed safe GET do not consume pending goal; fresh positive control later does
+  ---
+  duration_ms: 4.3773
+  type: 'test'
+  ...
+# Subtest: already_applied fresh target confirms once, changed=false
+ok 5 - already_applied fresh target confirms once, changed=false
+  ---
+  duration_ms: 3.0946
+  type: 'test'
+  ...
+# Subtest: already_applied fresh target confirms once, changed=true
+ok 6 - already_applied fresh target confirms once, changed=true
+  ---
+  duration_ms: 2.2802
+  type: 'test'
+  ...
+# Subtest: already_applied stale GET does not consume live target; fresh later confirms
+ok 7 - already_applied stale GET does not consume live target; fresh later confirms
+  ---
+  duration_ms: 4.0691
+  type: 'test'
+  ...
+# Subtest: already_applied different GET does not consume live target; fresh later confirms
+ok 8 - already_applied different GET does not consume live target; fresh later confirms
+  ---
+  duration_ms: 1.6418
+  type: 'test'
+  ...
+# Subtest: already_applied failed GET does not consume live target; fresh later confirms
+ok 9 - already_applied failed GET does not consume live target; fresh later confirms
+  ---
+  duration_ms: 1.8059
+  type: 'test'
+  ...
+# Subtest: RESULT_SUPERSEDED never confirms own target even when GET matches
+ok 10 - RESULT_SUPERSEDED never confirms own target even when GET matches
+  ---
+  duration_ms: 1.6083
+  type: 'test'
+  ...
+# Subtest: mounted editor collapses once; opening it and repeated publish never hide it again
+ok 11 - mounted editor collapses once; opening it and repeated publish never hide it again
+  ---
+  duration_ms: 13.5468
+  type: 'test'
+  ...
+# Subtest: submitted B with draft C remains open; edit then revert before acceptance can collapse once
+ok 12 - submitted B with draft C remains open; edit then revert before acceptance can collapse once
+  ---
+  duration_ms: 43.5597
+  type: 'test'
+  ...
+# Subtest: Owner aspect view focuses wheel, shows source endpoints/houses only, and restores full tables on exit
+ok 13 - Owner aspect view focuses wheel, shows source endpoints/houses only, and restores full tables on exit
+  ---
+  duration_ms: 29.7704
+  type: 'test'
+  ...
+# Subtest: Owner aspect view does not invent a house for unknown time or an angle
+ok 14 - Owner aspect view does not invent a house for unknown time or an angle
+  ---
+  duration_ms: 8.2176
+  type: 'test'
+  ...
+# Subtest: mounted aspect view hides unrelated form; planet activation still keeps native focus and no HTTP
+ok 15 - mounted aspect view hides unrelated form; planet activation still keeps native focus and no HTTP
+  ---
+  duration_ms: 52.8949
+  type: 'test'
+  ...
+# Subtest: Owner: all three fact tables have independent first-five disclosure
+ok 16 - Owner: all three fact tables have independent first-five disclosure
+  ---
+  duration_ms: 24.8187
+  type: 'test'
+  ...
+# Subtest: AS-WHEEL-11/13: one point replaces another; toggle resets only the general aspects disclosure
+ok 17 - AS-WHEEL-11/13: one point replaces another; toggle resets only the general aspects disclosure
+  ---
+  duration_ms: 16.8095
+  type: 'test'
+  ...
+# Subtest: AS-WHEEL-28: S1 counts the full DTO before filtering; all source rows survive
+ok 18 - AS-WHEEL-28: S1 counts the full DTO before filtering; all source rows survive
+  ---
+  duration_ms: 8.4042
+  type: 'test'
+  ...
+# Subtest: AS-WHEEL-12/13: a unique aspect focuses its wheel; closing it restores general five/all
+ok 19 - AS-WHEEL-12/13: a unique aspect focuses its wheel; closing it restores general five/all
+  ---
+  duration_ms: 19.7982
+  type: 'test'
+  ...
+# Subtest: AS-WHEEL-30: automatic accepted DTO reconciles unordered pair/type and displays its new facts
+ok 20 - AS-WHEEL-30: automatic accepted DTO reconciles unordered pair/type and displays its new facts
+  ---
+  duration_ms: 10.9253
+  type: 'test'
+  ...
+# Subtest: AS-WHEEL-29/30: duplicate/reversed/category variants disable only their full-source group
+ok 21 - AS-WHEEL-29/30: duplicate/reversed/category variants disable only their full-source group
+  ---
+  duration_ms: 3.1596
+  type: 'test'
+  ...
+# Subtest: AS-WHEEL-28: different published type is a different address; sole reverse and background are ordinary
+ok 22 - AS-WHEEL-28: different published type is a different address; sole reverse and background are ordinary
+  ---
+  duration_ms: 3.7837
+  type: 'test'
+  ...
+# Subtest: AS-WHEEL-11/28: point filter includes background, angles and ambiguous occurrences in DTO order
+ok 23 - AS-WHEEL-11/28: point filter includes background, angles and ambiguous occurrences in DTO order
+  ---
+  duration_ms: 4.6454
+  type: 'test'
+  ...
+# Subtest: AS-WHEEL-30: absent selection alone clears on acceptance; point selection and expansions otherwise persist
+ok 24 - AS-WHEEL-30: absent selection alone clears on acceptance; point selection and expansions otherwise persist
+  ---
+  duration_ms: 11.872
+  type: 'test'
+  ...
+# Subtest: accepted addressing state does not share mutable DTO or snapshots
+ok 25 - accepted addressing state does not share mutable DTO or snapshots
+  ---
+  duration_ms: 3.4172
+  type: 'test'
+  ...
+# Subtest: AS-WHEEL-23/30: point controls and focus survive updates; detached/disposed callbacks cannot select B
+ok 26 - AS-WHEEL-23/30: point controls and focus survive updates; detached/disposed callbacks cannot select B
+  ---
+  duration_ms: 10.1574
+  type: 'test'
+  ...
+# Subtest: REQ-WHEEL-11: mounted HTML activation and reveal perform no HTTP or draft changes
+ok 27 - REQ-WHEEL-11: mounted HTML activation and reveal perform no HTTP or draft changes
+  ---
+  duration_ms: 40.4091
+  type: 'test'
+  ...
+# Subtest: Owner points disclosure: preserve automatic updates and aspect endpoints; reset new accepted birth once
+ok 28 - Owner points disclosure: preserve automatic updates and aspect endpoints; reset new accepted birth once
+  ---
+  duration_ms: 14.6809
+  type: 'test'
+  ...
+# Subtest: Owner points disclosure: no redundant button for five or fewer and safe focus after collapse
+ok 29 - Owner points disclosure: no redundant button for five or fewer and safe focus after collapse
+  ---
+  duration_ms: 12.9157
+  type: 'test'
+  ...
+# Subtest: REQ-UI-04 orb 0 rounds half-up with minute carry to 0°00′
+ok 30 - REQ-UI-04 orb 0 rounds half-up with minute carry to 0°00′
+  ---
+  duration_ms: 1.3659
+  type: 'test'
+  ...
+# Subtest: REQ-UI-04 orb 0.008 rounds half-up with minute carry to 0°00′
+ok 31 - REQ-UI-04 orb 0.008 rounds half-up with minute carry to 0°00′
+  ---
+  duration_ms: 0.216
+  type: 'test'
+  ...
+# Subtest: REQ-UI-04 orb 0.009 rounds half-up with minute carry to 0°01′
+ok 32 - REQ-UI-04 orb 0.009 rounds half-up with minute carry to 0°01′
+  ---
+  duration_ms: 0.137
+  type: 'test'
+  ...
+# Subtest: REQ-UI-04 orb 0.999 rounds half-up with minute carry to 1°00′
+ok 33 - REQ-UI-04 orb 0.999 rounds half-up with minute carry to 1°00′
+  ---
+  duration_ms: 0.1125
+  type: 'test'
+  ...
+# Subtest: REQ-UI-04 orb 1.5 rounds half-up with minute carry to 1°30′
+ok 34 - REQ-UI-04 orb 1.5 rounds half-up with minute carry to 1°30′
+  ---
+  duration_ms: 0.136
+  type: 'test'
+  ...
+# Subtest: REQ-UI-04 orb 0.008333333333333333 rounds half-up with minute carry to 0°01′
+ok 35 - REQ-UI-04 orb 0.008333333333333333 rounds half-up with minute carry to 0°01′
+  ---
+  duration_ms: 0.0964
+  type: 'test'
+  ...
+# Subtest: REQ-UI-04 orb 0.025 rounds half-up with minute carry to 0°02′
+ok 36 - REQ-UI-04 orb 0.025 rounds half-up with minute carry to 0°02′
+  ---
+  duration_ms: 0.1338
+  type: 'test'
+  ...
+# Subtest: REQ-UI-04 orb 1.024 rounds half-up with minute carry to 1°01′
+ok 37 - REQ-UI-04 orb 1.024 rounds half-up with minute carry to 1°01′
+  ---
+  duration_ms: 0.1316
+  type: 'test'
+  ...
+# Subtest: REQ-UI-04 orb 1.0249999999999997 rounds half-up with minute carry to 1°01′
+ok 38 - REQ-UI-04 orb 1.0249999999999997 rounds half-up with minute carry to 1°01′
+  ---
+  duration_ms: 0.1748
+  type: 'test'
+  ...
+# Subtest: REQ-UI-04 orb 1.025 rounds half-up with minute carry to 1°02′
+ok 39 - REQ-UI-04 orb 1.025 rounds half-up with minute carry to 1°02′
+  ---
+  duration_ms: 0.1999
+  type: 'test'
+  ...
+# Subtest: REQ-UI-04 orb 1.0250000000000001 rounds half-up with minute carry to 1°02′
+ok 40 - REQ-UI-04 orb 1.0250000000000001 rounds half-up with minute carry to 1°02′
+  ---
+  duration_ms: 0.1419
+  type: 'test'
+  ...
+# Subtest: REQ-UI-04 orb 1.026 rounds half-up with minute carry to 1°02′
+ok 41 - REQ-UI-04 orb 1.026 rounds half-up with minute carry to 1°02′
+  ---
+  duration_ms: 0.2078
+  type: 'test'
+  ...
+# Subtest: REQ-UI-04 orb 0.9916666666666666 rounds half-up with minute carry to 0°59′
+ok 42 - REQ-UI-04 orb 0.9916666666666666 rounds half-up with minute carry to 0°59′
+  ---
+  duration_ms: 0.1023
+  type: 'test'
+  ...
+# Subtest: REQ-UI-04 orb 0.9916666666666667 rounds half-up with minute carry to 1°00′
+ok 43 - REQ-UI-04 orb 0.9916666666666667 rounds half-up with minute carry to 1°00′
+  ---
+  duration_ms: 0.0525
+  type: 'test'
+  ...
+# Subtest: REQ-UI-04 / AS-UI-07 / TEST-FIND-UI-013: mounted current orb 1.025 rounds half-up without changing DTO or requests
+ok 44 - REQ-UI-04 / AS-UI-07 / TEST-FIND-UI-013: mounted current orb 1.025 rounds half-up without changing DTO or requests
+  ---
+  duration_ms: 51.5548
+  type: 'test'
+  ...
+# Subtest: published positions keep zeroes and sign boundaries, independent of longitude
+ok 45 - published positions keep zeroes and sign boundaries, independent of longitude
+  ---
+  duration_ms: 0.6164
+  type: 'test'
+  ...
+# Subtest: reader uses canonical point order and localizes every published point/sign
+ok 46 - reader uses canonical point order and localizes every published point/sign
+  ---
+  duration_ms: 0.491
+  type: 'test'
+  ...
+# Subtest: natal houses sort numerically; five published angles belong to the houses group
+ok 47 - natal houses sort numerically; five published angles belong to the houses group
+  ---
+  duration_ms: 0.2624
+  type: 'test'
+  ...
+# Subtest: all aspect rows retain endpoint/type/category and DTO order without recalculation
+ok 48 - all aspect rows retain endpoint/type/category and DTO order without recalculation
+  ---
+  duration_ms: 0.3923
+  type: 'test'
+  ...
+# Subtest: cosmogram displays only published points/stable aspects and inapplicable houses
+ok 49 - cosmogram displays only published points/stable aspects and inapplicable houses
+  ---
+  duration_ms: 0.4161
+  type: 'test'
+  ...
+# Subtest: empty calculated aspects are distinct from missing/unavailable chart
+ok 50 - empty calculated aspects are distinct from missing/unavailable chart
+  ---
+  duration_ms: 0.2269
+  type: 'test'
+  ...
+# Subtest: reader does not mutate DTO or share mutable rows across callers
+ok 51 - reader does not mutate DTO or share mutable rows across callers
+  ---
+  duration_ms: 0.2956
+  type: 'test'
+  ...
+# Subtest: all seven public aspect types and three categories retain stable localized labels
+ok 52 - all seven public aspect types and three categories retain stable localized labels
+  ---
+  duration_ms: 0.2568
+  type: 'test'
+  ...
+# Subtest: REQ-WHEEL-09: DOM reader has three immediately accessible groups; future data stays private
+ok 53 - REQ-WHEEL-09: DOM reader has three immediately accessible groups; future data stays private
+  ---
+  duration_ms: 4.6981
+  type: 'test'
+  ...
+# Subtest: AS-UI-22 natal: build and reload details show the same identity/facts without chat or extra requests
+ok 54 - AS-UI-22 natal: build and reload details show the same identity/facts without chat or extra requests
+  ---
+  duration_ms: 17.5272
+  type: 'test'
+  ...
+# Subtest: AS-UI-22 cosmogram: build and reload details show the same identity/facts without chat or extra requests
+ok 55 - AS-UI-22 cosmogram: build and reload details show the same identity/facts without chat or extra requests
+  ---
+  duration_ms: 18.2268
+  type: 'test'
+  ...
+# Subtest: automatic identity replacement keeps facts visible and removes old rows without mixing charts
+ok 56 - automatic identity replacement keeps facts visible and removes old rows without mixing charts
+  ---
+  duration_ms: 3.5188
+  type: 'test'
+  ...
+# Subtest: empty/unavailable/current removal hides result and clears all numeric facts
+ok 57 - empty/unavailable/current removal hides result and clears all numeric facts
+  ---
+  duration_ms: 4.0872
+  type: 'test'
+  ...
+# Subtest: stale current keeps original facts and local details without implying a new build
+ok 58 - stale current keeps original facts and local details without implying a new build
+  ---
+  duration_ms: 3.1471
+  type: 'test'
+  ...
+# Subtest: DOM cosmogram distinguishes inapplicable houses and calculated empty aspects
+ok 59 - DOM cosmogram distinguishes inapplicable houses and calculated empty aspects
+  ---
+  duration_ms: 1.6503
+  type: 'test'
+  ...
+# Subtest: DTO strings render as text, never as executable HTML
+ok 60 - DTO strings render as text, never as executable HTML
+  ---
+  duration_ms: 2.1368
+  type: 'test'
+  ...
+# Subtest: full golden natal renders every published point, all twelve houses and every aspect
+ok 61 - full golden natal renders every published point, all twelve houses and every aspect
+  ---
+  duration_ms: 7.0647
+  type: 'test'
+  ...
+# Subtest: known 00:00 remains HH:MM and never becomes unknown
+ok 62 - known 00:00 remains HH:MM and never becomes unknown
+  ---
+  duration_ms: 2.4695
+  type: 'test'
+  ...
+# Subtest: known 12:00 remains HH:MM and never becomes unknown
+ok 63 - known 12:00 remains HH:MM and never becomes unknown
+  ---
+  duration_ms: 0.2735
+  type: 'test'
+  ...
+# Subtest: known 23:59 remains HH:MM and never becomes unknown
+ok 64 - known 23:59 remains HH:MM and never becomes unknown
+  ---
+  duration_ms: 0.164
+  type: 'test'
+  ...
+# Subtest: invalid time "" blocks submission and preserves the draft
+ok 65 - invalid time "" blocks submission and preserves the draft
+  ---
+  duration_ms: 0.3169
+  type: 'test'
+  ...
+# Subtest: invalid time "24:00" blocks submission and preserves the draft
+ok 66 - invalid time "24:00" blocks submission and preserves the draft
+  ---
+  duration_ms: 0.2128
+  type: 'test'
+  ...
+# Subtest: invalid time "12:60" blocks submission and preserves the draft
+ok 67 - invalid time "12:60" blocks submission and preserves the draft
+  ---
+  duration_ms: 0.5278
+  type: 'test'
+  ...
+# Subtest: invalid time "1:00" blocks submission and preserves the draft
+ok 68 - invalid time "1:00" blocks submission and preserves the draft
+  ---
+  duration_ms: 0.1959
+  type: 'test'
+  ...
+# Subtest: invalid time "12:00:00" blocks submission and preserves the draft
+ok 69 - invalid time "12:00:00" blocks submission and preserves the draft
+  ---
+  duration_ms: 0.1222
+  type: 'test'
+  ...
+# Subtest: invalid time " 12:00 " blocks submission and preserves the draft
+ok 70 - invalid time " 12:00 " blocks submission and preserves the draft
+  ---
+  duration_ms: 0.1497
+  type: 'test'
+  ...
+# Subtest: explicit unknown time sends null and toggling preserves other fields and entered time
+ok 71 - explicit unknown time sends null and toggling preserves other fields and entered time
+  ---
+  duration_ms: 0.3001
+  type: 'test'
+  ...
+# Subtest: invalid calendar date "" requires correction
+ok 72 - invalid calendar date "" requires correction
+  ---
+  duration_ms: 0.2131
+  type: 'test'
+  ...
+# Subtest: invalid calendar date "2023-02-29" requires correction
+ok 73 - invalid calendar date "2023-02-29" requires correction
+  ---
+  duration_ms: 0.0917
+  type: 'test'
+  ...
+# Subtest: invalid calendar date "1900-02-29" requires correction
+ok 74 - invalid calendar date "1900-02-29" requires correction
+  ---
+  duration_ms: 0.0705
+  type: 'test'
+  ...
+# Subtest: invalid calendar date "2000-04-31" requires correction
+ok 75 - invalid calendar date "2000-04-31" requires correction
+  ---
+  duration_ms: 1.304
+  type: 'test'
+  ...
+# Subtest: invalid calendar date "0000-01-01" requires correction
+ok 76 - invalid calendar date "0000-01-01" requires correction
+  ---
+  duration_ms: 0.1117
+  type: 'test'
+  ...
+# Subtest: invalid calendar date "2000-13-01" requires correction
+ok 77 - invalid calendar date "2000-13-01" requires correction
+  ---
+  duration_ms: 0.1145
+  type: 'test'
+  ...
+# Subtest: invalid calendar date "2000-01-00" requires correction
+ok 78 - invalid calendar date "2000-01-00" requires correction
+  ---
+  duration_ms: 0.0554
+  type: 'test'
+  ...
+# Subtest: invalid calendar date "29.02.2000" requires correction
+ok 79 - invalid calendar date "29.02.2000" requires correction
+  ---
+  duration_ms: 0.2967
+  type: 'test'
+  ...
+# Subtest: calendar validation does not invent domain range or browser timezone rules
+ok 80 - calendar validation does not invent domain range or browser timezone rules
+  ---
+  duration_ms: 0.1854
+  type: 'test'
+  ...
+# Subtest: typing or editing even the same place text clears confirmation immediately
+ok 81 - typing or editing even the same place text clears confirmation immediately
+  ---
+  duration_ms: 0.3672
+  type: 'test'
+  ...
+# Subtest: unchecked gate prevents POST; manual acknowledgement permits exactly three fields
+ok 82 - unchecked gate prevents POST; manual acknowledgement permits exactly three fields
+  ---
+  duration_ms: 33.8994
+  type: 'test'
+  ...
+# Subtest: every new form starts unchecked; snapshots and submitted intent do not share mutable data
+ok 83 - every new form starts unchecked; snapshots and submitted intent do not share mutable data
+  ---
+  duration_ms: 0.1865
+  type: 'test'
+  ...
+# Subtest: 006: seven visible legend entries identify the actual type palette, conjunction and stroke categories
+ok 84 - 006: seven visible legend entries identify the actual type palette, conjunction and stroke categories
+  ---
+  duration_ms: 14.7907
+  type: 'test'
+  ...
+# Subtest: 007: southern-node label is concise and published point facts/order are preserved
+ok 85 - 007: southern-node label is concise and published point facts/order are preserved
+  ---
+  duration_ms: 1.4337
+  type: 'test'
+  ...
+# Subtest: a nullable region preserves the entire mixed result and confirmed selection
+ok 86 - a nullable region preserves the entire mixed result and confirmed selection
+  ---
+  duration_ms: 6.2228
+  type: 'test'
+  ...
+# Subtest: K → Ki → Kir → Kiro → Ki respects threshold and cancels debounce
+ok 87 - K → Ki → Kir → Kiro → Ki respects threshold and cancels debounce
+  ---
+  duration_ms: 0.8114
+  type: 'test'
+  ...
+# Subtest: late Kir response cannot overwrite a newer Kiro result even if abort is ignored
+ok 88 - late Kir response cannot overwrite a newer Kiro result even if abort is ignored
+  ---
+  duration_ms: 0.6091
+  type: 'test'
+  ...
+# Subtest: late response after shortening/clearing "Ки" stays hidden
+ok 89 - late response after shortening/clearing "Ки" stays hidden
+  ---
+  duration_ms: 0.3319
+  type: 'test'
+  ...
+# Subtest: late response after shortening/clearing "" stays hidden
+ok 90 - late response after shortening/clearing "" stays hidden
+  ---
+  duration_ms: 0.3322
+  type: 'test'
+  ...
+# Subtest: late response after shortening/clearing "   " stays hidden
+ok 91 - late response after shortening/clearing "   " stays hidden
+  ---
+  duration_ms: 0.2392
+  type: 'test'
+  ...
+# Subtest: a canceled timer firing late cannot make a stale request
+ok 92 - a canceled timer firing late cannot make a stale request
+  ---
+  duration_ms: 0.3356
+  type: 'test'
+  ...
+# Subtest: keyboard and mouse choose a concrete duplicate-name ID without another request
+ok 93 - keyboard and mouse choose a concrete duplicate-name ID without another request
+  ---
+  duration_ms: 0.5234
+  type: 'test'
+  ...
+# Subtest: Escape closes suggestions, arrows reopen them and selection wraps
+ok 94 - Escape closes suggestions, arrows reopen them and selection wraps
+  ---
+  duration_ms: 0.3855
+  type: 'test'
+  ...
+# Subtest: empty, invalid-input and unavailable outcomes keep no invented selection
+ok 95 - empty, invalid-input and unavailable outcomes keep no invented selection
+  ---
+  duration_ms: 0.5939
+  type: 'test'
+  ...
+# Subtest: Retry-After prevents early requests and expiration does not retry automatically
+ok 96 - Retry-After prevents early requests and expiration does not retry automatically
+  ---
+  duration_ms: 0.4387
+  type: 'test'
+  ...
+# Subtest: query remains raw, Unicode threshold counts characters and actual transport is used
+ok 97 - query remains raw, Unicode threshold counts characters and actual transport is used
+  ---
+  duration_ms: 34.8219
+  type: 'test'
+  ...
+# Subtest: shortening and retyping during Retry-After retains a usable error and blocks early GET
+ok 98 - shortening and retyping during Retry-After retains a usable error and blocks early GET
+  ---
+  duration_ms: 0.5013
+  type: 'test'
+  ...
+# Subtest: malformed success and caller mutation cannot manufacture a usable place
+ok 99 - malformed success and caller mutation cannot manufacture a usable place
+  ---
+  duration_ms: 0.2901
+  type: 'test'
+  ...
+# Subtest: dispose prevents both scheduled requests and completion publication
+ok 100 - dispose prevents both scheduled requests and completion publication
+  ---
+  duration_ms: 0.3299
+  type: 'test'
+  ...
+# Subtest: unconfirmed text 502 blocks POST until bootstrap/current and then permits only gated manual retry
+ok 101 - unconfirmed text 502 blocks POST until bootstrap/current and then permits only gated manual retry
+  ---
+  duration_ms: 39.7647
+  type: 'test'
+  ...
+# Subtest: unconfirmed text 504 blocks POST until bootstrap/current and then permits only gated manual retry
+ok 102 - unconfirmed text 504 blocks POST until bootstrap/current and then permits only gated manual retry
+  ---
+  duration_ms: 3.5662
+  type: 'test'
+  ...
+# Subtest: unconfirmed empty 503 blocks POST until bootstrap/current and then permits only gated manual retry
+ok 103 - unconfirmed empty 503 blocks POST until bootstrap/current and then permits only gated manual retry
+  ---
+  duration_ms: 2.8413
+  type: 'test'
+  ...
+# Subtest: unconfirmed malformed capacity DTO blocks POST until bootstrap/current and then permits only gated manual retry
+ok 104 - unconfirmed malformed capacity DTO blocks POST until bootstrap/current and then permits only gated manual retry
+  ---
+  duration_ms: 2.0418
+  type: 'test'
+  ...
+# Subtest: unconfirmed unknown 503 code blocks POST until bootstrap/current and then permits only gated manual retry
+ok 105 - unconfirmed unknown 503 code blocks POST until bootstrap/current and then permits only gated manual retry
+  ---
+  duration_ms: 2.444
+  type: 'test'
+  ...
+# Subtest: unconfirmed unknown 599 blocks POST until bootstrap/current and then permits only gated manual retry
+ok 106 - unconfirmed unknown 599 blocks POST until bootstrap/current and then permits only gated manual retry
+  ---
+  duration_ms: 1.5483
+  type: 'test'
+  ...
+# Subtest: unconfirmed internal 500 blocks POST until bootstrap/current and then permits only gated manual retry
+ok 107 - unconfirmed internal 500 blocks POST until bootstrap/current and then permits only gated manual retry
+  ---
+  duration_ms: 2.0878
+  type: 'test'
+  ...
+# Subtest: unconfirmed internal 500 with cookie blocks POST until bootstrap/current and then permits only gated manual retry
+ok 108 - unconfirmed internal 500 with cookie blocks POST until bootstrap/current and then permits only gated manual retry
+  ---
+  duration_ms: 1.4074
+  type: 'test'
+  ...
+# Subtest: unconfirmed 5xx respects real Retry-After, checks once and keeps a failed check safe-read-only
+ok 109 - unconfirmed 5xx respects real Retry-After, checks once and keeps a failed check safe-read-only
+  ---
+  duration_ms: 2.7779
+  type: 'test'
+  ...
+# Subtest: known 503 SERVICE_SHUTTING_DOWN remains an ordinary refusal with no automatic reconciliation or POST
+ok 110 - known 503 SERVICE_SHUTTING_DOWN remains an ordinary refusal with no automatic reconciliation or POST
+  ---
+  duration_ms: 0.9375
+  type: 'test'
+  ...
+# Subtest: known 503 STATE_READ_FAILED remains an ordinary refusal with no automatic reconciliation or POST
+ok 111 - known 503 STATE_READ_FAILED remains an ordinary refusal with no automatic reconciliation or POST
+  ---
+  duration_ms: 0.5618
+  type: 'test'
+  ...
+# Subtest: known 503 RESOLUTION_UNAVAILABLE remains an ordinary refusal with no automatic reconciliation or POST
+ok 112 - known 503 RESOLUTION_UNAVAILABLE remains an ordinary refusal with no automatic reconciliation or POST
+  ---
+  duration_ms: 0.4748
+  type: 'test'
+  ...
+# Subtest: known 503 CALCULATION_FAILED remains an ordinary refusal with no automatic reconciliation or POST
+ok 113 - known 503 CALCULATION_FAILED remains an ordinary refusal with no automatic reconciliation or POST
+  ---
+  duration_ms: 0.6891
+  type: 'test'
+  ...
+# Subtest: known 500 RESOLUTION_UNAVAILABLE remains an ordinary refusal with no automatic reconciliation or POST
+ok 114 - known 500 RESOLUTION_UNAVAILABLE remains an ordinary refusal with no automatic reconciliation or POST
+  ---
+  duration_ms: 0.4805
+  type: 'test'
+  ...
+# Subtest: known 500 CALCULATION_FAILED remains an ordinary refusal with no automatic reconciliation or POST
+ok 115 - known 500 CALCULATION_FAILED remains an ordinary refusal with no automatic reconciliation or POST
+  ---
+  duration_ms: 0.4887
+  type: 'test'
+  ...
+# Subtest: policy distinguishes received failures, missing headers and ordinary HTTP refusal
+ok 116 - policy distinguishes received failures, missing headers and ordinary HTTP refusal
+  ---
+  duration_ms: 0.1751
+  type: 'test'
+  ...
+# Subtest: current relation uses birth intent and identity, never bootstrap state_version
+ok 117 - current relation uses birth intent and identity, never bootstrap state_version
+  ---
+  duration_ms: 0.2088
+  type: 'test'
+  ...
+# Subtest: lost build response automatically checks bootstrap/current and shows a committed matching map
+ok 118 - lost build response automatically checks bootstrap/current and shows a committed matching map
+  ---
+  duration_ms: 0.9869
+  type: 'test'
+  ...
+# Subtest: lost response with empty permits only a gated explicit retry after successful check
+ok 119 - lost response with empty permits only a gated explicit retry after successful check
+  ---
+  duration_ms: 1.0292
+  type: 'test'
+  ...
+# Subtest: lost response with chart_ready permits only a gated explicit retry after successful check
+ok 120 - lost response with chart_ready permits only a gated explicit retry after successful check
+  ---
+  duration_ms: 0.9195
+  type: 'test'
+  ...
+# Subtest: a failed /session/bootstrap recovery preserves draft/confirmed map and blocks build until safe retry succeeds
+ok 121 - a failed /session/bootstrap recovery preserves draft/confirmed map and blocks build until safe retry succeeds
+  ---
+  duration_ms: 3.4708
+  type: 'test'
+  ...
+# Subtest: a failed /charts/current recovery preserves draft/confirmed map and blocks build until safe retry succeeds
+ok 122 - a failed /charts/current recovery preserves draft/confirmed map and blocks build until safe retry succeeds
+  ---
+  duration_ms: 2.0238
+  type: 'test'
+  ...
+# Subtest: STATE_COMMIT_FAILED waits exact Retry-After then reads only current with separate request identity
+ok 123 - STATE_COMMIT_FAILED waits exact Retry-After then reads only current with separate request identity
+  ---
+  duration_ms: 1.251
+  type: 'test'
+  ...
+# Subtest: BUILD_TIMEOUT needs explicit restart confirmation and successful safe read; expiry never probes health
+ok 124 - BUILD_TIMEOUT needs explicit restart confirmation and successful safe read; expiry never probes health
+  ---
+  duration_ms: 1.9303
+  type: 'test'
+  ...
+# Subtest: recovery stores immutable first intent while draft edits and a later POST have their own snapshot
+ok 125 - recovery stores immutable first intent while draft edits and a later POST have their own snapshot
+  ---
+  duration_ms: 1.3675
+  type: 'test'
+  ...
+# Subtest: foreground arriving during a build is coalesced and reads only after its committed response
+ok 126 - foreground arriving during a build is coalesced and reads only after its committed response
+  ---
+  duration_ms: 1.1981
+  type: 'test'
+  ...
+# Subtest: dispose cancels scheduled recovery without claiming server cancellation
+ok 127 - dispose cancels scheduled recovery without claiming server cancellation
+  ---
+  duration_ms: 0.7459
+  type: 'test'
+  ...
+# Subtest: commit check encountering SESSION_REQUIRED has one bounded bootstrap/current recovery
+ok 128 - commit check encountering SESSION_REQUIRED has one bounded bootstrap/current recovery
+  ---
+  duration_ms: 1.5583
+  type: 'test'
+  ...
+# Subtest: interrupted response body retains real headers and delay without inventing an ErrorDTO
+ok 129 - interrupted response body retains real headers and delay without inventing an ErrorDTO
+  ---
+  duration_ms: 0.7724
+  type: 'test'
+  ...
+# Subtest: timeout matching current requires both delay and explicit external restart confirmation
+ok 130 - timeout matching current requires both delay and explicit external restart confirmation
+  ---
+  duration_ms: 0.7829
+  type: 'test'
+  ...
+# Subtest: dispose during recovery aborts its read and drops queued foreground without overwriting the last map
+ok 131 - dispose during recovery aborts its read and drops queued foreground without overwriting the last map
+  ---
+  duration_ms: 0.9567
+  type: 'test'
+  ...
+# Subtest: two tabs: foreground reads B's published map while retaining A's draft and three-field request contract
+ok 132 - two tabs: foreground reads B's published map while retaining A's draft and three-field request contract
+  ---
+  duration_ms: 1.2156
+  type: 'test'
+  ...
+# Subtest: two concurrent intents: RESULT_SUPERSEDED shows actual B current instead of attributing it to A's POST
+ok 133 - two concurrent intents: RESULT_SUPERSEDED shows actual B current instead of attributing it to A's POST
+  ---
+  duration_ms: 0.7822
+  type: 'test'
+  ...
+# Subtest: two concurrent intents: already_applied shows actual B current instead of attributing it to A's POST
+ok 134 - two concurrent intents: already_applied shows actual B current instead of attributing it to A's POST
+  ---
+  duration_ms: 0.73
+  type: 'test'
+  ...
+# Subtest: late first commit during the explicit second intent stays actual current, never a fabricated second artifact
+ok 135 - late first commit during the explicit second intent stays actual current, never a fabricated second artifact
+  ---
+  duration_ms: 0.9217
+  type: 'test'
+  ...
+# Subtest: mounted matching stale current with unchanged identity preserves facts and honest recovery feedback
+ok 136 - mounted matching stale current with unchanged identity preserves facts and honest recovery feedback
+  ---
+  duration_ms: 22.9796
+  type: 'test'
+  ...
+# Subtest: mounted matching fresh current with unchanged identity preserves facts and honest recovery feedback
+ok 137 - mounted matching fresh current with unchanged identity preserves facts and honest recovery feedback
+  ---
+  duration_ms: 8.8025
+  type: 'test'
+  ...
+# Subtest: mounted unknown 5xx failed at /session/bootstrap preserves facts and offers a working safe check
+ok 138 - mounted unknown 5xx failed at /session/bootstrap preserves facts and offers a working safe check
+  ---
+  duration_ms: 8.182
+  type: 'test'
+  ...
+# Subtest: mounted unknown 5xx failed at /charts/current preserves facts and offers a working safe check
+ok 139 - mounted unknown 5xx failed at /charts/current preserves facts and offers a working safe check
+  ---
+  duration_ms: 6.2011
+  type: 'test'
+  ...
+# Subtest: mounted lost-response warning keeps original intent visible; edits/gate never trigger a hidden POST
+ok 140 - mounted lost-response warning keeps original intent visible; edits/gate never trigger a hidden POST
+  ---
+  duration_ms: 6.735
+  type: 'test'
+  ...
+# Subtest: mounted failed check offers a working safe read; timeout button explicitly confirms restart after Retry-After
+ok 141 - mounted failed check offers a working safe read; timeout button explicitly confirms restart after Retry-After
+  ---
+  duration_ms: 6.5913
+  type: 'test'
+  ...
+# Subtest: mounted lost response with a different current shows it separately from the original intent and editable draft
+ok 142 - mounted lost response with a different current shows it separately from the original intent and editable draft
+  ---
+  duration_ms: 4.6111
+  type: 'test'
+  ...
+# Subtest: mounted visibility/online are readonly, coalesce during build, preserve draft and unsubscribe on dispose
+ok 143 - mounted visibility/online are readonly, coalesce during build, preserve draft and unsubscribe on dispose
+  ---
+  duration_ms: 6.8334
+  type: 'test'
+  ...
+# Subtest: committed known time summary belongs to the submitted snapshot despite pending draft edits
+ok 144 - committed known time summary belongs to the submitted snapshot despite pending draft edits
+  ---
+  duration_ms: 57.5556
+  type: 'test'
+  ...
+# Subtest: committed unknown time summary belongs to the submitted snapshot despite pending draft edits
+ok 145 - committed unknown time summary belongs to the submitted snapshot despite pending draft edits
+  ---
+  duration_ms: 10.6636
+  type: 'test'
+  ...
+# Subtest: a rejected later build keeps the summary of the previously displayed committed chart
+ok 146 - a rejected later build keeps the summary of the previously displayed committed chart
+  ---
+  duration_ms: 10.6067
+  type: 'test'
+  ...
+# Subtest: foreground summary reads actual current birth instead of a previous successful build intent
+ok 147 - foreground summary reads actual current birth instead of a previous successful build intent
+  ---
+  duration_ms: 10.4842
+  type: 'test'
+  ...
+# Subtest: restored chart_ready/false place survives focus/blur then edit and explicit new selection
+ok 148 - restored chart_ready/false place survives focus/blur then edit and explicit new selection
+  ---
+  duration_ms: 11.6402
+  type: 'test'
+  ...
+# Subtest: restored chart_ready/true place survives focus/blur then edit and explicit new selection
+ok 149 - restored chart_ready/true place survives focus/blur then edit and explicit new selection
+  ---
+  duration_ms: 6.5907
+  type: 'test'
+  ...
+# Subtest: restored chart_unavailable/false place survives focus/blur then edit and explicit new selection
+ok 150 - restored chart_unavailable/false place survives focus/blur then edit and explicit new selection
+  ---
+  duration_ms: 4.2249
+  type: 'test'
+  ...
+# Subtest: mounted nullable-region selection renders a dash and sends only the selected ID after the gate
+ok 151 - mounted nullable-region selection renders a dash and sends only the selected ID after the gate
+  ---
+  duration_ms: 5.4971
+  type: 'test'
+  ...
+# Subtest: malformed POST points null preserves the confirmed view and reconciles without a second POST
+ok 152 - malformed POST points null preserves the confirmed view and reconciles without a second POST
+  ---
+  duration_ms: 5.5991
+  type: 'test'
+  ...
+# Subtest: malformed POST point null preserves the confirmed view and reconciles without a second POST
+ok 153 - malformed POST point null preserves the confirmed view and reconciles without a second POST
+  ---
+  duration_ms: 5.7134
+  type: 'test'
+  ...
+# Subtest: malformed POST point degree outside range preserves the confirmed view and reconciles without a second POST
+ok 154 - malformed POST point degree outside range preserves the confirmed view and reconciles without a second POST
+  ---
+  duration_ms: 4.5455
+  type: 'test'
+  ...
+# Subtest: malformed POST point minute wrong type preserves the confirmed view and reconciles without a second POST
+ok 155 - malformed POST point minute wrong type preserves the confirmed view and reconciles without a second POST
+  ---
+  duration_ms: 5.2054
+  type: 'test'
+  ...
+# Subtest: malformed POST point retrograde wrong type preserves the confirmed view and reconciles without a second POST
+ok 156 - malformed POST point retrograde wrong type preserves the confirmed view and reconciles without a second POST
+  ---
+  duration_ms: 5.5664
+  type: 'test'
+  ...
+# Subtest: malformed POST houses not array preserves the confirmed view and reconciles without a second POST
+ok 157 - malformed POST houses not array preserves the confirmed view and reconciles without a second POST
+  ---
+  duration_ms: 4.3991
+  type: 'test'
+  ...
+# Subtest: malformed POST house null preserves the confirmed view and reconciles without a second POST
+ok 158 - malformed POST house null preserves the confirmed view and reconciles without a second POST
+  ---
+  duration_ms: 4.6787
+  type: 'test'
+  ...
+# Subtest: malformed POST missing angle preserves the confirmed view and reconciles without a second POST
+ok 159 - malformed POST missing angle preserves the confirmed view and reconciles without a second POST
+  ---
+  duration_ms: 7.6513
+  type: 'test'
+  ...
+# Subtest: malformed POST aspects null preserves the confirmed view and reconciles without a second POST
+ok 160 - malformed POST aspects null preserves the confirmed view and reconciles without a second POST
+  ---
+  duration_ms: 4.3229
+  type: 'test'
+  ...
+# Subtest: malformed POST aspect null preserves the confirmed view and reconciles without a second POST
+ok 161 - malformed POST aspect null preserves the confirmed view and reconciles without a second POST
+  ---
+  duration_ms: 4.3336
+  type: 'test'
+  ...
+# Subtest: malformed POST aspect orb wrong type preserves the confirmed view and reconciles without a second POST
+ok 162 - malformed POST aspect orb wrong type preserves the confirmed view and reconciles without a second POST
+  ---
+  duration_ms: 5.3508
+  type: 'test'
+  ...
+# Subtest: malformed foreground current points null cannot replace the confirmed view
+ok 163 - malformed foreground current points null cannot replace the confirmed view
+  ---
+  duration_ms: 3.6776
+  type: 'test'
+  ...
+# Subtest: malformed foreground current birth time wrong format cannot replace the confirmed view
+ok 164 - malformed foreground current birth time wrong format cannot replace the confirmed view
+  ---
+  duration_ms: 3.3215
+  type: 'test'
+  ...
+# Subtest: malformed foreground current place ID wrong type cannot replace the confirmed view
+ok 165 - malformed foreground current place ID wrong type cannot replace the confirmed view
+  ---
+  duration_ms: 4.3806
+  type: 'test'
+  ...
+# Subtest: malformed foreground current cosmogram with houses cannot replace the confirmed view
+ok 166 - malformed foreground current cosmogram with houses cannot replace the confirmed view
+  ---
+  duration_ms: 3.197
+  type: 'test'
+  ...
+# Subtest: malformed bootstrap is visible, blocks current/build and can be safely retried
+ok 167 - malformed bootstrap is visible, blocks current/build and can be safely retried
+  ---
+  duration_ms: 1.179
+  type: 'test'
+  ...
+# Subtest: malformed issue candidates do not reject the mounted submission handler
+ok 168 - malformed issue candidates do not reject the mounted submission handler
+  ---
+  duration_ms: 2.3941
+  type: 'test'
+  ...
+# Subtest: unexpected renderer failure during open becomes a visible safe-read-only error
+ok 169 - unexpected renderer failure during open becomes a visible safe-read-only error
+  ---
+  duration_ms: 5.1741
+  type: 'test'
+  ...
+# Subtest: unexpected renderer failure during foreground becomes a visible safe-read-only error
+ok 170 - unexpected renderer failure during foreground becomes a visible safe-read-only error
+  ---
+  duration_ms: 4.1513
+  type: 'test'
+  ...
+# Subtest: unexpected renderer failure during submit becomes a visible safe-read-only error
+ok 171 - unexpected renderer failure during submit becomes a visible safe-read-only error
+  ---
+  duration_ms: 3.8448
+  type: 'test'
+  ...
+# Subtest: renderer fallback preserves the BUILD_TIMEOUT restart confirmation and Retry-After gate
+ok 172 - renderer fallback preserves the BUILD_TIMEOUT restart confirmation and Retry-After gate
+  ---
+  duration_ms: 3.7103
+  type: 'test'
+  ...
+# Subtest: bootstrap ready/version never supplies a chart; current determines empty without build
+ok 173 - bootstrap ready/version never supplies a chart; current determines empty without build
+  ---
+  duration_ms: 0.3672
+  type: 'test'
+  ...
+# Subtest: explicit build has one immutable three-field intent; double click cannot create another POST
+ok 174 - explicit build has one immutable three-field intent; double click cannot create another POST
+  ---
+  duration_ms: 0.4522
+  type: 'test'
+  ...
+# Subtest: no build before successful bootstrap/current or manual gate; explicit valid control succeeds
+ok 175 - no build before successful bootstrap/current or manual gate; explicit valid control succeeds
+  ---
+  duration_ms: 0.4306
+  type: 'test'
+  ...
+# Subtest: unknown time reaches real transport as null and returns the published cosmogram
+ok 176 - unknown time reaches real transport as null and returns the published cosmogram
+  ---
+  duration_ms: 0.353
+  type: 'test'
+  ...
+# Subtest: server time AMBIGUOUS remains a field issue with candidates; draft and previous chart survive
+ok 177 - server time AMBIGUOUS remains a field issue with candidates; draft and previous chart survive
+  ---
+  duration_ms: 0.8893
+  type: 'test'
+  ...
+# Subtest: date/place issues retain constraints; unknown fields and user_message have a general fallback
+ok 178 - date/place issues retain constraints; unknown fields and user_message have a general fallback
+  ---
+  duration_ms: 0.4291
+  type: 'test'
+  ...
+# Subtest: already_applied reads actual current and never treats the POST as a new chart
+ok 179 - already_applied reads actual current and never treats the POST as a new chart
+  ---
+  duration_ms: 4.3991
+  type: 'test'
+  ...
+# Subtest: RESULT_SUPERSEDED reads actual current and never treats the POST as a new chart
+ok 180 - RESULT_SUPERSEDED reads actual current and never treats the POST as a new chart
+  ---
+  duration_ms: 3.8907
+  type: 'test'
+  ...
+# Subtest: SESSION_REQUIRED recovers empty with visible new-action explanation and intact draft
+ok 181 - SESSION_REQUIRED recovers empty with visible new-action explanation and intact draft
+  ---
+  duration_ms: 6.4398
+  type: 'test'
+  ...
+# Subtest: SESSION_REQUIRED recovers chart_ready with visible new-action explanation and intact draft
+ok 182 - SESSION_REQUIRED recovers chart_ready with visible new-action explanation and intact draft
+  ---
+  duration_ms: 5.4767
+  type: 'test'
+  ...
+# Subtest: SESSION_EXPIRED recovers empty with visible new-action explanation and intact draft
+ok 183 - SESSION_EXPIRED recovers empty with visible new-action explanation and intact draft
+  ---
+  duration_ms: 5.0387
+  type: 'test'
+  ...
+# Subtest: SESSION_EXPIRED recovers chart_ready with visible new-action explanation and intact draft
+ok 184 - SESSION_EXPIRED recovers chart_ready with visible new-action explanation and intact draft
+  ---
+  duration_ms: 6.2468
+  type: 'test'
+  ...
+# Subtest: SESSION_NOT_FOUND recovers empty with visible new-action explanation and intact draft
+ok 185 - SESSION_NOT_FOUND recovers empty with visible new-action explanation and intact draft
+  ---
+  duration_ms: 5.7397
+  type: 'test'
+  ...
+# Subtest: SESSION_NOT_FOUND recovers chart_ready with visible new-action explanation and intact draft
+ok 186 - SESSION_NOT_FOUND recovers chart_ready with visible new-action explanation and intact draft
+  ---
+  duration_ms: 5.0857
+  type: 'test'
+  ...
+# Subtest: session-loss check failed at /session/bootstrap never announces success and a later safe read explains the new action
+ok 187 - session-loss check failed at /session/bootstrap never announces success and a later safe read explains the new action
+  ---
+  duration_ms: 3.5728
+  type: 'test'
+  ...
+# Subtest: session-loss check failed at /charts/current never announces success and a later safe read explains the new action
+ok 188 - session-loss check failed at /charts/current never announces success and a later safe read explains the new action
+  ---
+  duration_ms: 3.6209
+  type: 'test'
+  ...
+# Subtest: a current session refusal performs one bounded recovery; repeated 409 never loops
+ok 189 - a current session refusal performs one bounded recovery; repeated 409 never loops
+  ---
+  duration_ms: 0.3771
+  type: 'test'
+  ...
+# Subtest: stale retains exact stored facts; unavailable/empty remove chart and do not build
+ok 190 - stale retains exact stored facts; unavailable/empty remove chart and do not build
+  ---
+  duration_ms: 0.6974
+  type: 'test'
+  ...
+# Subtest: bootstrap failure suppresses current/build and keeps draft; safe explicit read later succeeds
+ok 191 - bootstrap failure suppresses current/build and keeps draft; safe explicit read later succeeds
+  ---
+  duration_ms: 0.4336
+  type: 'test'
+  ...
+# Subtest: STATE_COMMIT_FAILED blocks a new build before delayed check or restart confirmation
+ok 192 - STATE_COMMIT_FAILED blocks a new build before delayed check or restart confirmation
+  ---
+  duration_ms: 0.2932
+  type: 'test'
+  ...
+# Subtest: BUILD_TIMEOUT blocks a new build before delayed check or restart confirmation
+ok 193 - BUILD_TIMEOUT blocks a new build before delayed check or restart confirmation
+  ---
+  duration_ms: 0.2912
+  type: 'test'
+  ...
+# Subtest: text proxy error and incomplete success cannot masquerade as a committed chart
+ok 194 - text proxy error and incomplete success cannot masquerade as a committed chart
+  ---
+  duration_ms: 1.7051
+  type: 'test'
+  ...
+# Subtest: snapshots do not share mutable charts, issues or request intent with callers
+ok 195 - snapshots do not share mutable charts, issues or request intent with callers
+  ---
+  duration_ms: 0.3544
+  type: 'test'
+  ...
+# Subtest: BUILD_SESSION_RATE_LIMITED respects Retry-After; expiry only permits an explicit build
+ok 196 - BUILD_SESSION_RATE_LIMITED respects Retry-After; expiry only permits an explicit build
+  ---
+  duration_ms: 0.4549
+  type: 'test'
+  ...
+# Subtest: BUILD_CAPACITY_EXHAUSTED respects Retry-After; expiry only permits an explicit build
+ok 197 - BUILD_CAPACITY_EXHAUSTED respects Retry-After; expiry only permits an explicit build
+  ---
+  duration_ms: 0.39
+  type: 'test'
+  ...
+# Subtest: read and build cannot overlap or let an older read replace a committed result
+ok 198 - read and build cannot overlap or let an older read replace a committed result
+  ---
+  duration_ms: 0.3194
+  type: 'test'
+  ...
+# Subtest: failed current reconciliation does not replay POST or replace a confirmed chart
+ok 199 - failed current reconciliation does not replay POST or replace a confirmed chart
+  ---
+  duration_ms: 0.6594
+  type: 'test'
+  ...
+# Subtest: dispose ignores a late network response without claiming server cancellation
+ok 200 - dispose ignores a late network response without claiming server cancellation
+  ---
+  duration_ms: 0.2686
+  type: 'test'
+  ...
+# Subtest: mounted form opens real coordinator, restores unavailable birth and requires a manual gate
+ok 201 - mounted form opens real coordinator, restores unavailable birth and requires a manual gate
+  ---
+  duration_ms: 3.7549
+  type: 'test'
+  ...
+# Subtest: mounted server time issue appears next to time, focuses it and clears on correction
+ok 202 - mounted server time issue appears next to time, focuses it and clears on correction
+  ---
+  duration_ms: 4.0377
+  type: 'test'
+  ...
+# Subtest: user input while initial current is pending survives late saved birth
+ok 203 - user input while initial current is pending survives late saved birth
+  ---
+  duration_ms: 1.701
+  type: 'test'
+  ...
+# Subtest: typing four time digits inserts the separator, preserves caret and sends HH:MM
+ok 204 - typing four time digits inserts the separator, preserves caret and sends HH:MM
+  ---
+  duration_ms: 4.6079
+  type: 'test'
+  ...
+# Subtest: pasted time 0045 displays 00:45 without losing leading zeroes
+ok 205 - pasted time 0045 displays 00:45 without losing leading zeroes
+  ---
+  duration_ms: 3.1999
+  type: 'test'
+  ...
+# Subtest: pasted time 0000 displays 00:00 without losing leading zeroes
+ok 206 - pasted time 0000 displays 00:00 without losing leading zeroes
+  ---
+  duration_ms: 4.3749
+  type: 'test'
+  ...
+# Subtest: pasted time 1200 displays 12:00 without losing leading zeroes
+ok 207 - pasted time 1200 displays 12:00 without losing leading zeroes
+  ---
+  duration_ms: 2.9896
+  type: 'test'
+  ...
+# Subtest: pasted time 2359 displays 23:59 without losing leading zeroes
+ok 208 - pasted time 2359 displays 23:59 without losing leading zeroes
+  ---
+  duration_ms: 3.0727
+  type: 'test'
+  ...
+# Subtest: time formatting keeps editing/clearing and rejects partial, seconds and invalid ranges
+ok 209 - time formatting keeps editing/clearing and rejects partial, seconds and invalid ranges
+  ---
+  duration_ms: 6.013
+  type: 'test'
+  ...
+# Subtest: existing endpoints use same-origin cookies, no-store and exact request bodies
+ok 210 - existing endpoints use same-origin cookies, no-store and exact request bodies
+  ---
+  duration_ms: 33.3186
+  type: 'test'
+  ...
+# Subtest: place search preserves server default limit
+ok 211 - place search preserves server default limit
+  ---
+  duration_ms: 0.7871
+  type: 'test'
+  ...
+# Subtest: HTTP ErrorDTO and network rejection are distinct, neither repeats a POST
+ok 212 - HTTP ErrorDTO and network rejection are distinct, neither repeats a POST
+  ---
+  duration_ms: 0.9273
+  type: 'test'
+  ...
+# Subtest: HTTP success and failure preserve status, body and diagnostic headers
+ok 213 - HTTP success and failure preserve status, body and diagnostic headers
+  ---
+  duration_ms: 1.1211
+  type: 'test'
+  ...
+# Subtest: a proxy text response remains HTTP and is not invented into ErrorDTO
+ok 214 - a proxy text response remains HTTP and is not invented into ErrorDTO
+  ---
+  duration_ms: 0.4387
+  type: 'test'
+  ...
+# Subtest: an empty HTTP response is not a network failure
+ok 215 - an empty HTTP response is not a network failure
+  ---
+  duration_ms: 0.2847
+  type: 'test'
+  ...
+# Subtest: an interrupted body is a network outcome retaining already received headers
+ok 216 - an interrupted body is a network outcome retaining already received headers
+  ---
+  duration_ms: 1.5535
+  type: 'test'
+  ...
+# Subtest: caller AbortSignal is forwarded without adding timers or a retry
+ok 217 - caller AbortSignal is forwarded without adding timers or a retry
+  ---
+  duration_ms: 0.4534
+  type: 'test'
+  ...
+# Subtest: separate requests and clients do not share a mutable result
+ok 218 - separate requests and clients do not share a mutable result
+  ---
+  duration_ms: 1.1187
+  type: 'test'
+  ...
+# Subtest: loading the page entry point makes no requests; its real client can then perform a read
+ok 219 - loading the page entry point makes no requests; its real client can then perform a read
+  ---
+  duration_ms: 10.8371
+  type: 'test'
+  ...
+# Subtest: gap includes equality, rejects diagonal near-overlap and handles fractional coordinates
+ok 220 - gap includes equality, rejects diagonal near-overlap and handles fractional coordinates
+  ---
+  duration_ms: 1.568
+  type: 'test'
+  ...
+# Subtest: cyclic cut crosses 0 degrees and exact ties use canonical IDs, independent of input/locale
+ok 221 - cyclic cut crosses 0 degrees and exact ties use canonical IDs, independent of input/locale
+  ---
+  duration_ms: 1.1922
+  type: 'test'
+  ...
+# Subtest: shared route regression: positive length is forbidden, crossing/touch/parallel remain distinct
+ok 222 - shared route regression: positive length is forbidden, crossing/touch/parallel remain distinct
+  ---
+  duration_ms: 0.2776
+  type: 'test'
+  ...
+# Subtest: invalid viewport and missing real measurements report typed local layout errors
+ok 223 - invalid viewport and missing real measurements report typed local layout errors
+  ---
+  duration_ms: 2.541
+  type: 'test'
+  ...
+# Subtest: numbered house sectors cross zero using consecutive published cusps, not point longitudes
+ok 224 - numbered house sectors cross zero using consecutive published cusps, not point longitudes
+  ---
+  duration_ms: 0.4404
+  type: 'test'
+  ...
+# Subtest: internal house rows contain complete glyph/R bounds across 0 at 720
+ok 225 - internal house rows contain complete glyph/R bounds across 0 at 720
+  ---
+  duration_ms: 14.7404
+  type: 'test'
+  ...
+# Subtest: internal house rows contain complete glyph/R bounds across 0 at 448
+ok 226 - internal house rows contain complete glyph/R bounds across 0 at 448
+  ---
+  duration_ms: 8.7017
+  type: 'test'
+  ...
+# Subtest: internal house rows contain complete glyph/R bounds across 0 at 328
+ok 227 - internal house rows contain complete glyph/R bounds across 0 at 328
+  ---
+  duration_ms: 5.3611
+  type: 'test'
+  ...
+# Subtest: published house controls placement even if source longitude is across a cusp
+ok 228 - published house controls placement even if source longitude is across a cusp
+  ---
+  duration_ms: 1.2539
+  type: 'test'
+  ...
+# Subtest: cosmogram clusters use internal rows without inventing houses
+ok 229 - cosmogram clusters use internal rows without inventing houses
+  ---
+  duration_ms: 28.1941
+  type: 'test'
+  ...
+1..229
+# tests 229
+# suites 0
+# pass 229
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 517.3926
