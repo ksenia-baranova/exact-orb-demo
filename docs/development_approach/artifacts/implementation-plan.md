@@ -12,7 +12,7 @@
 ## Заготовка
 
 ```markdown
-# План реализации <CH-id>
+# План реализации <change-id>
 
 Требования: docs/requirements/current/<…> @ <commit>; requirements.md @ <commit>
 

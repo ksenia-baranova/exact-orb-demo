@@ -13,7 +13,7 @@ docs/project_management/changes/<change-id>/
 ## requirements.md
 
 ```markdown
-# Требования <CH-id> <название>
+# Требования <change-id> <название>
 
 ## Глоссарий
 | Термин | Значение |

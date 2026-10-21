@@ -15,7 +15,7 @@
 ```markdown
 ---
 id: TASK-<R>-<nn>
-change: <CH-id>
+change: <change-id>
 role: developer            # owner | manager | analyst | developer | tester | reviewer
 kind: review               # intake | analysis | answer_dp | apply_decisions | resolve_findings | review | escalation | summary | approve | implement | test | code_review | bug_fix | transfer | accept
 gate: ALIGNMENT            # статус изменения, в котором создана

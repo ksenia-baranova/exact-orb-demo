@@ -16,7 +16,7 @@
 ## Заготовка
 
 ````markdown
-# Тест-план <CH-id> <название>
+# Тест-план <change-id> <название>
 
 Требования: docs/requirements/current/<…> @ <commit>; requirements.md инкремента @ <commit>
 Автор: Tester, <TASK-T-id>

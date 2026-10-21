@@ -30,7 +30,7 @@ O -> A : skill роли + путь к задаче NEW
 activate A
 A -> G : читает задачу и inputs
 A -> A : работа роли
-A -> G : свои файлы, status, resolution,\nraised_dp\nодин коммит [CH-042][TASK-A-01] docs: …
+A -> G : свои файлы, status, resolution,\nraised_dp\nодин коммит [ui-chart-wheel][TASK-A-01] docs: …
 A --> O : отчёт +\n«Следующий шаг: …»
 deactivate A
 
@@ -40,7 +40,7 @@ alt запуск неудачный
     O -> G : git revert коммита агента
     O -> O : поправить промпт, перезапустить
 else результат на месте
-    O -> S : next CH-042
+    O -> S : next ui-chart-wheel
     activate S
     S -> G : читает задачи, DP, баги, events.jsonl
     S -> S : поля задач по словарю;\nусловие перехода по таблице
@@ -49,14 +49,14 @@ else результат на месте
         S --> O : переход и созданные задачи
     else условие не выполнено
         S --> O : текст ошибки
-        O -> S : fix CH-042 TASK-… "ошибка"
+        O -> S : fix ui-chart-wheel TASK-… "ошибка"
         S -> G : задача тому же исполнителю\nна исправление
     end
     deactivate S
     O -> G : отдельный коммит оркестратора
 end
 
-O -> S : log CH-042 TASK-… --issue "…"
+O -> S : log ui-chart-wheel TASK-… --issue "…"
 S -> G : строка в debug_log.md:\nзадача, версия промпта,\nчто пошло не так, что поменяли
 
 @enduml
