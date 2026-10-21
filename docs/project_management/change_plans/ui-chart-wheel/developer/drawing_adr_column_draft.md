@@ -1,5 +1,7 @@
 # DRAFT — пассивный Chart Renderer с внутренними рядами планет
 
+**Навигация21.10:** чистовой предложенный [ADR-0042](../../../../requirements/decisions/0042-passive-chart-renderer.md) и [D008 handoff](task_d008_handoff.md) заменяют этот исторический рабочий draft как текущий предмет рассмотрения. Старые секции/подписи сохранены; approval не приписывается.
+
 **Codex / Developer,19.10.2026. Статус:DRAFT.** Ревизия technical proposal по прямому поручению Owner. Кандидат ADR-0042: [реестр](../../../../requirements/decisions/README.md) на InputSHA07bb56ba5d49ec76de64df41ad80d175fbe90a2d заканчивается0041; номер не резервируется, нормативный ADR не создаётся. Перед переносом проверить реестр повторно. [Прежний проект D005](https://github.com/ksenia-baranova/exact-orb-demo/blob/883b6d3a47f7113e44ede73c9ad16b40f15bbdaf/docs/project_management/change_plans/ui-chart-wheel/developer/drawing_adr_draft.md) и его SHA8b8c4c8 сохраняются; принятые ADR не заменяются этим draft.
 
 ## Контекст и область

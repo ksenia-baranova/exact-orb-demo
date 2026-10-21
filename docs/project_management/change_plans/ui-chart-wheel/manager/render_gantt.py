@@ -50,6 +50,9 @@ SOURCES = {
     "implementation_candidate": "883b6d3a47f7113e44ede73c9ad16b40f15bbdaf",
     "implementation_retested": "99741958b4bbee8884505920f4a02f2f19dea3e3",
     "implementation_tester_output": "f930c864d6a416acff8a49081585950853b931f9",
+    "transfer_publication": "c7219e485917366f67159c9a08e3c78dc4e69372",
+    "transfer_review": "583d635559862edc25e271f68053038c38fe088d",
+    "closure_input": "72ab4e30321884ddabe4205505216a7595d8bfeb",
     "main_for_merge_preparation": "bba8d6cfb22f586f86c3035423f2535ede158b9f",
 }
 
@@ -74,7 +77,7 @@ def render():
     xml = [
         '<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="1778" viewBox="0 0 1440 1778" role="img" aria-labelledby="title desc">',
         '<title id="title">ui-chart-wheel — факт, согласованная подготовка и условные оценки</title>',
-        '<desc id="desc">Факт G1:13–17 октября, фактический труд отдельно не измерен. Исторические research и оценки сохранены. Реализация D007 завершена, AcceptedSHA883b6d3 по Owner21.10 с DEBT-UI-004. Tester Retested9974195:6/6 native cases,672/672 checks,229 UI tests,2959 Python passed и1 legacy skip;004 CLOSED,002/precision OPEN/INDETERMINATE. Перенос22REQ/53AS/11PUML выполнен; A008 ready for review, T008 ещё не выполнен. Формальные G3/G4/G5 не восстановлены, реестр долга ещё не опубликован в main, поставка нет.</desc>',
+        '<desc id="desc">Факт G1:13–17 октября, фактический труд отдельно не измерен. Исторические research и оценки сохранены. Реализация D007 завершена, AcceptedSHA883b6d3 по Owner21.10 с DEBT-UI-004. Tester Retested9974195:6/6 native cases,672/672 checks,229 UI tests,2959 Python passed и1 legacy skip;004 CLOSED,002/precision OPEN/INDETERMINATE. T008583d635 вернул R01/R02; исправления готовы, T009 ожидается. D008/ADR приняты Owner для текущего passive этапа; active — будущая фича. Формальные G3/G4/G5 не восстановлены, реестр долга ещё не опубликован в main, поставка нет.</desc>',
         '<style>text{font-family:"Segoe UI","DejaVu Sans",sans-serif;fill:#172536} .muted{fill:#586879} .small{font-size:16px} .label{font-size:18px} .section{font-size:23px;font-weight:650} .grid{stroke:#dce4ec;stroke-width:1} .estimate{stroke:#215dc2;stroke-dasharray:6 4;stroke-width:2}</style>',
         '<rect width="1440" height="1778" fill="#f1f5f9"/>',
     ]
@@ -175,17 +178,17 @@ def render():
 
     text(50, 1326, "ПОДГОТОВКА К MAIN · принятый результат 883b6d3 · поставка нет", 23, weight="650")
     text(50, 1362, "Owner21.10 · завершить change; открытый остаток002 отложить в общий техдолг.", 18, color="#16795d")
-    text(50, 1392, "A008 · READY_FOR_REVIEW · 22REQ / 53AS перенесены; source-копии удалены.", 18)
-    text(50, 1422, "11 sequences перенесены: 8 текущих / 3 архивных; D008 остаётся для ADR.", 18)
-    text(50, 1452, "T008 · NOT_STARTED · независимая сверка будущих точных A008 / D008 SHA.", 18)
+    text(50, 1392, "A008 · READY_FOR_REVIEW · R01/R02 и advisory N01 исправлены локально.", 18)
+    text(50, 1422, "D008 · DONE / APPROVED · ADR-0042 принят для текущего пассивного M1-8.", 18)
+    text(50, 1452, "T008 · DONE · TRANSFER_REWORK_REQUIRED. Адресная сверка T009 ожидается.", 18)
     text(50, 1482, "D007 · DONE / APPROVED · реализация принята с исключением DEBT-UI-004.", 18, color="#16795d")
     text(50, 1512, "Tester · 6/6 native случаев · 672/672 checks · 229 UI / 2959 Python + 1 skip.", 18)
     text(50, 1542, "004 CLOSED; 002 / geometry precision OPEN / INDETERMINATE → DEBT-UI-004.", 18)
-    text(50, 1572, "Owner: внутренние ряды по домам, first-five всех таблиц, passive SVG.", 18)
+    text(50, 1572, "Owner: passive SVG только сейчас; active wheel — отдельная будущая фича.", 18)
     text(50, 1608, "Труд отдельно не измерен. Исторические оценки / исследования не начисляются повторно.", 17, color="#586879")
-    text(50, 1638, "Main bba8d6c: 21 документальное modify/delete пересечение из-за прежнего revert.", 17, color="#586879")
-    text(50, 1668, "Поставка: нет. Перенос выполнен; независимая сверка / ADR / публикация долга ещё впереди.", 17, color="#586879")
-    text(50, 1698, "Manager §2.29 / Plan v16 / Gantt v15. Owner разрешил commit/push; merge не выполнен.", 17, color="#586879")
+    text(50, 1638, "Main bba8d6c: 16 документальных пересечений; план разрешения подготовлен.", 17, color="#586879")
+    text(50, 1668, "Поставка: нет. Остались T009 / registry-публикация / разрешённая интеграция.", 17, color="#586879")
+    text(50, 1698, "Manager §2.31 / Plan v18 / Gantt v17. Разрешены только commit/push в change.", 17, color="#586879")
     text(50, 1728, "Owner-завершение не превращает неполный oracle / отсутствующие formal gates в PASS.", 17, color="#586879")
     metadata = {
         "timezone": "Europe/Moscow",
@@ -203,12 +206,13 @@ def render():
         "received_external_review": {"task": "TASK-R-001", "revision": "r2", "source": "Owner message; Manager summary", "task_status": "IN_PROGRESS", "artifact_status": "DRAFT", "source_output_sha": None, "source_package_published": False, "manager_summary_path": "manager/review_inputs/task-r-001-r2-summary.md"},
         "next_tasks": {
             "TASK-A-006": {"status": "NOT_STARTED", "subject": "historical Analyst task; semantics resolved directly by Owner20.10, transfer in A008"},
-            "TASK-A-008": {"status": "READY_FOR_REVIEW", "artifact_status": "IN_REVIEW", "executor_for_transfer": "Codex / Manager, direct Owner21.10", "subject": "final contract delta and clean transfer: passive SVG, internal house rows, first-five, aspect view, already_applied", "input_sha": SOURCES["implementation_candidate"], "published_output_sha": None},
+            "TASK-A-008": {"status": "READY_FOR_REVIEW", "artifact_status": "IN_REVIEW", "executor_for_transfer": "Codex / Manager, direct Owner21.10", "subject": "final contract delta and clean transfer: passive SVG, internal house rows, first-five, aspect view, already_applied", "input_sha": SOURCES["implementation_candidate"], "published_output_sha": SOURCES["transfer_publication"], "local_corrections_pending_review": True},
             "TASK-D-006": {"status": "DONE", "artifact_status": "APPROVED", "approval_scope": "preparation_completeness_only", "subject": "controller HTML plan and own estimate", "source_sha": SOURCES["full_wheel_package"], "started": "2026-10-19T13:01:09+03:00", "preparation_estimate_hours": [0.5, 1.5], "implementation_authorized": False, "analyst_contract_sha": SOURCES["analyst_contract_s1"]},
             "TASK-D-007": {"status": "DONE", "artifact_status": "APPROVED", "approval_scope": "delivered implementation accepted by Owner21.10 with DEBT-UI-004", "accepted_sha": SOURCES["implementation_candidate"], "actual_effort_hours": None, "resume_status": None, "started": "2026-10-19T22:11:37+03:00", "subject": "full passive wheel implementation FW-01 to FW-06", "input_sha": SOURCES["full_wheel_package"], "implementation_authorized": True, "authorization": "Owner direct process exception, Manager section 2.25", "g3_confirmed": False},
             "TASK-T-007": {"status": "NOT_STARTED", "previous_status": "BLOCKED", "dependency_resolved": True, "technical_package_sha": SOURCES["full_wheel_package"], "review_input_sha": SOURCES["full_wheel_package"], "previous_assignment_sha": SOURCES["table_only_publication"], "analyst_contract_sha": SOURCES["analyst_contract_s1"]},
-            "TASK-D-008": {"status": "NOT_STARTED", "subject": "remaining technical ADR / responsibilities; sequences already transferred by Manager", "input_sha": SOURCES["implementation_candidate"], "requires_new_geometry_research": False},
-            "TASK-T-008": {"status": "NOT_STARTED", "subject": "independent clean-transfer fidelity and evidence applicability", "input_sha": SOURCES["implementation_candidate"], "depends_on_exact_outputs": ["TASK-A-008", "TASK-D-008"]},
+            "TASK-D-008": {"status": "DONE", "artifact_status": "APPROVED", "subject": "ADR0042 accepted by Owner for current passive scope; active wheel future feature", "input_sha": SOURCES["closure_input"], "requires_new_geometry_research": False, "owner_accepted": True},
+            "TASK-T-008": {"status": "DONE", "artifact_status": "APPROVED", "subject": "completed independent review; transfer itself returned", "source_sha": SOURCES["transfer_review"], "verdict": "TRANSFER_REWORK_REQUIRED"},
+            "TASK-T-009": {"status": "NOT_STARTED", "subject": "targeted corrected transfer check; no new research"},
             "TASK-R-002": {"status": "NOT_STARTED", "previous_status": "BLOCKED", "dependency_resolved": True, "technical_package_sha": SOURCES["full_wheel_package"], "review_input_sha": SOURCES["full_wheel_package"], "previous_assignment_sha": SOURCES["table_only_publication"], "analyst_contract_sha": SOURCES["analyst_contract_s1"]},
         },
         "completion_registration": {
@@ -218,13 +222,13 @@ def render():
             "delivery_integrated": False, "merge_sha": None, "deferred_debt": "DEBT-UI-004",
             "tester_004": "CLOSED", "tester_002": "OPEN / precision INDETERMINATE",
             "registry_published_in_main": False,
-            "documentary_transfer_completed": True, "source_files_removed": 13, "target_requirement_ids": 22, "target_scenario_ids": 53, "target_sequence_files": 11, "independent_transfer_review": False, "native_cases_pass": [6, 6], "native_checks_pass": [672, 672],
+            "documentary_transfer_completed": True, "source_files_removed": 13, "target_requirement_ids": 22, "target_scenario_ids": 53, "target_sequence_files": 11, "independent_transfer_review": True, "independent_transfer_verdict": "TRANSFER_REWORK_REQUIRED", "corrected_independent_review": False, "native_cases_pass": [6, 6], "native_checks_pass": [672, 672],
             "ui_tests_pass": 229, "pytest_pass": 2959, "pytest_legacy_skip": 1,
             "actual_effort_hours": None,
-            "transfer_tasks": {"TASK-A-008": "READY_FOR_REVIEW", "TASK-D-008": "NOT_STARTED", "TASK-T-008": "NOT_STARTED"},
+            "transfer_tasks": {"TASK-A-008": "READY_FOR_REVIEW", "TASK-D-008": "DONE", "TASK-T-008": "DONE", "TASK-T-009": "NOT_STARTED"},
             "main_tree_equals_original_baseline": True, "main_is_ancestor": False,
-            "merge_probe_documentary_modify_delete": 21, "merge_probe_mutates_index_or_worktree": False,
-            "integration_resolution": "retain current change versions of the 21 reverted documentary paths; verify actual merge separately",
+            "merge_probe_documentary_modify_delete": 16, "merge_probe_mutates_index_or_worktree": False,
+            "integration_resolution": "retain current change versions of the 16 reverted documentary paths; verify actual merge separately",
         },
         "d005_research": {
             "task_status": "READY_FOR_REVIEW", "artifact_status": "IN_REVIEW",
@@ -239,16 +243,17 @@ def render():
             "independent_manager_browser_replay": False, "full_forecast_confirmed": False,
         },
         "limited_g3_preparation": {"task": "TASK-D-006", "status": "DONE", "artifact_status": "APPROVED", "scope": "HTML selection to passive SVG plan and own estimate only", "implementation_authorized": False, "g3_confirmed": False, "estimate_received": True, "future_hours": [14, 22], "independent_subset_hours": [7, 10], "subset_included_in_future_hours": True, "included_in_full_implementation": True},
-        "manager_registration_publication": {"status": "OWNER_AUTHORIZED", "source": "Owner21.10 requested commit/push to change then Tester prompt; Manager section2.29", "transfer_sha_selector": "commit containing Manager section2.29 and this T008 assignment", "previous_registration_sha": "e0daa0e814d3d1fd34cadb8c17d064f19c4810f5"},
+        "manager_registration_publication": {"status": "OWNER_AUTHORIZED_COMMIT_PUSH_CHANGE_ONLY", "source": "Owner21.10: current passive scope; active future feature; only commit/push everything to change, Manager section2.31", "transfer_sha_selector": "commit containing Manager section2.29 and this T008 assignment", "previous_registration_sha": "e0daa0e814d3d1fd34cadb8c17d064f19c4810f5"},
         "full_implementation_proposal": {"task": "TASK-D-007", "source_sha": SOURCES["full_wheel_package"], "work_items": ["FW-01", "FW-02", "FW-03", "FW-04", "FW-05", "FW-06"], "hours": [40, 64], "person_days": [5, 8], "confidence": "medium", "deadline_end_working_day": 8, "started": "2026-10-19T22:11:37+03:00", "owner_approved": False, "owner_question_pending": False, "start_authorization_independent_of_budget_approval": True, "includes_d006_controller_html": True, "previous_research_added_again": False, "independent_tester_included": False},
         "owner_column_decision": {"accepted": True, "source_sha": SOURCES["full_wheel_package"], "source_path": "developer/owner_decision_drawing_2026-10-19.md", "decision_refs": ["DP-O-011", "DP-O-012"], "conditional_column": True, "historical_superseded_by": "Owner20.10 internal house rows", "svg_category_text": False, "numeric_layout_approved_by_owner": False},
         "column_preparation": {"source_sha": SOURCES["full_wheel_package"], "run": "run07-ports", "studied_configurations_pass": [29, 29], "isolated_boundary_pass": [28, 28], "elapsed_minutes": 71.8126, "actual_effort_hours": None, "production_pass": False, "independent_manager_replay": False},
         "reviewer_feasibility_v2_guidance": {"person_days": [1.25, 2.25], "owner_approved": False, "developer_estimate_received": True, "status": "historical reviewer guidance; own D005 estimate registered separately", "source": "R001 r2 via Owner; arithmetic of reviewer blocks"},
         "owner_table_only_selection": {"accepted": True, "decision_ref": "DP-O-008 / Manager section 2.23", "source": "Owner: Да принимаем такое решение; current chat 2026-10-19", "svg_selectable": False, "html_selection_updates_svg": True, "svg_pointer_q44_required": False, "svg_keyboard_controls_required": False, "html_accessibility_required": True, "visual_requirements_preserved": True},
         "pending_analyst_contract_update": {"task": "TASK-A-008", "published_baseline_sha": SOURCES["analyst_contract_s1"], "target_contract_sha": None, "blocks_clean_delivery": True, "blocks_final_g3_on_affected_scope": False, "blocks_direct_owner_start": False, "blocks_independent_preparation_or_historical_reviews": False},
+        "future_active_wheel": {"kind": "feature", "current_scope": False, "owner_source": "Manager section2.31", "estimate": None, "start_authorized": False},
         "process_notes_added": {"item": 9, "subject": "propose lower-cost alternatives and explicit compromises", "actual_skill_files_modified": False},
         "analyst_contract_sha": SOURCES["analyst_contract_s1"],
-        "snapshot_version": 15,
+        "snapshot_version": 17,
         "owner_ambiguity_choice": "S1",
         "owner_ambiguity_choice_source": "Owner message S1; Manager section 2.19",
         "manager_registration_date": "2026-10-21",
@@ -257,7 +262,7 @@ def render():
     xml.append("<metadata>"+escape(json.dumps(metadata, ensure_ascii=False))+"</metadata>")
     xml.append("</svg>")
     OUT.write_text("\n".join(xml)+"\n", encoding="utf-8")
-    print(f"GANTT_RENDER_OK actual_date_difference=4 inclusive_dates=5 preparation=2.5-3.5_person_days experiment_max_hours=6 deadline_end_working_day=4 t0=2026-10-18T15:17:04+03:00 package=d24a24e snapshot=15 full_wheel_hours=40-64_REFERENCE d006=DONE d007=DONE accepted=883b6d3 retested=9974195 delivery=false owner_direct_start=true formal_g3=false output={OUT}")
+    print(f"GANTT_RENDER_OK actual_date_difference=4 inclusive_dates=5 preparation=2.5-3.5_person_days experiment_max_hours=6 deadline_end_working_day=4 t0=2026-10-18T15:17:04+03:00 package=d24a24e snapshot=17 full_wheel_hours=40-64_REFERENCE d006=DONE d007=DONE accepted=883b6d3 retested=9974195 delivery=false owner_direct_start=true formal_g3=false output={OUT}")
 
 if __name__ == "__main__":
     render()

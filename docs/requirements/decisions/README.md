@@ -55,6 +55,7 @@
 | [0039](0039-https-in-all-environments.md) | HTTPS и `Secure` cookie во всех окружениях | Принято |
 | [0040](0040-session-bootstrap-and-current-chart.md) | Bootstrap без карты; current chart отдельным GET | Принято |
 | [0041](0041-stored-chart-in-session.md) | Построенная карта хранится в агрегате сессии | Принято; компонентная реализация M1-5.2 выполнена |
+| [0042](0042-passive-chart-renderer.md) | Пассивный Chart Renderer и изоляция публикации SVG | Принято Owner21.10.2026 для M1-8; активное колесо — будущая отдельная фича |
 
 ## Замечание об именах файлов
 
