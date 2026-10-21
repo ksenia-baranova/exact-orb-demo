@@ -1,0 +1,1032 @@
+{
+  "author": "Codex / Tester",
+  "task": "TASK-T-008",
+  "input_head": "c7219e485917366f67159c9a08e3c78dc4e69372",
+  "assignment_sha": "c7219e485917366f67159c9a08e3c78dc4e69372",
+  "transfer_sha": "c7219e485917366f67159c9a08e3c78dc4e69372",
+  "source_sha": "883b6d3a47f7113e44ede73c9ad16b40f15bbdaf",
+  "retested_sha": "99741958b4bbee8884505920f4a02f2f19dea3e3",
+  "tester_output_sha": "f930c864d6a416acff8a49081585950853b931f9",
+  "estimate": "2-4h; medium-high; 2026-10-21 18:00 MSK",
+  "started_msk": "2026-10-21 14:01",
+  "method": "Independent Git source reads and semantic review; not a rerun of Manager validation",
+  "moves": [
+    {
+      "source": "docs/project_management/change_plans/ui-chart-wheel/analyst/requirements.md",
+      "target": "docs/requirements/current/ui/chart-wheel.md",
+      "source_git_sha256_lf": "71028bd69e874f4b2f6597a55973de04f638c619c8cdada5b13ccd67dc6c8f6c",
+      "source_snapshot_sha256": "addac6499c126e61d7890e9aab5fe4c59977e6eebab9e136770b8afdd1face6c",
+      "source_snapshot_eol": "CRLF",
+      "target_sha256_lf": "6c912cf1123e57c1e5c98822201150ca32e29176c6f664b3522a6110c724e82d",
+      "source_absent": true
+    },
+    {
+      "source": "docs/project_management/change_plans/ui-chart-wheel/analyst/scenarios.md",
+      "target": "docs/requirements/current/ui/scenarios.md",
+      "source_git_sha256_lf": "ab3967b0c8655bcb8fb1f60ca0158b2ffb3edad2033d00a3d79f0e2d8ee48acd",
+      "source_snapshot_sha256": "762e4a6ebae5129d1d8eacef1a4768f3e081db18a8611e1b1f37039146d75809",
+      "source_snapshot_eol": "CRLF",
+      "target_sha256_lf": "fae73be5f3552b1712d260774e7b218af5aa9ca5bead2045c099eb9b24d1f0bf",
+      "source_absent": true
+    },
+    {
+      "source": "docs/project_management/change_plans/ui-chart-wheel/analyst/sequence_diagrams/ui/001-chart-presentation.puml",
+      "target": "docs/sequence_diagrams/ui/001-chart-presentation.puml",
+      "source_git_sha256_lf": "1e4f9041b722a3eb40e6c75a0d4dca317b4813ece66fb5dc49cfb8527befa7d5",
+      "source_snapshot_sha256": "d9712d89d0f090fd4ff8f855cb833e59e6945a29049e9489278353145d6c4a87",
+      "source_snapshot_eol": "CRLF",
+      "target_sha256_lf": "6cdcbb60cdf5e07814a5ce3dd7314ebbbed0b96a903f330083640b5fbbbbd696",
+      "source_absent": true
+    },
+    {
+      "source": "docs/project_management/change_plans/ui-chart-wheel/analyst/sequence_diagrams/ui/002-wheel-table-selection.puml",
+      "target": "docs/sequence_diagrams/ui/002-wheel-table-selection.puml",
+      "source_git_sha256_lf": "a4bc0f7fac487b4530251ecd10174f1dc14acdd47cbf833546c6c99201cee1f5",
+      "source_snapshot_sha256": "edba2ab6f56d18fb82c8f344a70caf0a660d393ad6fd31b228ff8146cfa2df2b",
+      "source_snapshot_eol": "CRLF",
+      "target_sha256_lf": "7056e7482a613bb3fb001227b25b77aece3a69edbc3fe2531e77a1846d707baf",
+      "source_absent": true
+    },
+    {
+      "source": "docs/project_management/change_plans/ui-chart-wheel/analyst/sequence_diagrams/ui/003-edit-and-recovery.puml",
+      "target": "docs/sequence_diagrams/ui/003-edit-and-recovery.puml",
+      "source_git_sha256_lf": "fc97dbe39b8cde933c1f364165df23bfbedf55553e64c110315f134de178c152",
+      "source_snapshot_sha256": "5d22a2e18abab9a164a8ae6429f6148b6a65276bb59dc9d7ee37c8b39dbd41a0",
+      "source_snapshot_eol": "CRLF",
+      "target_sha256_lf": "90a5cd31de21cdaa85000771f0ca8a60d3335fbeedda99e02e8da1462658085d",
+      "source_absent": true
+    },
+    {
+      "source": "docs/project_management/change_plans/ui-chart-wheel/developer/sequence_diagrams/ui/001-result-renderer-lifecycle.puml",
+      "target": "docs/sequence_diagrams/research/ui-chart-wheel/001-result-renderer-lifecycle.puml",
+      "source_git_sha256_lf": "b483e6050ff43fc53b812c0ffedf06f68f41659271100b13bd0a1bef90d28ec0",
+      "source_snapshot_sha256": "e48e4cafcac18dc81215ef43845139c66f8ccdf14659b761b1cf32300b518f20",
+      "source_snapshot_eol": "CRLF",
+      "target_sha256_lf": "ed214598be4e1257efea6377f6a1841ad5acb206df93fa86b3d857dd19f55dbe",
+      "source_absent": true
+    },
+    {
+      "source": "docs/project_management/change_plans/ui-chart-wheel/developer/sequence_diagrams/ui/002-acceptance-selection-focus.puml",
+      "target": "docs/sequence_diagrams/research/ui-chart-wheel/002-acceptance-selection-focus.puml",
+      "source_git_sha256_lf": "66675a279664c0d63e8c67b0964e0db6c4d433b8eccb6b14768f1d90e5ff0c8a",
+      "source_snapshot_sha256": "9a23911c75411f81d14e10450000fa3a5f2f4dd5a76ccbc829eb0b3384cc7114",
+      "source_snapshot_eol": "CRLF",
+      "target_sha256_lf": "563486a13b16bc54552c96f23f495ad6a44c96888721bd52d5a3c83bcc22719c",
+      "source_absent": true
+    },
+    {
+      "source": "docs/project_management/change_plans/ui-chart-wheel/developer/sequence_diagrams/ui/003-passive-copy-install.puml",
+      "target": "docs/sequence_diagrams/ui/technical/003-passive-copy-install.puml",
+      "source_git_sha256_lf": "8d008d8705568be8c0f54345b92a151c2125d3c4b8aff1fa5368e67c0a1ff9b1",
+      "source_snapshot_sha256": "3111a2491af1c4684e830c25f414f5b045df998d78fcd4904bbe6d56e0cdfc6b",
+      "source_snapshot_eol": "CRLF",
+      "target_sha256_lf": "8d8ff8a7c8e2333c20e23e892570fb8f825af819ab82ad831a1e3795c24df41b",
+      "source_absent": true
+    },
+    {
+      "source": "docs/project_management/change_plans/ui-chart-wheel/developer/sequence_diagrams/ui/004-column-layout-revision.puml",
+      "target": "docs/sequence_diagrams/research/ui-chart-wheel/004-column-layout-revision.puml",
+      "source_git_sha256_lf": "15bf446eceb960fc06cd2b424697ce490d394b948cfb7132cb2fafcf070ed696",
+      "source_snapshot_sha256": "41b19506a13268374c7f8e92e6b28f4be20274ec4d03197549ad7a591e635ef1",
+      "source_snapshot_eol": "CRLF",
+      "target_sha256_lf": "ff777e172b05dd99ef82d5fd30fc31cd3097ad086e6862b2def5fe6b90f8bef4",
+      "source_absent": true
+    },
+    {
+      "source": "docs/project_management/change_plans/ui-chart-wheel/developer/sequence_diagrams/ui/005-accepted-once-editor.puml",
+      "target": "docs/sequence_diagrams/ui/technical/005-accepted-once-editor.puml",
+      "source_git_sha256_lf": "cfc320fbed70c926a6a452e14c1dc1ed28de1d83c87666071eff659a80da9d50",
+      "source_snapshot_sha256": "d04adb53c4b83d7e21ad3afc42caaa8906dec4c6cab14d485651ac733614dd36",
+      "source_snapshot_eol": "CRLF",
+      "target_sha256_lf": "9ca42c5581e3cc720b29e2b870492fab57fb625aec3d035d112bc4aae8bf935d",
+      "source_absent": true
+    },
+    {
+      "source": "docs/project_management/change_plans/ui-chart-wheel/developer/sequence_diagrams/ui/006-aspect-reading-mode.puml",
+      "target": "docs/sequence_diagrams/ui/technical/006-aspect-reading-mode.puml",
+      "source_git_sha256_lf": "e189641c948ca4ff9674ca68b506c2a6c55ae19dbca9576c1f88f073a203a8c6",
+      "source_snapshot_sha256": "2ae4acefbbebb9d2ecef1d6d8d5d58a6b89c5307efebbb0baa91c2ad8fbd137d",
+      "source_snapshot_eol": "CRLF",
+      "target_sha256_lf": "6be23bbcd76e9725483f1705845da9ee71051d77c132d96c91e03d7c6903c0cb",
+      "source_absent": true
+    },
+    {
+      "source": "docs/project_management/change_plans/ui-chart-wheel/developer/sequence_diagrams/ui/007-internal-house-rows.puml",
+      "target": "docs/sequence_diagrams/ui/technical/007-internal-house-rows.puml",
+      "source_git_sha256_lf": "3f311ea9be447d45191cdfb2b7fed84590b3b9f9142a3cea549c592d4aa62162",
+      "source_snapshot_sha256": "fc4217811383283e8afee9440230c8e4eece6ff4e0ced1e57f5fca118262affb",
+      "source_snapshot_eol": "CRLF",
+      "target_sha256_lf": "f8bcf6baed5f69f56eca878aa09152ae5af5a27a10d16b2458c4c1a01ff831db",
+      "source_absent": true
+    },
+    {
+      "source": "docs/project_management/change_plans/ui-chart-wheel/developer/sequence_diagrams/ui/008-viewport-legend-vectors.puml",
+      "target": "docs/sequence_diagrams/ui/technical/008-viewport-legend-vectors.puml",
+      "source_git_sha256_lf": "480757e12ac6190f915ec385936e63a03245f2045422f263f2f3febf3febafed",
+      "source_snapshot_sha256": "202a9f70824e7d4e662ccbe8007531c6bc3596944e056238882c6f9dbea493a7",
+      "source_snapshot_eol": "CRLF",
+      "target_sha256_lf": "da68d7952ef30e10a33ab569aa747c29f1034eda77b9aa7008104525ef55b2cb",
+      "source_absent": true
+    }
+  ],
+  "targets": [
+    {
+      "path": "docs/requirements/current/ui/birth-form-and-facts.md",
+      "sha256_lf": "fa569640506e4c41c6b7089f0d6b0a63d7031155f102dc589027121983858b65"
+    },
+    {
+      "path": "docs/requirements/current/ui/chart-wheel.md",
+      "sha256_lf": "6c912cf1123e57c1e5c98822201150ca32e29176c6f664b3522a6110c724e82d"
+    },
+    {
+      "path": "docs/requirements/current/ui/scenarios.md",
+      "sha256_lf": "fae73be5f3552b1712d260774e7b218af5aa9ca5bead2045c099eb9b24d1f0bf"
+    },
+    {
+      "path": "docs/sequence_diagrams/research/ui-chart-wheel/001-result-renderer-lifecycle.puml",
+      "sha256_lf": "ed214598be4e1257efea6377f6a1841ad5acb206df93fa86b3d857dd19f55dbe"
+    },
+    {
+      "path": "docs/sequence_diagrams/research/ui-chart-wheel/002-acceptance-selection-focus.puml",
+      "sha256_lf": "563486a13b16bc54552c96f23f495ad6a44c96888721bd52d5a3c83bcc22719c"
+    },
+    {
+      "path": "docs/sequence_diagrams/research/ui-chart-wheel/004-column-layout-revision.puml",
+      "sha256_lf": "ff777e172b05dd99ef82d5fd30fc31cd3097ad086e6862b2def5fe6b90f8bef4"
+    },
+    {
+      "path": "docs/sequence_diagrams/research/ui-chart-wheel/README.md",
+      "sha256_lf": "7fb15e3bd7f34b6d3fde00c3f0dd0ff83c0c8b10569b32235bc5b8b821dc51f7"
+    },
+    {
+      "path": "docs/sequence_diagrams/ui/001-chart-presentation.puml",
+      "sha256_lf": "6cdcbb60cdf5e07814a5ce3dd7314ebbbed0b96a903f330083640b5fbbbbd696"
+    },
+    {
+      "path": "docs/sequence_diagrams/ui/002-wheel-table-selection.puml",
+      "sha256_lf": "7056e7482a613bb3fb001227b25b77aece3a69edbc3fe2531e77a1846d707baf"
+    },
+    {
+      "path": "docs/sequence_diagrams/ui/003-edit-and-recovery.puml",
+      "sha256_lf": "90a5cd31de21cdaa85000771f0ca8a60d3335fbeedda99e02e8da1462658085d"
+    },
+    {
+      "path": "docs/sequence_diagrams/ui/README.md",
+      "sha256_lf": "8db571030c10c7b70de1f9412d586d84e731473019cd7f63e17992eef9c96a9d"
+    },
+    {
+      "path": "docs/sequence_diagrams/ui/technical/003-passive-copy-install.puml",
+      "sha256_lf": "8d8ff8a7c8e2333c20e23e892570fb8f825af819ab82ad831a1e3795c24df41b"
+    },
+    {
+      "path": "docs/sequence_diagrams/ui/technical/005-accepted-once-editor.puml",
+      "sha256_lf": "9ca42c5581e3cc720b29e2b870492fab57fb625aec3d035d112bc4aae8bf935d"
+    },
+    {
+      "path": "docs/sequence_diagrams/ui/technical/006-aspect-reading-mode.puml",
+      "sha256_lf": "6be23bbcd76e9725483f1705845da9ee71051d77c132d96c91e03d7c6903c0cb"
+    },
+    {
+      "path": "docs/sequence_diagrams/ui/technical/007-internal-house-rows.puml",
+      "sha256_lf": "f8bcf6baed5f69f56eca878aa09152ae5af5a27a10d16b2458c4c1a01ff831db"
+    },
+    {
+      "path": "docs/sequence_diagrams/ui/technical/008-viewport-legend-vectors.puml",
+      "sha256_lf": "da68d7952ef30e10a33ab569aa747c29f1034eda77b9aa7008104525ef55b2cb"
+    }
+  ],
+  "requirements": [
+    {
+      "id": "REQ-UI-01",
+      "source": "docs/project_management/change_plans/ui-chart-wheel/analyst/requirements.md",
+      "source_sha256_lf": "d4327461c2b57795cd2afc1b840304ba18009ad47a1571e380cb3fc185836d44",
+      "target": "docs/requirements/current/ui/birth-form-and-facts.md",
+      "target_sha256_lf": "6906c51f425b9ca21c1fd9f45c69f23ccbbb1dc07e05cc29b378dfb68f0b732d",
+      "unchanged_body": false
+    },
+    {
+      "id": "REQ-UI-02",
+      "source": "docs/requirements/current/ui/birth-form-and-facts.md",
+      "source_sha256_lf": "3dddf861ef604514ba0f826fcc88527160af1be0a247cf0512c3ca6f5f875be2",
+      "target": "docs/requirements/current/ui/birth-form-and-facts.md",
+      "target_sha256_lf": "3dddf861ef604514ba0f826fcc88527160af1be0a247cf0512c3ca6f5f875be2",
+      "unchanged_body": true
+    },
+    {
+      "id": "REQ-UI-03",
+      "source": "docs/project_management/change_plans/ui-chart-wheel/analyst/requirements.md",
+      "source_sha256_lf": "c38de170d9c9688557acaf08099cefa1afc9d9bd21a2ea21621107abd83b7b58",
+      "target": "docs/requirements/current/ui/birth-form-and-facts.md",
+      "target_sha256_lf": "7c3321d3859185d9f50c4beb386640bfdf134e042adf60a61dcfeb92cd13d1f0",
+      "unchanged_body": false
+    },
+    {
+      "id": "REQ-UI-04",
+      "source": "docs/project_management/change_plans/ui-chart-wheel/analyst/requirements.md",
+      "source_sha256_lf": "45f463a78c517346ed564177d9d3223a514d84c91113e1870ce45c44555d3ed2",
+      "target": "docs/requirements/current/ui/birth-form-and-facts.md",
+      "target_sha256_lf": "2e81669df488d2e73d9e6e9f93fcab2fdafd33d52444c7cf3b10b7fbfa7087f8",
+      "unchanged_body": false
+    },
+    {
+      "id": "REQ-UI-05",
+      "source": "docs/project_management/change_plans/ui-chart-wheel/analyst/requirements.md",
+      "source_sha256_lf": "f35b83901b1bce7dfa2f67f2c80cf68f0af187f002bb01469383b523cd3cfb16",
+      "target": "docs/requirements/current/ui/birth-form-and-facts.md",
+      "target_sha256_lf": "f2e2d6db6869c25543f19f3a941701bf1bd6b71631f6b4e76cdf130bd312476a",
+      "unchanged_body": false
+    },
+    {
+      "id": "REQ-UI-06",
+      "source": "docs/project_management/change_plans/ui-chart-wheel/analyst/requirements.md",
+      "source_sha256_lf": "5c4b31f2ef4abc2549ef4f456e12863ad916a6508bb138fda7f7cfa1ef0a9b94",
+      "target": "docs/requirements/current/ui/birth-form-and-facts.md",
+      "target_sha256_lf": "295b59458ca94b86c5584b35f72390f8602ac10266800817e0bd38db5f25f0e3",
+      "unchanged_body": false
+    },
+    {
+      "id": "REQ-UI-07",
+      "source": "docs/requirements/current/ui/birth-form-and-facts.md",
+      "source_sha256_lf": "d537cac2853bbc7755894bc38faa28c40be8e78cf5d60d7f4a31058c3b3bbc4c",
+      "target": "docs/requirements/current/ui/birth-form-and-facts.md",
+      "target_sha256_lf": "d537cac2853bbc7755894bc38faa28c40be8e78cf5d60d7f4a31058c3b3bbc4c",
+      "unchanged_body": true
+    },
+    {
+      "id": "REQ-UI-08",
+      "source": "docs/project_management/change_plans/ui-chart-wheel/analyst/requirements.md",
+      "source_sha256_lf": "543c7f5a2b8c0badcc9e3ba5a7c04492197f8065bab99011934dac7aa8449630",
+      "target": "docs/requirements/current/ui/birth-form-and-facts.md",
+      "target_sha256_lf": "92f9c95cc8c05158c56c5d4c17c83a621dda843d96893e1fbfeff02f2101a8df",
+      "unchanged_body": false
+    },
+    {
+      "id": "REQ-UI-09",
+      "source": "docs/project_management/change_plans/ui-chart-wheel/analyst/requirements.md",
+      "source_sha256_lf": "2c680656fd7a4bb36b500a420eb99b0336331cca10cf722d6bef05b307b0e774",
+      "target": "docs/requirements/current/ui/birth-form-and-facts.md",
+      "target_sha256_lf": "21aab451bd509fbe4c167a2421970d15b0396f772e54e1df0c699e03ff26c3f4",
+      "unchanged_body": false
+    },
+    {
+      "id": "REQ-UI-10",
+      "source": "docs/project_management/change_plans/ui-chart-wheel/analyst/requirements.md",
+      "source_sha256_lf": "ecfc24c843d49ca2e291e496502ddd363081e49a50090c70fff10f26c6b918db",
+      "target": "docs/requirements/current/ui/birth-form-and-facts.md",
+      "target_sha256_lf": "9397281d86db2b4a9171ed6ea23160f02a282e8915e65f6dfb6c2ec5730a7085",
+      "unchanged_body": false
+    },
+    {
+      "id": "REQ-UI-11",
+      "source": "docs/project_management/change_plans/ui-chart-wheel/analyst/requirements.md",
+      "source_sha256_lf": "fcb564acfb7120101f6c8a9926b113e44d1be3938b1a11787caf5fe8354e4474",
+      "target": "docs/requirements/current/ui/birth-form-and-facts.md",
+      "target_sha256_lf": "e14f3b9e9745cd3123dcfa9d449c08494fbc663870866b093d44ef07d2c9bafe",
+      "unchanged_body": false
+    },
+    {
+      "id": "REQ-WHEEL-01",
+      "source": "docs/project_management/change_plans/ui-chart-wheel/analyst/requirements.md",
+      "source_sha256_lf": "2dc2349272f738e73528f1e1991ee627e826a407d61c41d4a337b5bf39a6eb4d",
+      "target": "docs/requirements/current/ui/chart-wheel.md",
+      "target_sha256_lf": "c0da463b98517110fb5c66e7d0b21acc43b5d854aee99c91294ad6263352eab9",
+      "unchanged_body": false
+    },
+    {
+      "id": "REQ-WHEEL-02",
+      "source": "docs/project_management/change_plans/ui-chart-wheel/analyst/requirements.md",
+      "source_sha256_lf": "43dc91e3f2f43e628614ed1de6da563a1eb788afd536db1eef16b935459c3396",
+      "target": "docs/requirements/current/ui/chart-wheel.md",
+      "target_sha256_lf": "47de224ec31f35d062f3eefe0ccd7dd126589d7d4efc3e1a79d847f4562f943b",
+      "unchanged_body": false
+    },
+    {
+      "id": "REQ-WHEEL-03",
+      "source": "docs/project_management/change_plans/ui-chart-wheel/analyst/requirements.md",
+      "source_sha256_lf": "0600c3fb97b31e16c2b4cf9f39657078803bad9ddbc11d84c8cb6f8d785e5995",
+      "target": "docs/requirements/current/ui/chart-wheel.md",
+      "target_sha256_lf": "0600c3fb97b31e16c2b4cf9f39657078803bad9ddbc11d84c8cb6f8d785e5995",
+      "unchanged_body": true
+    },
+    {
+      "id": "REQ-WHEEL-04",
+      "source": "docs/project_management/change_plans/ui-chart-wheel/analyst/requirements.md",
+      "source_sha256_lf": "70362f84ec491d9f7fe45c8326cfd6f97a21e62e61fde3ca9f82f337cfc4c2e2",
+      "target": "docs/requirements/current/ui/chart-wheel.md",
+      "target_sha256_lf": "c1477303ab2af51d302f4b1acb0557505c8fa142e9f9d566c43d43ae15f504a1",
+      "unchanged_body": false
+    },
+    {
+      "id": "REQ-WHEEL-05",
+      "source": "docs/project_management/change_plans/ui-chart-wheel/analyst/requirements.md",
+      "source_sha256_lf": "47f9ea59b605f6ea520e41ee565385c4cd35faef3ccdc04a3825be2d39078b6b",
+      "target": "docs/requirements/current/ui/chart-wheel.md",
+      "target_sha256_lf": "d99c27af02576f56d156b3d24ee4e92e63461f351a952bb0a31b5a471b2090eb",
+      "unchanged_body": false
+    },
+    {
+      "id": "REQ-WHEEL-06",
+      "source": "docs/project_management/change_plans/ui-chart-wheel/analyst/requirements.md",
+      "source_sha256_lf": "2bf0961207b22c90ed28be9074aa6c5cf23d55a0c62380a593f2fab7a88b3e63",
+      "target": "docs/requirements/current/ui/chart-wheel.md",
+      "target_sha256_lf": "20aab0917464f3265f15765afd9f82f6a103f69689c8f6263cd4f8c33043ef6b",
+      "unchanged_body": false
+    },
+    {
+      "id": "REQ-WHEEL-07",
+      "source": "docs/project_management/change_plans/ui-chart-wheel/analyst/requirements.md",
+      "source_sha256_lf": "67e81d607ef3e8bfcf1742601a697470824c5475f4e18e4e7de077fda1f31dbb",
+      "target": "docs/requirements/current/ui/chart-wheel.md",
+      "target_sha256_lf": "0d0b39ee3a75637f6f81e4582e744d910f8525e151c5029cf8f3442e89a89c26",
+      "unchanged_body": false
+    },
+    {
+      "id": "REQ-WHEEL-08",
+      "source": "docs/project_management/change_plans/ui-chart-wheel/analyst/requirements.md",
+      "source_sha256_lf": "34198f7f73f87f78fa251d85c63bb8da0c1bb5e77bbca47af5740304341a716a",
+      "target": "docs/requirements/current/ui/chart-wheel.md",
+      "target_sha256_lf": "03f017a67ea1ee8084fde8f787e82409e2d3fea9c4bfc147f7455035b58d1d57",
+      "unchanged_body": false
+    },
+    {
+      "id": "REQ-WHEEL-09",
+      "source": "docs/project_management/change_plans/ui-chart-wheel/analyst/requirements.md",
+      "source_sha256_lf": "111250736c27dc66a4a60e6ec4e2bb159ac3b4604694d7b97f8d71317c5bf86e",
+      "target": "docs/requirements/current/ui/chart-wheel.md",
+      "target_sha256_lf": "b32587e6f9c366162658fdad7824331675daf4c235c191a2715bcea7d4aac166",
+      "unchanged_body": false
+    },
+    {
+      "id": "REQ-WHEEL-10",
+      "source": "docs/project_management/change_plans/ui-chart-wheel/analyst/requirements.md",
+      "source_sha256_lf": "acf10ae5f5389f5988310fa736568e257fd678f38fccd009981359f297d88cb7",
+      "target": "docs/requirements/current/ui/chart-wheel.md",
+      "target_sha256_lf": "5f619f0301ded6316f9dd406a9c25dae5fe6f2d63cf5e53793dc4d412222f814",
+      "unchanged_body": false
+    },
+    {
+      "id": "REQ-WHEEL-11",
+      "source": "docs/project_management/change_plans/ui-chart-wheel/analyst/requirements.md",
+      "source_sha256_lf": "dae7c8357537258603d9f1b8ec8df1ad85f7e3c9b61e506dd9e1f56c2003bfe4",
+      "target": "docs/requirements/current/ui/chart-wheel.md",
+      "target_sha256_lf": "dae7c8357537258603d9f1b8ec8df1ad85f7e3c9b61e506dd9e1f56c2003bfe4",
+      "unchanged_body": true
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "AS-UI-01",
+      "source": "docs/requirements/current/ui/scenarios.md",
+      "source_sha256_lf": "fecb2bad1462ed73bf0be1be17dc43c3e4671fe084eedf8b8badf41ff1b167e1",
+      "target": "docs/requirements/current/ui/scenarios.md",
+      "target_sha256_lf": "fecb2bad1462ed73bf0be1be17dc43c3e4671fe084eedf8b8badf41ff1b167e1",
+      "unchanged_body": true
+    },
+    {
+      "id": "AS-UI-02",
+      "source": "docs/requirements/current/ui/scenarios.md",
+      "source_sha256_lf": "37c9545b503bbfd9805f66f6ee502bad65c2dbf97911047d7d17e7adb2f5cfba",
+      "target": "docs/requirements/current/ui/scenarios.md",
+      "target_sha256_lf": "37c9545b503bbfd9805f66f6ee502bad65c2dbf97911047d7d17e7adb2f5cfba",
+      "unchanged_body": true
+    },
+    {
+      "id": "AS-UI-03",
+      "source": "docs/requirements/current/ui/scenarios.md",
+      "source_sha256_lf": "37ea2e2caa8ff0a84266a76d842038aa64b29c8f4a0e47dd279a2f82a31544d6",
+      "target": "docs/requirements/current/ui/scenarios.md",
+      "target_sha256_lf": "37ea2e2caa8ff0a84266a76d842038aa64b29c8f4a0e47dd279a2f82a31544d6",
+      "unchanged_body": true
+    },
+    {
+      "id": "AS-UI-04",
+      "source": "docs/requirements/current/ui/scenarios.md",
+      "source_sha256_lf": "3168e6f2537ed781a10726ec125977603abcfc32db87ce4558d216e60875e0da",
+      "target": "docs/requirements/current/ui/scenarios.md",
+      "target_sha256_lf": "3168e6f2537ed781a10726ec125977603abcfc32db87ce4558d216e60875e0da",
+      "unchanged_body": true
+    },
+    {
+      "id": "AS-UI-05",
+      "source": "docs/requirements/current/ui/scenarios.md",
+      "source_sha256_lf": "8b0598ab1c3fae2efa8407f6d2287e2641cf4f94d65356ac5f8f06df6fc7d08c",
+      "target": "docs/requirements/current/ui/scenarios.md",
+      "target_sha256_lf": "8b0598ab1c3fae2efa8407f6d2287e2641cf4f94d65356ac5f8f06df6fc7d08c",
+      "unchanged_body": true
+    },
+    {
+      "id": "AS-UI-06",
+      "source": "docs/requirements/current/ui/scenarios.md",
+      "source_sha256_lf": "f682306dd0f2a0a6748e6218dfa12592de1df03e55a23491123985cd78ef489c",
+      "target": "docs/requirements/current/ui/scenarios.md",
+      "target_sha256_lf": "f682306dd0f2a0a6748e6218dfa12592de1df03e55a23491123985cd78ef489c",
+      "unchanged_body": true
+    },
+    {
+      "id": "AS-UI-07",
+      "source": "docs/requirements/current/ui/scenarios.md",
+      "source_sha256_lf": "2fd8c8ce7a68421ee2ba1a1d0623e850846109b1373f7e88cd68a7bbbf78dbae",
+      "target": "docs/requirements/current/ui/scenarios.md",
+      "target_sha256_lf": "2fd8c8ce7a68421ee2ba1a1d0623e850846109b1373f7e88cd68a7bbbf78dbae",
+      "unchanged_body": true
+    },
+    {
+      "id": "AS-UI-08",
+      "source": "docs/requirements/current/ui/scenarios.md",
+      "source_sha256_lf": "3931cd93f8c6da05f6ef5c06e1bc2fd2306361356bb10bb62cc3109427a9ce02",
+      "target": "docs/requirements/current/ui/scenarios.md",
+      "target_sha256_lf": "3931cd93f8c6da05f6ef5c06e1bc2fd2306361356bb10bb62cc3109427a9ce02",
+      "unchanged_body": true
+    },
+    {
+      "id": "AS-UI-09",
+      "source": "docs/requirements/current/ui/scenarios.md",
+      "source_sha256_lf": "5e58f865fa5d903cdcdb1e94267a0dcdb91c46fd775602c5ed8ac2c1d6da1ff2",
+      "target": "docs/requirements/current/ui/scenarios.md",
+      "target_sha256_lf": "5e58f865fa5d903cdcdb1e94267a0dcdb91c46fd775602c5ed8ac2c1d6da1ff2",
+      "unchanged_body": true
+    },
+    {
+      "id": "AS-UI-10",
+      "source": "docs/requirements/current/ui/scenarios.md",
+      "source_sha256_lf": "a400bea81772fb6bdae5bed66af1baa3233eacd946f4c83f009cd86a24967772",
+      "target": "docs/requirements/current/ui/scenarios.md",
+      "target_sha256_lf": "a400bea81772fb6bdae5bed66af1baa3233eacd946f4c83f009cd86a24967772",
+      "unchanged_body": true
+    },
+    {
+      "id": "AS-UI-11",
+      "source": "docs/requirements/current/ui/scenarios.md",
+      "source_sha256_lf": "996b103716eb8814aae6797e524802e3151647ae8eb9f0c56aeb1a3477f058cf",
+      "target": "docs/requirements/current/ui/scenarios.md",
+      "target_sha256_lf": "996b103716eb8814aae6797e524802e3151647ae8eb9f0c56aeb1a3477f058cf",
+      "unchanged_body": true
+    },
+    {
+      "id": "AS-UI-12",
+      "source": "docs/requirements/current/ui/scenarios.md",
+      "source_sha256_lf": "032ec5f25f8421cc730b885caa0dd3a08db71dc91b99e094bd4bfcee605915d3",
+      "target": "docs/requirements/current/ui/scenarios.md",
+      "target_sha256_lf": "032ec5f25f8421cc730b885caa0dd3a08db71dc91b99e094bd4bfcee605915d3",
+      "unchanged_body": true
+    },
+    {
+      "id": "AS-UI-13",
+      "source": "docs/requirements/current/ui/scenarios.md",
+      "source_sha256_lf": "267509d3dda7d84afda19c77c8ea56cb9ee8ef518d4e6b6a3d2e42c729d98a96",
+      "target": "docs/requirements/current/ui/scenarios.md",
+      "target_sha256_lf": "267509d3dda7d84afda19c77c8ea56cb9ee8ef518d4e6b6a3d2e42c729d98a96",
+      "unchanged_body": true
+    },
+    {
+      "id": "AS-UI-14",
+      "source": "docs/requirements/current/ui/scenarios.md",
+      "source_sha256_lf": "cb6afa83f5d55f0a84d4ac13e3ff46941e4c03bc4119f0703311c33fa7f6c93f",
+      "target": "docs/requirements/current/ui/scenarios.md",
+      "target_sha256_lf": "cb6afa83f5d55f0a84d4ac13e3ff46941e4c03bc4119f0703311c33fa7f6c93f",
+      "unchanged_body": true
+    },
+    {
+      "id": "AS-UI-15",
+      "source": "docs/requirements/current/ui/scenarios.md",
+      "source_sha256_lf": "1ea2330094ea3fbff75cce69d89df7de6cbe7c7f05dc99f7c9fc548431bbf0e7",
+      "target": "docs/requirements/current/ui/scenarios.md",
+      "target_sha256_lf": "1ea2330094ea3fbff75cce69d89df7de6cbe7c7f05dc99f7c9fc548431bbf0e7",
+      "unchanged_body": true
+    },
+    {
+      "id": "AS-UI-16",
+      "source": "docs/requirements/current/ui/scenarios.md",
+      "source_sha256_lf": "f77349d835bde4b2f3598837d700fc48f796dc086f3cf62803534f54463f6718",
+      "target": "docs/requirements/current/ui/scenarios.md",
+      "target_sha256_lf": "f77349d835bde4b2f3598837d700fc48f796dc086f3cf62803534f54463f6718",
+      "unchanged_body": true
+    },
+    {
+      "id": "AS-UI-17",
+      "source": "docs/requirements/current/ui/scenarios.md",
+      "source_sha256_lf": "aa777ffbca68d3b00834c62e779a0581be111e03fd376ccdfcfe1e21d22f3fe3",
+      "target": "docs/requirements/current/ui/scenarios.md",
+      "target_sha256_lf": "aa777ffbca68d3b00834c62e779a0581be111e03fd376ccdfcfe1e21d22f3fe3",
+      "unchanged_body": true
+    },
+    {
+      "id": "AS-UI-18",
+      "source": "docs/requirements/current/ui/scenarios.md",
+      "source_sha256_lf": "251ce460e9fec7a07a89d699323c839d7bc96f48d607d010094c6a515780c32a",
+      "target": "docs/requirements/current/ui/scenarios.md",
+      "target_sha256_lf": "251ce460e9fec7a07a89d699323c839d7bc96f48d607d010094c6a515780c32a",
+      "unchanged_body": true
+    },
+    {
+      "id": "AS-UI-19",
+      "source": "docs/requirements/current/ui/scenarios.md",
+      "source_sha256_lf": "2765c60103db033f1b58463ad683ce28b5a691fbb23d56ffe45d6da0131a2b86",
+      "target": "docs/requirements/current/ui/scenarios.md",
+      "target_sha256_lf": "2765c60103db033f1b58463ad683ce28b5a691fbb23d56ffe45d6da0131a2b86",
+      "unchanged_body": true
+    },
+    {
+      "id": "AS-UI-20",
+      "source": "docs/requirements/current/ui/scenarios.md",
+      "source_sha256_lf": "ddfc09515decf09e775df827f6a4fa21caad5c801af7b5ee90177656c94a412a",
+      "target": "docs/requirements/current/ui/scenarios.md",
+      "target_sha256_lf": "ddfc09515decf09e775df827f6a4fa21caad5c801af7b5ee90177656c94a412a",
+      "unchanged_body": true
+    },
+    {
+      "id": "AS-UI-21",
+      "source": "docs/requirements/current/ui/scenarios.md",
+      "source_sha256_lf": "ad859878c02074a7db840bc9a5f09dfc94bc26a6d407a4bfbe2293907a9e50d8",
+      "target": "docs/requirements/current/ui/scenarios.md",
+      "target_sha256_lf": "ad859878c02074a7db840bc9a5f09dfc94bc26a6d407a4bfbe2293907a9e50d8",
+      "unchanged_body": true
+    },
+    {
+      "id": "AS-UI-22",
+      "source": "docs/requirements/current/ui/scenarios.md",
+      "source_sha256_lf": "33a3e835be711abff58798923f6ebe1c3a7c80d67fe090d9dcdf587ad0846970",
+      "target": "docs/requirements/current/ui/scenarios.md",
+      "target_sha256_lf": "947c75270a1eb97682f3e27d1d029a57c7fe465c9b20760da33d7b9a6402c03e",
+      "unchanged_body": false
+    },
+    {
+      "id": "AS-UI-23",
+      "source": "docs/requirements/current/ui/scenarios.md",
+      "source_sha256_lf": "d080558e4885e56deb4412f90faa93402dbc8e58f0102ab942996496544fdc84",
+      "target": "docs/requirements/current/ui/scenarios.md",
+      "target_sha256_lf": "d080558e4885e56deb4412f90faa93402dbc8e58f0102ab942996496544fdc84",
+      "unchanged_body": true
+    },
+    {
+      "id": "AS-WHEEL-01",
+      "source": "docs/project_management/change_plans/ui-chart-wheel/analyst/scenarios.md",
+      "source_sha256_lf": "25625bef634eb29af47a0f146aaae81d47b351e7004190b52295d926f813e74b",
+      "target": "docs/requirements/current/ui/scenarios.md",
+      "target_sha256_lf": "69d530858d43d658aa33ec8efa26a43cca82097e18a98ad16aaaf4b265af016a",
+      "unchanged_body": false
+    },
+    {
+      "id": "AS-WHEEL-02",
+      "source": "docs/project_management/change_plans/ui-chart-wheel/analyst/scenarios.md",
+      "source_sha256_lf": "eaa46c05351ad27067a1457e76fd9f142739bbee0947b8c5df41c7427b2295ff",
+      "target": "docs/requirements/current/ui/scenarios.md",
+      "target_sha256_lf": "8cfc7452d331f9ca35e845750fa9e1586de2262f34afe3936d4c7cea773b9fb7",
+      "unchanged_body": false
+    },
+    {
+      "id": "AS-WHEEL-03",
+      "source": "docs/project_management/change_plans/ui-chart-wheel/analyst/scenarios.md",
+      "source_sha256_lf": "0e9cc064c01b519b4d0e6ab4dcdaa1be07e36da63c366f5eaa653f502b2b2308",
+      "target": "docs/requirements/current/ui/scenarios.md",
+      "target_sha256_lf": "78b93dc53e837c59adf254ec3e8d8e80efef6f7b7da644a476050a5f13e40253",
+      "unchanged_body": false
+    },
+    {
+      "id": "AS-WHEEL-04",
+      "source": "docs/project_management/change_plans/ui-chart-wheel/analyst/scenarios.md",
+      "source_sha256_lf": "36e0130dde88d8d2beef8d0d82f7311ce6d102fd3e3daad7e0c173a0e17bdeef",
+      "target": "docs/requirements/current/ui/scenarios.md",
+      "target_sha256_lf": "8883a09aadac4033869fd59a6040527d5474d9d7756a668a24704778250c9e33",
+      "unchanged_body": false
+    },
+    {
+      "id": "AS-WHEEL-05",
+      "source": "docs/project_management/change_plans/ui-chart-wheel/analyst/scenarios.md",
+      "source_sha256_lf": "d86b0a93c1e7fe7e618682eaa2fc837e19717281d6f52a7aea11fae23d77194e",
+      "target": "docs/requirements/current/ui/scenarios.md",
+      "target_sha256_lf": "52e90f8c0babf7ad5a309108c00f4de7a56d36222a23110efa85cfb60fee0ecb",
+      "unchanged_body": false
+    },
+    {
+      "id": "AS-WHEEL-06",
+      "source": "docs/project_management/change_plans/ui-chart-wheel/analyst/scenarios.md",
+      "source_sha256_lf": "1d1ce489c46eb7d2d07ce88825d594311c5de0cd897968477b03f75f6e38c8ce",
+      "target": "docs/requirements/current/ui/scenarios.md",
+      "target_sha256_lf": "c9409c27a9709fe6b0398631344378e708667cdfb456c0ca86227ffd86b749cd",
+      "unchanged_body": false
+    },
+    {
+      "id": "AS-WHEEL-07",
+      "source": "docs/project_management/change_plans/ui-chart-wheel/analyst/scenarios.md",
+      "source_sha256_lf": "17fcc836f84fd563f335fb27e3bd4f69c5b37dbea92ed7f7a508042da3cf444e",
+      "target": "docs/requirements/current/ui/scenarios.md",
+      "target_sha256_lf": "80eb5b030ad667fbcc3e3c6058936136bf0399d4df53990fbb97a9f8056e3b63",
+      "unchanged_body": false
+    },
+    {
+      "id": "AS-WHEEL-08",
+      "source": "docs/project_management/change_plans/ui-chart-wheel/analyst/scenarios.md",
+      "source_sha256_lf": "dfb62266dd2280f890d171919418a189126e2487372b1135d1acf541dc9040e4",
+      "target": "docs/requirements/current/ui/scenarios.md",
+      "target_sha256_lf": "d6477a43bd4a4a2e00108a722c6cb64e5ab1eccaca6ea6c692d23ec34bc2aede",
+      "unchanged_body": false
+    },
+    {
+      "id": "AS-WHEEL-09",
+      "source": "docs/project_management/change_plans/ui-chart-wheel/analyst/scenarios.md",
+      "source_sha256_lf": "6313fa69e3c72b452eeffd0e82dac0276e952b7bb11700a034622be3b739c35c",
+      "target": "docs/requirements/current/ui/scenarios.md",
+      "target_sha256_lf": "6f0c8d5347a1a5de4f8f011995512b884610fe1aa40ad4c22bf07350cca05689",
+      "unchanged_body": false
+    },
+    {
+      "id": "AS-WHEEL-10",
+      "source": "docs/project_management/change_plans/ui-chart-wheel/analyst/scenarios.md",
+      "source_sha256_lf": "20efe157608f90436c1fc707894751fc49c7c504e823e72d75416eaff96e3cc1",
+      "target": "docs/requirements/current/ui/scenarios.md",
+      "target_sha256_lf": "bf4d676027fb5f3347a9725aad5a9d4a82700521362dc5ace56e319ec46afb69",
+      "unchanged_body": false
+    },
+    {
+      "id": "AS-WHEEL-11",
+      "source": "docs/project_management/change_plans/ui-chart-wheel/analyst/scenarios.md",
+      "source_sha256_lf": "9c663f36016a2349ec7724f7d84ed557537a4b691b8d9e9f43b60be06ffb3e71",
+      "target": "docs/requirements/current/ui/scenarios.md",
+      "target_sha256_lf": "1423457f65d6e9f6e1ad05487899d554e685dd45615f587628f8f12f38043046",
+      "unchanged_body": false
+    },
+    {
+      "id": "AS-WHEEL-12",
+      "source": "docs/project_management/change_plans/ui-chart-wheel/analyst/scenarios.md",
+      "source_sha256_lf": "fcd72355a4ef3b68bad08d2c70ec07e3e97e0d3af977d09ad02c571aafbef241",
+      "target": "docs/requirements/current/ui/scenarios.md",
+      "target_sha256_lf": "e3d8b67501be57c379908c4ef4d65acfb0395e85d6a5b9d0188d9a53b0812e54",
+      "unchanged_body": false
+    },
+    {
+      "id": "AS-WHEEL-13",
+      "source": "docs/project_management/change_plans/ui-chart-wheel/analyst/scenarios.md",
+      "source_sha256_lf": "d0d33f2d6c4f38a082e685c53896a24594ed485b129d56dbcd0ff104711c2232",
+      "target": "docs/requirements/current/ui/scenarios.md",
+      "target_sha256_lf": "7fa312b03c9c8fe7a210d579f4d5e984b32da3d5f28a6cb4e9d7fa051c62861f",
+      "unchanged_body": false
+    },
+    {
+      "id": "AS-WHEEL-14",
+      "source": "docs/project_management/change_plans/ui-chart-wheel/analyst/scenarios.md",
+      "source_sha256_lf": "8b4d65205475a2c1d02570bffd3c8b96fc10dd46ba3dbc5a0767f2d5c748658a",
+      "target": "docs/requirements/current/ui/scenarios.md",
+      "target_sha256_lf": "3d1e9c0c6959e66b512459ec76580da0ae05c33d5647098c36f2331cc3e89a54",
+      "unchanged_body": false
+    },
+    {
+      "id": "AS-WHEEL-15",
+      "source": "docs/project_management/change_plans/ui-chart-wheel/analyst/scenarios.md",
+      "source_sha256_lf": "0116000b99830e407e8cd4b77da505a422f66a4108fa7bb556fccb90817d4e04",
+      "target": "docs/requirements/current/ui/scenarios.md",
+      "target_sha256_lf": "babca2d4e2db7fd898ba8842036553fbbf0b428739bddabaccb14983aa5671c5",
+      "unchanged_body": false
+    },
+    {
+      "id": "AS-WHEEL-16",
+      "source": "docs/project_management/change_plans/ui-chart-wheel/analyst/scenarios.md",
+      "source_sha256_lf": "080d98379692694be8d10639f491ef875c19255fac2e17dae493efb7ecd56da1",
+      "target": "docs/requirements/current/ui/scenarios.md",
+      "target_sha256_lf": "1b767bd7ca14df9da73b61b3255598ff987d0a75988e7ce5eb023caf5eacee04",
+      "unchanged_body": false
+    },
+    {
+      "id": "AS-WHEEL-17",
+      "source": "docs/project_management/change_plans/ui-chart-wheel/analyst/scenarios.md",
+      "source_sha256_lf": "fcb19303fc689dcf95aa97c8cfedbbd28478c4539e69848fe4a9c86f262671ea",
+      "target": "docs/requirements/current/ui/scenarios.md",
+      "target_sha256_lf": "5290dd96c0557e565356fd12057349ba2c0dbb8e59f43d9c908a866a2a4457b4",
+      "unchanged_body": false
+    },
+    {
+      "id": "AS-WHEEL-18",
+      "source": "docs/project_management/change_plans/ui-chart-wheel/analyst/scenarios.md",
+      "source_sha256_lf": "44a1f779d3644b28e0230853f9ae9bbf17866035541de59a150a3b21fb83f93d",
+      "target": "docs/requirements/current/ui/scenarios.md",
+      "target_sha256_lf": "96bb75fbd187399d9fc4a72b4d97d90e0306428a48bbf1f7da59ac2d54f91f58",
+      "unchanged_body": false
+    },
+    {
+      "id": "AS-WHEEL-19",
+      "source": "docs/project_management/change_plans/ui-chart-wheel/analyst/scenarios.md",
+      "source_sha256_lf": "8081897c97aed8cf8800be14eb5fc0b19081b7661a92cddf8203ff1b9b09ae9e",
+      "target": "docs/requirements/current/ui/scenarios.md",
+      "target_sha256_lf": "bbf344f0775ea45ce7f0dd775b83abb93910c4cdce98294be2b4952406a7515c",
+      "unchanged_body": false
+    },
+    {
+      "id": "AS-WHEEL-20",
+      "source": "docs/project_management/change_plans/ui-chart-wheel/analyst/scenarios.md",
+      "source_sha256_lf": "dc5c4d0511f4dda97f0d54d2d8812e492e8f573ce70bc5c0e04fbc10798f0b87",
+      "target": "docs/requirements/current/ui/scenarios.md",
+      "target_sha256_lf": "6b6b9d9649eb30d8d1b5221a53fd22168dc02573fb758f4eb037a7e20fba7e55",
+      "unchanged_body": false
+    },
+    {
+      "id": "AS-WHEEL-21",
+      "source": "docs/project_management/change_plans/ui-chart-wheel/analyst/scenarios.md",
+      "source_sha256_lf": "3951c087aad4510873607a4a2ac5609cf96efc5c529a666c5bc02c76af124910",
+      "target": "docs/requirements/current/ui/scenarios.md",
+      "target_sha256_lf": "4964f802ddbed5bca47030cc99878b38175c465b8f19dd6f6d3c76d18c362793",
+      "unchanged_body": false
+    },
+    {
+      "id": "AS-WHEEL-22",
+      "source": "docs/project_management/change_plans/ui-chart-wheel/analyst/scenarios.md",
+      "source_sha256_lf": "de72c94dd9e12518dcb59ede2a176d098aefe546a3f81b37edc9581da2da0816",
+      "target": "docs/requirements/current/ui/scenarios.md",
+      "target_sha256_lf": "557e3b47e8c6a296af9bef8821932de7971d1d9c1e95dfe0a5c441093485a491",
+      "unchanged_body": false
+    },
+    {
+      "id": "AS-WHEEL-23",
+      "source": "docs/project_management/change_plans/ui-chart-wheel/analyst/scenarios.md",
+      "source_sha256_lf": "45d43dc6ac63ff6dd691c96387aaf48be9814b44f6dd329644729f07055981e9",
+      "target": "docs/requirements/current/ui/scenarios.md",
+      "target_sha256_lf": "2a38b791684ce4568fb85b97779400c0d30a037f817ee29da9ab8fcd86ea8b96",
+      "unchanged_body": false
+    },
+    {
+      "id": "AS-WHEEL-24",
+      "source": "docs/project_management/change_plans/ui-chart-wheel/analyst/scenarios.md",
+      "source_sha256_lf": "c79dbdf1e5dd38445984028217a2c9d6b0283472f01df0fc4c15ff16bf8889f8",
+      "target": "docs/requirements/current/ui/scenarios.md",
+      "target_sha256_lf": "efe950be217eaac64244871236b0a53f00a12f4d7bad26937e5de0fb34148ecd",
+      "unchanged_body": false
+    },
+    {
+      "id": "AS-WHEEL-25",
+      "source": "docs/project_management/change_plans/ui-chart-wheel/analyst/scenarios.md",
+      "source_sha256_lf": "93aae6c9896e922dea04c2bd6aa16bf7ffa6abd05d368fa5cf2ca85fb8e3c55b",
+      "target": "docs/requirements/current/ui/scenarios.md",
+      "target_sha256_lf": "d3984177bcfbaba994e2da0fa5db905812b657b747cf3a194edefe314a5c7c20",
+      "unchanged_body": false
+    },
+    {
+      "id": "AS-WHEEL-26",
+      "source": "docs/project_management/change_plans/ui-chart-wheel/analyst/scenarios.md",
+      "source_sha256_lf": "0d482e1869fa50a1c7e3563c2c3d918db9862ff989c9d5b5dd8f3871e3404a24",
+      "target": "docs/requirements/current/ui/scenarios.md",
+      "target_sha256_lf": "b135db8e036cb2ad7124f6e6b15061c152ba6e5224aa335ed9c695ef502f179d",
+      "unchanged_body": false
+    },
+    {
+      "id": "AS-WHEEL-27",
+      "source": "docs/project_management/change_plans/ui-chart-wheel/analyst/scenarios.md",
+      "source_sha256_lf": "51f49dc036668d2f3026b6494045b29f2824c220136704cf7d9737b0083508e8",
+      "target": "docs/requirements/current/ui/scenarios.md",
+      "target_sha256_lf": "1026ecfb1ec3b4ab2b00acc15fb7cd37664abf41306abccd854f4067765429dd",
+      "unchanged_body": false
+    },
+    {
+      "id": "AS-WHEEL-28",
+      "source": "docs/project_management/change_plans/ui-chart-wheel/analyst/scenarios.md",
+      "source_sha256_lf": "a4a3b6a9b4830b0f720732dedf6c6db79a0dd2e022f5af4162971462133cc273",
+      "target": "docs/requirements/current/ui/scenarios.md",
+      "target_sha256_lf": "6bc28adc470ae6d529d69d7e49b05e12ace63e600e0386b52ae63123f4d679aa",
+      "unchanged_body": false
+    },
+    {
+      "id": "AS-WHEEL-29",
+      "source": "docs/project_management/change_plans/ui-chart-wheel/analyst/scenarios.md",
+      "source_sha256_lf": "0e4589076c218bb69b2a2ca85ec0e867a1a65e537b54d69406b980ea3fe34133",
+      "target": "docs/requirements/current/ui/scenarios.md",
+      "target_sha256_lf": "0f54c556a5f20131cd85a27abf6349e46f8e572ad52f040d40455806cdfb32f6",
+      "unchanged_body": false
+    },
+    {
+      "id": "AS-WHEEL-30",
+      "source": "docs/project_management/change_plans/ui-chart-wheel/analyst/scenarios.md",
+      "source_sha256_lf": "3c5f0f59a0840148e915b41ec2d5f5a1fa34626684ae1ce9511f57699ae40c44",
+      "target": "docs/requirements/current/ui/scenarios.md",
+      "target_sha256_lf": "ccf4445c9e5d25bb397bdac3eda20275f8cb4142cb62051f4270a1d686c3b6c5",
+      "unchanged_body": false
+    }
+  ],
+  "sequences": [
+    {
+      "source": "docs/project_management/change_plans/ui-chart-wheel/analyst/sequence_diagrams/ui/001-chart-presentation.puml",
+      "target": "docs/sequence_diagrams/ui/001-chart-presentation.puml",
+      "status": "CURRENT",
+      "structure": "PASS (limited block syntax; not PlantUML compiler)",
+      "body_unchanged": false
+    },
+    {
+      "source": "docs/project_management/change_plans/ui-chart-wheel/analyst/sequence_diagrams/ui/002-wheel-table-selection.puml",
+      "target": "docs/sequence_diagrams/ui/002-wheel-table-selection.puml",
+      "status": "CURRENT",
+      "structure": "PASS (limited block syntax; not PlantUML compiler)",
+      "body_unchanged": false
+    },
+    {
+      "source": "docs/project_management/change_plans/ui-chart-wheel/analyst/sequence_diagrams/ui/003-edit-and-recovery.puml",
+      "target": "docs/sequence_diagrams/ui/003-edit-and-recovery.puml",
+      "status": "CURRENT",
+      "structure": "PASS (limited block syntax; not PlantUML compiler)",
+      "body_unchanged": false
+    },
+    {
+      "source": "docs/project_management/change_plans/ui-chart-wheel/developer/sequence_diagrams/ui/001-result-renderer-lifecycle.puml",
+      "target": "docs/sequence_diagrams/research/ui-chart-wheel/001-result-renderer-lifecycle.puml",
+      "status": "ARCHIVED",
+      "structure": "PASS (limited block syntax; not PlantUML compiler)",
+      "body_unchanged": true
+    },
+    {
+      "source": "docs/project_management/change_plans/ui-chart-wheel/developer/sequence_diagrams/ui/002-acceptance-selection-focus.puml",
+      "target": "docs/sequence_diagrams/research/ui-chart-wheel/002-acceptance-selection-focus.puml",
+      "status": "ARCHIVED",
+      "structure": "PASS (limited block syntax; not PlantUML compiler)",
+      "body_unchanged": true
+    },
+    {
+      "source": "docs/project_management/change_plans/ui-chart-wheel/developer/sequence_diagrams/ui/003-passive-copy-install.puml",
+      "target": "docs/sequence_diagrams/ui/technical/003-passive-copy-install.puml",
+      "status": "CURRENT",
+      "structure": "PASS (limited block syntax; not PlantUML compiler)",
+      "body_unchanged": true
+    },
+    {
+      "source": "docs/project_management/change_plans/ui-chart-wheel/developer/sequence_diagrams/ui/004-column-layout-revision.puml",
+      "target": "docs/sequence_diagrams/research/ui-chart-wheel/004-column-layout-revision.puml",
+      "status": "ARCHIVED",
+      "structure": "PASS (limited block syntax; not PlantUML compiler)",
+      "body_unchanged": true
+    },
+    {
+      "source": "docs/project_management/change_plans/ui-chart-wheel/developer/sequence_diagrams/ui/005-accepted-once-editor.puml",
+      "target": "docs/sequence_diagrams/ui/technical/005-accepted-once-editor.puml",
+      "status": "CURRENT",
+      "structure": "PASS (limited block syntax; not PlantUML compiler)",
+      "body_unchanged": true
+    },
+    {
+      "source": "docs/project_management/change_plans/ui-chart-wheel/developer/sequence_diagrams/ui/006-aspect-reading-mode.puml",
+      "target": "docs/sequence_diagrams/ui/technical/006-aspect-reading-mode.puml",
+      "status": "CURRENT",
+      "structure": "PASS (limited block syntax; not PlantUML compiler)",
+      "body_unchanged": true
+    },
+    {
+      "source": "docs/project_management/change_plans/ui-chart-wheel/developer/sequence_diagrams/ui/007-internal-house-rows.puml",
+      "target": "docs/sequence_diagrams/ui/technical/007-internal-house-rows.puml",
+      "status": "CURRENT",
+      "structure": "PASS (limited block syntax; not PlantUML compiler)",
+      "body_unchanged": true
+    },
+    {
+      "source": "docs/project_management/change_plans/ui-chart-wheel/developer/sequence_diagrams/ui/008-viewport-legend-vectors.puml",
+      "target": "docs/sequence_diagrams/ui/technical/008-viewport-legend-vectors.puml",
+      "status": "CURRENT",
+      "structure": "PASS (limited block syntax; not PlantUML compiler)",
+      "body_unchanged": true
+    }
+  ],
+  "as_ui_22_delta": {
+    "source": "docs/project_management/change_plans/ui-chart-wheel/analyst/scenarios.md#as-ui-22",
+    "sha256_lf": "9dd8cea634cdecd29adbbd9893e966a1882cd110d2a3afd06501948babc8da79",
+    "late_owner": "first-five points decision 2026-10-20; source all-points-now replaced explicitly"
+  },
+  "counts": {
+    "req": 22,
+    "as": 53,
+    "puml": 11,
+    "current_puml": 8,
+    "archived_puml": 3,
+    "removed_sources": 13,
+    "source_png": 0,
+    "historical_reports": 17,
+    "raw_evidence_files": 2914
+  },
+  "links": {
+    "documents": 20,
+    "links": 1059,
+    "tables": 83,
+    "errors": [
+      [
+        "docs/project_management/Roadmap/roadmap.md",
+        "../../../prompts/2026-08-26/01-freeze-swiss-ephemeris-runtime.md",
+        "missing"
+      ],
+      [
+        "docs/project_management/Roadmap/roadmap.md",
+        "../../../prompts/2026-09-04/01-session-contracts.md",
+        "missing"
+      ],
+      [
+        "docs/project_management/change_plans/ui-chart-wheel/manager_artifact.md",
+        "analyst/sequence_diagrams/ui/",
+        "missing"
+      ]
+    ]
+  },
+  "baseline_link_errors": [
+    [
+      "docs/project_management/Roadmap/roadmap.md",
+      "../../../prompts/2026-08-26/01-freeze-swiss-ephemeris-runtime.md",
+      "missing"
+    ],
+    [
+      "docs/project_management/Roadmap/roadmap.md",
+      "../../../prompts/2026-09-04/01-session-contracts.md",
+      "missing"
+    ]
+  ],
+  "new_link_errors": [
+    [
+      "docs/project_management/change_plans/ui-chart-wheel/manager_artifact.md",
+      "analyst/sequence_diagrams/ui/",
+      "missing"
+    ]
+  ],
+  "own_documents": {
+    "documents": 3,
+    "links": 83,
+    "tables": 9,
+    "new_link_errors": [],
+    "inherited_historical_links": 9,
+    "payload_sha256_lf": {
+      "docs/project_management/change_plans/ui-chart-wheel/tester/transfer_review.md": "613ff1ca64f01e9d6d21e28d30cdf2f4734634a15daf83761f63c8b91c58d995",
+      "docs/project_management/change_plans/ui-chart-wheel/tester_artifact.md": "a3cb3ac00ee4423289fdc8e9dcfc8921052ef0d9f7857e8e2ed003298c7ccf43",
+      "docs/project_management/change_plans/ui-chart-wheel/tester/defects.md": "2de902fb4a29e0b33056d18b6c65930364be289015127060f4e7968633875c15",
+      "docs/project_management/change_plans/ui-chart-wheel/tester/evidence/task_t008/verify_transfer.py": "b6d4965cb5f3470113ef777aff30cdd51f560fcbc207f3af54efe5886d847f77"
+    }
+  },
+  "runtime": {
+    "src_tree_equal": true,
+    "tests_tree_equal": true,
+    "source_fingerprints": 14,
+    "source_payload_hashes": 40,
+    "transfer_payload_hashes": 39,
+    "intentional_navigation_delta": [
+      "docs/project_management/change_plans/ui-chart-wheel/tester_artifact.md"
+    ],
+    "old_verdict_text_preserved": true,
+    "applicable": true,
+    "new_runtime": "NOT RUN; documentation only; no implementation mismatch reproduced",
+    "recorded_results": {
+      "node_target": 41,
+      "node_all": 229,
+      "python_target": 53,
+      "pytest": 2959,
+      "skipped": 1,
+      "native_cases": 6,
+      "native_checks": 672
+    }
+  },
+  "renderer": {
+    "plantuml": null,
+    "java": null,
+    "dot": null,
+    "render": "NOT RUN; no local PlantUML command or repository jar found"
+  },
+  "debt": {
+    "002": "OPEN",
+    "precision": "INDETERMINATE",
+    "004": "CLOSED / RETEST_PASS",
+    "debt": "DEBT-UI-004",
+    "main_ref": "bba8d6cfb22f586f86c3035423f2535ede158b9f",
+    "main_contains_004": false,
+    "registry_publication_confirmed": false
+  },
+  "issues": [
+    {
+      "id": "T008-N01",
+      "type": "nonblocking traceability clarification",
+      "scenario": "AS-WHEEL-28",
+      "source_has_initial_matrix": true,
+      "target_has_initial_matrix": false,
+      "retained_elsewhere": "F5 inputs and expected plus unaffected positive controls, REQ-WHEEL-04/08/10 and AS-WHEEL-23/30 survive; no whole-package S1 loss",
+      "recommendation": "Make AS-WHEEL-28 point explicitly to preserved F5 and related scenarios; not a new runtime blocker"
+    },
+    {
+      "id": "T008-R01",
+      "type": "transfer data reference",
+      "scenario": "AS-WHEEL-09",
+      "source_precondition": "- **Предусловия:** F3 с пятью R через 0°; отдельный управляемый разреженный контроль без пересечения значков для того же renderer / размера. Численный критерий конфликта формализует Developer.",
+      "target_precondition": "- **Предусловия:** Исходный seam/R набор F2 из раздела проверочных данных.",
+      "fixture_F2": "session view/state fixture",
+      "fixture_F3": "five R through zero"
+    },
+    {
+      "id": "T008-R02",
+      "type": "new broken navigation link",
+      "errors": [
+        [
+          "docs/project_management/change_plans/ui-chart-wheel/manager_artifact.md",
+          "analyst/sequence_diagrams/ui/",
+          "missing"
+        ]
+      ],
+      "baseline_directory_existed": true,
+      "transfer_directory_removed": true
+    }
+  ],
+  "verdict": "TRANSFER_REWORK_REQUIRED; hashes/IDs/PUML structure and S1 semantics PASS; one fixture reference and one navigation correction",
+  "index": "EMPTY",
+  "stashes": "PRESERVED",
+  "foreign_changes": "NONE",
+  "publication": {
+    "owner_authorization": "2026-10-21: commit/push test then merge change",
+    "audit_phase": "PACKAGE_PRE_STAGING; actual remote publication checked separately after execution",
+    "fetched_change_base": "c7219e485917366f67159c9a08e3c78dc4e69372",
+    "fetched_test_base": "f930c864d6a416acff8a49081585950853b931f9",
+    "source_sha_resolver": "first git log --reverse --format=%H -G '^### Публикация TASK-T-008 — 2026-10-21$' -- docs/project_management/change_plans/ui-chart-wheel/tester_artifact.md"
+  }
+}
