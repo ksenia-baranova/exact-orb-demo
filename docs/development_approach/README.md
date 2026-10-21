@@ -8,9 +8,9 @@
 | Документ | Назначение |
 |---|---|
 | [Development approach](development-approach.md) | Стабильные принципы и границы метода |
-| [Change development process](process/process.md) | Текущий рабочий цикл от намерения до принятия change |
-| [Roles and ownership](roles.md) | Полномочия, ответственность и handoff ролей |
-| [Artifact templates](artifacts/README.md) | Шаблоны рабочих артефактов по ролям |
+| [Change development process](process/change-process-v2.md) | Текущий рабочий цикл от запроса owner'а до ACCEPTED: статусы, переходы, задачи, DP, баги |
+| [Roles and ownership](roles.md) | Роли v2 и их зоны: кто что пишет и чего не трогает |
+| [Artifact templates](artifacts/README.md) | Шаблоны артефактов изменения: change, roadmap, задача, DP, требования, план, промт, тест-план, баг, риски, журнал отладки |
 | [Role skill drafts](skills/README.md) | Инструкции для агентов, реализующих роли |
 
 ## Evidence и история метода
@@ -21,7 +21,7 @@
 | [Problems detected by human](../project_management/problems_detected_by_human/) | Разборы дефектов, которые повлияли на метод |
 
 Эксперименты объясняют происхождение правил, но не переопределяют действующий процесс. При расхождении используются
-`development-approach.md`, `process/process.md` и `roles.md`.
+`development-approach.md`, `process/change-process-v2.md` и `roles.md`.
 
 ## Изменение структуры 2026-09-30
 
@@ -30,7 +30,7 @@
 role ownership, реализацию, тестирование и приёмку. Вариант `sdlc-process-approach` не выбран, потому что процесс вынесен
 в отдельный документ, а `SDLC process` дублирует смысл lifecycle.
 
-Детальные процессные правила вынесены в [process.md](process/process.md), роли — в [roles.md](roles.md). Историческое развитие
+Детальные процессные правила вынесены в [процесс](process/change-process-v2.md), роли — в [roles.md](roles.md). Историческое развитие
 role-based модели сохранено в [Experiment 002](experiments/experiment-002-role-based-change-development.md).
 
 ## Карта переноса содержания
@@ -38,15 +38,19 @@ role-based модели сохранено в [Experiment 002](experiments/exper
 | Содержание прежнего документа | Текущий источник |
 |---|---|
 | Граница между предложением и решением, источники истины, переносимый контекст, executable evidence, observability, bounded prompts, review и критерии успеха | [Development approach](development-approach.md) |
-| Decision gates, lifecycle change, возвраты между ролями, branching и финальная приёмка | [Change development process](process/process.md) |
+| Decision gates, lifecycle change, возвраты между ролями, branching и финальная приёмка | [Change development process](process/change-process-v2.md) |
 | Распределение полномочий, запреты и handoff | [Roles and ownership](roles.md) |
-| Единый реестр решений и рабочие форматы finding, estimate, plan и acceptance evidence | [Artifact templates](artifacts/README.md) |
+| Решения (DP), оценки, план реализации, тест-план и баги | [Artifact templates](artifacts/README.md) |
 | Ограниченные инструкции агенту для конкретной роли | [Role skill drafts](skills/README.md) |
 | Примеры, хронология формирования и проверяемые гипотезы | [Experiments](experiments/) |
 
 Такое разделение сохраняет основные утверждения прежнего документа, но не смешивает стабильные принципы с текущим
 workflow, role instructions и историей экспериментов.
 
+## Изменение структуры 2026-10-21: процесс v2
+
+Прежний `process/process.md`, его схемы и ролевые шаблоны артефактов заменены [процессом v2](process/change-process-v2.md), [схемами](process/process_diagram/) и [шаблонами](artifacts/README.md). Причины — в разборе прогона `ui-chart-wheel`: учёт статусов вручную вытеснял работу ролей. Прежние документы доступны в истории Git.
+
 ## Структура change и перенос общих документов
 
-Новые change используют docs/project_management/change_plans/<change-id>/: Manager и материалы участвующих ролей; малый вариант допускает один файл. [Раздел 7 процесса](process/process.md#7-размещение-материалов) определяет размещение. После финальных approvals и приёмки Owner переносятся только изменённые требования / sequences; если переноса нет, достаточно подтверждения Tester на G5 по [разделу 6.2](process/process.md#62-перенос-после-финальных-approvals-и-готовность-интеграции). Исторические пути сохраняются.
+Новые изменения используют папку `docs/project_management/changes/<change-id>/`; её дерево — в процессе, раздел «Хранение и оркестратор». Изменённые требования и sequences переносятся в общие каталоги задачей transfer до приёмки owner'ом; правила — в [README требований](../requirements/README.md). Папки прежних изменений в `docs/project_management/change_plans/` сохраняются как история.

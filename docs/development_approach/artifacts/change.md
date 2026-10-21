@@ -14,6 +14,7 @@
 ---
 id: <CH-id>
 status: INTAKE        # пишет оркестратор
+cycle: 0              # пишет оркестратор: номер цикла ALIGNMENT
 ---
 # <CH-id> <название>
 Тип: feature          # feature | refactor

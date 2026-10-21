@@ -8,6 +8,7 @@
 | Functional Analyst | [exact-orb-functional-analyst](functional-analyst/SKILL.md) |
 | Developer | [exact-orb-developer](developer/SKILL.md) |
 | Tester | [exact-orb-tester](tester/SKILL.md) |
+| Reviewer | [exact-orb-reviewer](reviewer/SKILL.md) |
 
 ## Почему skills пока находятся здесь
 
@@ -29,6 +30,18 @@
 4. проверить явное `$skill-name` invocation;
 5. добавить небольшой набор positive и negative invocation cases.
 
-Skill не расширяет разрешения: commit, push, PR, review reply, approval и merge выполняются только по отдельному поручению.
+Skill не расширяет разрешения. Коммит своей задачи делается по правилам skill роли; ветки, push, PR, approval и merge — только по отдельному поручению.
 
-Все четыре drafts используют размещение process.md, раздел 7: Manager и материалы участвующих ролей; малый вариант допускает один файл с авторскими handoffs. После финальных approvals и приёмки выполняются только необходимые перенос / сверка; неизменность требований и sequences подтверждается Tester на G5 без нового задания.
+## Процесс и артефакты
+
+Все skills работают по [процессу работы над изменением](../process/change-process-v2.md): один запуск — одна задача `tasks/TASK-*.md` в папке `docs/project_management/changes/<change-id>/`. Роль меняет только status и resolution своей задачи и пишет только свои файлы; переходы change проверяет оркестратор. Шаблоны артефактов — в [artifacts/](../artifacts/README.md).
+
+| Role | Виды задач | Основные артефакты |
+|---|---|---|
+| Change Manager | intake, apply_decisions, answer_dp по DP-M-*, escalation, summary, approve, accept | `change.md`, `roadmap.md`, `risks.md`, DP-M-* |
+| Functional Analyst | analysis, apply_decisions, resolve_findings, answer_dp, transfer | `requirements.md`, `sequences/`, DP к owner'у |
+| Developer | review, implement, bug_fix | `plans/implementation_plan.md`, `prompts/`, код и тесты |
+| Tester | review, test | `plans/test_plan.md`, `tests/acceptance/`, `bugs/` |
+| Reviewer | code_review: реализация, исправление, план рефакторинга | `bugs/`, DP |
+
+Reviewer запускается сторонним агентом или агентом с пулом моделей, на модели, отличной от модели Developer, в отдельной сессии.

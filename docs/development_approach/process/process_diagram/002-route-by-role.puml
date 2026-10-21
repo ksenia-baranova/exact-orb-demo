@@ -4,7 +4,7 @@ title exact-orb — Маршрут изменения по ролям: от за
 ' Источник: «Процесс работы над изменением v2».
 ' Ромбы — проверки оркестратора по таблице переходов (сейчас оркестратор — человек).
 ' Подписи «N ·» на стрелках — строки таблицы переходов.
-' В READY_FOR_TEST test и code_review идут параллельно; переход 11 или 13 — когда обе в DONE.
+' В READY_FOR_TEST code_review идёт после test; переход 11 или 13 — когда обе в DONE.
 
 skinparam shadowing false
 skinparam ArrowColor #2563EB
@@ -101,32 +101,37 @@ repeat
 repeat while (Возврат в ANALYSIS?\n4 — findings или сокращение скоупа\n7 — замечания на approve) is (да)
 -> нет · 6;
 :READY_FOR_DEVELOPMENT
-задача implement;
+первая задача implement;
 
-|Developer|
 -> 9 · IN_DEVELOPMENT;
-:**implement**
-код и тесты по implementation_plan,
-target → related → full pytest;
-|Оркестратор|
-while (Есть OPEN DP для owner'а?) is (да)
-  |Owner|
-  :**answer_dp**;
+repeat
   |Developer|
-  :**implement** с учётом решений;
+  :**implement**
+  один промт плана, по порядку,
+  target → related → full pytest;
   |Оркестратор|
-endwhile (нет)
--> 10 · READY_FOR_TEST;
+  while (Есть OPEN DP?) is (да)
+    |Analyst|
+    :**resolve_findings**
+    или **answer_dp** с owner'ом;
+    note right
+      17 · решение меняет
+      требование → ANALYSIS
+    end note
+    |Developer|
+    :**apply_decisions**;
+    |Оркестратор|
+  endwhile (нет)
+repeat while (Есть следующий промт?) is (да)
+-> нет · 10 · READY_FOR_TEST;
 
-fork
-  |Tester|
-  :**test**
-  по test_plan и матрице покрытия;
-fork again
-  |Reviewer|
-  :**code_review**
-  другая модель, не автор кода;
-end fork
+|Tester|
+:**test**
+по test_plan и матрице покрытия;
+|Reviewer|
+:**code_review**
+другая модель, не автор кода,
+код и приёмочные тесты;
 repeat
   |Оркестратор|
   while (Есть баги в OPEN?) is (да · 11 BUG_FIX)
@@ -134,9 +139,12 @@ repeat
     :**bug_fix**
     root cause, regression-тест;
     |Tester|
-    :перепроверка тем,
-    кто завёл баг
-    (test или code_review);
+    :**test**
+    если исправлены баги
+    Tester'а или owner'а;
+    |Reviewer|
+    :**code_review**
+    diff исправления — всегда;
     |Оркестратор|
   endwhile (нет · 13 DONE)
   |Manager|

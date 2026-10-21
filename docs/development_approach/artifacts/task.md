@@ -8,6 +8,7 @@
 - resolution ставится только вместе с DONE.
 - needs_decision без raised_dp и has_bugs без raised_bugs — ошибка.
 - «Задание» оркестратор берёт из описания kind в процессе: что сделать и когда готово.
+- В ручном режиме файл задачи создаёт `scripts/orchestrator.py next`, а не человек.
 
 ## Заготовка
 
@@ -20,6 +21,7 @@ kind: review               # intake | analysis | answer_dp | apply_decisions | r
 gate: ALIGNMENT            # статус изменения, в котором создана
 cycle: 1
 inputs: [requirements.md, DP-A-02]
+origin: null               # оркестратор: задача, которую эта продолжает (apply_decisions, исправление, ответ на DP)
 agent: <агент>             # заполняет оркестратор при запуске
 model: <модель>            # заполняет оркестратор при запуске
 status: NEW                # NEW | IN_PROGRESS | DONE
@@ -28,8 +30,9 @@ raised_dp: []
 raised_bugs: []
 changed_reqs: []           # Analyst
 reviewed_reqs: []          # Developer и Tester в review
-commit: null               # Developer в implement и bug_fix, Tester в test
+commit: null               # Developer в implement и bug_fix, Tester в test, Reviewer в code_review
 estimate: null             # { чч: 40, мч: 10, confidence: medium }; чч — у человека, мч — у агента
+choice: null               # только escalation: accept_risk | reduce_scope | cancel; пишет Manager со слов owner'а
 ---
 ## Задание
 <что сделать и когда готово; пишет оркестратор>
