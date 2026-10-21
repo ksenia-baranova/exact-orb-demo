@@ -1,0 +1,1837 @@
+{
+  "started": "2026-10-20T10:12:57.616Z",
+  "subject": "Numbered house composition and Owner aspect focus",
+  "cases": [
+    {
+      "id": "published-natal-1440",
+      "width": 1440,
+      "fixture": "published-natal",
+      "checks": [
+        {
+          "name": "numbered-houses",
+          "actual": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12
+          ],
+          "expected": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12
+          ],
+          "pass": true
+        },
+        {
+          "name": "published-cusps",
+          "actual": 12,
+          "expected": 12,
+          "pass": true
+        },
+        {
+          "name": "ruler",
+          "actual": 360,
+          "expected": 360,
+          "pass": true
+        },
+        {
+          "name": "no-page-overflow",
+          "actual": false,
+          "expected": false,
+          "pass": true
+        },
+        {
+          "name": "collapsed-form-does-not-duplicate-summary",
+          "actual": true,
+          "expected": true,
+          "pass": true
+        },
+        {
+          "name": "useful-aspect-area",
+          "actual": true,
+          "expected": true,
+          "pass": true
+        },
+        {
+          "name": "focus-wheel",
+          "actual": "chart-wheel",
+          "expected": "chart-wheel",
+          "pass": true
+        },
+        {
+          "name": "aspect-only-row",
+          "actual": 1,
+          "expected": 1,
+          "pass": true
+        },
+        {
+          "name": "two-point-rows",
+          "actual": [
+            "mean_apog",
+            "pars_fortune"
+          ],
+          "expected": [
+            "mean_apog",
+            "pars_fortune"
+          ],
+          "pass": true
+        },
+        {
+          "name": "two-graphic-points",
+          "actual": [
+            "mean_apog",
+            "pars_fortune"
+          ],
+          "expected": [
+            "mean_apog",
+            "pars_fortune"
+          ],
+          "pass": true
+        },
+        {
+          "name": "published-houses-only",
+          "actual": [
+            6,
+            11
+          ],
+          "expected": [
+            6,
+            11
+          ],
+          "pass": true
+        },
+        {
+          "name": "graphic-house-numbers-only",
+          "actual": [
+            6,
+            11
+          ],
+          "expected": [
+            6,
+            11
+          ],
+          "pass": true
+        },
+        {
+          "name": "focused-page",
+          "actual": [
+            true,
+            true,
+            true
+          ],
+          "expected": [
+            true,
+            true,
+            true
+          ],
+          "pass": true
+        },
+        {
+          "name": "only-chosen-graphic",
+          "actual": [
+            1,
+            0
+          ],
+          "expected": [
+            1,
+            0
+          ],
+          "pass": true
+        },
+        {
+          "name": "view-scrolls-to-wheel",
+          "actual": false,
+          "expected": true,
+          "pass": false
+        }
+      ],
+      "requests": [
+        "bootstrap",
+        "current"
+      ],
+      "errors": [],
+      "normal": {
+        "width": 940,
+        "height": 833,
+        "houseNumbers": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
+        "cuspCount": 12,
+        "ticks": 360,
+        "aspectRatio": 0.748164580374053,
+        "overflow": false,
+        "zoom": 1,
+        "formHidden": true
+      },
+      "selected": {
+        "focus": "chart-wheel",
+        "scrollTop": 111.59375,
+        "aspectRows": 1,
+        "pointIds": [
+          "mean_apog",
+          "pars_fortune"
+        ],
+        "houses": [
+          6,
+          11
+        ],
+        "houseNumbers": [
+          6,
+          11
+        ],
+        "graphicPoints": [
+          "mean_apog",
+          "pars_fortune"
+        ],
+        "formHidden": true,
+        "headingHidden": true,
+        "summaryHidden": true,
+        "lines": 1,
+        "markers": 0
+      },
+      "pass": false,
+      "error": "AssertionError [ERR_ASSERTION]: view-scrolls-to-wheel\n\nfalse !== true\n"
+    },
+    {
+      "id": "published-natal-768",
+      "width": 768,
+      "fixture": "published-natal",
+      "checks": [
+        {
+          "name": "numbered-houses",
+          "actual": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12
+          ],
+          "expected": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12
+          ],
+          "pass": true
+        },
+        {
+          "name": "published-cusps",
+          "actual": 12,
+          "expected": 12,
+          "pass": true
+        },
+        {
+          "name": "ruler",
+          "actual": 360,
+          "expected": 360,
+          "pass": true
+        },
+        {
+          "name": "no-page-overflow",
+          "actual": false,
+          "expected": false,
+          "pass": true
+        },
+        {
+          "name": "collapsed-form-does-not-duplicate-summary",
+          "actual": true,
+          "expected": true,
+          "pass": true
+        },
+        {
+          "name": "useful-aspect-area",
+          "actual": true,
+          "expected": true,
+          "pass": true
+        },
+        {
+          "name": "focus-wheel",
+          "actual": "chart-wheel",
+          "expected": "chart-wheel",
+          "pass": true
+        },
+        {
+          "name": "aspect-only-row",
+          "actual": 1,
+          "expected": 1,
+          "pass": true
+        },
+        {
+          "name": "two-point-rows",
+          "actual": [
+            "mean_apog",
+            "pars_fortune"
+          ],
+          "expected": [
+            "mean_apog",
+            "pars_fortune"
+          ],
+          "pass": true
+        },
+        {
+          "name": "two-graphic-points",
+          "actual": [
+            "mean_apog",
+            "pars_fortune"
+          ],
+          "expected": [
+            "mean_apog",
+            "pars_fortune"
+          ],
+          "pass": true
+        },
+        {
+          "name": "published-houses-only",
+          "actual": [
+            6,
+            11
+          ],
+          "expected": [
+            6,
+            11
+          ],
+          "pass": true
+        },
+        {
+          "name": "graphic-house-numbers-only",
+          "actual": [
+            6,
+            11
+          ],
+          "expected": [
+            6,
+            11
+          ],
+          "pass": true
+        },
+        {
+          "name": "focused-page",
+          "actual": [
+            true,
+            true,
+            true
+          ],
+          "expected": [
+            true,
+            true,
+            true
+          ],
+          "pass": true
+        },
+        {
+          "name": "only-chosen-graphic",
+          "actual": [
+            1,
+            0
+          ],
+          "expected": [
+            1,
+            0
+          ],
+          "pass": true
+        },
+        {
+          "name": "view-scrolls-to-wheel",
+          "actual": false,
+          "expected": true,
+          "pass": false
+        }
+      ],
+      "requests": [
+        "bootstrap",
+        "current"
+      ],
+      "errors": [],
+      "normal": {
+        "width": 648,
+        "height": 541,
+        "houseNumbers": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
+        "cuspCount": 12,
+        "ticks": 360,
+        "aspectRatio": 0.6101984593031777,
+        "overflow": false,
+        "zoom": 1,
+        "formHidden": true
+      },
+      "selected": {
+        "focus": "chart-wheel",
+        "scrollTop": 129.171875,
+        "aspectRows": 1,
+        "pointIds": [
+          "mean_apog",
+          "pars_fortune"
+        ],
+        "houses": [
+          6,
+          11
+        ],
+        "houseNumbers": [
+          6,
+          11
+        ],
+        "graphicPoints": [
+          "mean_apog",
+          "pars_fortune"
+        ],
+        "formHidden": true,
+        "headingHidden": true,
+        "summaryHidden": true,
+        "lines": 1,
+        "markers": 0
+      },
+      "pass": false,
+      "error": "AssertionError [ERR_ASSERTION]: view-scrolls-to-wheel\n\nfalse !== true\n"
+    },
+    {
+      "id": "published-natal-360",
+      "width": 360,
+      "fixture": "published-natal",
+      "checks": [
+        {
+          "name": "numbered-houses",
+          "actual": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12
+          ],
+          "expected": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12
+          ],
+          "pass": true
+        },
+        {
+          "name": "published-cusps",
+          "actual": 12,
+          "expected": 12,
+          "pass": true
+        },
+        {
+          "name": "ruler",
+          "actual": 360,
+          "expected": 360,
+          "pass": true
+        },
+        {
+          "name": "no-page-overflow",
+          "actual": false,
+          "expected": false,
+          "pass": true
+        },
+        {
+          "name": "collapsed-form-does-not-duplicate-summary",
+          "actual": true,
+          "expected": true,
+          "pass": true
+        },
+        {
+          "name": "focus-wheel",
+          "actual": "chart-wheel",
+          "expected": "chart-wheel",
+          "pass": true
+        },
+        {
+          "name": "aspect-only-row",
+          "actual": 1,
+          "expected": 1,
+          "pass": true
+        },
+        {
+          "name": "two-point-rows",
+          "actual": [
+            "mean_apog",
+            "pars_fortune"
+          ],
+          "expected": [
+            "mean_apog",
+            "pars_fortune"
+          ],
+          "pass": true
+        },
+        {
+          "name": "two-graphic-points",
+          "actual": [
+            "mean_apog",
+            "pars_fortune"
+          ],
+          "expected": [
+            "mean_apog",
+            "pars_fortune"
+          ],
+          "pass": true
+        },
+        {
+          "name": "published-houses-only",
+          "actual": [
+            6,
+            11
+          ],
+          "expected": [
+            6,
+            11
+          ],
+          "pass": true
+        },
+        {
+          "name": "graphic-house-numbers-only",
+          "actual": [
+            6,
+            11
+          ],
+          "expected": [
+            6,
+            11
+          ],
+          "pass": true
+        },
+        {
+          "name": "focused-page",
+          "actual": [
+            true,
+            true,
+            true
+          ],
+          "expected": [
+            true,
+            true,
+            true
+          ],
+          "pass": true
+        },
+        {
+          "name": "only-chosen-graphic",
+          "actual": [
+            1,
+            0
+          ],
+          "expected": [
+            1,
+            0
+          ],
+          "pass": true
+        },
+        {
+          "name": "view-scrolls-to-wheel",
+          "actual": true,
+          "expected": true,
+          "pass": true
+        },
+        {
+          "name": "activation-no-HTTP",
+          "actual": 2,
+          "expected": 2,
+          "pass": true
+        },
+        {
+          "name": "close-restores-native-source-focus",
+          "actual": true,
+          "expected": true,
+          "pass": true
+        },
+        {
+          "name": "close-restores-all-points",
+          "actual": 16,
+          "expected": 16,
+          "pass": true
+        },
+        {
+          "name": "background-no-line-marker",
+          "actual": 0,
+          "expected": 0,
+          "pass": true
+        },
+        {
+          "name": "S1-returns-whole-map",
+          "actual": true,
+          "expected": true,
+          "pass": true
+        },
+        {
+          "name": "S1-source-rows",
+          "actual": 47,
+          "expected": 47,
+          "pass": true
+        },
+        {
+          "name": "safe-recovery-stays-reachable",
+          "actual": true,
+          "expected": true,
+          "pass": true
+        },
+        {
+          "name": "recovery-positive-keeps-aspect-mode",
+          "actual": "true",
+          "expected": "true",
+          "pass": true
+        },
+        {
+          "name": "zero-page-errors",
+          "actual": [],
+          "expected": [],
+          "pass": true
+        }
+      ],
+      "requests": [
+        "bootstrap",
+        "current",
+        "bootstrap",
+        "current",
+        "bootstrap",
+        "current",
+        "bootstrap",
+        "current"
+      ],
+      "errors": [],
+      "normal": {
+        "width": 318,
+        "height": 406,
+        "houseNumbers": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
+        "cuspCount": 12,
+        "ticks": 360,
+        "aspectRatio": 0.27000000676498037,
+        "overflow": false,
+        "zoom": 1,
+        "formHidden": true
+      },
+      "selected": {
+        "focus": "chart-wheel",
+        "scrollTop": 24.28125,
+        "aspectRows": 1,
+        "pointIds": [
+          "mean_apog",
+          "pars_fortune"
+        ],
+        "houses": [
+          6,
+          11
+        ],
+        "houseNumbers": [
+          6,
+          11
+        ],
+        "graphicPoints": [
+          "mean_apog",
+          "pars_fortune"
+        ],
+        "formHidden": true,
+        "headingHidden": true,
+        "summaryHidden": true,
+        "lines": 1,
+        "markers": 0
+      },
+      "pass": true
+    },
+    {
+      "id": "F3-max-1440",
+      "width": 1440,
+      "fixture": "F3-max",
+      "checks": [
+        {
+          "name": "numbered-houses",
+          "actual": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12
+          ],
+          "expected": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12
+          ],
+          "pass": true
+        },
+        {
+          "name": "published-cusps",
+          "actual": 12,
+          "expected": 12,
+          "pass": true
+        },
+        {
+          "name": "ruler",
+          "actual": 360,
+          "expected": 360,
+          "pass": true
+        },
+        {
+          "name": "no-page-overflow",
+          "actual": false,
+          "expected": false,
+          "pass": true
+        },
+        {
+          "name": "collapsed-form-does-not-duplicate-summary",
+          "actual": true,
+          "expected": true,
+          "pass": true
+        },
+        {
+          "name": "useful-aspect-area",
+          "actual": true,
+          "expected": true,
+          "pass": true
+        }
+      ],
+      "requests": [
+        "bootstrap",
+        "current"
+      ],
+      "errors": [],
+      "normal": {
+        "width": 940,
+        "height": 833,
+        "houseNumbers": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
+        "cuspCount": 12,
+        "ticks": 360,
+        "aspectRatio": 0.748164580374053,
+        "overflow": false,
+        "zoom": 1,
+        "formHidden": true
+      },
+      "pass": false,
+      "error": "TimeoutError: locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#aspects-show-all')\u001b[22m\n\u001b[2m    - locator resolved to <button hidden=\"\" type=\"button\" id=\"aspects-show-all\" aria-expanded=\"false\" class=\"secondary-button\" aria-controls=\"aspects-table\">Показать все</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    58 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is not visible\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n"
+    },
+    {
+      "id": "F3-max-768",
+      "width": 768,
+      "fixture": "F3-max",
+      "checks": [
+        {
+          "name": "numbered-houses",
+          "actual": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12
+          ],
+          "expected": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12
+          ],
+          "pass": true
+        },
+        {
+          "name": "published-cusps",
+          "actual": 12,
+          "expected": 12,
+          "pass": true
+        },
+        {
+          "name": "ruler",
+          "actual": 360,
+          "expected": 360,
+          "pass": true
+        },
+        {
+          "name": "no-page-overflow",
+          "actual": false,
+          "expected": false,
+          "pass": true
+        },
+        {
+          "name": "collapsed-form-does-not-duplicate-summary",
+          "actual": true,
+          "expected": true,
+          "pass": true
+        },
+        {
+          "name": "useful-aspect-area",
+          "actual": true,
+          "expected": true,
+          "pass": true
+        }
+      ],
+      "requests": [
+        "bootstrap",
+        "current"
+      ],
+      "errors": [],
+      "normal": {
+        "width": 648,
+        "height": 541,
+        "houseNumbers": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
+        "cuspCount": 12,
+        "ticks": 360,
+        "aspectRatio": 0.6101984593031777,
+        "overflow": false,
+        "zoom": 1,
+        "formHidden": true
+      },
+      "pass": false,
+      "error": "TimeoutError: locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#aspects-show-all')\u001b[22m\n\u001b[2m    - locator resolved to <button hidden=\"\" type=\"button\" id=\"aspects-show-all\" aria-expanded=\"false\" class=\"secondary-button\" aria-controls=\"aspects-table\">Показать все</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    58 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is not visible\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n"
+    },
+    {
+      "id": "F3-max-360",
+      "width": 360,
+      "fixture": "F3-max",
+      "checks": [
+        {
+          "name": "numbered-houses",
+          "actual": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12
+          ],
+          "expected": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12
+          ],
+          "pass": true
+        },
+        {
+          "name": "published-cusps",
+          "actual": 12,
+          "expected": 12,
+          "pass": true
+        },
+        {
+          "name": "ruler",
+          "actual": 360,
+          "expected": 360,
+          "pass": true
+        },
+        {
+          "name": "no-page-overflow",
+          "actual": false,
+          "expected": false,
+          "pass": true
+        },
+        {
+          "name": "collapsed-form-does-not-duplicate-summary",
+          "actual": true,
+          "expected": true,
+          "pass": true
+        }
+      ],
+      "requests": [
+        "bootstrap",
+        "current"
+      ],
+      "errors": [],
+      "normal": {
+        "width": 318,
+        "height": 406,
+        "houseNumbers": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
+        "cuspCount": 12,
+        "ticks": 360,
+        "aspectRatio": 0.27000000676498037,
+        "overflow": false,
+        "zoom": 1,
+        "formHidden": true
+      },
+      "pass": false,
+      "error": "TimeoutError: locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#aspects-show-all')\u001b[22m\n\u001b[2m    - locator resolved to <button hidden=\"\" type=\"button\" id=\"aspects-show-all\" aria-expanded=\"false\" class=\"secondary-button\" aria-controls=\"aspects-table\">Показать все</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    58 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is not visible\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n"
+    },
+    {
+      "id": "cosmogram-1440",
+      "width": 1440,
+      "fixture": "cosmogram",
+      "checks": [
+        {
+          "name": "numbered-houses",
+          "actual": [],
+          "expected": [],
+          "pass": true
+        },
+        {
+          "name": "published-cusps",
+          "actual": 0,
+          "expected": 0,
+          "pass": true
+        },
+        {
+          "name": "ruler",
+          "actual": 360,
+          "expected": 360,
+          "pass": true
+        },
+        {
+          "name": "no-page-overflow",
+          "actual": false,
+          "expected": false,
+          "pass": true
+        },
+        {
+          "name": "collapsed-form-does-not-duplicate-summary",
+          "actual": true,
+          "expected": true,
+          "pass": true
+        },
+        {
+          "name": "useful-aspect-area",
+          "actual": true,
+          "expected": true,
+          "pass": true
+        }
+      ],
+      "requests": [
+        "bootstrap",
+        "current"
+      ],
+      "errors": [],
+      "normal": {
+        "width": 940,
+        "height": 940,
+        "houseNumbers": [],
+        "cuspCount": 0,
+        "ticks": 360,
+        "aspectRatio": 0.7775463055131773,
+        "overflow": false,
+        "zoom": 1,
+        "formHidden": true
+      },
+      "pass": false,
+      "error": "AssertionError [ERR_ASSERTION]: positive source aspect fixture"
+    },
+    {
+      "id": "cosmogram-768",
+      "width": 768,
+      "fixture": "cosmogram",
+      "checks": [
+        {
+          "name": "numbered-houses",
+          "actual": [],
+          "expected": [],
+          "pass": true
+        },
+        {
+          "name": "published-cusps",
+          "actual": 0,
+          "expected": 0,
+          "pass": true
+        },
+        {
+          "name": "ruler",
+          "actual": 360,
+          "expected": 360,
+          "pass": true
+        },
+        {
+          "name": "no-page-overflow",
+          "actual": false,
+          "expected": false,
+          "pass": true
+        },
+        {
+          "name": "collapsed-form-does-not-duplicate-summary",
+          "actual": true,
+          "expected": true,
+          "pass": true
+        },
+        {
+          "name": "useful-aspect-area",
+          "actual": true,
+          "expected": true,
+          "pass": true
+        }
+      ],
+      "requests": [
+        "bootstrap",
+        "current"
+      ],
+      "errors": [],
+      "normal": {
+        "width": 648,
+        "height": 648,
+        "houseNumbers": [],
+        "cuspCount": 0,
+        "ticks": 360,
+        "aspectRatio": 0.6760518550872803,
+        "overflow": false,
+        "zoom": 1,
+        "formHidden": true
+      },
+      "pass": false,
+      "error": "AssertionError [ERR_ASSERTION]: positive source aspect fixture"
+    },
+    {
+      "id": "cosmogram-360",
+      "width": 360,
+      "fixture": "cosmogram",
+      "checks": [
+        {
+          "name": "numbered-houses",
+          "actual": [],
+          "expected": [],
+          "pass": true
+        },
+        {
+          "name": "published-cusps",
+          "actual": 0,
+          "expected": 0,
+          "pass": true
+        },
+        {
+          "name": "ruler",
+          "actual": 360,
+          "expected": 360,
+          "pass": true
+        },
+        {
+          "name": "no-page-overflow",
+          "actual": false,
+          "expected": false,
+          "pass": true
+        },
+        {
+          "name": "collapsed-form-does-not-duplicate-summary",
+          "actual": true,
+          "expected": true,
+          "pass": true
+        }
+      ],
+      "requests": [
+        "bootstrap",
+        "current"
+      ],
+      "errors": [],
+      "normal": {
+        "width": 318,
+        "height": 318,
+        "houseNumbers": [],
+        "cuspCount": 0,
+        "ticks": 360,
+        "aspectRatio": 0.3312037806357107,
+        "overflow": false,
+        "zoom": 1,
+        "formHidden": true
+      },
+      "pass": false,
+      "error": "AssertionError [ERR_ASSERTION]: positive source aspect fixture"
+    },
+    {
+      "id": "palette-control-1440",
+      "width": 1440,
+      "fixture": "palette-control",
+      "checks": [
+        {
+          "name": "numbered-houses",
+          "actual": [],
+          "expected": [],
+          "pass": true
+        },
+        {
+          "name": "published-cusps",
+          "actual": 0,
+          "expected": 0,
+          "pass": true
+        },
+        {
+          "name": "ruler",
+          "actual": 360,
+          "expected": 360,
+          "pass": true
+        },
+        {
+          "name": "no-page-overflow",
+          "actual": false,
+          "expected": false,
+          "pass": true
+        },
+        {
+          "name": "collapsed-form-does-not-duplicate-summary",
+          "actual": true,
+          "expected": true,
+          "pass": true
+        },
+        {
+          "name": "useful-aspect-area",
+          "actual": true,
+          "expected": true,
+          "pass": true
+        },
+        {
+          "name": "focus-wheel",
+          "actual": "chart-wheel",
+          "expected": "chart-wheel",
+          "pass": true
+        },
+        {
+          "name": "aspect-only-row",
+          "actual": 1,
+          "expected": 1,
+          "pass": true
+        },
+        {
+          "name": "two-point-rows",
+          "actual": [
+            "moon",
+            "sun"
+          ],
+          "expected": [
+            "moon",
+            "sun"
+          ],
+          "pass": true
+        },
+        {
+          "name": "two-graphic-points",
+          "actual": [
+            "moon",
+            "sun"
+          ],
+          "expected": [
+            "moon",
+            "sun"
+          ],
+          "pass": true
+        },
+        {
+          "name": "published-houses-only",
+          "actual": [],
+          "expected": [],
+          "pass": true
+        },
+        {
+          "name": "graphic-house-numbers-only",
+          "actual": [],
+          "expected": [],
+          "pass": true
+        },
+        {
+          "name": "focused-page",
+          "actual": [
+            true,
+            true,
+            true
+          ],
+          "expected": [
+            true,
+            true,
+            true
+          ],
+          "pass": true
+        },
+        {
+          "name": "only-chosen-graphic",
+          "actual": [
+            0,
+            1
+          ],
+          "expected": [
+            0,
+            1
+          ],
+          "pass": true
+        },
+        {
+          "name": "view-scrolls-to-wheel",
+          "actual": true,
+          "expected": true,
+          "pass": true
+        },
+        {
+          "name": "activation-no-HTTP",
+          "actual": 2,
+          "expected": 2,
+          "pass": true
+        },
+        {
+          "name": "close-restores-native-source-focus",
+          "actual": true,
+          "expected": true,
+          "pass": true
+        },
+        {
+          "name": "close-restores-all-points",
+          "actual": 16,
+          "expected": 16,
+          "pass": true
+        },
+        {
+          "name": "S1-returns-whole-map",
+          "actual": true,
+          "expected": true,
+          "pass": true
+        },
+        {
+          "name": "S1-source-rows",
+          "actual": 8,
+          "expected": 8,
+          "pass": true
+        },
+        {
+          "name": "safe-recovery-stays-reachable",
+          "actual": true,
+          "expected": true,
+          "pass": true
+        },
+        {
+          "name": "recovery-positive-keeps-aspect-mode",
+          "actual": "true",
+          "expected": "true",
+          "pass": true
+        },
+        {
+          "name": "zero-page-errors",
+          "actual": [],
+          "expected": [],
+          "pass": true
+        }
+      ],
+      "requests": [
+        "bootstrap",
+        "current",
+        "bootstrap",
+        "current",
+        "bootstrap",
+        "current",
+        "bootstrap",
+        "current"
+      ],
+      "errors": [],
+      "normal": {
+        "width": 940,
+        "height": 940,
+        "houseNumbers": [],
+        "cuspCount": 0,
+        "ticks": 360,
+        "aspectRatio": 0.7775463055131773,
+        "overflow": false,
+        "zoom": 1,
+        "formHidden": true
+      },
+      "selected": {
+        "focus": "chart-wheel",
+        "scrollTop": 23.59375,
+        "aspectRows": 1,
+        "pointIds": [
+          "moon",
+          "sun"
+        ],
+        "houses": [],
+        "houseNumbers": [],
+        "graphicPoints": [
+          "moon",
+          "sun"
+        ],
+        "formHidden": true,
+        "headingHidden": true,
+        "summaryHidden": true,
+        "lines": 0,
+        "markers": 1
+      },
+      "pass": true
+    },
+    {
+      "id": "palette-control-768",
+      "width": 768,
+      "fixture": "palette-control",
+      "checks": [
+        {
+          "name": "numbered-houses",
+          "actual": [],
+          "expected": [],
+          "pass": true
+        },
+        {
+          "name": "published-cusps",
+          "actual": 0,
+          "expected": 0,
+          "pass": true
+        },
+        {
+          "name": "ruler",
+          "actual": 360,
+          "expected": 360,
+          "pass": true
+        },
+        {
+          "name": "no-page-overflow",
+          "actual": false,
+          "expected": false,
+          "pass": true
+        },
+        {
+          "name": "collapsed-form-does-not-duplicate-summary",
+          "actual": true,
+          "expected": true,
+          "pass": true
+        },
+        {
+          "name": "useful-aspect-area",
+          "actual": true,
+          "expected": true,
+          "pass": true
+        },
+        {
+          "name": "focus-wheel",
+          "actual": "chart-wheel",
+          "expected": "chart-wheel",
+          "pass": true
+        },
+        {
+          "name": "aspect-only-row",
+          "actual": 1,
+          "expected": 1,
+          "pass": true
+        },
+        {
+          "name": "two-point-rows",
+          "actual": [
+            "moon",
+            "sun"
+          ],
+          "expected": [
+            "moon",
+            "sun"
+          ],
+          "pass": true
+        },
+        {
+          "name": "two-graphic-points",
+          "actual": [
+            "moon",
+            "sun"
+          ],
+          "expected": [
+            "moon",
+            "sun"
+          ],
+          "pass": true
+        },
+        {
+          "name": "published-houses-only",
+          "actual": [],
+          "expected": [],
+          "pass": true
+        },
+        {
+          "name": "graphic-house-numbers-only",
+          "actual": [],
+          "expected": [],
+          "pass": true
+        },
+        {
+          "name": "focused-page",
+          "actual": [
+            true,
+            true,
+            true
+          ],
+          "expected": [
+            true,
+            true,
+            true
+          ],
+          "pass": true
+        },
+        {
+          "name": "only-chosen-graphic",
+          "actual": [
+            0,
+            1
+          ],
+          "expected": [
+            0,
+            1
+          ],
+          "pass": true
+        },
+        {
+          "name": "view-scrolls-to-wheel",
+          "actual": true,
+          "expected": true,
+          "pass": true
+        },
+        {
+          "name": "activation-no-HTTP",
+          "actual": 2,
+          "expected": 2,
+          "pass": true
+        },
+        {
+          "name": "close-restores-native-source-focus",
+          "actual": true,
+          "expected": true,
+          "pass": true
+        },
+        {
+          "name": "close-restores-all-points",
+          "actual": 16,
+          "expected": 16,
+          "pass": true
+        },
+        {
+          "name": "S1-returns-whole-map",
+          "actual": true,
+          "expected": true,
+          "pass": true
+        },
+        {
+          "name": "S1-source-rows",
+          "actual": 8,
+          "expected": 8,
+          "pass": true
+        },
+        {
+          "name": "safe-recovery-stays-reachable",
+          "actual": true,
+          "expected": true,
+          "pass": true
+        },
+        {
+          "name": "recovery-positive-keeps-aspect-mode",
+          "actual": "true",
+          "expected": "true",
+          "pass": true
+        },
+        {
+          "name": "zero-page-errors",
+          "actual": [],
+          "expected": [],
+          "pass": true
+        }
+      ],
+      "requests": [
+        "bootstrap",
+        "current",
+        "bootstrap",
+        "current",
+        "bootstrap",
+        "current",
+        "bootstrap",
+        "current"
+      ],
+      "errors": [],
+      "normal": {
+        "width": 648,
+        "height": 648,
+        "houseNumbers": [],
+        "cuspCount": 0,
+        "ticks": 360,
+        "aspectRatio": 0.6760518550872803,
+        "overflow": false,
+        "zoom": 1,
+        "formHidden": true
+      },
+      "selected": {
+        "focus": "chart-wheel",
+        "scrollTop": 24.171875,
+        "aspectRows": 1,
+        "pointIds": [
+          "moon",
+          "sun"
+        ],
+        "houses": [],
+        "houseNumbers": [],
+        "graphicPoints": [
+          "moon",
+          "sun"
+        ],
+        "formHidden": true,
+        "headingHidden": true,
+        "summaryHidden": true,
+        "lines": 0,
+        "markers": 1
+      },
+      "pass": true
+    },
+    {
+      "id": "palette-control-360",
+      "width": 360,
+      "fixture": "palette-control",
+      "checks": [
+        {
+          "name": "numbered-houses",
+          "actual": [],
+          "expected": [],
+          "pass": true
+        },
+        {
+          "name": "published-cusps",
+          "actual": 0,
+          "expected": 0,
+          "pass": true
+        },
+        {
+          "name": "ruler",
+          "actual": 360,
+          "expected": 360,
+          "pass": true
+        },
+        {
+          "name": "no-page-overflow",
+          "actual": false,
+          "expected": false,
+          "pass": true
+        },
+        {
+          "name": "collapsed-form-does-not-duplicate-summary",
+          "actual": true,
+          "expected": true,
+          "pass": true
+        },
+        {
+          "name": "focus-wheel",
+          "actual": "chart-wheel",
+          "expected": "chart-wheel",
+          "pass": true
+        },
+        {
+          "name": "aspect-only-row",
+          "actual": 1,
+          "expected": 1,
+          "pass": true
+        },
+        {
+          "name": "two-point-rows",
+          "actual": [
+            "moon",
+            "sun"
+          ],
+          "expected": [
+            "moon",
+            "sun"
+          ],
+          "pass": true
+        },
+        {
+          "name": "two-graphic-points",
+          "actual": [
+            "moon",
+            "sun"
+          ],
+          "expected": [
+            "moon",
+            "sun"
+          ],
+          "pass": true
+        },
+        {
+          "name": "published-houses-only",
+          "actual": [],
+          "expected": [],
+          "pass": true
+        },
+        {
+          "name": "graphic-house-numbers-only",
+          "actual": [],
+          "expected": [],
+          "pass": true
+        },
+        {
+          "name": "focused-page",
+          "actual": [
+            true,
+            true,
+            true
+          ],
+          "expected": [
+            true,
+            true,
+            true
+          ],
+          "pass": true
+        },
+        {
+          "name": "only-chosen-graphic",
+          "actual": [
+            0,
+            1
+          ],
+          "expected": [
+            0,
+            1
+          ],
+          "pass": true
+        },
+        {
+          "name": "view-scrolls-to-wheel",
+          "actual": true,
+          "expected": true,
+          "pass": true
+        },
+        {
+          "name": "activation-no-HTTP",
+          "actual": 2,
+          "expected": 2,
+          "pass": true
+        },
+        {
+          "name": "close-restores-native-source-focus",
+          "actual": true,
+          "expected": true,
+          "pass": true
+        },
+        {
+          "name": "close-restores-all-points",
+          "actual": 16,
+          "expected": 16,
+          "pass": true
+        },
+        {
+          "name": "S1-returns-whole-map",
+          "actual": true,
+          "expected": true,
+          "pass": true
+        },
+        {
+          "name": "S1-source-rows",
+          "actual": 8,
+          "expected": 8,
+          "pass": true
+        },
+        {
+          "name": "safe-recovery-stays-reachable",
+          "actual": true,
+          "expected": true,
+          "pass": true
+        },
+        {
+          "name": "recovery-positive-keeps-aspect-mode",
+          "actual": "true",
+          "expected": "true",
+          "pass": true
+        },
+        {
+          "name": "zero-page-errors",
+          "actual": [],
+          "expected": [],
+          "pass": true
+        }
+      ],
+      "requests": [
+        "bootstrap",
+        "current",
+        "bootstrap",
+        "current",
+        "bootstrap",
+        "current",
+        "bootstrap"
+      ],
+      "errors": [],
+      "normal": {
+        "width": 318,
+        "height": 318,
+        "houseNumbers": [],
+        "cuspCount": 0,
+        "ticks": 360,
+        "aspectRatio": 0.3312037806357107,
+        "overflow": false,
+        "zoom": 1,
+        "formHidden": true
+      },
+      "selected": {
+        "focus": "chart-wheel",
+        "scrollTop": 24.1875,
+        "aspectRows": 1,
+        "pointIds": [
+          "moon",
+          "sun"
+        ],
+        "houses": [],
+        "houseNumbers": [],
+        "graphicPoints": [
+          "moon",
+          "sun"
+        ],
+        "formHidden": true,
+        "headingHidden": true,
+        "summaryHidden": true,
+        "lines": 0,
+        "markers": 1
+      },
+      "pass": true
+    }
+  ],
+  "sources": {
+    "chart_state.mjs": "4b01e6623624b3027d1b45c07f8185afded2558eca5e2e352d22c183a172e63d",
+    "facts.mjs": "fd34639b3fa4dfb3764863fb5b6f10e0a17b3289aff7c988df08156e17d0486c",
+    "form.mjs": "4f44f1289e8aa46e463e4d517161df474ea4c94b008f0616b9e01bd65b590ebd",
+    "index.html": "87d9d939ed69089167055b44ba65e53107dd1ade88c7a81041304985a98bf532",
+    "main.mjs": "153ccf28ae4a22da5138691701006080d992c67ce563f93db7e86487d803955b",
+    "places.mjs": "857593b5b335c4612823dc1d4b58e5dca628671cd3ff51e371ac8641bb820bfb",
+    "recovery.mjs": "405eae1bb36ee3387337fa1d34d5af48d7385bbfbc295ea5a9ae391d48d07414",
+    "response.mjs": "045770e93485c9f8111c6bd03bf9ce9a16e19d05f5e9624931ae63f84bfcbb8d",
+    "result_controller.mjs": "3cfea4b45e41c104b4354457013f6787301b593e8f769a42796fa1cd75f3d794",
+    "session.mjs": "cff830d2f6e490290696cd2846cabd53d17b1f49a8b624c6765bf289cc162088",
+    "styles.css": "6df7e84a3d47542cc8361d4a1214ae79066fac54bfb024b54dc6ad69b51be84c",
+    "transport.mjs": "18b46104d161eb6ca3c094c507e2011bbba3aec91ad62622c38cae234693dc60",
+    "wheel_layout.mjs": "8e681abee76a8c1704a0e0c615b948c85d3e275f3304e18698174aa5625ccc27",
+    "wheel_svg.mjs": "7c6cf37dbdd5f56430442763076e09d5b234165932c29a65763a6a01800ebbb0"
+  },
+  "browser": "155.0.8059.40",
+  "finished": "2026-10-20T10:15:16.315Z"
+}

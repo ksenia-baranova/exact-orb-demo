@@ -1,0 +1,48 @@
+{
+  "RealBuildPerformed": false,
+  "TLS": "verified",
+  "Ready": 200,
+  "UTC": "2026-10-20T14:09:59.7329154Z",
+  "Assets": [
+    {
+      "File": "index.html",
+      "MatchesCurrentSource": true,
+      "Status": 200
+    },
+    {
+      "File": "main.mjs",
+      "MatchesCurrentSource": true,
+      "Status": 200
+    },
+    {
+      "File": "session.mjs",
+      "MatchesCurrentSource": true,
+      "Status": 200
+    },
+    {
+      "File": "facts.mjs",
+      "MatchesCurrentSource": true,
+      "Status": 200
+    },
+    {
+      "File": "wheel_layout.mjs",
+      "MatchesCurrentSource": true,
+      "Status": 200
+    },
+    {
+      "File": "wheel_svg.mjs",
+      "MatchesCurrentSource": true,
+      "Status": 200
+    },
+    {
+      "File": "result_controller.mjs",
+      "MatchesCurrentSource": true,
+      "Status": 200
+    },
+    {
+      "File": "styles.css",
+      "MatchesCurrentSource": true,
+      "Status": 200
+    }
+  ]
+}

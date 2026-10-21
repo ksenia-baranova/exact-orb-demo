@@ -1,0 +1,14 @@
+{
+  "candidate": "v2",
+  "registered_utc": "2026-10-19T16:22:28.289398+00:00",
+  "prior": "run01 + run01-audit.json preserved",
+  "changes": [
+    "Reserve all foreign true-anchor 2x2 CSS squares as real obstacles with gap2; labels incident to those anchors join C0. Candidate aux labels must leave all foreign true anchors visible and route starts free.",
+    "Point default ring is R - 26 - max measured point/R corner reach - 2, keeping labels inside zodiac; no arbitrary ring margin derived from screenshot.",
+    "Column order separation uses asymmetric actual previous.bottom - next.top +2 rather than half heights. This repairs fallback R descender protrusion; no gap threshold is changed.",
+    "Producer true-anchor coordinates snap to 1/64 CSS px; reference remains ideal trig translation with error <=.5. PAV block coordinates round to 1/64 to avoid native float32 contact drift. This is producer precision, not verifier tolerance.",
+    "Auxiliary candidate is compacted to an exact axis contact with a frozen foreign label/anchor, with strictly closing derivative toward A. The independent verifier must check entire-cell validity and exact contact+derivative; otherwise certificate is UNPROVEN. No global optimum is claimed."
+  ],
+  "unchanged": "Original gap2/anchor.5/em16,12/return1/HTML44, DTO, source rows, passive SVG; initial timebox unchanged",
+  "known_domain_delta": "External column row objective is L2 on ordered vertical slots; old annular chord-return does not apply automatically and requires narrow criteria/Analyst/decision-owner alignment."
+}

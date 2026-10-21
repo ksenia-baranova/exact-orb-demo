@@ -1,0 +1,157 @@
+{
+  "author": "Codex / Manager; author checks, not independent Tester",
+  "input_sha": "72ab4e30321884ddabe4205505216a7595d8bfeb",
+  "checkout_head_sha": "72ab4e30321884ddabe4205505216a7595d8bfeb",
+  "main_sha": "bba8d6cfb22f586f86c3035423f2535ede158b9f",
+  "transfer_sha": "c7219e485917366f67159c9a08e3c78dc4e69372",
+  "tester_output_sha": "583d635559862edc25e271f68053038c38fe088d",
+  "original_tester_verdict": "TRANSFER_REWORK_REQUIRED",
+  "corrections": [
+    "T008-R01",
+    "T008-R02",
+    "T008-N01"
+  ],
+  "independent_corrected_review": "NOT RUN / TASK-T-009",
+  "adr_0042": "ACCEPTED by Owner for current passive M1-8",
+  "active_wheel": "FUTURE FEATURE; not canceled, no current implementation/estimate authorized",
+  "requirements": 22,
+  "scenarios": 53,
+  "puml_structure_pass": 11,
+  "plantuml_render": "NOT RUN",
+  "target_hashes_pass": 16,
+  "removed_sources": 13,
+  "historical_reports_unchanged": 17,
+  "runtime_files_unchanged": 14,
+  "src_tests": "UNCHANGED",
+  "local_links_checked": 853,
+  "link_errors": [],
+  "preexisting_link_errors": [
+    [
+      "docs/project_management/Roadmap/roadmap.md",
+      "../../../prompts/2026-08-26/01-freeze-swiss-ephemeris-runtime.md",
+      "not in candidate Git files"
+    ],
+    [
+      "docs/project_management/Roadmap/roadmap.md",
+      "../../../prompts/2026-09-04/01-session-contracts.md",
+      "not in candidate Git files"
+    ]
+  ],
+  "negative_controls": [
+    "old AS09 F2 detected",
+    "retired Git directory absent"
+  ],
+  "node_command": "node --test tests/ui/*.test.mjs",
+  "node_observed_result": "229 passed / 0 failed",
+  "browser_https_full_pytest": "NOT RUN in this session",
+  "gantt_snapshot": 17,
+  "registry_patch": {
+    "base_sha": "bba8d6cfb22f586f86c3035423f2535ede158b9f",
+    "candidate_sha256_lf": "bef67d48aa5dfbaeed66081f831fed69c994e45fc957ac1504d377b72e210252",
+    "existing_main_entries": "UNCHANGED",
+    "check_and_apply_in_scratch": "PASS; exact candidate reconstructed",
+    "apply_option": "--unidiff-zero"
+  },
+  "merge_base": "9dd8b96fe25f6644b7820c03a784ce04aa33cf87",
+  "documentary_modify_delete": [
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/analyst/decision_input.patch",
+      "base_blob": "8d7b2161156f756c43c33688100c9b1a9b25156f",
+      "change_blob": "868ab870603d82ef054c1ef3d3a065bd2f7387f9",
+      "resolution": "KEEP_CURRENT_CHANGE"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/analyst/findings.md",
+      "base_blob": "9598c96ebdb86be7f5528c8a6d676eb0375d5751",
+      "change_blob": "800fc3ea5a764ec6c10f417901e6c85a3e01f7c0",
+      "resolution": "KEEP_CURRENT_CHANGE"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/analyst/package_manifest.json",
+      "base_blob": "5e2b01f55ad86483935eb2d09bb4f5a40d867d35",
+      "change_blob": "6f69e4d2cf78bd01e7fa7845d27f0fa91afd3cd1",
+      "resolution": "KEEP_CURRENT_CHANGE"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/analyst/sources.md",
+      "base_blob": "8cce5e9d8e29a7c1320405a031b90fc8af84d93e",
+      "change_blob": "3d018e1fb5188422d2b7cb75eef90944abc923be",
+      "resolution": "KEEP_CURRENT_CHANGE"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/analyst_artifact.md",
+      "base_blob": "4e3e259686766b54bf0aa1242cd9e541decf4d41",
+      "change_blob": "9de7b28f73dfd07f87707335c5eed527ada6f041",
+      "resolution": "KEEP_CURRENT_CHANGE"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/manager_artifact.md",
+      "base_blob": "00e94a8faae6c555c4f9179697eb2b9fb6783e3d",
+      "change_blob": "6c1d719238d3567c449dbcc2eb7dbcbf0305a0c4",
+      "resolution": "KEEP_CURRENT_CHANGE"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/process_notes.md",
+      "base_blob": "9d35378805f46093fe30cd01b94ecc6af401a951",
+      "change_blob": "177d9fdba94fc82d98e341d902384553682eccf4",
+      "resolution": "KEEP_CURRENT_CHANGE"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/tester/coverage_matrix.md",
+      "base_blob": "b9c20120f8945c3498bdca034a1743a874756fef",
+      "change_blob": "3088349e562b47aed87ebc1fcc7cbb76b7b6027e",
+      "resolution": "KEEP_CURRENT_CHANGE"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/tester/decision_input.patch",
+      "base_blob": "2f7025df8ef0ef238ff2320430056fdd52e2ab27",
+      "change_blob": "8e2759f132cad5d1f69d797b7450e5ac637b9c62",
+      "resolution": "KEEP_CURRENT_CHANGE"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/tester/defects.md",
+      "base_blob": "f3d9f9d714ebb3ba31b6b778ba1ecb5f74d8c29a",
+      "change_blob": "b76ad1d5a9c1daa6fe608d34481ad0b71b54c71f",
+      "resolution": "KEEP_CURRENT_CHANGE"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/tester/evidence/review.json",
+      "base_blob": "f715a30b72e5ea7aeb31421ecfa3c7eb1c937c4b",
+      "change_blob": "2cf95f688041751504bc9464ec4be751fa43aae2",
+      "resolution": "KEEP_CURRENT_CHANGE"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/tester/evidence/validate_review.py",
+      "base_blob": "e96d63b00604848290311da86308c1fbecf15ad0",
+      "change_blob": "8c898929aeb1a682756f1c342380c258cfe1e01a",
+      "resolution": "KEEP_CURRENT_CHANGE"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/tester/evidence/validation.txt",
+      "base_blob": "ab2ba80fcbddc43d83cd2f1eb24e7721b4b62893",
+      "change_blob": "ef66d00d04487054035cae0fb5a3e1e1a0b5d484",
+      "resolution": "KEEP_CURRENT_CHANGE"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/tester/test_plan.md",
+      "base_blob": "34db8b8e1aa7c60554a80e80ff3e16ab994f8884",
+      "change_blob": "544141155623119fb48ee0f0fc2b12a9697b85e2",
+      "resolution": "KEEP_CURRENT_CHANGE"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/tester/testability_review.md",
+      "base_blob": "7b07f1ce85e298c64771f05edf1cd45d815f3609",
+      "change_blob": "d8a54c364dfa1a4ea82daceccf4080c038727e4e",
+      "resolution": "KEEP_CURRENT_CHANGE"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/tester_artifact.md",
+      "base_blob": "1a7e9f719ed5dd34669cf4c790f5efd6572a1780",
+      "change_blob": "c2f701ecd9f35d7afdc25ffb0503ca1dabaef7e1",
+      "resolution": "KEEP_CURRENT_CHANGE"
+    }
+  ],
+  "code_intersection": false,
+  "git_publication": "OWNER AUTHORIZED commit/push everything to change only; PR/merge/role dispatch NOT AUTHORIZED",
+  "merge_sha": null
+}

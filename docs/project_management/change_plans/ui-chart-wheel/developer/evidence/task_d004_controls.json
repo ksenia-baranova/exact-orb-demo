@@ -1,0 +1,1236 @@
+{
+  "task": "TASK-D-004",
+  "revision": "criteria-v2-DRAFT",
+  "author": "Codex / Developer",
+  "pins": {
+    "input": "aa067201dc509f19bbe670778a9fa9470cf0bfb0",
+    "manager_material_base": "67fd9dbf25fb5cb6a4dafbce65582078917bb1a3",
+    "criteria_v1": "11a703ed6a01eb368f0f0ba23dc23f1e90fac81f",
+    "tester_t005": "71aa21cb79b046d25c77f68c6e87a9e48bd4c7fe",
+    "analyst_a003": "4055a9cb2bb18919c776c9d4e8585e2408a638c7",
+    "analyst_v3": "2634b224894b1046113557bfe241f0a5f2d46f8c",
+    "developer_v2": "f9c70f75ea815b2f3bf7e01426ee5afe65b31606",
+    "main_baseline": "535551026af6eedaf2a0aa5c0daa96fa94655ec1"
+  },
+  "started_utc": "2026-10-17T19:35:11Z",
+  "deadline": "one working day from STARTED, agreed by Owner",
+  "estimate_hours": [
+    3,
+    4
+  ],
+  "budget_relation": "inside existing criteria slot / 20–28, no automatic addition",
+  "evidence_type": "EXACT_ANALYTICAL_CALIBRATIONS_AND_DOCUMENT_AUDIT",
+  "calibrations": [
+    {
+      "id": "G-diagonal-gap",
+      "input": {
+        "A": [
+          "0",
+          "16",
+          "0",
+          "16"
+        ],
+        "B": [
+          "35/2",
+          "67/2",
+          "35/2",
+          "67/2"
+        ]
+      },
+      "expected": {
+        "squared_gap": "9/2",
+        "gap_pass": true
+      },
+      "actual": {
+        "squared_gap": "9/2",
+        "gap_pass": true
+      },
+      "result": "PASS",
+      "evidence_type": "ANALYTICAL_NOT_BROWSER"
+    },
+    {
+      "id": "G-gap-boundary",
+      "input": {
+        "A": [
+          "0",
+          "16",
+          "0",
+          "16"
+        ],
+        "B": [
+          "18",
+          "34",
+          "0",
+          "16"
+        ]
+      },
+      "expected": true,
+      "actual": true,
+      "result": "PASS",
+      "evidence_type": "ANALYTICAL_NOT_BROWSER"
+    },
+    {
+      "id": "G-gap-below",
+      "input": {
+        "A": [
+          "0",
+          "16",
+          "0",
+          "16"
+        ],
+        "B": [
+          "1799/100",
+          "3399/100",
+          "0",
+          "16"
+        ]
+      },
+      "expected": false,
+      "actual": false,
+      "result": "PASS",
+      "evidence_type": "ANALYTICAL_NOT_BROWSER"
+    },
+    {
+      "id": "G-union-not-envelope",
+      "input": {
+        "A_components": [
+          [
+            "0",
+            "4",
+            "0",
+            "16"
+          ],
+          [
+            "0",
+            "16",
+            "0",
+            "4"
+          ]
+        ],
+        "B": [
+          "8",
+          "12",
+          "8",
+          "12"
+        ]
+      },
+      "expected": {
+        "union_gap_squared": "16",
+        "envelope_gap_squared": "0"
+      },
+      "actual": {
+        "union_gap_squared": "16",
+        "envelope_gap_squared": "0"
+      },
+      "result": "PASS",
+      "evidence_type": "ANALYTICAL_NOT_BROWSER"
+    },
+    {
+      "id": "G-forbidden-outer",
+      "input": {
+        "center": [
+          0,
+          0
+        ],
+        "annulus": [
+          4,
+          10
+        ],
+        "component": [
+          "9",
+          "11",
+          "0",
+          "2"
+        ]
+      },
+      "expected": false,
+      "actual": false,
+      "result": "PASS",
+      "evidence_type": "ANALYTICAL_NOT_BROWSER"
+    },
+    {
+      "id": "G-forbidden-inner",
+      "input": {
+        "center": [
+          0,
+          0
+        ],
+        "annulus": [
+          4,
+          10
+        ],
+        "component": [
+          "1",
+          "3",
+          "0",
+          "1"
+        ]
+      },
+      "expected": false,
+      "actual": false,
+      "result": "PASS",
+      "evidence_type": "ANALYTICAL_NOT_BROWSER"
+    },
+    {
+      "id": "G-region-boundary",
+      "input": {
+        "center": [
+          0,
+          0
+        ],
+        "annulus": [
+          4,
+          10
+        ],
+        "component": [
+          "6",
+          "8",
+          "0",
+          "6"
+        ]
+      },
+      "expected": true,
+      "actual": true,
+      "result": "PASS",
+      "evidence_type": "ANALYTICAL_NOT_BROWSER"
+    },
+    {
+      "id": "G-SVG-clipping",
+      "input": {
+        "page": [
+          "0",
+          "360",
+          "0",
+          "100"
+        ],
+        "clip": [
+          "0",
+          "300",
+          "0",
+          "100"
+        ],
+        "box": [
+          "292",
+          "308",
+          "10",
+          "26"
+        ]
+      },
+      "expected": {
+        "page_contained": true,
+        "clip_contained": false
+      },
+      "actual": {
+        "page_contained": true,
+        "clip_contained": false
+      },
+      "result": "PASS",
+      "evidence_type": "ANALYTICAL_NOT_BROWSER"
+    },
+    {
+      "id": "G-SVG-clip-positive",
+      "input": {
+        "page": [
+          "0",
+          "360",
+          "0",
+          "100"
+        ],
+        "clip": [
+          "0",
+          "300",
+          "0",
+          "100"
+        ],
+        "box": [
+          "284",
+          "300",
+          "10",
+          "26"
+        ]
+      },
+      "expected": {
+        "page_contained": true,
+        "clip_contained": true
+      },
+      "actual": {
+        "page_contained": true,
+        "clip_contained": true
+      },
+      "result": "PASS",
+      "evidence_type": "ANALYTICAL_NOT_BROWSER"
+    },
+    {
+      "id": "G-anchor-boundary",
+      "input": {
+        "expected": [
+          0,
+          0
+        ],
+        "actual": [
+          "1/2",
+          "0"
+        ]
+      },
+      "expected": true,
+      "actual": true,
+      "result": "PASS",
+      "evidence_type": "ANALYTICAL_NOT_BROWSER"
+    },
+    {
+      "id": "G-anchor-diagonal",
+      "input": {
+        "expected": [
+          0,
+          0
+        ],
+        "actual": [
+          "3/10",
+          "2/5"
+        ]
+      },
+      "expected": true,
+      "actual": true,
+      "result": "PASS",
+      "evidence_type": "ANALYTICAL_NOT_BROWSER"
+    },
+    {
+      "id": "G-anchor-fail",
+      "input": {
+        "expected": [
+          0,
+          0
+        ],
+        "actual": [
+          "51/100",
+          "0"
+        ]
+      },
+      "expected": false,
+      "actual": false,
+      "result": "PASS",
+      "evidence_type": "ANALYTICAL_NOT_BROWSER"
+    },
+    {
+      "id": "L-18",
+      "input": {
+        "origin_left": "0",
+        "candidate_left": "18",
+        "frozen_obstacle": [
+          "0",
+          "16",
+          "0",
+          "16"
+        ]
+      },
+      "expected": {
+        "feasible": true,
+        "probe_length": "1",
+        "probe_gap": "1",
+        "step_pass": true,
+        "tight_pass": true,
+        "admissible_return_prefix": "0"
+      },
+      "actual": {
+        "feasible": true,
+        "probe_length": "1",
+        "probe_gap": "1",
+        "step_pass": true,
+        "tight_pass": true,
+        "admissible_return_prefix": "0"
+      },
+      "result": "PASS",
+      "evidence_type": "ANALYTICAL_NOT_BROWSER"
+    },
+    {
+      "id": "L-20",
+      "input": {
+        "origin_left": "0",
+        "candidate_left": "20",
+        "frozen_obstacle": [
+          "0",
+          "16",
+          "0",
+          "16"
+        ]
+      },
+      "expected": {
+        "feasible": true,
+        "probe_length": "1",
+        "probe_gap": "3",
+        "step_pass": false,
+        "tight_pass": false,
+        "admissible_return_prefix": "2"
+      },
+      "actual": {
+        "feasible": true,
+        "probe_length": "1",
+        "probe_gap": "3",
+        "step_pass": false,
+        "tight_pass": false,
+        "admissible_return_prefix": "2"
+      },
+      "result": "PASS",
+      "evidence_type": "ANALYTICAL_NOT_BROWSER"
+    },
+    {
+      "id": "L-19",
+      "input": {
+        "origin_left": "0",
+        "candidate_left": "19",
+        "frozen_obstacle": [
+          "0",
+          "16",
+          "0",
+          "16"
+        ]
+      },
+      "expected": {
+        "feasible": true,
+        "probe_length": "1",
+        "probe_gap": "2",
+        "step_pass": false,
+        "tight_pass": false,
+        "admissible_return_prefix": "1"
+      },
+      "actual": {
+        "feasible": true,
+        "probe_length": "1",
+        "probe_gap": "2",
+        "step_pass": false,
+        "tight_pass": false,
+        "admissible_return_prefix": "1"
+      },
+      "result": "PASS",
+      "evidence_type": "ANALYTICAL_NOT_BROWSER"
+    },
+    {
+      "id": "L-fraction",
+      "input": {
+        "origin_left": "8",
+        "candidate_left": "18.5",
+        "frozen_obstacle": [
+          "0",
+          "16",
+          "0",
+          "16"
+        ]
+      },
+      "expected": {
+        "feasible": true,
+        "probe_length": "1",
+        "probe_gap": "3/2",
+        "step_pass": true,
+        "tight_pass": false,
+        "admissible_return_prefix": "1/2"
+      },
+      "actual": {
+        "feasible": true,
+        "probe_length": "1",
+        "probe_gap": "3/2",
+        "step_pass": true,
+        "tight_pass": false,
+        "admissible_return_prefix": "1/2"
+      },
+      "result": "PASS",
+      "evidence_type": "ANALYTICAL_NOT_BROWSER"
+    },
+    {
+      "id": "L-subpixel-tight",
+      "input": {
+        "origin_left": "17.5",
+        "candidate_left": "18",
+        "frozen_obstacle": [
+          "0",
+          "16",
+          "0",
+          "16"
+        ]
+      },
+      "expected": {
+        "feasible": true,
+        "probe_length": "1/2",
+        "probe_gap": "3/2",
+        "step_pass": true,
+        "tight_pass": true,
+        "admissible_return_prefix": "0"
+      },
+      "actual": {
+        "feasible": true,
+        "probe_length": "1/2",
+        "probe_gap": "3/2",
+        "step_pass": true,
+        "tight_pass": true,
+        "admissible_return_prefix": "0"
+      },
+      "result": "PASS",
+      "evidence_type": "ANALYTICAL_NOT_BROWSER"
+    },
+    {
+      "id": "L-subpixel-excess",
+      "input": {
+        "origin_left": "17.75",
+        "candidate_left": "18.25",
+        "frozen_obstacle": [
+          "0",
+          "16",
+          "0",
+          "16"
+        ]
+      },
+      "expected": {
+        "feasible": true,
+        "probe_length": "1/2",
+        "probe_gap": "7/4",
+        "step_pass": true,
+        "tight_pass": false,
+        "admissible_return_prefix": "1/4"
+      },
+      "actual": {
+        "feasible": true,
+        "probe_length": "1/2",
+        "probe_gap": "7/4",
+        "step_pass": true,
+        "tight_pass": false,
+        "admissible_return_prefix": "1/4"
+      },
+      "result": "PASS",
+      "evidence_type": "ANALYTICAL_NOT_BROWSER"
+    },
+    {
+      "id": "L-zero-sparse",
+      "input": {
+        "default": [
+          "40",
+          "56",
+          "0",
+          "16"
+        ],
+        "candidate": [
+          "40",
+          "56",
+          "0",
+          "16"
+        ],
+        "obstacle": [
+          "0",
+          "16",
+          "0",
+          "16"
+        ]
+      },
+      "expected": {
+        "conflict": false,
+        "displacement": "0",
+        "leader": false,
+        "probe": "N/A"
+      },
+      "actual": {
+        "conflict": false,
+        "displacement": "0",
+        "leader": false,
+        "probe": "N/A"
+      },
+      "result": "PASS",
+      "evidence_type": "ANALYTICAL_NOT_BROWSER"
+    },
+    {
+      "id": "L-arc-positive-prefix",
+      "input": {
+        "radius": "100",
+        "P": [
+          0,
+          100
+        ],
+        "A": [
+          100,
+          0
+        ],
+        "rational_t": "1/200"
+      },
+      "expected": {
+        "radius_squared": "10000",
+        "closer_to_A": true,
+        "positive_prefix": true
+      },
+      "actual": {
+        "radius_squared": "10000",
+        "closer_to_A": true,
+        "positive_prefix": true
+      },
+      "result": "PASS",
+      "evidence_type": "ANALYTICAL_NOT_BROWSER"
+    },
+    {
+      "id": "L-chord-invalid-probe",
+      "input": {
+        "radius": 100,
+        "one_px_chord_squared_radius": "9859.5786437626904951198311275790301921430328124623"
+      },
+      "expected": true,
+      "actual": true,
+      "result": "PASS",
+      "evidence_type": "ANALYTICAL_NOT_BROWSER"
+    },
+    {
+      "id": "F-glyph-boundary",
+      "input": {
+        "local_em": "16",
+        "scale": "1",
+        "threshold": "16"
+      },
+      "expected": {
+        "effective_em": "16",
+        "size_pass": true
+      },
+      "actual": {
+        "effective_em": "16",
+        "size_pass": true
+      },
+      "result": "PASS",
+      "evidence_type": "ANALYTICAL_NOT_BROWSER"
+    },
+    {
+      "id": "F-R-boundary",
+      "input": {
+        "local_em": "12",
+        "scale": "1",
+        "threshold": "12"
+      },
+      "expected": {
+        "effective_em": "12",
+        "size_pass": true
+      },
+      "actual": {
+        "effective_em": "12",
+        "size_pass": true
+      },
+      "result": "PASS",
+      "evidence_type": "ANALYTICAL_NOT_BROWSER"
+    },
+    {
+      "id": "F-glyph-below",
+      "input": {
+        "local_em": "15.99",
+        "scale": "1",
+        "threshold": "16"
+      },
+      "expected": {
+        "effective_em": "1599/100",
+        "size_pass": false
+      },
+      "actual": {
+        "effective_em": "1599/100",
+        "size_pass": false
+      },
+      "result": "PASS",
+      "evidence_type": "ANALYTICAL_NOT_BROWSER"
+    },
+    {
+      "id": "F-category-below",
+      "input": {
+        "local_em": "11.99",
+        "scale": "1",
+        "threshold": "12"
+      },
+      "expected": {
+        "effective_em": "1199/100",
+        "size_pass": false
+      },
+      "actual": {
+        "effective_em": "1199/100",
+        "size_pass": false
+      },
+      "result": "PASS",
+      "evidence_type": "ANALYTICAL_NOT_BROWSER"
+    },
+    {
+      "id": "F-scale",
+      "input": {
+        "local_em": "16",
+        "scale": ".5",
+        "threshold": "16"
+      },
+      "expected": {
+        "effective_em": "8",
+        "size_pass": false
+      },
+      "actual": {
+        "effective_em": "8",
+        "size_pass": false
+      },
+      "result": "PASS",
+      "evidence_type": "ANALYTICAL_NOT_BROWSER"
+    },
+    {
+      "id": "F-em-vs-ink",
+      "input": {
+        "effective_em": 16,
+        "ink_height": 12
+      },
+      "expected": true,
+      "actual": true,
+      "result": "PASS",
+      "evidence_type": "ANALYTICAL_NOT_BROWSER"
+    },
+    {
+      "id": "F-tofu",
+      "input": {
+        "em": 16,
+        "resolved_supported_glyph": false
+      },
+      "expected": false,
+      "actual": false,
+      "result": "PASS",
+      "evidence_type": "ANALYTICAL_NOT_BROWSER"
+    },
+    {
+      "id": "F-fallback",
+      "input": {
+        "em": 16,
+        "resolved_supported_fixture_font": true,
+        "real_font_measured": false
+      },
+      "expected": true,
+      "actual": true,
+      "result": "PASS",
+      "evidence_type": "ANALYTICAL_NOT_BROWSER"
+    },
+    {
+      "id": "H-full-44",
+      "input": {
+        "Q": [
+          "0",
+          "44",
+          "0",
+          "44"
+        ],
+        "native_shape": [
+          "0",
+          "44",
+          "0",
+          "44"
+        ],
+        "clip": [
+          "0",
+          "44",
+          "0",
+          "44"
+        ],
+        "overlays": []
+      },
+      "expected": true,
+      "actual": true,
+      "result": "PASS",
+      "evidence_type": "ANALYTICAL_NOT_BROWSER"
+    },
+    {
+      "id": "H-narrow",
+      "input": {
+        "Q": [
+          "0",
+          "44",
+          "0",
+          "44"
+        ],
+        "native_shape": [
+          "20",
+          "24",
+          "0",
+          "44"
+        ],
+        "clip": [
+          "0",
+          "44",
+          "0",
+          "44"
+        ],
+        "overlays": []
+      },
+      "expected": false,
+      "actual": false,
+      "result": "PASS",
+      "evidence_type": "ANALYTICAL_NOT_BROWSER"
+    },
+    {
+      "id": "H-overlay",
+      "input": {
+        "Q": [
+          "0",
+          "44",
+          "0",
+          "44"
+        ],
+        "native_shape": [
+          "0",
+          "44",
+          "0",
+          "44"
+        ],
+        "clip": [
+          "0",
+          "44",
+          "0",
+          "44"
+        ],
+        "overlays": [
+          [
+            "30",
+            "44",
+            "0",
+            "44"
+          ]
+        ]
+      },
+      "expected": false,
+      "actual": false,
+      "result": "PASS",
+      "evidence_type": "ANALYTICAL_NOT_BROWSER"
+    },
+    {
+      "id": "H-overlay-paired-positive",
+      "input": {
+        "Q": [
+          "0",
+          "44",
+          "0",
+          "44"
+        ],
+        "native_shape": [
+          "0",
+          "44",
+          "0",
+          "44"
+        ],
+        "clip": [
+          "0",
+          "44",
+          "0",
+          "44"
+        ],
+        "overlays": []
+      },
+      "expected": true,
+      "actual": true,
+      "result": "PASS",
+      "evidence_type": "ANALYTICAL_NOT_BROWSER"
+    },
+    {
+      "id": "H-clip",
+      "input": {
+        "Q": [
+          "0",
+          "44",
+          "0",
+          "44"
+        ],
+        "native_shape": [
+          "0",
+          "44",
+          "0",
+          "44"
+        ],
+        "clip": [
+          "0",
+          "43",
+          "0",
+          "44"
+        ],
+        "overlays": []
+      },
+      "expected": false,
+      "actual": false,
+      "result": "PASS",
+      "evidence_type": "ANALYTICAL_NOT_BROWSER"
+    },
+    {
+      "id": "H-neighbour-at-excluded-edge",
+      "input": {
+        "Q": [
+          "0",
+          "44",
+          "0",
+          "44"
+        ],
+        "native_shape": [
+          "0",
+          "44",
+          "0",
+          "44"
+        ],
+        "clip": [
+          "0",
+          "44",
+          "0",
+          "44"
+        ],
+        "overlays": [
+          [
+            "44",
+            "60",
+            "0",
+            "44"
+          ]
+        ]
+      },
+      "expected": true,
+      "actual": true,
+      "result": "PASS",
+      "evidence_type": "ANALYTICAL_NOT_BROWSER"
+    },
+    {
+      "id": "H-off-centre-sensitive",
+      "input": {
+        "target": [
+          "0",
+          "44",
+          "0",
+          "44"
+        ],
+        "overlay": [
+          "30",
+          "44",
+          "0",
+          "44"
+        ],
+        "centre": [
+          22,
+          22
+        ],
+        "off_centre": [
+          33,
+          22
+        ]
+      },
+      "expected": {
+        "centre_intercepted": false,
+        "off_centre_intercepted": true
+      },
+      "actual": {
+        "centre_intercepted": false,
+        "off_centre_intercepted": true
+      },
+      "result": "PASS",
+      "evidence_type": "ANALYTICAL_NOT_BROWSER"
+    },
+    {
+      "id": "H-boundary-half-open",
+      "input": {
+        "Q": [
+          "0",
+          "44",
+          "0",
+          "44"
+        ]
+      },
+      "expected": {
+        "left_top": true,
+        "right": false,
+        "bottom": false
+      },
+      "actual": {
+        "left_top": true,
+        "right": false,
+        "bottom": false
+      },
+      "result": "PASS",
+      "evidence_type": "ANALYTICAL_NOT_BROWSER"
+    },
+    {
+      "id": "H-wrong-owner",
+      "input": {
+        "expected_key": "point:sun",
+        "actual_key": "point:moon",
+        "bbox_pass": true
+      },
+      "expected": false,
+      "actual": false,
+      "result": "PASS",
+      "evidence_type": "ANALYTICAL_NOT_BROWSER"
+    },
+    {
+      "id": "K-planet-retained",
+      "input": {
+        "cause": "planet",
+        "before_node": "n1",
+        "after_node": "n1",
+        "before_key": "point:sun",
+        "after_key": "point:sun",
+        "connected": true,
+        "visible": true,
+        "enabled": true,
+        "next_actionable": true,
+        "programmatic_focus": false
+      },
+      "expected": true,
+      "actual": true,
+      "result": "PASS",
+      "evidence_type": "ANALYTICAL_NOT_BROWSER"
+    },
+    {
+      "id": "K-planet-recreated",
+      "input": {
+        "cause": "planet",
+        "before_node": "n1",
+        "after_node": "n2",
+        "before_key": "point:sun",
+        "after_key": "point:sun",
+        "connected": true,
+        "visible": true,
+        "enabled": true,
+        "next_actionable": true,
+        "programmatic_focus": true
+      },
+      "expected": false,
+      "actual": false,
+      "result": "PASS",
+      "evidence_type": "ANALYTICAL_NOT_BROWSER"
+    },
+    {
+      "id": "K-planet-transfer",
+      "input": {
+        "cause": "planet",
+        "before_node": "n1",
+        "after_node": "n2",
+        "before_key": "point:sun",
+        "after_key": "aspect:x",
+        "connected": true,
+        "visible": true,
+        "enabled": true,
+        "next_actionable": true,
+        "programmatic_focus": true,
+        "available_fallbacks": [
+          "aspect:x"
+        ]
+      },
+      "expected": false,
+      "actual": false,
+      "result": "PASS",
+      "evidence_type": "ANALYTICAL_NOT_BROWSER"
+    },
+    {
+      "id": "K-current-recreated",
+      "input": {
+        "cause": "current",
+        "before_node": "n1",
+        "after_node": "n2",
+        "before_key": "point:sun",
+        "after_key": "point:sun",
+        "connected": true,
+        "visible": true,
+        "enabled": true,
+        "next_actionable": true,
+        "programmatic_focus": true
+      },
+      "expected": true,
+      "actual": true,
+      "result": "PASS",
+      "evidence_type": "ANALYTICAL_NOT_BROWSER"
+    },
+    {
+      "id": "K-current-missing-fallback",
+      "input": {
+        "cause": "current",
+        "before_node": "n1",
+        "after_node": "edit",
+        "before_key": "point:sun",
+        "after_key": "editor-toggle",
+        "connected": true,
+        "visible": true,
+        "enabled": true,
+        "next_actionable": true,
+        "programmatic_focus": true,
+        "available_fallbacks": [
+          "editor-toggle",
+          "recovery-check"
+        ]
+      },
+      "expected": true,
+      "actual": true,
+      "result": "PASS",
+      "evidence_type": "ANALYTICAL_NOT_BROWSER"
+    },
+    {
+      "id": "K-current-wrong-fallback",
+      "input": {
+        "cause": "current",
+        "before_node": "n1",
+        "after_node": "retry",
+        "before_key": "point:sun",
+        "after_key": "recovery-check",
+        "connected": true,
+        "visible": true,
+        "enabled": true,
+        "next_actionable": true,
+        "programmatic_focus": true,
+        "available_fallbacks": [
+          "editor-toggle",
+          "recovery-check"
+        ]
+      },
+      "expected": false,
+      "actual": false,
+      "result": "PASS",
+      "evidence_type": "ANALYTICAL_NOT_BROWSER"
+    },
+    {
+      "id": "K-current-no-valid-fallback",
+      "input": {
+        "cause": "current",
+        "before_node": "n1",
+        "after_node": "body",
+        "before_key": "point:sun",
+        "after_key": "body",
+        "connected": true,
+        "visible": true,
+        "enabled": true,
+        "next_actionable": true,
+        "programmatic_focus": true,
+        "available_fallbacks": []
+      },
+      "expected": false,
+      "actual": false,
+      "result": "PASS",
+      "evidence_type": "ANALYTICAL_NOT_BROWSER"
+    },
+    {
+      "id": "K-current-detached",
+      "input": {
+        "cause": "current",
+        "before_node": "n1",
+        "after_node": "n1",
+        "before_key": "point:sun",
+        "after_key": "point:sun",
+        "connected": false,
+        "visible": true,
+        "enabled": true,
+        "next_actionable": true,
+        "programmatic_focus": false
+      },
+      "expected": false,
+      "actual": false,
+      "result": "PASS",
+      "evidence_type": "ANALYTICAL_NOT_BROWSER"
+    },
+    {
+      "id": "K-collapse-outside",
+      "input": {
+        "cause": "collapse",
+        "before_node": "n1",
+        "after_node": "n1",
+        "before_key": "point:sun",
+        "after_key": "point:sun",
+        "connected": true,
+        "visible": true,
+        "enabled": true,
+        "next_actionable": true,
+        "programmatic_focus": false
+      },
+      "expected": true,
+      "actual": true,
+      "result": "PASS",
+      "evidence_type": "ANALYTICAL_NOT_BROWSER"
+    },
+    {
+      "id": "K-collapse-inside-to-editor",
+      "input": {
+        "cause": "collapse",
+        "before_node": "n1",
+        "after_node": "edit",
+        "before_key": "point:sun",
+        "after_key": "editor-toggle",
+        "connected": true,
+        "visible": true,
+        "enabled": true,
+        "next_actionable": true,
+        "programmatic_focus": true,
+        "available_fallbacks": [
+          "editor-toggle"
+        ]
+      },
+      "expected": true,
+      "actual": true,
+      "result": "PASS",
+      "evidence_type": "ANALYTICAL_NOT_BROWSER"
+    },
+    {
+      "id": "K-collapse-late-draft",
+      "input": {
+        "cause": "collapse",
+        "before_node": "n1",
+        "after_node": "n1",
+        "before_key": "point:sun",
+        "after_key": "point:sun",
+        "connected": true,
+        "visible": true,
+        "enabled": true,
+        "next_actionable": true,
+        "programmatic_focus": false,
+        "late_different_draft": true
+      },
+      "expected": false,
+      "actual": false,
+      "result": "PASS",
+      "evidence_type": "ANALYTICAL_NOT_BROWSER"
+    },
+    {
+      "id": "K-hidden-recovery",
+      "input": {
+        "cause": "collapse",
+        "before_node": "n1",
+        "after_node": "n1",
+        "before_key": "point:sun",
+        "after_key": "point:sun",
+        "connected": true,
+        "visible": false,
+        "enabled": true,
+        "next_actionable": true,
+        "programmatic_focus": false
+      },
+      "expected": false,
+      "actual": false,
+      "result": "PASS",
+      "evidence_type": "ANALYTICAL_NOT_BROWSER"
+    }
+  ],
+  "calibrations_passed": 50,
+  "historical_manifest_checks": {
+    "developer": "9/9 historical Git payload",
+    "analyst": "9/9 historical Git payload"
+  },
+  "tester_t005_source_hashes": 16,
+  "v1_plan_sha256_lf": "9e2fcab32e0664090fcda25a932e4b83ea1e90b3d06d154fbc0d860247ab7043",
+  "prior_index_sha256_lf": "47a014defe95ff759ed6784ad8715795dc1bedf8e4dbff29e7af81636a5493ec",
+  "historical_developer_files_preserved": {
+    "docs/project_management/change_plans/ui-chart-wheel/developer/checks.md": "279f5e3cc09bd26d9d930c90c382d667e2f05a982609d085f3f0ddb5b7d9d04c",
+    "docs/project_management/change_plans/ui-chart-wheel/developer/decision_input.patch": "2465ca8a257bc07bb76a159f0b38853f2dfcc76d4b19f96a16f21aa859150fcd",
+    "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_preparation.json": "2b39cdc492cae961ea13b42080eefa03966af11be8032a69b6173d549df7e6d9",
+    "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_preparation_check.py": "a5e5d7ff58158c3d73354ad4dc356c6433326f3c556968f278b3ad9e50332985",
+    "docs/project_management/change_plans/ui-chart-wheel/developer/findings.md": "8328344f1fe74bd2d8520e7ac871c29dce03132c2576532c9dfd65f5b5460de2",
+    "docs/project_management/change_plans/ui-chart-wheel/developer/implementation_plan.md": "a63474dfab606f3f213362e07642603cdde63025bd32a5277d27929c3ffc83b2",
+    "docs/project_management/change_plans/ui-chart-wheel/developer/package_manifest.json": "0105a082dda449ed6811a1465c79c7fa31485a352af0575e37214d7a952984ee",
+    "docs/project_management/change_plans/ui-chart-wheel/developer/prompts/01-renderer-decisions-and-spike.md": "8505896cc52b2de92a675e8d68216061955781a1bd2de71df7b7e45d2e9c2d62",
+    "docs/project_management/change_plans/ui-chart-wheel/developer/prompts/02-svg-renderer.md": "50d1378802afeb6dd7be8dc1c6946b4be2bcbfc5d688c80b720596cb68600fb5",
+    "docs/project_management/change_plans/ui-chart-wheel/developer/prompts/03-selection-and-tables.md": "6cffea3214032e7bfff7ad832e3a3fa3df4aef4528c217031a559a59864757cd",
+    "docs/project_management/change_plans/ui-chart-wheel/developer/prompts/04-page-form-and-recovery.md": "59caf07d6454b04885d1c87863882b500635ed778d4d5f86af1d374e4902e024"
+  },
+  "manager_foreign_artifacts_shared_contract": "UNCHANGED",
+  "local_links_checked": 817,
+  "markdown_documents_checked": 23,
+  "markdown_tables_checked": 72,
+  "output_payload_sha256_lf": {
+    "docs/project_management/change_plans/ui-chart-wheel/developer/task_d003_implementation_plan.md": "4dfda5c1927335eeee3262904339e3271393ffb5b42ac6d6a95cb30369cb0b66",
+    "docs/project_management/change_plans/ui-chart-wheel/developer_artifact.md": "ed4b55deb3483a05307506d570799b76503c9ef9025167b4d121622663b460c0",
+    "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d004_controls.py": "4a8524b046e9b9ff83a431e222a9a4e12b7f802fe9f2e77db76cc2bb0e021ce0"
+  },
+  "not_run": [
+    "SVG/browser experiment",
+    "actual font / bbox / hit / focus measurement",
+    "placement algorithm",
+    "generic curved-path certificate verifier",
+    "production runtime / Node / pytest",
+    "PUML render"
+  ],
+  "task_d003": "BLOCKED; T0 not occurred; no unblock/STARTED event emitted",
+  "next": "publish CriteriaSHA if authorized; TASK-T-006 + TASK-A-004; Manager decides unblock"
+}

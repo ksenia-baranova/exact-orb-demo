@@ -1,0 +1,1454 @@
+{
+  "subject": "TASK-D-007 full application SVG integration",
+  "started": "2026-10-20T12:01:30.411Z",
+  "cases": [],
+  "sources": {
+    "chart_state.mjs": "4b01e6623624b3027d1b45c07f8185afded2558eca5e2e352d22c183a172e63d",
+    "facts.mjs": "4dc1bce38a32f525ec8b6a4a047f9e060b042261ee09ea925d429d8970284e73",
+    "form.mjs": "4f44f1289e8aa46e463e4d517161df474ea4c94b008f0616b9e01bd65b590ebd",
+    "index.html": "87d9d939ed69089167055b44ba65e53107dd1ade88c7a81041304985a98bf532",
+    "main.mjs": "db6610257167f73f809c224dba9ec3ca734de707768a1783ff11b18fe5164253",
+    "places.mjs": "857593b5b335c4612823dc1d4b58e5dca628671cd3ff51e371ac8641bb820bfb",
+    "recovery.mjs": "405eae1bb36ee3387337fa1d34d5af48d7385bbfbc295ea5a9ae391d48d07414",
+    "response.mjs": "045770e93485c9f8111c6bd03bf9ce9a16e19d05f5e9624931ae63f84bfcbb8d",
+    "result_controller.mjs": "9cbf0019927d18b73447aa144bf7c336e9955b0c1da004a51a3b371273a11027",
+    "session.mjs": "cff830d2f6e490290696cd2846cabd53d17b1f49a8b624c6765bf289cc162088",
+    "styles.css": "3a37eff6cb8f9b94184102ac5817eaf2d2a4a561e2f3198422c6eca9c3d0cc5d",
+    "transport.mjs": "18b46104d161eb6ca3c094c507e2011bbba3aec91ad62622c38cae234693dc60",
+    "wheel_layout.mjs": "3598ce96819ec058c443797ca28a4b66642e34af7878fc59388f718c07421999",
+    "wheel_svg.mjs": "c485d14c2668a343a6b924f180e18fe5d2e526a78b19f5d9a87d6cbac4e9fd1b"
+  },
+  "browser": "155.0.8059.40",
+  "boundary": {
+    "controls": [
+      {
+        "id": "copy-distinct",
+        "actual": false,
+        "expected": false,
+        "pass": true
+      },
+      {
+        "id": "current-original-cannot-mutate-copy",
+        "actual": "A",
+        "expected": "A",
+        "pass": true
+      },
+      {
+        "id": "order-revoke-remove-html-dispose-draw",
+        "actual": [
+          "revoke",
+          "remove",
+          "html",
+          "dispose-fault",
+          "draw"
+        ],
+        "expected": [
+          "revoke",
+          "remove",
+          "html",
+          "dispose-fault",
+          "draw"
+        ],
+        "pass": true
+      },
+      {
+        "id": "new-HTML-survives-dispose-fault",
+        "actual": "HTML B",
+        "expected": "HTML B",
+        "pass": true
+      },
+      {
+        "id": "old-surface-detached",
+        "actual": false,
+        "expected": false,
+        "pass": true
+      },
+      {
+        "id": "late-before-settlement",
+        "actual": false,
+        "expected": false,
+        "pass": true
+      },
+      {
+        "id": "late-after-settlement",
+        "actual": false,
+        "expected": false,
+        "pass": true
+      },
+      {
+        "id": "late-keeps-B",
+        "actual": "B",
+        "expected": "B",
+        "pass": true
+      },
+      {
+        "id": "surface-alive-after-settlement",
+        "actual": true,
+        "expected": true,
+        "pass": true
+      },
+      {
+        "id": "current-late-publish",
+        "actual": true,
+        "expected": true,
+        "pass": true
+      },
+      {
+        "id": "current-late-content",
+        "actual": "font callback",
+        "expected": "font callback",
+        "pass": true
+      },
+      {
+        "id": "same-instance-old-revision",
+        "actual": false,
+        "expected": false,
+        "pass": true
+      },
+      {
+        "id": "stale-rejection-keeps-new",
+        "actual": "same-B",
+        "expected": "same-B",
+        "pass": true
+      },
+      {
+        "id": "local-factory",
+        "actual": [
+          "HTML factory",
+          0,
+          "svg_unavailable"
+        ],
+        "expected": [
+          "HTML factory",
+          0,
+          "svg_unavailable"
+        ],
+        "pass": true
+      },
+      {
+        "id": "local-sync",
+        "actual": [
+          "HTML sync",
+          0,
+          "svg_unavailable"
+        ],
+        "expected": [
+          "HTML sync",
+          0,
+          "svg_unavailable"
+        ],
+        "pass": true
+      },
+      {
+        "id": "local-async",
+        "actual": [
+          "HTML async",
+          0,
+          "svg_unavailable"
+        ],
+        "expected": [
+          "HTML async",
+          0,
+          "svg_unavailable"
+        ],
+        "pass": true
+      },
+      {
+        "id": "local-invalid",
+        "actual": [
+          "HTML invalid",
+          0,
+          "svg_unavailable"
+        ],
+        "expected": [
+          "HTML invalid",
+          0,
+          "svg_unavailable"
+        ],
+        "pass": true
+      },
+      {
+        "id": "rejection-revokes-lease",
+        "actual": false,
+        "expected": false,
+        "pass": true
+      },
+      {
+        "id": "whitelist-event",
+        "actual": [
+          0,
+          "svg_unavailable"
+        ],
+        "expected": [
+          0,
+          "svg_unavailable"
+        ],
+        "pass": true
+      },
+      {
+        "id": "whitelist-positioning",
+        "actual": [
+          0,
+          "svg_unavailable"
+        ],
+        "expected": [
+          0,
+          "svg_unavailable"
+        ],
+        "pass": true
+      },
+      {
+        "id": "whitelist-external-href",
+        "actual": [
+          0,
+          "svg_unavailable"
+        ],
+        "expected": [
+          0,
+          "svg_unavailable"
+        ],
+        "pass": true
+      },
+      {
+        "id": "whitelist-external-paint",
+        "actual": [
+          0,
+          "svg_unavailable"
+        ],
+        "expected": [
+          0,
+          "svg_unavailable"
+        ],
+        "pass": true
+      },
+      {
+        "id": "whitelist-id",
+        "actual": [
+          0,
+          "svg_unavailable"
+        ],
+        "expected": [
+          0,
+          "svg_unavailable"
+        ],
+        "pass": true
+      },
+      {
+        "id": "whitelist-infinite",
+        "actual": [
+          0,
+          "svg_unavailable"
+        ],
+        "expected": [
+          0,
+          "svg_unavailable"
+        ],
+        "pass": true
+      },
+      {
+        "id": "whitelist-font-scale",
+        "actual": [
+          0,
+          "svg_unavailable"
+        ],
+        "expected": [
+          0,
+          "svg_unavailable"
+        ],
+        "pass": true
+      },
+      {
+        "id": "whitelist-bad-font",
+        "actual": [
+          0,
+          "svg_unavailable"
+        ],
+        "expected": [
+          0,
+          "svg_unavailable"
+        ],
+        "pass": true
+      },
+      {
+        "id": "whitelist-active-tag",
+        "actual": [
+          0,
+          "svg_unavailable"
+        ],
+        "expected": [
+          0,
+          "svg_unavailable"
+        ],
+        "pass": true
+      },
+      {
+        "id": "deep-frozen-source",
+        "actual": 159.34074778029736,
+        "expected": 159.34074778029736,
+        "pass": true
+      },
+      {
+        "id": "recheck-after-reentrant-clone",
+        "actual": false,
+        "expected": false,
+        "pass": true
+      },
+      {
+        "id": "reentrant-new-kept",
+        "actual": "new",
+        "expected": "new",
+        "pass": true
+      },
+      {
+        "id": "real-positive-SVG",
+        "actual": 16,
+        "expected": 16,
+        "pass": true
+      },
+      {
+        "id": "real-copy-no-focus-targets",
+        "actual": 0,
+        "expected": 0,
+        "pass": true
+      },
+      {
+        "id": "real-keeps-live-HTML-focus",
+        "actual": true,
+        "expected": true,
+        "pass": true
+      },
+      {
+        "id": "controller-error-partition",
+        "actual": [
+          true,
+          true
+        ],
+        "expected": [
+          true,
+          true
+        ],
+        "pass": true
+      },
+      {
+        "id": "independent-positive-after-fault",
+        "actual": "alternate",
+        "expected": "alternate",
+        "pass": true
+      },
+      {
+        "id": "retired-owner-failure-keeps-B",
+        "actual": [
+          "HTML after-owner-B",
+          "B-positive",
+          0
+        ],
+        "expected": [
+          "HTML after-owner-B",
+          "B-positive",
+          0
+        ],
+        "pass": true
+      },
+      {
+        "id": "idempotent-close",
+        "actual": 0,
+        "expected": 0,
+        "pass": true
+      }
+    ],
+    "trace": [
+      {
+        "event": "remove",
+        "revision": 1,
+        "acceptanceSeq": null,
+        "detail": null
+      },
+      {
+        "event": "html",
+        "revision": 1,
+        "acceptanceSeq": null,
+        "detail": null
+      },
+      {
+        "event": "draw",
+        "revision": 1,
+        "acceptanceSeq": 1,
+        "detail": null
+      },
+      {
+        "event": "install-copy",
+        "revision": 1,
+        "acceptanceSeq": 1,
+        "detail": null
+      },
+      {
+        "event": "revoke",
+        "revision": 1,
+        "acceptanceSeq": 1,
+        "detail": null
+      },
+      {
+        "event": "remove",
+        "revision": 2,
+        "acceptanceSeq": null,
+        "detail": null
+      },
+      {
+        "event": "html",
+        "revision": 2,
+        "acceptanceSeq": null,
+        "detail": null
+      },
+      {
+        "event": "dispose-fault",
+        "revision": 2,
+        "acceptanceSeq": 2,
+        "detail": "Error: dispose-controlled"
+      },
+      {
+        "event": "draw",
+        "revision": 2,
+        "acceptanceSeq": 2,
+        "detail": null
+      },
+      {
+        "event": "install-copy",
+        "revision": 2,
+        "acceptanceSeq": 2,
+        "detail": null
+      },
+      {
+        "event": "stale-refused",
+        "revision": 1,
+        "acceptanceSeq": 1,
+        "detail": null
+      },
+      {
+        "event": "stale-refused",
+        "revision": 1,
+        "acceptanceSeq": 1,
+        "detail": null
+      },
+      {
+        "event": "revoke",
+        "revision": 2,
+        "acceptanceSeq": 2,
+        "detail": null
+      },
+      {
+        "event": "remove",
+        "revision": 3,
+        "acceptanceSeq": null,
+        "detail": null
+      },
+      {
+        "event": "html",
+        "revision": 3,
+        "acceptanceSeq": null,
+        "detail": null
+      },
+      {
+        "event": "dispose",
+        "revision": 3,
+        "acceptanceSeq": 3,
+        "detail": null
+      },
+      {
+        "event": "draw",
+        "revision": 3,
+        "acceptanceSeq": 3,
+        "detail": null
+      },
+      {
+        "event": "install-copy",
+        "revision": 3,
+        "acceptanceSeq": 3,
+        "detail": null
+      },
+      {
+        "event": "install-copy",
+        "revision": 3,
+        "acceptanceSeq": 3,
+        "detail": null
+      },
+      {
+        "event": "revoke",
+        "revision": 3,
+        "acceptanceSeq": 3,
+        "detail": null
+      },
+      {
+        "event": "remove",
+        "revision": 4,
+        "acceptanceSeq": null,
+        "detail": null
+      },
+      {
+        "event": "html",
+        "revision": 4,
+        "acceptanceSeq": null,
+        "detail": null
+      },
+      {
+        "event": "dispose",
+        "revision": 4,
+        "acceptanceSeq": 4,
+        "detail": null
+      },
+      {
+        "event": "draw",
+        "revision": 4,
+        "acceptanceSeq": 4,
+        "detail": null
+      },
+      {
+        "event": "revoke",
+        "revision": 4,
+        "acceptanceSeq": 4,
+        "detail": null
+      },
+      {
+        "event": "remove",
+        "revision": 5,
+        "acceptanceSeq": null,
+        "detail": null
+      },
+      {
+        "event": "html",
+        "revision": 5,
+        "acceptanceSeq": null,
+        "detail": null
+      },
+      {
+        "event": "draw",
+        "revision": 5,
+        "acceptanceSeq": 5,
+        "detail": null
+      },
+      {
+        "event": "install-copy",
+        "revision": 5,
+        "acceptanceSeq": 5,
+        "detail": null
+      },
+      {
+        "event": "stale-refused",
+        "revision": 4,
+        "acceptanceSeq": 4,
+        "detail": null
+      },
+      {
+        "event": "stale-rejection",
+        "revision": 4,
+        "acceptanceSeq": 4,
+        "detail": null
+      },
+      {
+        "event": "revoke",
+        "revision": 5,
+        "acceptanceSeq": 5,
+        "detail": null
+      },
+      {
+        "event": "remove",
+        "revision": 6,
+        "acceptanceSeq": null,
+        "detail": null
+      },
+      {
+        "event": "html",
+        "revision": 6,
+        "acceptanceSeq": null,
+        "detail": null
+      },
+      {
+        "event": "dispose-fault",
+        "revision": 6,
+        "acceptanceSeq": 6,
+        "detail": "Error: same instance must not dispose for revision"
+      },
+      {
+        "event": "revoke",
+        "revision": 6,
+        "acceptanceSeq": 6,
+        "detail": null
+      },
+      {
+        "event": "svg-unavailable",
+        "revision": 6,
+        "acceptanceSeq": 6,
+        "detail": "Error"
+      },
+      {
+        "event": "revoke",
+        "revision": 6,
+        "acceptanceSeq": 6,
+        "detail": null
+      },
+      {
+        "event": "remove",
+        "revision": 7,
+        "acceptanceSeq": null,
+        "detail": null
+      },
+      {
+        "event": "html",
+        "revision": 7,
+        "acceptanceSeq": null,
+        "detail": null
+      },
+      {
+        "event": "draw",
+        "revision": 7,
+        "acceptanceSeq": 7,
+        "detail": null
+      },
+      {
+        "event": "revoke",
+        "revision": 7,
+        "acceptanceSeq": 7,
+        "detail": null
+      },
+      {
+        "event": "svg-unavailable",
+        "revision": 7,
+        "acceptanceSeq": 7,
+        "detail": "Error"
+      },
+      {
+        "event": "revoke",
+        "revision": 7,
+        "acceptanceSeq": 7,
+        "detail": null
+      },
+      {
+        "event": "remove",
+        "revision": 8,
+        "acceptanceSeq": null,
+        "detail": null
+      },
+      {
+        "event": "html",
+        "revision": 8,
+        "acceptanceSeq": null,
+        "detail": null
+      },
+      {
+        "event": "dispose",
+        "revision": 8,
+        "acceptanceSeq": 8,
+        "detail": null
+      },
+      {
+        "event": "draw",
+        "revision": 8,
+        "acceptanceSeq": 8,
+        "detail": null
+      },
+      {
+        "event": "revoke",
+        "revision": 8,
+        "acceptanceSeq": 8,
+        "detail": null
+      },
+      {
+        "event": "svg-unavailable",
+        "revision": 8,
+        "acceptanceSeq": 8,
+        "detail": "Error"
+      },
+      {
+        "event": "revoke",
+        "revision": 8,
+        "acceptanceSeq": 8,
+        "detail": null
+      },
+      {
+        "event": "remove",
+        "revision": 9,
+        "acceptanceSeq": null,
+        "detail": null
+      },
+      {
+        "event": "html",
+        "revision": 9,
+        "acceptanceSeq": null,
+        "detail": null
+      },
+      {
+        "event": "dispose",
+        "revision": 9,
+        "acceptanceSeq": 9,
+        "detail": null
+      },
+      {
+        "event": "revoke",
+        "revision": 9,
+        "acceptanceSeq": 9,
+        "detail": null
+      },
+      {
+        "event": "svg-unavailable",
+        "revision": 9,
+        "acceptanceSeq": 9,
+        "detail": "renderer-interface"
+      },
+      {
+        "event": "revoke",
+        "revision": 9,
+        "acceptanceSeq": 9,
+        "detail": null
+      },
+      {
+        "event": "remove",
+        "revision": 10,
+        "acceptanceSeq": null,
+        "detail": null
+      },
+      {
+        "event": "html",
+        "revision": 10,
+        "acceptanceSeq": null,
+        "detail": null
+      },
+      {
+        "event": "draw",
+        "revision": 10,
+        "acceptanceSeq": 10,
+        "detail": null
+      },
+      {
+        "event": "install-copy",
+        "revision": 10,
+        "acceptanceSeq": 10,
+        "detail": null
+      },
+      {
+        "event": "revoke",
+        "revision": 10,
+        "acceptanceSeq": 10,
+        "detail": null
+      },
+      {
+        "event": "svg-unavailable",
+        "revision": 10,
+        "acceptanceSeq": 10,
+        "detail": "Error"
+      },
+      {
+        "event": "stale-refused",
+        "revision": 10,
+        "acceptanceSeq": 10,
+        "detail": null
+      },
+      {
+        "event": "revoke",
+        "revision": 10,
+        "acceptanceSeq": 10,
+        "detail": null
+      },
+      {
+        "event": "remove",
+        "revision": 11,
+        "acceptanceSeq": null,
+        "detail": null
+      },
+      {
+        "event": "html",
+        "revision": 11,
+        "acceptanceSeq": null,
+        "detail": null
+      },
+      {
+        "event": "dispose",
+        "revision": 11,
+        "acceptanceSeq": 11,
+        "detail": null
+      },
+      {
+        "event": "draw",
+        "revision": 11,
+        "acceptanceSeq": 11,
+        "detail": null
+      },
+      {
+        "event": "revoke",
+        "revision": 11,
+        "acceptanceSeq": 11,
+        "detail": null
+      },
+      {
+        "event": "svg-unavailable",
+        "revision": 11,
+        "acceptanceSeq": 11,
+        "detail": "attribute:onclick"
+      },
+      {
+        "event": "revoke",
+        "revision": 11,
+        "acceptanceSeq": 11,
+        "detail": null
+      },
+      {
+        "event": "remove",
+        "revision": 12,
+        "acceptanceSeq": null,
+        "detail": null
+      },
+      {
+        "event": "html",
+        "revision": 12,
+        "acceptanceSeq": null,
+        "detail": null
+      },
+      {
+        "event": "dispose",
+        "revision": 12,
+        "acceptanceSeq": 12,
+        "detail": null
+      },
+      {
+        "event": "draw",
+        "revision": 12,
+        "acceptanceSeq": 12,
+        "detail": null
+      },
+      {
+        "event": "revoke",
+        "revision": 12,
+        "acceptanceSeq": 12,
+        "detail": null
+      },
+      {
+        "event": "svg-unavailable",
+        "revision": 12,
+        "acceptanceSeq": 12,
+        "detail": "attribute:style"
+      },
+      {
+        "event": "revoke",
+        "revision": 12,
+        "acceptanceSeq": 12,
+        "detail": null
+      },
+      {
+        "event": "remove",
+        "revision": 13,
+        "acceptanceSeq": null,
+        "detail": null
+      },
+      {
+        "event": "html",
+        "revision": 13,
+        "acceptanceSeq": null,
+        "detail": null
+      },
+      {
+        "event": "dispose",
+        "revision": 13,
+        "acceptanceSeq": 13,
+        "detail": null
+      },
+      {
+        "event": "draw",
+        "revision": 13,
+        "acceptanceSeq": 13,
+        "detail": null
+      },
+      {
+        "event": "revoke",
+        "revision": 13,
+        "acceptanceSeq": 13,
+        "detail": null
+      },
+      {
+        "event": "svg-unavailable",
+        "revision": 13,
+        "acceptanceSeq": 13,
+        "detail": "attribute:href"
+      },
+      {
+        "event": "revoke",
+        "revision": 13,
+        "acceptanceSeq": 13,
+        "detail": null
+      },
+      {
+        "event": "remove",
+        "revision": 14,
+        "acceptanceSeq": null,
+        "detail": null
+      },
+      {
+        "event": "html",
+        "revision": 14,
+        "acceptanceSeq": null,
+        "detail": null
+      },
+      {
+        "event": "dispose",
+        "revision": 14,
+        "acceptanceSeq": 14,
+        "detail": null
+      },
+      {
+        "event": "draw",
+        "revision": 14,
+        "acceptanceSeq": 14,
+        "detail": null
+      },
+      {
+        "event": "revoke",
+        "revision": 14,
+        "acceptanceSeq": 14,
+        "detail": null
+      },
+      {
+        "event": "svg-unavailable",
+        "revision": 14,
+        "acceptanceSeq": 14,
+        "detail": "paint"
+      },
+      {
+        "event": "revoke",
+        "revision": 14,
+        "acceptanceSeq": 14,
+        "detail": null
+      },
+      {
+        "event": "remove",
+        "revision": 15,
+        "acceptanceSeq": null,
+        "detail": null
+      },
+      {
+        "event": "html",
+        "revision": 15,
+        "acceptanceSeq": null,
+        "detail": null
+      },
+      {
+        "event": "dispose",
+        "revision": 15,
+        "acceptanceSeq": 15,
+        "detail": null
+      },
+      {
+        "event": "draw",
+        "revision": 15,
+        "acceptanceSeq": 15,
+        "detail": null
+      },
+      {
+        "event": "revoke",
+        "revision": 15,
+        "acceptanceSeq": 15,
+        "detail": null
+      },
+      {
+        "event": "svg-unavailable",
+        "revision": 15,
+        "acceptanceSeq": 15,
+        "detail": "attribute:id"
+      },
+      {
+        "event": "revoke",
+        "revision": 15,
+        "acceptanceSeq": 15,
+        "detail": null
+      },
+      {
+        "event": "remove",
+        "revision": 16,
+        "acceptanceSeq": null,
+        "detail": null
+      },
+      {
+        "event": "html",
+        "revision": 16,
+        "acceptanceSeq": null,
+        "detail": null
+      },
+      {
+        "event": "dispose",
+        "revision": 16,
+        "acceptanceSeq": 16,
+        "detail": null
+      },
+      {
+        "event": "draw",
+        "revision": 16,
+        "acceptanceSeq": 16,
+        "detail": null
+      },
+      {
+        "event": "revoke",
+        "revision": 16,
+        "acceptanceSeq": 16,
+        "detail": null
+      },
+      {
+        "event": "svg-unavailable",
+        "revision": 16,
+        "acceptanceSeq": 16,
+        "detail": "numeric"
+      },
+      {
+        "event": "revoke",
+        "revision": 16,
+        "acceptanceSeq": 16,
+        "detail": null
+      },
+      {
+        "event": "remove",
+        "revision": 17,
+        "acceptanceSeq": null,
+        "detail": null
+      },
+      {
+        "event": "html",
+        "revision": 17,
+        "acceptanceSeq": null,
+        "detail": null
+      },
+      {
+        "event": "dispose",
+        "revision": 17,
+        "acceptanceSeq": 17,
+        "detail": null
+      },
+      {
+        "event": "draw",
+        "revision": 17,
+        "acceptanceSeq": 17,
+        "detail": null
+      },
+      {
+        "event": "revoke",
+        "revision": 17,
+        "acceptanceSeq": 17,
+        "detail": null
+      },
+      {
+        "event": "svg-unavailable",
+        "revision": 17,
+        "acceptanceSeq": 17,
+        "detail": "transform"
+      },
+      {
+        "event": "revoke",
+        "revision": 17,
+        "acceptanceSeq": 17,
+        "detail": null
+      },
+      {
+        "event": "remove",
+        "revision": 18,
+        "acceptanceSeq": null,
+        "detail": null
+      },
+      {
+        "event": "html",
+        "revision": 18,
+        "acceptanceSeq": null,
+        "detail": null
+      },
+      {
+        "event": "dispose",
+        "revision": 18,
+        "acceptanceSeq": 18,
+        "detail": null
+      },
+      {
+        "event": "draw",
+        "revision": 18,
+        "acceptanceSeq": 18,
+        "detail": null
+      },
+      {
+        "event": "revoke",
+        "revision": 18,
+        "acceptanceSeq": 18,
+        "detail": null
+      },
+      {
+        "event": "svg-unavailable",
+        "revision": 18,
+        "acceptanceSeq": 18,
+        "detail": "font-size"
+      },
+      {
+        "event": "revoke",
+        "revision": 18,
+        "acceptanceSeq": 18,
+        "detail": null
+      },
+      {
+        "event": "remove",
+        "revision": 19,
+        "acceptanceSeq": null,
+        "detail": null
+      },
+      {
+        "event": "html",
+        "revision": 19,
+        "acceptanceSeq": null,
+        "detail": null
+      },
+      {
+        "event": "dispose",
+        "revision": 19,
+        "acceptanceSeq": 19,
+        "detail": null
+      },
+      {
+        "event": "draw",
+        "revision": 19,
+        "acceptanceSeq": 19,
+        "detail": null
+      },
+      {
+        "event": "revoke",
+        "revision": 19,
+        "acceptanceSeq": 19,
+        "detail": null
+      },
+      {
+        "event": "svg-unavailable",
+        "revision": 19,
+        "acceptanceSeq": 19,
+        "detail": "element"
+      },
+      {
+        "event": "revoke",
+        "revision": 19,
+        "acceptanceSeq": 19,
+        "detail": null
+      },
+      {
+        "event": "remove",
+        "revision": 20,
+        "acceptanceSeq": null,
+        "detail": null
+      },
+      {
+        "event": "html",
+        "revision": 20,
+        "acceptanceSeq": null,
+        "detail": null
+      },
+      {
+        "event": "dispose",
+        "revision": 20,
+        "acceptanceSeq": 20,
+        "detail": null
+      },
+      {
+        "event": "draw",
+        "revision": 20,
+        "acceptanceSeq": 20,
+        "detail": null
+      },
+      {
+        "event": "install-copy",
+        "revision": 20,
+        "acceptanceSeq": 20,
+        "detail": null
+      },
+      {
+        "event": "revoke",
+        "revision": 20,
+        "acceptanceSeq": 20,
+        "detail": null
+      },
+      {
+        "event": "remove",
+        "revision": 21,
+        "acceptanceSeq": null,
+        "detail": null
+      },
+      {
+        "event": "html",
+        "revision": 21,
+        "acceptanceSeq": null,
+        "detail": null
+      },
+      {
+        "event": "dispose",
+        "revision": 21,
+        "acceptanceSeq": 21,
+        "detail": null
+      },
+      {
+        "event": "draw",
+        "revision": 21,
+        "acceptanceSeq": 21,
+        "detail": null
+      },
+      {
+        "event": "revoke",
+        "revision": 21,
+        "acceptanceSeq": 21,
+        "detail": null
+      },
+      {
+        "event": "remove",
+        "revision": 22,
+        "acceptanceSeq": null,
+        "detail": null
+      },
+      {
+        "event": "html",
+        "revision": 22,
+        "acceptanceSeq": null,
+        "detail": null
+      },
+      {
+        "event": "dispose",
+        "revision": 22,
+        "acceptanceSeq": 22,
+        "detail": null
+      },
+      {
+        "event": "draw",
+        "revision": 22,
+        "acceptanceSeq": 22,
+        "detail": null
+      },
+      {
+        "event": "install-copy",
+        "revision": 22,
+        "acceptanceSeq": 22,
+        "detail": null
+      },
+      {
+        "event": "revoke",
+        "revision": 22,
+        "acceptanceSeq": 22,
+        "detail": null
+      },
+      {
+        "event": "remove",
+        "revision": 23,
+        "acceptanceSeq": null,
+        "detail": null
+      },
+      {
+        "event": "html",
+        "revision": 23,
+        "acceptanceSeq": null,
+        "detail": null
+      },
+      {
+        "event": "dispose",
+        "revision": 23,
+        "acceptanceSeq": 23,
+        "detail": null
+      },
+      {
+        "event": "draw",
+        "revision": 23,
+        "acceptanceSeq": 23,
+        "detail": null
+      },
+      {
+        "event": "install-copy",
+        "revision": 23,
+        "acceptanceSeq": 23,
+        "detail": null
+      },
+      {
+        "event": "revoke",
+        "revision": 23,
+        "acceptanceSeq": 23,
+        "detail": null
+      },
+      {
+        "event": "remove",
+        "revision": 24,
+        "acceptanceSeq": null,
+        "detail": null
+      },
+      {
+        "event": "html",
+        "revision": 24,
+        "acceptanceSeq": null,
+        "detail": null
+      },
+      {
+        "event": "draw",
+        "revision": 24,
+        "acceptanceSeq": 23,
+        "detail": null
+      },
+      {
+        "event": "install-copy",
+        "revision": 24,
+        "acceptanceSeq": 23,
+        "detail": null
+      },
+      {
+        "event": "revoke",
+        "revision": 24,
+        "acceptanceSeq": 23,
+        "detail": null
+      },
+      {
+        "event": "remove",
+        "revision": 25,
+        "acceptanceSeq": null,
+        "detail": null
+      },
+      {
+        "event": "html",
+        "revision": 25,
+        "acceptanceSeq": null,
+        "detail": null
+      },
+      {
+        "event": "dispose",
+        "revision": 25,
+        "acceptanceSeq": 24,
+        "detail": null
+      },
+      {
+        "event": "draw",
+        "revision": 25,
+        "acceptanceSeq": 24,
+        "detail": null
+      },
+      {
+        "event": "revoke",
+        "revision": 25,
+        "acceptanceSeq": 24,
+        "detail": null
+      },
+      {
+        "event": "revoke",
+        "revision": 25,
+        "acceptanceSeq": 24,
+        "detail": null
+      },
+      {
+        "event": "remove",
+        "revision": 26,
+        "acceptanceSeq": null,
+        "detail": null
+      },
+      {
+        "event": "html",
+        "revision": 26,
+        "acceptanceSeq": null,
+        "detail": null
+      },
+      {
+        "event": "dispose",
+        "revision": 26,
+        "acceptanceSeq": 25,
+        "detail": null
+      },
+      {
+        "event": "draw",
+        "revision": 26,
+        "acceptanceSeq": 25,
+        "detail": null
+      },
+      {
+        "event": "install-copy",
+        "revision": 26,
+        "acceptanceSeq": 25,
+        "detail": null
+      },
+      {
+        "event": "revoke",
+        "revision": 26,
+        "acceptanceSeq": 25,
+        "detail": null
+      },
+      {
+        "event": "remove",
+        "revision": 27,
+        "acceptanceSeq": null,
+        "detail": null
+      },
+      {
+        "event": "html",
+        "revision": 27,
+        "acceptanceSeq": null,
+        "detail": null
+      },
+      {
+        "event": "dispose",
+        "revision": 27,
+        "acceptanceSeq": 26,
+        "detail": null
+      },
+      {
+        "event": "draw",
+        "revision": 27,
+        "acceptanceSeq": 26,
+        "detail": null
+      },
+      {
+        "event": "revoke",
+        "revision": 27,
+        "acceptanceSeq": 26,
+        "detail": null
+      },
+      {
+        "event": "remove",
+        "revision": 28,
+        "acceptanceSeq": null,
+        "detail": null
+      },
+      {
+        "event": "html",
+        "revision": 28,
+        "acceptanceSeq": null,
+        "detail": null
+      },
+      {
+        "event": "dispose",
+        "revision": 28,
+        "acceptanceSeq": 27,
+        "detail": null
+      },
+      {
+        "event": "draw",
+        "revision": 28,
+        "acceptanceSeq": 27,
+        "detail": null
+      },
+      {
+        "event": "install-copy",
+        "revision": 28,
+        "acceptanceSeq": 27,
+        "detail": null
+      },
+      {
+        "event": "stale-controller-rejection",
+        "revision": 27,
+        "acceptanceSeq": 26,
+        "detail": null
+      },
+      {
+        "event": "revoke",
+        "revision": 28,
+        "acceptanceSeq": 27,
+        "detail": null
+      },
+      {
+        "event": "dispose",
+        "revision": 28,
+        "acceptanceSeq": 27,
+        "detail": null
+      }
+    ],
+    "fatal": [
+      "Error: host-owner-fault"
+    ]
+  },
+  "finished": "2026-10-20T12:01:31.312Z",
+  "node": "v24.19.0",
+  "platform": "win32"
+}

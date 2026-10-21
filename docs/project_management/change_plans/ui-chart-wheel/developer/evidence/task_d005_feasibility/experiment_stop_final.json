@@ -1,0 +1,23 @@
+{
+  "author": "Codex / Developer",
+  "task": "TASK-D-005",
+  "stop_condition": "sufficient bounded evidence: explicit construction counterexamples + independent positive controls; no further tuning",
+  "stopped_utc": "2026-10-19T08:12:57.167959+00:00",
+  "stopped_MSK": "2026-10-19T11:12:57.167959+03:00",
+  "started_to_stop_wall_hours": 10.958935544166666,
+  "wall_within_12h_from_STARTED": true,
+  "browser_started": "2026-10-19T08:09:33.297Z",
+  "browser_ended": "2026-10-19T08:09:46.646Z",
+  "browser_wall_seconds": 13.349,
+  "effort_note": "Wall envelope includes interruptions and tool approval waits, is NOT measured effort/timesheet or a basis for reconstructing D003/remaining budget. Assessment preparation already included once in estimate. No extra experiment allowed after this stop.",
+  "actual_effort_hours": null,
+  "browser_cells": 24,
+  "browser_controls": 12,
+  "boundary_controls": 12,
+  "experiment_hours_cap": 12,
+  "browser_harness_cap": 4,
+  "analytics_cap": 4,
+  "authoritative_run": "run04-delivery",
+  "initial_stop_preserved": "experiment_stop.json",
+  "post_audit_correction": "10 misses had no activation event in first run. Same model/inputs repeated with global capture in run04-delivery; no parameter tuning, no budget extension. Both runs and original sources retained. This is final experiment stop."
+}

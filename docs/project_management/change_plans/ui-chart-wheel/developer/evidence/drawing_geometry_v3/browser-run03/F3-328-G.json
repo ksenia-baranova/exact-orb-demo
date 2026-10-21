@@ -1,0 +1,2421 @@
+{
+  "model": {
+    "file": "F3-328-G.json",
+    "sha256": "c1409951eaa56edb0a34589e37de50ae891051db6b37cc5abc80412f71528882"
+  },
+  "measurement": {
+    "frame": 328,
+    "viewport": [
+      360,
+      1050
+    ],
+    "matrix": [
+      1,
+      0,
+      0,
+      1,
+      16,
+      166
+    ],
+    "svgRect": {
+      "left": 16,
+      "top": 166,
+      "right": 344,
+      "bottom": 494,
+      "width": 328,
+      "height": 328
+    },
+    "DPR": 1,
+    "zoom": 1,
+    "groups": [
+      {
+        "key": "sun",
+        "P": [
+          100.86422729492188,
+          279.01007080078125
+        ],
+        "components": [
+          [
+            -7.75,
+            -5.75,
+            4.75,
+            6.75
+          ]
+        ],
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          116.86422729492188,
+          445.01007080078125
+        ],
+        "actualAnchorCSS": [
+          116.86422729492188,
+          445.01007080078125
+        ],
+        "expectedAnchorCSS": [
+          116.86422729492188,
+          445.01007080078125
+        ]
+      },
+      {
+        "key": "moon",
+        "P": [
+          165.00929260253906,
+          32.80388259887695
+        ],
+        "components": [
+          [
+            -8.75,
+            -6.75,
+            1.75,
+            7.75
+          ]
+        ],
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          181.00929260253906,
+          198.80388259887695
+        ],
+        "actualAnchorCSS": [
+          181.00928497314453,
+          198.80388641357422
+        ],
+        "expectedAnchorCSS": [
+          181.00929260253906,
+          198.80388259887695
+        ]
+      },
+      {
+        "key": "mercury",
+        "P": [
+          208.56884765625,
+          46
+        ],
+        "components": [
+          [
+            -8.75,
+            -6.75,
+            1.75,
+            9.75
+          ],
+          [
+            8,
+            1,
+            16,
+            10
+          ]
+        ],
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          224.56884765625,
+          212
+        ],
+        "actualAnchorCSS": [
+          199.17902374267578,
+          200.20938110351562
+        ],
+        "expectedAnchorCSS": [
+          199.1790313720703,
+          200.20938110351562
+        ]
+      },
+      {
+        "key": "venus",
+        "P": [
+          210.75,
+          30.5
+        ],
+        "components": [
+          [
+            -8.75,
+            -6.75,
+            1.75,
+            6.75
+          ],
+          [
+            8,
+            1,
+            16,
+            10
+          ]
+        ],
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          226.75,
+          196.5
+        ],
+        "actualAnchorCSS": [
+          198.83917999267578,
+          200.15961456298828
+        ],
+        "expectedAnchorCSS": [
+          198.8391876220703,
+          200.15961456298828
+        ]
+      },
+      {
+        "key": "mars",
+        "P": [
+          181.75,
+          47.51565933227539
+        ],
+        "components": [
+          [
+            -8.75,
+            -4.75,
+            3.75,
+            7.75
+          ],
+          [
+            8,
+            1,
+            16,
+            10
+          ]
+        ],
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          197.75,
+          213.5156593322754
+        ],
+        "actualAnchorCSS": [
+          198.49918365478516,
+          200.1107406616211
+        ],
+        "expectedAnchorCSS": [
+          198.4991912841797,
+          200.1107406616211
+        ]
+      },
+      {
+        "key": "jupiter",
+        "P": [
+          184,
+          18.51565933227539
+        ],
+        "components": [
+          [
+            -8.75,
+            -6.75,
+            4.75,
+            6.75
+          ],
+          [
+            8,
+            1,
+            16,
+            10
+          ]
+        ],
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          200,
+          184.5156593322754
+        ],
+        "actualAnchorCSS": [
+          198.1590805053711,
+          200.06275177001953
+        ],
+        "expectedAnchorCSS": [
+          198.15908813476562,
+          200.0627555847168
+        ]
+      },
+      {
+        "key": "saturn",
+        "P": [
+          181.81884765625,
+          34.01565933227539
+        ],
+        "components": [
+          [
+            -8.75,
+            -6.75,
+            1.75,
+            6.75
+          ],
+          [
+            8,
+            1,
+            16,
+            10
+          ]
+        ],
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          197.81884765625,
+          200.0156593322754
+        ],
+        "actualAnchorCSS": [
+          197.81884002685547,
+          200.01566314697266
+        ],
+        "expectedAnchorCSS": [
+          197.81884765625,
+          200.0156593322754
+        ]
+      },
+      {
+        "key": "uranus",
+        "P": [
+          283.7619323730469,
+          217.57725524902344
+        ],
+        "components": [
+          [
+            -8.75,
+            -6.75,
+            4.75,
+            7.75
+          ]
+        ],
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          299.7619323730469,
+          383.57725524902344
+        ],
+        "actualAnchorCSS": [
+          299.7619323730469,
+          383.5772399902344
+        ],
+        "expectedAnchorCSS": [
+          299.7619323730469,
+          383.57725524902344
+        ]
+      },
+      {
+        "key": "neptune",
+        "P": [
+          294.15716552734375,
+          180.5091552734375
+        ],
+        "components": [
+          [
+            -8.75,
+            -6.75,
+            6.75,
+            8.75
+          ],
+          [
+            8,
+            1,
+            16,
+            10
+          ]
+        ],
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          310.15716552734375,
+          346.5091552734375
+        ],
+        "actualAnchorCSS": [
+          310.15716552734375,
+          346.50914001464844
+        ],
+        "expectedAnchorCSS": [
+          310.15716552734375,
+          346.5091552734375
+        ]
+      },
+      {
+        "key": "pluto",
+        "P": [
+          218.5160675048828,
+          283.3374938964844
+        ],
+        "components": [
+          [
+            -7.75,
+            -6.75,
+            1.75,
+            6.75
+          ]
+        ],
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          234.5160675048828,
+          449.3374938964844
+        ],
+        "actualAnchorCSS": [
+          234.51605987548828,
+          449.3374938964844
+        ],
+        "expectedAnchorCSS": [
+          234.5160675048828,
+          449.3374938964844
+        ]
+      },
+      {
+        "key": "chiron",
+        "P": [
+          43.82844543457031,
+          111.34795379638672
+        ],
+        "components": [
+          [
+            -8.75,
+            -6.75,
+            1.75,
+            7.75
+          ]
+        ],
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          59.82844543457031,
+          277.3479537963867
+        ],
+        "actualAnchorCSS": [
+          59.828447341918945,
+          277.3479461669922
+        ],
+        "expectedAnchorCSS": [
+          59.82844543457031,
+          277.3479537963867
+        ]
+      },
+      {
+        "key": "true_node",
+        "P": [
+          92.9169692993164,
+          53.72469711303711
+        ],
+        "components": [
+          [
+            -8.75,
+            -6.75,
+            4.75,
+            7.75
+          ],
+          [
+            8,
+            1,
+            16,
+            10
+          ]
+        ],
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          108.9169692993164,
+          219.7246971130371
+        ],
+        "actualAnchorCSS": [
+          108.9169692993164,
+          219.72470092773438
+        ],
+        "expectedAnchorCSS": [
+          108.9169692993164,
+          219.7246971130371
+        ]
+      },
+      {
+        "key": "south_node",
+        "P": [
+          235.08303833007812,
+          274.2752990722656
+        ],
+        "components": [
+          [
+            -8.75,
+            -6.75,
+            4.75,
+            7.75
+          ],
+          [
+            8,
+            1,
+            16,
+            10
+          ]
+        ],
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          251.08303833007812,
+          440.2752990722656
+        ],
+        "actualAnchorCSS": [
+          251.0830307006836,
+          440.2752990722656
+        ],
+        "expectedAnchorCSS": [
+          251.08303833007812,
+          440.2752990722656
+        ]
+      },
+      {
+        "key": "mean_apog",
+        "P": [
+          94.25,
+          38.22469711303711
+        ],
+        "components": [
+          [
+            -7.75,
+            -6.75,
+            -0.25,
+            6.75
+          ]
+        ],
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          110.25,
+          204.2246971130371
+        ],
+        "actualAnchorCSS": [
+          110.28858184814453,
+          218.8525390625
+        ],
+        "expectedAnchorCSS": [
+          110.28858184814453,
+          218.8525390625
+        ]
+      },
+      {
+        "key": "selena",
+        "P": [
+          249.58303833007812,
+          266.5
+        ],
+        "components": [
+          [
+            -7.75,
+            -5.75,
+            4.75,
+            6.75
+          ],
+          [
+            8,
+            1,
+            16,
+            10
+          ]
+        ],
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          265.5830383300781,
+          432.5
+        ],
+        "actualAnchorCSS": [
+          259.6819763183594,
+          434.2315673828125
+        ],
+        "expectedAnchorCSS": [
+          259.68199157714844,
+          434.2315673828125
+        ]
+      },
+      {
+        "key": "pars_fortune",
+        "P": [
+          279.5,
+          232.07725524902344
+        ],
+        "components": [
+          [
+            -7.75,
+            -4.75,
+            4.75,
+            7.75
+          ]
+        ],
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          295.5,
+          398.07725524902344
+        ],
+        "actualAnchorCSS": [
+          295.4923400878906,
+          392.24916076660156
+        ],
+        "expectedAnchorCSS": [
+          295.4923400878906,
+          392.24916076660156
+        ]
+      },
+      {
+        "key": "[\"mercury\",\"venus\",\"conjunction\"]",
+        "P": [
+          174.5,
+          106.07428741455078
+        ],
+        "components": [
+          [
+            -8.75,
+            -6.75,
+            0.75,
+            4.75
+          ],
+          [
+            7,
+            1,
+            50.537109375,
+            10
+          ]
+        ],
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          190.5,
+          272.0742874145508
+        ],
+        "actualAnchorCSS": [
+          190.45500946044922,
+          258.6014099121094
+        ],
+        "expectedAnchorCSS": [
+          190.45501708984375,
+          258.6014099121094
+        ]
+      },
+      {
+        "key": "[\"venus\",\"mars\",\"conjunction\"]",
+        "P": [
+          174.26806640625,
+          92.57428741455078
+        ],
+        "components": [
+          [
+            -8.75,
+            -6.75,
+            0.75,
+            4.75
+          ],
+          [
+            8,
+            1,
+            55.55859375,
+            10
+          ]
+        ],
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          190.26806640625,
+          258.5742874145508
+        ],
+        "actualAnchorCSS": [
+          190.26805877685547,
+          258.5742950439453
+        ],
+        "expectedAnchorCSS": [
+          190.26806640625,
+          258.5742874145508
+        ]
+      },
+      {
+        "key": "angle:asc",
+        "P": [
+          127.91999816894531,
+          164
+        ],
+        "components": [
+          [
+            -1,
+            -9,
+            22.115234375,
+            0
+          ]
+        ],
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          143.9199981689453,
+          330
+        ],
+        "actualAnchorCSS": [
+          143.92000579833984,
+          329.99998474121094
+        ],
+        "expectedAnchorCSS": [
+          143.9199981689453,
+          330
+        ]
+      },
+      {
+        "key": "angle:mc",
+        "P": [
+          187.42074584960938,
+          136.55487060546875
+        ],
+        "components": [
+          [
+            0,
+            -9,
+            18.775390625,
+            0
+          ]
+        ],
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          203.42074584960938,
+          302.55487060546875
+        ],
+        "actualAnchorCSS": [
+          203.42073822021484,
+          302.5548553466797
+        ],
+        "expectedAnchorCSS": [
+          203.42074584960938,
+          302.55487060546875
+        ]
+      },
+      {
+        "key": "angle:vertex",
+        "P": [
+          187.97000122070312,
+          190.9667510986328
+        ],
+        "components": [
+          [
+            -1,
+            -9,
+            40.794921875,
+            0
+          ]
+        ],
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          203.97000122070312,
+          356.9667510986328
+        ],
+        "actualAnchorCSS": [
+          203.9699935913086,
+          356.9667510986328
+        ],
+        "expectedAnchorCSS": [
+          203.97000122070312,
+          356.9667510986328
+        ]
+      },
+      {
+        "key": "angle:dsc",
+        "P": [
+          200.0800018310547,
+          164
+        ],
+        "components": [
+          [
+            0,
+            -9,
+            22.7890625,
+            0
+          ]
+        ],
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          216.0800018310547,
+          330
+        ],
+        "actualAnchorCSS": [
+          216.07999420166016,
+          329.99998474121094
+        ],
+        "expectedAnchorCSS": [
+          216.0800018310547,
+          330
+        ]
+      },
+      {
+        "key": "angle:ic",
+        "P": [
+          140.57925415039062,
+          191.44512939453125
+        ],
+        "components": [
+          [
+            0,
+            -9,
+            11.193359375,
+            0
+          ]
+        ],
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          156.57925415039062,
+          357.44512939453125
+        ],
+        "actualAnchorCSS": [
+          156.5792465209961,
+          357.4451141357422
+        ],
+        "expectedAnchorCSS": [
+          156.57925415039062,
+          357.44512939453125
+        ]
+      }
+    ],
+    "texts": [
+      {
+        "group": "sun",
+        "text": "☉",
+        "computedFont": "\"Segoe UI Symbol\", \"Segoe UI\", sans-serif",
+        "fontSize": 16,
+        "effectiveEm": 16,
+        "ink": [
+          -7,
+          -5,
+          4,
+          6
+        ],
+        "bbox": {
+          "left": -8,
+          "top": -11,
+          "right": 5.484375,
+          "bottom": 10,
+          "width": 13.484375,
+          "height": 21
+        },
+        "CSSRect": {
+          "left": 108.86422729492188,
+          "top": 434.01007080078125,
+          "right": 122.34860229492188,
+          "bottom": 455.01007080078125,
+          "width": 13.484375,
+          "height": 21
+        }
+      },
+      {
+        "group": "moon",
+        "text": "☽",
+        "computedFont": "\"Segoe UI Symbol\", \"Segoe UI\", sans-serif",
+        "fontSize": 16,
+        "effectiveEm": 16,
+        "ink": [
+          -8,
+          -6,
+          1,
+          7
+        ],
+        "bbox": {
+          "left": -8,
+          "top": -11,
+          "right": 1.140625,
+          "bottom": 10,
+          "width": 9.140625,
+          "height": 21
+        },
+        "CSSRect": {
+          "left": 173.00929260253906,
+          "top": 187.8038787841797,
+          "right": 182.14991760253906,
+          "bottom": 208.8038787841797,
+          "width": 9.140625,
+          "height": 21
+        }
+      },
+      {
+        "group": "mercury",
+        "text": "☿",
+        "computedFont": "\"Segoe UI Symbol\", \"Segoe UI\", sans-serif",
+        "fontSize": 16,
+        "effectiveEm": 16,
+        "ink": [
+          -8,
+          -6,
+          1,
+          9
+        ],
+        "bbox": {
+          "left": -8,
+          "top": -11,
+          "right": 1,
+          "bottom": 10,
+          "width": 9,
+          "height": 21
+        },
+        "CSSRect": {
+          "left": 216.56884765625,
+          "top": 201,
+          "right": 225.56884765625,
+          "bottom": 222,
+          "width": 9,
+          "height": 21
+        }
+      },
+      {
+        "group": "mercury",
+        "text": "R",
+        "computedFont": "\"Segoe UI Symbol\", \"Segoe UI\", sans-serif",
+        "fontSize": 12,
+        "effectiveEm": 12,
+        "ink": [
+          8,
+          1,
+          16,
+          10
+        ],
+        "bbox": {
+          "left": 8,
+          "top": -3,
+          "right": 16,
+          "bottom": 13,
+          "width": 8,
+          "height": 16
+        },
+        "CSSRect": {
+          "left": 232.56884765625,
+          "top": 209,
+          "right": 240.56884765625,
+          "bottom": 225,
+          "width": 8,
+          "height": 16
+        }
+      },
+      {
+        "group": "venus",
+        "text": "♀",
+        "computedFont": "\"Segoe UI Symbol\", \"Segoe UI\", sans-serif",
+        "fontSize": 16,
+        "effectiveEm": 16,
+        "ink": [
+          -8,
+          -6,
+          1,
+          6
+        ],
+        "bbox": {
+          "left": -8,
+          "top": -11,
+          "right": 1,
+          "bottom": 10,
+          "width": 9,
+          "height": 21
+        },
+        "CSSRect": {
+          "left": 218.75,
+          "top": 185.5,
+          "right": 227.75,
+          "bottom": 206.5,
+          "width": 9,
+          "height": 21
+        }
+      },
+      {
+        "group": "venus",
+        "text": "R",
+        "computedFont": "\"Segoe UI Symbol\", \"Segoe UI\", sans-serif",
+        "fontSize": 12,
+        "effectiveEm": 12,
+        "ink": [
+          8,
+          1,
+          16,
+          10
+        ],
+        "bbox": {
+          "left": 8,
+          "top": -3,
+          "right": 16,
+          "bottom": 13,
+          "width": 8,
+          "height": 16
+        },
+        "CSSRect": {
+          "left": 234.75,
+          "top": 193.5,
+          "right": 242.75,
+          "bottom": 209.5,
+          "width": 8,
+          "height": 16
+        }
+      },
+      {
+        "group": "mars",
+        "text": "♂",
+        "computedFont": "\"Segoe UI Symbol\", \"Segoe UI\", sans-serif",
+        "fontSize": 16,
+        "effectiveEm": 16,
+        "ink": [
+          -8,
+          -4,
+          3,
+          7
+        ],
+        "bbox": {
+          "left": -8,
+          "top": -11,
+          "right": 3.109375,
+          "bottom": 10,
+          "width": 11.109375,
+          "height": 21
+        },
+        "CSSRect": {
+          "left": 189.75,
+          "top": 202.51565551757812,
+          "right": 200.859375,
+          "bottom": 223.51565551757812,
+          "width": 11.109375,
+          "height": 21
+        }
+      },
+      {
+        "group": "mars",
+        "text": "R",
+        "computedFont": "\"Segoe UI Symbol\", \"Segoe UI\", sans-serif",
+        "fontSize": 12,
+        "effectiveEm": 12,
+        "ink": [
+          8,
+          1,
+          16,
+          10
+        ],
+        "bbox": {
+          "left": 8,
+          "top": -3,
+          "right": 16,
+          "bottom": 13,
+          "width": 8,
+          "height": 16
+        },
+        "CSSRect": {
+          "left": 205.75,
+          "top": 210.51565551757812,
+          "right": 213.75,
+          "bottom": 226.51565551757812,
+          "width": 8,
+          "height": 16
+        }
+      },
+      {
+        "group": "jupiter",
+        "text": "♃",
+        "computedFont": "\"Segoe UI Symbol\", \"Segoe UI\", sans-serif",
+        "fontSize": 16,
+        "effectiveEm": 16,
+        "ink": [
+          -8,
+          -6,
+          4,
+          6
+        ],
+        "bbox": {
+          "left": -8,
+          "top": -11,
+          "right": 4.3125,
+          "bottom": 10,
+          "width": 12.3125,
+          "height": 21
+        },
+        "CSSRect": {
+          "left": 192,
+          "top": 173.51565551757812,
+          "right": 204.3125,
+          "bottom": 194.51565551757812,
+          "width": 12.3125,
+          "height": 21
+        }
+      },
+      {
+        "group": "jupiter",
+        "text": "R",
+        "computedFont": "\"Segoe UI Symbol\", \"Segoe UI\", sans-serif",
+        "fontSize": 12,
+        "effectiveEm": 12,
+        "ink": [
+          8,
+          1,
+          16,
+          10
+        ],
+        "bbox": {
+          "left": 8,
+          "top": -3,
+          "right": 16,
+          "bottom": 13,
+          "width": 8,
+          "height": 16
+        },
+        "CSSRect": {
+          "left": 208,
+          "top": 181.51565551757812,
+          "right": 216,
+          "bottom": 197.51565551757812,
+          "width": 8,
+          "height": 16
+        }
+      },
+      {
+        "group": "saturn",
+        "text": "♄",
+        "computedFont": "\"Segoe UI Symbol\", \"Segoe UI\", sans-serif",
+        "fontSize": 16,
+        "effectiveEm": 16,
+        "ink": [
+          -8,
+          -6,
+          1,
+          6
+        ],
+        "bbox": {
+          "left": -8,
+          "top": -11,
+          "right": 1,
+          "bottom": 10,
+          "width": 9,
+          "height": 21
+        },
+        "CSSRect": {
+          "left": 189.81884765625,
+          "top": 189.01565551757812,
+          "right": 198.81884765625,
+          "bottom": 210.01565551757812,
+          "width": 9,
+          "height": 21
+        }
+      },
+      {
+        "group": "saturn",
+        "text": "R",
+        "computedFont": "\"Segoe UI Symbol\", \"Segoe UI\", sans-serif",
+        "fontSize": 12,
+        "effectiveEm": 12,
+        "ink": [
+          8,
+          1,
+          16,
+          10
+        ],
+        "bbox": {
+          "left": 8,
+          "top": -3,
+          "right": 16,
+          "bottom": 13,
+          "width": 8,
+          "height": 16
+        },
+        "CSSRect": {
+          "left": 205.81884765625,
+          "top": 197.01565551757812,
+          "right": 213.81884765625,
+          "bottom": 213.01565551757812,
+          "width": 8,
+          "height": 16
+        }
+      },
+      {
+        "group": "uranus",
+        "text": "♅",
+        "computedFont": "\"Segoe UI Symbol\", \"Segoe UI\", sans-serif",
+        "fontSize": 16,
+        "effectiveEm": 16,
+        "ink": [
+          -8,
+          -6,
+          4,
+          7
+        ],
+        "bbox": {
+          "left": -8,
+          "top": -11,
+          "right": 4,
+          "bottom": 10,
+          "width": 12,
+          "height": 21
+        },
+        "CSSRect": {
+          "left": 291.7619323730469,
+          "top": 372.5772705078125,
+          "right": 303.7619323730469,
+          "bottom": 393.5772705078125,
+          "width": 12,
+          "height": 21
+        }
+      },
+      {
+        "group": "neptune",
+        "text": "♆",
+        "computedFont": "\"Segoe UI Symbol\", \"Segoe UI\", sans-serif",
+        "fontSize": 16,
+        "effectiveEm": 16,
+        "ink": [
+          -8,
+          -6,
+          6,
+          8
+        ],
+        "bbox": {
+          "left": -8,
+          "top": -11,
+          "right": 6,
+          "bottom": 10,
+          "width": 14,
+          "height": 21
+        },
+        "CSSRect": {
+          "left": 302.15716552734375,
+          "top": 335.5091552734375,
+          "right": 316.15716552734375,
+          "bottom": 356.5091552734375,
+          "width": 14,
+          "height": 21
+        }
+      },
+      {
+        "group": "neptune",
+        "text": "R",
+        "computedFont": "\"Segoe UI Symbol\", \"Segoe UI\", sans-serif",
+        "fontSize": 12,
+        "effectiveEm": 12,
+        "ink": [
+          8,
+          1,
+          16,
+          10
+        ],
+        "bbox": {
+          "left": 8,
+          "top": -3,
+          "right": 16,
+          "bottom": 13,
+          "width": 8,
+          "height": 16
+        },
+        "CSSRect": {
+          "left": 318.15716552734375,
+          "top": 343.5091552734375,
+          "right": 326.15716552734375,
+          "bottom": 359.5091552734375,
+          "width": 8,
+          "height": 16
+        }
+      },
+      {
+        "group": "pluto",
+        "text": "♇",
+        "computedFont": "\"Segoe UI Symbol\", \"Segoe UI\", sans-serif",
+        "fontSize": 16,
+        "effectiveEm": 16,
+        "ink": [
+          -7,
+          -6,
+          1,
+          6
+        ],
+        "bbox": {
+          "left": -8,
+          "top": -11,
+          "right": 1,
+          "bottom": 10,
+          "width": 9,
+          "height": 21
+        },
+        "CSSRect": {
+          "left": 226.5160675048828,
+          "top": 438.3374938964844,
+          "right": 235.5160675048828,
+          "bottom": 459.3374938964844,
+          "width": 9,
+          "height": 21
+        }
+      },
+      {
+        "group": "chiron",
+        "text": "⚷",
+        "computedFont": "\"Segoe UI Symbol\", \"Segoe UI\", sans-serif",
+        "fontSize": 16,
+        "effectiveEm": 16,
+        "ink": [
+          -8,
+          -6,
+          1,
+          7
+        ],
+        "bbox": {
+          "left": -8,
+          "top": -11,
+          "right": 1,
+          "bottom": 10,
+          "width": 9,
+          "height": 21
+        },
+        "CSSRect": {
+          "left": 51.82844543457031,
+          "top": 266.34796142578125,
+          "right": 60.82844543457031,
+          "bottom": 287.34796142578125,
+          "width": 9,
+          "height": 21
+        }
+      },
+      {
+        "group": "true_node",
+        "text": "☊",
+        "computedFont": "\"Segoe UI Symbol\", \"Segoe UI\", sans-serif",
+        "fontSize": 16,
+        "effectiveEm": 16,
+        "ink": [
+          -8,
+          -6,
+          4,
+          7
+        ],
+        "bbox": {
+          "left": -8,
+          "top": -11,
+          "right": 4.1875,
+          "bottom": 10,
+          "width": 12.1875,
+          "height": 21
+        },
+        "CSSRect": {
+          "left": 100.9169692993164,
+          "top": 208.72470092773438,
+          "right": 113.1044692993164,
+          "bottom": 229.72470092773438,
+          "width": 12.1875,
+          "height": 21
+        }
+      },
+      {
+        "group": "true_node",
+        "text": "R",
+        "computedFont": "\"Segoe UI Symbol\", \"Segoe UI\", sans-serif",
+        "fontSize": 12,
+        "effectiveEm": 12,
+        "ink": [
+          8,
+          1,
+          16,
+          10
+        ],
+        "bbox": {
+          "left": 8,
+          "top": -3,
+          "right": 16,
+          "bottom": 13,
+          "width": 8,
+          "height": 16
+        },
+        "CSSRect": {
+          "left": 116.9169692993164,
+          "top": 216.72470092773438,
+          "right": 124.9169692993164,
+          "bottom": 232.72470092773438,
+          "width": 8,
+          "height": 16
+        }
+      },
+      {
+        "group": "south_node",
+        "text": "☋",
+        "computedFont": "\"Segoe UI Symbol\", \"Segoe UI\", sans-serif",
+        "fontSize": 16,
+        "effectiveEm": 16,
+        "ink": [
+          -8,
+          -6,
+          4,
+          7
+        ],
+        "bbox": {
+          "left": -8,
+          "top": -11,
+          "right": 4.1875,
+          "bottom": 10,
+          "width": 12.1875,
+          "height": 21
+        },
+        "CSSRect": {
+          "left": 243.08303833007812,
+          "top": 429.2752990722656,
+          "right": 255.27053833007812,
+          "bottom": 450.2752990722656,
+          "width": 12.1875,
+          "height": 21
+        }
+      },
+      {
+        "group": "south_node",
+        "text": "R",
+        "computedFont": "\"Segoe UI Symbol\", \"Segoe UI\", sans-serif",
+        "fontSize": 12,
+        "effectiveEm": 12,
+        "ink": [
+          8,
+          1,
+          16,
+          10
+        ],
+        "bbox": {
+          "left": 8,
+          "top": -3,
+          "right": 16,
+          "bottom": 13,
+          "width": 8,
+          "height": 16
+        },
+        "CSSRect": {
+          "left": 259.0830383300781,
+          "top": 437.2752990722656,
+          "right": 267.0830383300781,
+          "bottom": 453.2752990722656,
+          "width": 8,
+          "height": 16
+        }
+      },
+      {
+        "group": "mean_apog",
+        "text": "⚸",
+        "computedFont": "\"Segoe UI Symbol\", \"Segoe UI\", sans-serif",
+        "fontSize": 16,
+        "effectiveEm": 16,
+        "ink": [
+          -7,
+          -6,
+          -1,
+          6
+        ],
+        "bbox": {
+          "left": -8,
+          "top": -11,
+          "right": 0.8125,
+          "bottom": 10,
+          "width": 8.8125,
+          "height": 21
+        },
+        "CSSRect": {
+          "left": 102.25,
+          "top": 193.22470092773438,
+          "right": 111.0625,
+          "bottom": 214.22470092773438,
+          "width": 8.8125,
+          "height": 21
+        }
+      },
+      {
+        "group": "selena",
+        "text": "⚪",
+        "computedFont": "\"Segoe UI Symbol\", \"Segoe UI\", sans-serif",
+        "fontSize": 16,
+        "effectiveEm": 16,
+        "ink": [
+          -7,
+          -5,
+          4,
+          6
+        ],
+        "bbox": {
+          "left": -8,
+          "top": -11,
+          "right": 5.484375,
+          "bottom": 10,
+          "width": 13.484375,
+          "height": 21
+        },
+        "CSSRect": {
+          "left": 257.5830383300781,
+          "top": 421.5,
+          "right": 271.0674133300781,
+          "bottom": 442.5,
+          "width": 13.484375,
+          "height": 21
+        }
+      },
+      {
+        "group": "selena",
+        "text": "R",
+        "computedFont": "\"Segoe UI Symbol\", \"Segoe UI\", sans-serif",
+        "fontSize": 12,
+        "effectiveEm": 12,
+        "ink": [
+          8,
+          1,
+          16,
+          10
+        ],
+        "bbox": {
+          "left": 8,
+          "top": -3,
+          "right": 16,
+          "bottom": 13,
+          "width": 8,
+          "height": 16
+        },
+        "CSSRect": {
+          "left": 273.5830383300781,
+          "top": 429.5,
+          "right": 281.5830383300781,
+          "bottom": 445.5,
+          "width": 8,
+          "height": 16
+        }
+      },
+      {
+        "group": "pars_fortune",
+        "text": "⊗",
+        "computedFont": "\"Segoe UI Symbol\", \"Segoe UI\", sans-serif",
+        "fontSize": 16,
+        "effectiveEm": 16,
+        "ink": [
+          -7,
+          -4,
+          4,
+          7
+        ],
+        "bbox": {
+          "left": -8,
+          "top": -11,
+          "right": 5.484375,
+          "bottom": 10,
+          "width": 13.484375,
+          "height": 21
+        },
+        "CSSRect": {
+          "left": 287.5,
+          "top": 387.0772705078125,
+          "right": 300.984375,
+          "bottom": 408.0772705078125,
+          "width": 13.484375,
+          "height": 21
+        }
+      },
+      {
+        "group": "[\"mercury\",\"venus\",\"conjunction\"]",
+        "text": "☌",
+        "computedFont": "\"Segoe UI Symbol\", \"Segoe UI\", sans-serif",
+        "fontSize": 16,
+        "effectiveEm": 16,
+        "ink": [
+          -8,
+          -6,
+          0,
+          4
+        ],
+        "bbox": {
+          "left": -8,
+          "top": -11,
+          "right": 0.125,
+          "bottom": 10,
+          "width": 8.125,
+          "height": 21
+        },
+        "CSSRect": {
+          "left": 182.5,
+          "top": 261.07427978515625,
+          "right": 190.625,
+          "bottom": 282.07427978515625,
+          "width": 8.125,
+          "height": 21
+        }
+      },
+      {
+        "group": "[\"mercury\",\"venus\",\"conjunction\"]",
+        "text": "Точный",
+        "computedFont": "\"Segoe UI Symbol\", \"Segoe UI\", sans-serif",
+        "fontSize": 12,
+        "effectiveEm": 12,
+        "ink": [
+          7,
+          1,
+          50.537109375,
+          10
+        ],
+        "bbox": {
+          "left": 7,
+          "top": -3,
+          "right": 50.537109375,
+          "bottom": 13,
+          "width": 43.537109375,
+          "height": 16
+        },
+        "CSSRect": {
+          "left": 197.5,
+          "top": 269.07427978515625,
+          "right": 241.037109375,
+          "bottom": 285.07427978515625,
+          "width": 43.537109375,
+          "height": 16
+        }
+      },
+      {
+        "group": "[\"venus\",\"mars\",\"conjunction\"]",
+        "text": "☌",
+        "computedFont": "\"Segoe UI Symbol\", \"Segoe UI\", sans-serif",
+        "fontSize": 16,
+        "effectiveEm": 16,
+        "ink": [
+          -8,
+          -6,
+          0,
+          4
+        ],
+        "bbox": {
+          "left": -8,
+          "top": -11,
+          "right": 0.125,
+          "bottom": 10,
+          "width": 8.125,
+          "height": 21
+        },
+        "CSSRect": {
+          "left": 182.26806640625,
+          "top": 247.57427978515625,
+          "right": 190.39306640625,
+          "bottom": 268.57427978515625,
+          "width": 8.125,
+          "height": 21
+        }
+      },
+      {
+        "group": "[\"venus\",\"mars\",\"conjunction\"]",
+        "text": "Рабочий",
+        "computedFont": "\"Segoe UI Symbol\", \"Segoe UI\", sans-serif",
+        "fontSize": 12,
+        "effectiveEm": 12,
+        "ink": [
+          8,
+          1,
+          55.55859375,
+          10
+        ],
+        "bbox": {
+          "left": 8,
+          "top": -3,
+          "right": 55.55859375,
+          "bottom": 13,
+          "width": 47.55859375,
+          "height": 16
+        },
+        "CSSRect": {
+          "left": 198.26806640625,
+          "top": 255.57427978515625,
+          "right": 245.82666015625,
+          "bottom": 271.57427978515625,
+          "width": 47.55859375,
+          "height": 16
+        }
+      },
+      {
+        "group": "angle:asc",
+        "text": "ASC",
+        "computedFont": "\"Segoe UI Symbol\", \"Segoe UI\", sans-serif",
+        "fontSize": 12,
+        "effectiveEm": 12,
+        "ink": [
+          -1,
+          -9,
+          22.115234375,
+          0
+        ],
+        "bbox": {
+          "left": -1,
+          "top": -13,
+          "right": 22.115234375,
+          "bottom": 3,
+          "width": 23.115234375,
+          "height": 16
+        },
+        "CSSRect": {
+          "left": 142.9199981689453,
+          "top": 317,
+          "right": 166.0352325439453,
+          "bottom": 333,
+          "width": 23.115234375,
+          "height": 16
+        }
+      },
+      {
+        "group": "angle:mc",
+        "text": "MC",
+        "computedFont": "\"Segoe UI Symbol\", \"Segoe UI\", sans-serif",
+        "fontSize": 12,
+        "effectiveEm": 12,
+        "ink": [
+          0,
+          -9,
+          18.775390625,
+          0
+        ],
+        "bbox": {
+          "left": 0,
+          "top": -13,
+          "right": 18.775390625,
+          "bottom": 3,
+          "width": 18.775390625,
+          "height": 16
+        },
+        "CSSRect": {
+          "left": 203.42074584960938,
+          "top": 289.55487060546875,
+          "right": 222.19613647460938,
+          "bottom": 305.55487060546875,
+          "width": 18.775390625,
+          "height": 16
+        }
+      },
+      {
+        "group": "angle:vertex",
+        "text": "VERTEX",
+        "computedFont": "\"Segoe UI Symbol\", \"Segoe UI\", sans-serif",
+        "fontSize": 12,
+        "effectiveEm": 12,
+        "ink": [
+          -1,
+          -9,
+          40.794921875,
+          0
+        ],
+        "bbox": {
+          "left": -1,
+          "top": -13,
+          "right": 40.794921875,
+          "bottom": 3,
+          "width": 41.794921875,
+          "height": 16
+        },
+        "CSSRect": {
+          "left": 202.97000122070312,
+          "top": 343.96673583984375,
+          "right": 244.76492309570312,
+          "bottom": 359.96673583984375,
+          "width": 41.794921875,
+          "height": 16
+        }
+      },
+      {
+        "group": "angle:dsc",
+        "text": "DSC",
+        "computedFont": "\"Segoe UI Symbol\", \"Segoe UI\", sans-serif",
+        "fontSize": 12,
+        "effectiveEm": 12,
+        "ink": [
+          0,
+          -9,
+          22.7890625,
+          0
+        ],
+        "bbox": {
+          "left": 0,
+          "top": -13,
+          "right": 22.7890625,
+          "bottom": 3,
+          "width": 22.7890625,
+          "height": 16
+        },
+        "CSSRect": {
+          "left": 216.0800018310547,
+          "top": 317,
+          "right": 238.8690643310547,
+          "bottom": 333,
+          "width": 22.7890625,
+          "height": 16
+        }
+      },
+      {
+        "group": "angle:ic",
+        "text": "IC",
+        "computedFont": "\"Segoe UI Symbol\", \"Segoe UI\", sans-serif",
+        "fontSize": 12,
+        "effectiveEm": 12,
+        "ink": [
+          0,
+          -9,
+          11.193359375,
+          0
+        ],
+        "bbox": {
+          "left": 0,
+          "top": -13,
+          "right": 11.193359375,
+          "bottom": 3,
+          "width": 11.193359375,
+          "height": 16
+        },
+        "CSSRect": {
+          "left": 156.57925415039062,
+          "top": 344.44512939453125,
+          "right": 167.77261352539062,
+          "bottom": 360.44512939453125,
+          "width": 11.193359375,
+          "height": 16
+        }
+      }
+    ],
+    "maxComponentDrift": 0,
+    "interactiveSVG": 0,
+    "chartUnchanged": true,
+    "pageOverflow": false
+  },
+  "fonts": [
+    {
+      "attributes": [
+        "x",
+        "-8",
+        "y",
+        "6",
+        "font-size",
+        "16"
+      ],
+      "fonts": [
+        {
+          "familyName": "Segoe UI Symbol",
+          "postScriptName": "SegoeUISymbol",
+          "isCustomFont": false,
+          "glyphCount": 1
+        }
+      ]
+    },
+    {
+      "attributes": [
+        "x",
+        "-8",
+        "y",
+        "6",
+        "font-size",
+        "16"
+      ],
+      "fonts": [
+        {
+          "familyName": "Segoe UI Symbol",
+          "postScriptName": "SegoeUISymbol",
+          "isCustomFont": false,
+          "glyphCount": 1
+        }
+      ]
+    },
+    {
+      "attributes": [
+        "x",
+        "-8",
+        "y",
+        "6",
+        "font-size",
+        "16"
+      ],
+      "fonts": [
+        {
+          "familyName": "Segoe UI Symbol",
+          "postScriptName": "SegoeUISymbol",
+          "isCustomFont": false,
+          "glyphCount": 1
+        }
+      ]
+    },
+    {
+      "attributes": [
+        "x",
+        "8",
+        "y",
+        "10",
+        "font-size",
+        "12"
+      ],
+      "fonts": [
+        {
+          "familyName": "Segoe UI Symbol",
+          "postScriptName": "SegoeUISymbol",
+          "isCustomFont": false,
+          "glyphCount": 1
+        }
+      ]
+    },
+    {
+      "attributes": [
+        "x",
+        "-8",
+        "y",
+        "6",
+        "font-size",
+        "16"
+      ],
+      "fonts": [
+        {
+          "familyName": "Segoe UI Symbol",
+          "postScriptName": "SegoeUISymbol",
+          "isCustomFont": false,
+          "glyphCount": 1
+        }
+      ]
+    },
+    {
+      "attributes": [
+        "x",
+        "8",
+        "y",
+        "10",
+        "font-size",
+        "12"
+      ],
+      "fonts": [
+        {
+          "familyName": "Segoe UI Symbol",
+          "postScriptName": "SegoeUISymbol",
+          "isCustomFont": false,
+          "glyphCount": 1
+        }
+      ]
+    },
+    {
+      "attributes": [
+        "x",
+        "-8",
+        "y",
+        "6",
+        "font-size",
+        "16"
+      ],
+      "fonts": [
+        {
+          "familyName": "Segoe UI Symbol",
+          "postScriptName": "SegoeUISymbol",
+          "isCustomFont": false,
+          "glyphCount": 1
+        }
+      ]
+    },
+    {
+      "attributes": [
+        "x",
+        "8",
+        "y",
+        "10",
+        "font-size",
+        "12"
+      ],
+      "fonts": [
+        {
+          "familyName": "Segoe UI Symbol",
+          "postScriptName": "SegoeUISymbol",
+          "isCustomFont": false,
+          "glyphCount": 1
+        }
+      ]
+    },
+    {
+      "attributes": [
+        "x",
+        "-8",
+        "y",
+        "6",
+        "font-size",
+        "16"
+      ],
+      "fonts": [
+        {
+          "familyName": "Segoe UI Symbol",
+          "postScriptName": "SegoeUISymbol",
+          "isCustomFont": false,
+          "glyphCount": 1
+        }
+      ]
+    },
+    {
+      "attributes": [
+        "x",
+        "8",
+        "y",
+        "10",
+        "font-size",
+        "12"
+      ],
+      "fonts": [
+        {
+          "familyName": "Segoe UI Symbol",
+          "postScriptName": "SegoeUISymbol",
+          "isCustomFont": false,
+          "glyphCount": 1
+        }
+      ]
+    },
+    {
+      "attributes": [
+        "x",
+        "-8",
+        "y",
+        "6",
+        "font-size",
+        "16"
+      ],
+      "fonts": [
+        {
+          "familyName": "Segoe UI Symbol",
+          "postScriptName": "SegoeUISymbol",
+          "isCustomFont": false,
+          "glyphCount": 1
+        }
+      ]
+    },
+    {
+      "attributes": [
+        "x",
+        "8",
+        "y",
+        "10",
+        "font-size",
+        "12"
+      ],
+      "fonts": [
+        {
+          "familyName": "Segoe UI Symbol",
+          "postScriptName": "SegoeUISymbol",
+          "isCustomFont": false,
+          "glyphCount": 1
+        }
+      ]
+    },
+    {
+      "attributes": [
+        "x",
+        "-8",
+        "y",
+        "6",
+        "font-size",
+        "16"
+      ],
+      "fonts": [
+        {
+          "familyName": "Segoe UI Symbol",
+          "postScriptName": "SegoeUISymbol",
+          "isCustomFont": false,
+          "glyphCount": 1
+        }
+      ]
+    },
+    {
+      "attributes": [
+        "x",
+        "-8",
+        "y",
+        "6",
+        "font-size",
+        "16"
+      ],
+      "fonts": [
+        {
+          "familyName": "Segoe UI Symbol",
+          "postScriptName": "SegoeUISymbol",
+          "isCustomFont": false,
+          "glyphCount": 1
+        }
+      ]
+    },
+    {
+      "attributes": [
+        "x",
+        "8",
+        "y",
+        "10",
+        "font-size",
+        "12"
+      ],
+      "fonts": [
+        {
+          "familyName": "Segoe UI Symbol",
+          "postScriptName": "SegoeUISymbol",
+          "isCustomFont": false,
+          "glyphCount": 1
+        }
+      ]
+    },
+    {
+      "attributes": [
+        "x",
+        "-8",
+        "y",
+        "6",
+        "font-size",
+        "16"
+      ],
+      "fonts": [
+        {
+          "familyName": "Segoe UI Symbol",
+          "postScriptName": "SegoeUISymbol",
+          "isCustomFont": false,
+          "glyphCount": 1
+        }
+      ]
+    },
+    {
+      "attributes": [
+        "x",
+        "-8",
+        "y",
+        "6",
+        "font-size",
+        "16"
+      ],
+      "fonts": [
+        {
+          "familyName": "Segoe UI Symbol",
+          "postScriptName": "SegoeUISymbol",
+          "isCustomFont": false,
+          "glyphCount": 1
+        }
+      ]
+    },
+    {
+      "attributes": [
+        "x",
+        "-8",
+        "y",
+        "6",
+        "font-size",
+        "16"
+      ],
+      "fonts": [
+        {
+          "familyName": "Segoe UI Symbol",
+          "postScriptName": "SegoeUISymbol",
+          "isCustomFont": false,
+          "glyphCount": 1
+        }
+      ]
+    },
+    {
+      "attributes": [
+        "x",
+        "8",
+        "y",
+        "10",
+        "font-size",
+        "12"
+      ],
+      "fonts": [
+        {
+          "familyName": "Segoe UI Symbol",
+          "postScriptName": "SegoeUISymbol",
+          "isCustomFont": false,
+          "glyphCount": 1
+        }
+      ]
+    },
+    {
+      "attributes": [
+        "x",
+        "-8",
+        "y",
+        "6",
+        "font-size",
+        "16"
+      ],
+      "fonts": [
+        {
+          "familyName": "Segoe UI Symbol",
+          "postScriptName": "SegoeUISymbol",
+          "isCustomFont": false,
+          "glyphCount": 1
+        }
+      ]
+    },
+    {
+      "attributes": [
+        "x",
+        "8",
+        "y",
+        "10",
+        "font-size",
+        "12"
+      ],
+      "fonts": [
+        {
+          "familyName": "Segoe UI Symbol",
+          "postScriptName": "SegoeUISymbol",
+          "isCustomFont": false,
+          "glyphCount": 1
+        }
+      ]
+    },
+    {
+      "attributes": [
+        "x",
+        "-8",
+        "y",
+        "6",
+        "font-size",
+        "16"
+      ],
+      "fonts": [
+        {
+          "familyName": "Segoe UI Symbol",
+          "postScriptName": "SegoeUISymbol",
+          "isCustomFont": false,
+          "glyphCount": 1
+        }
+      ]
+    },
+    {
+      "attributes": [
+        "x",
+        "-8",
+        "y",
+        "6",
+        "font-size",
+        "16"
+      ],
+      "fonts": [
+        {
+          "familyName": "Segoe UI Symbol",
+          "postScriptName": "SegoeUISymbol",
+          "isCustomFont": false,
+          "glyphCount": 1
+        }
+      ]
+    },
+    {
+      "attributes": [
+        "x",
+        "8",
+        "y",
+        "10",
+        "font-size",
+        "12"
+      ],
+      "fonts": [
+        {
+          "familyName": "Segoe UI Symbol",
+          "postScriptName": "SegoeUISymbol",
+          "isCustomFont": false,
+          "glyphCount": 1
+        }
+      ]
+    },
+    {
+      "attributes": [
+        "x",
+        "-8",
+        "y",
+        "6",
+        "font-size",
+        "16"
+      ],
+      "fonts": [
+        {
+          "familyName": "Segoe UI Symbol",
+          "postScriptName": "SegoeUISymbol",
+          "isCustomFont": false,
+          "glyphCount": 1
+        }
+      ]
+    },
+    {
+      "attributes": [
+        "x",
+        "-8",
+        "y",
+        "6",
+        "font-size",
+        "16"
+      ],
+      "fonts": [
+        {
+          "familyName": "Segoe UI Symbol",
+          "postScriptName": "SegoeUISymbol",
+          "isCustomFont": false,
+          "glyphCount": 1
+        }
+      ]
+    },
+    {
+      "attributes": [
+        "x",
+        "8",
+        "y",
+        "10",
+        "font-size",
+        "12"
+      ],
+      "fonts": [
+        {
+          "familyName": "Segoe UI",
+          "postScriptName": "SegoeUI",
+          "isCustomFont": false,
+          "glyphCount": 6
+        }
+      ]
+    },
+    {
+      "attributes": [
+        "x",
+        "-8",
+        "y",
+        "6",
+        "font-size",
+        "16"
+      ],
+      "fonts": [
+        {
+          "familyName": "Segoe UI Symbol",
+          "postScriptName": "SegoeUISymbol",
+          "isCustomFont": false,
+          "glyphCount": 1
+        }
+      ]
+    },
+    {
+      "attributes": [
+        "x",
+        "8",
+        "y",
+        "10",
+        "font-size",
+        "12"
+      ],
+      "fonts": [
+        {
+          "familyName": "Segoe UI",
+          "postScriptName": "SegoeUI",
+          "isCustomFont": false,
+          "glyphCount": 7
+        }
+      ]
+    },
+    {
+      "attributes": [
+        "x",
+        "0",
+        "y",
+        "0",
+        "font-size",
+        "12"
+      ],
+      "fonts": [
+        {
+          "familyName": "Segoe UI Symbol",
+          "postScriptName": "SegoeUISymbol",
+          "isCustomFont": false,
+          "glyphCount": 3
+        }
+      ]
+    },
+    {
+      "attributes": [
+        "x",
+        "0",
+        "y",
+        "0",
+        "font-size",
+        "12"
+      ],
+      "fonts": [
+        {
+          "familyName": "Segoe UI Symbol",
+          "postScriptName": "SegoeUISymbol",
+          "isCustomFont": false,
+          "glyphCount": 2
+        }
+      ]
+    },
+    {
+      "attributes": [
+        "x",
+        "0",
+        "y",
+        "0",
+        "font-size",
+        "12"
+      ],
+      "fonts": [
+        {
+          "familyName": "Segoe UI Symbol",
+          "postScriptName": "SegoeUISymbol",
+          "isCustomFont": false,
+          "glyphCount": 6
+        }
+      ]
+    },
+    {
+      "attributes": [
+        "x",
+        "0",
+        "y",
+        "0",
+        "font-size",
+        "12"
+      ],
+      "fonts": [
+        {
+          "familyName": "Segoe UI Symbol",
+          "postScriptName": "SegoeUISymbol",
+          "isCustomFont": false,
+          "glyphCount": 3
+        }
+      ]
+    },
+    {
+      "attributes": [
+        "x",
+        "0",
+        "y",
+        "0",
+        "font-size",
+        "12"
+      ],
+      "fonts": [
+        {
+          "familyName": "Segoe UI Symbol",
+          "postScriptName": "SegoeUISymbol",
+          "isCustomFont": false,
+          "glyphCount": 2
+        }
+      ]
+    }
+  ],
+  "pageErrors": [],
+  "screenshot": "screenshots/F3-328-G.png",
+  "screenshotSHA256": "2509b7dd51d5027edee97f6da4d775ef07bd456251fada9ba3ff2c7f347a8eb4"
+}

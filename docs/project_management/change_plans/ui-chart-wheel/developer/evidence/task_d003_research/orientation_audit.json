@@ -1,0 +1,54 @@
+[
+  {
+    "kind": "natal",
+    "configs": "saved",
+    "accepted": false,
+    "errors": [
+      {
+        "loc": [
+          "chart"
+        ],
+        "type": "value_error",
+        "msg": "Value error, configurations[0].aspects[0] must exactly materialize an aspect from NatalChart.aspects"
+      }
+    ]
+  },
+  {
+    "kind": "natal",
+    "configs": "empty",
+    "accepted": true,
+    "first": {
+      "from": "pars_fortune",
+      "to": "mean_apog",
+      "type": "quincunx",
+      "orb": 0.4200378038607937,
+      "category": "exact"
+    }
+  },
+  {
+    "kind": "cosmogram",
+    "configs": "saved",
+    "accepted": false,
+    "errors": [
+      {
+        "loc": [
+          "chart"
+        ],
+        "type": "value_error",
+        "msg": "Value error, configurations[0].aspects[0] must exactly materialize an aspect from NatalChart.aspects"
+      }
+    ]
+  },
+  {
+    "kind": "cosmogram",
+    "configs": "empty",
+    "accepted": true,
+    "first": {
+      "from": "chiron",
+      "to": "uranus",
+      "type": "opposition",
+      "orb": 0.45438143185427293,
+      "category": "exact"
+    }
+  }
+]

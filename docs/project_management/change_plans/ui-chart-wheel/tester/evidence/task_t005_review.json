@@ -1,0 +1,240 @@
+{
+  "task_id": "TASK-T-005",
+  "author": "Codex / Tester",
+  "date": "2026-10-17",
+  "verdict": "CHANGES_REQUIRED_BEFORE_EXPERIMENT",
+  "review_type": "DOCUMENTARY_PRESTART",
+  "estimate_hours": [
+    2,
+    3
+  ],
+  "confidence": "MEDIUM",
+  "target_response_workdays": 1,
+  "target_feasible_confirmed_before_start": true,
+  "start_msk": "2026-10-17 21:25:11",
+  "start_utc": "2026-10-17 18:25:11 UTC",
+  "result": "TASK_T005_INPUT_AUDIT_OK",
+  "pins": {
+    "assignment": "50cb4cc46f76bd1430b8dfc552c1e14ed32bf65d",
+    "review_input": "49b9d7ce58be8171ee0159643f9f085afe090972",
+    "developer_plan": "11a703ed6a01eb368f0f0ba23dc23f1e90fac81f",
+    "previous_tester_review": "c59cc3f68e7769841134801dc125633decade032",
+    "analyst_v3": "2634b224894b1046113557bfe241f0a5f2d46f8c"
+  },
+  "history": {
+    "developer_manifest_at_recorded_sha": "9/9",
+    "analyst_manifest_at_recorded_sha": "9/9"
+  },
+  "tester_t003_source_hashes_at_recorded_shas": 42,
+  "tester_t003_outputs_at_c59": "MATCH",
+  "developer_preparation_outputs_at_11a": "3/3 MATCH",
+  "historical_audit_not_rebased_to_head": true,
+  "historical_developer_check_not_executed_on_new_head": true,
+  "shared_unchanged": [
+    "AGENTS.md",
+    "src",
+    "tests",
+    "docs/requirements",
+    "docs/sequence_diagrams",
+    "docs/development_approach",
+    "pyproject.toml"
+  ],
+  "previous_index_prefix_sha256_lf": "2877de8f6b1143b96582656c4ce4185cf60b891fae9e4dd6870dd6778c9da6b4",
+  "sources": [
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/manager_artifact.md",
+      "sha": "50cb4cc46f76bd1430b8dfc552c1e14ed32bf65d",
+      "sha256_lf": "11248e9bf13402018e12b4593127e0a7692a5fdd94bbb4939d0e658a82d8aecb",
+      "lines": 638
+    },
+    {
+      "path": "AGENTS.md",
+      "sha": "50cb4cc46f76bd1430b8dfc552c1e14ed32bf65d",
+      "sha256_lf": "e5737a9b86f96483e7bad691bbfb3e179b00763bcbc62077141b4618d1c37b95",
+      "lines": 89
+    },
+    {
+      "path": "docs/development_approach/skills/tester/SKILL.md",
+      "sha": "50cb4cc46f76bd1430b8dfc552c1e14ed32bf65d",
+      "sha256_lf": "0bd3c2c436fce234cc90a1011b3d61db205d9db7eb90766b5f9eb577eb3725dc",
+      "lines": 127
+    },
+    {
+      "path": "docs/development_approach/process/process.md",
+      "sha": "50cb4cc46f76bd1430b8dfc552c1e14ed32bf65d",
+      "sha256_lf": "02893a5d14d6e72d4af906155992a7829477902af823146b6f22eac8b1b354ab",
+      "lines": 517
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/task_d003_implementation_plan.md",
+      "sha": "11a703ed6a01eb368f0f0ba23dc23f1e90fac81f",
+      "sha256_lf": "9e2fcab32e0664090fcda25a932e4b83ea1e90b3d06d154fbc0d860247ab7043",
+      "lines": 114
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_preparation.json",
+      "sha": "11a703ed6a01eb368f0f0ba23dc23f1e90fac81f",
+      "sha256_lf": "2b39cdc492cae961ea13b42080eefa03966af11be8032a69b6173d549df7e6d9",
+      "lines": 99
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_preparation_check.py",
+      "sha": "11a703ed6a01eb368f0f0ba23dc23f1e90fac81f",
+      "sha256_lf": "a5e5d7ff58158c3d73354ad4dc356c6433326f3c556968f278b3ad9e50332985",
+      "lines": 150
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/tester_artifact.md",
+      "sha": "c59cc3f68e7769841134801dc125633decade032",
+      "sha256_lf": "2877de8f6b1143b96582656c4ce4185cf60b891fae9e4dd6870dd6778c9da6b4",
+      "lines": 148
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/tester/task_t003_review.md",
+      "sha": "c59cc3f68e7769841134801dc125633decade032",
+      "sha256_lf": "38b1876314d3904de7814d7915fc8b65a33141a40d54bfc9076e64a6eea013f1",
+      "lines": 122
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/tester/evidence/task_t003_review.json",
+      "sha": "c59cc3f68e7769841134801dc125633decade032",
+      "sha256_lf": "bebaa3856b5400624f4eb29d0b48ff3f7c37990657fde74dbf1dcf8420234303",
+      "lines": 333
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/tester/defects.md",
+      "sha": "c59cc3f68e7769841134801dc125633decade032",
+      "sha256_lf": "32d3fa0d5fff8506ca0f6460a196874404552fba90ce2c626974d57c63a87767",
+      "lines": 112
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/analyst/requirements.md",
+      "sha": "2634b224894b1046113557bfe241f0a5f2d46f8c",
+      "sha256_lf": "3cfd3dadba7213465ffbec8da866cefd496905792ec971671bf920b4c2ddd684",
+      "lines": 291
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/analyst/scenarios.md",
+      "sha": "2634b224894b1046113557bfe241f0a5f2d46f8c",
+      "sha256_lf": "b3a7942f9feb76877f43f95f04a33ba44a7931620a5da6226f38991bb797dccd",
+      "lines": 433
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/analyst/sequence_diagrams/ui/001-chart-presentation.puml",
+      "sha": "2634b224894b1046113557bfe241f0a5f2d46f8c",
+      "sha256_lf": "a2062567689495f8a9a4b16bcb9616e7b8ef3d12a7421a44135a721bd25d7116",
+      "lines": 102
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/analyst/sequence_diagrams/ui/002-wheel-table-selection.puml",
+      "sha": "2634b224894b1046113557bfe241f0a5f2d46f8c",
+      "sha256_lf": "af1fb9396708bd728a336edcbe4e37ad6db04fdeba03d12f50483e90e0a915c5",
+      "lines": 86
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/analyst/sequence_diagrams/ui/003-edit-and-recovery.puml",
+      "sha": "2634b224894b1046113557bfe241f0a5f2d46f8c",
+      "sha256_lf": "a7bee13c5502ddde382630affe76c0cfb3ba3c81f9b3c622e40f27f1fbfac610",
+      "lines": 103
+    }
+  ],
+  "owner_research_parameters_preserved": {
+    "anchor_error_css_px_max": 0.5,
+    "gap_css_px_min": 2,
+    "local_probe_css_px": 1,
+    "glyph_size_css_px": 16,
+    "r_category_size_css_px": 12,
+    "zoom_percent": 100,
+    "hit_target_css_px": [
+      44,
+      44
+    ],
+    "viewports_css_px": [
+      1440,
+      768,
+      360
+    ],
+    "experiment_hours_max": 6
+  },
+  "remarks": [
+    {
+      "id": "T005-R01",
+      "owner": "Developer; Analyst for semantics",
+      "dp": [
+        "DP-O-011",
+        "DP-O-012",
+        "DP-O-013"
+      ],
+      "topic": "Geometry / coordinate / gap / admissible region / clipping contract",
+      "blocks": "positive prestart conclusion"
+    },
+    {
+      "id": "T005-R02",
+      "owner": "Developer; Analyst TASK-A-003 for local meaning",
+      "dp": [
+        "DP-O-011"
+      ],
+      "topic": "Admissible 1 CSS px probe / calibrated local-minimality controls",
+      "blocks": "positive prestart conclusion"
+    },
+    {
+      "id": "T005-R03",
+      "owner": "Developer; Analyst if semantic change",
+      "dp": [
+        "DP-O-011",
+        "DP-O-012"
+      ],
+      "topic": "Named metric for 16/12 CSS px and font/glyph bounds",
+      "blocks": "positive prestart conclusion"
+    },
+    {
+      "id": "T005-N01",
+      "owner": "Developer; Tester TASK-T-004",
+      "dp": [
+        "DP-O-013"
+      ],
+      "topic": "Effective native hit target vs bbox / overlay control",
+      "blocks": "evidence sufficiency for future hit verdict"
+    }
+  ],
+  "allowed_output_paths": [
+    "docs/project_management/change_plans/ui-chart-wheel/tester_artifact.md",
+    "docs/project_management/change_plans/ui-chart-wheel/tester/task_t005_review.md",
+    "docs/project_management/change_plans/ui-chart-wheel/tester/evidence/task_t005_review.json"
+  ],
+  "output_sha256_lf": {
+    "docs/project_management/change_plans/ui-chart-wheel/tester_artifact.md": "9a322cd321d0d6a47f3baf64f5d1d1bd5e79bbbd9dbccfc09c18c7fe8707f7db",
+    "docs/project_management/change_plans/ui-chart-wheel/tester/task_t005_review.md": "358eeeacb355c953fc9cae3f86f23911baa28d6c67fcda032d8aa7e5bc3a4186"
+  },
+  "document_validation": {
+    "result": "TASK_T005_REVIEW_DOC_OK",
+    "source_files": 16,
+    "protected_previous_tester_files": 10,
+    "previous_index_prefix": "UNCHANGED",
+    "manager": "UNCHANGED",
+    "historical_audits": "CHECKED_AT_RECORDED_SHAS",
+    "changed_paths": 3,
+    "index": "EMPTY",
+    "stash": "PRESERVED_BY_SEPARATE_GIT_CHECK",
+    "local_links": 24,
+    "tables": 6,
+    "runtime": "NOT_RUN",
+    "status": "PASS_DOCUMENTARY_ONLY"
+  },
+  "runtime_tests": "NOT_RUN",
+  "svg_experiment": "NOT_RUN",
+  "analytic_counterexamples_executed": false,
+  "task_t004_performed": false,
+  "publication": {
+    "authorization": "Owner separately requested commit and push to test/ui-chart-wheel",
+    "pre_authorization_snapshot": {
+      "commit": "NOT_CREATED",
+      "push": "NOT_RUN"
+    },
+    "pr": "NOT_CREATED",
+    "output_source_sha_resolver": "git log --reverse --format=%H -G '^### Публикация review TASK-T-005$' -- docs/project_management/change_plans/ui-chart-wheel/tester_artifact.md (first line)",
+    "push_verification": "Compare local HEAD with git ls-remote --heads origin refs/heads/test/ui-chart-wheel after push; report exact SHA to Owner"
+  },
+  "manager_worktree_accessed": false,
+  "messages_to_other_chats_sent": false
+}

@@ -1,0 +1,89 @@
+{
+  "width": 1440,
+  "checks": [
+    {
+      "id": "initial-editor-collapsed",
+      "actual": true,
+      "expected": true,
+      "pass": true
+    },
+    {
+      "id": "manual-gate-unchecked",
+      "actual": false,
+      "expected": false,
+      "pass": true
+    },
+    {
+      "id": "pointer-44-native-hit",
+      "actual": false,
+      "expected": true,
+      "pass": false
+    }
+  ],
+  "requests": [
+    {
+      "method": "bootstrap"
+    },
+    {
+      "method": "current",
+      "identity": "eo:calc:v2:471780444330e2d9108e7ae97652bb4a47d3142ffc14cb238a587a6002df8eee"
+    }
+  ],
+  "errors": [],
+  "pointerHit": {
+    "width": 66.0625,
+    "height": 44,
+    "coords": [
+      {
+        "x": 256.04125,
+        "y": 478.35375,
+        "hit": true
+      },
+      {
+        "x": 256.04125,
+        "y": 500.34375,
+        "hit": true
+      },
+      {
+        "x": 256.04125,
+        "y": 522.33375,
+        "hit": false
+      },
+      {
+        "x": 278.03125,
+        "y": 478.35375,
+        "hit": true
+      },
+      {
+        "x": 278.03125,
+        "y": 500.34375,
+        "hit": true
+      },
+      {
+        "x": 278.03125,
+        "y": 522.33375,
+        "hit": false
+      },
+      {
+        "x": 300.02125,
+        "y": 478.35375,
+        "hit": true
+      },
+      {
+        "x": 300.02125,
+        "y": 500.34375,
+        "hit": true
+      },
+      {
+        "x": 300.02125,
+        "y": 522.33375,
+        "hit": false
+      }
+    ],
+    "occluded": true,
+    "x": 278.03125,
+    "y": 500.34375
+  },
+  "pass": false,
+  "error": "AssertionError [ERR_ASSERTION]: pointer-44-native-hit\n\nfalse !== true\n"
+}

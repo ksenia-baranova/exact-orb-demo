@@ -1,0 +1,42 @@
+{
+  "author": "Codex / Developer",
+  "preserved": 1456,
+  "append_only": 2,
+  "index_raw_unchanged": true,
+  "index_empty": true,
+  "head": "07bb56ba5d49ec76de64df41ad80d175fbe90a2d",
+  "markdown_files": 7,
+  "local_links": 162,
+  "tables": 10,
+  "puml_structures": 2,
+  "puml_render": "NOT_RUN",
+  "node_syntax": [
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/column_full_composition_v1/boundary.mjs",
+      "exit": 0
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/column_full_composition_v1/composition.mjs",
+      "exit": 0
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/column_full_composition_v1/boundary_only.cjs",
+      "exit": 0
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/column_full_composition_v1/browser.cjs",
+      "exit": 0
+    }
+  ],
+  "final_static": 29,
+  "final_aux_outcomes": 29,
+  "native_calibration": 13,
+  "analytic_calibration": 7,
+  "renderer_controls": 28,
+  "post_audit_cells": 29,
+  "baseline_node_tests": "188 PASS /0 FAIL; six existing UI files; command in plan",
+  "full_pytest": "NOT_RUN",
+  "production_browser_https": "NOT_RUN",
+  "publication": "NOT_RUN",
+  "errors": []
+}

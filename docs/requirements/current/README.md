@@ -11,3 +11,11 @@
 Наличие этой папки само по себе не означает переноса ранее созданных требований.
 
 Подготовка новой чистовой редакции выполняется в change после финальных approvals и решения Owner, до финального merge. Tester отдельно сверяет перенос; общий main-baseline изменяется только после интеграции. DELTA и исходные findings остаются в папке change как история.
+
+
+## UI
+
+- [Форма рождения и факты карты](ui/birth-form-and-facts.md): REQ-UI-01…11, исходный M1-7 + применённая M1-8 дельта.
+- [Колесо карты](ui/chart-wheel.md): REQ-WHEEL-01…11, passive SVG / HTML selection / internal house rows.
+- [Сценарии](ui/scenarios.md): AS-UI-01…23 и AS-WHEEL-01…30.
+- [Поведенческие и технические sequences](../../sequence_diagrams/ui/README.md); исторические варианты не входят в текущий контракт.

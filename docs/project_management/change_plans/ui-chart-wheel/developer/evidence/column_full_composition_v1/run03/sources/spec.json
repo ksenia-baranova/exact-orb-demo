@@ -1,0 +1,48 @@
+{
+  "author": "Codex / Developer",
+  "authorization": "Owner: Проработай правила выносной колонки, проверь полную композицию и границу renderer. Подготовь план и оценку реализации всего колеса.",
+  "started_utc": "2026-10-19T16:12:00.698852+00:00",
+  "scope": "new bounded preparation; no new Manager TaskId; not runtime implementation STARTED or G3",
+  "InputSHA": "07bb56ba5d49ec76de64df41ad80d175fbe90a2d",
+  "AssignmentSHA": "direct Owner message in current Developer chat",
+  "published_change": "07bb56ba5d49ec76de64df41ad80d175fbe90a2d",
+  "AnalystContractSHA": "2736e2848c977ec4c770a9a4dec2a0d7c1b62a71",
+  "owner_delta": "table-only + passive SVG; conditional external column; no exact/working words beside conjunction symbols",
+  "timebox": "90 minutes for new placement/browser iterations; stop on sufficient evidence or deadline; post-audit/docs allowed after stop",
+  "deadline_utc": "2026-10-19T17:42:00.698852+00:00",
+  "widths": [
+    720,
+    448,
+    328
+  ],
+  "viewports": [
+    1440,
+    768,
+    360
+  ],
+  "fixtures": [
+    "sparse",
+    "F1",
+    "F3",
+    "F3-max",
+    "published-natal",
+    "cosmogram",
+    "multigroup-control"
+  ],
+  "thresholds": {
+    "gap_css": 2,
+    "anchor_error_css": 0.5,
+    "point_sign_marker_em_css": 16,
+    "aux_em_css": 12,
+    "return_step_css": 1,
+    "html_target_css": 44
+  },
+  "geometry": "SVG 1 unit = 1 CSS px; translated union of measured getBBox components + .75 selected contour; Euclidean AABB distance >=2, equality allowed. Paint/clip audit independently uses actual CSS boxes.",
+  "column": "One left column, measured name width; 12 px gutter; wheel is remaining width. Final geometry recomputes default conflict graph; only incident point vertices move. Full cyclic order cut at largest empty gap, canonical ID tie break. Row positions are least-squares isotonic projection in fixed order, separated by max selected component heights + 2. Height expands, fonts never shrink.",
+  "aux": "Only initially conflicting angle/conjunction labels move; other labels frozen. Joint finite candidates on 4 CSS px lattice inside zodiac. MRV + forward checking bounded 100000 nodes; local 1 CSS px directional compactness independent witness, not global optimum.",
+  "leaders": "One continuous owner-tagged path per moved label from true anchor to label edge; avoid foreign label bounds. Crossings allowed only with white bridge underlay; no shared branch or selection target. Report route failures, never hide labels.",
+  "renderer": "Per-revision isolated connected measurement root; live host private to controller. Validate passive SVG, deep clone, recheck token immediately before synchronous install. Revoke -> remove A -> HTML B -> guarded dispose -> guarded draw. Same-origin contract, not malicious JS sandbox.",
+  "stop": "fixed matrix + controls adequate for recommendation or concrete counterexamples; no production/dependencies/API/golden changes",
+  "index_sha256": "c941c5ca591403e0ebd5640421d1244b738dbcb14b64e8ad97b3f1931e1764da",
+  "preserved_payload_count": 1458
+}

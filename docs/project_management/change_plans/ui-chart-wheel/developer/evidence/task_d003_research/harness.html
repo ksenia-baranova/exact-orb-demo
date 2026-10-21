@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="ru"><meta charset="utf-8"><title>TASK-D-003 isolated research</title>
+<style>
+*{box-sizing:border-box}body{margin:16px;color:#17263c;background:#fafbfd;font:14px 'Segoe UI',sans-serif}h1{font-size:18px;margin:0 0 8px}p{margin:6px 0}button,input{min-height:44px;min-width:44px;font:inherit}button:focus-visible,input:focus-visible{outline:2px solid #111;outline-offset:2px}#wheel{display:block;background:white;overflow:hidden}#mount{width:fit-content;max-width:100%}svg text{font-family:'Segoe UI Symbol','Segoe UI',sans-serif;pointer-events:none}svg .hit{fill:transparent;pointer-events:all}svg g[role=button]{cursor:pointer;outline:none}.focus{display:none;fill:none;stroke:#111;stroke-width:2;pointer-events:none}g:focus>.focus{display:block}.selected>.glyph{stroke:#162b70;stroke-width:1.5;paint-order:stroke fill}.rows{display:flex;flex-wrap:wrap;gap:4px;max-width:720px}.rows button{font-size:12px}#message{color:#a01927}#summary{overflow-wrap:anywhere}
+</style>
+<h1>TASK-D-003 — isolated SVG / lifecycle hypotheses</h1>
+<p>Контролируемые UI fixtures; production API и вычислитель не вызываются.</p>
+<div id="editor"><label>Черновик <input id="draft" value="10:30"></label></div>
+<button id="edit">Изменить данные</button><button id="recover">Повторить проверку карты</button>
+<p id="summary"></p><p id="message" role="status"></p><div id="mount"></div>
+<section><h2>Положения: HTML из принятого DTO</h2><div id="points" class="rows"></div></section>
+<section><h2>Аспекты</h2><div id="aspects" class="rows"></div><button id="reveal">Показать все</button></section>
+<section><h2>Дома / углы</h2><div id="houses"></div><button id="reveal-houses">Показать все дома</button></section>
+<script type="module" src="./harness.mjs"></script>
+</html>

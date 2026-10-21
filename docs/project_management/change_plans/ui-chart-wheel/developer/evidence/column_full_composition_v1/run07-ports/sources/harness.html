@@ -1,0 +1,19 @@
+<!doctype html><html lang="ru"><meta charset="utf-8"><title>Полная композиция — исследование колонки</title>
+<style>*{box-sizing:border-box}body{margin:0;padding:16px;background:#edf2f6;color:#183e55;font:14px/1.5 'Segoe UI',sans-serif}main{width:var(--w);background:white;border-radius:12px;padding:0;overflow:hidden}header{padding:12px 16px}h1{font-size:17px;margin:0}.legend{display:flex;flex-wrap:wrap;gap:6px 14px;padding:12px 16px;border-top:1px solid #e3eaf0;font-size:12px}.legend span{white-space:nowrap}#measurement{position:absolute;left:-10000px;top:0;visibility:hidden}</style>
+<main><header><h1>Карта · полная композиция</h1><div id="subtitle"></div></header><div id="mount"></div><div class="legend"><span style="color:#385f8a">☌ Соединение</span><span style="color:#9a6a32">Полусекстиль</span><span style="color:#277566">Секстиль</span><span style="color:#ad3e42">Квадрат</span><span style="color:#386bb0">Трин</span><span style="color:#566e36">Квинконс</span><span style="color:#944e82">Оппозиция</span><span>Сплошная / пунктирная линия — категория аспекта</span><span>R — ретроградная</span><span>Управление — в таблицах</span></div></main><div id="measurement"></div>
+<script type="module">
+import {compose} from './composition.mjs';
+const q=new URLSearchParams(location.search),data=await fetch('./data.json').then(r=>r.json()),fixture=q.get('fixture')||'F3-max',width=+(q.get('width')||328),font=q.get('font')==='fallback'?'sans-serif':undefined,mode=q.get('mode')||'none';
+document.querySelector('main').style.setProperty('--w',width+'px');document.getElementById('subtitle').textContent=fixture+' · '+width+' CSS px';
+await document.fonts.ready;
+let selection=null;const ch=data[fixture].chart;
+const key=a=>[...([a.from,a.to].sort()),a.type].join('|');
+if(mode==='point')selection={kind:'point',id:ch.points[0].id};
+if(['aspect','conjunction','background'].includes(mode)){const a=ch.aspects.find(a=>mode==='conjunction'?a.type==='conjunction'&&a.category!=='background':mode==='background'?a.category==='background':a.type!=='conjunction'&&a.category!=='background');if(a)selection={kind:'aspect',key:key(a)}}
+const inputBefore=JSON.stringify(data[fixture].chart);window.result=await compose(document.getElementById('mount'),data[fixture],{width,font,selection});window.ready=true;
+window.readActual=()=>{
+ const s=result.svg,origin=s.getBoundingClientRect(),texts=[...s.querySelectorAll('[data-component]')].map(e=>{const b=e.getBBox(),r=e.getBoundingClientRect();return {key:e.dataset.component,owner:e.closest('[data-label]').dataset.label,text:e.textContent,size:parseFloat(getComputedStyle(e).fontSize),font:getComputedStyle(e).fontFamily,bbox:[b.x,b.y,b.x+b.width,b.y+b.height],css:[r.x-origin.x,r.y-origin.y,r.right-origin.x,r.bottom-origin.y],matrix:[e.getScreenCTM().a,e.getScreenCTM().d]}});
+ const anchors=[...s.querySelectorAll('[data-anchor]')].map(e=>({key:e.dataset.anchor,cx:e.cx.baseVal.value,cy:e.cy.baseVal.value}));
+ return {state:result.state,texts,anchors,houseCount:s.querySelectorAll('[data-house]').length,signCount:s.querySelectorAll('[data-sector]').length,pointCount:s.querySelectorAll('[data-kind=point]').length,angleCount:s.querySelectorAll('[data-kind=angle]').length,markerCount:s.querySelectorAll('[data-kind=marker]').length,svgTargets:s.querySelectorAll('[tabindex],[role=button],a,foreignObject,script').length,sourceUnchanged:result.state.sourceUnchanged&&inputBefore===JSON.stringify(data[fixture].chart),overflow:document.documentElement.scrollWidth>innerWidth,legend:document.querySelector('.legend').innerText,selected:[...s.querySelectorAll('[data-selected]')].map(e=>e.dataset.selected),aspectLines:[...s.querySelectorAll('[data-aspect]')].map(e=>({key:e.dataset.aspect,color:e.getAttribute('stroke'),dash:e.getAttribute('stroke-dasharray'),width:e.getAttribute('stroke-width')}))};
+};
+</script></html>

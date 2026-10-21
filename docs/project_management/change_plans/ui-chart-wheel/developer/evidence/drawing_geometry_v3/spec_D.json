@@ -1,0 +1,9 @@
+{
+  "variant": "D",
+  "recorded_utc": "2026-10-19T10:53:44.144352+00:00",
+  "seed": "choose only independently geometry-verified A/B/C seeds; minimize maximum displacement, then sum; deterministic fixture-independent rule",
+  "reason": "beam and CSP are complementary; independent verification prevents publishing a failed search seed",
+  "return_sweeps": 24,
+  "stop": "no changes or cap24 or parent90min; every residual positive prefix remains failure",
+  "unchanged": "spec.json thresholds/radii/annuli/clip/C0/passive SVG; no new dependencies or production; no claim of global optimum"
+}

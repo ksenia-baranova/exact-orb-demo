@@ -1,0 +1,9 @@
+{
+  "candidate": "boundary-v4 only; composition unchanged from run03",
+  "registered_utc": "2026-10-19T17:08:56.083340+00:00",
+  "cause": "run03 real SVG positive rejected: CSSOM expands overflow shorthand to overflow-x/overflow-y; validator had omitted these equivalent hidden properties. Fix allowlist for hidden overflow only; positioning styles remain forbidden.",
+  "changes": [
+    "Allow CSSOM hidden overflow-x/overflow-y. Add successful current font callback after settlement as independent positive control, retain failure/debug trace. No geometry rerun or threshold change."
+  ],
+  "prior": "run03 boundary error and all 29 SVG records unchanged"
+}

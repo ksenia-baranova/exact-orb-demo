@@ -1,0 +1,180 @@
+{
+  "tested_sha": "0da99518ada67603b08ab4220d337e3a5e3aae60",
+  "branch": "test/ui-chart-wheel",
+  "author": "Codex / Tester",
+  "started_utc": "2026-10-20T16:34:13.738682+00:00",
+  "python": "3.14.0 (tags/v3.14.0:ebf955d, Oct  7 2025, 10:15:03) [MSC v.1944 64 bit (AMD64)]",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "source_sha256_lf": {
+    "src/exact_orb/http_api/ui/chart_state.mjs": "4b01e6623624b3027d1b45c07f8185afded2558eca5e2e352d22c183a172e63d",
+    "src/exact_orb/http_api/ui/facts.mjs": "6bc4d4d832f4fada7917480895f801143f96bc7c24cb2e10aeef9d3cffe46ef4",
+    "src/exact_orb/http_api/ui/form.mjs": "4f44f1289e8aa46e463e4d517161df474ea4c94b008f0616b9e01bd65b590ebd",
+    "src/exact_orb/http_api/ui/index.html": "87d9d939ed69089167055b44ba65e53107dd1ade88c7a81041304985a98bf532",
+    "src/exact_orb/http_api/ui/main.mjs": "c84bd563ee044187be2e750e293ac8f09d6b240d5e67ab14bcca050b5829c173",
+    "src/exact_orb/http_api/ui/places.mjs": "857593b5b335c4612823dc1d4b58e5dca628671cd3ff51e371ac8641bb820bfb",
+    "src/exact_orb/http_api/ui/recovery.mjs": "405eae1bb36ee3387337fa1d34d5af48d7385bbfbc295ea5a9ae391d48d07414",
+    "src/exact_orb/http_api/ui/response.mjs": "045770e93485c9f8111c6bd03bf9ce9a16e19d05f5e9624931ae63f84bfcbb8d",
+    "src/exact_orb/http_api/ui/result_controller.mjs": "8b2193feaa39664b27d251e44d7f1746b37e18c4b32aa8546dbddca97b21d905",
+    "src/exact_orb/http_api/ui/session.mjs": "cff830d2f6e490290696cd2846cabd53d17b1f49a8b624c6765bf289cc162088",
+    "src/exact_orb/http_api/ui/styles.css": "24058567d56cef73806d58aa1fb8d9b7d11779851337de9b6a54fee613d73cf3",
+    "src/exact_orb/http_api/ui/transport.mjs": "18b46104d161eb6ca3c094c507e2011bbba3aec91ad62622c38cae234693dc60",
+    "src/exact_orb/http_api/ui/wheel_layout.mjs": "e47e7878b2781dde5e76c4ff4bc7e7d8c6f9e144e29d855789b3969ac57248c8",
+    "src/exact_orb/http_api/ui/wheel_svg.mjs": "39619b4750f9934f71177f3dade18f358d0e5ef2c5ac6cd728658efa29c7cf3d"
+  },
+  "commands": [
+    {
+      "name": "node_target",
+      "argv": [
+        "C:/Users/KateUser/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node.exe",
+        "--test",
+        "--test-reporter=tap",
+        "tests/ui/accepted_chart.test.mjs",
+        "tests/ui/aspect_view.test.mjs",
+        "tests/ui/chart_selection.test.mjs",
+        "tests/ui/owner_feedback.test.mjs",
+        "tests/ui/wheel_layout.test.mjs"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.2512515999842435,
+      "finished_utc": "2026-10-20T16:34:14.175581+00:00",
+      "log": "node_target.log",
+      "log_sha256": "627690e8236abde4ff210e40a3d0bf30d6c1c480c89799701ea42cd3f5be0e9e",
+      "tail": [
+        "  duration_ms: 18.8209",
+        "  type: 'test'",
+        "  ...",
+        "1..39",
+        "# tests 39",
+        "# suites 0",
+        "# pass 39",
+        "# fail 0",
+        "# cancelled 0",
+        "# skipped 0",
+        "# todo 0",
+        "# duration_ms 197.6918"
+      ]
+    },
+    {
+      "name": "python_target",
+      "argv": [
+        "C:\\Users\\KateUser\\AppData\\Local\\Programs\\Python\\Python314\\python.exe",
+        "-B",
+        "-m",
+        "pytest",
+        "-p",
+        "no:cacheprovider",
+        "tests/http_api/test_ui_delivery.py",
+        "tests/test_module_boundaries.py",
+        "-q"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 18.88640169997234,
+      "finished_utc": "2026-10-20T16:34:33.062825+00:00",
+      "log": "python_target.log",
+      "log_sha256": "7006e5a862c39ec385624bd7891cd5f9f59d551fb876d6d88dcedea357e8d7dd",
+      "tail": [
+        ".....................................................                    [100%]",
+        "53 passed in 15.85s"
+      ]
+    },
+    {
+      "name": "node_all_ui",
+      "argv": [
+        "C:/Users/KateUser/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node.exe",
+        "--test",
+        "--test-reporter=tap",
+        "tests/ui/accepted_chart.test.mjs",
+        "tests/ui/aspect_view.test.mjs",
+        "tests/ui/chart_selection.test.mjs",
+        "tests/ui/facts.test.mjs",
+        "tests/ui/form.test.mjs",
+        "tests/ui/owner_feedback.test.mjs",
+        "tests/ui/places.test.mjs",
+        "tests/ui/recovery.test.mjs",
+        "tests/ui/session.test.mjs",
+        "tests/ui/transport.test.mjs",
+        "tests/ui/wheel_layout.test.mjs"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.5410894999513403,
+      "finished_utc": "2026-10-20T16:34:33.604369+00:00",
+      "log": "node_all_ui.log",
+      "log_sha256": "4c328107163f2462343493a65d603ba6df84b7241d981e0d9ced14731231f83d",
+      "tail": [
+        "  duration_ms: 25.4",
+        "  type: 'test'",
+        "  ...",
+        "1..227",
+        "# tests 227",
+        "# suites 0",
+        "# pass 227",
+        "# fail 0",
+        "# cancelled 0",
+        "# skipped 0",
+        "# todo 0",
+        "# duration_ms 487.6429"
+      ]
+    },
+    {
+      "name": "python_http_api",
+      "argv": [
+        "C:\\Users\\KateUser\\AppData\\Local\\Programs\\Python\\Python314\\python.exe",
+        "-B",
+        "-m",
+        "pytest",
+        "-p",
+        "no:cacheprovider",
+        "tests/http_api",
+        "-q"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 29.60382719989866,
+      "finished_utc": "2026-10-20T16:35:03.208754+00:00",
+      "log": "python_http_api.log",
+      "log_sha256": "62775ae4308a2e04709f7a4520332e4bde9e0fe13ae68c42dbf5251767c80b3d",
+      "tail": [
+        "........................................................................ [ 24%]",
+        "........................................................................ [ 48%]",
+        "........................................................................ [ 72%]",
+        "........................................................................ [ 96%]",
+        "............                                                             [100%]",
+        "300 passed in 28.53s"
+      ]
+    },
+    {
+      "name": "python_full",
+      "argv": [
+        "C:\\Users\\KateUser\\AppData\\Local\\Programs\\Python\\Python314\\python.exe",
+        "-B",
+        "-m",
+        "pytest",
+        "-p",
+        "no:cacheprovider",
+        "-q"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 138.75798599992413,
+      "finished_utc": "2026-10-20T16:37:21.967163+00:00",
+      "log": "python_full.log",
+      "log_sha256": "024141273fd2fb04bc3fa835cdd8efdb01f26c91e956cf49cd02754af9171f0f",
+      "tail": [
+        "........................................................................ [ 82%]",
+        "............................................................s........... [ 85%]",
+        "........................................................................ [ 87%]",
+        "........................................................................ [ 90%]",
+        "........................................................................ [ 92%]",
+        "........................................................................ [ 94%]",
+        "........................................................................ [ 97%]",
+        "........................................................................ [ 99%]",
+        "........                                                                 [100%]",
+        "=========================== short test summary info ===========================",
+        "SKIPPED [1] tests\\test_configurations.py:473: DEBT-CALC-001: �������� ������������ �������� �� ��������� ���������; ��������� ��������� ������ ���� �������� ����� ����, ��������� ����������� ��������� ����������.",
+        "2959 passed, 1 skipped in 137.37s (0:02:17)"
+      ]
+    }
+  ],
+  "scope": "Local regression suites; full pytest does not imply whole functional coverage",
+  "finished_utc": "2026-10-20T16:37:21.967670+00:00",
+  "head_after": "0da99518ada67603b08ab4220d337e3a5e3aae60",
+  "production_delta_after": ""
+}

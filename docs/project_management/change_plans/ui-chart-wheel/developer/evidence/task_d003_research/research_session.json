@@ -1,0 +1,14 @@
+{
+  "task": "TASK-D-003",
+  "started_utc": "2026-10-18T12:17:04+00:00",
+  "package_prepared_utc": "2026-10-18T14:13:54.287000+00:00",
+  "current_session_elapsed_hours": 1.9473019444444446,
+  "meaning": "elapsed current research/documentation session including tool waits; not human timesheet or total historical effort",
+  "deadline": "end of working day 4 from T0; calendar unspecified",
+  "budget_hours": [
+    20,
+    28
+  ],
+  "previous_effort": "unknown; not subtracted",
+  "experiment_record": "experiment_stop.json"
+}

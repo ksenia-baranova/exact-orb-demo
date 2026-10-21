@@ -1,0 +1,1531 @@
+{
+  "width": 768,
+  "checks": [
+    {
+      "id": "initial-editor-collapsed",
+      "actual": true,
+      "expected": true,
+      "pass": true
+    },
+    {
+      "id": "manual-gate-unchecked",
+      "actual": false,
+      "expected": false,
+      "pass": true
+    },
+    {
+      "id": "pointer-44-native-hit",
+      "actual": true,
+      "expected": true,
+      "pass": true
+    },
+    {
+      "id": "coordinate-activation",
+      "actual": "true",
+      "expected": "true",
+      "pass": true
+    },
+    {
+      "id": "coordinate-no-HTTP",
+      "actual": 2,
+      "expected": 2,
+      "pass": true
+    },
+    {
+      "id": "background-no-line-or-conjunction",
+      "actual": 0,
+      "expected": 0,
+      "pass": true
+    },
+    {
+      "id": "background-two-endpoints",
+      "actual": true,
+      "expected": true,
+      "pass": true
+    },
+    {
+      "id": "background-layout-frozen",
+      "actual": [
+        [
+          "sign:0",
+          "translate(248.390625 17.03125)"
+        ],
+        [
+          "sign:1",
+          "translate(179.953125 44.53125)"
+        ],
+        [
+          "sign:2",
+          "translate(134.4375 102.578125)"
+        ],
+        [
+          "sign:3",
+          "translate(124.03125 175.609375)"
+        ],
+        [
+          "sign:4",
+          "translate(151.53125 244.046875)"
+        ],
+        [
+          "sign:5",
+          "translate(209.578125 289.5625)"
+        ],
+        [
+          "sign:6",
+          "translate(282.609375 299.96875)"
+        ],
+        [
+          "sign:7",
+          "translate(351.046875 272.46875)"
+        ],
+        [
+          "sign:8",
+          "translate(396.5625 214.421875)"
+        ],
+        [
+          "sign:9",
+          "translate(406.96875 141.390625)"
+        ],
+        [
+          "sign:10",
+          "translate(379.46875 72.953125)"
+        ],
+        [
+          "sign:11",
+          "translate(321.421875 27.4375)"
+        ],
+        [
+          "sun",
+          "translate(214.671875 251.078125)"
+        ],
+        [
+          "moon",
+          "translate(266.3125 52.890625)"
+        ],
+        [
+          "mercury",
+          "translate(23.845703125 126.25)"
+        ],
+        [
+          "venus",
+          "translate(171.8125 207.25)"
+        ],
+        [
+          "mars",
+          "translate(49.759765625 150.75)"
+        ],
+        [
+          "jupiter",
+          "translate(356.4375 104.765625)"
+        ],
+        [
+          "saturn",
+          "translate(42.431640625 248.75)"
+        ],
+        [
+          "uranus",
+          "translate(52.28125 297.75)"
+        ],
+        [
+          "neptune",
+          "translate(370.28125 171.796875)"
+        ],
+        [
+          "pluto",
+          "translate(41.11328125 175.25)"
+        ],
+        [
+          "chiron",
+          "translate(168.765625 116.109375)"
+        ],
+        [
+          "true_node",
+          "translate(19.4375 81.640625)"
+        ],
+        [
+          "south_node",
+          "translate(11.40625 199.75)"
+        ],
+        [
+          "mean_apog",
+          "translate(45.501953125 57.140625)"
+        ],
+        [
+          "selena",
+          "translate(29.015625 224.25)"
+        ],
+        [
+          "pars_fortune",
+          "translate(36.244140625 273.25)"
+        ],
+        [
+          "angle:asc",
+          "translate(191.34375 158.5)"
+        ],
+        [
+          "angle:mc",
+          "translate(313.640625 102.09375)"
+        ],
+        [
+          "angle:vertex",
+          "translate(314.765625 213.921875)"
+        ],
+        [
+          "angle:dsc",
+          "translate(339.65625 158.5)"
+        ],
+        [
+          "angle:ic",
+          "translate(217.359375 214.90625)"
+        ]
+      ],
+      "expected": [
+        [
+          "sign:0",
+          "translate(248.390625 17.03125)"
+        ],
+        [
+          "sign:1",
+          "translate(179.953125 44.53125)"
+        ],
+        [
+          "sign:2",
+          "translate(134.4375 102.578125)"
+        ],
+        [
+          "sign:3",
+          "translate(124.03125 175.609375)"
+        ],
+        [
+          "sign:4",
+          "translate(151.53125 244.046875)"
+        ],
+        [
+          "sign:5",
+          "translate(209.578125 289.5625)"
+        ],
+        [
+          "sign:6",
+          "translate(282.609375 299.96875)"
+        ],
+        [
+          "sign:7",
+          "translate(351.046875 272.46875)"
+        ],
+        [
+          "sign:8",
+          "translate(396.5625 214.421875)"
+        ],
+        [
+          "sign:9",
+          "translate(406.96875 141.390625)"
+        ],
+        [
+          "sign:10",
+          "translate(379.46875 72.953125)"
+        ],
+        [
+          "sign:11",
+          "translate(321.421875 27.4375)"
+        ],
+        [
+          "sun",
+          "translate(214.671875 251.078125)"
+        ],
+        [
+          "moon",
+          "translate(266.3125 52.890625)"
+        ],
+        [
+          "mercury",
+          "translate(23.845703125 126.25)"
+        ],
+        [
+          "venus",
+          "translate(171.8125 207.25)"
+        ],
+        [
+          "mars",
+          "translate(49.759765625 150.75)"
+        ],
+        [
+          "jupiter",
+          "translate(356.4375 104.765625)"
+        ],
+        [
+          "saturn",
+          "translate(42.431640625 248.75)"
+        ],
+        [
+          "uranus",
+          "translate(52.28125 297.75)"
+        ],
+        [
+          "neptune",
+          "translate(370.28125 171.796875)"
+        ],
+        [
+          "pluto",
+          "translate(41.11328125 175.25)"
+        ],
+        [
+          "chiron",
+          "translate(168.765625 116.109375)"
+        ],
+        [
+          "true_node",
+          "translate(19.4375 81.640625)"
+        ],
+        [
+          "south_node",
+          "translate(11.40625 199.75)"
+        ],
+        [
+          "mean_apog",
+          "translate(45.501953125 57.140625)"
+        ],
+        [
+          "selena",
+          "translate(29.015625 224.25)"
+        ],
+        [
+          "pars_fortune",
+          "translate(36.244140625 273.25)"
+        ],
+        [
+          "angle:asc",
+          "translate(191.34375 158.5)"
+        ],
+        [
+          "angle:mc",
+          "translate(313.640625 102.09375)"
+        ],
+        [
+          "angle:vertex",
+          "translate(314.765625 213.921875)"
+        ],
+        [
+          "angle:dsc",
+          "translate(339.65625 158.5)"
+        ],
+        [
+          "angle:ic",
+          "translate(217.359375 214.90625)"
+        ]
+      ],
+      "pass": true
+    },
+    {
+      "id": "POST-snapshot-B",
+      "actual": "1990-01-01",
+      "expected": "1990-01-01",
+      "pass": true
+    },
+    {
+      "id": "draft-C-open",
+      "actual": [
+        "2000-01-01",
+        false
+      ],
+      "expected": [
+        "2000-01-01",
+        false
+      ],
+      "pass": true
+    },
+    {
+      "id": "summary-B",
+      "actual": true,
+      "expected": true,
+      "pass": true
+    },
+    {
+      "id": "changed-B-reset",
+      "actual": [
+        "false",
+        5
+      ],
+      "expected": [
+        "false",
+        5
+      ],
+      "pass": true
+    },
+    {
+      "id": "stale-A-refused",
+      "actual": [
+        false,
+        false
+      ],
+      "expected": [
+        false,
+        false
+      ],
+      "pass": true
+    },
+    {
+      "id": "automatic-preserves",
+      "actual": [
+        "true",
+        12
+      ],
+      "expected": [
+        "true",
+        12
+      ],
+      "pass": true
+    },
+    {
+      "id": "automatic-keeps-C",
+      "actual": "2000-01-01",
+      "expected": "2000-01-01",
+      "pass": true
+    },
+    {
+      "id": "resize-keeps-selection",
+      "actual": "true",
+      "expected": "true",
+      "pass": true
+    },
+    {
+      "id": "leaf-fault-retains-new-HTML",
+      "actual": [
+        "current-C",
+        16,
+        0
+      ],
+      "expected": [
+        "current-C",
+        16,
+        0
+      ],
+      "pass": true
+    },
+    {
+      "id": "leaf-fault-local",
+      "actual": true,
+      "expected": true,
+      "pass": true
+    },
+    {
+      "id": "controller-fault-safe-read",
+      "actual": true,
+      "expected": true,
+      "pass": true
+    },
+    {
+      "id": "safe-read-positive",
+      "actual": true,
+      "expected": true,
+      "pass": true
+    },
+    {
+      "id": "S1-warning",
+      "actual": true,
+      "expected": true,
+      "pass": true
+    },
+    {
+      "id": "S1-live-focus",
+      "actual": true,
+      "expected": true,
+      "pass": true
+    },
+    {
+      "id": "S1-all-rows",
+      "actual": 47,
+      "expected": 47,
+      "pass": true
+    },
+    {
+      "id": "empty-removes-SVG",
+      "actual": 0,
+      "expected": 0,
+      "pass": true
+    },
+    {
+      "id": "empty-live-editor-focus",
+      "actual": true,
+      "expected": true,
+      "pass": true
+    },
+    {
+      "id": "one-explicit-POST",
+      "actual": 1,
+      "expected": 1,
+      "pass": true
+    },
+    {
+      "id": "no-page-errors",
+      "actual": [],
+      "expected": [],
+      "pass": true
+    },
+    {
+      "id": "already-B-reset-once",
+      "actual": [
+        "false",
+        5
+      ],
+      "expected": [
+        "false",
+        5
+      ],
+      "pass": true
+    },
+    {
+      "id": "already-B-collapse-iff-matched",
+      "actual": true,
+      "expected": true,
+      "pass": true
+    },
+    {
+      "id": "already-B-summary-from-GET",
+      "actual": true,
+      "expected": true,
+      "pass": true
+    },
+    {
+      "id": "already-B-automatic-no-second-reset",
+      "actual": [
+        "true",
+        12,
+        false
+      ],
+      "expected": [
+        "true",
+        12,
+        false
+      ],
+      "pass": true
+    },
+    {
+      "id": "already-C-reset-once",
+      "actual": [
+        "false",
+        5
+      ],
+      "expected": [
+        "false",
+        5
+      ],
+      "pass": true
+    },
+    {
+      "id": "already-C-collapse-iff-matched",
+      "actual": false,
+      "expected": false,
+      "pass": true
+    },
+    {
+      "id": "already-C-summary-from-GET",
+      "actual": true,
+      "expected": true,
+      "pass": true
+    },
+    {
+      "id": "already-C-automatic-no-second-reset",
+      "actual": [
+        "true",
+        12,
+        false
+      ],
+      "expected": [
+        "true",
+        12,
+        false
+      ],
+      "pass": true
+    },
+    {
+      "id": "exact-explicit-POST-count",
+      "actual": 3,
+      "expected": 3,
+      "pass": true
+    },
+    {
+      "id": "final-no-page-errors",
+      "actual": [],
+      "expected": [],
+      "pass": true
+    }
+  ],
+  "requests": [
+    {
+      "method": "bootstrap"
+    },
+    {
+      "method": "current",
+      "identity": "eo:calc:v2:471780444330e2d9108e7ae97652bb4a47d3142ffc14cb238a587a6002df8eee"
+    },
+    {
+      "method": "build",
+      "body": {
+        "birth_date": "1990-01-01",
+        "birth_time": "14:30",
+        "place_id": "524901"
+      }
+    },
+    {
+      "method": "bootstrap"
+    },
+    {
+      "method": "current",
+      "identity": "own-B"
+    },
+    {
+      "method": "bootstrap"
+    },
+    {
+      "method": "current",
+      "identity": "current-C"
+    },
+    {
+      "method": "bootstrap"
+    },
+    {
+      "method": "current",
+      "identity": "current-D"
+    },
+    {
+      "method": "bootstrap"
+    },
+    {
+      "method": "current",
+      "identity": "current-D"
+    },
+    {
+      "method": "bootstrap"
+    },
+    {
+      "method": "current",
+      "identity": "S1-current"
+    },
+    {
+      "method": "bootstrap"
+    },
+    {
+      "method": "current"
+    },
+    {
+      "method": "bootstrap"
+    },
+    {
+      "method": "current",
+      "identity": "eo:calc:v2:471780444330e2d9108e7ae97652bb4a47d3142ffc14cb238a587a6002df8eee"
+    },
+    {
+      "method": "build",
+      "body": {
+        "birth_date": "1990-01-01",
+        "birth_time": "14:30",
+        "place_id": "524901"
+      }
+    },
+    {
+      "method": "current",
+      "identity": "already-B-B"
+    },
+    {
+      "method": "bootstrap"
+    },
+    {
+      "method": "current",
+      "identity": "already-B-B"
+    },
+    {
+      "method": "bootstrap"
+    },
+    {
+      "method": "current",
+      "identity": "eo:calc:v2:471780444330e2d9108e7ae97652bb4a47d3142ffc14cb238a587a6002df8eee"
+    },
+    {
+      "method": "build",
+      "body": {
+        "birth_date": "1990-01-01",
+        "birth_time": "14:30",
+        "place_id": "524901"
+      }
+    },
+    {
+      "method": "current",
+      "identity": "already-B-C"
+    },
+    {
+      "method": "bootstrap"
+    },
+    {
+      "method": "current",
+      "identity": "already-B-C"
+    }
+  ],
+  "errors": [],
+  "pointerHit": {
+    "width": 66.0625,
+    "height": 44,
+    "coords": [
+      {
+        "x": 78.76,
+        "y": 477.635,
+        "hit": true,
+        "element": "<button class=\"fact-select\" type=\"button\" aria-pressed=\"false\" aria-label=\"Выбрать точку: Солнце\" data-point-id=\"sun\">Солнце</button>"
+      },
+      {
+        "x": 78.76,
+        "y": 499.625,
+        "hit": true,
+        "element": "<button class=\"fact-select\" type=\"button\" aria-pressed=\"false\" aria-label=\"Выбрать точку: Солнце\" data-point-id=\"sun\">Солнце</button>"
+      },
+      {
+        "x": 78.76,
+        "y": 521.615,
+        "hit": true,
+        "element": "<button class=\"fact-select\" type=\"button\" aria-pressed=\"false\" aria-label=\"Выбрать точку: Солнце\" data-point-id=\"sun\">Солнце</button>"
+      },
+      {
+        "x": 100.75,
+        "y": 477.635,
+        "hit": true,
+        "element": "<button class=\"fact-select\" type=\"button\" aria-pressed=\"false\" aria-label=\"Выбрать точку: Солнце\" data-point-id=\"sun\">Солнце</button>"
+      },
+      {
+        "x": 100.75,
+        "y": 499.625,
+        "hit": true,
+        "element": "<button class=\"fact-select\" type=\"button\" aria-pressed=\"false\" aria-label=\"Выбрать точку: Солнце\" data-point-id=\"sun\">Солнце</button>"
+      },
+      {
+        "x": 100.75,
+        "y": 521.615,
+        "hit": true,
+        "element": "<button class=\"fact-select\" type=\"button\" aria-pressed=\"false\" aria-label=\"Выбрать точку: Солнце\" data-point-id=\"sun\">Солнце</button>"
+      },
+      {
+        "x": 122.74,
+        "y": 477.635,
+        "hit": true,
+        "element": "<button class=\"fact-select\" type=\"button\" aria-pressed=\"false\" aria-label=\"Выбрать точку: Солнце\" data-point-id=\"sun\">Солнце</button>"
+      },
+      {
+        "x": 122.74,
+        "y": 499.625,
+        "hit": true,
+        "element": "<button class=\"fact-select\" type=\"button\" aria-pressed=\"false\" aria-label=\"Выбрать точку: Солнце\" data-point-id=\"sun\">Солнце</button>"
+      },
+      {
+        "x": 122.74,
+        "y": 521.615,
+        "hit": true,
+        "element": "<button class=\"fact-select\" type=\"button\" aria-pressed=\"false\" aria-label=\"Выбрать точку: Солнце\" data-point-id=\"sun\">Солнце</button>"
+      }
+    ],
+    "occluded": true,
+    "x": 100.75,
+    "y": 499.625,
+    "scan": [
+      [
+        -23,
+        false
+      ],
+      [
+        -22.75,
+        false
+      ],
+      [
+        -22.5,
+        true
+      ],
+      [
+        -22.25,
+        true
+      ],
+      [
+        -22,
+        true
+      ],
+      [
+        -21.75,
+        true
+      ],
+      [
+        -21.5,
+        true
+      ],
+      [
+        -21.25,
+        true
+      ],
+      [
+        -21,
+        true
+      ],
+      [
+        -20.75,
+        true
+      ],
+      [
+        -20.5,
+        true
+      ],
+      [
+        -20.25,
+        true
+      ],
+      [
+        -20,
+        true
+      ],
+      [
+        -19.75,
+        true
+      ],
+      [
+        -19.5,
+        true
+      ],
+      [
+        -19.25,
+        true
+      ],
+      [
+        -19,
+        true
+      ],
+      [
+        -18.75,
+        true
+      ],
+      [
+        -18.5,
+        true
+      ],
+      [
+        -18.25,
+        true
+      ],
+      [
+        -18,
+        true
+      ],
+      [
+        -17.75,
+        true
+      ],
+      [
+        -17.5,
+        true
+      ],
+      [
+        -17.25,
+        true
+      ],
+      [
+        -17,
+        true
+      ],
+      [
+        -16.75,
+        true
+      ],
+      [
+        -16.5,
+        true
+      ],
+      [
+        -16.25,
+        true
+      ],
+      [
+        -16,
+        true
+      ],
+      [
+        -15.75,
+        true
+      ],
+      [
+        -15.5,
+        true
+      ],
+      [
+        -15.25,
+        true
+      ],
+      [
+        -15,
+        true
+      ],
+      [
+        -14.75,
+        true
+      ],
+      [
+        -14.5,
+        true
+      ],
+      [
+        -14.25,
+        true
+      ],
+      [
+        -14,
+        true
+      ],
+      [
+        -13.75,
+        true
+      ],
+      [
+        -13.5,
+        true
+      ],
+      [
+        -13.25,
+        true
+      ],
+      [
+        -13,
+        true
+      ],
+      [
+        -12.75,
+        true
+      ],
+      [
+        -12.5,
+        true
+      ],
+      [
+        -12.25,
+        true
+      ],
+      [
+        -12,
+        true
+      ],
+      [
+        -11.75,
+        true
+      ],
+      [
+        -11.5,
+        true
+      ],
+      [
+        -11.25,
+        true
+      ],
+      [
+        -11,
+        true
+      ],
+      [
+        -10.75,
+        true
+      ],
+      [
+        -10.5,
+        true
+      ],
+      [
+        -10.25,
+        true
+      ],
+      [
+        -10,
+        true
+      ],
+      [
+        -9.75,
+        true
+      ],
+      [
+        -9.5,
+        true
+      ],
+      [
+        -9.25,
+        true
+      ],
+      [
+        -9,
+        true
+      ],
+      [
+        -8.75,
+        true
+      ],
+      [
+        -8.5,
+        true
+      ],
+      [
+        -8.25,
+        true
+      ],
+      [
+        -8,
+        true
+      ],
+      [
+        -7.75,
+        true
+      ],
+      [
+        -7.5,
+        true
+      ],
+      [
+        -7.25,
+        true
+      ],
+      [
+        -7,
+        true
+      ],
+      [
+        -6.75,
+        true
+      ],
+      [
+        -6.5,
+        true
+      ],
+      [
+        -6.25,
+        true
+      ],
+      [
+        -6,
+        true
+      ],
+      [
+        -5.75,
+        true
+      ],
+      [
+        -5.5,
+        true
+      ],
+      [
+        -5.25,
+        true
+      ],
+      [
+        -5,
+        true
+      ],
+      [
+        -4.75,
+        true
+      ],
+      [
+        -4.5,
+        true
+      ],
+      [
+        -4.25,
+        true
+      ],
+      [
+        -4,
+        true
+      ],
+      [
+        -3.75,
+        true
+      ],
+      [
+        -3.5,
+        true
+      ],
+      [
+        -3.25,
+        true
+      ],
+      [
+        -3,
+        true
+      ],
+      [
+        -2.75,
+        true
+      ],
+      [
+        -2.5,
+        true
+      ],
+      [
+        -2.25,
+        true
+      ],
+      [
+        -2,
+        true
+      ],
+      [
+        -1.75,
+        true
+      ],
+      [
+        -1.5,
+        true
+      ],
+      [
+        -1.25,
+        true
+      ],
+      [
+        -1,
+        true
+      ],
+      [
+        -0.75,
+        true
+      ],
+      [
+        -0.5,
+        true
+      ],
+      [
+        -0.25,
+        true
+      ],
+      [
+        0,
+        true
+      ],
+      [
+        0.25,
+        true
+      ],
+      [
+        0.5,
+        true
+      ],
+      [
+        0.75,
+        true
+      ],
+      [
+        1,
+        true
+      ],
+      [
+        1.25,
+        true
+      ],
+      [
+        1.5,
+        true
+      ],
+      [
+        1.75,
+        true
+      ],
+      [
+        2,
+        true
+      ],
+      [
+        2.25,
+        true
+      ],
+      [
+        2.5,
+        true
+      ],
+      [
+        2.75,
+        true
+      ],
+      [
+        3,
+        true
+      ],
+      [
+        3.25,
+        true
+      ],
+      [
+        3.5,
+        true
+      ],
+      [
+        3.75,
+        true
+      ],
+      [
+        4,
+        true
+      ],
+      [
+        4.25,
+        true
+      ],
+      [
+        4.5,
+        true
+      ],
+      [
+        4.75,
+        true
+      ],
+      [
+        5,
+        true
+      ],
+      [
+        5.25,
+        true
+      ],
+      [
+        5.5,
+        true
+      ],
+      [
+        5.75,
+        true
+      ],
+      [
+        6,
+        true
+      ],
+      [
+        6.25,
+        true
+      ],
+      [
+        6.5,
+        true
+      ],
+      [
+        6.75,
+        true
+      ],
+      [
+        7,
+        true
+      ],
+      [
+        7.25,
+        true
+      ],
+      [
+        7.5,
+        true
+      ],
+      [
+        7.75,
+        true
+      ],
+      [
+        8,
+        true
+      ],
+      [
+        8.25,
+        true
+      ],
+      [
+        8.5,
+        true
+      ],
+      [
+        8.75,
+        true
+      ],
+      [
+        9,
+        true
+      ],
+      [
+        9.25,
+        true
+      ],
+      [
+        9.5,
+        true
+      ],
+      [
+        9.75,
+        true
+      ],
+      [
+        10,
+        true
+      ],
+      [
+        10.25,
+        true
+      ],
+      [
+        10.5,
+        true
+      ],
+      [
+        10.75,
+        true
+      ],
+      [
+        11,
+        true
+      ],
+      [
+        11.25,
+        true
+      ],
+      [
+        11.5,
+        true
+      ],
+      [
+        11.75,
+        true
+      ],
+      [
+        12,
+        true
+      ],
+      [
+        12.25,
+        true
+      ],
+      [
+        12.5,
+        true
+      ],
+      [
+        12.75,
+        true
+      ],
+      [
+        13,
+        true
+      ],
+      [
+        13.25,
+        true
+      ],
+      [
+        13.5,
+        true
+      ],
+      [
+        13.75,
+        true
+      ],
+      [
+        14,
+        true
+      ],
+      [
+        14.25,
+        true
+      ],
+      [
+        14.5,
+        true
+      ],
+      [
+        14.75,
+        true
+      ],
+      [
+        15,
+        true
+      ],
+      [
+        15.25,
+        true
+      ],
+      [
+        15.5,
+        true
+      ],
+      [
+        15.75,
+        true
+      ],
+      [
+        16,
+        true
+      ],
+      [
+        16.25,
+        true
+      ],
+      [
+        16.5,
+        true
+      ],
+      [
+        16.75,
+        true
+      ],
+      [
+        17,
+        true
+      ],
+      [
+        17.25,
+        true
+      ],
+      [
+        17.5,
+        true
+      ],
+      [
+        17.75,
+        true
+      ],
+      [
+        18,
+        true
+      ],
+      [
+        18.25,
+        true
+      ],
+      [
+        18.5,
+        true
+      ],
+      [
+        18.75,
+        true
+      ],
+      [
+        19,
+        true
+      ],
+      [
+        19.25,
+        true
+      ],
+      [
+        19.5,
+        true
+      ],
+      [
+        19.75,
+        true
+      ],
+      [
+        20,
+        true
+      ],
+      [
+        20.25,
+        true
+      ],
+      [
+        20.5,
+        true
+      ],
+      [
+        20.75,
+        true
+      ],
+      [
+        21,
+        true
+      ],
+      [
+        21.25,
+        true
+      ],
+      [
+        21.5,
+        true
+      ],
+      [
+        21.75,
+        true
+      ],
+      [
+        22,
+        false
+      ],
+      [
+        22.25,
+        false
+      ],
+      [
+        22.5,
+        false
+      ],
+      [
+        22.75,
+        false
+      ],
+      [
+        23,
+        false
+      ]
+    ],
+    "rect": {
+      "x": 67.71875,
+      "y": 477.625,
+      "width": 66.0625,
+      "height": 44,
+      "top": 477.625,
+      "right": 133.78125,
+      "bottom": 521.625,
+      "left": 67.71875
+    },
+    "parent": {
+      "x": 59.71875,
+      "y": 465.125,
+      "width": 129.703125,
+      "height": 69,
+      "top": 465.125,
+      "right": 189.421875,
+      "bottom": 534.125,
+      "left": 59.71875
+    }
+  },
+  "timings": [
+    {
+      "identity": "eo:calc:v2:471780444330e2d9108e7ae97652bb4a47d3142ffc14cb238a587a6002df8eee",
+      "selected": null,
+      "totalMs": 197.89999997615814,
+      "copyMs": 2
+    },
+    {
+      "identity": "eo:calc:v2:471780444330e2d9108e7ae97652bb4a47d3142ffc14cb238a587a6002df8eee",
+      "selected": {
+        "kind": "point",
+        "id": "moon"
+      },
+      "totalMs": 2.799999952316284,
+      "copyMs": 1.7999999523162842
+    },
+    {
+      "identity": "already-B-C",
+      "selected": null,
+      "totalMs": 175.70000004768372,
+      "copyMs": 1.5
+    },
+    {
+      "identity": "already-B-C",
+      "selected": {
+        "kind": "point",
+        "id": "moon"
+      },
+      "totalMs": 2.5,
+      "copyMs": 1.7000000476837158
+    },
+    {
+      "identity": "already-B-C",
+      "selected": {
+        "kind": "point",
+        "id": "moon"
+      },
+      "totalMs": 206.19999992847443,
+      "copyMs": 1.600000023841858
+    }
+  ],
+  "pass": true
+}

@@ -1,0 +1,326 @@
+{
+  "id": "F3-max-360",
+  "fixture": "F3-max",
+  "width": 360,
+  "dpr": 1,
+  "font": "normal",
+  "errors": [],
+  "requests": [
+    "bootstrap",
+    "current"
+  ],
+  "chart": {
+    "chart_identity": "controlled-ui-F3-max",
+    "kind": "natal",
+    "zodiac": "tropical",
+    "house_system": "P",
+    "points": [
+      {
+        "id": "sun",
+        "longitude": 358.5,
+        "sign": "Pisces",
+        "degree": 28,
+        "minute": 30,
+        "house": 4,
+        "retrograde": true
+      },
+      {
+        "id": "moon",
+        "longitude": 358.7,
+        "sign": "Pisces",
+        "degree": 28,
+        "minute": 42,
+        "house": 11,
+        "retrograde": false
+      },
+      {
+        "id": "mercury",
+        "longitude": 358.9,
+        "sign": "Pisces",
+        "degree": 28,
+        "minute": 54,
+        "house": 3,
+        "retrograde": true
+      },
+      {
+        "id": "venus",
+        "longitude": 359.1,
+        "sign": "Pisces",
+        "degree": 29,
+        "minute": 6,
+        "house": 2,
+        "retrograde": false
+      },
+      {
+        "id": "mars",
+        "longitude": 359.3,
+        "sign": "Pisces",
+        "degree": 29,
+        "minute": 18,
+        "house": 3,
+        "retrograde": true
+      },
+      {
+        "id": "jupiter",
+        "longitude": 359.5,
+        "sign": "Pisces",
+        "degree": 29,
+        "minute": 30,
+        "house": 9,
+        "retrograde": false
+      },
+      {
+        "id": "saturn",
+        "longitude": 359.7,
+        "sign": "Pisces",
+        "degree": 29,
+        "minute": 42,
+        "house": 6,
+        "retrograde": true
+      },
+      {
+        "id": "uranus",
+        "longitude": 359.9,
+        "sign": "Pisces",
+        "degree": 29,
+        "minute": 54,
+        "house": 6,
+        "retrograde": false
+      },
+      {
+        "id": "neptune",
+        "longitude": 0.10000000000002274,
+        "sign": "Aries",
+        "degree": 0,
+        "minute": 6,
+        "house": 6,
+        "retrograde": true
+      },
+      {
+        "id": "pluto",
+        "longitude": 0.30000000000001137,
+        "sign": "Aries",
+        "degree": 0,
+        "minute": 18,
+        "house": 5,
+        "retrograde": false
+      },
+      {
+        "id": "chiron",
+        "longitude": 0.5,
+        "sign": "Aries",
+        "degree": 0,
+        "minute": 30,
+        "house": 12,
+        "retrograde": true
+      },
+      {
+        "id": "true_node",
+        "longitude": 0.6999999999999886,
+        "sign": "Aries",
+        "degree": 0,
+        "minute": 42,
+        "house": 11,
+        "retrograde": false
+      },
+      {
+        "id": "south_node",
+        "longitude": 0.8999999999999773,
+        "sign": "Aries",
+        "degree": 0,
+        "minute": 54,
+        "house": 5,
+        "retrograde": true
+      },
+      {
+        "id": "mean_apog",
+        "longitude": 1.1000000000000227,
+        "sign": "Aries",
+        "degree": 1,
+        "minute": 6,
+        "house": 11,
+        "retrograde": false
+      },
+      {
+        "id": "selena",
+        "longitude": 1.3000000000000114,
+        "sign": "Aries",
+        "degree": 1,
+        "minute": 18,
+        "house": 5,
+        "retrograde": true
+      },
+      {
+        "id": "pars_fortune",
+        "longitude": 1.5,
+        "sign": "Aries",
+        "degree": 1,
+        "minute": 30,
+        "house": 6,
+        "retrograde": false
+      }
+    ],
+    "angles": {
+      "asc": {
+        "longitude": 359.4,
+        "sign": "Pisces",
+        "degree": 29,
+        "minute": 24
+      },
+      "mc": {
+        "longitude": 359.5,
+        "sign": "Pisces",
+        "degree": 29,
+        "minute": 30
+      },
+      "vertex": {
+        "longitude": 359.6,
+        "sign": "Pisces",
+        "degree": 29,
+        "minute": 36
+      },
+      "dsc": {
+        "longitude": 179.4,
+        "sign": "Virgo",
+        "degree": 29,
+        "minute": 24
+      },
+      "ic": {
+        "longitude": 179.5,
+        "sign": "Virgo",
+        "degree": 29,
+        "minute": 30
+      }
+    },
+    "houses": [
+      {
+        "number": 1,
+        "cusp_longitude": 98.10571461295291,
+        "sign": "Cancer",
+        "degree": 8,
+        "minute": 6
+      },
+      {
+        "number": 2,
+        "cusp_longitude": 111.86113073362736,
+        "sign": "Cancer",
+        "degree": 21,
+        "minute": 51
+      },
+      {
+        "number": 3,
+        "cusp_longitude": 127.21128222848128,
+        "sign": "Leo",
+        "degree": 7,
+        "minute": 12
+      },
+      {
+        "number": 4,
+        "cusp_longitude": 147.62940719926064,
+        "sign": "Leo",
+        "degree": 27,
+        "minute": 37
+      },
+      {
+        "number": 5,
+        "cusp_longitude": 179.74928469285112,
+        "sign": "Virgo",
+        "degree": 29,
+        "minute": 44
+      },
+      {
+        "number": 6,
+        "cusp_longitude": 231.38720474173113,
+        "sign": "Scorpio",
+        "degree": 21,
+        "minute": 23
+      },
+      {
+        "number": 7,
+        "cusp_longitude": 278.1057146129529,
+        "sign": "Capricorn",
+        "degree": 8,
+        "minute": 6
+      },
+      {
+        "number": 8,
+        "cusp_longitude": 291.86113073362736,
+        "sign": "Capricorn",
+        "degree": 21,
+        "minute": 51
+      },
+      {
+        "number": 9,
+        "cusp_longitude": 307.2112822284813,
+        "sign": "Aquarius",
+        "degree": 7,
+        "minute": 12
+      },
+      {
+        "number": 10,
+        "cusp_longitude": 327.62940719926064,
+        "sign": "Aquarius",
+        "degree": 27,
+        "minute": 37
+      },
+      {
+        "number": 11,
+        "cusp_longitude": 359.7492846928511,
+        "sign": "Pisces",
+        "degree": 29,
+        "minute": 44
+      },
+      {
+        "number": 12,
+        "cusp_longitude": 51.38720474173114,
+        "sign": "Taurus",
+        "degree": 21,
+        "minute": 23
+      }
+    ],
+    "aspects": [
+      {
+        "from": "sun",
+        "to": "moon",
+        "type": "conjunction",
+        "category": "exact",
+        "orb": 0.2
+      },
+      {
+        "from": "mercury",
+        "to": "venus",
+        "type": "conjunction",
+        "category": "working",
+        "orb": 0.2
+      },
+      {
+        "from": "mars",
+        "to": "jupiter",
+        "type": "conjunction",
+        "category": "exact",
+        "orb": 0.2
+      },
+      {
+        "from": "saturn",
+        "to": "uranus",
+        "type": "conjunction",
+        "category": "working",
+        "orb": 0.2
+      },
+      {
+        "from": "neptune",
+        "to": "pluto",
+        "type": "conjunction",
+        "category": "background",
+        "orb": 0.2
+      }
+    ]
+  },
+  "actual": {
+    "svg": false,
+    "error": "Не удалось показать колесо. Все подтверждённые данные доступны в таблицах.",
+    "html": "Планеты и точки · 16Опубликованные точки отсутствуютПоложения планет и точекНазваниеЗнакПоложениеДомДвижениеСолнцеРыбы28°30′4R — ретрограднаяЛунаРыбы28°42′11—МеркурийРыбы28°54′3R — ретрограднаяВенераРыбы29°06′2—МарсРыбы29°18′3R — ретрограднаяЮпитерРыбы29°30′9—СатурнРыбы29°42′6R — ретрограднаяУранРыбы29°54′6—НептунОвен00°06′6R — ретрограднаяПлутонОвен00°18′5—ХиронОвен00°30′12R — ретрограднаяСеверный узелОвен00°42′11—Южный узел (производная позиция)Овен00°54′5R — ретрограднаяЛилитОвен01°06′11—СеленаОвен01°18′5R — ретрограднаяПарс ФортуныОвен01°30′6—Дома · 12Опубликованные дома отсутствуютКуспиды домовНомерЗнакКуспид1Рак08°06′2Рак21°51′3Лев07°12′4Лев27°37′5Дева29°44′6Скорпион21°23′7Козерог08°06′8Козерог21°51′9Водолей07°12′10Водолей27°37′11Рыбы29°44′12Телец21°23′Показать всеУглы картыУголЗнакПоложениеASC — АсцендентРыбы29°24′MC — Середина небаРыбы29°30′Vertex — ВертексРыбы29°36′DSC — ДесцендентДева29°24′IC — НадирДева29°30′Аспекты · 5Аспекты не найденыВсе опубликованные аспектыОтКВидКатегорияОрбисСолнцеЛунаСоединениеТочный0°12′МеркурийВенераСоединениеРабочий0°12′МарсЮпитерСоединениеТочный0°12′СатурнУранСоединениеРабочий0°12′НептунПлутонСоединениеФоновый0°12′Показать все"
+  },
+  "pass": false,
+  "error": "AssertionError [ERR_ASSERTION]: Не удалось показать колесо. Все подтверждённые данные доступны в таблицах.\n\nfalse !== true\n"
+}

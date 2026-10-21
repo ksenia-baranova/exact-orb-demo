@@ -1,0 +1,31 @@
+{
+  "input_sha": "8fb25770169166a3a4e94110eee684bd8b116474",
+  "sources": {
+    "src/exact_orb/http_api/ui/session.mjs": "920439c370071397f6b5d291e87b997950ebe52a5357251ac908c016f91db5cd",
+    "src/exact_orb/http_api/ui/recovery.mjs": "b5d3cd889cd12ae42b9461429c1eef98d1ddc737cde2ce7e83189cb2e3ff81b5",
+    "src/exact_orb/http_api/ui/facts.mjs": "64a47d1cd4158afa1b27cafb5936f4ffda11ed243ae169f3a9ec144fb18781e9",
+    "src/exact_orb/http_api/ui/main.mjs": "2c48b775d504c06bd134ba92a2c065e31bd0e614efe7a80c1fc255d3a2a102e8",
+    "src/exact_orb/http_api/dto.py": "9f90942061e901e771809b5c79cbceea110ebe1f9787c93a90d1fc3910eba3f1",
+    "src/exact_orb/http_api/projectors.py": "da5691e0af6bae5b444bd9f8de6f91c1572bf17a05ba102e2506fd278ed65398",
+    "src/exact_orb/engine/aspects/finder.py": "35f24866f6edae7464d3b30c52cdfb23f0a97992d32b3503ea64792f6af80623",
+    "src/exact_orb/engine/aspects/types.py": "2d5680b0ddb1dceb94dd926bfa9cde32c618150f4e9cb7ca6a2b72d2b83ff69b",
+    "src/exact_orb/engine/charts/natal.py": "ad25d82365e165f7bfdf4cccb4de60c1920c0950f105a7cd0ef2d2694a0fef6b",
+    "src/exact_orb/engine/charts/uncertainty.py": "333d519e74a8180ba7a1c306ca2a2ef3270da30e4c03910d7543304e71ad5e06",
+    "src/exact_orb/calculation/codec.py": "50b514e05150da056384b7bb714cc45985dc1ab0dbbb0d8048a38bf3fba18620",
+    "src/exact_orb/calculation/types.py": "922f4130ad20597fd5001412735cbef6f69116935e607630e854a3fef9de0854",
+    "docs/requirements/decisions/README.md": "d5092317d6ededaced8c039b212d7a94d5f671ef0c2b87839e2277d939a1e282",
+    "docs/project_management/change_plans/ui-chart-wheel/analyst/requirements.md": "12fb53b5ed02fbfd488ac950e1509ff2e80d9453aa859515c7af78d60e08b4a4",
+    "docs/project_management/change_plans/ui-chart-wheel/analyst/scenarios.md": "1bcea6acbf69e9c59df03d56c3131d5d1002f2189dfdb85c9be2c5d6ad79b4ce",
+    "docs/project_management/change_plans/ui-chart-wheel/developer/task_d003_implementation_plan.md": "4dfda5c1927335eeee3262904339e3271393ffb5b42ac6d6a95cb30369cb0b66",
+    "docs/project_management/change_plans/ui-chart-wheel/tester/task_t003_review.md": "de9006ca86fbce94df48daa70dbf99ba48d58ae609175f4388a7d0ab5e576b3b",
+    "docs/project_management/change_plans/ui-chart-wheel/tester/task_t006_review.md": "27b03fdeb58ad210ef07a94714d896b8f37475f60fa33eea1905c510c4d0b5fb"
+  },
+  "inputs": {
+    "fixtures_v2.json": "840e18fb459ef114c9d9a805f30eb6c668aa90eaaa012ae264be71f2a70cebc7",
+    "experiment_spec_v2.json": "1dc7597e3c84082bd75c3a334d08a6f901bef8a5bdb47a4e55eff29dd1e0b7e1"
+  },
+  "experiment_started_utc": "2026-10-18T12:25:09.174356+00:00",
+  "engine_golden_changed": false,
+  "supersedes_fixture_revision": 1,
+  "recorded_before_run03": "2026-10-18T12:59:20.054385+00:00"
+}

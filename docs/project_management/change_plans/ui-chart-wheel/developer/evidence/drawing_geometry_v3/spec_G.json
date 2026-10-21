@@ -1,0 +1,10 @@
+{
+  "variant": "G",
+  "recorded_utc": "2026-10-19T11:14:03.713320+00:00",
+  "reason": "F removes collisions/precision failures but12 moved labels lack exact directional compactness",
+  "construction": "local certificate-preserving axis contacts; only original C0, preserve all previously tight groups; propagate one axis along its exact-contact dependency component when needed, then verify every geometric constraint",
+  "bound": "max8px per coordinate correction from current F; <=25 successful repairs/cell; no extra retries after fixed-point/no candidate",
+  "objective": "choose feasible correction closest to current placement; exact local tightness only, no global optimality claim; total displacement may rise slightly",
+  "unchanged": "same physical reference, C0, true anchors/DTO/order/clip/annuli/16/12/gap2/passive SVG; zero tolerance, float32-exact coordinates",
+  "verification": "separate Fraction verifier and new browser-run03; no inherited F PASS by assertion"
+}

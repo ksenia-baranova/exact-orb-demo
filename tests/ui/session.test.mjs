@@ -197,8 +197,14 @@ for (const action of ["open", "foreground", "submit"]) {
   test(`unexpected renderer failure during ${action} becomes a visible safe-read-only error`, async () => {
     const h = harness(), document = documentPort(); h.queue(currentPath, response(ready()));
     const originalCreate = document.createElement;
+    let restoreRenderer = () => { document.createElement = originalCreate; };
     const breakRenderer = () => {
-      document.createElement = () => { throw new Error("controlled DOM failure"); };
+      const retained = document.getElementById("chart-facts").querySelector("button");
+      if (retained) {
+        const originalSet = retained.setAttribute;
+        retained.setAttribute = () => { throw new Error("controlled retained DOM failure"); };
+        restoreRenderer = () => { retained.setAttribute = originalSet; };
+      } else document.createElement = () => { throw new Error("controlled DOM failure"); };
     };
     // mount creates the result skeleton before open; damage only the dynamic table renderer.
     const ui = mountBirthForm(document, { apiClient: h.apiClient, clock: h.clock });
@@ -216,10 +222,13 @@ for (const action of ["open", "foreground", "submit"]) {
     assert.equal(ui.session.snapshot().busy, false); assert.equal(ui.session.snapshot().canSubmit, false);
     assert.match(document.getElementById("form-error").textContent, /показать|отобразить|обновить/i);
     assert.equal(document.getElementById("birth-form").getAttribute("aria-busy"), "false");
-    document.createElement = originalCreate;
+    restoreRenderer();
     h.queue(currentPath, response(ready())); assert.equal(await ui.session.recheck(), true);
     assert.equal(ui.session.snapshot().error, null);
     assert.equal(document.getElementById("chart-facts").querySelectorAll("table").length, 4);
+    assert.ok(document.getElementById("chart-facts").querySelectorAll("tbody tr").length > 0);
+    assert.equal(document.getElementById("chart-result").dataset.chartIdentity,
+      ui.session.snapshot().view.chart.chart_identity);
     ui.dispose();
   });
 }

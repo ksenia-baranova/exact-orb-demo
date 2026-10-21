@@ -1,0 +1,8 @@
+{
+  "stopped_utc": "2026-10-19T11:27:48.942725+00:00",
+  "reason": "sufficient comparative evidence:108 models/native records, final H geometry12/12; two exact compactness counterexamples remain; no further placement iterations",
+  "wall_minutes": 43.79400433333333,
+  "wall_limit_minutes": 90,
+  "effort_timesheet": false,
+  "future": "post-audit and documentation only"
+}

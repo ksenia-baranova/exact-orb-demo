@@ -1,0 +1,2155 @@
+{
+  "fixture": "F3-max",
+  "size": 328,
+  "C": [
+    164.0,
+    164.0
+  ],
+  "clip": [
+    0,
+    0,
+    328,
+    328
+  ],
+  "origin": 359.4,
+  "groups": [
+    {
+      "key": "sun",
+      "kind": "point",
+      "index": 0,
+      "theta0": 6.267477343911637,
+      "theta": 4.045887719136826,
+      "r": 131.20000000000002,
+      "A": [
+        32.816185818406126,
+        161.9391999686891
+      ],
+      "P": [
+        32.75,
+        "157.36220626193526"
+      ],
+      "components": [
+        [
+          -7.75,
+          -5.75,
+          4.75,
+          6.75
+        ],
+        [
+          8,
+          1,
+          16,
+          10
+        ]
+      ],
+      "metrics": [
+        {
+          "id": "glyph-point-0",
+          "text": "☉",
+          "font": "\"Segoe UI Symbol\", \"Segoe UI\", sans-serif",
+          "size": 16,
+          "ink": {
+            "left": -7,
+            "top": -5,
+            "right": 4,
+            "bottom": 6
+          },
+          "svgBBox": {
+            "left": -8,
+            "top": -11,
+            "right": 5.484375,
+            "bottom": 10
+          },
+          "advance": 13.484375
+        },
+        {
+          "id": "aux-point-0",
+          "text": "R",
+          "font": "\"Segoe UI Symbol\", \"Segoe UI\", sans-serif",
+          "size": 12,
+          "ink": {
+            "left": 8,
+            "top": 1,
+            "right": 16,
+            "bottom": 10
+          },
+          "svgBBox": {
+            "left": 8,
+            "top": -3,
+            "right": 16,
+            "bottom": 13
+          },
+          "advance": 7.177734375
+        }
+      ],
+      "annulus": [
+        95.11999999999999,
+        160.72
+      ],
+      "C0": true,
+      "leader": true,
+      "rank": 0,
+      "seam": 6.267477343911637,
+      "unwrapped": 6.267477343911637
+    },
+    {
+      "key": "moon",
+      "kind": "point",
+      "index": 1,
+      "theta0": 6.270968002415626,
+      "theta": 4.350069343783759,
+      "r": 131.20000000000002,
+      "A": [
+        32.80979150054867,
+        162.39712949041552
+      ],
+      "P": [
+        32.75,
+        "172.86220626193526"
+      ],
+      "components": [
+        [
+          -8.75,
+          -6.75,
+          1.75,
+          7.75
+        ]
+      ],
+      "metrics": [
+        {
+          "id": "glyph-point-1",
+          "text": "☽",
+          "font": "\"Segoe UI Symbol\", \"Segoe UI\", sans-serif",
+          "size": 16,
+          "ink": {
+            "left": -8,
+            "top": -6,
+            "right": 1,
+            "bottom": 7
+          },
+          "svgBBox": {
+            "left": -8,
+            "top": -11,
+            "right": 1.140625,
+            "bottom": 10
+          },
+          "advance": 9.1328125
+        }
+      ],
+      "annulus": [
+        95.11999999999999,
+        160.72
+      ],
+      "C0": true,
+      "leader": true,
+      "rank": 1,
+      "seam": 6.267477343911637,
+      "unwrapped": 6.270968002415626
+    },
+    {
+      "key": "mercury",
+      "kind": "point",
+      "index": 2,
+      "theta0": 6.274458660919614,
+      "theta": 4.653752214418696,
+      "r": 131.20000000000002,
+      "A": [
+        32.804995693980715,
+        162.85507854261326
+      ],
+      "P": [
+        47.25,
+        "176.11220626193526"
+      ],
+      "components": [
+        [
+          -8.75,
+          -6.75,
+          1.75,
+          9.75
+        ],
+        [
+          8,
+          1,
+          16,
+          10
+        ]
+      ],
+      "metrics": [
+        {
+          "id": "glyph-point-2",
+          "text": "☿",
+          "font": "\"Segoe UI Symbol\", \"Segoe UI\", sans-serif",
+          "size": 16,
+          "ink": {
+            "left": -8,
+            "top": -6,
+            "right": 1,
+            "bottom": 9
+          },
+          "svgBBox": {
+            "left": -8,
+            "top": -11,
+            "right": 1,
+            "bottom": 10
+          },
+          "advance": 8.8125
+        },
+        {
+          "id": "aux-point-2",
+          "text": "R",
+          "font": "\"Segoe UI Symbol\", \"Segoe UI\", sans-serif",
+          "size": 12,
+          "ink": {
+            "left": 8,
+            "top": 1,
+            "right": 16,
+            "bottom": 10
+          },
+          "svgBBox": {
+            "left": 8,
+            "top": -3,
+            "right": 16,
+            "bottom": 13
+          },
+          "advance": 7.177734375
+        }
+      ],
+      "annulus": [
+        95.11999999999999,
+        160.72
+      ],
+      "C0": true,
+      "leader": true,
+      "rank": 2,
+      "seam": 6.267477343911637,
+      "unwrapped": 6.274458660919614
+    },
+    {
+      "key": "venus",
+      "kind": "point",
+      "index": 3,
+      "theta0": 6.2779493194236045,
+      "theta": 4.952003600783189,
+      "r": 131.20000000000002,
+      "A": [
+        32.80179845713761,
+        163.31304154531787
+      ],
+      "P": [
+        16.496384033655936,
+        179.30273422669114
+      ],
+      "components": [
+        [
+          -8.75,
+          -6.75,
+          1.75,
+          6.75
+        ]
+      ],
+      "metrics": [
+        {
+          "id": "glyph-point-3",
+          "text": "♀",
+          "font": "\"Segoe UI Symbol\", \"Segoe UI\", sans-serif",
+          "size": 16,
+          "ink": {
+            "left": -8,
+            "top": -6,
+            "right": 1,
+            "bottom": 6
+          },
+          "svgBBox": {
+            "left": -8,
+            "top": -11,
+            "right": 1,
+            "bottom": 10
+          },
+          "advance": 8.8125
+        }
+      ],
+      "annulus": [
+        95.11999999999999,
+        160.72
+      ],
+      "C0": true,
+      "leader": true,
+      "rank": 3,
+      "seam": 6.267477343911637,
+      "unwrapped": 6.2779493194236045
+    },
+    {
+      "key": "mars",
+      "kind": "point",
+      "index": 4,
+      "theta0": 6.281439977927593,
+      "theta": 5.249934414124411,
+      "r": 131.20000000000002,
+      "A": [
+        32.800199828976645,
+        163.77101291839423
+      ],
+      "P": [
+        32.75,
+        "187.36220626193526"
+      ],
+      "components": [
+        [
+          -8.75,
+          -4.75,
+          3.75,
+          7.75
+        ],
+        [
+          8,
+          1,
+          16,
+          10
+        ]
+      ],
+      "metrics": [
+        {
+          "id": "glyph-point-4",
+          "text": "♂",
+          "font": "\"Segoe UI Symbol\", \"Segoe UI\", sans-serif",
+          "size": 16,
+          "ink": {
+            "left": -8,
+            "top": -4,
+            "right": 3,
+            "bottom": 7
+          },
+          "svgBBox": {
+            "left": -8,
+            "top": -11,
+            "right": 3.109375,
+            "bottom": 10
+          },
+          "advance": 11.1015625
+        },
+        {
+          "id": "aux-point-4",
+          "text": "R",
+          "font": "\"Segoe UI Symbol\", \"Segoe UI\", sans-serif",
+          "size": 12,
+          "ink": {
+            "left": 8,
+            "top": 1,
+            "right": 16,
+            "bottom": 10
+          },
+          "svgBBox": {
+            "left": 8,
+            "top": -3,
+            "right": 16,
+            "bottom": 13
+          },
+          "advance": 7.177734375
+        }
+      ],
+      "annulus": [
+        95.11999999999999,
+        160.72
+      ],
+      "C0": true,
+      "leader": true,
+      "rank": 4,
+      "seam": 6.267477343911637,
+      "unwrapped": 6.281439977927593
+    },
+    {
+      "key": "jupiter",
+      "kind": "point",
+      "index": 5,
+      "theta0": 0.0017453292519947264,
+      "theta": 5.5476486557704,
+      "r": 131.20000000000002,
+      "A": [
+        32.800199828976645,
+        164.2289870816059
+      ],
+      "P": [
+        36.25,
+        "206.11220626193526"
+      ],
+      "components": [
+        [
+          -8.75,
+          -6.75,
+          4.75,
+          6.75
+        ]
+      ],
+      "metrics": [
+        {
+          "id": "glyph-point-5",
+          "text": "♃",
+          "font": "\"Segoe UI Symbol\", \"Segoe UI\", sans-serif",
+          "size": 16,
+          "ink": {
+            "left": -8,
+            "top": -6,
+            "right": 4,
+            "bottom": 6
+          },
+          "svgBBox": {
+            "left": -8,
+            "top": -11,
+            "right": 4.3125,
+            "bottom": 10
+          },
+          "advance": 12.3046875
+        }
+      ],
+      "annulus": [
+        95.11999999999999,
+        160.72
+      ],
+      "C0": true,
+      "leader": true,
+      "rank": 5,
+      "seam": 6.267477343911637,
+      "unwrapped": 6.284930636431581
+    },
+    {
+      "key": "saturn",
+      "kind": "point",
+      "index": 6,
+      "theta0": 0.005235987755983187,
+      "theta": 5.845254611515282,
+      "r": 131.20000000000002,
+      "A": [
+        32.80179845713761,
+        164.68695845468227
+      ],
+      "P": [
+        58.489650413897245,
+        206.9256258440016
+      ],
+      "components": [
+        [
+          -8.75,
+          -6.75,
+          1.75,
+          6.75
+        ],
+        [
+          8,
+          1,
+          16,
+          10
+        ]
+      ],
+      "metrics": [
+        {
+          "id": "glyph-point-6",
+          "text": "♄",
+          "font": "\"Segoe UI Symbol\", \"Segoe UI\", sans-serif",
+          "size": 16,
+          "ink": {
+            "left": -8,
+            "top": -6,
+            "right": 1,
+            "bottom": 6
+          },
+          "svgBBox": {
+            "left": -8,
+            "top": -11,
+            "right": 1,
+            "bottom": 10
+          },
+          "advance": 8.5625
+        },
+        {
+          "id": "aux-point-6",
+          "text": "R",
+          "font": "\"Segoe UI Symbol\", \"Segoe UI\", sans-serif",
+          "size": 12,
+          "ink": {
+            "left": 8,
+            "top": 1,
+            "right": 16,
+            "bottom": 10
+          },
+          "svgBBox": {
+            "left": 8,
+            "top": -3,
+            "right": 16,
+            "bottom": 13
+          },
+          "advance": 7.177734375
+        }
+      ],
+      "annulus": [
+        95.11999999999999,
+        160.72
+      ],
+      "C0": true,
+      "leader": true,
+      "rank": 6,
+      "seam": 6.267477343911637,
+      "unwrapped": 6.28842129493557
+    },
+    {
+      "key": "uranus",
+      "kind": "point",
+      "index": 7,
+      "theta0": 0.008726646259971648,
+      "theta": 6.147876046001792,
+      "r": 131.20000000000002,
+      "A": [
+        32.804995693980715,
+        165.14492145738666
+      ],
+      "P": [
+        45.0,
+        "222.4256258440016"
+      ],
+      "components": [
+        [
+          -8.75,
+          -6.75,
+          4.75,
+          7.75
+        ]
+      ],
+      "metrics": [
+        {
+          "id": "glyph-point-7",
+          "text": "♅",
+          "font": "\"Segoe UI Symbol\", \"Segoe UI\", sans-serif",
+          "size": 16,
+          "ink": {
+            "left": -8,
+            "top": -6,
+            "right": 4,
+            "bottom": 7
+          },
+          "svgBBox": {
+            "left": -8,
+            "top": -11,
+            "right": 4,
+            "bottom": 10
+          },
+          "advance": 11.359375
+        }
+      ],
+      "annulus": [
+        95.11999999999999,
+        160.72
+      ],
+      "C0": true,
+      "leader": true,
+      "rank": 7,
+      "seam": 6.267477343911637,
+      "unwrapped": 6.291911953439558
+    },
+    {
+      "key": "neptune",
+      "kind": "point",
+      "index": 8,
+      "theta0": 0.012217304763961323,
+      "theta": 6.450601644836917,
+      "r": 131.20000000000002,
+      "A": [
+        32.80979150054867,
+        165.60287050958456
+      ],
+      "P": [
+        67.25,
+        "225.69264372178083"
+      ],
+      "components": [
+        [
+          -8.75,
+          -6.75,
+          6.75,
+          8.75
+        ],
+        [
+          8,
+          1,
+          16,
+          10
+        ]
+      ],
+      "metrics": [
+        {
+          "id": "glyph-point-8",
+          "text": "♆",
+          "font": "\"Segoe UI Symbol\", \"Segoe UI\", sans-serif",
+          "size": 16,
+          "ink": {
+            "left": -8,
+            "top": -6,
+            "right": 6,
+            "bottom": 8
+          },
+          "svgBBox": {
+            "left": -8,
+            "top": -11,
+            "right": 6,
+            "bottom": 10
+          },
+          "advance": 13.1875
+        },
+        {
+          "id": "aux-point-8",
+          "text": "R",
+          "font": "\"Segoe UI Symbol\", \"Segoe UI\", sans-serif",
+          "size": 12,
+          "ink": {
+            "left": 8,
+            "top": 1,
+            "right": 16,
+            "bottom": 10
+          },
+          "svgBBox": {
+            "left": 8,
+            "top": -3,
+            "right": 16,
+            "bottom": 13
+          },
+          "advance": 7.177734375
+        }
+      ],
+      "annulus": [
+        95.11999999999999,
+        160.72
+      ],
+      "C0": true,
+      "leader": true,
+      "rank": 8,
+      "seam": 6.267477343911637,
+      "unwrapped": 6.2954026119435476
+    },
+    {
+      "key": "pluto",
+      "kind": "point",
+      "index": 9,
+      "theta0": 0.015707963267949765,
+      "theta": 6.742689408875277,
+      "r": 131.20000000000002,
+      "A": [
+        32.816185818406126,
+        166.06080003131098
+      ],
+      "P": [
+        46.5,
+        "238.9256258440016"
+      ],
+      "components": [
+        [
+          -7.75,
+          -6.75,
+          1.75,
+          6.75
+        ]
+      ],
+      "metrics": [
+        {
+          "id": "glyph-point-9",
+          "text": "♇",
+          "font": "\"Segoe UI Symbol\", \"Segoe UI\", sans-serif",
+          "size": 16,
+          "ink": {
+            "left": -7,
+            "top": -6,
+            "right": 1,
+            "bottom": 6
+          },
+          "svgBBox": {
+            "left": -8,
+            "top": -11,
+            "right": 1,
+            "bottom": 10
+          },
+          "advance": 8.9609375
+        }
+      ],
+      "annulus": [
+        95.11999999999999,
+        160.72
+      ],
+      "C0": true,
+      "leader": true,
+      "rank": 9,
+      "seam": 6.267477343911637,
+      "unwrapped": 6.298893270447536
+    },
+    {
+      "key": "chiron",
+      "kind": "point",
+      "index": 10,
+      "theta0": 0.019198621771938207,
+      "theta": 7.035062518071398,
+      "r": 131.20000000000002,
+      "A": [
+        32.82417856964025,
+        166.51870444283935
+      ],
+      "P": [
+        59.0,
+        "253.19264372178083"
+      ],
+      "components": [
+        [
+          -8.75,
+          -6.75,
+          1.75,
+          7.75
+        ],
+        [
+          8,
+          1,
+          16,
+          10
+        ]
+      ],
+      "metrics": [
+        {
+          "id": "glyph-point-10",
+          "text": "⚷",
+          "font": "\"Segoe UI Symbol\", \"Segoe UI\", sans-serif",
+          "size": 16,
+          "ink": {
+            "left": -8,
+            "top": -6,
+            "right": 1,
+            "bottom": 7
+          },
+          "svgBBox": {
+            "left": -8,
+            "top": -11,
+            "right": 1,
+            "bottom": 10
+          },
+          "advance": 8.8125
+        },
+        {
+          "id": "aux-point-10",
+          "text": "R",
+          "font": "\"Segoe UI Symbol\", \"Segoe UI\", sans-serif",
+          "size": 12,
+          "ink": {
+            "left": 8,
+            "top": 1,
+            "right": 16,
+            "bottom": 10
+          },
+          "svgBBox": {
+            "left": 8,
+            "top": -3,
+            "right": 16,
+            "bottom": 13
+          },
+          "advance": 7.177734375
+        }
+      ],
+      "annulus": [
+        95.11999999999999,
+        160.72
+      ],
+      "C0": true,
+      "leader": true,
+      "rank": 10,
+      "seam": 6.267477343911637,
+      "unwrapped": 6.302383928951524
+    },
+    {
+      "key": "true_node",
+      "kind": "point",
+      "index": 11,
+      "theta0": 0.02268928027592665,
+      "theta": 7.338630059034451,
+      "r": 131.20000000000002,
+      "A": [
+        32.83376965686196,
+        166.97657816474896
+      ],
+      "P": [
+        75.0,
+        "244.44264372178083"
+      ],
+      "components": [
+        [
+          -8.75,
+          -6.75,
+          4.75,
+          7.75
+        ]
+      ],
+      "metrics": [
+        {
+          "id": "glyph-point-11",
+          "text": "☊",
+          "font": "\"Segoe UI Symbol\", \"Segoe UI\", sans-serif",
+          "size": 16,
+          "ink": {
+            "left": -8,
+            "top": -6,
+            "right": 4,
+            "bottom": 7
+          },
+          "svgBBox": {
+            "left": -8,
+            "top": -11,
+            "right": 4.1875,
+            "bottom": 10
+          },
+          "advance": 12.1875
+        }
+      ],
+      "annulus": [
+        95.11999999999999,
+        160.72
+      ],
+      "C0": true,
+      "leader": true,
+      "rank": 11,
+      "seam": 6.267477343911637,
+      "unwrapped": 6.305874587455513
+    },
+    {
+      "key": "south_node",
+      "kind": "point",
+      "index": 12,
+      "theta0": 0.02617993877991509,
+      "theta": 7.642608395675497,
+      "r": 131.20000000000002,
+      "A": [
+        32.844958963206864,
+        167.43441561799298
+      ],
+      "P": [
+        "94.00",
+        241.5
+      ],
+      "components": [
+        [
+          -8.75,
+          -6.75,
+          4.75,
+          7.75
+        ],
+        [
+          8,
+          1,
+          16,
+          10
+        ]
+      ],
+      "metrics": [
+        {
+          "id": "glyph-point-12",
+          "text": "☋",
+          "font": "\"Segoe UI Symbol\", \"Segoe UI\", sans-serif",
+          "size": 16,
+          "ink": {
+            "left": -8,
+            "top": -6,
+            "right": 4,
+            "bottom": 7
+          },
+          "svgBBox": {
+            "left": -8,
+            "top": -11,
+            "right": 4.1875,
+            "bottom": 10
+          },
+          "advance": 12.1875
+        },
+        {
+          "id": "aux-point-12",
+          "text": "R",
+          "font": "\"Segoe UI Symbol\", \"Segoe UI\", sans-serif",
+          "size": 12,
+          "ink": {
+            "left": 8,
+            "top": 1,
+            "right": 16,
+            "bottom": 10
+          },
+          "svgBBox": {
+            "left": 8,
+            "top": -3,
+            "right": 16,
+            "bottom": 13
+          },
+          "advance": 7.177734375
+        }
+      ],
+      "annulus": [
+        95.11999999999999,
+        160.72
+      ],
+      "C0": true,
+      "leader": true,
+      "rank": 12,
+      "seam": 6.267477343911637,
+      "unwrapped": 6.309365245959501
+    },
+    {
+      "key": "mean_apog",
+      "kind": "point",
+      "index": 13,
+      "theta0": 0.02967059728390442,
+      "theta": 7.936196178890785,
+      "r": 131.20000000000002,
+      "A": [
+        32.85774635233679,
+        167.89221122396663
+      ],
+      "P": [
+        81.75,
+        "271.94264372178083"
+      ],
+      "components": [
+        [
+          -7.75,
+          -6.75,
+          -0.25,
+          6.75
+        ]
+      ],
+      "metrics": [
+        {
+          "id": "glyph-point-13",
+          "text": "⚸",
+          "font": "\"Segoe UI Symbol\", \"Segoe UI\", sans-serif",
+          "size": 16,
+          "ink": {
+            "left": -7,
+            "top": -6,
+            "right": -1,
+            "bottom": 6
+          },
+          "svgBBox": {
+            "left": -8,
+            "top": -11,
+            "right": 0.8125,
+            "bottom": 10
+          },
+          "advance": 8.8125
+        }
+      ],
+      "annulus": [
+        95.11999999999999,
+        160.72
+      ],
+      "C0": true,
+      "leader": true,
+      "rank": 13,
+      "seam": 6.267477343911637,
+      "unwrapped": 6.312855904463491
+    },
+    {
+      "key": "selena",
+      "kind": "point",
+      "index": 14,
+      "theta0": 0.03316125578789375,
+      "theta": 8.230250085953326,
+      "r": 131.20000000000002,
+      "A": [
+        32.872131668441455,
+        168.34995940457483
+      ],
+      "P": [
+        76.25,
+        "286.44264372178083"
+      ],
+      "components": [
+        [
+          -7.75,
+          -5.75,
+          4.75,
+          6.75
+        ],
+        [
+          8,
+          1,
+          16,
+          10
+        ]
+      ],
+      "metrics": [
+        {
+          "id": "glyph-point-14",
+          "text": "⚪",
+          "font": "\"Segoe UI Symbol\", \"Segoe UI\", sans-serif",
+          "size": 16,
+          "ink": {
+            "left": -7,
+            "top": -5,
+            "right": 4,
+            "bottom": 6
+          },
+          "svgBBox": {
+            "left": -8,
+            "top": -11,
+            "right": 5.484375,
+            "bottom": 10
+          },
+          "advance": 13.484375
+        },
+        {
+          "id": "aux-point-14",
+          "text": "R",
+          "font": "\"Segoe UI Symbol\", \"Segoe UI\", sans-serif",
+          "size": 12,
+          "ink": {
+            "left": 8,
+            "top": 1,
+            "right": 16,
+            "bottom": 10
+          },
+          "svgBBox": {
+            "left": 8,
+            "top": -3,
+            "right": 16,
+            "bottom": 13
+          },
+          "advance": 7.177734375
+        }
+      ],
+      "annulus": [
+        95.11999999999999,
+        160.72
+      ],
+      "C0": true,
+      "leader": true,
+      "rank": 14,
+      "seam": 6.267477343911637,
+      "unwrapped": 6.31634656296748
+    },
+    {
+      "key": "pars_fortune",
+      "kind": "point",
+      "index": 15,
+      "theta0": 0.03665191429188219,
+      "theta": 8.530051626192845,
+      "r": 131.20000000000002,
+      "A": [
+        32.88811473624028,
+        168.80765458230036
+      ],
+      "P": [
+        92.72287409607107,
+        263.45709096943256
+      ],
+      "components": [
+        [
+          -7.75,
+          -4.75,
+          4.75,
+          7.75
+        ]
+      ],
+      "metrics": [
+        {
+          "id": "glyph-point-15",
+          "text": "⊗",
+          "font": "\"Segoe UI Symbol\", \"Segoe UI\", sans-serif",
+          "size": 16,
+          "ink": {
+            "left": -7,
+            "top": -4,
+            "right": 4,
+            "bottom": 7
+          },
+          "svgBBox": {
+            "left": -8,
+            "top": -11,
+            "right": 5.484375,
+            "bottom": 10
+          },
+          "advance": 13.484375
+        }
+      ],
+      "annulus": [
+        95.11999999999999,
+        160.72
+      ],
+      "C0": true,
+      "leader": true,
+      "rank": 15,
+      "seam": 6.267477343911637,
+      "unwrapped": 6.319837221471468
+    },
+    {
+      "key": "[\"sun\",\"moon\",\"conjunction\"]",
+      "kind": "marker",
+      "index": 0,
+      "theta0": 6.2692226731636325,
+      "theta": 4.168322148259055,
+      "r": 72.16,
+      "A": [
+        91.8470338674886,
+        162.99248906672733
+      ],
+      "P": [
+        91.75,
+        "176.69264372178083"
+      ],
+      "components": [
+        [
+          -8.75,
+          -6.75,
+          0.75,
+          4.75
+        ],
+        [
+          7,
+          1,
+          50.537109375,
+          10
+        ]
+      ],
+      "metrics": [
+        {
+          "id": "glyph-marker-0",
+          "text": "☌",
+          "font": "\"Segoe UI Symbol\", \"Segoe UI\", sans-serif",
+          "size": 16,
+          "ink": {
+            "left": -8,
+            "top": -6,
+            "right": 0,
+            "bottom": 4
+          },
+          "svgBBox": {
+            "left": -8,
+            "top": -11,
+            "right": 0.125,
+            "bottom": 10
+          },
+          "advance": 8.125
+        },
+        {
+          "id": "aux-marker-0",
+          "text": "Точный",
+          "font": "\"Segoe UI Symbol\", \"Segoe UI\", sans-serif",
+          "size": 12,
+          "ink": {
+            "left": 7,
+            "top": 1,
+            "right": 50.537109375,
+            "bottom": 10
+          },
+          "svgBBox": {
+            "left": 7,
+            "top": -3,
+            "right": 50.537109375,
+            "bottom": 13
+          },
+          "advance": 42.509765625
+        }
+      ],
+      "annulus": [
+        6.5600000000000005,
+        124.64
+      ],
+      "C0": true,
+      "leader": true,
+      "rank": 0,
+      "seam": 6.2692226731636325,
+      "unwrapped": 6.2692226731636325
+    },
+    {
+      "key": "[\"mercury\",\"venus\",\"conjunction\"]",
+      "kind": "marker",
+      "index": 1,
+      "theta0": 6.276203990171609,
+      "theta": 5.412689155352881,
+      "r": 72.16,
+      "A": [
+        91.84175848829872,
+        163.4962322568991
+      ],
+      "P": [
+        95.0,
+        "190.19264372178083"
+      ],
+      "components": [
+        [
+          -8.75,
+          -6.75,
+          0.75,
+          4.75
+        ],
+        [
+          8,
+          1,
+          55.55859375,
+          10
+        ]
+      ],
+      "metrics": [
+        {
+          "id": "glyph-marker-1",
+          "text": "☌",
+          "font": "\"Segoe UI Symbol\", \"Segoe UI\", sans-serif",
+          "size": 16,
+          "ink": {
+            "left": -8,
+            "top": -6,
+            "right": 0,
+            "bottom": 4
+          },
+          "svgBBox": {
+            "left": -8,
+            "top": -11,
+            "right": 0.125,
+            "bottom": 10
+          },
+          "advance": 8.125
+        },
+        {
+          "id": "aux-marker-1",
+          "text": "Рабочий",
+          "font": "\"Segoe UI Symbol\", \"Segoe UI\", sans-serif",
+          "size": 12,
+          "ink": {
+            "left": 8,
+            "top": 1,
+            "right": 55.55859375,
+            "bottom": 10
+          },
+          "svgBBox": {
+            "left": 8,
+            "top": -3,
+            "right": 55.55859375,
+            "bottom": 13
+          },
+          "advance": 47.53125
+        }
+      ],
+      "annulus": [
+        6.5600000000000005,
+        124.64
+      ],
+      "C0": true,
+      "leader": true,
+      "rank": 1,
+      "seam": 6.2692226731636325,
+      "unwrapped": 6.276203990171609
+    },
+    {
+      "key": "[\"mars\",\"jupiter\",\"conjunction\"]",
+      "kind": "marker",
+      "index": 2,
+      "theta0": 9.921048172113442e-16,
+      "theta": 6.983485482147778,
+      "r": 72.16,
+      "A": [
+        91.84,
+        164.00000000000009
+      ],
+      "P": [
+        83.5,
+        "201.19264372178083"
+      ],
+      "components": [
+        [
+          -8.75,
+          -6.75,
+          0.75,
+          4.75
+        ],
+        [
+          7,
+          1,
+          50.537109375,
+          10
+        ]
+      ],
+      "metrics": [
+        {
+          "id": "glyph-marker-2",
+          "text": "☌",
+          "font": "\"Segoe UI Symbol\", \"Segoe UI\", sans-serif",
+          "size": 16,
+          "ink": {
+            "left": -8,
+            "top": -6,
+            "right": 0,
+            "bottom": 4
+          },
+          "svgBBox": {
+            "left": -8,
+            "top": -11,
+            "right": 0.125,
+            "bottom": 10
+          },
+          "advance": 8.125
+        },
+        {
+          "id": "aux-marker-2",
+          "text": "Точный",
+          "font": "\"Segoe UI Symbol\", \"Segoe UI\", sans-serif",
+          "size": 12,
+          "ink": {
+            "left": 7,
+            "top": 1,
+            "right": 50.537109375,
+            "bottom": 10
+          },
+          "svgBBox": {
+            "left": 7,
+            "top": -3,
+            "right": 50.537109375,
+            "bottom": 13
+          },
+          "advance": 42.509765625
+        }
+      ],
+      "annulus": [
+        6.5600000000000005,
+        124.64
+      ],
+      "C0": true,
+      "leader": true,
+      "rank": 2,
+      "seam": 6.2692226731636325,
+      "unwrapped": 6.283185307179587
+    },
+    {
+      "key": "[\"saturn\",\"uranus\",\"conjunction\"]",
+      "kind": "marker",
+      "index": 3,
+      "theta0": 0.006981317007977914,
+      "theta": 8.554281808942674,
+      "r": 72.16,
+      "A": [
+        91.84175848829872,
+        164.50376774310095
+      ],
+      "P": [
+        91.75,
+        "219.94264372178083"
+      ],
+      "components": [
+        [
+          -8.75,
+          -6.75,
+          0.75,
+          4.75
+        ],
+        [
+          8,
+          1,
+          55.55859375,
+          10
+        ]
+      ],
+      "metrics": [
+        {
+          "id": "glyph-marker-3",
+          "text": "☌",
+          "font": "\"Segoe UI Symbol\", \"Segoe UI\", sans-serif",
+          "size": 16,
+          "ink": {
+            "left": -8,
+            "top": -6,
+            "right": 0,
+            "bottom": 4
+          },
+          "svgBBox": {
+            "left": -8,
+            "top": -11,
+            "right": 0.125,
+            "bottom": 10
+          },
+          "advance": 8.125
+        },
+        {
+          "id": "aux-marker-3",
+          "text": "Рабочий",
+          "font": "\"Segoe UI Symbol\", \"Segoe UI\", sans-serif",
+          "size": 12,
+          "ink": {
+            "left": 8,
+            "top": 1,
+            "right": 55.55859375,
+            "bottom": 10
+          },
+          "svgBBox": {
+            "left": 8,
+            "top": -3,
+            "right": 55.55859375,
+            "bottom": 13
+          },
+          "advance": 47.53125
+        }
+      ],
+      "annulus": [
+        6.5600000000000005,
+        124.64
+      ],
+      "C0": true,
+      "leader": true,
+      "rank": 3,
+      "seam": 6.2692226731636325,
+      "unwrapped": 6.290166624187564
+    },
+    {
+      "key": "angle:asc",
+      "kind": "angle",
+      "index": 0,
+      "theta0": 0.0,
+      "theta": -1.1976212806512112,
+      "r": 36.08,
+      "A": [
+        127.92,
+        164.0
+      ],
+      "P": [
+        128.0,
+        "153.69264372178083"
+      ],
+      "components": [
+        [
+          -1.0,
+          -9.0,
+          22.115234375,
+          0.0
+        ]
+      ],
+      "metrics": [],
+      "annulus": [
+        0,
+        82.0
+      ],
+      "C0": true,
+      "leader": true,
+      "rank": 0,
+      "seam": 0.0,
+      "unwrapped": 0.0
+    },
+    {
+      "key": "angle:mc",
+      "kind": "angle",
+      "index": 1,
+      "theta0": 0.0017453292519947264,
+      "theta": -0.63879233194937,
+      "r": 36.08,
+      "A": [
+        127.92005495296858,
+        164.0629714474416
+      ],
+      "P": [
+        127.92664910665107,
+        164.69264372178083
+      ],
+      "components": [
+        [
+          0.0,
+          -9.0,
+          18.775390625,
+          0.0
+        ]
+      ],
+      "metrics": [],
+      "annulus": [
+        0,
+        82.0
+      ],
+      "C0": true,
+      "leader": true,
+      "rank": 1,
+      "seam": 0.0,
+      "unwrapped": 0.0017453292519947264
+    },
+    {
+      "key": "angle:vertex",
+      "kind": "angle",
+      "index": 2,
+      "theta0": 0.003490658503989453,
+      "theta": 1.15578799320954,
+      "r": 36.08,
+      "A": [
+        127.92021981170691,
+        164.1259427030613
+      ],
+      "P": [
+        128.0,
+        "175.69264372178083"
+      ],
+      "components": [
+        [
+          -1.0,
+          -9.0,
+          40.794921875,
+          0.0
+        ]
+      ],
+      "metrics": [],
+      "annulus": [
+        0,
+        82.0
+      ],
+      "C0": true,
+      "leader": true,
+      "rank": 2,
+      "seam": 0.0,
+      "unwrapped": 0.003490658503989453
+    },
+    {
+      "key": "angle:dsc",
+      "kind": "angle",
+      "index": 3,
+      "theta0": 3.1415926535897936,
+      "theta": 3.085843770407144,
+      "r": 36.08,
+      "A": [
+        200.07999999999998,
+        164.0
+      ],
+      "P": [
+        200.0,
+        "169.02136548263917"
+      ],
+      "components": [
+        [
+          0.0,
+          -9.0,
+          22.7890625,
+          0.0
+        ]
+      ],
+      "metrics": [],
+      "annulus": [
+        0,
+        82.0
+      ],
+      "C0": true,
+      "leader": true,
+      "rank": 3,
+      "seam": 0.0,
+      "unwrapped": 3.1415926535897936
+    },
+    {
+      "key": "angle:ic",
+      "kind": "angle",
+      "index": 4,
+      "theta0": 3.143337982841788,
+      "theta": 3.884948473171467,
+      "r": 36.08,
+      "A": [
+        200.0799450470314,
+        163.9370285525584
+      ],
+      "P": [
+        200.0,
+        "158.02136548263917"
+      ],
+      "components": [
+        [
+          0.0,
+          -9.0,
+          11.193359375,
+          0.0
+        ]
+      ],
+      "metrics": [],
+      "annulus": [
+        0,
+        82.0
+      ],
+      "C0": true,
+      "leader": true,
+      "rank": 4,
+      "seam": 0.0,
+      "unwrapped": 3.143337982841788
+    }
+  ],
+  "orders": {},
+  "construction_notes": [
+    {
+      "key": "angle:vertex",
+      "kind": "circumdisk_construction_not_applicable",
+      "ratio": 1.1855847551292402
+    }
+  ],
+  "chart": {
+    "chart_identity": "controlled-ui-F3-max",
+    "kind": "natal",
+    "zodiac": "tropical",
+    "house_system": "P",
+    "points": [
+      {
+        "id": "sun",
+        "longitude": 358.5,
+        "sign": "Pisces",
+        "degree": 28,
+        "minute": 30,
+        "house": 4,
+        "retrograde": true
+      },
+      {
+        "id": "moon",
+        "longitude": 358.7,
+        "sign": "Pisces",
+        "degree": 28,
+        "minute": 42,
+        "house": 11,
+        "retrograde": false
+      },
+      {
+        "id": "mercury",
+        "longitude": 358.9,
+        "sign": "Pisces",
+        "degree": 28,
+        "minute": 54,
+        "house": 3,
+        "retrograde": true
+      },
+      {
+        "id": "venus",
+        "longitude": 359.1,
+        "sign": "Pisces",
+        "degree": 29,
+        "minute": 6,
+        "house": 2,
+        "retrograde": false
+      },
+      {
+        "id": "mars",
+        "longitude": 359.3,
+        "sign": "Pisces",
+        "degree": 29,
+        "minute": 18,
+        "house": 3,
+        "retrograde": true
+      },
+      {
+        "id": "jupiter",
+        "longitude": 359.5,
+        "sign": "Pisces",
+        "degree": 29,
+        "minute": 30,
+        "house": 9,
+        "retrograde": false
+      },
+      {
+        "id": "saturn",
+        "longitude": 359.7,
+        "sign": "Pisces",
+        "degree": 29,
+        "minute": 42,
+        "house": 6,
+        "retrograde": true
+      },
+      {
+        "id": "uranus",
+        "longitude": 359.9,
+        "sign": "Pisces",
+        "degree": 29,
+        "minute": 54,
+        "house": 6,
+        "retrograde": false
+      },
+      {
+        "id": "neptune",
+        "longitude": 0.10000000000002274,
+        "sign": "Aries",
+        "degree": 0,
+        "minute": 6,
+        "house": 6,
+        "retrograde": true
+      },
+      {
+        "id": "pluto",
+        "longitude": 0.30000000000001137,
+        "sign": "Aries",
+        "degree": 0,
+        "minute": 18,
+        "house": 5,
+        "retrograde": false
+      },
+      {
+        "id": "chiron",
+        "longitude": 0.5,
+        "sign": "Aries",
+        "degree": 0,
+        "minute": 30,
+        "house": 12,
+        "retrograde": true
+      },
+      {
+        "id": "true_node",
+        "longitude": 0.6999999999999886,
+        "sign": "Aries",
+        "degree": 0,
+        "minute": 42,
+        "house": 11,
+        "retrograde": false
+      },
+      {
+        "id": "south_node",
+        "longitude": 0.8999999999999773,
+        "sign": "Aries",
+        "degree": 0,
+        "minute": 54,
+        "house": 5,
+        "retrograde": true
+      },
+      {
+        "id": "mean_apog",
+        "longitude": 1.1000000000000227,
+        "sign": "Aries",
+        "degree": 1,
+        "minute": 6,
+        "house": 11,
+        "retrograde": false
+      },
+      {
+        "id": "selena",
+        "longitude": 1.3000000000000114,
+        "sign": "Aries",
+        "degree": 1,
+        "minute": 18,
+        "house": 5,
+        "retrograde": true
+      },
+      {
+        "id": "pars_fortune",
+        "longitude": 1.5,
+        "sign": "Aries",
+        "degree": 1,
+        "minute": 30,
+        "house": 6,
+        "retrograde": false
+      }
+    ],
+    "angles": {
+      "asc": {
+        "longitude": 359.4,
+        "sign": "Pisces",
+        "degree": 29,
+        "minute": 24
+      },
+      "mc": {
+        "longitude": 359.5,
+        "sign": "Pisces",
+        "degree": 29,
+        "minute": 30
+      },
+      "vertex": {
+        "longitude": 359.6,
+        "sign": "Pisces",
+        "degree": 29,
+        "minute": 36
+      },
+      "dsc": {
+        "longitude": 179.4,
+        "sign": "Virgo",
+        "degree": 29,
+        "minute": 24
+      },
+      "ic": {
+        "longitude": 179.5,
+        "sign": "Virgo",
+        "degree": 29,
+        "minute": 30
+      }
+    },
+    "houses": [
+      {
+        "number": 1,
+        "cusp_longitude": 98.10571461295291,
+        "sign": "Cancer",
+        "degree": 8,
+        "minute": 6
+      },
+      {
+        "number": 2,
+        "cusp_longitude": 111.86113073362736,
+        "sign": "Cancer",
+        "degree": 21,
+        "minute": 51
+      },
+      {
+        "number": 3,
+        "cusp_longitude": 127.21128222848128,
+        "sign": "Leo",
+        "degree": 7,
+        "minute": 12
+      },
+      {
+        "number": 4,
+        "cusp_longitude": 147.62940719926064,
+        "sign": "Leo",
+        "degree": 27,
+        "minute": 37
+      },
+      {
+        "number": 5,
+        "cusp_longitude": 179.74928469285112,
+        "sign": "Virgo",
+        "degree": 29,
+        "minute": 44
+      },
+      {
+        "number": 6,
+        "cusp_longitude": 231.38720474173113,
+        "sign": "Scorpio",
+        "degree": 21,
+        "minute": 23
+      },
+      {
+        "number": 7,
+        "cusp_longitude": 278.1057146129529,
+        "sign": "Capricorn",
+        "degree": 8,
+        "minute": 6
+      },
+      {
+        "number": 8,
+        "cusp_longitude": 291.86113073362736,
+        "sign": "Capricorn",
+        "degree": 21,
+        "minute": 51
+      },
+      {
+        "number": 9,
+        "cusp_longitude": 307.2112822284813,
+        "sign": "Aquarius",
+        "degree": 7,
+        "minute": 12
+      },
+      {
+        "number": 10,
+        "cusp_longitude": 327.62940719926064,
+        "sign": "Aquarius",
+        "degree": 27,
+        "minute": 37
+      },
+      {
+        "number": 11,
+        "cusp_longitude": 359.7492846928511,
+        "sign": "Pisces",
+        "degree": 29,
+        "minute": 44
+      },
+      {
+        "number": 12,
+        "cusp_longitude": 51.38720474173114,
+        "sign": "Taurus",
+        "degree": 21,
+        "minute": 23
+      }
+    ],
+    "aspects": [
+      {
+        "from": "sun",
+        "to": "moon",
+        "type": "conjunction",
+        "category": "exact",
+        "orb": 0.2
+      },
+      {
+        "from": "mercury",
+        "to": "venus",
+        "type": "conjunction",
+        "category": "working",
+        "orb": 0.2
+      },
+      {
+        "from": "mars",
+        "to": "jupiter",
+        "type": "conjunction",
+        "category": "exact",
+        "orb": 0.2
+      },
+      {
+        "from": "saturn",
+        "to": "uranus",
+        "type": "conjunction",
+        "category": "working",
+        "orb": 0.2
+      },
+      {
+        "from": "neptune",
+        "to": "pluto",
+        "type": "conjunction",
+        "category": "background",
+        "orb": 0.2
+      }
+    ]
+  },
+  "variant": "D",
+  "viewport": 360,
+  "passive": true,
+  "search": {
+    "found": true,
+    "stages": [
+      {
+        "key": "angle:asc",
+        "candidates": 1077,
+        "pair_checks": 97,
+        "beam": 96
+      },
+      {
+        "key": "angle:mc",
+        "candidates": 1077,
+        "pair_checks": 1131,
+        "beam": 96
+      },
+      {
+        "key": "angle:vertex",
+        "candidates": 935,
+        "pair_checks": 2445,
+        "beam": 96
+      },
+      {
+        "key": "angle:dsc",
+        "candidates": 1077,
+        "pair_checks": 250,
+        "beam": 96
+      },
+      {
+        "key": "angle:ic",
+        "candidates": 1077,
+        "pair_checks": 2123,
+        "beam": 96
+      },
+      {
+        "key": "[\"sun\",\"moon\",\"conjunction\"]",
+        "candidates": 921,
+        "pair_checks": 2947,
+        "beam": 96
+      },
+      {
+        "key": "[\"mercury\",\"venus\",\"conjunction\"]",
+        "candidates": 848,
+        "pair_checks": 3391,
+        "beam": 96
+      },
+      {
+        "key": "[\"mars\",\"jupiter\",\"conjunction\"]",
+        "candidates": 921,
+        "pair_checks": 3678,
+        "beam": 96
+      },
+      {
+        "key": "[\"saturn\",\"uranus\",\"conjunction\"]",
+        "candidates": 847,
+        "pair_checks": 7118,
+        "beam": 96
+      },
+      {
+        "key": "sun",
+        "candidates": 844,
+        "pair_checks": 360,
+        "beam": 96
+      },
+      {
+        "key": "moon",
+        "candidates": 953,
+        "pair_checks": 1262,
+        "beam": 96
+      },
+      {
+        "key": "mercury",
+        "candidates": 742,
+        "pair_checks": 1272,
+        "beam": 96
+      },
+      {
+        "key": "venus",
+        "candidates": 965,
+        "pair_checks": 1101,
+        "beam": 96
+      },
+      {
+        "key": "mars",
+        "candidates": 792,
+        "pair_checks": 1225,
+        "beam": 96
+      },
+      {
+        "key": "jupiter",
+        "candidates": 965,
+        "pair_checks": 2234,
+        "beam": 96
+      },
+      {
+        "key": "saturn",
+        "candidates": 768,
+        "pair_checks": 1240,
+        "beam": 96
+      },
+      {
+        "key": "uranus",
+        "candidates": 954,
+        "pair_checks": 1557,
+        "beam": 96
+      },
+      {
+        "key": "neptune",
+        "candidates": 745,
+        "pair_checks": 1790,
+        "beam": 96
+      },
+      {
+        "key": "pluto",
+        "candidates": 1007,
+        "pair_checks": 1279,
+        "beam": 96
+      },
+      {
+        "key": "chiron",
+        "candidates": 755,
+        "pair_checks": 2132,
+        "beam": 96
+      },
+      {
+        "key": "true_node",
+        "candidates": 953,
+        "pair_checks": 1587,
+        "beam": 96
+      },
+      {
+        "key": "south_node",
+        "candidates": 756,
+        "pair_checks": 1786,
+        "beam": 96
+      },
+      {
+        "key": "mean_apog",
+        "candidates": 1008,
+        "pair_checks": 1053,
+        "beam": 96
+      },
+      {
+        "key": "selena",
+        "candidates": 843,
+        "pair_checks": 1831,
+        "beam": 96
+      },
+      {
+        "key": "pars_fortune",
+        "candidates": 1023,
+        "pair_checks": 2019,
+        "beam": 96
+      }
+    ]
+  },
+  "return_history": [
+    {
+      "sweep": 0,
+      "changed": 24
+    },
+    {
+      "sweep": 1,
+      "changed": 20
+    },
+    {
+      "sweep": 2,
+      "changed": 20
+    }
+  ],
+  "elapsed_seconds": 0.890427100006491,
+  "seed_variant": "B",
+  "return_history_D": [
+    {
+      "sweep": 0,
+      "changed": 18
+    },
+    {
+      "sweep": 1,
+      "changed": 16
+    },
+    {
+      "sweep": 2,
+      "changed": 13
+    },
+    {
+      "sweep": 3,
+      "changed": 12
+    },
+    {
+      "sweep": 4,
+      "changed": 11
+    },
+    {
+      "sweep": 5,
+      "changed": 9
+    },
+    {
+      "sweep": 6,
+      "changed": 9
+    },
+    {
+      "sweep": 7,
+      "changed": 9
+    },
+    {
+      "sweep": 8,
+      "changed": 8
+    },
+    {
+      "sweep": 9,
+      "changed": 7
+    },
+    {
+      "sweep": 10,
+      "changed": 7
+    },
+    {
+      "sweep": 11,
+      "changed": 7
+    },
+    {
+      "sweep": 12,
+      "changed": 7
+    },
+    {
+      "sweep": 13,
+      "changed": 7
+    },
+    {
+      "sweep": 14,
+      "changed": 7
+    },
+    {
+      "sweep": 15,
+      "changed": 7
+    },
+    {
+      "sweep": 16,
+      "changed": 7
+    },
+    {
+      "sweep": 17,
+      "changed": 7
+    },
+    {
+      "sweep": 18,
+      "changed": 6
+    },
+    {
+      "sweep": 19,
+      "changed": 6
+    },
+    {
+      "sweep": 20,
+      "changed": 6
+    },
+    {
+      "sweep": 21,
+      "changed": 5
+    },
+    {
+      "sweep": 22,
+      "changed": 3
+    },
+    {
+      "sweep": 23,
+      "changed": 3
+    }
+  ],
+  "elapsed_seconds_D": 2.3185063999844715
+}

@@ -1,0 +1,167 @@
+{
+  "author": "Codex / Tester",
+  "date": "2026-10-16",
+  "version": "consultation-v2-pre-publication",
+  "task_id": "TASK-T-002",
+  "manager_registration": "assignment registered; new result pending",
+  "review_sha": "543b7ec726ee96c951dc0abbf1067ca6ad47a1ba",
+  "main_baseline": "535551026af6eedaf2a0aa5c0daa96fa94655ec1",
+  "published_main_snapshot": "bba8d6cfb22f586f86c3035423f2535ede158b9f",
+  "published_main_tree_matches_baseline": true,
+  "analyst_package_sha": "2634b224894b1046113557bfe241f0a5f2d46f8c",
+  "developer_package_sha": "04be207627de1049deac2e069574e01b62536607",
+  "new_developer_consultation": null,
+  "candidate_sha": null,
+  "tested_sha": null,
+  "accepted_sha": null,
+  "worktree": "C:\\Users\\KateUser\\.codex\\worktrees\\ui-chart-wheel-test\\exact-orb-recovered",
+  "branch": "test/ui-chart-wheel",
+  "source_hash_basis": "canonical LF Git input bytes",
+  "source_git_sha256": {
+    "AGENTS.md": "e5737a9b86f96483e7bad691bbfb3e179b00763bcbc62077141b4618d1c37b95",
+    "docs/project_management/change_plans/ui-chart-wheel/analyst/decision_input.patch": "0c88337410a9561c1af709bc5864bdd6c7ec1fe0c0e67ed3ab17894bb3c13bfb",
+    "docs/project_management/change_plans/ui-chart-wheel/analyst/findings.md": "4640af07d7b09a284e4cf5abfb28e79372199c823c7171d0d307325982b776f5",
+    "docs/project_management/change_plans/ui-chart-wheel/analyst/package_manifest.json": "ef672dd4935e8b15f2b14dbd7aed80aff0c4f8fd5e2c5e26bf1e3f9bb7640bf0",
+    "docs/project_management/change_plans/ui-chart-wheel/analyst/requirements.md": "3cfd3dadba7213465ffbec8da866cefd496905792ec971671bf920b4c2ddd684",
+    "docs/project_management/change_plans/ui-chart-wheel/analyst/scenarios.md": "b3a7942f9feb76877f43f95f04a33ba44a7931620a5da6226f38991bb797dccd",
+    "docs/project_management/change_plans/ui-chart-wheel/analyst/sequence_diagrams/ui/001-chart-presentation.puml": "a2062567689495f8a9a4b16bcb9616e7b8ef3d12a7421a44135a721bd25d7116",
+    "docs/project_management/change_plans/ui-chart-wheel/analyst/sequence_diagrams/ui/002-wheel-table-selection.puml": "af1fb9396708bd728a336edcbe4e37ad6db04fdeba03d12f50483e90e0a915c5",
+    "docs/project_management/change_plans/ui-chart-wheel/analyst/sequence_diagrams/ui/003-edit-and-recovery.puml": "a7bee13c5502ddde382630affe76c0cfb3ba3c81f9b3c622e40f27f1fbfac610",
+    "docs/project_management/change_plans/ui-chart-wheel/analyst/sources.md": "b88be56857dd13e642147e70f02e05ce689cd794fc078ced504cdb7765fef853",
+    "docs/project_management/change_plans/ui-chart-wheel/analyst_artifact.md": "636c3ac812168324a93d4554b7936d25c6df6250000a4614023af7ae3966c8c2",
+    "docs/project_management/change_plans/ui-chart-wheel/developer/checks.md": "eca2a1566087e2d6eb7f462587c95d3e1ec04abda66e36f375262c68586eb976",
+    "docs/project_management/change_plans/ui-chart-wheel/developer/decision_input.patch": "ea5f0f22903b3f29423641e0ff6cb63ec4177f3530f4d041a7168bf9f8e1b4c6",
+    "docs/project_management/change_plans/ui-chart-wheel/developer/findings.md": "56d833d7d8f50ae1082081b4a4c69f4ccc52428b81f114bb642bb38bd83b3f65",
+    "docs/project_management/change_plans/ui-chart-wheel/developer/implementation_plan.md": "7622884debcb883b4ddca3c5690086390c7a556255eedc389196cb2f7bde6389",
+    "docs/project_management/change_plans/ui-chart-wheel/developer/package_manifest.json": "cfe85e7b39d2b6094b72a44fad1629740e771e1312b29bc38bf8f80584b69d81",
+    "docs/project_management/change_plans/ui-chart-wheel/developer/prompts/01-renderer-decisions-and-spike.md": "79a8382f439237855e5dbbd2699754da8ef6dd8674057a99c58e2adcd2e7f7fe",
+    "docs/project_management/change_plans/ui-chart-wheel/developer/prompts/02-svg-renderer.md": "561e0b2534be45c3daecadcddf93a70204c6ce40993d654ac4c8c1fa34df95ca",
+    "docs/project_management/change_plans/ui-chart-wheel/developer/prompts/03-selection-and-tables.md": "e7f690755aa2ab634729d3c556011a515a81b0bcebd805ab35ebed55e398e23b",
+    "docs/project_management/change_plans/ui-chart-wheel/developer/prompts/04-page-form-and-recovery.md": "33d5112c198768b0ee09aecd0c3a3b2c11aaab96fa0ed3a3e3e74a9ffa40ea9a",
+    "docs/project_management/change_plans/ui-chart-wheel/developer_artifact.md": "a670790e8c3c1d32ab1406a72640216f8a188aa6c58368db8c8f32a996eab81f",
+    "docs/project_management/change_plans/ui-chart-wheel/manager_artifact.md": "a3d6d8cd74f295c64648725ed22867379b89782b425bef30af27e92f43aa6cd2",
+    "docs/project_management/change_plans/ui-chart-wheel/process_notes.md": "fa6c1843b7ae27500fee744512512c43960914f0d1e3eef6babcde9a26bac56f",
+    "docs/project_management/technical_debt.md": "583ea6b5fe787847ea3f36bf9a39e7ed037eddc8284baf4f75c35a46b6e64ce9",
+    "docs/requirements/current/ui/birth-form-and-facts.md": "36a534f92b826454c0f145c6ea1acc92ab95e08e31bef17221f4005bb18fac1b",
+    "docs/requirements/current/ui/scenarios.md": "ee737e0e7cbe20a8bdee3c85e9d6fa35155ef151069ec6057d1c757bbfd54353",
+    "docs/requirements/http_api.md": "4e02a9db151b2fe728fef3ca3832c1a78c7dfebded26063053445541d920a55c",
+    "src/exact_orb/http_api/ui/facts.mjs": "5cfddc42b430b9d5847d7dd6446975b0a1d358615af98d401ba7cbae29edbc66",
+    "src/exact_orb/http_api/ui/main.mjs": "6c9e0abdf933b1394f14279fcb2ac80990700b50cc4b70cc1176cf887fc88e7e",
+    "src/exact_orb/http_api/ui/response.mjs": "045770e93485c9f8111c6bd03bf9ce9a16e19d05f5e9624931ae63f84bfcbb8d",
+    "src/exact_orb/http_api/ui/session.mjs": "0eea63e3b4d0049b0f40f5fdce55fe20a8dc9430eb4cd05d7d0883bd5e895564",
+    "tests/ui/facts.test.mjs": "0e04d5bfac734f8fc8c9f91c42c35bc2415d59c6f133c1e6307128bd23cfa33c",
+    "tests/ui/recovery.test.mjs": "96bbfb7f98f09ff0fc074eaf8fb32ee30684514195704da0671b8b99cf30c8c0",
+    "tests/ui/session.test.mjs": "653782c7fe284119490a5216ab6257838e62804384db9329e633dceb7bd730bf"
+  },
+  "main_to_input_changed_paths": [
+    "docs/project_management/change_plans/ui-chart-wheel/analyst/decision_input.patch",
+    "docs/project_management/change_plans/ui-chart-wheel/analyst/findings.md",
+    "docs/project_management/change_plans/ui-chart-wheel/analyst/package_manifest.json",
+    "docs/project_management/change_plans/ui-chart-wheel/analyst/requirements.md",
+    "docs/project_management/change_plans/ui-chart-wheel/analyst/scenarios.md",
+    "docs/project_management/change_plans/ui-chart-wheel/analyst/sequence_diagrams/ui/001-chart-presentation.puml",
+    "docs/project_management/change_plans/ui-chart-wheel/analyst/sequence_diagrams/ui/002-wheel-table-selection.puml",
+    "docs/project_management/change_plans/ui-chart-wheel/analyst/sequence_diagrams/ui/003-edit-and-recovery.puml",
+    "docs/project_management/change_plans/ui-chart-wheel/analyst/sources.md",
+    "docs/project_management/change_plans/ui-chart-wheel/analyst_artifact.md",
+    "docs/project_management/change_plans/ui-chart-wheel/developer/checks.md",
+    "docs/project_management/change_plans/ui-chart-wheel/developer/decision_input.patch",
+    "docs/project_management/change_plans/ui-chart-wheel/developer/findings.md",
+    "docs/project_management/change_plans/ui-chart-wheel/developer/implementation_plan.md",
+    "docs/project_management/change_plans/ui-chart-wheel/developer/package_manifest.json",
+    "docs/project_management/change_plans/ui-chart-wheel/developer/prompts/01-renderer-decisions-and-spike.md",
+    "docs/project_management/change_plans/ui-chart-wheel/developer/prompts/02-svg-renderer.md",
+    "docs/project_management/change_plans/ui-chart-wheel/developer/prompts/03-selection-and-tables.md",
+    "docs/project_management/change_plans/ui-chart-wheel/developer/prompts/04-page-form-and-recovery.md",
+    "docs/project_management/change_plans/ui-chart-wheel/developer_artifact.md",
+    "docs/project_management/change_plans/ui-chart-wheel/manager_artifact.md",
+    "docs/project_management/change_plans/ui-chart-wheel/process_notes.md",
+    "docs/project_management/change_plans/ui-chart-wheel/tester/coverage_matrix.md",
+    "docs/project_management/change_plans/ui-chart-wheel/tester/decision_input.patch",
+    "docs/project_management/change_plans/ui-chart-wheel/tester/defects.md",
+    "docs/project_management/change_plans/ui-chart-wheel/tester/evidence/review.json",
+    "docs/project_management/change_plans/ui-chart-wheel/tester/evidence/validate_review.py",
+    "docs/project_management/change_plans/ui-chart-wheel/tester/evidence/validation.txt",
+    "docs/project_management/change_plans/ui-chart-wheel/tester/test_plan.md",
+    "docs/project_management/change_plans/ui-chart-wheel/tester/testability_review.md",
+    "docs/project_management/change_plans/ui-chart-wheel/tester_artifact.md"
+  ],
+  "static_checks": {
+    "markdown_files": 5,
+    "local_links": 133,
+    "tables": 7,
+    "requirements": 22,
+    "partial": 16,
+    "missing": 6,
+    "as_wheel": 30,
+    "as_ui": 23,
+    "as_ui_modify": "AS-UI-22",
+    "planned_t_wheel": 14,
+    "sequences_mapped": 3,
+    "dp_proposals": [
+      "010",
+      "011",
+      "012",
+      "013",
+      "014"
+    ],
+    "source_files_unchanged": 34,
+    "manifest_payloads": {
+      "analyst": 9,
+      "developer": 9
+    },
+    "finding_states": {
+      "TEST-FIND-WHEEL-001": "CLOSED",
+      "TEST-FIND-WHEEL-002": "OPEN",
+      "TEST-FIND-WHEEL-003": "CLOSED"
+    }
+  },
+  "fixture_inventory_only": {
+    "tests/http_api/golden/chart_dto.json": {
+      "natal": {
+        "points": 3,
+        "aspects": 3,
+        "houses": 3
+      },
+      "cosmogram": {
+        "points": 2,
+        "aspects": 1,
+        "houses": null
+      }
+    },
+    "tests/ui/fixtures/natal_1985_chart_dto.json": {
+      "full_natal": {
+        "points": 16,
+        "aspects": 46,
+        "houses": 12
+      }
+    }
+  },
+  "testability": "TESTABLE WITH CLARIFICATIONS",
+  "estimate_independent_testing_days": [
+    3,
+    5
+  ],
+  "estimate_consultation_days": [
+    0.5,
+    0.75
+  ],
+  "estimate_confidence": "medium",
+  "not_run": [
+    "pytest",
+    "node --test",
+    "browser acceptance",
+    "HTTPS smoke",
+    "PlantUML rendering",
+    "density spike",
+    "renderer replacement",
+    "post-acceptance transfer verification"
+  ],
+  "limitations": [
+    "Document review only; CLOSED requirement gaps do not mean runtime PASS",
+    "Remaining numerical/layout/replacement/mobile criteria are in existing DP-O-010..013",
+    "Reviewers have not accepted this local result; Manager lifecycle and approvals unchanged",
+    "Previous evidence is preserved in Git at 9dd8b96; it is not a run on this InputSHA",
+    "Pre-publication validation snapshot; subsequent authorized commit/push is recorded in tester_artifact.md; PR not requested"
+  ]
+}

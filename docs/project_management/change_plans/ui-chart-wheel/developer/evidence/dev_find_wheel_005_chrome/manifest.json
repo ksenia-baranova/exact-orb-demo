@@ -1,0 +1,31 @@
+{
+  "finding": "DEV-FIND-WHEEL-005",
+  "reported_by": "Owner",
+  "registered_by": "Codex / Developer",
+  "date": "2026-10-20",
+  "browser": "Google Chrome",
+  "browser_version": null,
+  "URL": "https://exact-orb.localhost/",
+  "capture_pixels": [
+    1882,
+    1068
+  ],
+  "CSS_viewport": null,
+  "browser_zoom_percent": null,
+  "device_pixel_ratio": null,
+  "head": "e0daa0e814d3d1fd34cadb8c17d064f19c4810f5",
+  "branch": "dev/ui-chart-wheel",
+  "candidate_state": "HEAD plus local uncommitted UI; screenshot not independently bound to CandidateSHA",
+  "state": "normal natal chart_ready / no aspect reading mode",
+  "screenshot": {
+    "file": "chrome-wheel-viewport-owner.png",
+    "sha256": "8bc900dae8872ae111054fd3fe1bc69fbdda2dd4ca7aa38625cb2537cf142c56",
+    "source_filename": "codex-clipboard-8dc8e00b-3dde-4957-8e0b-87e6065eabbe.png"
+  },
+  "runtime_reproduction_performed": false,
+  "source_fingerprints_at_registration": {
+    "src/exact_orb/http_api/ui/styles.css": "3a37eff6cb8f9b94184102ac5817eaf2d2a4a561e2f3198422c6eca9c3d0cc5d",
+    "src/exact_orb/http_api/ui/wheel_svg.mjs": "9926075fcc42112090f64c5c01b216f6969f96899ca8d614806db75598c8efc3",
+    "src/exact_orb/http_api/ui/wheel_layout.mjs": "bd78348f94ccd81d4b133ccafb65a9cd491b63377219d65523f203cd32b7526f"
+  }
+}

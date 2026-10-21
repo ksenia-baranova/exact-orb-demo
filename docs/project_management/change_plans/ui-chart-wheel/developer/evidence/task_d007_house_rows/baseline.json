@@ -1,0 +1,10 @@
+{
+  "head": "e0daa0e814d3d1fd34cadb8c17d064f19c4810f5",
+  "source": "Owner 20.10: remove column, group inside published houses, allow radial rows; preserve exact data",
+  "files": {
+    "src/exact_orb/http_api/ui/wheel_layout.mjs": "8e681abee76a8c1704a0e0c615b948c85d3e275f3304e18698174aa5625ccc27",
+    "src/exact_orb/http_api/ui/wheel_svg.mjs": "85e55d062fa3a021666a2ef925bf95c28ffab40023da37391b7d066d509d58f0",
+    "src/exact_orb/http_api/ui/result_controller.mjs": "3cfea4b45e41c104b4354457013f6787301b593e8f769a42796fa1cd75f3d794",
+    "tests/ui/wheel_layout.test.mjs": "b4e003c0b876e9c3d7decfde6588d76e3f65ab229535eb1640b55c374731c5a6"
+  }
+}

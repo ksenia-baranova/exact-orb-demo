@@ -1,0 +1,302 @@
+{
+  "browser": "155.0.8059.40",
+  "records": [
+    {
+      "id": "G01-A-live",
+      "actual": {
+        "identity": "eo:calc:v2:471780444330e2d9108e7ae97652bb4a47d3142ffc14cb238a587a6002df8eee",
+        "point": "sun159.34074778029736920Virgofalse",
+        "html": "sun159.34074778029736920Virgofalsemoon7.664949064158727739Ariesfalsemercury142.09770491769441225Leofalsevenus125.5987958919479535Leofalsemars144.792751433922662447Leofalsejupiter308.6836676177389841Aquariustruesaturn232.61554218957362236Scorpiofalseuranus254.00365980527386140Sagittariusfalseneptune270.87690779987076052Capricorntruepluto212.65770399299151239Scorpiofalsechiron74.445534132247771426Geminifalsetrue_node40.91138483483051054Taurustruesouth_node220.91138483483051054Scorpiotruemean_apog40.2015511329523461012Taurusfalseselena225.502570128212651530Scorpiotruepars_fortune249.78151332909155946Sagittariusfalsemean_apogpars_fortunequincunxexact0.4200378038607937moonascsquareexact0.4407655487941611sunpars_fortunesquareexact0.4407655487941611uranuschironoppositionexact0.4418743269739025mercurysaturnsquareexact0.5178372718792161jupiterascquincunxexact0.577953004785968sunjupiterquincunxexact0.6570801625584863true_nodemean_apogconjunctionexact0.7098337018781535sunmean_apogtrineexact0.8608033526549832moonjupitersextileworking1.018718553580129chironselenaquincunxworking1.0570359959648954jupiterpars_fortunesextileworking1.0978457113526758true_nodepars_fortunequincunxworking1.1298715057389472sunascsextileworking1.2350331673444543jupitermean_apogsquareworking1.517883515213498suntrue_nodetrineworking1.5706370545331367pars_fortuneascquincunxworking1.6757987161386438sunmoonquincunxworking1.6757987161386438neptuneplutosextileworking1.78079619312075moonvenustrineworking2.066153172210818mean_apogascsextileworking2.095836519999466marssaturnsquareworking2.177209244349058jupitertrue_nodesquareworking2.2277172170915946mercuryvertexsquareworking2.358986592298379mercurymarsconjunctionworking2.695046516228217true_nodeascsextileworking2.8056702218775627marsmcoppositionworking2.83665576533798saturnvertexconjunctionworking2.8768238641775383venusplutosquareworking2.941091898956415venusjupiteroppositionbackground3.0848717257909755neptunemcsextilebackground3.247500600610124sunuranussquarebackground4.662912024976492venusneptunequincunxbackground4.721888092077137moonplutoquincunxbackground5.007245071167205saturnmcsquarebackground5.013865009687038plutomctrinebackground5.028296793730874sunchironsquarebackground5.104786351950409jupiteruranussextilebackground5.319992187534979plutoasctrinebackground5.448010619961394mercurymcoppositionbackground5.531702281566226jupiterchirontrinebackground5.761866514508881uranusascquincunxbackground5.897945192320947moonuranustrinebackground6.338710741115136sunplutosextilebackground6.683043787305849moonchironsextilebackground6.780585068089067moonneptunesquarebackground6.788041264287983",
+        "summary": "eo:calc:v2:471780444330e2d9108e7ae97652bb4a47d3142ffc14cb238a587a6002df8eee",
+        "error": "",
+        "imageCount": 1,
+        "selected": "sun",
+        "trace": [
+          {
+            "event": "mounted",
+            "style": "default",
+            "identity": "eo:calc:v2:471780444330e2d9108e7ae97652bb4a47d3142ffc14cb238a587a6002df8eee"
+          },
+          {
+            "event": "activation",
+            "identity": "eo:calc:v2:471780444330e2d9108e7ae97652bb4a47d3142ffc14cb238a587a6002df8eee",
+            "intent": {
+              "kind": "point",
+              "id": "sun"
+            },
+            "selected": "sun",
+            "token": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "G01-B-fault-old-callback",
+      "actual": {
+        "identity": "controlled-B-confirmed",
+        "point": "sun12.251215Ariesfalse",
+        "html": "sun12.251215Ariesfalsemoon7.664949064158727739Ariesfalsemercury142.09770491769441225Leofalsevenus125.5987958919479535Leofalsemars144.792751433922662447Leofalsejupiter308.6836676177389841Aquariustruesaturn232.61554218957362236Scorpiofalseuranus254.00365980527386140Sagittariusfalseneptune270.87690779987076052Capricorntruepluto212.65770399299151239Scorpiofalsechiron74.445534132247771426Geminifalsetrue_node40.91138483483051054Taurustruesouth_node220.91138483483051054Scorpiotruemean_apog40.2015511329523461012Taurusfalseselena225.502570128212651530Scorpiotruepars_fortune249.78151332909155946Sagittariusfalsemean_apogpars_fortunequincunxexact2.75moonascsquareexact0.4407655487941611sunpars_fortunesquareexact0.4407655487941611uranuschironoppositionexact0.4418743269739025mercurysaturnsquareexact0.5178372718792161jupiterascquincunxexact0.577953004785968sunjupiterquincunxexact0.6570801625584863true_nodemean_apogconjunctionexact0.7098337018781535sunmean_apogtrineexact0.8608033526549832moonjupitersextileworking1.018718553580129chironselenaquincunxworking1.0570359959648954jupiterpars_fortunesextileworking1.0978457113526758true_nodepars_fortunequincunxworking1.1298715057389472sunascsextileworking1.2350331673444543jupitermean_apogsquareworking1.517883515213498suntrue_nodetrineworking1.5706370545331367pars_fortuneascquincunxworking1.6757987161386438sunmoonquincunxworking1.6757987161386438neptuneplutosextileworking1.78079619312075moonvenustrineworking2.066153172210818mean_apogascsextileworking2.095836519999466marssaturnsquareworking2.177209244349058jupitertrue_nodesquareworking2.2277172170915946mercuryvertexsquareworking2.358986592298379mercurymarsconjunctionworking2.695046516228217true_nodeascsextileworking2.8056702218775627marsmcoppositionworking2.83665576533798saturnvertexconjunctionworking2.8768238641775383venusplutosquareworking2.941091898956415venusjupiteroppositionbackground3.0848717257909755neptunemcsextilebackground3.247500600610124sunuranussquarebackground4.662912024976492venusneptunequincunxbackground4.721888092077137moonplutoquincunxbackground5.007245071167205saturnmcsquarebackground5.013865009687038plutomctrinebackground5.028296793730874sunchironsquarebackground5.104786351950409jupiteruranussextilebackground5.319992187534979plutoasctrinebackground5.448010619961394mercurymcoppositionbackground5.531702281566226jupiterchirontrinebackground5.761866514508881uranusascquincunxbackground5.897945192320947moonuranustrinebackground6.338710741115136sunplutosextilebackground6.683043787305849moonchironsextilebackground6.780585068089067moonneptunesquarebackground6.788041264287983",
+        "summary": "controlled-B-confirmed",
+        "error": "SVG unavailable; confirmed HTML retained",
+        "imageCount": 0,
+        "selected": "sun",
+        "trace": [
+          {
+            "event": "mounted",
+            "style": "default",
+            "identity": "eo:calc:v2:471780444330e2d9108e7ae97652bb4a47d3142ffc14cb238a587a6002df8eee"
+          },
+          {
+            "event": "activation",
+            "identity": "eo:calc:v2:471780444330e2d9108e7ae97652bb4a47d3142ffc14cb238a587a6002df8eee",
+            "intent": {
+              "kind": "point",
+              "id": "sun"
+            },
+            "selected": "sun",
+            "token": 1
+          },
+          {
+            "event": "disposed",
+            "style": "default"
+          },
+          {
+            "event": "fault-hook",
+            "identity": "controlled-B-confirmed"
+          },
+          {
+            "event": "local-unavailable",
+            "identity": "controlled-B-confirmed",
+            "message": "controlled SVG leaf failure"
+          },
+          {
+            "event": "late-ignored",
+            "token": 1,
+            "current": 2
+          }
+        ]
+      }
+    },
+    {
+      "id": "G01-B-alternate-live",
+      "actual": {
+        "identity": "controlled-B-confirmed",
+        "point": "sun12.251215Ariesfalse",
+        "html": "sun12.251215Ariesfalsemoon7.664949064158727739Ariesfalsemercury142.09770491769441225Leofalsevenus125.5987958919479535Leofalsemars144.792751433922662447Leofalsejupiter308.6836676177389841Aquariustruesaturn232.61554218957362236Scorpiofalseuranus254.00365980527386140Sagittariusfalseneptune270.87690779987076052Capricorntruepluto212.65770399299151239Scorpiofalsechiron74.445534132247771426Geminifalsetrue_node40.91138483483051054Taurustruesouth_node220.91138483483051054Scorpiotruemean_apog40.2015511329523461012Taurusfalseselena225.502570128212651530Scorpiotruepars_fortune249.78151332909155946Sagittariusfalsemean_apogpars_fortunequincunxexact2.75moonascsquareexact0.4407655487941611sunpars_fortunesquareexact0.4407655487941611uranuschironoppositionexact0.4418743269739025mercurysaturnsquareexact0.5178372718792161jupiterascquincunxexact0.577953004785968sunjupiterquincunxexact0.6570801625584863true_nodemean_apogconjunctionexact0.7098337018781535sunmean_apogtrineexact0.8608033526549832moonjupitersextileworking1.018718553580129chironselenaquincunxworking1.0570359959648954jupiterpars_fortunesextileworking1.0978457113526758true_nodepars_fortunequincunxworking1.1298715057389472sunascsextileworking1.2350331673444543jupitermean_apogsquareworking1.517883515213498suntrue_nodetrineworking1.5706370545331367pars_fortuneascquincunxworking1.6757987161386438sunmoonquincunxworking1.6757987161386438neptuneplutosextileworking1.78079619312075moonvenustrineworking2.066153172210818mean_apogascsextileworking2.095836519999466marssaturnsquareworking2.177209244349058jupitertrue_nodesquareworking2.2277172170915946mercuryvertexsquareworking2.358986592298379mercurymarsconjunctionworking2.695046516228217true_nodeascsextileworking2.8056702218775627marsmcoppositionworking2.83665576533798saturnvertexconjunctionworking2.8768238641775383venusplutosquareworking2.941091898956415venusjupiteroppositionbackground3.0848717257909755neptunemcsextilebackground3.247500600610124sunuranussquarebackground4.662912024976492venusneptunequincunxbackground4.721888092077137moonplutoquincunxbackground5.007245071167205saturnmcsquarebackground5.013865009687038plutomctrinebackground5.028296793730874sunchironsquarebackground5.104786351950409jupiteruranussextilebackground5.319992187534979plutoasctrinebackground5.448010619961394mercurymcoppositionbackground5.531702281566226jupiterchirontrinebackground5.761866514508881uranusascquincunxbackground5.897945192320947moonuranustrinebackground6.338710741115136sunplutosextilebackground6.683043787305849moonchironsextilebackground6.780585068089067moonneptunesquarebackground6.788041264287983",
+        "summary": "controlled-B-confirmed",
+        "error": "",
+        "imageCount": 1,
+        "selected": null,
+        "trace": [
+          {
+            "event": "mounted",
+            "style": "default",
+            "identity": "eo:calc:v2:471780444330e2d9108e7ae97652bb4a47d3142ffc14cb238a587a6002df8eee"
+          },
+          {
+            "event": "activation",
+            "identity": "eo:calc:v2:471780444330e2d9108e7ae97652bb4a47d3142ffc14cb238a587a6002df8eee",
+            "intent": {
+              "kind": "point",
+              "id": "sun"
+            },
+            "selected": "sun",
+            "token": 1
+          },
+          {
+            "event": "disposed",
+            "style": "default"
+          },
+          {
+            "event": "fault-hook",
+            "identity": "controlled-B-confirmed"
+          },
+          {
+            "event": "local-unavailable",
+            "identity": "controlled-B-confirmed",
+            "message": "controlled SVG leaf failure"
+          },
+          {
+            "event": "late-ignored",
+            "token": 1,
+            "current": 2
+          },
+          {
+            "event": "mounted",
+            "style": "alternate",
+            "identity": "controlled-B-confirmed"
+          },
+          {
+            "event": "activation",
+            "identity": "controlled-B-confirmed",
+            "intent": {
+              "kind": "point",
+              "id": "sun"
+            },
+            "selected": null,
+            "token": 3
+          }
+        ]
+      },
+      "inputUnchanged": true
+    },
+    {
+      "id": "G04-retained-toggle",
+      "before": {
+        "node": "live-renderer",
+        "selection": null
+      },
+      "actual": {
+        "same": true,
+        "connected": true,
+        "selection": "sun"
+      }
+    },
+    {
+      "id": "G05-effective-em-boundaries",
+      "actual": [
+        {
+          "id": "t16",
+          "font": 16,
+          "M": [
+            1,
+            0,
+            0,
+            1
+          ],
+          "bbox": {
+            "x": 10,
+            "y": 13,
+            "width": 8.125,
+            "height": 21
+          }
+        },
+        {
+          "id": "tbelow",
+          "font": 15.99,
+          "M": [
+            1,
+            0,
+            0,
+            1
+          ],
+          "bbox": {
+            "x": 50,
+            "y": 13,
+            "width": 8.125,
+            "height": 21
+          }
+        },
+        {
+          "id": "t12",
+          "font": 12,
+          "M": [
+            1,
+            0,
+            0,
+            1
+          ],
+          "bbox": {
+            "x": 9,
+            "y": 49,
+            "width": 10,
+            "height": 14
+          }
+        },
+        {
+          "id": "tbelow12",
+          "font": 11.99,
+          "M": [
+            1,
+            0,
+            0,
+            1
+          ],
+          "bbox": {
+            "x": 49,
+            "y": 49,
+            "width": 10,
+            "height": 14
+          }
+        }
+      ]
+    },
+    {
+      "id": "G05-SVG-clipping-native",
+      "geometry": [
+        {
+          "id": "bad",
+          "left": 292,
+          "right": 308,
+          "top": 10,
+          "bottom": 26
+        },
+        {
+          "id": "good",
+          "left": 284,
+          "right": 300,
+          "top": 50,
+          "bottom": 66
+        }
+      ],
+      "actual": [
+        {
+          "type": "pointerdown",
+          "x": 299,
+          "y": 18,
+          "target": "bad",
+          "trusted": true
+        },
+        {
+          "type": "click",
+          "x": 299,
+          "y": 18,
+          "target": "bad",
+          "trusted": true
+        },
+        {
+          "type": "pointerdown",
+          "x": 304,
+          "y": 18,
+          "target": "",
+          "trusted": true
+        },
+        {
+          "type": "click",
+          "x": 304,
+          "y": 18,
+          "target": "",
+          "trusted": true
+        },
+        {
+          "type": "pointerdown",
+          "x": 299,
+          "y": 58,
+          "target": "good",
+          "trusted": true
+        },
+        {
+          "type": "click",
+          "x": 299,
+          "y": 58,
+          "target": "good",
+          "trusted": true
+        },
+        {
+          "type": "pointerdown",
+          "x": 299.5,
+          "y": 58,
+          "target": "good",
+          "trusted": true
+        },
+        {
+          "type": "click",
+          "x": 299,
+          "y": 58,
+          "target": "good",
+          "trusted": true
+        }
+      ]
+    }
+  ]
+}

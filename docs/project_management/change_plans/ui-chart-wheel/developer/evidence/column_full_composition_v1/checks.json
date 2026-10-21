@@ -1,0 +1,46 @@
+{
+  "author": "Codex / Developer",
+  "baseline": "07bb56ba5d49ec76de64df41ad80d175fbe90a2d",
+  "baseline_ui_command": "node --test tests/ui/facts.test.mjs tests/ui/form.test.mjs tests/ui/session.test.mjs tests/ui/recovery.test.mjs tests/ui/places.test.mjs tests/ui/transport.test.mjs",
+  "baseline_ui_actual": {
+    "pass": 188,
+    "fail": 0,
+    "exit": 0
+  },
+  "research_actual": {
+    "final_run": "run07-ports",
+    "browser_exit": 0,
+    "native_static": "29/29",
+    "aux_applicable_outcomes": "29/29;92 exact native contacts+12 unmoved+3 not-visible-mode exemptions",
+    "C0_order_row_clip_no_shared_segments": "29/29 each",
+    "native_controls": "13/13",
+    "analytic_controls": "7/7",
+    "boundary": "28/28"
+  },
+  "negative_control": {
+    "command": "python postaudit_final.py run05-final",
+    "expected_exit": 1,
+    "no_shared_cells": "11/29",
+    "reason": "shared positive-length leader segments retained as negative evidence"
+  },
+  "not_run": [
+    "full pytest",
+    "production mounted browser/HTTPS",
+    "other browsers/OS/devices",
+    "zoom/accessibility-tree acceptance",
+    "PlantUML rendering",
+    "new feature tests of future production code",
+    "publication"
+  ],
+  "errors_preserved": [
+    "run01 geometry/anchor/asymmetric bbox",
+    "run02 fallback marker certificate",
+    "run03 helper CSSOM allowlist rejected real SVG",
+    "run05 shared branches",
+    "run06 restricted graph lost routes",
+    "PowerShell date metadata parsing; corrected without changing stop timestamp"
+  ],
+  "bounds": "no universal arbitrary DTO/performance/readability claim; source IDs/DTO/thresholds/golden/engine preserved",
+  "publication": "NOT_RUN",
+  "implementation_started": false
+}

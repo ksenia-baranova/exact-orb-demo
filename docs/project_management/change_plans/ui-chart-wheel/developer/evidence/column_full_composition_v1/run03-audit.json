@@ -1,0 +1,2261 @@
+{
+  "author": "Codex / Developer",
+  "run": "run03",
+  "native_predicate": "exact binary64-as-rational squared Euclidean AABB distance >=4; no tolerance",
+  "records": [
+    {
+      "id": "sparse-720-normal-none-dpr1",
+      "errors": [],
+      "static_pass": true,
+      "texts": 34,
+      "points": 16,
+      "R": 6,
+      "signs": 12,
+      "houses": 0,
+      "angles": 0,
+      "markers": 0,
+      "drawn_aspects": 0,
+      "column_points": 0,
+      "frozen_labels": 16,
+      "height_css": 720,
+      "wheel_css": 720,
+      "column_width_css": 0,
+      "min_foreign_component_gap_css": 5.463658344003585,
+      "max_anchor_error_css": 0.010302547978367101,
+      "missing_leaders": [],
+      "aux_certificates": [],
+      "aux_certificates_pass": true,
+      "actual_fonts": [
+        "Segoe UI Symbol"
+      ],
+      "eligible_graphic_aspects": 0,
+      "ambiguous_source_rows": 0,
+      "aux_1px_endpoint_feasible_NOT_prefix_witness": []
+    },
+    {
+      "id": "sparse-448-normal-none-dpr1",
+      "errors": [],
+      "static_pass": true,
+      "texts": 34,
+      "points": 16,
+      "R": 6,
+      "signs": 12,
+      "houses": 0,
+      "angles": 0,
+      "markers": 0,
+      "drawn_aspects": 0,
+      "column_points": 0,
+      "frozen_labels": 16,
+      "height_css": 448,
+      "wheel_css": 448,
+      "column_width_css": 0,
+      "min_foreign_component_gap_css": 5.441853501450586,
+      "max_anchor_error_css": 0.007162678818474433,
+      "missing_leaders": [],
+      "aux_certificates": [],
+      "aux_certificates_pass": true,
+      "actual_fonts": [
+        "Segoe UI Symbol"
+      ],
+      "eligible_graphic_aspects": 0,
+      "ambiguous_source_rows": 0,
+      "aux_1px_endpoint_feasible_NOT_prefix_witness": []
+    },
+    {
+      "id": "sparse-328-normal-none-dpr1",
+      "errors": [],
+      "static_pass": true,
+      "texts": 34,
+      "points": 16,
+      "R": 6,
+      "signs": 12,
+      "houses": 0,
+      "angles": 0,
+      "markers": 0,
+      "drawn_aspects": 0,
+      "column_points": 0,
+      "frozen_labels": 16,
+      "height_css": 328,
+      "wheel_css": 328,
+      "column_width_css": 0,
+      "min_foreign_component_gap_css": 5.441853501450586,
+      "max_anchor_error_css": 0.010633628787636115,
+      "missing_leaders": [],
+      "aux_certificates": [],
+      "aux_certificates_pass": true,
+      "actual_fonts": [
+        "Segoe UI Symbol"
+      ],
+      "eligible_graphic_aspects": 0,
+      "ambiguous_source_rows": 0,
+      "aux_1px_endpoint_feasible_NOT_prefix_witness": []
+    },
+    {
+      "id": "F1-720-normal-none-dpr1",
+      "errors": [],
+      "static_pass": true,
+      "texts": 49,
+      "points": 16,
+      "R": 5,
+      "signs": 12,
+      "houses": 12,
+      "angles": 5,
+      "markers": 3,
+      "drawn_aspects": 29,
+      "column_points": 8,
+      "frozen_labels": 16,
+      "height_css": 613,
+      "wheel_css": 613,
+      "column_width_css": 95,
+      "min_foreign_component_gap_css": 2.0,
+      "max_anchor_error_css": 0.010152746656378256,
+      "missing_leaders": [],
+      "aux_certificates": [],
+      "aux_certificates_pass": true,
+      "actual_fonts": [
+        "Segoe UI",
+        "Segoe UI Symbol"
+      ],
+      "eligible_graphic_aspects": 29,
+      "ambiguous_source_rows": 0,
+      "aux_1px_endpoint_feasible_NOT_prefix_witness": []
+    },
+    {
+      "id": "F1-448-normal-none-dpr1",
+      "errors": [],
+      "static_pass": true,
+      "texts": 50,
+      "points": 16,
+      "R": 5,
+      "signs": 12,
+      "houses": 12,
+      "angles": 5,
+      "markers": 3,
+      "drawn_aspects": 29,
+      "column_points": 9,
+      "frozen_labels": 15,
+      "height_css": 341,
+      "wheel_css": 341,
+      "column_width_css": 95,
+      "min_foreign_component_gap_css": 2.0,
+      "max_anchor_error_css": 0.009062417019740605,
+      "missing_leaders": [],
+      "aux_certificates": [],
+      "aux_certificates_pass": true,
+      "actual_fonts": [
+        "Segoe UI",
+        "Segoe UI Symbol"
+      ],
+      "eligible_graphic_aspects": 29,
+      "ambiguous_source_rows": 0,
+      "aux_1px_endpoint_feasible_NOT_prefix_witness": []
+    },
+    {
+      "id": "F1-328-normal-none-dpr1",
+      "errors": [],
+      "static_pass": true,
+      "texts": 55,
+      "points": 16,
+      "R": 5,
+      "signs": 12,
+      "houses": 12,
+      "angles": 5,
+      "markers": 3,
+      "drawn_aspects": 29,
+      "column_points": 14,
+      "frozen_labels": 5,
+      "height_css": 357,
+      "wheel_css": 221,
+      "column_width_css": 95,
+      "min_foreign_component_gap_css": 2.0,
+      "max_anchor_error_css": 0.010848716508144922,
+      "missing_leaders": [],
+      "aux_certificates": [
+        {
+          "key": "angle:mc",
+          "result": "UNMOVED",
+          "pass": true
+        },
+        {
+          "key": "angle:vertex",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 8.109375,
+          "frozen_obstacle": "anchor:saturn"
+        },
+        {
+          "key": "angle:dsc",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 3.75,
+          "frozen_obstacle": "anchor:neptune"
+        },
+        {
+          "key": "angle:ic",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 9.875,
+          "frozen_obstacle": "anchor:mercury"
+        },
+        {
+          "key": "conj:mean_apog|true_node|conjunction",
+          "result": "UNMOVED",
+          "pass": true
+        }
+      ],
+      "aux_certificates_pass": true,
+      "actual_fonts": [
+        "Segoe UI",
+        "Segoe UI Symbol"
+      ],
+      "eligible_graphic_aspects": 29,
+      "ambiguous_source_rows": 0,
+      "aux_1px_endpoint_feasible_NOT_prefix_witness": []
+    },
+    {
+      "id": "F3-720-normal-none-dpr1",
+      "errors": [],
+      "static_pass": true,
+      "texts": 55,
+      "points": 16,
+      "R": 9,
+      "signs": 12,
+      "houses": 12,
+      "angles": 5,
+      "markers": 2,
+      "drawn_aspects": 2,
+      "column_points": 11,
+      "frozen_labels": 10,
+      "height_css": 613,
+      "wheel_css": 613,
+      "column_width_css": 95,
+      "min_foreign_component_gap_css": 2.0,
+      "max_anchor_error_css": 0.010152746656378256,
+      "missing_leaders": [],
+      "aux_certificates": [
+        {
+          "key": "conj:mercury|venus|conjunction",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 7.6015625,
+          "frozen_obstacle": "anchor:conj:mars|venus|conjunction"
+        },
+        {
+          "key": "conj:mars|venus|conjunction",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 7.6015625,
+          "frozen_obstacle": "anchor:conj:mercury|venus|conjunction"
+        }
+      ],
+      "aux_certificates_pass": true,
+      "actual_fonts": [
+        "Segoe UI",
+        "Segoe UI Symbol"
+      ],
+      "eligible_graphic_aspects": 2,
+      "ambiguous_source_rows": 0,
+      "aux_1px_endpoint_feasible_NOT_prefix_witness": []
+    },
+    {
+      "id": "F3-448-normal-none-dpr1",
+      "errors": [],
+      "static_pass": true,
+      "texts": 55,
+      "points": 16,
+      "R": 9,
+      "signs": 12,
+      "houses": 12,
+      "angles": 5,
+      "markers": 2,
+      "drawn_aspects": 2,
+      "column_points": 11,
+      "frozen_labels": 10,
+      "height_css": 341,
+      "wheel_css": 341,
+      "column_width_css": 95,
+      "min_foreign_component_gap_css": 2.0,
+      "max_anchor_error_css": 0.009062417019740605,
+      "missing_leaders": [],
+      "aux_certificates": [
+        {
+          "key": "conj:mercury|venus|conjunction",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 7.9296875,
+          "frozen_obstacle": "anchor:conj:mars|venus|conjunction"
+        },
+        {
+          "key": "conj:mars|venus|conjunction",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 7.9296875,
+          "frozen_obstacle": "anchor:conj:mercury|venus|conjunction"
+        }
+      ],
+      "aux_certificates_pass": true,
+      "actual_fonts": [
+        "Segoe UI",
+        "Segoe UI Symbol"
+      ],
+      "eligible_graphic_aspects": 2,
+      "ambiguous_source_rows": 0,
+      "aux_1px_endpoint_feasible_NOT_prefix_witness": []
+    },
+    {
+      "id": "F3-328-normal-none-dpr1",
+      "errors": [],
+      "static_pass": true,
+      "texts": 59,
+      "points": 16,
+      "R": 9,
+      "signs": 12,
+      "houses": 12,
+      "angles": 5,
+      "markers": 2,
+      "drawn_aspects": 2,
+      "column_points": 15,
+      "frozen_labels": 2,
+      "height_css": 381.5,
+      "wheel_css": 221,
+      "column_width_css": 95,
+      "min_foreign_component_gap_css": 2.0,
+      "max_anchor_error_css": 0.010848716508144922,
+      "missing_leaders": [],
+      "aux_certificates": [
+        {
+          "key": "angle:mc",
+          "result": "UNMOVED",
+          "pass": true
+        },
+        {
+          "key": "angle:vertex",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 3.421875,
+          "frozen_obstacle": "anchor:selena"
+        },
+        {
+          "key": "angle:dsc",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 3.75,
+          "frozen_obstacle": "anchor:neptune"
+        },
+        {
+          "key": "angle:ic",
+          "result": "UNMOVED",
+          "pass": true
+        },
+        {
+          "key": "conj:mercury|venus|conjunction",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 7.734375,
+          "frozen_obstacle": "anchor:conj:mars|venus|conjunction"
+        },
+        {
+          "key": "conj:mars|venus|conjunction",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 7.734375,
+          "frozen_obstacle": "anchor:conj:mercury|venus|conjunction"
+        }
+      ],
+      "aux_certificates_pass": true,
+      "actual_fonts": [
+        "Segoe UI",
+        "Segoe UI Symbol"
+      ],
+      "eligible_graphic_aspects": 2,
+      "ambiguous_source_rows": 0,
+      "aux_1px_endpoint_feasible_NOT_prefix_witness": []
+    },
+    {
+      "id": "F3-max-720-normal-none-dpr1",
+      "errors": [],
+      "static_pass": true,
+      "texts": 61,
+      "points": 16,
+      "R": 8,
+      "signs": 12,
+      "houses": 12,
+      "angles": 5,
+      "markers": 4,
+      "drawn_aspects": 4,
+      "column_points": 16,
+      "frozen_labels": 0,
+      "height_css": 613,
+      "wheel_css": 613,
+      "column_width_css": 95,
+      "min_foreign_component_gap_css": 2.0,
+      "max_anchor_error_css": 0.009663967252172428,
+      "missing_leaders": [],
+      "aux_certificates": [
+        {
+          "key": "angle:asc",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 11.5,
+          "frozen_obstacle": "anchor:angle:vertex"
+        },
+        {
+          "key": "angle:mc",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 11.25,
+          "frozen_obstacle": "anchor:angle:asc"
+        },
+        {
+          "key": "angle:vertex",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 20.7841796875,
+          "frozen_obstacle": "angle:asc"
+        },
+        {
+          "key": "angle:dsc",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 10.75,
+          "frozen_obstacle": "anchor:angle:ic"
+        },
+        {
+          "key": "angle:ic",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 10.75,
+          "frozen_obstacle": "anchor:angle:dsc"
+        },
+        {
+          "key": "conj:moon|sun|conjunction",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 8.609375,
+          "frozen_obstacle": "angle:asc"
+        },
+        {
+          "key": "conj:mercury|venus|conjunction",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 7.8125,
+          "frozen_obstacle": "anchor:conj:moon|sun|conjunction"
+        },
+        {
+          "key": "conj:jupiter|mars|conjunction",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 7.8125,
+          "frozen_obstacle": "anchor:conj:moon|sun|conjunction"
+        },
+        {
+          "key": "conj:saturn|uranus|conjunction",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 19.4375,
+          "frozen_obstacle": "conj:mercury|venus|conjunction"
+        }
+      ],
+      "aux_certificates_pass": true,
+      "actual_fonts": [
+        "Segoe UI",
+        "Segoe UI Symbol"
+      ],
+      "eligible_graphic_aspects": 4,
+      "ambiguous_source_rows": 0,
+      "aux_1px_endpoint_feasible_NOT_prefix_witness": [
+        {
+          "key": "conj:moon|sun|conjunction",
+          "probe_css": 1,
+          "P": [
+            285.65073473858996,
+            296.929584501489
+          ]
+        }
+      ]
+    },
+    {
+      "id": "F3-max-448-normal-none-dpr1",
+      "errors": [],
+      "static_pass": true,
+      "texts": 61,
+      "points": 16,
+      "R": 8,
+      "signs": 12,
+      "houses": 12,
+      "angles": 5,
+      "markers": 4,
+      "drawn_aspects": 4,
+      "column_points": 16,
+      "frozen_labels": 0,
+      "height_css": 406,
+      "wheel_css": 341,
+      "column_width_css": 95,
+      "min_foreign_component_gap_css": 2.0,
+      "max_anchor_error_css": 0.009459854057045773,
+      "missing_leaders": [],
+      "aux_certificates": [
+        {
+          "key": "angle:asc",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 15.3125,
+          "frozen_obstacle": "anchor:pars_fortune"
+        },
+        {
+          "key": "angle:mc",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 11.140625,
+          "frozen_obstacle": "anchor:angle:vertex"
+        },
+        {
+          "key": "angle:vertex",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 11.28125,
+          "frozen_obstacle": "anchor:angle:asc"
+        },
+        {
+          "key": "angle:dsc",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 14.39453125,
+          "frozen_obstacle": "anchor:angle:ic"
+        },
+        {
+          "key": "angle:ic",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 8.5966796875,
+          "frozen_obstacle": "anchor:angle:dsc"
+        },
+        {
+          "key": "conj:moon|sun|conjunction",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 31.625,
+          "frozen_obstacle": "angle:vertex"
+        },
+        {
+          "key": "conj:mercury|venus|conjunction",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 7.8125,
+          "frozen_obstacle": "anchor:conj:moon|sun|conjunction"
+        },
+        {
+          "key": "conj:jupiter|mars|conjunction",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 7.8125,
+          "frozen_obstacle": "anchor:conj:moon|sun|conjunction"
+        },
+        {
+          "key": "conj:saturn|uranus|conjunction",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 19.4375,
+          "frozen_obstacle": "conj:jupiter|mars|conjunction"
+        }
+      ],
+      "aux_certificates_pass": true,
+      "actual_fonts": [
+        "Segoe UI",
+        "Segoe UI Symbol"
+      ],
+      "eligible_graphic_aspects": 4,
+      "ambiguous_source_rows": 0,
+      "aux_1px_endpoint_feasible_NOT_prefix_witness": []
+    },
+    {
+      "id": "F3-max-328-normal-none-dpr1",
+      "errors": [],
+      "static_pass": true,
+      "texts": 61,
+      "points": 16,
+      "R": 8,
+      "signs": 12,
+      "houses": 12,
+      "angles": 5,
+      "markers": 4,
+      "drawn_aspects": 4,
+      "column_points": 16,
+      "frozen_labels": 0,
+      "height_css": 406,
+      "wheel_css": 221,
+      "column_width_css": 95,
+      "min_foreign_component_gap_css": 2.0,
+      "max_anchor_error_css": 0.009909930173057717,
+      "missing_leaders": [],
+      "aux_certificates": [
+        {
+          "key": "angle:asc",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 13.109375,
+          "frozen_obstacle": "anchor:pars_fortune"
+        },
+        {
+          "key": "angle:mc",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 12.0,
+          "frozen_obstacle": "anchor:sun"
+        },
+        {
+          "key": "angle:vertex",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 20.7841796875,
+          "frozen_obstacle": "angle:asc"
+        },
+        {
+          "key": "angle:dsc",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 14.39453125,
+          "frozen_obstacle": "anchor:angle:ic"
+        },
+        {
+          "key": "angle:ic",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 8.5966796875,
+          "frozen_obstacle": "anchor:angle:dsc"
+        },
+        {
+          "key": "conj:moon|sun|conjunction",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 20.9453125,
+          "frozen_obstacle": "angle:ic"
+        },
+        {
+          "key": "conj:mercury|venus|conjunction",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 3.359375,
+          "frozen_obstacle": "conj:moon|sun|conjunction"
+        },
+        {
+          "key": "conj:jupiter|mars|conjunction",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 14.453125,
+          "frozen_obstacle": "anchor:conj:saturn|uranus|conjunction"
+        },
+        {
+          "key": "conj:saturn|uranus|conjunction",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 11.625,
+          "frozen_obstacle": "conj:jupiter|mars|conjunction"
+        }
+      ],
+      "aux_certificates_pass": true,
+      "actual_fonts": [
+        "Segoe UI",
+        "Segoe UI Symbol"
+      ],
+      "eligible_graphic_aspects": 4,
+      "ambiguous_source_rows": 0,
+      "aux_1px_endpoint_feasible_NOT_prefix_witness": [
+        {
+          "key": "conj:mercury|venus|conjunction",
+          "probe_css": 1,
+          "P": [
+            238.9962825362463,
+            206.09083414023493
+          ]
+        }
+      ]
+    },
+    {
+      "id": "published-natal-720-normal-none-dpr1",
+      "errors": [],
+      "static_pass": true,
+      "texts": 49,
+      "points": 16,
+      "R": 5,
+      "signs": 12,
+      "houses": 12,
+      "angles": 5,
+      "markers": 3,
+      "drawn_aspects": 29,
+      "column_points": 8,
+      "frozen_labels": 16,
+      "height_css": 613,
+      "wheel_css": 613,
+      "column_width_css": 95,
+      "min_foreign_component_gap_css": 2.0,
+      "max_anchor_error_css": 0.010152746656378256,
+      "missing_leaders": [],
+      "aux_certificates": [],
+      "aux_certificates_pass": true,
+      "actual_fonts": [
+        "Segoe UI",
+        "Segoe UI Symbol"
+      ],
+      "eligible_graphic_aspects": 29,
+      "ambiguous_source_rows": 0,
+      "aux_1px_endpoint_feasible_NOT_prefix_witness": []
+    },
+    {
+      "id": "published-natal-448-normal-none-dpr1",
+      "errors": [],
+      "static_pass": true,
+      "texts": 50,
+      "points": 16,
+      "R": 5,
+      "signs": 12,
+      "houses": 12,
+      "angles": 5,
+      "markers": 3,
+      "drawn_aspects": 29,
+      "column_points": 9,
+      "frozen_labels": 15,
+      "height_css": 341,
+      "wheel_css": 341,
+      "column_width_css": 95,
+      "min_foreign_component_gap_css": 2.0,
+      "max_anchor_error_css": 0.009062417019740605,
+      "missing_leaders": [],
+      "aux_certificates": [],
+      "aux_certificates_pass": true,
+      "actual_fonts": [
+        "Segoe UI",
+        "Segoe UI Symbol"
+      ],
+      "eligible_graphic_aspects": 29,
+      "ambiguous_source_rows": 0,
+      "aux_1px_endpoint_feasible_NOT_prefix_witness": []
+    },
+    {
+      "id": "published-natal-328-normal-none-dpr1",
+      "errors": [],
+      "static_pass": true,
+      "texts": 55,
+      "points": 16,
+      "R": 5,
+      "signs": 12,
+      "houses": 12,
+      "angles": 5,
+      "markers": 3,
+      "drawn_aspects": 29,
+      "column_points": 14,
+      "frozen_labels": 5,
+      "height_css": 357,
+      "wheel_css": 221,
+      "column_width_css": 95,
+      "min_foreign_component_gap_css": 2.0,
+      "max_anchor_error_css": 0.010848716508144922,
+      "missing_leaders": [],
+      "aux_certificates": [
+        {
+          "key": "angle:mc",
+          "result": "UNMOVED",
+          "pass": true
+        },
+        {
+          "key": "angle:vertex",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 8.109375,
+          "frozen_obstacle": "anchor:saturn"
+        },
+        {
+          "key": "angle:dsc",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 3.75,
+          "frozen_obstacle": "anchor:neptune"
+        },
+        {
+          "key": "angle:ic",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 9.875,
+          "frozen_obstacle": "anchor:mercury"
+        },
+        {
+          "key": "conj:mean_apog|true_node|conjunction",
+          "result": "UNMOVED",
+          "pass": true
+        }
+      ],
+      "aux_certificates_pass": true,
+      "actual_fonts": [
+        "Segoe UI",
+        "Segoe UI Symbol"
+      ],
+      "eligible_graphic_aspects": 29,
+      "ambiguous_source_rows": 0,
+      "aux_1px_endpoint_feasible_NOT_prefix_witness": []
+    },
+    {
+      "id": "cosmogram-720-normal-none-dpr1",
+      "errors": [],
+      "static_pass": true,
+      "texts": 34,
+      "points": 16,
+      "R": 6,
+      "signs": 12,
+      "houses": 0,
+      "angles": 0,
+      "markers": 0,
+      "drawn_aspects": 0,
+      "column_points": 0,
+      "frozen_labels": 16,
+      "height_css": 720,
+      "wheel_css": 720,
+      "column_width_css": 0,
+      "min_foreign_component_gap_css": 5.463658344003585,
+      "max_anchor_error_css": 0.010302547978367101,
+      "missing_leaders": [],
+      "aux_certificates": [],
+      "aux_certificates_pass": true,
+      "actual_fonts": [
+        "Segoe UI Symbol"
+      ],
+      "eligible_graphic_aspects": 0,
+      "ambiguous_source_rows": 0,
+      "aux_1px_endpoint_feasible_NOT_prefix_witness": []
+    },
+    {
+      "id": "cosmogram-448-normal-none-dpr1",
+      "errors": [],
+      "static_pass": true,
+      "texts": 34,
+      "points": 16,
+      "R": 6,
+      "signs": 12,
+      "houses": 0,
+      "angles": 0,
+      "markers": 0,
+      "drawn_aspects": 0,
+      "column_points": 0,
+      "frozen_labels": 16,
+      "height_css": 448,
+      "wheel_css": 448,
+      "column_width_css": 0,
+      "min_foreign_component_gap_css": 5.441853501450586,
+      "max_anchor_error_css": 0.007162678818474433,
+      "missing_leaders": [],
+      "aux_certificates": [],
+      "aux_certificates_pass": true,
+      "actual_fonts": [
+        "Segoe UI Symbol"
+      ],
+      "eligible_graphic_aspects": 0,
+      "ambiguous_source_rows": 0,
+      "aux_1px_endpoint_feasible_NOT_prefix_witness": []
+    },
+    {
+      "id": "cosmogram-328-normal-none-dpr1",
+      "errors": [],
+      "static_pass": true,
+      "texts": 34,
+      "points": 16,
+      "R": 6,
+      "signs": 12,
+      "houses": 0,
+      "angles": 0,
+      "markers": 0,
+      "drawn_aspects": 0,
+      "column_points": 0,
+      "frozen_labels": 16,
+      "height_css": 328,
+      "wheel_css": 328,
+      "column_width_css": 0,
+      "min_foreign_component_gap_css": 5.441853501450586,
+      "max_anchor_error_css": 0.010633628787636115,
+      "missing_leaders": [],
+      "aux_certificates": [],
+      "aux_certificates_pass": true,
+      "actual_fonts": [
+        "Segoe UI Symbol"
+      ],
+      "eligible_graphic_aspects": 0,
+      "ambiguous_source_rows": 0,
+      "aux_1px_endpoint_feasible_NOT_prefix_witness": []
+    },
+    {
+      "id": "multigroup-control-720-normal-none-dpr1",
+      "errors": [],
+      "static_pass": true,
+      "texts": 61,
+      "points": 16,
+      "R": 8,
+      "signs": 12,
+      "houses": 12,
+      "angles": 5,
+      "markers": 4,
+      "drawn_aspects": 4,
+      "column_points": 16,
+      "frozen_labels": 0,
+      "height_css": 613,
+      "wheel_css": 613,
+      "column_width_css": 95,
+      "min_foreign_component_gap_css": 2.0,
+      "max_anchor_error_css": 0.009321087389329014,
+      "missing_leaders": [],
+      "aux_certificates": [
+        {
+          "key": "angle:asc",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 11.5,
+          "frozen_obstacle": "anchor:angle:vertex"
+        },
+        {
+          "key": "angle:mc",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 11.25,
+          "frozen_obstacle": "anchor:angle:asc"
+        },
+        {
+          "key": "angle:vertex",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 20.7841796875,
+          "frozen_obstacle": "angle:asc"
+        },
+        {
+          "key": "angle:dsc",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 10.75,
+          "frozen_obstacle": "anchor:angle:ic"
+        },
+        {
+          "key": "angle:ic",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 10.75,
+          "frozen_obstacle": "anchor:angle:dsc"
+        },
+        {
+          "key": "conj:moon|sun|conjunction",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 7.7890625,
+          "frozen_obstacle": "anchor:conj:mercury|venus|conjunction"
+        },
+        {
+          "key": "conj:mercury|venus|conjunction",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 7.7890625,
+          "frozen_obstacle": "anchor:conj:moon|sun|conjunction"
+        },
+        {
+          "key": "conj:jupiter|mars|conjunction",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 6.2421875,
+          "frozen_obstacle": "anchor:conj:saturn|uranus|conjunction"
+        },
+        {
+          "key": "conj:saturn|uranus|conjunction",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 6.2421875,
+          "frozen_obstacle": "anchor:conj:jupiter|mars|conjunction"
+        }
+      ],
+      "aux_certificates_pass": true,
+      "actual_fonts": [
+        "Segoe UI",
+        "Segoe UI Symbol"
+      ],
+      "eligible_graphic_aspects": 4,
+      "ambiguous_source_rows": 0,
+      "aux_1px_endpoint_feasible_NOT_prefix_witness": []
+    },
+    {
+      "id": "multigroup-control-448-normal-none-dpr1",
+      "errors": [],
+      "static_pass": true,
+      "texts": 61,
+      "points": 16,
+      "R": 8,
+      "signs": 12,
+      "houses": 12,
+      "angles": 5,
+      "markers": 4,
+      "drawn_aspects": 4,
+      "column_points": 16,
+      "frozen_labels": 0,
+      "height_css": 406,
+      "wheel_css": 341,
+      "column_width_css": 95,
+      "min_foreign_component_gap_css": 2.0,
+      "max_anchor_error_css": 0.00804902694623001,
+      "missing_leaders": [],
+      "aux_certificates": [
+        {
+          "key": "angle:asc",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 14.390625,
+          "frozen_obstacle": "anchor:venus"
+        },
+        {
+          "key": "angle:mc",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 11.140625,
+          "frozen_obstacle": "anchor:angle:vertex"
+        },
+        {
+          "key": "angle:vertex",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 11.28125,
+          "frozen_obstacle": "anchor:angle:asc"
+        },
+        {
+          "key": "angle:dsc",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 14.39453125,
+          "frozen_obstacle": "anchor:angle:ic"
+        },
+        {
+          "key": "angle:ic",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 8.5966796875,
+          "frozen_obstacle": "anchor:angle:dsc"
+        },
+        {
+          "key": "conj:moon|sun|conjunction",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 7.8046875,
+          "frozen_obstacle": "anchor:conj:mercury|venus|conjunction"
+        },
+        {
+          "key": "conj:mercury|venus|conjunction",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 7.8046875,
+          "frozen_obstacle": "anchor:conj:moon|sun|conjunction"
+        },
+        {
+          "key": "conj:jupiter|mars|conjunction",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 8.671875,
+          "frozen_obstacle": "anchor:conj:saturn|uranus|conjunction"
+        },
+        {
+          "key": "conj:saturn|uranus|conjunction",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 8.671875,
+          "frozen_obstacle": "anchor:conj:jupiter|mars|conjunction"
+        }
+      ],
+      "aux_certificates_pass": true,
+      "actual_fonts": [
+        "Segoe UI",
+        "Segoe UI Symbol"
+      ],
+      "eligible_graphic_aspects": 4,
+      "ambiguous_source_rows": 0,
+      "aux_1px_endpoint_feasible_NOT_prefix_witness": []
+    },
+    {
+      "id": "multigroup-control-328-normal-none-dpr1",
+      "errors": [],
+      "static_pass": true,
+      "texts": 61,
+      "points": 16,
+      "R": 8,
+      "signs": 12,
+      "houses": 12,
+      "angles": 5,
+      "markers": 4,
+      "drawn_aspects": 4,
+      "column_points": 16,
+      "frozen_labels": 0,
+      "height_css": 406,
+      "wheel_css": 221,
+      "column_width_css": 95,
+      "min_foreign_component_gap_css": 2.0,
+      "max_anchor_error_css": 0.008537860906771132,
+      "missing_leaders": [],
+      "aux_certificates": [
+        {
+          "key": "angle:asc",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 12.65625,
+          "frozen_obstacle": "anchor:venus"
+        },
+        {
+          "key": "angle:mc",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 11.09375,
+          "frozen_obstacle": "anchor:sun"
+        },
+        {
+          "key": "angle:vertex",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 20.7841796875,
+          "frozen_obstacle": "angle:asc"
+        },
+        {
+          "key": "angle:dsc",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 4.50390625,
+          "frozen_obstacle": "sign:4"
+        },
+        {
+          "key": "angle:ic",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 8.5966796875,
+          "frozen_obstacle": "anchor:angle:dsc"
+        },
+        {
+          "key": "conj:moon|sun|conjunction",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 14.796875,
+          "frozen_obstacle": "anchor:conj:mercury|venus|conjunction"
+        },
+        {
+          "key": "conj:mercury|venus|conjunction",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 11.625,
+          "frozen_obstacle": "conj:moon|sun|conjunction"
+        },
+        {
+          "key": "conj:jupiter|mars|conjunction",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 8.359375,
+          "frozen_obstacle": "anchor:conj:saturn|uranus|conjunction"
+        },
+        {
+          "key": "conj:saturn|uranus|conjunction",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 8.359375,
+          "frozen_obstacle": "anchor:conj:jupiter|mars|conjunction"
+        }
+      ],
+      "aux_certificates_pass": true,
+      "actual_fonts": [
+        "Segoe UI",
+        "Segoe UI Symbol"
+      ],
+      "eligible_graphic_aspects": 4,
+      "ambiguous_source_rows": 0,
+      "aux_1px_endpoint_feasible_NOT_prefix_witness": [
+        {
+          "key": "angle:dsc",
+          "probe_css": 1,
+          "P": [
+            264.2152438801285,
+            249.62944198913536
+          ]
+        }
+      ]
+    },
+    {
+      "id": "F3-max-328-fallback-none-dpr1",
+      "errors": [],
+      "static_pass": true,
+      "texts": 61,
+      "points": 16,
+      "R": 8,
+      "signs": 12,
+      "houses": 12,
+      "angles": 5,
+      "markers": 4,
+      "drawn_aspects": 4,
+      "column_points": 16,
+      "frozen_labels": 0,
+      "height_css": 348,
+      "wheel_css": 220,
+      "column_width_css": 96,
+      "min_foreign_component_gap_css": 2.0,
+      "max_anchor_error_css": 0.007506459336990603,
+      "missing_leaders": [],
+      "aux_certificates": [
+        {
+          "key": "angle:asc",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 9.70703125,
+          "frozen_obstacle": "sign:10"
+        },
+        {
+          "key": "angle:mc",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 10.921875,
+          "frozen_obstacle": "anchor:sun"
+        },
+        {
+          "key": "angle:vertex",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 11.78125,
+          "frozen_obstacle": "anchor:pars_fortune"
+        },
+        {
+          "key": "angle:dsc",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 9.90625,
+          "frozen_obstacle": "anchor:angle:ic"
+        },
+        {
+          "key": "angle:ic",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 9.90625,
+          "frozen_obstacle": "anchor:angle:dsc"
+        },
+        {
+          "key": "conj:moon|sun|conjunction",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 38.568359375,
+          "frozen_obstacle": "angle:mc"
+        },
+        {
+          "key": "conj:mercury|venus|conjunction",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 12.4453125,
+          "frozen_obstacle": "anchor:conj:moon|sun|conjunction"
+        },
+        {
+          "key": "conj:jupiter|mars|conjunction",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 12.453125,
+          "frozen_obstacle": "anchor:conj:saturn|uranus|conjunction"
+        },
+        {
+          "key": "conj:saturn|uranus|conjunction",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 11.625,
+          "frozen_obstacle": "conj:mercury|venus|conjunction"
+        }
+      ],
+      "aux_certificates_pass": true,
+      "actual_fonts": [
+        "Arial",
+        "Cambria Math",
+        "Segoe UI Emoji",
+        "Segoe UI Symbol"
+      ],
+      "eligible_graphic_aspects": 4,
+      "ambiguous_source_rows": 0,
+      "aux_1px_endpoint_feasible_NOT_prefix_witness": [
+        {
+          "key": "angle:asc",
+          "probe_css": 1,
+          "P": [
+            176.64241980110125,
+            124.71623420500167
+          ]
+        }
+      ]
+    },
+    {
+      "id": "F1-328-normal-point-dpr2",
+      "errors": [],
+      "static_pass": true,
+      "texts": 55,
+      "points": 16,
+      "R": 5,
+      "signs": 12,
+      "houses": 12,
+      "angles": 5,
+      "markers": 3,
+      "drawn_aspects": 29,
+      "column_points": 14,
+      "frozen_labels": 5,
+      "height_css": 357,
+      "wheel_css": 221,
+      "column_width_css": 95,
+      "min_foreign_component_gap_css": 2.0,
+      "max_anchor_error_css": 0.010848716508144922,
+      "missing_leaders": [],
+      "aux_certificates": [
+        {
+          "key": "angle:mc",
+          "result": "UNMOVED",
+          "pass": true
+        },
+        {
+          "key": "angle:vertex",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 8.109375,
+          "frozen_obstacle": "anchor:saturn"
+        },
+        {
+          "key": "angle:dsc",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 3.75,
+          "frozen_obstacle": "anchor:neptune"
+        },
+        {
+          "key": "angle:ic",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 9.875,
+          "frozen_obstacle": "anchor:mercury"
+        },
+        {
+          "key": "conj:mean_apog|true_node|conjunction",
+          "result": "UNMOVED",
+          "pass": true
+        }
+      ],
+      "aux_certificates_pass": true,
+      "actual_fonts": [
+        "Segoe UI",
+        "Segoe UI Symbol"
+      ],
+      "eligible_graphic_aspects": 29,
+      "ambiguous_source_rows": 0,
+      "aux_1px_endpoint_feasible_NOT_prefix_witness": []
+    },
+    {
+      "id": "F3-max-328-normal-conjunction-dpr2",
+      "errors": [],
+      "static_pass": true,
+      "texts": 58,
+      "points": 16,
+      "R": 8,
+      "signs": 12,
+      "houses": 12,
+      "angles": 5,
+      "markers": 1,
+      "drawn_aspects": 1,
+      "column_points": 16,
+      "frozen_labels": 0,
+      "height_css": 406,
+      "wheel_css": 221,
+      "column_width_css": 95,
+      "min_foreign_component_gap_css": 2.0,
+      "max_anchor_error_css": 0.009909930173057717,
+      "missing_leaders": [],
+      "aux_certificates": [
+        {
+          "key": "angle:asc",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 13.109375,
+          "frozen_obstacle": "anchor:pars_fortune"
+        },
+        {
+          "key": "angle:mc",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 12.0,
+          "frozen_obstacle": "anchor:sun"
+        },
+        {
+          "key": "angle:vertex",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 20.7841796875,
+          "frozen_obstacle": "angle:asc"
+        },
+        {
+          "key": "angle:dsc",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 14.39453125,
+          "frozen_obstacle": "anchor:angle:ic"
+        },
+        {
+          "key": "angle:ic",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 8.5966796875,
+          "frozen_obstacle": "anchor:angle:dsc"
+        },
+        {
+          "key": "conj:moon|sun|conjunction",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 20.9453125,
+          "frozen_obstacle": "angle:ic"
+        },
+        {
+          "key": "conj:mercury|venus|conjunction",
+          "result": "NOT_VISIBLE_IN_THIS_MODE",
+          "pass": true
+        },
+        {
+          "key": "conj:jupiter|mars|conjunction",
+          "result": "NOT_VISIBLE_IN_THIS_MODE",
+          "pass": true
+        },
+        {
+          "key": "conj:saturn|uranus|conjunction",
+          "result": "NOT_VISIBLE_IN_THIS_MODE",
+          "pass": true
+        }
+      ],
+      "aux_certificates_pass": true,
+      "actual_fonts": [
+        "Segoe UI",
+        "Segoe UI Symbol"
+      ],
+      "eligible_graphic_aspects": 1,
+      "ambiguous_source_rows": 0,
+      "aux_1px_endpoint_feasible_NOT_prefix_witness": [
+        {
+          "key": "conj:mercury|venus|conjunction",
+          "probe_css": 1,
+          "P": [
+            238.9962825362463,
+            206.09083414023493
+          ]
+        }
+      ]
+    },
+    {
+      "id": "F1-448-normal-aspect-dpr1",
+      "errors": [],
+      "static_pass": true,
+      "texts": 47,
+      "points": 16,
+      "R": 5,
+      "signs": 12,
+      "houses": 12,
+      "angles": 5,
+      "markers": 0,
+      "drawn_aspects": 1,
+      "column_points": 9,
+      "frozen_labels": 15,
+      "height_css": 341,
+      "wheel_css": 341,
+      "column_width_css": 95,
+      "min_foreign_component_gap_css": 2.0,
+      "max_anchor_error_css": 0.009062417019740605,
+      "missing_leaders": [],
+      "aux_certificates": [],
+      "aux_certificates_pass": true,
+      "actual_fonts": [
+        "Segoe UI",
+        "Segoe UI Symbol"
+      ],
+      "eligible_graphic_aspects": 1,
+      "ambiguous_source_rows": 0,
+      "aux_1px_endpoint_feasible_NOT_prefix_witness": []
+    },
+    {
+      "id": "published-natal-328-normal-background-dpr1",
+      "errors": [],
+      "static_pass": true,
+      "texts": 52,
+      "points": 16,
+      "R": 5,
+      "signs": 12,
+      "houses": 12,
+      "angles": 5,
+      "markers": 0,
+      "drawn_aspects": 0,
+      "column_points": 14,
+      "frozen_labels": 5,
+      "height_css": 357,
+      "wheel_css": 221,
+      "column_width_css": 95,
+      "min_foreign_component_gap_css": 2.0,
+      "max_anchor_error_css": 0.010848716508144922,
+      "missing_leaders": [],
+      "aux_certificates": [
+        {
+          "key": "angle:mc",
+          "result": "UNMOVED",
+          "pass": true
+        },
+        {
+          "key": "angle:vertex",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 8.109375,
+          "frozen_obstacle": "anchor:saturn"
+        },
+        {
+          "key": "angle:dsc",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 3.75,
+          "frozen_obstacle": "anchor:neptune"
+        },
+        {
+          "key": "angle:ic",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 9.875,
+          "frozen_obstacle": "anchor:mercury"
+        },
+        {
+          "key": "conj:mean_apog|true_node|conjunction",
+          "result": "UNMOVED",
+          "pass": true
+        }
+      ],
+      "aux_certificates_pass": true,
+      "actual_fonts": [
+        "Segoe UI",
+        "Segoe UI Symbol"
+      ],
+      "eligible_graphic_aspects": 0,
+      "ambiguous_source_rows": 0,
+      "aux_1px_endpoint_feasible_NOT_prefix_witness": []
+    },
+    {
+      "id": "S1-control-328-normal-none-dpr1",
+      "errors": [],
+      "static_pass": true,
+      "texts": 55,
+      "points": 16,
+      "R": 5,
+      "signs": 12,
+      "houses": 12,
+      "angles": 5,
+      "markers": 3,
+      "drawn_aspects": 28,
+      "column_points": 14,
+      "frozen_labels": 5,
+      "height_css": 357,
+      "wheel_css": 221,
+      "column_width_css": 95,
+      "min_foreign_component_gap_css": 2.0,
+      "max_anchor_error_css": 0.010848716508144922,
+      "missing_leaders": [],
+      "aux_certificates": [
+        {
+          "key": "angle:mc",
+          "result": "UNMOVED",
+          "pass": true
+        },
+        {
+          "key": "angle:vertex",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 8.109375,
+          "frozen_obstacle": "anchor:saturn"
+        },
+        {
+          "key": "angle:dsc",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 3.75,
+          "frozen_obstacle": "anchor:neptune"
+        },
+        {
+          "key": "angle:ic",
+          "result": "EXACT_CONTACT_BLOCKS_EVERY_POSITIVE_PREFIX",
+          "pass": true,
+          "axis_gap": 2.0,
+          "cross_projection_gap": 0.0,
+          "closing_derivative": 9.875,
+          "frozen_obstacle": "anchor:mercury"
+        },
+        {
+          "key": "conj:mean_apog|true_node|conjunction",
+          "result": "UNMOVED",
+          "pass": true
+        }
+      ],
+      "aux_certificates_pass": true,
+      "actual_fonts": [
+        "Segoe UI",
+        "Segoe UI Symbol"
+      ],
+      "eligible_graphic_aspects": 28,
+      "ambiguous_source_rows": 3,
+      "aux_1px_endpoint_feasible_NOT_prefix_witness": []
+    },
+    {
+      "id": "palette-control-328-normal-none-dpr1",
+      "errors": [],
+      "static_pass": true,
+      "texts": 35,
+      "points": 16,
+      "R": 6,
+      "signs": 12,
+      "houses": 0,
+      "angles": 0,
+      "markers": 1,
+      "drawn_aspects": 7,
+      "column_points": 0,
+      "frozen_labels": 17,
+      "height_css": 328,
+      "wheel_css": 328,
+      "column_width_css": 0,
+      "min_foreign_component_gap_css": 5.441853501450586,
+      "max_anchor_error_css": 0.010633628787636115,
+      "missing_leaders": [],
+      "aux_certificates": [],
+      "aux_certificates_pass": true,
+      "actual_fonts": [
+        "Segoe UI Symbol"
+      ],
+      "eligible_graphic_aspects": 7,
+      "ambiguous_source_rows": 0,
+      "aux_1px_endpoint_feasible_NOT_prefix_witness": []
+    },
+    {
+      "id": "empty-cosmogram-328-normal-none-dpr1",
+      "errors": [],
+      "static_pass": true,
+      "texts": 34,
+      "points": 16,
+      "R": 6,
+      "signs": 12,
+      "houses": 0,
+      "angles": 0,
+      "markers": 0,
+      "drawn_aspects": 0,
+      "column_points": 0,
+      "frozen_labels": 16,
+      "height_css": 328,
+      "wheel_css": 328,
+      "column_width_css": 0,
+      "min_foreign_component_gap_css": 5.441853501450586,
+      "max_anchor_error_css": 0.010633628787636115,
+      "missing_leaders": [],
+      "aux_certificates": [],
+      "aux_certificates_pass": true,
+      "actual_fonts": [
+        "Segoe UI Symbol"
+      ],
+      "eligible_graphic_aspects": 0,
+      "ambiguous_source_rows": 0,
+      "aux_1px_endpoint_feasible_NOT_prefix_witness": []
+    }
+  ],
+  "measured": 29,
+  "static_pass": 29,
+  "aux_certificate_cells_pass": 29,
+  "analytic_controls": [
+    {
+      "id": "gap-equality",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "gap-below",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "id": "diagonal-equality",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "diagonal-below",
+      "actual": false,
+      "expected": false
+    }
+  ],
+  "native_controls": [
+    {
+      "id": "gap-equal",
+      "actual": true,
+      "expected": true,
+      "pass": true,
+      "measurements": {
+        "id": "gap-equal",
+        "kind": "gap",
+        "expected": true,
+        "boxes": [
+          [
+            0,
+            0,
+            16,
+            16
+          ],
+          [
+            18,
+            0,
+            34,
+            16
+          ]
+        ],
+        "em": null,
+        "clip": [
+          0,
+          0,
+          200,
+          120
+        ],
+        "computedFont": null
+      }
+    },
+    {
+      "id": "gap-below",
+      "actual": false,
+      "expected": false,
+      "pass": true,
+      "measurements": {
+        "id": "gap-below",
+        "kind": "gap",
+        "expected": false,
+        "boxes": [
+          [
+            0,
+            0,
+            16,
+            16
+          ],
+          [
+            17.984375,
+            0,
+            33.984375,
+            16
+          ]
+        ],
+        "em": null,
+        "clip": [
+          0,
+          0,
+          200,
+          120
+        ],
+        "computedFont": null
+      }
+    },
+    {
+      "id": "diagonal-positive",
+      "actual": true,
+      "expected": true,
+      "pass": true,
+      "measurements": {
+        "id": "diagonal-positive",
+        "kind": "gap",
+        "expected": true,
+        "boxes": [
+          [
+            0,
+            0,
+            16,
+            16
+          ],
+          [
+            19,
+            20,
+            35,
+            36
+          ]
+        ],
+        "em": null,
+        "clip": [
+          0,
+          0,
+          200,
+          120
+        ],
+        "computedFont": null
+      }
+    },
+    {
+      "id": "diagonal-negative",
+      "actual": false,
+      "expected": false,
+      "pass": true,
+      "measurements": {
+        "id": "diagonal-negative",
+        "kind": "gap",
+        "expected": false,
+        "boxes": [
+          [
+            0,
+            0,
+            16,
+            16
+          ],
+          [
+            17,
+            17,
+            33,
+            33
+          ]
+        ],
+        "em": null,
+        "clip": [
+          0,
+          0,
+          200,
+          120
+        ],
+        "computedFont": null
+      }
+    },
+    {
+      "id": "forbidden-clear",
+      "actual": true,
+      "expected": true,
+      "pass": true,
+      "measurements": {
+        "id": "forbidden-clear",
+        "kind": "gap",
+        "expected": true,
+        "boxes": [
+          [
+            0,
+            0,
+            20,
+            20
+          ],
+          [
+            22,
+            0,
+            38,
+            16
+          ]
+        ],
+        "em": null,
+        "clip": [
+          0,
+          0,
+          200,
+          120
+        ],
+        "computedFont": null
+      }
+    },
+    {
+      "id": "forbidden-intersection",
+      "actual": false,
+      "expected": false,
+      "pass": true,
+      "measurements": {
+        "id": "forbidden-intersection",
+        "kind": "gap",
+        "expected": false,
+        "boxes": [
+          [
+            0,
+            0,
+            20,
+            20
+          ],
+          [
+            19,
+            5,
+            35,
+            21
+          ]
+        ],
+        "em": null,
+        "clip": [
+          0,
+          0,
+          200,
+          120
+        ],
+        "computedFont": null
+      }
+    },
+    {
+      "id": "svg-clip-positive",
+      "actual": true,
+      "expected": true,
+      "pass": true,
+      "measurements": {
+        "id": "svg-clip-positive",
+        "kind": "clip",
+        "expected": true,
+        "boxes": [
+          [
+            0,
+            0,
+            16,
+            16
+          ]
+        ],
+        "em": null,
+        "clip": [
+          0,
+          0,
+          200,
+          120
+        ],
+        "computedFont": null
+      }
+    },
+    {
+      "id": "svg-clip-negative",
+      "actual": false,
+      "expected": false,
+      "pass": true,
+      "measurements": {
+        "id": "svg-clip-negative",
+        "kind": "clip",
+        "expected": false,
+        "boxes": [
+          [
+            -1,
+            0,
+            15,
+            16
+          ]
+        ],
+        "em": null,
+        "clip": [
+          0,
+          0,
+          200,
+          120
+        ],
+        "computedFont": null
+      }
+    },
+    {
+      "id": "point-em-equal",
+      "actual": true,
+      "expected": true,
+      "pass": true,
+      "measurements": {
+        "id": "point-em-equal",
+        "kind": "em",
+        "expected": true,
+        "boxes": [
+          [
+            20,
+            13,
+            33.484375,
+            34
+          ]
+        ],
+        "em": [
+          16
+        ],
+        "clip": [
+          0,
+          0,
+          200,
+          120
+        ],
+        "computedFont": 16
+      }
+    },
+    {
+      "id": "point-em-below",
+      "actual": false,
+      "expected": false,
+      "pass": true,
+      "measurements": {
+        "id": "point-em-below",
+        "kind": "em",
+        "expected": false,
+        "boxes": [
+          [
+            20,
+            13,
+            33.46875,
+            34
+          ]
+        ],
+        "em": [
+          15.9844
+        ],
+        "clip": [
+          0,
+          0,
+          200,
+          120
+        ],
+        "computedFont": 15.9844
+      }
+    },
+    {
+      "id": "aux-em-equal",
+      "actual": true,
+      "expected": true,
+      "pass": true,
+      "measurements": {
+        "id": "aux-em-equal",
+        "kind": "em",
+        "expected": true,
+        "boxes": [
+          [
+            20,
+            17,
+            28,
+            33
+          ]
+        ],
+        "em": [
+          12
+        ],
+        "clip": [
+          0,
+          0,
+          200,
+          120
+        ],
+        "computedFont": 12
+      }
+    },
+    {
+      "id": "aux-em-below",
+      "actual": false,
+      "expected": false,
+      "pass": true,
+      "measurements": {
+        "id": "aux-em-below",
+        "kind": "em",
+        "expected": false,
+        "boxes": [
+          [
+            20,
+            17,
+            28,
+            33
+          ]
+        ],
+        "em": [
+          11.9844
+        ],
+        "clip": [
+          0,
+          0,
+          200,
+          120
+        ],
+        "computedFont": 11.9844
+      }
+    },
+    {
+      "id": "scale-reduces-effective-em",
+      "actual": false,
+      "expected": false,
+      "pass": true,
+      "measurements": {
+        "id": "scale-reduces-effective-em",
+        "kind": "em",
+        "expected": false,
+        "boxes": [
+          [
+            10,
+            6,
+            17,
+            17
+          ]
+        ],
+        "em": [
+          8
+        ],
+        "clip": [
+          0,
+          0,
+          200,
+          120
+        ],
+        "computedFont": 16
+      }
+    }
+  ],
+  "boundary": [],
+  "qualification": "Endpoint feasibility at 1px alone is not a positive prefix witness. An exact touching frozen obstacle plus strictly closing derivative blocks every sufficiently small positive step, even if endpoint becomes feasible later."
+}

@@ -1,0 +1,10 @@
+{
+  "task": "TASK-D-003",
+  "author": "Codex / Developer",
+  "started_utc": "2026-10-18T12:17:04+00:00",
+  "started_msk": "2026-10-18T15:17:04+03:00",
+  "input_sha": "8fb25770169166a3a4e94110eee684bd8b116474",
+  "previous_head": "f6f289cda25e7f228dff064175805130cc770b63",
+  "experiment_limit_hours": 6,
+  "deadline": "end of working day 4 from T0; calendar unspecified"
+}

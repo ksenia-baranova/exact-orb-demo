@@ -1,0 +1,55 @@
+@startuml
+' Transfer21.10 by Codex / Manager, explicit Owner instruction.
+' Analyst2736e28 + Owner19-21.10; original source in transfer_map.md.
+title Accepted chart: one DTO, retained HTML and passive SVG
+autonumber
+hide footbox
+actor User
+participant "Page / session coordinator" as Page
+participant "Existing HTTP API" as API
+participant "Existing correlated HTTP log" as Log
+control "Accepted facts / HTML" as Facts
+participant "Passive SVG boundary" as Wheel
+User -> Page : open / reload / foreground
+Page -> API : POST /session/bootstrap {}
+API -> Log : request_id / existing send, receive and terminal events
+API --> Page : ready + state_version (not a chart)
+Page -> API : GET /charts/current
+API -> Log : existing correlated current request
+alt valid chart_ready (current or explicit committed POST)
+ API --> Page : validated DTO + birth + stale
+ Page -> Page : accepted snapshot / unique acceptanceSeq / cause
+ Page -> Facts : same accepted source + submitted intent
+ Facts -> Facts : full source S1 index BEFORE subset; consume acceptance once
+ Facts -> Facts : reset or preserve/reconcile according to cause
+ Facts -> Wheel : immutable snapshot for current revision
+ alt normal mode
+  Facts --> User : summary; first5 points/houses/aspects, independent toggles
+  Wheel --> User : all source points / true anchors / exact-working aspects
+ else selected unique aspect
+  Facts --> User : one aspect, all participants, their published houses
+  Wheel --> User : selected pair; background without line or marker
+ end
+ alt current SVG failure
+  Wheel --> Facts : typed local image failure
+  Facts --> User : image warning; same accepted HTML facts remain
+ else current valid frame
+  Wheel --> User : passive SVG of same accepted DTO
+ end
+else confirmed empty / chart_unavailable
+ API --> Page : no ChartDTO, permitted birth
+ Page -> Facts : remove numeric facts / selection / image
+ Facts --> User : empty / unavailable explanation, permitted draft/birth
+else failed safe read
+ API --> Page : existing error or network failure
+ Page -> Page : no acceptance of failed data
+ Page --> User : keep confirmed facts/draft, existing recheck
+end
+note over Page, Facts
+No automatic build or domain recalculation.
+Ordinary current preserves addressable selection and three disclosures.
+F5 starts without selection and with first5 tables.
+Live changed-birth target confirmation resets once; see003 and technical005.
+source=current / identity does not prove an own committed goal.
+end note
+@enduml

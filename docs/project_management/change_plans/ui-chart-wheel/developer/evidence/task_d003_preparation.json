@@ -1,0 +1,99 @@
+{
+  "task": "TASK-D-003",
+  "phase": "estimate_and_start_preparation",
+  "pins": {
+    "before_sync": "8921e9d81d416f6ae49c401600c600d24e46c316",
+    "manager_registration": "0083d81151f3af649feee9e7737ec6469c35cf1e",
+    "material_input": "6c4607165085d7297f044cef026353f36f6c842f",
+    "developer_v2": "f9c70f75ea815b2f3bf7e01426ee5afe65b31606",
+    "analyst_v3": "2634b224894b1046113557bfe241f0a5f2d46f8c",
+    "tester_v2": "7e95c0f680cc790fc8b45d9e25d69cc6e94fbc12",
+    "tester_review": "c59cc3f68e7769841134801dc125633decade032",
+    "analyst_review": "2f5579677114ea2dc86c66cf0fd656fdb5910df5",
+    "main_baseline": "535551026af6eedaf2a0aa5c0daa96fa94655ec1"
+  },
+  "sync": "fast-forward; initial tree clean; no reset/force",
+  "input_to_registration_changed_paths": [
+    "docs/project_management/change_plans/ui-chart-wheel/manager_artifact.md"
+  ],
+  "material_drift": "pinned payloads/shared contract unchanged; Manager appends signed review recommendations/evidence to 5 DP rows; Owner choice/status preserved",
+  "dp_registration_delta": [
+    {
+      "id": "DP-O-010",
+      "changed_columns": [
+        "recommendations",
+        "evidence"
+      ],
+      "details": {
+        "8": "<br>Tester / Codex, TASK-T-003 @ c59cc3f, 2026-10-17: проверяемость предложений Developer v2 подтверждена в документальном предмете без возврата; условия T003-G01/G02 (port / failure / key) — [подписанное review](tester/task_t003_review.md). Будущие controls / measurements NOT RUN; технический пакет проверяется отдельно.",
+        "10": "<br>Manager, регистрация после reviews @ 2f55796 / c59cc3f, 2026-10-17: Analyst подтвердил смысл Tester v2, Tester — проверяемость Developer v2; оба адресных review приняты §2.12. Прежние сообщения об ожидаемой сверке — исторический snapshot. Остатки переданы TASK-D-003 / TASK-T-004 / TASK-R-001; Owner choice / статус DP не изменены, G3 не подтверждён."
+      }
+    },
+    {
+      "id": "DP-O-011",
+      "changed_columns": [
+        "recommendations",
+        "evidence"
+      ],
+      "details": {
+        "8": "<br>Tester / Codex, TASK-T-003 @ c59cc3f, 2026-10-17: проверяемость предложений Developer v2 подтверждена в документальном предмете без возврата; условия T003-G05 (критерии / реальные измерения) — [подписанное review](tester/task_t003_review.md). Будущие controls / measurements NOT RUN; технический пакет проверяется отдельно.",
+        "10": "<br>Manager, регистрация после reviews @ 2f55796 / c59cc3f, 2026-10-17: Analyst подтвердил смысл Tester v2, Tester — проверяемость Developer v2; оба адресных review приняты §2.12. Прежние сообщения об ожидаемой сверке — исторический snapshot. Остатки переданы TASK-D-003 / TASK-T-004 / TASK-R-001; Owner choice / статус DP не изменены, G3 не подтверждён."
+      }
+    },
+    {
+      "id": "DP-O-012",
+      "changed_columns": [
+        "recommendations",
+        "evidence"
+      ],
+      "details": {
+        "8": "<br>Tester / Codex, TASK-T-003 @ c59cc3f, 2026-10-17: проверяемость предложений Developer v2 подтверждена в документальном предмете без возврата; условия T003-G05 (glyph / категория / контур / bounds) — [подписанное review](tester/task_t003_review.md). Будущие controls / measurements NOT RUN; технический пакет проверяется отдельно.",
+        "10": "<br>Manager, регистрация после reviews @ 2f55796 / c59cc3f, 2026-10-17: Analyst подтвердил смысл Tester v2, Tester — проверяемость Developer v2; оба адресных review приняты §2.12. Прежние сообщения об ожидаемой сверке — исторический snapshot. Остатки переданы TASK-D-003 / TASK-T-004 / TASK-R-001; Owner choice / статус DP не изменены, G3 не подтверждён."
+      }
+    },
+    {
+      "id": "DP-O-013",
+      "changed_columns": [
+        "recommendations",
+        "evidence"
+      ],
+      "details": {
+        "8": "<br>Tester / Codex, TASK-T-003 @ c59cc3f, 2026-10-17: проверяемость предложений Developer v2 подтверждена в документальном предмете без возврата; условия T003-G02/G03/G04 (reconcile / accepted cause / snapshot / keyboard focus) — [подписанное review](tester/task_t003_review.md). Будущие controls / measurements NOT RUN; технический пакет проверяется отдельно.",
+        "10": "<br>Manager, регистрация после reviews @ 2f55796 / c59cc3f, 2026-10-17: Analyst подтвердил смысл Tester v2, Tester — проверяемость Developer v2; оба адресных review приняты §2.12. Прежние сообщения об ожидаемой сверке — исторический snapshot. Остатки переданы TASK-D-003 / TASK-T-004 / TASK-R-001; Owner choice / статус DP не изменены, G3 не подтверждён."
+      }
+    },
+    {
+      "id": "DP-O-014",
+      "changed_columns": [
+        "recommendations",
+        "evidence"
+      ],
+      "details": {
+        "8": "<br>Tester / Codex, TASK-T-003 @ c59cc3f, 2026-10-17: проверяемость предложений Developer v2 подтверждена в документальном предмете без возврата; условия T003-G05 (независимые опорные стороны / true anchors) — [подписанное review](tester/task_t003_review.md). Будущие controls / measurements NOT RUN; технический пакет проверяется отдельно.",
+        "10": "<br>Manager, регистрация после reviews @ 2f55796 / c59cc3f, 2026-10-17: Analyst подтвердил смысл Tester v2, Tester — проверяемость Developer v2; оба адресных review приняты §2.12. Прежние сообщения об ожидаемой сверке — исторический snapshot. Остатки переданы TASK-D-003 / TASK-T-004 / TASK-R-001; Owner choice / статус DP не изменены, G3 не подтверждён."
+      }
+    }
+  ],
+  "manifests": {
+    "developer": "9/9",
+    "analyst": "9/9"
+  },
+  "tester_review_source_hashes": 42,
+  "tester_v2_historical_files_preserved": 9,
+  "developer_v2_index_prefix": "PRESERVED",
+  "developer_v2_payload": "UNCHANGED",
+  "manager_and_14_dp_rows": "UNCHANGED",
+  "shared_contract_code_tests": "UNCHANGED",
+  "runtime_tests": "NOT_RUN",
+  "svg_spike": "NOT_RUN",
+  "browser_font_measurements": "NOT_RUN",
+  "drawing_adr_and_technical_sequences": "NOT_CREATED",
+  "task_start_event": "NOT_EMITTED",
+  "publication": "NOT_PERFORMED",
+  "historical_evidence_replayed_as_new_run": false,
+  "preparation_outputs_sha256_lf": {
+    "docs/project_management/change_plans/ui-chart-wheel/developer_artifact.md": "47a014defe95ff759ed6784ad8715795dc1bedf8e4dbff29e7af81636a5493ec",
+    "docs/project_management/change_plans/ui-chart-wheel/developer/task_d003_implementation_plan.md": "9e2fcab32e0664090fcda25a932e4b83ea1e90b3d06d154fbc0d860247ab7043",
+    "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_preparation_check.py": "a5e5d7ff58158c3d73354ad4dc356c6433326f3c556968f278b3ad9e50332985"
+  }
+}

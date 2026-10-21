@@ -1,0 +1,515 @@
+{
+  "controls": [
+    {
+      "id": "COPY-installed-is-distinct",
+      "actual": false,
+      "expected": false,
+      "pass": true
+    },
+    {
+      "id": "COPY-current-original-mutation",
+      "actual": "A",
+      "expected": "A",
+      "pass": true
+    },
+    {
+      "id": "ORDER-revoke-remove-HTML-dispose-draw",
+      "actual": [
+        "revoke",
+        "remove",
+        "html",
+        "dispose-fault",
+        "draw"
+      ],
+      "expected": [
+        "revoke",
+        "remove",
+        "html",
+        "dispose-fault",
+        "draw"
+      ],
+      "pass": true
+    },
+    {
+      "id": "DISPOSE-fault-sees-new-HTML",
+      "actual": "HTML B",
+      "expected": "HTML B",
+      "pass": true
+    },
+    {
+      "id": "STALE-before-settlement",
+      "actual": false,
+      "expected": false,
+      "pass": true
+    },
+    {
+      "id": "STALE-original-reference-keeps-B",
+      "actual": "B",
+      "expected": "B",
+      "pass": true
+    },
+    {
+      "id": "STALE-after-settlement",
+      "actual": false,
+      "expected": false,
+      "pass": true
+    },
+    {
+      "id": "REVISION-same-instance",
+      "actual": 3,
+      "expected": 3,
+      "pass": true
+    },
+    {
+      "id": "REVISION-old-revision-refused",
+      "actual": false,
+      "expected": false,
+      "pass": true
+    },
+    {
+      "id": "STALE-rejection-locality",
+      "actual": [
+        "HTML D",
+        "D",
+        ""
+      ],
+      "expected": [
+        "HTML D",
+        "D",
+        ""
+      ],
+      "pass": true
+    },
+    {
+      "id": "FAULT-factory",
+      "actual": [
+        "svg_unavailable",
+        "HTML factory",
+        0
+      ],
+      "expected": [
+        "svg_unavailable",
+        "HTML factory",
+        0
+      ],
+      "pass": true
+    },
+    {
+      "id": "FAULT-sync",
+      "actual": [
+        "svg_unavailable",
+        "HTML sync",
+        0
+      ],
+      "expected": [
+        "svg_unavailable",
+        "HTML sync",
+        0
+      ],
+      "pass": true
+    },
+    {
+      "id": "FAULT-async",
+      "actual": [
+        "svg_unavailable",
+        "HTML async",
+        0
+      ],
+      "expected": [
+        "svg_unavailable",
+        "HTML async",
+        0
+      ],
+      "pass": true
+    },
+    {
+      "id": "FAULT-revokes-current-authority",
+      "actual": false,
+      "expected": false,
+      "pass": true
+    },
+    {
+      "id": "VALIDATION-event-attribute-local",
+      "actual": [
+        0,
+        "HTML unsafe"
+      ],
+      "expected": [
+        0,
+        "HTML unsafe"
+      ],
+      "pass": true
+    },
+    {
+      "id": "REAL-SVG-16-source-points",
+      "actual": 16,
+      "expected": 16,
+      "pass": true
+    },
+    {
+      "id": "REAL-SVG-no-interactive-targets",
+      "actual": 0,
+      "expected": 0,
+      "pass": true
+    },
+    {
+      "id": "REAL-SVG-copy-isolation",
+      "actual": "<svg width=\"328\" height=\"357\" viewBox=\"0 0 328 357\" role=\"img\" aria-label=\"Карта: положения, дома и аспекты; управление в таблицах\" xmlns=\"http://www.w3.org/2000/svg\" style=\"font-family: &quot;Segoe UI Symbol&quot;, &quot;Segoe UI&quot;, sans-serif; overflow: hidden; display: block;\"><path d=\"M232.515625,73.0625 A106.5 106.5 0 0 0 177.78125,79.6875 L187.484375,103.8125 A80.5 80.5 0 0 1 228.84375,98.796875 Z\" fill=\"#f8fafc\" stroke=\"#bdcdd9\" stroke-width=\"0.5\" data-sector=\"0\"></path><path d=\"M177.78125,79.6875 A106.5 106.5 0 0 0 133.703125,112.78125 L154.15625,128.828125 A80.5 80.5 0 0 1 187.484375,103.8125 Z\" fill=\"#eef4f7\" stroke=\"#bdcdd9\" stroke-width=\"0.5\" data-sector=\"1\"></path><path d=\"M133.703125,112.78125 A106.5 106.5 0 0 0 112.0625,163.484375 L137.796875,167.15625 A80.5 80.5 0 0 1 154.15625,128.828125 Z\" fill=\"#f8fafc\" stroke=\"#bdcdd9\" stroke-width=\"0.5\" data-sector=\"2\"></path><path d=\"M112.0625,163.484375 A106.5 106.5 0 0 0 118.6875,218.21875 L142.8125,208.515625 A80.5 80.5 0 0 1 137.796875,167.15625 Z\" fill=\"#eef4f7\" stroke=\"#bdcdd9\" stroke-width=\"0.5\" data-sector=\"3\"></path><path d=\"M118.6875,218.21875 A106.5 106.5 0 0 0 151.78125,262.296875 L167.828125,241.84375 A80.5 80.5 0 0 1 142.8125,208.515625 Z\" fill=\"#f8fafc\" stroke=\"#bdcdd9\" stroke-width=\"0.5\" data-sector=\"4\"></path><path d=\"M151.78125,262.296875 A106.5 106.5 0 0 0 202.484375,283.9375 L206.15625,258.203125 A80.5 80.5 0 0 1 167.828125,241.84375 Z\" fill=\"#eef4f7\" stroke=\"#bdcdd9\" stroke-width=\"0.5\" data-sector=\"5\"></path><path d=\"M202.484375,283.9375 A106.5 106.5 0 0 0 257.21875,277.3125 L247.515625,253.1875 A80.5 80.5 0 0 1 206.15625,258.203125 Z\" fill=\"#f8fafc\" stroke=\"#bdcdd9\" stroke-width=\"0.5\" data-sector=\"6\"></path><path d=\"M257.21875,277.3125 A106.5 106.5 0 0 0 301.296875,244.21875 L280.84375,228.171875 A80.5 80.5 0 0 1 247.515625,253.1875 Z\" fill=\"#eef4f7\" stroke=\"#bdcdd9\" stroke-width=\"0.5\" data-sector=\"7\"></path><path d=\"M301.296875,244.21875 A106.5 106.5 0 0 0 322.9375,193.515625 L297.203125,189.84375 A80.5 80.5 0 0 1 280.84375,228.171875 Z\" fill=\"#f8fafc\" stroke=\"#bdcdd9\" stroke-width=\"0.5\" data-sector=\"8\"></path><path d=\"M322.9375,193.515625 A106.5 106.5 0 0 0 316.3125,138.78125 L292.1875,148.484375 A80.5 80.5 0 0 1 297.203125,189.84375 Z\" fill=\"#eef4f7\" stroke=\"#bdcdd9\" stroke-width=\"0.5\" data-sector=\"9\"></path><path d=\"M316.3125,138.78125 A106.5 106.5 0 0 0 283.21875,94.703125 L267.171875,115.15625 A80.5 80.5 0 0 1 292.1875,148.484375 Z\" fill=\"#f8fafc\" stroke=\"#bdcdd9\" stroke-width=\"0.5\" data-sector=\"10\"></path><path d=\"M283.21875,94.703125 A106.5 106.5 0 0 0 232.515625,73.0625 L228.84375,98.796875 A80.5 80.5 0 0 1 267.171875,115.15625 Z\" fill=\"#eef4f7\" stroke=\"#bdcdd9\" stroke-width=\"0.5\" data-sector=\"11\"></path><circle cx=\"217.5\" cy=\"178.5\" r=\"106.5\" fill=\"none\" stroke=\"#c6d4df\" stroke-width=\"0.7\"></circle><circle cx=\"217.5\" cy=\"178.5\" r=\"80.5\" fill=\"none\" stroke=\"#c6d4df\" stroke-width=\"0.7\"></circle><circle cx=\"217.5\" cy=\"178.5\" r=\"28.755000000000003\" fill=\"none\" stroke=\"#c6d4df\" stroke-width=\"0.7\"></circle><line x1=\"188.75\" y1=\"178.5\" x2=\"137\" y2=\"178.5\" stroke=\"#aebfc9\" stroke-width=\"0.7\" data-house=\"1\"></line><line x1=\"189.5625\" y1=\"185.34375\" x2=\"139.3125\" y2=\"197.640625\" stroke=\"#aebfc9\" stroke-width=\"0.7\" data-house=\"2\"></line><line x1=\"192.375\" y1=\"192.484375\" x2=\"147.171875\" y2=\"217.65625\" stroke=\"#aebfc9\" stroke-width=\"0.7\" data-house=\"3\"></line><line x1=\"198.828125\" y1=\"200.375\" x2=\"165.25\" y2=\"239.734375\" stroke=\"#aebfc9\" stroke-width=\"0.7\" data-house=\"4\"></line><line x1=\"213.328125\" y1=\"206.953125\" x2=\"205.796875\" y2=\"258.140625\" stroke=\"#aebfc9\" stroke-width=\"0.7\" data-house=\"5\"></line><line x1=\"237.21875\" y1=\"199.4375\" x2=\"272.6875\" y2=\"237.109375\" stroke=\"#aebfc9\" stroke-width=\"0.7\" data-house=\"6\"></line><line x1=\"246.25\" y1=\"178.5\" x2=\"298\" y2=\"178.5\" stroke=\"#aebfc9\" stroke-width=\"0.7\" data-house=\"7\"></line><line x1=\"245.4375\" y1=\"171.65625\" x2=\"295.6875\" y2=\"159.359375\" stroke=\"#aebfc9\" stroke-width=\"0.7\" data-house=\"8\"></line><line x1=\"242.625\" y1=\"164.515625\" x2=\"287.828125\" y2=\"139.34375\" stroke=\"#aebfc9\" stroke-width=\"0.7\" data-house=\"9\"></line><line x1=\"236.171875\" y1=\"156.625\" x2=\"269.75\" y2=\"117.265625\" stroke=\"#aebfc9\" stroke-width=\"0.7\" data-house=\"10\"></line><line x1=\"221.671875\" y1=\"150.046875\" x2=\"229.203125\" y2=\"98.859375\" stroke=\"#aebfc9\" stroke-width=\"0.7\" data-house=\"11\"></line><line x1=\"197.78125\" y1=\"157.5625\" x2=\"162.3125\" y2=\"119.890625\" stroke=\"#aebfc9\" stroke-width=\"0.7\" data-house=\"12\"></line><line x1=\"202.21875\" y1=\"154.140625\" x2=\"242.8125\" y2=\"192.140625\" stroke=\"#8a632f\" stroke-width=\"1\" stroke-dasharray=\"none\" data-aspect=\"mean_apog|pars_fortune|quincunx\" data-source-index=\"0\"></line><line x1=\"217.71875\" y1=\"149.75\" x2=\"188.75\" y2=\"178.5\" stroke=\"#ad3e42\" stroke-width=\"1\" stroke-dasharray=\"none\" data-aspect=\"asc|moon|square\" data-source-index=\"1\"></line><line x1=\"203.65625\" y1=\"203.703125\" x2=\"242.8125\" y2=\"192.140625\" stroke=\"#ad3e42\" stroke-width=\"1\" stroke-dasharray=\"none\" data-aspect=\"pars_fortune|sun|square\" data-source-index=\"2\"></line><line x1=\"243.75\" y1=\"190.25\" x2=\"191.15625\" y2=\"166.953125\" stroke=\"#944e82\" stroke-width=\"1\" stroke-dasharray=\"none\" data-aspect=\"chiron|uranus|opposition\" data-source-index=\"3\"></line><line x1=\"196.8125\" y1=\"198.46875\" x2=\"237.65625\" y2=\"199\" stroke=\"#ad3e42\" stroke-width=\"1\" stroke-dasharray=\"none\" data-aspect=\"mercury|saturn|square\" data-source-index=\"4\"></line><line x1=\"242.25\" y1=\"163.875\" x2=\"188.75\" y2=\"178.5\" stroke=\"#8a632f\" stroke-width=\"1\" stroke-dasharray=\"none\" data-aspect=\"asc|jupiter|quincunx\" data-source-index=\"5\"></line><line x1=\"203.65625\" y1=\"203.703125\" x2=\"242.25\" y2=\"163.875\" stroke=\"#8a632f\" stroke-width=\"1\" stroke-dasharray=\"none\" data-aspect=\"jupiter|sun|quincunx\" data-source-index=\"6\"></line><line x1=\"203.65625\" y1=\"203.703125\" x2=\"202.21875\" y2=\"154.140625\" stroke=\"#386bb0\" stroke-width=\"1\" stroke-dasharray=\"none\" data-aspect=\"mean_apog|sun|trine\" data-source-index=\"8\"></line><line x1=\"217.71875\" y1=\"149.75\" x2=\"242.25\" y2=\"163.875\" stroke=\"#277566\" stroke-width=\"1\" stroke-dasharray=\"4 3\" data-aspect=\"jupiter|moon|sextile\" data-source-index=\"9\"></line><line x1=\"191.15625\" y1=\"166.953125\" x2=\"234.96875\" y2=\"201.34375\" stroke=\"#8a632f\" stroke-width=\"1\" stroke-dasharray=\"4 3\" data-aspect=\"chiron|selena|quincunx\" data-source-index=\"10\"></line><line x1=\"242.25\" y1=\"163.875\" x2=\"242.8125\" y2=\"192.140625\" stroke=\"#277566\" stroke-width=\"1\" stroke-dasharray=\"4 3\" data-aspect=\"jupiter|pars_fortune|sextile\" data-source-index=\"11\"></line><line x1=\"201.921875\" y1=\"154.328125\" x2=\"242.8125\" y2=\"192.140625\" stroke=\"#8a632f\" stroke-width=\"1\" stroke-dasharray=\"4 3\" data-aspect=\"pars_fortune|true_node|quincunx\" data-source-index=\"12\"></line><line x1=\"203.65625\" y1=\"203.703125\" x2=\"188.75\" y2=\"178.5\" stroke=\"#277566\" stroke-width=\"1\" stroke-dasharray=\"4 3\" data-aspect=\"asc|sun|sextile\" data-source-index=\"13\"></line><line x1=\"242.25\" y1=\"163.875\" x2=\"202.21875\" y2=\"154.140625\" stroke=\"#ad3e42\" stroke-width=\"1\" stroke-dasharray=\"4 3\" data-aspect=\"jupiter|mean_apog|square\" data-source-index=\"14\"></line><line x1=\"203.65625\" y1=\"203.703125\" x2=\"201.921875\" y2=\"154.328125\" stroke=\"#386bb0\" stroke-width=\"1\" stroke-dasharray=\"4 3\" data-aspect=\"sun|true_node|trine\" data-source-index=\"15\"></line><line x1=\"242.8125\" y1=\"192.140625\" x2=\"188.75\" y2=\"178.5\" stroke=\"#8a632f\" stroke-width=\"1\" stroke-dasharray=\"4 3\" data-aspect=\"asc|pars_fortune|quincunx\" data-source-index=\"16\"></line><line x1=\"203.65625\" y1=\"203.703125\" x2=\"217.71875\" y2=\"149.75\" stroke=\"#8a632f\" stroke-width=\"1\" stroke-dasharray=\"4 3\" data-aspect=\"moon|sun|quincunx\" data-source-index=\"17\"></line><line x1=\"246.03125\" y1=\"182.125\" x2=\"229.453125\" y2=\"204.65625\" stroke=\"#277566\" stroke-width=\"1\" stroke-dasharray=\"4 3\" data-aspect=\"neptune|pluto|sextile\" data-source-index=\"18\"></line><line x1=\"217.71875\" y1=\"149.75\" x2=\"192\" y2=\"191.78125\" stroke=\"#386bb0\" stroke-width=\"1\" stroke-dasharray=\"4 3\" data-aspect=\"moon|venus|trine\" data-source-index=\"19\"></line><line x1=\"202.21875\" y1=\"154.140625\" x2=\"188.75\" y2=\"178.5\" stroke=\"#277566\" stroke-width=\"1\" stroke-dasharray=\"4 3\" data-aspect=\"asc|mean_apog|sextile\" data-source-index=\"20\"></line><line x1=\"197.78125\" y1=\"199.421875\" x2=\"237.65625\" y2=\"199\" stroke=\"#ad3e42\" stroke-width=\"1\" stroke-dasharray=\"4 3\" data-aspect=\"mars|saturn|square\" data-source-index=\"21\"></line><line x1=\"242.25\" y1=\"163.875\" x2=\"201.921875\" y2=\"154.328125\" stroke=\"#ad3e42\" stroke-width=\"1\" stroke-dasharray=\"4 3\" data-aspect=\"jupiter|true_node|square\" data-source-index=\"22\"></line><line x1=\"196.8125\" y1=\"198.46875\" x2=\"236.609375\" y2=\"199.984375\" stroke=\"#ad3e42\" stroke-width=\"1\" stroke-dasharray=\"4 3\" data-aspect=\"mercury|vertex|square\" data-source-index=\"23\"></line><line x1=\"201.921875\" y1=\"154.328125\" x2=\"188.75\" y2=\"178.5\" stroke=\"#277566\" stroke-width=\"1\" stroke-dasharray=\"4 3\" data-aspect=\"asc|true_node|sextile\" data-source-index=\"25\"></line><line x1=\"197.78125\" y1=\"199.421875\" x2=\"236.171875\" y2=\"156.625\" stroke=\"#944e82\" stroke-width=\"1\" stroke-dasharray=\"4 3\" data-aspect=\"mars|mc|opposition\" data-source-index=\"26\"></line><line x1=\"192\" y1=\"191.78125\" x2=\"229.453125\" y2=\"204.65625\" stroke=\"#ad3e42\" stroke-width=\"1\" stroke-dasharray=\"4 3\" data-aspect=\"pluto|venus|square\" data-source-index=\"28\"></line><path d=\"M189.765625 229.015625 L174.796875 217.765625 L134.4375 177.09375 L91 141.75\" fill=\"none\" stroke=\"white\" stroke-width=\"3.5\" data-leader-bridge=\"sun\"></path><path d=\"M189.765625 229.015625 L174.796875 217.765625 L134.4375 177.09375 L91 141.75\" fill=\"none\" stroke=\"#6e8798\" stroke-width=\"0.75\" data-leader=\"sun\"></path><path d=\"M176.046875 218.515625 L174.796875 217.765625 L120.328125 154.171875 L91 92.75\" fill=\"none\" stroke=\"white\" stroke-width=\"3.5\" data-leader-bridge=\"mercury\"></path><path d=\"M176.046875 218.515625 L174.796875 217.765625 L120.328125 154.171875 L91 92.75\" fill=\"none\" stroke=\"#6e8798\" stroke-width=\"0.75\" data-leader=\"mercury\"></path><path d=\"M166.390625 205.09375 L120.328125 154.171875 L91 68.25\" fill=\"none\" stroke=\"white\" stroke-width=\"3.5\" data-leader-bridge=\"venus\"></path><path d=\"M166.390625 205.09375 L120.328125 154.171875 L91 68.25\" fill=\"none\" stroke=\"#6e8798\" stroke-width=\"0.75\" data-leader=\"venus\"></path><path d=\"M177.96875 220.421875 L174.796875 217.765625 L120.328125 154.171875 L91 117.25\" fill=\"none\" stroke=\"white\" stroke-width=\"3.5\" data-leader-bridge=\"mars\"></path><path d=\"M177.96875 220.421875 L174.796875 217.765625 L120.328125 154.171875 L91 117.25\" fill=\"none\" stroke=\"#6e8798\" stroke-width=\"0.75\" data-leader=\"mars\"></path><path d=\"M267.109375 149.1875 L230.0703125 185.9921875 L91 337.75\" fill=\"none\" stroke=\"white\" stroke-width=\"3.5\" data-leader-bridge=\"jupiter\"></path><path d=\"M267.109375 149.1875 L230.0703125 185.9921875 L91 337.75\" fill=\"none\" stroke=\"#6e8798\" stroke-width=\"0.75\" data-leader=\"jupiter\"></path><path d=\"M257.890625 219.59375 L132.171875 222.484375 L91 239.75\" fill=\"none\" stroke=\"white\" stroke-width=\"3.5\" data-leader-bridge=\"saturn\"></path><path d=\"M257.890625 219.59375 L132.171875 222.484375 L91 239.75\" fill=\"none\" stroke=\"#6e8798\" stroke-width=\"0.75\" data-leader=\"saturn\"></path><path d=\"M270.09375 202.03125 L260.9453125 218.84375 L169.671875 252.671875 L91 288.75\" fill=\"none\" stroke=\"white\" stroke-width=\"3.5\" data-leader-bridge=\"uranus\"></path><path d=\"M270.09375 202.03125 L260.9453125 218.84375 L169.671875 252.671875 L91 288.75\" fill=\"none\" stroke=\"#6e8798\" stroke-width=\"0.75\" data-leader=\"uranus\"></path><path d=\"M274.65625 185.75 L260.9453125 218.84375 L169.671875 252.671875 L91 313.25\" fill=\"none\" stroke=\"white\" stroke-width=\"3.5\" data-leader-bridge=\"neptune\"></path><path d=\"M274.65625 185.75 L260.9453125 218.84375 L169.671875 252.671875 L91 313.25\" fill=\"none\" stroke=\"#6e8798\" stroke-width=\"0.75\" data-leader=\"neptune\"></path><path d=\"M241.4375 230.90625 L174.796875 217.765625 L134.4375 177.09375 L91 166.25\" fill=\"none\" stroke=\"white\" stroke-width=\"3.5\" data-leader-bridge=\"pluto\"></path><path d=\"M241.4375 230.90625 L174.796875 217.765625 L134.4375 177.09375 L91 166.25\" fill=\"none\" stroke=\"#6e8798\" stroke-width=\"0.75\" data-leader=\"pluto\"></path><path d=\"M186.28125 130.078125 L150.015625 115.671875 L91 43.75\" fill=\"none\" stroke=\"white\" stroke-width=\"3.5\" data-leader-bridge=\"true_node\"></path><path d=\"M186.28125 130.078125 L150.015625 115.671875 L91 43.75\" fill=\"none\" stroke=\"#6e8798\" stroke-width=\"0.75\" data-leader=\"true_node\"></path><path d=\"M248.71875 226.921875 L174.796875 217.765625 L112.9375 202.59375 L91 190.75\" fill=\"none\" stroke=\"white\" stroke-width=\"3.5\" data-leader-bridge=\"south_node\"></path><path d=\"M248.71875 226.921875 L174.796875 217.765625 L112.9375 202.59375 L91 190.75\" fill=\"none\" stroke=\"#6e8798\" stroke-width=\"0.75\" data-leader=\"south_node\"></path><path d=\"M186.890625 129.6875 L171.515625 90.171875 L91 19.25\" fill=\"none\" stroke=\"white\" stroke-width=\"3.5\" data-leader-bridge=\"mean_apog\"></path><path d=\"M186.890625 129.6875 L171.515625 90.171875 L91 19.25\" fill=\"none\" stroke=\"#6e8798\" stroke-width=\"0.75\" data-leader=\"mean_apog\"></path><path d=\"M252.5 224.28125 L91 215.25\" fill=\"none\" stroke=\"white\" stroke-width=\"3.5\" data-leader-bridge=\"selena\"></path><path d=\"M252.5 224.28125 L91 215.25\" fill=\"none\" stroke=\"#6e8798\" stroke-width=\"0.75\" data-leader=\"selena\"></path><path d=\"M268.21875 205.84375 L260.9453125 218.84375 L91 264.25\" fill=\"none\" stroke=\"white\" stroke-width=\"3.5\" data-leader-bridge=\"pars_fortune\"></path><path d=\"M268.21875 205.84375 L260.9453125 218.84375 L91 264.25\" fill=\"none\" stroke=\"#6e8798\" stroke-width=\"0.75\" data-leader=\"pars_fortune\"></path><path d=\"M251.46875 216.703125 L251.46875 208.59375\" fill=\"none\" stroke=\"white\" stroke-width=\"3.5\" data-leader-bridge=\"angle:vertex\"></path><path d=\"M251.46875 216.703125 L251.46875 208.59375\" fill=\"none\" stroke=\"#6e8798\" stroke-width=\"0.75\" data-leader=\"angle:vertex\"></path><path d=\"M268.625 178.5 L268.625 174.75\" fill=\"none\" stroke=\"white\" stroke-width=\"3.5\" data-leader-bridge=\"angle:dsc\"></path><path d=\"M268.625 178.5 L268.625 174.75\" fill=\"none\" stroke=\"#6e8798\" stroke-width=\"0.75\" data-leader=\"angle:dsc\"></path><path d=\"M184.3125 217.390625 L182.6435546875 207.515625\" fill=\"none\" stroke=\"white\" stroke-width=\"3.5\" data-leader-bridge=\"angle:ic\"></path><path d=\"M184.3125 217.390625 L182.6435546875 207.515625\" fill=\"none\" stroke=\"#6e8798\" stroke-width=\"0.75\" data-leader=\"angle:ic\"></path><g data-label=\"sign:0\" data-kind=\"sign\" transform=\"translate(206.15625 84.6875)\" aria-label=\"sign:0\"><rect x=\"-8.5\" y=\"-10.5\" width=\"17\" height=\"21\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-7.5\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"sign:0:0\">♈</text></g><g data-label=\"sign:1\" data-kind=\"sign\" transform=\"translate(160.765625 102.921875)\" aria-label=\"sign:1\"><rect x=\"-8.5\" y=\"-10.5\" width=\"17\" height=\"21\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-7.5\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"sign:1:0\">♉</text></g><g data-label=\"sign:2\" data-kind=\"sign\" transform=\"translate(130.578125 141.421875)\" aria-label=\"sign:2\"><rect x=\"-8\" y=\"-10.5\" width=\"16\" height=\"21\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-7\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"sign:2:0\">♊</text></g><g data-label=\"sign:3\" data-kind=\"sign\" transform=\"translate(123.6875 189.84375)\" aria-label=\"sign:3\"><rect x=\"-8.5\" y=\"-10.5\" width=\"17\" height=\"21\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-7.5\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"sign:3:0\">♋</text></g><g data-label=\"sign:4\" data-kind=\"sign\" transform=\"translate(141.921875 235.234375)\" aria-label=\"sign:4\"><rect x=\"-7.5\" y=\"-10.5\" width=\"15\" height=\"21\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-6.5\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"sign:4:0\">♌</text></g><g data-label=\"sign:5\" data-kind=\"sign\" transform=\"translate(180.421875 265.421875)\" aria-label=\"sign:5\"><rect x=\"-8.5\" y=\"-10.5\" width=\"17\" height=\"21\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-7.5\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"sign:5:0\">♍</text></g><g data-label=\"sign:6\" data-kind=\"sign\" transform=\"translate(228.84375 272.3125)\" aria-label=\"sign:6\"><rect x=\"-8\" y=\"-10.5\" width=\"16\" height=\"21\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-7\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"sign:6:0\">♎</text></g><g data-label=\"sign:7\" data-kind=\"sign\" transform=\"translate(274.234375 254.078125)\" aria-label=\"sign:7\"><rect x=\"-8.5\" y=\"-10.5\" width=\"17\" height=\"21\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-7.5\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"sign:7:0\">♏</text></g><g data-label=\"sign:8\" data-kind=\"sign\" transform=\"translate(304.421875 215.578125)\" aria-label=\"sign:8\"><rect x=\"-7.5\" y=\"-10.5\" width=\"15\" height=\"21\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-6.5\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"sign:8:0\">♐</text></g><g data-label=\"sign:9\" data-kind=\"sign\" transform=\"translate(311.3125 167.15625)\" aria-label=\"sign:9\"><rect x=\"-9.5\" y=\"-10.5\" width=\"19\" height=\"21\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-8.5\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"sign:9:0\">♑</text></g><g data-label=\"sign:10\" data-kind=\"sign\" transform=\"translate(293.078125 121.765625)\" aria-label=\"sign:10\"><rect x=\"-9.5\" y=\"-10.5\" width=\"19\" height=\"21\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-8.5\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"sign:10:0\">♒</text></g><g data-label=\"sign:11\" data-kind=\"sign\" transform=\"translate(254.578125 91.578125)\" aria-label=\"sign:11\"><rect x=\"-6.5\" y=\"-10.5\" width=\"13\" height=\"21\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-5.5\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"sign:11:0\">♓</text></g><g data-label=\"sun\" data-kind=\"point\" transform=\"translate(36.59765625 141.75)\" aria-label=\"Солнце\"><rect x=\"-7.4921875\" y=\"-11.25\" width=\"14.984375\" height=\"22.5\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-6.7421875\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"sun:0\">☉</text><rect x=\"12.4921875\" y=\"-8\" width=\"41.91015625\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"12.4921875\" y=\"5\" font-size=\"12\" fill=\"#193e55\" data-component=\"sun:1\">Солнце</text></g><circle cx=\"189.765625\" cy=\"229.015625\" r=\"1\" fill=\"#305b75\" data-anchor=\"sun\"></circle><g data-label=\"moon\" data-kind=\"point\" transform=\"translate(217.9375 120.890625)\" aria-label=\"Луна\"><rect x=\"-5.3203125\" y=\"-11.25\" width=\"10.640625\" height=\"22.5\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-4.5703125\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"moon:0\">☽</text></g><circle cx=\"217.9375\" cy=\"120.890625\" r=\"1\" fill=\"#305b75\" data-anchor=\"moon\"></circle><g data-label=\"mercury\" data-kind=\"point\" transform=\"translate(23.845703125 92.75)\" aria-label=\"Меркурий\"><rect x=\"-5.25\" y=\"-11.25\" width=\"10.5\" height=\"22.5\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-4.5\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"mercury:0\">☿</text><rect x=\"10.25\" y=\"-8\" width=\"56.904296875\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"10.25\" y=\"5\" font-size=\"12\" fill=\"#193e55\" data-component=\"mercury:1\">Меркурий</text></g><circle cx=\"176.046875\" cy=\"218.515625\" r=\"1\" fill=\"#305b75\" data-anchor=\"mercury\"></circle><g data-label=\"venus\" data-kind=\"point\" transform=\"translate(41.234375 68.25)\" aria-label=\"Венера\"><rect x=\"-5.25\" y=\"-11.25\" width=\"10.5\" height=\"22.5\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-4.5\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"venus:0\">♀</text><rect x=\"10.25\" y=\"-8\" width=\"39.515625\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"10.25\" y=\"5\" font-size=\"12\" fill=\"#193e55\" data-component=\"venus:1\">Венера</text></g><circle cx=\"166.390625\" cy=\"205.09375\" r=\"1\" fill=\"#305b75\" data-anchor=\"venus\"></circle><g data-label=\"mars\" data-kind=\"point\" transform=\"translate(49.759765625 117.25)\" aria-label=\"Марс\"><rect x=\"-6.3046875\" y=\"-11.25\" width=\"12.609375\" height=\"22.5\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-5.5546875\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"mars:0\">♂</text><rect x=\"11.3046875\" y=\"-8\" width=\"29.935546875\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"11.3046875\" y=\"5\" font-size=\"12\" fill=\"#193e55\" data-component=\"mars:1\">Марс</text></g><circle cx=\"177.96875\" cy=\"220.421875\" r=\"1\" fill=\"#305b75\" data-anchor=\"mars\"></circle><g data-label=\"jupiter\" data-kind=\"point\" transform=\"translate(24.71875 337.75)\" aria-label=\"Юпитер, ретроградная\"><rect x=\"-6.90625\" y=\"-11.25\" width=\"13.8125\" height=\"22.5\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-6.15625\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"jupiter:0\">♃</text><rect x=\"8.90625\" y=\"-5\" width=\"8\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"8.90625\" y=\"8\" font-size=\"12\" fill=\"#193e55\" data-component=\"jupiter:1\">R</text><rect x=\"21.90625\" y=\"-8\" width=\"44.375\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"21.90625\" y=\"5\" font-size=\"12\" fill=\"#193e55\" data-component=\"jupiter:2\">Юпитер</text></g><circle cx=\"267.109375\" cy=\"149.1875\" r=\"1\" fill=\"#305b75\" data-anchor=\"jupiter\"></circle><g data-label=\"saturn\" data-kind=\"point\" transform=\"translate(42.431640625 239.75)\" aria-label=\"Сатурн\"><rect x=\"-5.25\" y=\"-11.25\" width=\"10.5\" height=\"22.5\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-4.5\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"saturn:0\">♄</text><rect x=\"10.25\" y=\"-8\" width=\"38.318359375\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"10.25\" y=\"5\" font-size=\"12\" fill=\"#193e55\" data-component=\"saturn:1\">Сатурн</text></g><circle cx=\"257.890625\" cy=\"219.59375\" r=\"1\" fill=\"#305b75\" data-anchor=\"saturn\"></circle><g data-label=\"uranus\" data-kind=\"point\" transform=\"translate(52.28125 288.75)\" aria-label=\"Уран\"><rect x=\"-6.75\" y=\"-11.25\" width=\"13.5\" height=\"22.5\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-6\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"uranus:0\">♅</text><rect x=\"11.75\" y=\"-8\" width=\"26.96875\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"11.75\" y=\"5\" font-size=\"12\" fill=\"#193e55\" data-component=\"uranus:1\">Уран</text></g><circle cx=\"270.09375\" cy=\"202.03125\" r=\"1\" fill=\"#305b75\" data-anchor=\"uranus\"></circle><g data-label=\"neptune\" data-kind=\"point\" transform=\"translate(28.80078125 313.25)\" aria-label=\"Нептун, ретроградная\"><rect x=\"-7.75\" y=\"-11.25\" width=\"15.5\" height=\"22.5\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-7\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"neptune:0\">♆</text><rect x=\"9.75\" y=\"-5\" width=\"8\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"9.75\" y=\"8\" font-size=\"12\" fill=\"#193e55\" data-component=\"neptune:1\">R</text><rect x=\"22.75\" y=\"-8\" width=\"39.44921875\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"22.75\" y=\"5\" font-size=\"12\" fill=\"#193e55\" data-component=\"neptune:2\">Нептун</text></g><circle cx=\"274.65625\" cy=\"185.75\" r=\"1\" fill=\"#305b75\" data-anchor=\"neptune\"></circle><g data-label=\"pluto\" data-kind=\"point\" transform=\"translate(41.11328125 166.25)\" aria-label=\"Плутон\"><rect x=\"-5.25\" y=\"-11.25\" width=\"10.5\" height=\"22.5\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-4.5\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"pluto:0\">♇</text><rect x=\"10.25\" y=\"-8\" width=\"39.63671875\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"10.25\" y=\"5\" font-size=\"12\" fill=\"#193e55\" data-component=\"pluto:1\">Плутон</text></g><circle cx=\"241.4375\" cy=\"230.90625\" r=\"1\" fill=\"#305b75\" data-anchor=\"pluto\"></circle><g data-label=\"chiron\" data-kind=\"point\" transform=\"translate(164.71875 155.375)\" aria-label=\"Хирон\"><rect x=\"-5.25\" y=\"-11.25\" width=\"10.5\" height=\"22.5\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-4.5\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"chiron:0\">⚷</text></g><circle cx=\"164.71875\" cy=\"155.375\" r=\"1\" fill=\"#305b75\" data-anchor=\"chiron\"></circle><g data-label=\"true_node\" data-kind=\"point\" transform=\"translate(19.4375 43.75)\" aria-label=\"Сев. узел, ретроградная\"><rect x=\"-6.84375\" y=\"-11.25\" width=\"13.6875\" height=\"22.5\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-6.09375\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"true_node:0\">☊</text><rect x=\"8.84375\" y=\"-5\" width=\"8\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"8.84375\" y=\"8\" font-size=\"12\" fill=\"#193e55\" data-component=\"true_node:1\">R</text><rect x=\"21.84375\" y=\"-8\" width=\"49.71875\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"21.84375\" y=\"5\" font-size=\"12\" fill=\"#193e55\" data-component=\"true_node:2\">Сев. узел</text></g><circle cx=\"186.28125\" cy=\"130.078125\" r=\"1\" fill=\"#305b75\" data-anchor=\"true_node\"></circle><g data-label=\"south_node\" data-kind=\"point\" transform=\"translate(11.40625 190.75)\" aria-label=\"Южн. узел, ретроградная\"><rect x=\"-6.84375\" y=\"-11.25\" width=\"13.6875\" height=\"22.5\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-6.09375\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"south_node:0\">☋</text><rect x=\"8.84375\" y=\"-5\" width=\"8\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"8.84375\" y=\"8\" font-size=\"12\" fill=\"#193e55\" data-component=\"south_node:1\">R</text><rect x=\"21.84375\" y=\"-8\" width=\"57.75\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"21.84375\" y=\"5\" font-size=\"12\" fill=\"#193e55\" data-component=\"south_node:2\">Южн. узел</text></g><circle cx=\"248.71875\" cy=\"226.921875\" r=\"1\" fill=\"#305b75\" data-anchor=\"south_node\"></circle><g data-label=\"mean_apog\" data-kind=\"point\" transform=\"translate(45.501953125 19.25)\" aria-label=\"Лилит\"><rect x=\"-5.15625\" y=\"-11.25\" width=\"10.3125\" height=\"22.5\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-4.40625\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"mean_apog:0\">⚸</text><rect x=\"10.15625\" y=\"-8\" width=\"35.341796875\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"11.15625\" y=\"5\" font-size=\"12\" fill=\"#193e55\" data-component=\"mean_apog:1\">Лилит</text></g><circle cx=\"186.890625\" cy=\"129.6875\" r=\"1\" fill=\"#305b75\" data-anchor=\"mean_apog\"></circle><g data-label=\"selena\" data-kind=\"point\" transform=\"translate(29.1640625 215.25)\" aria-label=\"Селена, ретроградная\"><rect x=\"-7.4921875\" y=\"-11.25\" width=\"14.984375\" height=\"22.5\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-6.7421875\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"selena:0\">⚪</text><rect x=\"9.4921875\" y=\"-5\" width=\"8\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"9.4921875\" y=\"8\" font-size=\"12\" fill=\"#193e55\" data-component=\"selena:1\">R</text><rect x=\"22.4921875\" y=\"-8\" width=\"39.34375\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"22.4921875\" y=\"5\" font-size=\"12\" fill=\"#193e55\" data-component=\"selena:2\">Селена</text></g><circle cx=\"252.5\" cy=\"224.28125\" r=\"1\" fill=\"#305b75\" data-anchor=\"selena\"></circle><g data-label=\"pars_fortune\" data-kind=\"point\" transform=\"translate(36.244140625 264.25)\" aria-label=\"Парс Ф.\"><rect x=\"-7.4921875\" y=\"-11.25\" width=\"14.984375\" height=\"22.5\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-6.7421875\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"pars_fortune:0\">⊗</text><rect x=\"12.4921875\" y=\"-8\" width=\"42.263671875\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"12.4921875\" y=\"5\" font-size=\"12\" fill=\"#193e55\" data-component=\"pars_fortune:1\">Парс Ф.</text></g><circle cx=\"268.21875\" cy=\"205.84375\" r=\"1\" fill=\"#305b75\" data-anchor=\"pars_fortune\"></circle><g data-label=\"angle:asc\" data-kind=\"angle\" transform=\"translate(166.375 178.5)\" aria-label=\"angle:asc\"><rect x=\"-11.5576171875\" y=\"-8\" width=\"23.115234375\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-10.5576171875\" y=\"5\" font-size=\"12\" fill=\"#193e55\" data-component=\"angle:asc:0\">ASC</text></g><circle cx=\"166.375\" cy=\"178.5\" r=\"1\" fill=\"#305b75\" data-anchor=\"angle:asc\"></circle><g data-label=\"angle:mc\" data-kind=\"angle\" transform=\"translate(250.6875 139.609375)\" aria-label=\"angle:mc\"><rect x=\"-9.3876953125\" y=\"-8\" width=\"18.775390625\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-9.3876953125\" y=\"5\" font-size=\"12\" fill=\"#193e55\" data-component=\"angle:mc:0\">MC</text></g><circle cx=\"250.6875\" cy=\"139.609375\" r=\"1\" fill=\"#305b75\" data-anchor=\"angle:mc\"></circle><g data-label=\"angle:vertex\" data-kind=\"angle\" transform=\"translate(251.46875 208.59375)\" aria-label=\"angle:vertex\"><rect x=\"-7.2265625\" y=\"-8\" width=\"14.453125\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-6.2265625\" y=\"5\" font-size=\"12\" fill=\"#193e55\" data-component=\"angle:vertex:0\">Vx</text></g><circle cx=\"251.46875\" cy=\"216.703125\" r=\"1\" fill=\"#305b75\" data-anchor=\"angle:vertex\"></circle><g data-label=\"angle:dsc\" data-kind=\"angle\" transform=\"translate(268.625 174.75)\" aria-label=\"angle:dsc\"><rect x=\"-11.39453125\" y=\"-8\" width=\"22.7890625\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-11.39453125\" y=\"5\" font-size=\"12\" fill=\"#193e55\" data-component=\"angle:dsc:0\">DSC</text></g><circle cx=\"268.625\" cy=\"178.5\" r=\"1\" fill=\"#305b75\" data-anchor=\"angle:dsc\"></circle><g data-label=\"angle:ic\" data-kind=\"angle\" transform=\"translate(182.6435546875 207.515625)\" aria-label=\"angle:ic\"><rect x=\"-5.5966796875\" y=\"-8\" width=\"11.193359375\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-5.5966796875\" y=\"5\" font-size=\"12\" fill=\"#193e55\" data-component=\"angle:ic:0\">IC</text></g><circle cx=\"184.3125\" cy=\"217.390625\" r=\"1\" fill=\"#305b75\" data-anchor=\"angle:ic\"></circle><g data-label=\"conj:mean_apog|true_node|conjunction\" data-kind=\"marker\" transform=\"translate(202.0703125 154.234375)\" aria-label=\"conj:mean_apog|true_node|conjunction\"><rect x=\"-4.8125\" y=\"-11.25\" width=\"9.625\" height=\"22.5\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-4.0625\" y=\"6.5\" font-size=\"16\" fill=\"#385f8a\" data-component=\"conj:mean_apog|true_node|conjunction:0\">☌</text></g><circle cx=\"202.0703125\" cy=\"154.234375\" r=\"1\" fill=\"#305b75\" data-anchor=\"conj:mean_apog|true_node|conjunction\"></circle><g data-label=\"conj:mars|mercury|conjunction\" data-kind=\"marker\" transform=\"translate(197.296875 198.9453125)\" aria-label=\"conj:mars|mercury|conjunction\"><rect x=\"-4.8125\" y=\"-11.25\" width=\"9.625\" height=\"22.5\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-4.0625\" y=\"6.5\" font-size=\"16\" fill=\"#385f8a\" data-component=\"conj:mars|mercury|conjunction:0\">☌</text></g><circle cx=\"197.296875\" cy=\"198.9453125\" r=\"1\" fill=\"#305b75\" data-anchor=\"conj:mars|mercury|conjunction\"></circle><g data-label=\"conj:saturn|vertex|conjunction\" data-kind=\"marker\" transform=\"translate(237.1328125 199.4921875)\" aria-label=\"conj:saturn|vertex|conjunction\"><rect x=\"-4.8125\" y=\"-11.25\" width=\"9.625\" height=\"22.5\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-4.0625\" y=\"6.5\" font-size=\"16\" fill=\"#385f8a\" data-component=\"conj:saturn|vertex|conjunction:0\">☌</text></g><circle cx=\"237.1328125\" cy=\"199.4921875\" r=\"1\" fill=\"#305b75\" data-anchor=\"conj:saturn|vertex|conjunction\"></circle></svg>",
+      "expected": "<svg width=\"328\" height=\"357\" viewBox=\"0 0 328 357\" role=\"img\" aria-label=\"Карта: положения, дома и аспекты; управление в таблицах\" xmlns=\"http://www.w3.org/2000/svg\" style=\"font-family: &quot;Segoe UI Symbol&quot;, &quot;Segoe UI&quot;, sans-serif; overflow: hidden; display: block;\"><path d=\"M232.515625,73.0625 A106.5 106.5 0 0 0 177.78125,79.6875 L187.484375,103.8125 A80.5 80.5 0 0 1 228.84375,98.796875 Z\" fill=\"#f8fafc\" stroke=\"#bdcdd9\" stroke-width=\"0.5\" data-sector=\"0\"></path><path d=\"M177.78125,79.6875 A106.5 106.5 0 0 0 133.703125,112.78125 L154.15625,128.828125 A80.5 80.5 0 0 1 187.484375,103.8125 Z\" fill=\"#eef4f7\" stroke=\"#bdcdd9\" stroke-width=\"0.5\" data-sector=\"1\"></path><path d=\"M133.703125,112.78125 A106.5 106.5 0 0 0 112.0625,163.484375 L137.796875,167.15625 A80.5 80.5 0 0 1 154.15625,128.828125 Z\" fill=\"#f8fafc\" stroke=\"#bdcdd9\" stroke-width=\"0.5\" data-sector=\"2\"></path><path d=\"M112.0625,163.484375 A106.5 106.5 0 0 0 118.6875,218.21875 L142.8125,208.515625 A80.5 80.5 0 0 1 137.796875,167.15625 Z\" fill=\"#eef4f7\" stroke=\"#bdcdd9\" stroke-width=\"0.5\" data-sector=\"3\"></path><path d=\"M118.6875,218.21875 A106.5 106.5 0 0 0 151.78125,262.296875 L167.828125,241.84375 A80.5 80.5 0 0 1 142.8125,208.515625 Z\" fill=\"#f8fafc\" stroke=\"#bdcdd9\" stroke-width=\"0.5\" data-sector=\"4\"></path><path d=\"M151.78125,262.296875 A106.5 106.5 0 0 0 202.484375,283.9375 L206.15625,258.203125 A80.5 80.5 0 0 1 167.828125,241.84375 Z\" fill=\"#eef4f7\" stroke=\"#bdcdd9\" stroke-width=\"0.5\" data-sector=\"5\"></path><path d=\"M202.484375,283.9375 A106.5 106.5 0 0 0 257.21875,277.3125 L247.515625,253.1875 A80.5 80.5 0 0 1 206.15625,258.203125 Z\" fill=\"#f8fafc\" stroke=\"#bdcdd9\" stroke-width=\"0.5\" data-sector=\"6\"></path><path d=\"M257.21875,277.3125 A106.5 106.5 0 0 0 301.296875,244.21875 L280.84375,228.171875 A80.5 80.5 0 0 1 247.515625,253.1875 Z\" fill=\"#eef4f7\" stroke=\"#bdcdd9\" stroke-width=\"0.5\" data-sector=\"7\"></path><path d=\"M301.296875,244.21875 A106.5 106.5 0 0 0 322.9375,193.515625 L297.203125,189.84375 A80.5 80.5 0 0 1 280.84375,228.171875 Z\" fill=\"#f8fafc\" stroke=\"#bdcdd9\" stroke-width=\"0.5\" data-sector=\"8\"></path><path d=\"M322.9375,193.515625 A106.5 106.5 0 0 0 316.3125,138.78125 L292.1875,148.484375 A80.5 80.5 0 0 1 297.203125,189.84375 Z\" fill=\"#eef4f7\" stroke=\"#bdcdd9\" stroke-width=\"0.5\" data-sector=\"9\"></path><path d=\"M316.3125,138.78125 A106.5 106.5 0 0 0 283.21875,94.703125 L267.171875,115.15625 A80.5 80.5 0 0 1 292.1875,148.484375 Z\" fill=\"#f8fafc\" stroke=\"#bdcdd9\" stroke-width=\"0.5\" data-sector=\"10\"></path><path d=\"M283.21875,94.703125 A106.5 106.5 0 0 0 232.515625,73.0625 L228.84375,98.796875 A80.5 80.5 0 0 1 267.171875,115.15625 Z\" fill=\"#eef4f7\" stroke=\"#bdcdd9\" stroke-width=\"0.5\" data-sector=\"11\"></path><circle cx=\"217.5\" cy=\"178.5\" r=\"106.5\" fill=\"none\" stroke=\"#c6d4df\" stroke-width=\"0.7\"></circle><circle cx=\"217.5\" cy=\"178.5\" r=\"80.5\" fill=\"none\" stroke=\"#c6d4df\" stroke-width=\"0.7\"></circle><circle cx=\"217.5\" cy=\"178.5\" r=\"28.755000000000003\" fill=\"none\" stroke=\"#c6d4df\" stroke-width=\"0.7\"></circle><line x1=\"188.75\" y1=\"178.5\" x2=\"137\" y2=\"178.5\" stroke=\"#aebfc9\" stroke-width=\"0.7\" data-house=\"1\"></line><line x1=\"189.5625\" y1=\"185.34375\" x2=\"139.3125\" y2=\"197.640625\" stroke=\"#aebfc9\" stroke-width=\"0.7\" data-house=\"2\"></line><line x1=\"192.375\" y1=\"192.484375\" x2=\"147.171875\" y2=\"217.65625\" stroke=\"#aebfc9\" stroke-width=\"0.7\" data-house=\"3\"></line><line x1=\"198.828125\" y1=\"200.375\" x2=\"165.25\" y2=\"239.734375\" stroke=\"#aebfc9\" stroke-width=\"0.7\" data-house=\"4\"></line><line x1=\"213.328125\" y1=\"206.953125\" x2=\"205.796875\" y2=\"258.140625\" stroke=\"#aebfc9\" stroke-width=\"0.7\" data-house=\"5\"></line><line x1=\"237.21875\" y1=\"199.4375\" x2=\"272.6875\" y2=\"237.109375\" stroke=\"#aebfc9\" stroke-width=\"0.7\" data-house=\"6\"></line><line x1=\"246.25\" y1=\"178.5\" x2=\"298\" y2=\"178.5\" stroke=\"#aebfc9\" stroke-width=\"0.7\" data-house=\"7\"></line><line x1=\"245.4375\" y1=\"171.65625\" x2=\"295.6875\" y2=\"159.359375\" stroke=\"#aebfc9\" stroke-width=\"0.7\" data-house=\"8\"></line><line x1=\"242.625\" y1=\"164.515625\" x2=\"287.828125\" y2=\"139.34375\" stroke=\"#aebfc9\" stroke-width=\"0.7\" data-house=\"9\"></line><line x1=\"236.171875\" y1=\"156.625\" x2=\"269.75\" y2=\"117.265625\" stroke=\"#aebfc9\" stroke-width=\"0.7\" data-house=\"10\"></line><line x1=\"221.671875\" y1=\"150.046875\" x2=\"229.203125\" y2=\"98.859375\" stroke=\"#aebfc9\" stroke-width=\"0.7\" data-house=\"11\"></line><line x1=\"197.78125\" y1=\"157.5625\" x2=\"162.3125\" y2=\"119.890625\" stroke=\"#aebfc9\" stroke-width=\"0.7\" data-house=\"12\"></line><line x1=\"202.21875\" y1=\"154.140625\" x2=\"242.8125\" y2=\"192.140625\" stroke=\"#8a632f\" stroke-width=\"1\" stroke-dasharray=\"none\" data-aspect=\"mean_apog|pars_fortune|quincunx\" data-source-index=\"0\"></line><line x1=\"217.71875\" y1=\"149.75\" x2=\"188.75\" y2=\"178.5\" stroke=\"#ad3e42\" stroke-width=\"1\" stroke-dasharray=\"none\" data-aspect=\"asc|moon|square\" data-source-index=\"1\"></line><line x1=\"203.65625\" y1=\"203.703125\" x2=\"242.8125\" y2=\"192.140625\" stroke=\"#ad3e42\" stroke-width=\"1\" stroke-dasharray=\"none\" data-aspect=\"pars_fortune|sun|square\" data-source-index=\"2\"></line><line x1=\"243.75\" y1=\"190.25\" x2=\"191.15625\" y2=\"166.953125\" stroke=\"#944e82\" stroke-width=\"1\" stroke-dasharray=\"none\" data-aspect=\"chiron|uranus|opposition\" data-source-index=\"3\"></line><line x1=\"196.8125\" y1=\"198.46875\" x2=\"237.65625\" y2=\"199\" stroke=\"#ad3e42\" stroke-width=\"1\" stroke-dasharray=\"none\" data-aspect=\"mercury|saturn|square\" data-source-index=\"4\"></line><line x1=\"242.25\" y1=\"163.875\" x2=\"188.75\" y2=\"178.5\" stroke=\"#8a632f\" stroke-width=\"1\" stroke-dasharray=\"none\" data-aspect=\"asc|jupiter|quincunx\" data-source-index=\"5\"></line><line x1=\"203.65625\" y1=\"203.703125\" x2=\"242.25\" y2=\"163.875\" stroke=\"#8a632f\" stroke-width=\"1\" stroke-dasharray=\"none\" data-aspect=\"jupiter|sun|quincunx\" data-source-index=\"6\"></line><line x1=\"203.65625\" y1=\"203.703125\" x2=\"202.21875\" y2=\"154.140625\" stroke=\"#386bb0\" stroke-width=\"1\" stroke-dasharray=\"none\" data-aspect=\"mean_apog|sun|trine\" data-source-index=\"8\"></line><line x1=\"217.71875\" y1=\"149.75\" x2=\"242.25\" y2=\"163.875\" stroke=\"#277566\" stroke-width=\"1\" stroke-dasharray=\"4 3\" data-aspect=\"jupiter|moon|sextile\" data-source-index=\"9\"></line><line x1=\"191.15625\" y1=\"166.953125\" x2=\"234.96875\" y2=\"201.34375\" stroke=\"#8a632f\" stroke-width=\"1\" stroke-dasharray=\"4 3\" data-aspect=\"chiron|selena|quincunx\" data-source-index=\"10\"></line><line x1=\"242.25\" y1=\"163.875\" x2=\"242.8125\" y2=\"192.140625\" stroke=\"#277566\" stroke-width=\"1\" stroke-dasharray=\"4 3\" data-aspect=\"jupiter|pars_fortune|sextile\" data-source-index=\"11\"></line><line x1=\"201.921875\" y1=\"154.328125\" x2=\"242.8125\" y2=\"192.140625\" stroke=\"#8a632f\" stroke-width=\"1\" stroke-dasharray=\"4 3\" data-aspect=\"pars_fortune|true_node|quincunx\" data-source-index=\"12\"></line><line x1=\"203.65625\" y1=\"203.703125\" x2=\"188.75\" y2=\"178.5\" stroke=\"#277566\" stroke-width=\"1\" stroke-dasharray=\"4 3\" data-aspect=\"asc|sun|sextile\" data-source-index=\"13\"></line><line x1=\"242.25\" y1=\"163.875\" x2=\"202.21875\" y2=\"154.140625\" stroke=\"#ad3e42\" stroke-width=\"1\" stroke-dasharray=\"4 3\" data-aspect=\"jupiter|mean_apog|square\" data-source-index=\"14\"></line><line x1=\"203.65625\" y1=\"203.703125\" x2=\"201.921875\" y2=\"154.328125\" stroke=\"#386bb0\" stroke-width=\"1\" stroke-dasharray=\"4 3\" data-aspect=\"sun|true_node|trine\" data-source-index=\"15\"></line><line x1=\"242.8125\" y1=\"192.140625\" x2=\"188.75\" y2=\"178.5\" stroke=\"#8a632f\" stroke-width=\"1\" stroke-dasharray=\"4 3\" data-aspect=\"asc|pars_fortune|quincunx\" data-source-index=\"16\"></line><line x1=\"203.65625\" y1=\"203.703125\" x2=\"217.71875\" y2=\"149.75\" stroke=\"#8a632f\" stroke-width=\"1\" stroke-dasharray=\"4 3\" data-aspect=\"moon|sun|quincunx\" data-source-index=\"17\"></line><line x1=\"246.03125\" y1=\"182.125\" x2=\"229.453125\" y2=\"204.65625\" stroke=\"#277566\" stroke-width=\"1\" stroke-dasharray=\"4 3\" data-aspect=\"neptune|pluto|sextile\" data-source-index=\"18\"></line><line x1=\"217.71875\" y1=\"149.75\" x2=\"192\" y2=\"191.78125\" stroke=\"#386bb0\" stroke-width=\"1\" stroke-dasharray=\"4 3\" data-aspect=\"moon|venus|trine\" data-source-index=\"19\"></line><line x1=\"202.21875\" y1=\"154.140625\" x2=\"188.75\" y2=\"178.5\" stroke=\"#277566\" stroke-width=\"1\" stroke-dasharray=\"4 3\" data-aspect=\"asc|mean_apog|sextile\" data-source-index=\"20\"></line><line x1=\"197.78125\" y1=\"199.421875\" x2=\"237.65625\" y2=\"199\" stroke=\"#ad3e42\" stroke-width=\"1\" stroke-dasharray=\"4 3\" data-aspect=\"mars|saturn|square\" data-source-index=\"21\"></line><line x1=\"242.25\" y1=\"163.875\" x2=\"201.921875\" y2=\"154.328125\" stroke=\"#ad3e42\" stroke-width=\"1\" stroke-dasharray=\"4 3\" data-aspect=\"jupiter|true_node|square\" data-source-index=\"22\"></line><line x1=\"196.8125\" y1=\"198.46875\" x2=\"236.609375\" y2=\"199.984375\" stroke=\"#ad3e42\" stroke-width=\"1\" stroke-dasharray=\"4 3\" data-aspect=\"mercury|vertex|square\" data-source-index=\"23\"></line><line x1=\"201.921875\" y1=\"154.328125\" x2=\"188.75\" y2=\"178.5\" stroke=\"#277566\" stroke-width=\"1\" stroke-dasharray=\"4 3\" data-aspect=\"asc|true_node|sextile\" data-source-index=\"25\"></line><line x1=\"197.78125\" y1=\"199.421875\" x2=\"236.171875\" y2=\"156.625\" stroke=\"#944e82\" stroke-width=\"1\" stroke-dasharray=\"4 3\" data-aspect=\"mars|mc|opposition\" data-source-index=\"26\"></line><line x1=\"192\" y1=\"191.78125\" x2=\"229.453125\" y2=\"204.65625\" stroke=\"#ad3e42\" stroke-width=\"1\" stroke-dasharray=\"4 3\" data-aspect=\"pluto|venus|square\" data-source-index=\"28\"></line><path d=\"M189.765625 229.015625 L174.796875 217.765625 L134.4375 177.09375 L91 141.75\" fill=\"none\" stroke=\"white\" stroke-width=\"3.5\" data-leader-bridge=\"sun\"></path><path d=\"M189.765625 229.015625 L174.796875 217.765625 L134.4375 177.09375 L91 141.75\" fill=\"none\" stroke=\"#6e8798\" stroke-width=\"0.75\" data-leader=\"sun\"></path><path d=\"M176.046875 218.515625 L174.796875 217.765625 L120.328125 154.171875 L91 92.75\" fill=\"none\" stroke=\"white\" stroke-width=\"3.5\" data-leader-bridge=\"mercury\"></path><path d=\"M176.046875 218.515625 L174.796875 217.765625 L120.328125 154.171875 L91 92.75\" fill=\"none\" stroke=\"#6e8798\" stroke-width=\"0.75\" data-leader=\"mercury\"></path><path d=\"M166.390625 205.09375 L120.328125 154.171875 L91 68.25\" fill=\"none\" stroke=\"white\" stroke-width=\"3.5\" data-leader-bridge=\"venus\"></path><path d=\"M166.390625 205.09375 L120.328125 154.171875 L91 68.25\" fill=\"none\" stroke=\"#6e8798\" stroke-width=\"0.75\" data-leader=\"venus\"></path><path d=\"M177.96875 220.421875 L174.796875 217.765625 L120.328125 154.171875 L91 117.25\" fill=\"none\" stroke=\"white\" stroke-width=\"3.5\" data-leader-bridge=\"mars\"></path><path d=\"M177.96875 220.421875 L174.796875 217.765625 L120.328125 154.171875 L91 117.25\" fill=\"none\" stroke=\"#6e8798\" stroke-width=\"0.75\" data-leader=\"mars\"></path><path d=\"M267.109375 149.1875 L230.0703125 185.9921875 L91 337.75\" fill=\"none\" stroke=\"white\" stroke-width=\"3.5\" data-leader-bridge=\"jupiter\"></path><path d=\"M267.109375 149.1875 L230.0703125 185.9921875 L91 337.75\" fill=\"none\" stroke=\"#6e8798\" stroke-width=\"0.75\" data-leader=\"jupiter\"></path><path d=\"M257.890625 219.59375 L132.171875 222.484375 L91 239.75\" fill=\"none\" stroke=\"white\" stroke-width=\"3.5\" data-leader-bridge=\"saturn\"></path><path d=\"M257.890625 219.59375 L132.171875 222.484375 L91 239.75\" fill=\"none\" stroke=\"#6e8798\" stroke-width=\"0.75\" data-leader=\"saturn\"></path><path d=\"M270.09375 202.03125 L260.9453125 218.84375 L169.671875 252.671875 L91 288.75\" fill=\"none\" stroke=\"white\" stroke-width=\"3.5\" data-leader-bridge=\"uranus\"></path><path d=\"M270.09375 202.03125 L260.9453125 218.84375 L169.671875 252.671875 L91 288.75\" fill=\"none\" stroke=\"#6e8798\" stroke-width=\"0.75\" data-leader=\"uranus\"></path><path d=\"M274.65625 185.75 L260.9453125 218.84375 L169.671875 252.671875 L91 313.25\" fill=\"none\" stroke=\"white\" stroke-width=\"3.5\" data-leader-bridge=\"neptune\"></path><path d=\"M274.65625 185.75 L260.9453125 218.84375 L169.671875 252.671875 L91 313.25\" fill=\"none\" stroke=\"#6e8798\" stroke-width=\"0.75\" data-leader=\"neptune\"></path><path d=\"M241.4375 230.90625 L174.796875 217.765625 L134.4375 177.09375 L91 166.25\" fill=\"none\" stroke=\"white\" stroke-width=\"3.5\" data-leader-bridge=\"pluto\"></path><path d=\"M241.4375 230.90625 L174.796875 217.765625 L134.4375 177.09375 L91 166.25\" fill=\"none\" stroke=\"#6e8798\" stroke-width=\"0.75\" data-leader=\"pluto\"></path><path d=\"M186.28125 130.078125 L150.015625 115.671875 L91 43.75\" fill=\"none\" stroke=\"white\" stroke-width=\"3.5\" data-leader-bridge=\"true_node\"></path><path d=\"M186.28125 130.078125 L150.015625 115.671875 L91 43.75\" fill=\"none\" stroke=\"#6e8798\" stroke-width=\"0.75\" data-leader=\"true_node\"></path><path d=\"M248.71875 226.921875 L174.796875 217.765625 L112.9375 202.59375 L91 190.75\" fill=\"none\" stroke=\"white\" stroke-width=\"3.5\" data-leader-bridge=\"south_node\"></path><path d=\"M248.71875 226.921875 L174.796875 217.765625 L112.9375 202.59375 L91 190.75\" fill=\"none\" stroke=\"#6e8798\" stroke-width=\"0.75\" data-leader=\"south_node\"></path><path d=\"M186.890625 129.6875 L171.515625 90.171875 L91 19.25\" fill=\"none\" stroke=\"white\" stroke-width=\"3.5\" data-leader-bridge=\"mean_apog\"></path><path d=\"M186.890625 129.6875 L171.515625 90.171875 L91 19.25\" fill=\"none\" stroke=\"#6e8798\" stroke-width=\"0.75\" data-leader=\"mean_apog\"></path><path d=\"M252.5 224.28125 L91 215.25\" fill=\"none\" stroke=\"white\" stroke-width=\"3.5\" data-leader-bridge=\"selena\"></path><path d=\"M252.5 224.28125 L91 215.25\" fill=\"none\" stroke=\"#6e8798\" stroke-width=\"0.75\" data-leader=\"selena\"></path><path d=\"M268.21875 205.84375 L260.9453125 218.84375 L91 264.25\" fill=\"none\" stroke=\"white\" stroke-width=\"3.5\" data-leader-bridge=\"pars_fortune\"></path><path d=\"M268.21875 205.84375 L260.9453125 218.84375 L91 264.25\" fill=\"none\" stroke=\"#6e8798\" stroke-width=\"0.75\" data-leader=\"pars_fortune\"></path><path d=\"M251.46875 216.703125 L251.46875 208.59375\" fill=\"none\" stroke=\"white\" stroke-width=\"3.5\" data-leader-bridge=\"angle:vertex\"></path><path d=\"M251.46875 216.703125 L251.46875 208.59375\" fill=\"none\" stroke=\"#6e8798\" stroke-width=\"0.75\" data-leader=\"angle:vertex\"></path><path d=\"M268.625 178.5 L268.625 174.75\" fill=\"none\" stroke=\"white\" stroke-width=\"3.5\" data-leader-bridge=\"angle:dsc\"></path><path d=\"M268.625 178.5 L268.625 174.75\" fill=\"none\" stroke=\"#6e8798\" stroke-width=\"0.75\" data-leader=\"angle:dsc\"></path><path d=\"M184.3125 217.390625 L182.6435546875 207.515625\" fill=\"none\" stroke=\"white\" stroke-width=\"3.5\" data-leader-bridge=\"angle:ic\"></path><path d=\"M184.3125 217.390625 L182.6435546875 207.515625\" fill=\"none\" stroke=\"#6e8798\" stroke-width=\"0.75\" data-leader=\"angle:ic\"></path><g data-label=\"sign:0\" data-kind=\"sign\" transform=\"translate(206.15625 84.6875)\" aria-label=\"sign:0\"><rect x=\"-8.5\" y=\"-10.5\" width=\"17\" height=\"21\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-7.5\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"sign:0:0\">♈</text></g><g data-label=\"sign:1\" data-kind=\"sign\" transform=\"translate(160.765625 102.921875)\" aria-label=\"sign:1\"><rect x=\"-8.5\" y=\"-10.5\" width=\"17\" height=\"21\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-7.5\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"sign:1:0\">♉</text></g><g data-label=\"sign:2\" data-kind=\"sign\" transform=\"translate(130.578125 141.421875)\" aria-label=\"sign:2\"><rect x=\"-8\" y=\"-10.5\" width=\"16\" height=\"21\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-7\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"sign:2:0\">♊</text></g><g data-label=\"sign:3\" data-kind=\"sign\" transform=\"translate(123.6875 189.84375)\" aria-label=\"sign:3\"><rect x=\"-8.5\" y=\"-10.5\" width=\"17\" height=\"21\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-7.5\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"sign:3:0\">♋</text></g><g data-label=\"sign:4\" data-kind=\"sign\" transform=\"translate(141.921875 235.234375)\" aria-label=\"sign:4\"><rect x=\"-7.5\" y=\"-10.5\" width=\"15\" height=\"21\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-6.5\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"sign:4:0\">♌</text></g><g data-label=\"sign:5\" data-kind=\"sign\" transform=\"translate(180.421875 265.421875)\" aria-label=\"sign:5\"><rect x=\"-8.5\" y=\"-10.5\" width=\"17\" height=\"21\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-7.5\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"sign:5:0\">♍</text></g><g data-label=\"sign:6\" data-kind=\"sign\" transform=\"translate(228.84375 272.3125)\" aria-label=\"sign:6\"><rect x=\"-8\" y=\"-10.5\" width=\"16\" height=\"21\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-7\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"sign:6:0\">♎</text></g><g data-label=\"sign:7\" data-kind=\"sign\" transform=\"translate(274.234375 254.078125)\" aria-label=\"sign:7\"><rect x=\"-8.5\" y=\"-10.5\" width=\"17\" height=\"21\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-7.5\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"sign:7:0\">♏</text></g><g data-label=\"sign:8\" data-kind=\"sign\" transform=\"translate(304.421875 215.578125)\" aria-label=\"sign:8\"><rect x=\"-7.5\" y=\"-10.5\" width=\"15\" height=\"21\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-6.5\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"sign:8:0\">♐</text></g><g data-label=\"sign:9\" data-kind=\"sign\" transform=\"translate(311.3125 167.15625)\" aria-label=\"sign:9\"><rect x=\"-9.5\" y=\"-10.5\" width=\"19\" height=\"21\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-8.5\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"sign:9:0\">♑</text></g><g data-label=\"sign:10\" data-kind=\"sign\" transform=\"translate(293.078125 121.765625)\" aria-label=\"sign:10\"><rect x=\"-9.5\" y=\"-10.5\" width=\"19\" height=\"21\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-8.5\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"sign:10:0\">♒</text></g><g data-label=\"sign:11\" data-kind=\"sign\" transform=\"translate(254.578125 91.578125)\" aria-label=\"sign:11\"><rect x=\"-6.5\" y=\"-10.5\" width=\"13\" height=\"21\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-5.5\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"sign:11:0\">♓</text></g><g data-label=\"sun\" data-kind=\"point\" transform=\"translate(36.59765625 141.75)\" aria-label=\"Солнце\"><rect x=\"-7.4921875\" y=\"-11.25\" width=\"14.984375\" height=\"22.5\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-6.7421875\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"sun:0\">☉</text><rect x=\"12.4921875\" y=\"-8\" width=\"41.91015625\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"12.4921875\" y=\"5\" font-size=\"12\" fill=\"#193e55\" data-component=\"sun:1\">Солнце</text></g><circle cx=\"189.765625\" cy=\"229.015625\" r=\"1\" fill=\"#305b75\" data-anchor=\"sun\"></circle><g data-label=\"moon\" data-kind=\"point\" transform=\"translate(217.9375 120.890625)\" aria-label=\"Луна\"><rect x=\"-5.3203125\" y=\"-11.25\" width=\"10.640625\" height=\"22.5\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-4.5703125\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"moon:0\">☽</text></g><circle cx=\"217.9375\" cy=\"120.890625\" r=\"1\" fill=\"#305b75\" data-anchor=\"moon\"></circle><g data-label=\"mercury\" data-kind=\"point\" transform=\"translate(23.845703125 92.75)\" aria-label=\"Меркурий\"><rect x=\"-5.25\" y=\"-11.25\" width=\"10.5\" height=\"22.5\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-4.5\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"mercury:0\">☿</text><rect x=\"10.25\" y=\"-8\" width=\"56.904296875\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"10.25\" y=\"5\" font-size=\"12\" fill=\"#193e55\" data-component=\"mercury:1\">Меркурий</text></g><circle cx=\"176.046875\" cy=\"218.515625\" r=\"1\" fill=\"#305b75\" data-anchor=\"mercury\"></circle><g data-label=\"venus\" data-kind=\"point\" transform=\"translate(41.234375 68.25)\" aria-label=\"Венера\"><rect x=\"-5.25\" y=\"-11.25\" width=\"10.5\" height=\"22.5\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-4.5\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"venus:0\">♀</text><rect x=\"10.25\" y=\"-8\" width=\"39.515625\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"10.25\" y=\"5\" font-size=\"12\" fill=\"#193e55\" data-component=\"venus:1\">Венера</text></g><circle cx=\"166.390625\" cy=\"205.09375\" r=\"1\" fill=\"#305b75\" data-anchor=\"venus\"></circle><g data-label=\"mars\" data-kind=\"point\" transform=\"translate(49.759765625 117.25)\" aria-label=\"Марс\"><rect x=\"-6.3046875\" y=\"-11.25\" width=\"12.609375\" height=\"22.5\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-5.5546875\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"mars:0\">♂</text><rect x=\"11.3046875\" y=\"-8\" width=\"29.935546875\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"11.3046875\" y=\"5\" font-size=\"12\" fill=\"#193e55\" data-component=\"mars:1\">Марс</text></g><circle cx=\"177.96875\" cy=\"220.421875\" r=\"1\" fill=\"#305b75\" data-anchor=\"mars\"></circle><g data-label=\"jupiter\" data-kind=\"point\" transform=\"translate(24.71875 337.75)\" aria-label=\"Юпитер, ретроградная\"><rect x=\"-6.90625\" y=\"-11.25\" width=\"13.8125\" height=\"22.5\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-6.15625\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"jupiter:0\">♃</text><rect x=\"8.90625\" y=\"-5\" width=\"8\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"8.90625\" y=\"8\" font-size=\"12\" fill=\"#193e55\" data-component=\"jupiter:1\">R</text><rect x=\"21.90625\" y=\"-8\" width=\"44.375\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"21.90625\" y=\"5\" font-size=\"12\" fill=\"#193e55\" data-component=\"jupiter:2\">Юпитер</text></g><circle cx=\"267.109375\" cy=\"149.1875\" r=\"1\" fill=\"#305b75\" data-anchor=\"jupiter\"></circle><g data-label=\"saturn\" data-kind=\"point\" transform=\"translate(42.431640625 239.75)\" aria-label=\"Сатурн\"><rect x=\"-5.25\" y=\"-11.25\" width=\"10.5\" height=\"22.5\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-4.5\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"saturn:0\">♄</text><rect x=\"10.25\" y=\"-8\" width=\"38.318359375\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"10.25\" y=\"5\" font-size=\"12\" fill=\"#193e55\" data-component=\"saturn:1\">Сатурн</text></g><circle cx=\"257.890625\" cy=\"219.59375\" r=\"1\" fill=\"#305b75\" data-anchor=\"saturn\"></circle><g data-label=\"uranus\" data-kind=\"point\" transform=\"translate(52.28125 288.75)\" aria-label=\"Уран\"><rect x=\"-6.75\" y=\"-11.25\" width=\"13.5\" height=\"22.5\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-6\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"uranus:0\">♅</text><rect x=\"11.75\" y=\"-8\" width=\"26.96875\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"11.75\" y=\"5\" font-size=\"12\" fill=\"#193e55\" data-component=\"uranus:1\">Уран</text></g><circle cx=\"270.09375\" cy=\"202.03125\" r=\"1\" fill=\"#305b75\" data-anchor=\"uranus\"></circle><g data-label=\"neptune\" data-kind=\"point\" transform=\"translate(28.80078125 313.25)\" aria-label=\"Нептун, ретроградная\"><rect x=\"-7.75\" y=\"-11.25\" width=\"15.5\" height=\"22.5\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-7\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"neptune:0\">♆</text><rect x=\"9.75\" y=\"-5\" width=\"8\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"9.75\" y=\"8\" font-size=\"12\" fill=\"#193e55\" data-component=\"neptune:1\">R</text><rect x=\"22.75\" y=\"-8\" width=\"39.44921875\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"22.75\" y=\"5\" font-size=\"12\" fill=\"#193e55\" data-component=\"neptune:2\">Нептун</text></g><circle cx=\"274.65625\" cy=\"185.75\" r=\"1\" fill=\"#305b75\" data-anchor=\"neptune\"></circle><g data-label=\"pluto\" data-kind=\"point\" transform=\"translate(41.11328125 166.25)\" aria-label=\"Плутон\"><rect x=\"-5.25\" y=\"-11.25\" width=\"10.5\" height=\"22.5\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-4.5\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"pluto:0\">♇</text><rect x=\"10.25\" y=\"-8\" width=\"39.63671875\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"10.25\" y=\"5\" font-size=\"12\" fill=\"#193e55\" data-component=\"pluto:1\">Плутон</text></g><circle cx=\"241.4375\" cy=\"230.90625\" r=\"1\" fill=\"#305b75\" data-anchor=\"pluto\"></circle><g data-label=\"chiron\" data-kind=\"point\" transform=\"translate(164.71875 155.375)\" aria-label=\"Хирон\"><rect x=\"-5.25\" y=\"-11.25\" width=\"10.5\" height=\"22.5\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-4.5\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"chiron:0\">⚷</text></g><circle cx=\"164.71875\" cy=\"155.375\" r=\"1\" fill=\"#305b75\" data-anchor=\"chiron\"></circle><g data-label=\"true_node\" data-kind=\"point\" transform=\"translate(19.4375 43.75)\" aria-label=\"Сев. узел, ретроградная\"><rect x=\"-6.84375\" y=\"-11.25\" width=\"13.6875\" height=\"22.5\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-6.09375\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"true_node:0\">☊</text><rect x=\"8.84375\" y=\"-5\" width=\"8\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"8.84375\" y=\"8\" font-size=\"12\" fill=\"#193e55\" data-component=\"true_node:1\">R</text><rect x=\"21.84375\" y=\"-8\" width=\"49.71875\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"21.84375\" y=\"5\" font-size=\"12\" fill=\"#193e55\" data-component=\"true_node:2\">Сев. узел</text></g><circle cx=\"186.28125\" cy=\"130.078125\" r=\"1\" fill=\"#305b75\" data-anchor=\"true_node\"></circle><g data-label=\"south_node\" data-kind=\"point\" transform=\"translate(11.40625 190.75)\" aria-label=\"Южн. узел, ретроградная\"><rect x=\"-6.84375\" y=\"-11.25\" width=\"13.6875\" height=\"22.5\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-6.09375\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"south_node:0\">☋</text><rect x=\"8.84375\" y=\"-5\" width=\"8\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"8.84375\" y=\"8\" font-size=\"12\" fill=\"#193e55\" data-component=\"south_node:1\">R</text><rect x=\"21.84375\" y=\"-8\" width=\"57.75\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"21.84375\" y=\"5\" font-size=\"12\" fill=\"#193e55\" data-component=\"south_node:2\">Южн. узел</text></g><circle cx=\"248.71875\" cy=\"226.921875\" r=\"1\" fill=\"#305b75\" data-anchor=\"south_node\"></circle><g data-label=\"mean_apog\" data-kind=\"point\" transform=\"translate(45.501953125 19.25)\" aria-label=\"Лилит\"><rect x=\"-5.15625\" y=\"-11.25\" width=\"10.3125\" height=\"22.5\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-4.40625\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"mean_apog:0\">⚸</text><rect x=\"10.15625\" y=\"-8\" width=\"35.341796875\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"11.15625\" y=\"5\" font-size=\"12\" fill=\"#193e55\" data-component=\"mean_apog:1\">Лилит</text></g><circle cx=\"186.890625\" cy=\"129.6875\" r=\"1\" fill=\"#305b75\" data-anchor=\"mean_apog\"></circle><g data-label=\"selena\" data-kind=\"point\" transform=\"translate(29.1640625 215.25)\" aria-label=\"Селена, ретроградная\"><rect x=\"-7.4921875\" y=\"-11.25\" width=\"14.984375\" height=\"22.5\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-6.7421875\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"selena:0\">⚪</text><rect x=\"9.4921875\" y=\"-5\" width=\"8\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"9.4921875\" y=\"8\" font-size=\"12\" fill=\"#193e55\" data-component=\"selena:1\">R</text><rect x=\"22.4921875\" y=\"-8\" width=\"39.34375\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"22.4921875\" y=\"5\" font-size=\"12\" fill=\"#193e55\" data-component=\"selena:2\">Селена</text></g><circle cx=\"252.5\" cy=\"224.28125\" r=\"1\" fill=\"#305b75\" data-anchor=\"selena\"></circle><g data-label=\"pars_fortune\" data-kind=\"point\" transform=\"translate(36.244140625 264.25)\" aria-label=\"Парс Ф.\"><rect x=\"-7.4921875\" y=\"-11.25\" width=\"14.984375\" height=\"22.5\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-6.7421875\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"pars_fortune:0\">⊗</text><rect x=\"12.4921875\" y=\"-8\" width=\"42.263671875\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"12.4921875\" y=\"5\" font-size=\"12\" fill=\"#193e55\" data-component=\"pars_fortune:1\">Парс Ф.</text></g><circle cx=\"268.21875\" cy=\"205.84375\" r=\"1\" fill=\"#305b75\" data-anchor=\"pars_fortune\"></circle><g data-label=\"angle:asc\" data-kind=\"angle\" transform=\"translate(166.375 178.5)\" aria-label=\"angle:asc\"><rect x=\"-11.5576171875\" y=\"-8\" width=\"23.115234375\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-10.5576171875\" y=\"5\" font-size=\"12\" fill=\"#193e55\" data-component=\"angle:asc:0\">ASC</text></g><circle cx=\"166.375\" cy=\"178.5\" r=\"1\" fill=\"#305b75\" data-anchor=\"angle:asc\"></circle><g data-label=\"angle:mc\" data-kind=\"angle\" transform=\"translate(250.6875 139.609375)\" aria-label=\"angle:mc\"><rect x=\"-9.3876953125\" y=\"-8\" width=\"18.775390625\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-9.3876953125\" y=\"5\" font-size=\"12\" fill=\"#193e55\" data-component=\"angle:mc:0\">MC</text></g><circle cx=\"250.6875\" cy=\"139.609375\" r=\"1\" fill=\"#305b75\" data-anchor=\"angle:mc\"></circle><g data-label=\"angle:vertex\" data-kind=\"angle\" transform=\"translate(251.46875 208.59375)\" aria-label=\"angle:vertex\"><rect x=\"-7.2265625\" y=\"-8\" width=\"14.453125\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-6.2265625\" y=\"5\" font-size=\"12\" fill=\"#193e55\" data-component=\"angle:vertex:0\">Vx</text></g><circle cx=\"251.46875\" cy=\"216.703125\" r=\"1\" fill=\"#305b75\" data-anchor=\"angle:vertex\"></circle><g data-label=\"angle:dsc\" data-kind=\"angle\" transform=\"translate(268.625 174.75)\" aria-label=\"angle:dsc\"><rect x=\"-11.39453125\" y=\"-8\" width=\"22.7890625\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-11.39453125\" y=\"5\" font-size=\"12\" fill=\"#193e55\" data-component=\"angle:dsc:0\">DSC</text></g><circle cx=\"268.625\" cy=\"178.5\" r=\"1\" fill=\"#305b75\" data-anchor=\"angle:dsc\"></circle><g data-label=\"angle:ic\" data-kind=\"angle\" transform=\"translate(182.6435546875 207.515625)\" aria-label=\"angle:ic\"><rect x=\"-5.5966796875\" y=\"-8\" width=\"11.193359375\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-5.5966796875\" y=\"5\" font-size=\"12\" fill=\"#193e55\" data-component=\"angle:ic:0\">IC</text></g><circle cx=\"184.3125\" cy=\"217.390625\" r=\"1\" fill=\"#305b75\" data-anchor=\"angle:ic\"></circle><g data-label=\"conj:mean_apog|true_node|conjunction\" data-kind=\"marker\" transform=\"translate(202.0703125 154.234375)\" aria-label=\"conj:mean_apog|true_node|conjunction\"><rect x=\"-4.8125\" y=\"-11.25\" width=\"9.625\" height=\"22.5\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-4.0625\" y=\"6.5\" font-size=\"16\" fill=\"#385f8a\" data-component=\"conj:mean_apog|true_node|conjunction:0\">☌</text></g><circle cx=\"202.0703125\" cy=\"154.234375\" r=\"1\" fill=\"#305b75\" data-anchor=\"conj:mean_apog|true_node|conjunction\"></circle><g data-label=\"conj:mars|mercury|conjunction\" data-kind=\"marker\" transform=\"translate(197.296875 198.9453125)\" aria-label=\"conj:mars|mercury|conjunction\"><rect x=\"-4.8125\" y=\"-11.25\" width=\"9.625\" height=\"22.5\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-4.0625\" y=\"6.5\" font-size=\"16\" fill=\"#385f8a\" data-component=\"conj:mars|mercury|conjunction:0\">☌</text></g><circle cx=\"197.296875\" cy=\"198.9453125\" r=\"1\" fill=\"#305b75\" data-anchor=\"conj:mars|mercury|conjunction\"></circle><g data-label=\"conj:saturn|vertex|conjunction\" data-kind=\"marker\" transform=\"translate(237.1328125 199.4921875)\" aria-label=\"conj:saturn|vertex|conjunction\"><rect x=\"-4.8125\" y=\"-11.25\" width=\"9.625\" height=\"22.5\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-4.0625\" y=\"6.5\" font-size=\"16\" fill=\"#385f8a\" data-component=\"conj:saturn|vertex|conjunction:0\">☌</text></g><circle cx=\"237.1328125\" cy=\"199.4921875\" r=\"1\" fill=\"#305b75\" data-anchor=\"conj:saturn|vertex|conjunction\"></circle></svg>",
+      "pass": true
+    },
+    {
+      "id": "HTML-focus-live-retained",
+      "actual": [
+        true,
+        true
+      ],
+      "expected": [
+        true,
+        true
+      ],
+      "pass": true
+    },
+    {
+      "id": "DISPOSE-controller-idempotent",
+      "actual": 1,
+      "expected": 1,
+      "pass": true
+    },
+    {
+      "id": "DISPOSE-revoked-final-sink",
+      "actual": false,
+      "expected": false,
+      "pass": true
+    },
+    {
+      "id": "ALTERNATE-recovers",
+      "actual": [
+        "HTML ALTERNATE",
+        "Alternative renderer"
+      ],
+      "expected": [
+        "HTML ALTERNATE",
+        "Alternative renderer"
+      ],
+      "pass": true
+    }
+  ],
+  "trace": [
+    {
+      "event": "revoke",
+      "identity": "A"
+    },
+    {
+      "event": "remove",
+      "identity": "A"
+    },
+    {
+      "event": "html",
+      "identity": "A"
+    },
+    {
+      "event": "draw",
+      "identity": "A"
+    },
+    {
+      "event": "install-copy",
+      "identity": "A"
+    },
+    {
+      "event": "revoke",
+      "identity": "B",
+      "revision": 1
+    },
+    {
+      "event": "remove",
+      "identity": "B"
+    },
+    {
+      "event": "html",
+      "identity": "B"
+    },
+    {
+      "event": "dispose-fault",
+      "identity": "B",
+      "html": "HTML B"
+    },
+    {
+      "event": "draw",
+      "identity": "B"
+    },
+    {
+      "event": "install-copy",
+      "identity": "B"
+    },
+    {
+      "event": "stale-refused",
+      "identity": "A"
+    },
+    {
+      "event": "stale-refused",
+      "identity": "A"
+    },
+    {
+      "event": "revoke",
+      "identity": "C",
+      "revision": 2
+    },
+    {
+      "event": "remove",
+      "identity": "C"
+    },
+    {
+      "event": "html",
+      "identity": "C"
+    },
+    {
+      "event": "dispose",
+      "identity": "C"
+    },
+    {
+      "event": "draw",
+      "identity": "C"
+    },
+    {
+      "event": "revoke",
+      "identity": "D",
+      "revision": 3
+    },
+    {
+      "event": "remove",
+      "identity": "D"
+    },
+    {
+      "event": "html",
+      "identity": "D"
+    },
+    {
+      "event": "draw",
+      "identity": "D"
+    },
+    {
+      "event": "install-copy",
+      "identity": "D"
+    },
+    {
+      "event": "stale-refused",
+      "identity": "C"
+    },
+    {
+      "event": "stale-rejection",
+      "identity": "C"
+    },
+    {
+      "event": "revoke",
+      "identity": "factory",
+      "revision": 4
+    },
+    {
+      "event": "remove",
+      "identity": "factory"
+    },
+    {
+      "event": "html",
+      "identity": "factory"
+    },
+    {
+      "event": "dispose",
+      "identity": "factory"
+    },
+    {
+      "event": "local-fault",
+      "identity": "factory",
+      "html": "HTML factory"
+    },
+    {
+      "event": "revoke",
+      "identity": "sync",
+      "revision": 5
+    },
+    {
+      "event": "remove",
+      "identity": "sync"
+    },
+    {
+      "event": "html",
+      "identity": "sync"
+    },
+    {
+      "event": "dispose",
+      "identity": "sync"
+    },
+    {
+      "event": "draw",
+      "identity": "sync"
+    },
+    {
+      "event": "local-fault",
+      "identity": "sync",
+      "html": "HTML sync"
+    },
+    {
+      "event": "revoke",
+      "identity": "async",
+      "revision": 6
+    },
+    {
+      "event": "remove",
+      "identity": "async"
+    },
+    {
+      "event": "html",
+      "identity": "async"
+    },
+    {
+      "event": "dispose",
+      "identity": "async"
+    },
+    {
+      "event": "draw",
+      "identity": "async"
+    },
+    {
+      "event": "local-fault",
+      "identity": "async",
+      "html": "HTML async"
+    },
+    {
+      "event": "revoke",
+      "identity": "failed-later",
+      "revision": 7
+    },
+    {
+      "event": "remove",
+      "identity": "failed-later"
+    },
+    {
+      "event": "html",
+      "identity": "failed-later"
+    },
+    {
+      "event": "dispose",
+      "identity": "failed-later"
+    },
+    {
+      "event": "draw",
+      "identity": "failed-later"
+    },
+    {
+      "event": "install-copy",
+      "identity": "failed-later"
+    },
+    {
+      "event": "local-fault",
+      "identity": "failed-later",
+      "html": "HTML failed-later"
+    },
+    {
+      "event": "stale-refused",
+      "identity": "failed-later"
+    },
+    {
+      "event": "revoke",
+      "identity": "unsafe",
+      "revision": 8
+    },
+    {
+      "event": "remove",
+      "identity": "unsafe"
+    },
+    {
+      "event": "html",
+      "identity": "unsafe"
+    },
+    {
+      "event": "dispose",
+      "identity": "unsafe"
+    },
+    {
+      "event": "draw",
+      "identity": "unsafe"
+    },
+    {
+      "event": "local-fault",
+      "identity": "unsafe",
+      "html": "HTML unsafe"
+    },
+    {
+      "event": "revoke",
+      "identity": "REAL-F1",
+      "revision": 9
+    },
+    {
+      "event": "remove",
+      "identity": "REAL-F1"
+    },
+    {
+      "event": "html",
+      "identity": "REAL-F1"
+    },
+    {
+      "event": "dispose",
+      "identity": "REAL-F1"
+    },
+    {
+      "event": "draw",
+      "identity": "REAL-F1"
+    },
+    {
+      "event": "install-copy",
+      "identity": "REAL-F1"
+    },
+    {
+      "event": "revoke",
+      "identity": "REAL-B",
+      "revision": 10
+    },
+    {
+      "event": "remove",
+      "identity": "REAL-B"
+    },
+    {
+      "event": "html",
+      "identity": "REAL-B"
+    },
+    {
+      "event": "dispose",
+      "identity": "REAL-B"
+    },
+    {
+      "event": "draw",
+      "identity": "REAL-B"
+    },
+    {
+      "event": "install-copy",
+      "identity": "REAL-B"
+    },
+    {
+      "event": "stale-refused",
+      "identity": "REAL-B"
+    },
+    {
+      "event": "revoke",
+      "identity": "ALTERNATE"
+    },
+    {
+      "event": "remove",
+      "identity": "ALTERNATE"
+    },
+    {
+      "event": "html",
+      "identity": "ALTERNATE"
+    },
+    {
+      "event": "draw",
+      "identity": "ALTERNATE"
+    },
+    {
+      "event": "install-copy",
+      "identity": "ALTERNATE"
+    }
+  ],
+  "limits": "isolated real SVG clone seam; no production controller/session; same-origin contract not security boundary",
+  "httpBuildCalls": 0,
+  "disposeCount": 2
+}

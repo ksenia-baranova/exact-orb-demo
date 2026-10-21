@@ -1,0 +1,67 @@
+@startuml
+' Transfer21.10 by Codex / Manager on explicit Owner instruction.
+' Source 883b6d3a47f7113e44ede73c9ad16b40f15bbdaf:docs/project_management/change_plans/ui-chart-wheel/developer/sequence_diagrams/ui/003-passive-copy-install.puml; no invented ADR approval.
+' DRAFT Developer,20.10.2026; implemented D007, InputSHA e0daa0e.
+title DRAFT: implemented passive SVG, revision-local surface and copy/install
+autonumber
+hide footbox
+participant "session.mjs / accept owner" as Session
+control "facts.mjs + chart_state.mjs" as Facts
+control "result_controller.mjs" as Result
+participant "Retained HTML controls" as HTML
+participant "Private live DOM adapter" as DOM
+participant "Revision-local surface" as Surface
+participant "wheel_svg.mjs" as Wheel
+actor User
+Session -> Facts : acceptanceSeq/cause/reset/submitted + accepted DTO
+Facts -> Result : present(prepare, replace on new acceptance)
+Result -> DOM : revoke old lease; detach its surface; remove imagery A
+Result -> Facts : prepare outside leaf guard
+Facts -> Facts : consume acceptance once; full-B S1 index/reconcile
+Facts -> HTML : patch B facts/summary, keep live keyed controls
+Facts --> Result : copied/frozen presentation snapshot
+alt instance replacement
+  Result -> Wheel : guarded dispose retired leaf, at most once
+  alt dispose throws
+    Wheel --> Result : retired diagnostic
+    Result -> Result : retain HTML B; continue new draw
+  end
+else same instance, new revision
+  Result -> Result : keep leaf, revoke old revision
+end
+Result -> Surface : create private connected measurement surface
+Result -> Wheel : update(snapshot, captured publish, currentSurface)
+Wheel -> Surface : native metrics / own root
+Wheel -> DOM : captured publish(root)
+DOM -> DOM : current guard; closed passive validation; clone
+DOM -> DOM : recheck lease; validate clone; recheck; synchronous install
+alt current valid
+  DOM --> Wheel : true / copied root installed
+else revoked or reentrant
+  DOM --> Wheel : false; retain new accepted image
+end
+alt current factory/update sync throw or async rejection
+  Wheel --> Result : local SVG failure
+  Result -> DOM : revoke lease; clear imagery only
+  Result -> HTML : visible local warning; retain facts B
+else stale failure including delayed owner failure
+  Wheel --> Result : retired diagnostic only
+  Result -> Result : no B DOM/state/warning/safe-read mutation
+else current controller/HTML failure
+  Result -> Session : existing presentationFailed / safe-read
+else success
+  Wheel --> Result : settled
+  Result -> Surface : retain until revoke
+end
+User -> HTML : native point/aspect activation
+HTML -> Facts : canonical selection intent
+Facts -> HTML : keyed patch, no planet focus/scroll call
+Facts -> Result : new revision, same acceptanceSeq
+Result -> Wheel : new frozen snapshot + lease
+note over Session, Wheel
+HTML/state own selection. Session alone mints acceptance/attempt/cause.
+SVG has no controls/tabindex/Q44 and cannot issue HTTP.
+Current late publish is allowed through the same guards; retired publish is refused.
+37 native boundary controls, plus mounted whole-path checks; no independent acceptance.
+end note
+@enduml
