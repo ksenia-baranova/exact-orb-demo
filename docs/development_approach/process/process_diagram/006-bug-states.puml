@@ -1,0 +1,42 @@
+@startuml
+title exact-orb — Статусы бага (простой процесс)
+
+' Источник: «Процесс работы над изменением v3», раздел «Баги».
+' Один баг — один файл bugs/BUG-*.md. Заводит Tester (test), Reviewer (code_review)
+' или Manager со слов owner'а (accept). FIXED ставит Developer, CLOSED — автор бага.
+
+hide empty description
+skinparam shadowing false
+skinparam state {
+    BackgroundColor #F8FAFC
+    BorderColor #64748B
+    FontColor #0F172A
+    ArrowColor #2563EB
+    ArrowFontColor #334155
+    BackgroundColor<<final>> #ECFDF5
+    BorderColor<<final>> #059669
+    BackgroundColor<<stop>> #F1F5F9
+    BorderColor<<stop>> #94A3B8
+}
+skinparam legend {
+    BackgroundColor #FFFBEB
+    BorderColor #D97706
+}
+
+state OPEN : REQ или место в коде,\nшаги или сценарий поломки,\nseverity, commit проверки
+state FIXED : исправлен,\nесть regression-тест
+state CLOSED <<final>> : перепроверка прошла
+state DEFERRED <<stop>> : owner решил не чинить\nсейчас; внесён в risks.md
+
+[*] --> OPEN : Tester, Reviewer\nили Manager со слов owner'а
+OPEN --> FIXED : Developer (bug_fix)
+FIXED --> CLOSED : автор бага:\nперепроверка прошла
+FIXED -[#EA580C]-> OPEN : автор бага:\nперепроверка не прошла
+OPEN --> DEFERRED : решение owner'а\n(answer_dp)
+
+legend bottom left
+  Переход 13 (READY_FOR_TEST → DONE) требует, чтобы не было багов в OPEN и FIXED.
+  DEFERRED не блокирует; в сводке для accept такие баги перечислены отдельно.
+endlegend
+
+@enduml

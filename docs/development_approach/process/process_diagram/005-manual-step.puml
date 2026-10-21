@@ -1,0 +1,62 @@
+@startuml
+title exact-orb — Один шаг в ручном режиме
+
+' Источник: «Процесс работы над изменением v3», разделы «Ручной режим: отладка»
+' и «Хранение и оркестратор». Всё в git, одна рабочая ветка.
+
+skinparam shadowing false
+skinparam sequence {
+    ArrowColor #2563EB
+    LifeLineBorderColor #94A3B8
+    ParticipantBorderColor #64748B
+    ParticipantBackgroundColor #F8FAFC
+    ActorBorderColor #64748B
+    ActorBackgroundColor #F8FAFC
+    GroupBorderColor #94A3B8
+}
+skinparam note {
+    BackgroundColor #FFFBEB
+    BorderColor #D97706
+}
+
+actor "Оркестратор\n(вы)" as O
+participant "scripts/\norchestrator.py" as S
+participant "Агент роли\n(новая сессия)" as A
+database "git\n(рабочая ветка)" as G
+
+note right of G : рабочая копия\nчистая
+
+O -> A : skill роли + путь к задаче NEW
+activate A
+A -> G : читает задачу и inputs
+A -> A : работа роли
+A -> G : свои файлы, status, resolution,\nraised_dp\nодин коммит [ui-chart-wheel][TASK-A-01] docs: …
+A --> O : отчёт +\n«Следующий шаг: …»
+deactivate A
+
+O -> G : git show --stat коммита агента:\nтолько свои файлы?
+
+alt запуск неудачный
+    O -> G : git revert коммита агента
+    O -> O : поправить промпт, перезапустить
+else результат на месте
+    O -> S : next ui-chart-wheel
+    activate S
+    S -> G : читает задачи, DP, баги, events.jsonl
+    S -> S : поля задач по словарю;\nусловие перехода по таблице
+    alt условие выполнено
+        S -> G : events.jsonl, статус в change.md,\nзадачи следующего шага
+        S --> O : переход и созданные задачи
+    else условие не выполнено
+        S --> O : текст ошибки
+        O -> S : fix ui-chart-wheel TASK-… "ошибка"
+        S -> G : задача тому же исполнителю\nна исправление
+    end
+    deactivate S
+    O -> G : отдельный коммит оркестратора
+end
+
+O -> S : log ui-chart-wheel TASK-… --issue "…"
+S -> G : строка в debug_log.md:\nзадача, версия промпта,\nчто пошло не так, что поменяли
+
+@enduml

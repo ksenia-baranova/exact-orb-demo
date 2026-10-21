@@ -1,0 +1,76 @@
+@startuml
+title exact-orb — Статусы изменения (простой процесс)
+
+' Источник: «Процесс работы над изменением v3», разделы «Машина состояний» и «Таблица переходов».
+' Номера на стрелках — строки таблицы переходов.
+' Статус = гейт. Ожидание owner'а — его задача внутри гейта, статус при этом не меняется.
+
+hide empty description
+skinparam shadowing false
+skinparam state {
+    BackgroundColor #F8FAFC
+    BorderColor #64748B
+    FontColor #0F172A
+    ArrowColor #2563EB
+    ArrowFontColor #334155
+    BackgroundColor<<milestone>> #EFF6FF
+    BorderColor<<milestone>> #2563EB
+    BackgroundColor<<final>> #ECFDF5
+    BorderColor<<final>> #059669
+    BackgroundColor<<stop>> #F1F5F9
+    BorderColor<<stop>> #94A3B8
+}
+skinparam legend {
+    BackgroundColor #FFFBEB
+    BorderColor #D97706
+}
+
+state "Подготовка" as PREP {
+    state INTAKE : Manager собирает запрос\nи проверяет полноту\n<i>owner: answer_dp</i>
+    state ANALYSIS : Analyst пишет требования\nс источниками и оценку\n<i>owner: answer_dp</i>
+    state ALIGNMENT : Developer и Tester\nпараллельно ревьюят\n<i>owner: escalation,</i>\n<i>если cycle = 2 и новые DP</i>
+    state APPROVAL : Manager готовит сводку\n<i>owner: approve</i>
+}
+state READY_FOR_DEVELOPMENT <<milestone>> : требования утверждены,\nпервая задача implement создана
+state "Реализация" as BUILD {
+    state IN_DEVELOPMENT : Developer реализует\nпромты плана по одному
+    state READY_FOR_TEST : Tester проверяет поведение,\nзатем Reviewer — код и тесты
+    state BUG_FIX : Developer исправляет\nоткрытые баги
+    state DONE : Manager готовит сводку;\nAnalyst переносит контракт\n<i>owner: accept</i>
+}
+state ACCEPTED <<final>> : owner принял;\nслияние в main
+state CANCELLED <<stop>> : открытые задачи →\nDONE / cancelled;\nкоммиты агентов → git revert
+
+[*] --> INTAKE : 1 · owner пришёл с запросом
+INTAKE --> ANALYSIS : 2 · intake done,\nowner подтвердил описание,\nнет OPEN DP
+ANALYSIS --> ALIGNMENT : 3 · analysis done,\nнет OPEN DP, у REQ есть source\n[cycle + 1]
+ALIGNMENT -[#EA580C]-> ANALYSIS : 4 · ревью вернули DP при cycle < 2\nили owner: «сократить скоуп» [cycle = 0]
+ALIGNMENT --> APPROVAL : 5 · оба ревью done\nили owner: «принять риск»
+INTAKE -[#7C3AED]-> ALIGNMENT : 16 · тип refactor:\nбез ANALYSIS
+APPROVAL -[#EA580C]-> ANALYSIS : 7 · замечания owner'а\nоформлены как DP [cycle = 0]
+APPROVAL --> READY_FOR_DEVELOPMENT : 6 · owner утвердил
+
+READY_FOR_DEVELOPMENT --> IN_DEVELOPMENT : 9 · Developer\nвзял implement
+IN_DEVELOPMENT --> READY_FOR_TEST : 10 · все implement done,\nпроверки Developer прошли
+READY_FOR_TEST -[#EA580C]-> BUG_FIX : 11 · test или code_review:\nhas_bugs
+BUG_FIX --> READY_FOR_TEST : 12 · bug_fix done,\nбаги FIXED + regression-тесты
+READY_FOR_TEST --> DONE : 13 · test и code_review done,\nнет багов в OPEN и FIXED
+DONE -[#EA580C]-> BUG_FIX : 15 · accept: has_bugs\n(owner нашёл дефект)
+DONE --> ACCEPTED : 14 · owner принял
+IN_DEVELOPMENT -[#EA580C]-> ANALYSIS : 17 · решение DP\nменяет требование [cycle = 0]
+ACCEPTED --> [*]
+
+PREP -[#94A3B8]-> CANCELLED : 8 · owner отменил
+BUILD -[#94A3B8]-> CANCELLED : 8
+
+legend bottom left
+  Курсивом — задача owner'а внутри гейта. Пока она открыта, статус изменения не меняется.
+  answer_dp — пакет DP для owner'а; уточняющие DP Analyst закрывает сам.
+  escalation: принять риск → 5, сократить скоуп → 4, отменить → 8.
+  В реализации DP решаются внутри гейта: resolve_findings или answer_dp → apply_decisions.
+  Если решение меняет требование — 17 в ANALYSIS; так же из READY_FOR_TEST и BUG_FIX.
+  Рефакторинг (16): в ALIGNMENT план проверяет Reviewer вместо Tester.
+  Баг, который owner решил не чинить, получает DEFERRED и уходит в risks.md — не блокирует 13.
+endlegend
+
+@enduml

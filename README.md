@@ -99,28 +99,28 @@ structured input → deterministic resolution → deterministic calculation
 
 ## Метод разработки
 
-Единица работы — change с ролями Owner, Manager, Analyst, Developer и Tester.
-У каждой роли есть полномочия и шаблоны артефактов; у Manager, Analyst,
-Developer и Tester — инструкции для агентов (skills). Роли может совмещать
-один человек либо выполнять разные участники; смена роли фиксируется явно.
-Manager ведёт состояние, блокеры, следующий шаг и общий реестр решений DP-*;
-роль, получившая evidence, отвечает за него.
+Единица работы — change с ролями Owner, Manager, Analyst, Developer, Tester
+и Reviewer. Каждый запуск агента — одна задача в git; роль меняет только
+статус своей задачи, а статус change выводит оркестратор по таблице переходов
+(сейчас это человек). Один файл — один автор. Вопросы к Owner задают двое:
+Manager — о скоупе, сроках и приёмке, Analyst — о требованиях. Роли может
+совмещать один человек, запуская каждую отдельной задачей.
 
 ```text
-намерение Owner → brief
-  → требования и сценарии (Analyst) + единый реестр решений DP-*
-  → консультации и оценки Developer / Tester → допуск Owner
-  → bounded prompts + реализация + Developer checks
-  → независимое тестирование (Tester)
-  → приёмка Owner → перенос в requirements/current/ → сверка → merge
+INTAKE → ANALYSIS → ALIGNMENT → APPROVAL → READY_FOR_DEVELOPMENT
+  → IN_DEVELOPMENT → READY_FOR_TEST ⇄ BUG_FIX → DONE → ACCEPTED
 ```
 
-Переходы защищены gates G0–G5; для небольших изменений по действующему
-контракту предусмотрен сокращённый маршрут.
+Analyst пишет инкремент требований с источниками, Developer и Tester делают
+ревью, план и оценки (чч и мч), Owner утверждает план. Developer реализует
+по одному промту на задачу, Tester пишет приёмочные тесты, Reviewer другой
+моделью в отдельной сессии проверяет код. После DONE Analyst переносит
+инкремент в requirements/current/, Owner принимает изменение. Для
+рефакторинга без изменения поведения анализ пропускается.
 
 Если найден дефект реализации, Developer устраняет его с regression-тестом,
-а Tester проводит независимый retest. Если выявлен пробел в требованиях,
-change возвращается к Analyst через decision point.
+а перепроверяет тот, кто завёл баг: Tester или Reviewer. Пробел в требованиях
+оформляется как decision point (DP) и возвращается к Analyst.
 
 Проверки включают component, contract, property-based, integration,
 persistence conformance, concurrency, golden и module-boundary tests;
@@ -128,7 +128,7 @@ mock не считается доказательством интеграции
 по себе не служит метрикой качества.
 
 Документы метода: [принципы](docs/development_approach/development-approach.md),
-[процесс](docs/development_approach/process/process.md),
+[процесс](docs/development_approach/process/change-process-v3.md),
 [роли](docs/development_approach/roles.md),
 [шаблоны](docs/development_approach/artifacts/README.md),
 [инструкции ролей](docs/development_approach/skills/README.md).

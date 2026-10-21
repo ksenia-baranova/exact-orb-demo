@@ -1,280 +1,94 @@
 # Roles and ownership
 
 **Статус:** DRAFT / WORK IN PROGRESS
-**Дата:** 2026-10-12
+**Дата:** 2026-10-21
 
-Документ описывает полномочия ролей. Порядок стадий находится в [process.md](process/process.md), общие принципы — в
-[development-approach.md](development-approach.md).
+Документ описывает полномочия ролей. Кто какие файлы пишет, статусы и переходы — в [процессе работы над изменением](process/change-process-v3.md), раздел «Роли и зоны ответственности». Общие принципы — в [development-approach.md](development-approach.md).
 
-## 1. Общие правила
+## Общие правила
 
-1. Роль владеет смыслом своих артефактов и отвечает за их handoff.
-2. Finding в чужом артефакте не разрешает молча менять его смысл.
-3. Рекомендация роли записывается в её поле единого реестра и становится решением только после действия decision owner.
-4. Роль подтверждает только свою область ответственности.
-5. Один человек может выполнять несколько ролей, но обязан явно обозначить смену роли.
-6. При single-operator режиме новая роль получает репозиторий на зафиксированном commit и явную задачу, а не скрытую
-   переписку предыдущей роли.
-7. Роль продолжает участвовать после handoff, если новый finding относится к принадлежащему ей смыслу.
-8. Роль регистрирует события и evidence в своих материалах. Служебная сводка обновляется по правилам процесса; допуски и решения подтверждают назначенные уполномоченные участники.
+1. Один запуск агента — одна задача `tasks/TASK-*.md`. Роль меняет только status и resolution своей задачи.
+2. Каждый файл в каждый момент пишет один автор. Ошибка в чужом артефакте — DP или баг, а не правка.
+3. Статус изменения никто не пишет руками: его выводит оркестратор из статусов задач по таблице переходов.
+4. Предложение роли становится решением только после ответа owner'а в DP.
+5. Вопросы к owner'у задают два голоса: Manager — о скоупе, приоритетах, сроках, утверждении и приёмке (DP-M-\*); Analyst — о требованиях, в том числе по вопросам Developer и Tester.
+6. В работе одно изменение за раз: следующее начинается после ACCEPTED или CANCELLED предыдущего.
+7. Один человек может выполнять несколько ролей, но запускает каждую отдельной задачей, на зафиксированном commit и без скрытой переписки предыдущей роли.
 
-## 2. Owner
+## Owner
 
-### Назначение
+Человек. Формулирует запрос, отвечает на анкеты DP, утверждает план (APPROVAL) и принимает результат (accept), отменяет изменение.
 
-Owner определяет пользовательское намерение, принимает продуктовые решения и подтверждает итоговую приёмку.
+- Файлы не пишет: отвечает в чате или анкете, задачи TASK-O закрывает Manager, в лог пишется, кто фактически принял решение.
+- Молчание не означает решение, утверждение, приёмку или принятие риска.
+- Не подтверждает тесты вместо Tester и не выбирает реализацию вместо Developer.
 
-### Владеет
+## Manager
 
-- пользовательским намерением, приоритетом и критериями успеха change;
-- подтверждением brief и исходного scope (G0);
-- подтверждением scope, бюджета и принятых исключений при допуске реализации (G3);
-- продуктовыми решениями в строках `DP-*`, для которых назначен decision owner, включая перенос в техдолг;
-- решениями `ON_HOLD`, `CANCELLED` и `REJECTED`;
-- итоговой приёмкой либо явным делегированием её Manager.
+Ведёт изменение с owner'ом: intake, пакеты DP, сводки, утверждение и приёмка. Критичен к предложениям owner'а: показывает реальную выгоду, предлагает отказ и альтернативы. Ведёт `risks.md`.
 
-### Обязан
+- Пишет `change.md`, `roadmap.md`, `risks.md`, свои задачи, DP-M-\* и решение owner'а в них.
+- Не пишет требования, не придумывает оценки ролей, не выдаёт рекомендацию за решение.
 
-- подтверждать решения явно, с датой и evidence: молчание не означает approval, приёмку или принятие риска;
-- называть границы делегирования Manager и уполномоченного заместителя;
-- при совмещении с ролью Manager явно подписывать решения ролью Owner.
+## Analyst
 
-### Не уполномочен самостоятельно
+Отвечает за наблюдаемое поведение: инкремент требований с источниками, sequence diagrams, разговор с owner'ом о требованиях, решение уточняющих DP, перенос в `current/` в задаче transfer.
 
-- подтверждать test evidence или readiness вместо Tester;
-- выбирать внутреннюю реализацию вместо Developer;
-- превращать разрешённое исключение в `PASS`.
+- Пишет `requirements.md`, `sequences/`, свои задачи, новые DP и решения уточняющих DP. Правила размещения — [требования](../requirements/README.md).
+- Не меняет код и тесты, не утверждает скоуп, сроки и ADR, не выбирает реализацию.
 
-Совмещение Owner и Manager не считается вторым независимым approval; независимое evidence Tester сохраняется.
+## Developer
 
-## 3. Change Manager
+Отвечает за реализацию в рамках утверждённых требований: ревью требований, план реализации, промты, код и тесты, исправление багов.
 
-### Назначение
+- Пишет план, промты, код, тесты, свои задачи, новые DP и статус FIXED в багах.
+- Не меняет требования и поведение вне них, не расширяет скоуп, не закрывает баги и не подтверждает приёмку.
 
-Change Manager является единой точкой обсуждения намерения с Owner и владельцем delivery-процесса change.
+## Tester
 
-### Владеет
+Независимо проверяет, что система делает то, что написано в требованиях: ревью на тестируемость, тест-план, приёмочные автотесты, баги и перепроверка.
 
-- единым `docs/project_management/change_plans/<change-id>/manager_artifact.md`: brief, сводкой заданий и артефактов, DP, оценками, Change Plan, журналом переходов и приёмкой;
-- согласованным delivery plan и его календарём;
-- координацией согласованных scope, priorities и dependencies в границах решений Owner;
-- единым реестром решений change, его структурой и baseline;
-- правилами и корректностью сборки текущих состояний change, заданий и версий артефактов по `process.md`;
-- назначением reviewers, критериев принятия, сроков ответа / эскалации, источников по выбранному режиму и допусков по единой таблице gates;
-- координацией синхронизации main, классификацией влияния обновления базы и подтверждением отдельного поля поставки; кодовые конфликты и checks назначаются Developer, retest — Tester;
-- созданием и ведением общего `docs/project_management/technical_debt.md`, публикацией его изменений отдельными документальными PR в main;
-- организацией role consultations;
-- организацией final acceptance и фиксацией решения Owner либо явно делегированного Manager;
-- отдельной фиксацией разрешённой финальной интеграции.
+- Пишет тест-план, `tests/acceptance/`, баги, свои задачи и новые DP.
+- Не меняет требования, production-код и тесты Developer'а, не подгоняет ожидаемый результат под реализацию.
 
-Manager создаёт manager_artifact.md, отмечает участие ролей и назначает необходимые документы по process.md, раздел 7; в малом варианте достаточно одного файла. После финальных approvals и приёмки Owner назначает перенос только изменённых требований / sequences и сверку. При отсутствии изменений достаточно подтверждения Tester на G5.
+## Reviewer
 
-### Обязан
+Ревью кода и приёмочных тестов после задачи test, ревью diff каждого bug_fix и, для типа refactor, ревью плана. Сторонний агент с подключённой моделью или агент с пулом моделей; модель не та, что у Developer, сессия отдельная. Модель, вызванная как инструмент из сессии Developer'а, — самопроверка, а не code_review.
 
-- сохранить пользовательское намерение без технической подмены;
-- передавать вопросы ролей Owner и фиксировать ответы;
-- отделять гипотезы, рекомендации и решения владельца;
-- обеспечивать одну строку `DP-*` на вопрос без копий в ролевых артефактах;
-- получить оценки от Developer и Tester до утверждения сроков;
-- получить необходимые подтверждения по наблюдаемому контракту; для сокращённого маршрута обосновать применимость действующего baseline;
-- поддерживать plan как краткий delivery-документ со ссылками на подробные артефакты;
-- разрешать продолжение независимой работы при локальном blocker;
-- явно фиксировать accepted risk и deferred work.
+- Пишет свои задачи и баги.
+- Не меняет код, тесты и требования.
 
-### Не уполномочен самостоятельно
+## Оркестратор
 
-- определять отсутствующую продуктовую семантику вместо Analyst / Owner;
-- подтверждать brief, scope, бюджет и приёмку без явного делегирования Owner;
-- выбирать внутреннюю реализацию вместо Developer;
-- придумывать оценки разработки и тестирования;
-- подтверждать test evidence вместо Tester;
-- выдавать recommendation за принятое решение.
+Сейчас человек, потом сервис на событиях трекера. Валидирует переходы, создаёт задачи, ведёт `events.jsonl` и `decisions.md`, будит агентов. Содержание документов не трогает.
 
-### Handoff
+## Условные роли
 
-Передаёт Analyst утверждённый brief (G0), baseline `change/*` и известные `DP-*`. Передаёт Developer утверждённые
-requirements, сценарии, Change Plan и разрешённые work items (G3); Implementation Plan готовит и ведёт сам Developer.
-Передаёт Tester requirements, accepted limitations, delivery expectations и проверяемый CandidateSHA (G4). Получает от
-каждой роли manager summary и evidence.
+Архитектурная развилка оформляется как DP; решение фиксируется ADR по [правилам ADR](../requirements/decisions/README.md). Отдельная роль архитектора не вводится.
 
-## 4. Functional Analyst
+Platform Engineer вводится только при самостоятельной инфраструктурной области: deployment, CI/CD, secrets, runtime supervisor, reverse proxy, observability backend или production operations. Пока эта работа входит в поставку приложения, ею владеет Developer.
 
-### Назначение
+## Кто решает
 
-Functional Analyst отвечает за наблюдаемое поведение и публичный контракт change.
-
-### Владеет
-
-- functional requirements;
-- дельтой или полной спецификацией change и переносом принятого контракта в чистовые требования;
-- endpoint/DTO semantics и пользовательскими сценариями;
-- acceptance criteria и structured acceptance scenarios;
-- behavioral/API sequence drafts;
-- analysis findings;
-- вопросами, наблюдаемыми вариантами и рекомендациями Analysis в строках единого реестра;
-- impact analysis на уровне поведения.
-
-### Обязан
-
-- изучить действующие ADR, requirements, diagrams, code и tests;
-- отделить факт, вывод, предложение, решение и неизвестное;
-- описать happy, error, boundary, recovery и relevant concurrency scenarios;
-- объяснить каждый существенный finding языком, понятным Manager;
-- привести конкретный пример проявления;
-- добавить варианты, влияние и рекомендацию Analysis в соответствующую строку `DP-*`;
-- назвать decision owner и blocking impact;
-- синхронизировать наблюдаемые requirements, scenarios и diagrams.
-
-Размещает требования, сценарии и findings по [правилам требований](../requirements/README.md), фиксирует исходный
-baseline и целевые пункты. Ведёт `analyst_artifact.md`, подробные материалы в `analyst/`. После финальных approvals и решения Owner, до merge, подготавливает полный текст в `current/`, переносит behavioral/API sequences и ведёт `analyst/transfer_map.md` со стабильными IDs, неизменёнными обязательствами и основаниями исключений.
-
-### Не уполномочен самостоятельно
-
-- изменять Change Plan или Gantt;
-- утверждать scope, сроки и архитектурные решения;
-- выбирать implementation strategy за Developer;
-- менять production code и Developer tests в Analysis task;
-- записывать предложение как решение Manager/Developer.
-
-### Handoff
-
-Передаёт Manager краткий вывод, readiness status, IDs blocking строк `DP-*` и рисков. Передаёт Developer и Tester approved
-requirements, acceptance scenarios и behavioral sequence.
-
-## 5. Developer
-
-### Назначение
-
-Developer отвечает за техническую реализуемость, внутренний дизайн и поставку работающей реализации в рамках approved
-contract.
-
-### Владеет
-
-- technical choices внутри approved contract; существенные choices фиксируются строками `DP-*`;
-- development estimate и confidence;
-- планом реализации и исполняемыми промтами work items;
-- выбором порядка разработки и проверок: через тесты или с иной достаточной проверкой;
-- technical sequence diagrams в `developer/sequence_diagrams/`; после финальных approvals — их перенос в общие тематические каталоги;
-- production code;
-- developer automated tests;
-- implementation evidence и development findings.
-
-### Обязан
-
-- проверить требования против текущей архитектуры и кода;
-- выявить dependencies, migration и lifecycle risks;
-- провести bounded spike, если без него оценка недостоверна;
-- дать Manager диапазон оценки, допущения и confidence;
-- добавить техническое evidence и рекомендацию Developer в соответствующую строку `DP-*`;
-- связать work items с requirements, промтами и tests;
-- обосновать для каждого work item выбор TDD или другого подхода через риск и существующее покрытие;
-- задать в промте данные, expected result и критерий завершения; избежать лишних тестовых этапов и дубликатов;
-- реализовать минимальный scope на ответственном слое;
-- добавить regression test для исправленного дефекта;
-- по заданию разрешать конфликты кода / Developer tests / конфигурации и выполнять обязательные checks на актуальном CandidateSHA;
-- эскалировать новую семантику Analyst, scope Manager, architecture Technical Reviewer.
-
-### Не уполномочен самостоятельно
-
-- менять пользовательское поведение вне approved requirements;
-- расширять scope под удобство реализации;
-- редактировать Analysis artifact так, чтобы скрыть finding;
-- подтверждать acceptance вместо Tester;
-- выдавать техническую гипотезу за решение Manager.
-
-### Handoff
-
-До development передаёт Manager Implementation Plan с оценкой реализуемости, dependencies, risks и estimate.
-Ведёт `developer_artifact.md`; план, промты, checks и findings — в `developer/`. После реализации передаёт Tester diff summary,
-reproduction/setup, выполненные checks, ограничения и открытые non-blocking findings.
-
-## 6. Tester
-
-### Назначение
-
-Tester отвечает за независимую проверку testability и evidence соответствия реализации approved contract.
-
-### Владеет
-
-- testability review;
-- test estimate и confidence;
-- independent test plan;
-- manual/exploratory scenarios;
-- acceptance evidence;
-- test findings и defects;
-- дополнительное regression coverage в согласованной области.
-
-### Обязан
-
-- сформировать negative и boundary scenarios до чтения Developer tests, где это возможно;
-- проверить, что acceptance criteria наблюдаемы и воспроизводимы;
-- отличить collection от успешного test run;
-- проверить positive control для существенных негативных утверждений;
-- зафиксировать environment, команды и фактические результаты;
-- классифицировать проблему по владельцу смысла;
-- добавить testability evidence и рекомендацию Tester в соответствующую строку `DP-*`;
-- назвать непроверенное и предел evidence;
-- вести единый реестр дефектов в tester/defects.md либо в разделе Manager малого варианта по process.md, раздел 7.1; выбирать retest при пересечении обновления базы с поставкой.
-
-Ведёт `tester_artifact.md`; подробные review, план, матрица, дефекты и evidence — в `tester/`. До приёмки подтверждает проверенный контракт baseline + утверждённый пакет change. После решения Owner сверяет чистовые требования, сценарии и sequences с этим пакетом; поддерживает ссылки в матрице и тестах и фиксирует отдельное evidence переноса до merge.
-
-### Не уполномочен самостоятельно
-
-- менять requirement, чтобы реализация прошла;
-- подгонять golden data или допуски под текущий результат;
-- исправлять production code в роли Tester;
-- принимать scope/deferred risk вместо Manager;
-- объявлять change принятым без требуемого evidence.
-
-### Handoff
-
-До development передаёт Manager testability review и estimate. После testing передаёт acceptance matrix, команды,
-результаты, defects, limitations и readiness recommendation.
-
-## 7. Technical Reviewer
-
-Technical Reviewer — условная роль, подключаемая по эскалации. Она не образует обязательный gate каждого change.
-
-Подключается, когда решение затрагивает:
-
-- архитектурные границы нескольких компонентов;
-- security boundary;
-- ownership конкурентных или фоновых задач;
-- durable processing, network boundary или новый service;
-- необратимую migration;
-- исключение из действующего ADR или архитектурного invariant.
-
-Reviewer сравнивает варианты и добавляет technical recommendation в строку `DP-*`. Выбор и evidence заполняет только
-явно названный decision owner; Change Manager поддерживает baseline реестра.
-
-## 8. Platform Engineer
-
-Platform Engineer вводится только при самостоятельной infrastructure области: deployment, CI/CD, secrets, runtime
-supervisor, reverse proxy, observability backend или production operations. Пока эта работа остаётся частью application
-delivery boundary, ею владеет Developer.
-
-## 9. Матрица ответственности
-
-| Область | Владелец смысла | Consulted | Approval / evidence |
-|---|---|---|---|
-| Пользовательское намерение и priority | Owner | Change Manager | Owner; brief ведёт Manager (G0) |
-| Change scope и бюджет | Owner | Change Manager, Analyst, Developer, Tester | Owner (G0 / G3) |
-| Delivery plan | Change Manager | Analyst, Developer, Tester | Manager; scope и бюджет — Owner |
-| Наблюдаемое поведение | Functional Analyst | Developer, Tester, Manager, Owner | Developer — реализуемость; Tester — тестируемость; Owner — продуктовые решения ([process.md §3.2](process/process.md)) |
-| Техническая реализация | Developer | Analyst, Tester, Technical Reviewer при эскалации | Implementation Plan — Manager и назначенный reviewer; реализация — Developer evidence |
-| Development estimate | Developer | Manager | Developer |
-| Подход к разработке и Developer checks | Developer | Tester при необходимости; Manager при влиянии на delivery | implementation plan и промт с обоснованием |
-| Стратегия независимого тестирования и test estimate | Tester | Analyst, Developer, Manager | Tester |
-| Существенное решение | назначенный decision owner | Manager и затронутые роли | строка `DP-*` со статусом `ACCEPTED`; для архитектуры — связанный ADR |
-| Acceptance evidence | Tester | Developer, Analyst | Tester |
-| Final acceptance | Owner | Manager, Analyst, Developer, Tester | Owner либо явно делегированный Manager; совмещение ролей явно подписано |
-
-## 10. Role skills и шаблоны
-
-| Роль | Skill draft | Artifact templates |
+| Область | Решает | Предлагает |
 |---|---|---|
-| Owner | — | решения фиксируются в [manager_artifact.md Manager](artifacts/change-manager.md) |
-| Change Manager | [skill](skills/change-manager/SKILL.md) | [templates](artifacts/change-manager.md) |
-| Functional Analyst | [skill](skills/functional-analyst/SKILL.md) | [templates](artifacts/functional-analyst.md) |
-| Developer | [skill](skills/developer/SKILL.md) | [templates](artifacts/developer.md) |
-| Tester | [skill](skills/tester/SKILL.md) | [templates](artifacts/tester.md) |
+| Цель, скоуп, приоритет, сроки | Owner | Manager |
+| Наблюдаемое поведение | Owner по DP | Analyst; Developer и Tester через DP |
+| Уточняющий DP: формулировка требования без изменения поведения | Analyst | Developer, Tester |
+| Реализация внутри требований | Developer | Reviewer через баги |
+| Оценки | роль, выполняющая работу (чч и мч) | — |
+| Результат проверки | Tester и Reviewer | — |
+| Отложить баг (DEFERRED) | Owner | Manager, запись в risks.md |
+| Приёмка | Owner | Manager — сводка поставки |
+
+## Skills и шаблоны
+
+| Роль | Skill draft | Шаблоны |
+|---|---|---|
+| Owner | — | ответы в [DP](artifacts/dp.md) |
+| Manager | [skill](skills/change-manager/SKILL.md) | [change](artifacts/change.md), [roadmap](artifacts/roadmap.md), [risks](artifacts/risks.md), [DP](artifacts/dp.md) |
+| Analyst | [skill](skills/functional-analyst/SKILL.md) | [requirements](artifacts/requirements.md), [DP](artifacts/dp.md) |
+| Developer | [skill](skills/developer/SKILL.md) | [implementation plan](artifacts/implementation-plan.md), [prompt](artifacts/prompt.md), [debug log](artifacts/debug-log.md) |
+| Tester | [skill](skills/tester/SKILL.md) | [test plan](artifacts/test-plan.md), [bug](artifacts/bug.md) |
+| Reviewer | [skill](skills/reviewer/SKILL.md) | [bug](artifacts/bug.md), [DP](artifacts/dp.md) |
+| Все роли | — | [task](artifacts/task.md); общий список — [artifacts/README.md](artifacts/README.md) |
