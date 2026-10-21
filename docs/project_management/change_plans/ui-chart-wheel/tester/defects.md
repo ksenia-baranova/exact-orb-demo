@@ -7,11 +7,11 @@
 | ID | Тип / источник | Severity | Priority | Статус | Blocks сейчас | Ответственный |
 |---|---|---|---|---|---|---|
 | [TEST-FIND-WHEEL-001](#test-find-wheel-001) | requirement gap: рассогласование версий после Owner decisions | N/A | P2, PROPOSED исторически | CLOSED | Нет по этому gap; полные gates отдельно | Tester подтвердил; Manager регистрирует результат |
-| [TEST-FIND-WHEEL-002](#test-find-wheel-002) | requirement gap: измерительные критерии в DP-O-011/012 | N/A | P2, PROPOSED | OPEN | Окончательный oracle плотности / размещения / fallback и затронутая acceptance | Developer + Analyst / Owner |
+| [TEST-FIND-WHEEL-002](#test-find-wheel-002) | измерительный gap; DEBT-UI-004 | N/A | P2 по DEBT-UI-004, Manager21.10; исходно PROPOSED | OPEN | Owner разрешил отсрочку; публикация долга в main ещё не подтверждена, это не PASS | Developer + Tester; Analyst / Owner при изменении предела |
 | [TEST-FIND-WHEEL-003](#test-find-wheel-003) | requirement gap: переходы выбора внутри DP-O-013 | N/A | P2, PROPOSED исторически | CLOSED | Нет по этому gap; runtime tests ещё NOT RUN | Tester подтвердил; Manager регистрирует результат |
 | [TEST-FIND-WHEEL-004](#test-find-wheel-004) | implementation defect: effective HTML hit-area меньше Q44 | S3 | P2, PROPOSED | CLOSED | Нет по004;002/общие gates отдельно | Tester / Codex retest9974195 PASS;Developer fix9974195 |
 
-Закрытие requirement gap означает проверенный текст expected result и зарегистрированный источник, не исправление runtime bug / PASS продукта. Priority не подтверждался Manager. Исходные примеры / условия ниже сохранены; актуальные результаты сверки добавлены с автором, датой и точными версиями.
+Закрытие requirement gap означает проверенный текст expected result и зарегистрированный источник, не исправление runtime bug / PASS продукта. Исторические Priority PROPOSED не выдаются за прежние подтверждения Manager; для долга002 новая регистрация21.10 указана отдельно ниже. Исходные примеры / условия сохранены; актуальные результаты сверки добавлены с автором, датой и точными версиями.
 
 <a id="test-find-wheel-001"></a>
 ## TEST-FIND-WHEEL-001. Пакет v1 ещё не отражает актуальные решения
@@ -78,6 +78,12 @@ REQ-WHEEL-06 / AS-WHEEL-07/08 / sequence 002 и DP-O-012 @ `543b7ec726ee96c951dc
 Остаются OPEN: критерий bbox/collision/minimality, допустимые интервалы / bounds, placement нескольких R / ☌, палитра / legend layout и принятый наблюдаемый fallback при недостижимой плотности. Нового технического пакета TASK-D-002 и real SVG/font/browser evidence нет. Developer consultation v1 @ `04be207` содержит предложение отдельного bounded spike, не результат измерений и не допуск его исполнения.
 
 **Результат:** закрытие всего TEST-FIND-WHEEL-002 не подтверждено, статус OPEN. Условия закрытия сохраняются: проверяемые Developer критерии / drawing ADR, согласованный наблюдаемый предел / fallback в существующих DP, соответствующие AS и независимое evidence. Priority P2 остаётся PROPOSED; негативные сценарии и разрежённый positive control — [T-WHEEL-05](test_plan.md#t-wheel-05).
+
+### Отсрочка Owner / DEBT-UI-004 — TASK-T-008, 2026-10-21
+
+**Codex / Tester; TransferSHA c7219e485917366f67159c9a08e3c78dc4e69372.** [Manager§2.27](../manager_artifact.md#227-завершение-реализации-техдолг-и-подготовка-к-main) и [DEBT-UI-004](../../../technical_debt.md#debt-ui-004) фиксируют прямое решение Owner21.10 отложить остаток002/precision. Статус finding **OPEN**, native gap2 **INDETERMINATE**; closure не выполнен. Старые C0/minimality/column критерии не становятся oracle новой раскладки: Owner20.10 заменил её внутренними рядами. Долг покрывает независимый oracle актуальных house rows/density и radial/numeric precision, не отменяя S1,HTML Q44 или запрет синтеза фактов. Bug004 остаётся CLOSED по RetestedSHA9974195.
+
+Погашение: Developer — precision model/evidence; Tester — независимые expected/controls и exact-version retest; Analyst при изменении наблюдаемого предела; Manager — возврат в ближайшем изменении размеров/размещения SVG (включая DEBT-UI-003) либо перед публичным выпуском, что раньше. ДолгP2 подтверждён Manager21.10, исходное PROPOSED сохранено как история. Проверенный origin/mainbba8d6cfb22f586f86c3035423f2535ede158b9f записи004 ещё не содержит; опубликованный registrySHA не назначен. Отсрочка не является исправлением/geometry PASS или самостоятельным подтверждением gate. [Независимая сверка переноса](transfer_review.md) отделена от будущего погашения долга.
 
 <a id="test-find-wheel-003"></a>
 ## TEST-FIND-WHEEL-003. Переход от фильтра планеты к аспекту и снятие аспекта
