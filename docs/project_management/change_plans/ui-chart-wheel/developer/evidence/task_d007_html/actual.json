@@ -1,0 +1,109 @@
+{
+  "subject": "TASK-D-007 CH-02/03, actual application; no SVG claim",
+  "cases": [
+    {
+      "width": 1440,
+      "initial_aspects": 5,
+      "initial_houses": 5,
+      "source_points": 16,
+      "native_enter_space": true,
+      "retained_focus_and_node": true,
+      "no_programmatic_focus_or_scroll": true,
+      "html_Q44": 24,
+      "resize_preserved": true,
+      "automatic_reconcile": true,
+      "full_source_S1": true,
+      "no_horizontal_overflow": true,
+      "requests": [
+        "bootstrap",
+        "current",
+        "bootstrap",
+        "current",
+        "bootstrap",
+        "current"
+      ],
+      "page_errors": []
+    },
+    {
+      "width": 768,
+      "initial_aspects": 5,
+      "initial_houses": 5,
+      "source_points": 16,
+      "native_enter_space": true,
+      "retained_focus_and_node": true,
+      "no_programmatic_focus_or_scroll": true,
+      "html_Q44": 24,
+      "resize_preserved": true,
+      "automatic_reconcile": true,
+      "full_source_S1": true,
+      "no_horizontal_overflow": true,
+      "requests": [
+        "bootstrap",
+        "current",
+        "bootstrap",
+        "current",
+        "bootstrap",
+        "current"
+      ],
+      "page_errors": []
+    },
+    {
+      "width": 360,
+      "initial_aspects": 5,
+      "initial_houses": 5,
+      "source_points": 16,
+      "native_enter_space": true,
+      "retained_focus_and_node": true,
+      "no_programmatic_focus_or_scroll": true,
+      "html_Q44": 24,
+      "resize_preserved": true,
+      "automatic_reconcile": true,
+      "full_source_S1": true,
+      "no_horizontal_overflow": true,
+      "requests": [
+        "bootstrap",
+        "current",
+        "bootstrap",
+        "current",
+        "bootstrap",
+        "current"
+      ],
+      "page_errors": []
+    }
+  ],
+  "browser": "155.0.8059.40",
+  "status": "PASS",
+  "input_sha": "502589dbadd382fbe39e3cf1fd763abb52ffc620",
+  "source_sha256": {
+    "src/exact_orb/http_api/ui/chart_state.mjs": "4b01e6623624b3027d1b45c07f8185afded2558eca5e2e352d22c183a172e63d",
+    "src/exact_orb/http_api/ui/facts.mjs": "56882d705c0d9c5b1d313584d5dce5aefc40484cd532fdeadad213005b91cd89",
+    "src/exact_orb/http_api/ui/form.mjs": "01c67968c92569cfa039c08a29b097bee8f9e7d06b335a9d58575b0fb31bdad3",
+    "src/exact_orb/http_api/ui/index.html": "0e0590f58e22320d81a33d73c857d547b85dc5a0a79ea980cc4698aa3fffd167",
+    "src/exact_orb/http_api/ui/main.mjs": "e883e9fbca1bc72107f9ff9ca6068516b00256a0685fe53229036e6e53e1d47e",
+    "src/exact_orb/http_api/ui/places.mjs": "9261d46e9c716db979ee4dc7454a4a656c6d350f78f5883c7635103af56b9dcb",
+    "src/exact_orb/http_api/ui/recovery.mjs": "b5d3cd889cd12ae42b9461429c1eef98d1ddc737cde2ce7e83189cb2e3ff81b5",
+    "src/exact_orb/http_api/ui/response.mjs": "124eed92a2be48598eb38f2deaae6f826bced0491e0acf82384c681fca27942c",
+    "src/exact_orb/http_api/ui/session.mjs": "920439c370071397f6b5d291e87b997950ebe52a5357251ac908c016f91db5cd",
+    "src/exact_orb/http_api/ui/styles.css": "8b43d145d99020a6b46d4faab9600ca7a6c59b0347e29fe0be2e52194a36c599",
+    "src/exact_orb/http_api/ui/transport.mjs": "bc1ca991d76af8ec6af63cdf69cb25bc00053a77cb1d12d8ae67fccea4140fdb",
+    "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d007_html/browser.cjs": "2f0bd1065c1a5c9c6042e4e3a862c837e6a245113fd77809bd39170df7c5aa76",
+    "tests/ui/fixtures/natal_1985_chart_dto.json": "28b4a322fbd1ebed99a7f9716fd7d071583beb5e060b1d4a5bf9666c2248c8ff",
+    "tests/http_api/golden/session_view.json": "075725ef55bba279312aa5e95998480f62651450568f16199eb3f772cd331109"
+  },
+  "source_lf_sha256": {
+    "src/exact_orb/http_api/ui/chart_state.mjs": "4b01e6623624b3027d1b45c07f8185afded2558eca5e2e352d22c183a172e63d",
+    "src/exact_orb/http_api/ui/facts.mjs": "0af02194b7f3cafa0af8d900a50ec403128eb2540b48dd7bcf7a2ea90d77b999",
+    "src/exact_orb/http_api/ui/form.mjs": "4f44f1289e8aa46e463e4d517161df474ea4c94b008f0616b9e01bd65b590ebd",
+    "src/exact_orb/http_api/ui/index.html": "f184bf2bedcb34f5daf056a26b0fb86cca080f92314d4712a631fff429425b12",
+    "src/exact_orb/http_api/ui/main.mjs": "2a3c6291dc100df3a26126426990f2fe46b438c6825aba6e6126274842cad6ef",
+    "src/exact_orb/http_api/ui/places.mjs": "857593b5b335c4612823dc1d4b58e5dca628671cd3ff51e371ac8641bb820bfb",
+    "src/exact_orb/http_api/ui/recovery.mjs": "405eae1bb36ee3387337fa1d34d5af48d7385bbfbc295ea5a9ae391d48d07414",
+    "src/exact_orb/http_api/ui/response.mjs": "045770e93485c9f8111c6bd03bf9ce9a16e19d05f5e9624931ae63f84bfcbb8d",
+    "src/exact_orb/http_api/ui/session.mjs": "0eea63e3b4d0049b0f40f5fdce55fe20a8dc9430eb4cd05d7d0883bd5e895564",
+    "src/exact_orb/http_api/ui/styles.css": "060c3df22f04024a91c101aa0b9cafe8678cafdce66670fe1ccf95bbeb447da9",
+    "src/exact_orb/http_api/ui/transport.mjs": "18b46104d161eb6ca3c094c507e2011bbba3aec91ad62622c38cae234693dc60",
+    "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d007_html/browser.cjs": "2f0bd1065c1a5c9c6042e4e3a862c837e6a245113fd77809bd39170df7c5aa76",
+    "tests/ui/fixtures/natal_1985_chart_dto.json": "31e125adf755093f489bad9a10b81bc677f811276600df1224a35af0e2db0627",
+    "tests/http_api/golden/session_view.json": "a2306251cb2f87edf4e2167407c4ff1ed8054f9df97f33e57d32f60b326c5eab"
+  }
+}

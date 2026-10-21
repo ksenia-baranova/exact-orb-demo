@@ -1,0 +1,806 @@
+{
+  "cases": [
+    {
+      "id": "sparse-1440",
+      "pass": false,
+      "errors": [
+        "true-anchor:moon",
+        "true-anchor:mercury",
+        "true-anchor:venus",
+        "true-anchor:jupiter",
+        "true-anchor:saturn",
+        "true-anchor:uranus",
+        "true-anchor:pluto",
+        "true-anchor:chiron",
+        "true-anchor:true_node",
+        "true-anchor:mean_apog",
+        "true-anchor:selena",
+        "true-anchor:pars_fortune"
+      ],
+      "rows": [
+        0
+      ]
+    },
+    {
+      "id": "sparse-768",
+      "pass": false,
+      "errors": [
+        "true-anchor:moon",
+        "true-anchor:mercury",
+        "true-anchor:venus",
+        "true-anchor:jupiter",
+        "true-anchor:saturn",
+        "true-anchor:uranus",
+        "true-anchor:pluto",
+        "true-anchor:chiron",
+        "true-anchor:true_node",
+        "true-anchor:mean_apog",
+        "true-anchor:selena"
+      ],
+      "rows": [
+        0
+      ]
+    },
+    {
+      "id": "sparse-360",
+      "pass": false,
+      "errors": [
+        "true-anchor:moon",
+        "true-anchor:mercury",
+        "true-anchor:venus",
+        "true-anchor:jupiter",
+        "true-anchor:saturn",
+        "true-anchor:uranus",
+        "true-anchor:pluto",
+        "true-anchor:chiron",
+        "true-anchor:true_node",
+        "true-anchor:mean_apog",
+        "true-anchor:selena",
+        "true-anchor:pars_fortune"
+      ],
+      "rows": [
+        0
+      ]
+    },
+    {
+      "id": "F1-1440",
+      "pass": false,
+      "errors": [
+        "true-anchor:sun",
+        "true-anchor:moon",
+        "true-anchor:mercury",
+        "true-anchor:venus",
+        "true-anchor:mars",
+        "true-anchor:jupiter",
+        "true-anchor:saturn",
+        "true-anchor:uranus",
+        "true-anchor:neptune",
+        "true-anchor:pluto",
+        "true-anchor:chiron",
+        "true-anchor:true_node",
+        "true-anchor:south_node",
+        "true-anchor:mean_apog",
+        "true-anchor:selena",
+        "true-anchor:pars_fortune"
+      ],
+      "rows": [
+        0
+      ]
+    },
+    {
+      "id": "F1-768",
+      "pass": false,
+      "errors": [
+        "true-anchor:sun",
+        "true-anchor:mercury",
+        "true-anchor:venus",
+        "true-anchor:mars",
+        "true-anchor:jupiter",
+        "true-anchor:saturn",
+        "true-anchor:uranus",
+        "true-anchor:neptune",
+        "true-anchor:pluto",
+        "true-anchor:chiron",
+        "true-anchor:true_node",
+        "true-anchor:south_node",
+        "true-anchor:mean_apog",
+        "true-anchor:selena",
+        "true-anchor:pars_fortune"
+      ],
+      "rows": [
+        0
+      ]
+    },
+    {
+      "id": "F1-360",
+      "pass": false,
+      "errors": [
+        "true-anchor:sun",
+        "true-anchor:mercury",
+        "true-anchor:venus",
+        "true-anchor:mars",
+        "true-anchor:jupiter",
+        "true-anchor:saturn",
+        "true-anchor:uranus",
+        "true-anchor:neptune",
+        "true-anchor:pluto",
+        "true-anchor:chiron",
+        "true-anchor:true_node",
+        "true-anchor:south_node",
+        "true-anchor:selena",
+        "true-anchor:pars_fortune"
+      ],
+      "rows": [
+        0,
+        2,
+        5,
+        6
+      ]
+    },
+    {
+      "id": "F3-1440",
+      "pass": false,
+      "errors": [
+        "true-anchor:sun",
+        "true-anchor:moon",
+        "true-anchor:mercury",
+        "true-anchor:mars",
+        "true-anchor:jupiter",
+        "true-anchor:saturn",
+        "true-anchor:uranus",
+        "true-anchor:neptune",
+        "true-anchor:pluto",
+        "true-anchor:chiron",
+        "true-anchor:true_node",
+        "true-anchor:south_node",
+        "true-anchor:mean_apog",
+        "true-anchor:selena",
+        "true-anchor:pars_fortune"
+      ],
+      "rows": [
+        0
+      ]
+    },
+    {
+      "id": "F3-768",
+      "pass": false,
+      "errors": [
+        "true-anchor:sun",
+        "true-anchor:mercury",
+        "true-anchor:venus",
+        "true-anchor:mars",
+        "true-anchor:jupiter",
+        "true-anchor:saturn",
+        "true-anchor:uranus",
+        "true-anchor:neptune",
+        "true-anchor:pluto",
+        "true-anchor:chiron",
+        "true-anchor:true_node",
+        "true-anchor:south_node",
+        "true-anchor:mean_apog",
+        "true-anchor:selena",
+        "true-anchor:pars_fortune"
+      ],
+      "rows": [
+        0,
+        1
+      ]
+    },
+    {
+      "id": "F3-360",
+      "pass": false,
+      "errors": [
+        "true-anchor:sun",
+        "true-anchor:venus",
+        "true-anchor:mars",
+        "true-anchor:jupiter",
+        "true-anchor:saturn",
+        "true-anchor:uranus",
+        "true-anchor:neptune",
+        "true-anchor:pluto",
+        "true-anchor:chiron",
+        "true-anchor:true_node",
+        "true-anchor:south_node",
+        "true-anchor:selena",
+        "true-anchor:pars_fortune"
+      ],
+      "rows": [
+        0,
+        1,
+        5,
+        6
+      ]
+    },
+    {
+      "id": "F3-max-1440",
+      "pass": false,
+      "errors": [
+        "true-anchor:sun",
+        "true-anchor:mercury",
+        "true-anchor:venus",
+        "true-anchor:saturn",
+        "true-anchor:uranus",
+        "true-anchor:pluto",
+        "true-anchor:true_node",
+        "true-anchor:south_node",
+        "true-anchor:mean_apog",
+        "true-anchor:selena",
+        "true-anchor:pars_fortune"
+      ],
+      "rows": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "id": "F3-max-768",
+      "pass": false,
+      "errors": [
+        "true-anchor:sun",
+        "true-anchor:moon",
+        "true-anchor:venus",
+        "true-anchor:saturn",
+        "true-anchor:neptune",
+        "true-anchor:pluto",
+        "true-anchor:chiron",
+        "true-anchor:south_node"
+      ],
+      "rows": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "id": "F3-max-360",
+      "pass": false,
+      "errors": [
+        "true-anchor:sun",
+        "true-anchor:moon",
+        "true-anchor:venus",
+        "true-anchor:mars",
+        "true-anchor:jupiter",
+        "true-anchor:saturn",
+        "true-anchor:neptune",
+        "true-anchor:pluto",
+        "true-anchor:chiron",
+        "true-anchor:south_node",
+        "true-anchor:mean_apog",
+        "true-anchor:selena"
+      ],
+      "rows": [
+        0,
+        1,
+        2,
+        8
+      ]
+    },
+    {
+      "id": "published-natal-1440",
+      "pass": false,
+      "errors": [
+        "true-anchor:sun",
+        "true-anchor:moon",
+        "true-anchor:mercury",
+        "true-anchor:venus",
+        "true-anchor:mars",
+        "true-anchor:jupiter",
+        "true-anchor:saturn",
+        "true-anchor:uranus",
+        "true-anchor:neptune",
+        "true-anchor:pluto",
+        "true-anchor:chiron",
+        "true-anchor:true_node",
+        "true-anchor:south_node",
+        "true-anchor:mean_apog",
+        "true-anchor:selena",
+        "true-anchor:pars_fortune"
+      ],
+      "rows": [
+        0
+      ]
+    },
+    {
+      "id": "published-natal-768",
+      "pass": false,
+      "errors": [
+        "true-anchor:sun",
+        "true-anchor:mercury",
+        "true-anchor:venus",
+        "true-anchor:mars",
+        "true-anchor:jupiter",
+        "true-anchor:saturn",
+        "true-anchor:uranus",
+        "true-anchor:neptune",
+        "true-anchor:pluto",
+        "true-anchor:chiron",
+        "true-anchor:true_node",
+        "true-anchor:south_node",
+        "true-anchor:mean_apog",
+        "true-anchor:selena",
+        "true-anchor:pars_fortune"
+      ],
+      "rows": [
+        0
+      ]
+    },
+    {
+      "id": "published-natal-360",
+      "pass": false,
+      "errors": [
+        "true-anchor:sun",
+        "true-anchor:mercury",
+        "true-anchor:venus",
+        "true-anchor:mars",
+        "true-anchor:jupiter",
+        "true-anchor:saturn",
+        "true-anchor:uranus",
+        "true-anchor:neptune",
+        "true-anchor:pluto",
+        "true-anchor:chiron",
+        "true-anchor:true_node",
+        "true-anchor:south_node",
+        "true-anchor:selena",
+        "true-anchor:pars_fortune"
+      ],
+      "rows": [
+        0,
+        2,
+        5,
+        6
+      ]
+    },
+    {
+      "id": "cosmogram-1440",
+      "pass": false,
+      "errors": [
+        "true-anchor:moon",
+        "true-anchor:mercury",
+        "true-anchor:venus",
+        "true-anchor:jupiter",
+        "true-anchor:saturn",
+        "true-anchor:uranus",
+        "true-anchor:pluto",
+        "true-anchor:chiron",
+        "true-anchor:true_node",
+        "true-anchor:mean_apog",
+        "true-anchor:selena",
+        "true-anchor:pars_fortune"
+      ],
+      "rows": [
+        0
+      ]
+    },
+    {
+      "id": "cosmogram-768",
+      "pass": false,
+      "errors": [
+        "true-anchor:moon",
+        "true-anchor:mercury",
+        "true-anchor:venus",
+        "true-anchor:jupiter",
+        "true-anchor:saturn",
+        "true-anchor:uranus",
+        "true-anchor:pluto",
+        "true-anchor:chiron",
+        "true-anchor:true_node",
+        "true-anchor:mean_apog",
+        "true-anchor:selena"
+      ],
+      "rows": [
+        0
+      ]
+    },
+    {
+      "id": "cosmogram-360",
+      "pass": false,
+      "errors": [
+        "true-anchor:moon",
+        "true-anchor:mercury",
+        "true-anchor:venus",
+        "true-anchor:jupiter",
+        "true-anchor:saturn",
+        "true-anchor:uranus",
+        "true-anchor:pluto",
+        "true-anchor:chiron",
+        "true-anchor:true_node",
+        "true-anchor:mean_apog",
+        "true-anchor:selena",
+        "true-anchor:pars_fortune"
+      ],
+      "rows": [
+        0
+      ]
+    },
+    {
+      "id": "multigroup-control-1440",
+      "pass": false,
+      "errors": [
+        "true-anchor:moon",
+        "true-anchor:venus",
+        "true-anchor:jupiter",
+        "true-anchor:saturn",
+        "true-anchor:uranus",
+        "true-anchor:pluto",
+        "true-anchor:chiron",
+        "true-anchor:true_node",
+        "true-anchor:mean_apog",
+        "true-anchor:pars_fortune"
+      ],
+      "rows": [
+        0,
+        1
+      ]
+    },
+    {
+      "id": "multigroup-control-768",
+      "pass": false,
+      "errors": [
+        "true-anchor:moon",
+        "true-anchor:mercury",
+        "true-anchor:venus",
+        "true-anchor:jupiter",
+        "true-anchor:saturn",
+        "true-anchor:uranus",
+        "true-anchor:pluto",
+        "true-anchor:chiron",
+        "true-anchor:true_node",
+        "true-anchor:mean_apog",
+        "true-anchor:selena",
+        "true-anchor:pars_fortune"
+      ],
+      "rows": [
+        0,
+        1
+      ]
+    },
+    {
+      "id": "multigroup-control-360",
+      "pass": false,
+      "errors": [
+        "true-anchor:moon",
+        "true-anchor:mercury",
+        "true-anchor:venus",
+        "true-anchor:jupiter",
+        "true-anchor:saturn",
+        "true-anchor:uranus",
+        "true-anchor:pluto",
+        "true-anchor:chiron",
+        "true-anchor:true_node",
+        "true-anchor:mean_apog",
+        "true-anchor:selena",
+        "true-anchor:pars_fortune"
+      ],
+      "rows": [
+        0,
+        1,
+        8
+      ]
+    },
+    {
+      "id": "S1-control-1440",
+      "pass": false,
+      "errors": [
+        "true-anchor:sun",
+        "true-anchor:moon",
+        "true-anchor:mercury",
+        "true-anchor:venus",
+        "true-anchor:mars",
+        "true-anchor:jupiter",
+        "true-anchor:saturn",
+        "true-anchor:uranus",
+        "true-anchor:neptune",
+        "true-anchor:pluto",
+        "true-anchor:chiron",
+        "true-anchor:true_node",
+        "true-anchor:south_node",
+        "true-anchor:mean_apog",
+        "true-anchor:selena",
+        "true-anchor:pars_fortune"
+      ],
+      "rows": [
+        0
+      ]
+    },
+    {
+      "id": "S1-control-768",
+      "pass": false,
+      "errors": [
+        "true-anchor:sun",
+        "true-anchor:mercury",
+        "true-anchor:venus",
+        "true-anchor:mars",
+        "true-anchor:jupiter",
+        "true-anchor:saturn",
+        "true-anchor:uranus",
+        "true-anchor:neptune",
+        "true-anchor:pluto",
+        "true-anchor:chiron",
+        "true-anchor:true_node",
+        "true-anchor:south_node",
+        "true-anchor:mean_apog",
+        "true-anchor:selena",
+        "true-anchor:pars_fortune"
+      ],
+      "rows": [
+        0
+      ]
+    },
+    {
+      "id": "S1-control-360",
+      "pass": false,
+      "errors": [
+        "true-anchor:sun",
+        "true-anchor:mercury",
+        "true-anchor:venus",
+        "true-anchor:mars",
+        "true-anchor:jupiter",
+        "true-anchor:saturn",
+        "true-anchor:uranus",
+        "true-anchor:neptune",
+        "true-anchor:pluto",
+        "true-anchor:chiron",
+        "true-anchor:true_node",
+        "true-anchor:south_node",
+        "true-anchor:selena",
+        "true-anchor:pars_fortune"
+      ],
+      "rows": [
+        0,
+        2,
+        5,
+        6
+      ]
+    },
+    {
+      "id": "palette-control-1440",
+      "pass": false,
+      "errors": [
+        "true-anchor:moon",
+        "true-anchor:mercury",
+        "true-anchor:venus",
+        "true-anchor:jupiter",
+        "true-anchor:saturn",
+        "true-anchor:uranus",
+        "true-anchor:pluto",
+        "true-anchor:chiron",
+        "true-anchor:true_node",
+        "true-anchor:mean_apog",
+        "true-anchor:selena",
+        "true-anchor:pars_fortune"
+      ],
+      "rows": [
+        0
+      ]
+    },
+    {
+      "id": "palette-control-768",
+      "pass": false,
+      "errors": [
+        "true-anchor:moon",
+        "true-anchor:mercury",
+        "true-anchor:venus",
+        "true-anchor:jupiter",
+        "true-anchor:saturn",
+        "true-anchor:uranus",
+        "true-anchor:pluto",
+        "true-anchor:chiron",
+        "true-anchor:true_node",
+        "true-anchor:mean_apog",
+        "true-anchor:selena"
+      ],
+      "rows": [
+        0
+      ]
+    },
+    {
+      "id": "palette-control-360",
+      "pass": false,
+      "errors": [
+        "true-anchor:moon",
+        "true-anchor:mercury",
+        "true-anchor:venus",
+        "true-anchor:jupiter",
+        "true-anchor:saturn",
+        "true-anchor:uranus",
+        "true-anchor:pluto",
+        "true-anchor:chiron",
+        "true-anchor:true_node",
+        "true-anchor:mean_apog",
+        "true-anchor:selena",
+        "true-anchor:pars_fortune"
+      ],
+      "rows": [
+        0
+      ]
+    },
+    {
+      "id": "empty-cosmogram-1440",
+      "pass": false,
+      "errors": [
+        "true-anchor:moon",
+        "true-anchor:mercury",
+        "true-anchor:venus",
+        "true-anchor:jupiter",
+        "true-anchor:saturn",
+        "true-anchor:uranus",
+        "true-anchor:pluto",
+        "true-anchor:chiron",
+        "true-anchor:true_node",
+        "true-anchor:mean_apog",
+        "true-anchor:selena",
+        "true-anchor:pars_fortune"
+      ],
+      "rows": [
+        0
+      ]
+    },
+    {
+      "id": "empty-cosmogram-768",
+      "pass": false,
+      "errors": [
+        "true-anchor:moon",
+        "true-anchor:mercury",
+        "true-anchor:venus",
+        "true-anchor:jupiter",
+        "true-anchor:saturn",
+        "true-anchor:uranus",
+        "true-anchor:pluto",
+        "true-anchor:chiron",
+        "true-anchor:true_node",
+        "true-anchor:mean_apog",
+        "true-anchor:selena"
+      ],
+      "rows": [
+        0
+      ]
+    },
+    {
+      "id": "empty-cosmogram-360",
+      "pass": false,
+      "errors": [
+        "true-anchor:moon",
+        "true-anchor:mercury",
+        "true-anchor:venus",
+        "true-anchor:jupiter",
+        "true-anchor:saturn",
+        "true-anchor:uranus",
+        "true-anchor:pluto",
+        "true-anchor:chiron",
+        "true-anchor:true_node",
+        "true-anchor:mean_apog",
+        "true-anchor:selena",
+        "true-anchor:pars_fortune"
+      ],
+      "rows": [
+        0
+      ]
+    },
+    {
+      "id": "exact-tie-1440",
+      "pass": false,
+      "errors": [
+        "true-anchor:sun",
+        "true-anchor:moon",
+        "true-anchor:mercury",
+        "true-anchor:venus",
+        "true-anchor:mars",
+        "true-anchor:jupiter",
+        "true-anchor:saturn",
+        "true-anchor:uranus",
+        "true-anchor:neptune",
+        "true-anchor:pluto",
+        "true-anchor:chiron",
+        "true-anchor:true_node",
+        "true-anchor:south_node",
+        "true-anchor:mean_apog",
+        "true-anchor:selena",
+        "true-anchor:pars_fortune"
+      ],
+      "rows": [
+        0
+      ]
+    },
+    {
+      "id": "exact-tie-768",
+      "pass": false,
+      "errors": [
+        "true-anchor:mercury",
+        "true-anchor:venus",
+        "true-anchor:mars",
+        "true-anchor:jupiter",
+        "true-anchor:saturn",
+        "true-anchor:uranus",
+        "true-anchor:neptune",
+        "true-anchor:pluto",
+        "true-anchor:chiron",
+        "true-anchor:true_node",
+        "true-anchor:south_node",
+        "true-anchor:mean_apog",
+        "true-anchor:selena",
+        "true-anchor:pars_fortune"
+      ],
+      "rows": [
+        0
+      ]
+    },
+    {
+      "id": "exact-tie-360",
+      "pass": false,
+      "errors": [
+        "true-anchor:sun",
+        "true-anchor:moon",
+        "true-anchor:mercury",
+        "true-anchor:venus",
+        "true-anchor:mars",
+        "true-anchor:jupiter",
+        "true-anchor:saturn",
+        "true-anchor:uranus",
+        "true-anchor:neptune",
+        "true-anchor:pluto",
+        "true-anchor:chiron",
+        "true-anchor:true_node",
+        "true-anchor:south_node",
+        "true-anchor:selena",
+        "true-anchor:pars_fortune"
+      ],
+      "rows": [
+        0,
+        2,
+        5,
+        6
+      ]
+    },
+    {
+      "id": "F3-max-360-dpr2",
+      "pass": false,
+      "errors": [
+        "true-anchor:sun",
+        "true-anchor:moon",
+        "true-anchor:venus",
+        "true-anchor:mars",
+        "true-anchor:jupiter",
+        "true-anchor:saturn",
+        "true-anchor:neptune",
+        "true-anchor:pluto",
+        "true-anchor:chiron",
+        "true-anchor:south_node",
+        "true-anchor:mean_apog",
+        "true-anchor:selena"
+      ],
+      "rows": [
+        0,
+        1,
+        2,
+        8
+      ]
+    },
+    {
+      "id": "F3-max-360-fallback",
+      "pass": false,
+      "errors": [
+        "true-anchor:sun",
+        "true-anchor:moon",
+        "true-anchor:venus",
+        "true-anchor:mars",
+        "true-anchor:jupiter",
+        "true-anchor:saturn",
+        "true-anchor:neptune",
+        "true-anchor:pluto",
+        "true-anchor:chiron",
+        "true-anchor:south_node",
+        "true-anchor:mean_apog",
+        "true-anchor:selena"
+      ],
+      "rows": [
+        0,
+        1,
+        2,
+        8
+      ]
+    }
+  ],
+  "controls": 3,
+  "source_fingerprints_match": true
+}

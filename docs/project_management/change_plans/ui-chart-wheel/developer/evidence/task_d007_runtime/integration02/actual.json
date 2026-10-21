@@ -1,0 +1,693 @@
+{
+  "subject": "TASK-D-007 mounted application integration",
+  "started": "2026-10-20T08:35:55.868Z",
+  "cases": [
+    {
+      "width": 1440,
+      "checks": [
+        {
+          "id": "initial-editor-collapsed",
+          "actual": true,
+          "expected": true,
+          "pass": true
+        },
+        {
+          "id": "manual-gate-unchecked",
+          "actual": false,
+          "expected": false,
+          "pass": true
+        },
+        {
+          "id": "POST-snapshot-B",
+          "actual": "1990-01-01",
+          "expected": "1990-01-01",
+          "pass": true
+        },
+        {
+          "id": "draft-C-open",
+          "actual": [
+            "2000-01-01",
+            false
+          ],
+          "expected": [
+            "2000-01-01",
+            false
+          ],
+          "pass": true
+        },
+        {
+          "id": "summary-B",
+          "actual": true,
+          "expected": true,
+          "pass": true
+        },
+        {
+          "id": "changed-B-reset",
+          "actual": [
+            "false",
+            5
+          ],
+          "expected": [
+            "false",
+            5
+          ],
+          "pass": true
+        },
+        {
+          "id": "stale-A-refused",
+          "actual": [
+            false,
+            false
+          ],
+          "expected": [
+            false,
+            false
+          ],
+          "pass": true
+        },
+        {
+          "id": "automatic-preserves",
+          "actual": [
+            "true",
+            12
+          ],
+          "expected": [
+            "true",
+            12
+          ],
+          "pass": true
+        },
+        {
+          "id": "automatic-keeps-C",
+          "actual": "2000-01-01",
+          "expected": "2000-01-01",
+          "pass": true
+        },
+        {
+          "id": "resize-keeps-selection",
+          "actual": "true",
+          "expected": "true",
+          "pass": true
+        },
+        {
+          "id": "leaf-fault-retains-new-HTML",
+          "actual": [
+            "current-C",
+            16,
+            0
+          ],
+          "expected": [
+            "current-C",
+            16,
+            0
+          ],
+          "pass": true
+        },
+        {
+          "id": "leaf-fault-local",
+          "actual": true,
+          "expected": true,
+          "pass": true
+        },
+        {
+          "id": "controller-fault-safe-read",
+          "actual": true,
+          "expected": true,
+          "pass": true
+        },
+        {
+          "id": "safe-read-positive",
+          "actual": true,
+          "expected": true,
+          "pass": true
+        },
+        {
+          "id": "S1-warning",
+          "actual": true,
+          "expected": true,
+          "pass": true
+        },
+        {
+          "id": "S1-live-focus",
+          "actual": true,
+          "expected": true,
+          "pass": true
+        },
+        {
+          "id": "S1-all-rows",
+          "actual": 47,
+          "expected": 47,
+          "pass": true
+        },
+        {
+          "id": "empty-removes-SVG",
+          "actual": 0,
+          "expected": 0,
+          "pass": true
+        },
+        {
+          "id": "empty-live-editor-focus",
+          "actual": true,
+          "expected": true,
+          "pass": true
+        },
+        {
+          "id": "one-explicit-POST",
+          "actual": 1,
+          "expected": 1,
+          "pass": true
+        },
+        {
+          "id": "no-page-errors",
+          "actual": [],
+          "expected": [],
+          "pass": true
+        }
+      ],
+      "requests": [
+        {
+          "method": "bootstrap"
+        },
+        {
+          "method": "current",
+          "identity": "eo:calc:v2:471780444330e2d9108e7ae97652bb4a47d3142ffc14cb238a587a6002df8eee"
+        },
+        {
+          "method": "build",
+          "body": {
+            "birth_date": "1990-01-01",
+            "birth_time": "14:30",
+            "place_id": "524901"
+          }
+        },
+        {
+          "method": "bootstrap"
+        },
+        {
+          "method": "current",
+          "identity": "own-B"
+        },
+        {
+          "method": "bootstrap"
+        },
+        {
+          "method": "current",
+          "identity": "current-C"
+        },
+        {
+          "method": "bootstrap"
+        },
+        {
+          "method": "current",
+          "identity": "current-D"
+        },
+        {
+          "method": "bootstrap"
+        },
+        {
+          "method": "current",
+          "identity": "current-D"
+        },
+        {
+          "method": "bootstrap"
+        },
+        {
+          "method": "current",
+          "identity": "S1-current"
+        },
+        {
+          "method": "bootstrap"
+        },
+        {
+          "method": "current"
+        }
+      ],
+      "errors": [],
+      "pass": true
+    },
+    {
+      "width": 768,
+      "checks": [
+        {
+          "id": "initial-editor-collapsed",
+          "actual": true,
+          "expected": true,
+          "pass": true
+        },
+        {
+          "id": "manual-gate-unchecked",
+          "actual": false,
+          "expected": false,
+          "pass": true
+        },
+        {
+          "id": "POST-snapshot-B",
+          "actual": "1990-01-01",
+          "expected": "1990-01-01",
+          "pass": true
+        },
+        {
+          "id": "draft-C-open",
+          "actual": [
+            "2000-01-01",
+            false
+          ],
+          "expected": [
+            "2000-01-01",
+            false
+          ],
+          "pass": true
+        },
+        {
+          "id": "summary-B",
+          "actual": true,
+          "expected": true,
+          "pass": true
+        },
+        {
+          "id": "changed-B-reset",
+          "actual": [
+            "false",
+            5
+          ],
+          "expected": [
+            "false",
+            5
+          ],
+          "pass": true
+        },
+        {
+          "id": "stale-A-refused",
+          "actual": [
+            false,
+            false
+          ],
+          "expected": [
+            false,
+            false
+          ],
+          "pass": true
+        },
+        {
+          "id": "automatic-preserves",
+          "actual": [
+            "true",
+            12
+          ],
+          "expected": [
+            "true",
+            12
+          ],
+          "pass": true
+        },
+        {
+          "id": "automatic-keeps-C",
+          "actual": "2000-01-01",
+          "expected": "2000-01-01",
+          "pass": true
+        },
+        {
+          "id": "resize-keeps-selection",
+          "actual": "true",
+          "expected": "true",
+          "pass": true
+        },
+        {
+          "id": "leaf-fault-retains-new-HTML",
+          "actual": [
+            "current-C",
+            16,
+            0
+          ],
+          "expected": [
+            "current-C",
+            16,
+            0
+          ],
+          "pass": true
+        },
+        {
+          "id": "leaf-fault-local",
+          "actual": true,
+          "expected": true,
+          "pass": true
+        },
+        {
+          "id": "controller-fault-safe-read",
+          "actual": true,
+          "expected": true,
+          "pass": true
+        },
+        {
+          "id": "safe-read-positive",
+          "actual": true,
+          "expected": true,
+          "pass": true
+        },
+        {
+          "id": "S1-warning",
+          "actual": true,
+          "expected": true,
+          "pass": true
+        },
+        {
+          "id": "S1-live-focus",
+          "actual": true,
+          "expected": true,
+          "pass": true
+        },
+        {
+          "id": "S1-all-rows",
+          "actual": 47,
+          "expected": 47,
+          "pass": true
+        },
+        {
+          "id": "empty-removes-SVG",
+          "actual": 0,
+          "expected": 0,
+          "pass": true
+        },
+        {
+          "id": "empty-live-editor-focus",
+          "actual": true,
+          "expected": true,
+          "pass": true
+        },
+        {
+          "id": "one-explicit-POST",
+          "actual": 1,
+          "expected": 1,
+          "pass": true
+        },
+        {
+          "id": "no-page-errors",
+          "actual": [],
+          "expected": [],
+          "pass": true
+        }
+      ],
+      "requests": [
+        {
+          "method": "bootstrap"
+        },
+        {
+          "method": "current",
+          "identity": "eo:calc:v2:471780444330e2d9108e7ae97652bb4a47d3142ffc14cb238a587a6002df8eee"
+        },
+        {
+          "method": "build",
+          "body": {
+            "birth_date": "1990-01-01",
+            "birth_time": "14:30",
+            "place_id": "524901"
+          }
+        },
+        {
+          "method": "bootstrap"
+        },
+        {
+          "method": "current",
+          "identity": "own-B"
+        },
+        {
+          "method": "bootstrap"
+        },
+        {
+          "method": "current",
+          "identity": "current-C"
+        },
+        {
+          "method": "bootstrap"
+        },
+        {
+          "method": "current",
+          "identity": "current-D"
+        },
+        {
+          "method": "bootstrap"
+        },
+        {
+          "method": "current",
+          "identity": "current-D"
+        },
+        {
+          "method": "bootstrap"
+        },
+        {
+          "method": "current",
+          "identity": "S1-current"
+        },
+        {
+          "method": "bootstrap"
+        },
+        {
+          "method": "current"
+        }
+      ],
+      "errors": [],
+      "pass": true
+    },
+    {
+      "width": 360,
+      "checks": [
+        {
+          "id": "initial-editor-collapsed",
+          "actual": true,
+          "expected": true,
+          "pass": true
+        },
+        {
+          "id": "manual-gate-unchecked",
+          "actual": false,
+          "expected": false,
+          "pass": true
+        },
+        {
+          "id": "POST-snapshot-B",
+          "actual": "1990-01-01",
+          "expected": "1990-01-01",
+          "pass": true
+        },
+        {
+          "id": "draft-C-open",
+          "actual": [
+            "2000-01-01",
+            false
+          ],
+          "expected": [
+            "2000-01-01",
+            false
+          ],
+          "pass": true
+        },
+        {
+          "id": "summary-B",
+          "actual": true,
+          "expected": true,
+          "pass": true
+        },
+        {
+          "id": "changed-B-reset",
+          "actual": [
+            "false",
+            5
+          ],
+          "expected": [
+            "false",
+            5
+          ],
+          "pass": true
+        },
+        {
+          "id": "stale-A-refused",
+          "actual": [
+            false,
+            false
+          ],
+          "expected": [
+            false,
+            false
+          ],
+          "pass": true
+        },
+        {
+          "id": "automatic-preserves",
+          "actual": [
+            "true",
+            12
+          ],
+          "expected": [
+            "true",
+            12
+          ],
+          "pass": true
+        },
+        {
+          "id": "automatic-keeps-C",
+          "actual": "2000-01-01",
+          "expected": "2000-01-01",
+          "pass": true
+        },
+        {
+          "id": "resize-keeps-selection",
+          "actual": "true",
+          "expected": "true",
+          "pass": true
+        },
+        {
+          "id": "leaf-fault-retains-new-HTML",
+          "actual": [
+            "current-C",
+            16,
+            0
+          ],
+          "expected": [
+            "current-C",
+            16,
+            0
+          ],
+          "pass": true
+        },
+        {
+          "id": "leaf-fault-local",
+          "actual": true,
+          "expected": true,
+          "pass": true
+        },
+        {
+          "id": "controller-fault-safe-read",
+          "actual": true,
+          "expected": true,
+          "pass": true
+        },
+        {
+          "id": "safe-read-positive",
+          "actual": true,
+          "expected": true,
+          "pass": true
+        },
+        {
+          "id": "S1-warning",
+          "actual": true,
+          "expected": true,
+          "pass": true
+        },
+        {
+          "id": "S1-live-focus",
+          "actual": true,
+          "expected": true,
+          "pass": true
+        },
+        {
+          "id": "S1-all-rows",
+          "actual": 47,
+          "expected": 47,
+          "pass": true
+        },
+        {
+          "id": "empty-removes-SVG",
+          "actual": 0,
+          "expected": 0,
+          "pass": true
+        },
+        {
+          "id": "empty-live-editor-focus",
+          "actual": true,
+          "expected": true,
+          "pass": true
+        },
+        {
+          "id": "one-explicit-POST",
+          "actual": 1,
+          "expected": 1,
+          "pass": true
+        },
+        {
+          "id": "no-page-errors",
+          "actual": [],
+          "expected": [],
+          "pass": true
+        }
+      ],
+      "requests": [
+        {
+          "method": "bootstrap"
+        },
+        {
+          "method": "current",
+          "identity": "eo:calc:v2:471780444330e2d9108e7ae97652bb4a47d3142ffc14cb238a587a6002df8eee"
+        },
+        {
+          "method": "build",
+          "body": {
+            "birth_date": "1990-01-01",
+            "birth_time": "14:30",
+            "place_id": "524901"
+          }
+        },
+        {
+          "method": "bootstrap"
+        },
+        {
+          "method": "current",
+          "identity": "own-B"
+        },
+        {
+          "method": "bootstrap"
+        },
+        {
+          "method": "current",
+          "identity": "current-C"
+        },
+        {
+          "method": "bootstrap"
+        },
+        {
+          "method": "current",
+          "identity": "current-D"
+        },
+        {
+          "method": "bootstrap"
+        },
+        {
+          "method": "current",
+          "identity": "current-D"
+        },
+        {
+          "method": "bootstrap"
+        },
+        {
+          "method": "current",
+          "identity": "S1-current"
+        },
+        {
+          "method": "bootstrap"
+        },
+        {
+          "method": "current"
+        }
+      ],
+      "errors": [],
+      "pass": true
+    }
+  ],
+  "sources": {
+    "chart_state.mjs": "4b01e6623624b3027d1b45c07f8185afded2558eca5e2e352d22c183a172e63d",
+    "facts.mjs": "da334d2229b63de82b819c2933eb4e8015a2424c415977f74e5961a884565930",
+    "form.mjs": "4f44f1289e8aa46e463e4d517161df474ea4c94b008f0616b9e01bd65b590ebd",
+    "index.html": "f184bf2bedcb34f5daf056a26b0fb86cca080f92314d4712a631fff429425b12",
+    "main.mjs": "04c93f5ce16f57aff2ab7dbf986c2ec11ca98d594aca4d6ca9982826dc73223e",
+    "places.mjs": "857593b5b335c4612823dc1d4b58e5dca628671cd3ff51e371ac8641bb820bfb",
+    "recovery.mjs": "405eae1bb36ee3387337fa1d34d5af48d7385bbfbc295ea5a9ae391d48d07414",
+    "response.mjs": "045770e93485c9f8111c6bd03bf9ce9a16e19d05f5e9624931ae63f84bfcbb8d",
+    "result_controller.mjs": "2d1ebfdd81cb8f2a4bae901a299dbd2be09d451b3425c3e9d85838dc3af9aaf7",
+    "session.mjs": "1cf9603ea9ce84d676e8d0ef235edbcc4e84fe3eb680b7624d363a97b0b26748",
+    "styles.css": "a0c53b30357b5a92d714cf34aee48f5535ad5c2592a5810372b8e500a796cf91",
+    "transport.mjs": "18b46104d161eb6ca3c094c507e2011bbba3aec91ad62622c38cae234693dc60",
+    "wheel_layout.mjs": "9d3bca7e58649cd8798ddff62640e9d82f2392d9716c6e18f782a1eebb0c01ff",
+    "wheel_svg.mjs": "3fe102c23578357c98e22b568c315e0fd9b7d0bbd102bc6df0aa356ec5875f78"
+  },
+  "browser": "155.0.8059.40",
+  "finished": "2026-10-20T08:36:08.016Z"
+}

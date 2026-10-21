@@ -1,0 +1,14 @@
+{
+  "final_source_runs": [
+    "native03",
+    "focus01",
+    "boundary01"
+  ],
+  "local_document_links": 15,
+  "sequence_delimiters": true,
+  "diagram_rendered": false,
+  "head": "e0daa0e814d3d1fd34cadb8c17d064f19c4810f5",
+  "preview_resize_319_pass": true,
+  "preview_pid": 22424,
+  "preview_source_sha256": "6cadcc1dff112f35c11120ce2612889d9298cdf749902a794f70572667a550ec"
+}

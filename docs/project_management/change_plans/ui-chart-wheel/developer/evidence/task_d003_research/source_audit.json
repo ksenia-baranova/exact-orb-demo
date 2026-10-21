@@ -1,0 +1,91 @@
+{
+  "records": [
+    {
+      "id": "G02-natal-codec-projector",
+      "round_trip_exact": true,
+      "aspects": 46,
+      "unique_directed": 46,
+      "unique_undirected": 46,
+      "nonlexical_direction": 28,
+      "angle_endpoints": 15,
+      "key_order_preserved": true
+    },
+    {
+      "id": "G02-natal-duplicate-restore",
+      "accepted_by_current_codec_projector": true,
+      "rows": 47,
+      "unique": 46,
+      "meaning": "validation-admissible storage counterexample, not demonstrated normal producer output / new API obligation"
+    },
+    {
+      "id": "G02-natal-reverse-restore",
+      "accepted": false,
+      "error": "ChartArtifactDecodeError",
+      "message": "validation"
+    },
+    {
+      "id": "G02-cosmogram-codec-projector",
+      "round_trip_exact": true,
+      "aspects": 13,
+      "unique_directed": 13,
+      "unique_undirected": 13,
+      "nonlexical_direction": 6,
+      "angle_endpoints": 0,
+      "key_order_preserved": true
+    },
+    {
+      "id": "G02-cosmogram-duplicate-restore",
+      "accepted_by_current_codec_projector": true,
+      "rows": 14,
+      "unique": 13,
+      "meaning": "validation-admissible storage counterexample, not demonstrated normal producer output / new API obligation"
+    },
+    {
+      "id": "G02-cosmogram-reverse-restore",
+      "accepted": false,
+      "error": "ChartArtifactDecodeError",
+      "message": "validation"
+    },
+    {
+      "id": "G02-default-config",
+      "points": [
+        "sun",
+        "moon",
+        "mercury",
+        "venus",
+        "mars",
+        "jupiter",
+        "saturn",
+        "uranus",
+        "neptune",
+        "pluto",
+        "chiron",
+        "true_node",
+        "mean_apog",
+        "selena",
+        "pars_fortune",
+        "vertex",
+        "asc",
+        "mc"
+      ],
+      "unique": true,
+      "proof": "finite default list; i<j enumerates pair once, closest_allowed emits at most one type; stable cosmogram refs validated unique and same order"
+    },
+    {
+      "id": "G02-finder-direction",
+      "forward": [
+        [
+          "sun",
+          "moon"
+        ]
+      ],
+      "reverse_input": [
+        [
+          "moon",
+          "sun"
+        ]
+      ],
+      "meaning": "direction follows input order; independent from result sort"
+    }
+  ]
+}

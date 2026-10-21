@@ -1,0 +1,11 @@
+<!doctype html><html lang="ru"><meta charset="utf-8"><title>D005 run04 — isolated model</title>
+<style>
+*{box-sizing:border-box}body{margin:16px;font:14px 'Segoe UI',sans-serif;color:#17263c;background:#fafbfd}h1{font-size:18px}button,input{min-width:44px;min-height:44px;font:inherit}button:focus-visible,input:focus-visible{outline:2px solid #111;outline-offset:2px}#wheel{display:block;overflow:hidden;background:white}svg text{font-family:'Segoe UI Symbol','Segoe UI',sans-serif;pointer-events:none}svg g[role=button]{outline:none;cursor:pointer}.focus{display:none;fill:none;stroke:#111;stroke-width:2;pointer-events:none}g:focus>.focus{display:block}.selected>.glyph{stroke:#162b70;stroke-width:1.5;paint-order:stroke fill}.rows{display:flex;flex-wrap:wrap;gap:4px;max-width:720px}.rows button{font-size:12px}#summary{overflow-wrap:anywhere}[hidden]{display:none!important}
+</style>
+<h1>D005 run04 — исследовательская модель, без production / API</h1>
+<div id="editor"><label>Черновик <input id="draft" value="10:30"></label></div><button id="edit">Изменить данные</button><button id="recover">Повторить проверку</button>
+<p id="summary"></p><p>Измеряются points/R/☌/подписи/angles. Полная палитра и zodiac/sign text здесь не моделируются.</p>
+<button id="graphic-start">Начало последовательности колеса</button><div id="mount"></div>
+<h2>Положения</h2><div id="points" class="rows"></div><h2>Аспекты</h2><div id="aspects" class="rows"></div><button id="reveal">Показать все</button>
+<h2>Дома</h2><div id="houses"></div><button id="reveal-houses">Показать все дома</button>
+<script type="module" src="./harness.mjs"></script></html>

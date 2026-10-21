@@ -1,0 +1,18 @@
+<!doctype html><html><meta charset="utf-8"><style>body{margin:16px;font-family:'Segoe UI'}svg{display:block;overflow:hidden}text{font-family:'Segoe UI Symbol','Segoe UI',sans-serif}</style><h1>Independent native controls</h1><div id="tests"></div><script type="module">
+const NS='http://www.w3.org/2000/svg',records=[];
+function item(id,kind,expected,attrs){const svg=document.createElementNS(NS,'svg');svg.setAttribute('width',200);svg.setAttribute('height',120);svg.style.overflow='hidden';document.getElementById('tests').append(svg);const nodes=[];for(const a of attrs){const n=document.createElementNS(NS,kind==='em'?'text':'rect');for(const[k,v]of Object.entries(a))if(k==='text')n.textContent=v;else if(k==='scale')n.setAttribute('transform',`scale(${v})`);else n.setAttribute(k,String(v));svg.append(n);nodes.push(n)}const origin=svg.getBoundingClientRect();const boxes=nodes.map(n=>{const r=n.getBoundingClientRect();return [r.x-origin.x,r.y-origin.y,r.right-origin.x,r.bottom-origin.y]});const em=kind==='em'?nodes.map(n=>parseFloat(getComputedStyle(n).fontSize)*Math.min(n.getScreenCTM().a,n.getScreenCTM().d)):null;records.push({id,kind,expected,boxes,em,clip:[0,0,200,120],computedFont:kind==='em'?parseFloat(getComputedStyle(nodes[0]).fontSize):null})}
+item('gap-equal','gap',true,[{x:0,y:0,width:16,height:16},{x:18,y:0,width:16,height:16}]);
+item('gap-below','gap',false,[{x:0,y:0,width:16,height:16},{x:17.984375,y:0,width:16,height:16}]);
+item('diagonal-positive','gap',true,[{x:0,y:0,width:16,height:16},{x:19,y:20,width:16,height:16}]);
+item('diagonal-negative','gap',false,[{x:0,y:0,width:16,height:16},{x:17,y:17,width:16,height:16}]);
+item('forbidden-clear','gap',true,[{x:0,y:0,width:20,height:20},{x:22,y:0,width:16,height:16}]);
+item('forbidden-intersection','gap',false,[{x:0,y:0,width:20,height:20},{x:19,y:5,width:16,height:16}]);
+item('svg-clip-positive','clip',true,[{x:0,y:0,width:16,height:16}]);
+item('svg-clip-negative','clip',false,[{x:-1,y:0,width:16,height:16}]);
+item('point-em-equal','em',true,[{x:20,y:30,'font-size':16,text:'☉'}]);
+item('point-em-below','em',false,[{x:20,y:30,'font-size':15.984375,text:'☉'}]);
+item('aux-em-equal','em',true,[{x:20,y:30,'font-size':12,text:'R'}]);
+item('aux-em-below','em',false,[{x:20,y:30,'font-size':11.984375,text:'R'}]);
+item('scale-reduces-effective-em','em',false,[{x:20,y:30,'font-size':16,scale:.5,text:'☉'}]);
+window.calibration={records,limits:'native measurements independent of compose; ink dimensions do not define font em; no screenshot pass inference'};window.calibrationReady=true;
+</script></html>

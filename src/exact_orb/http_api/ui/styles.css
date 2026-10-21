@@ -323,6 +323,29 @@ button:disabled {
   font-variant-numeric: tabular-nums;
 }
 
+.fact-select {
+  min-width: 44px;
+  max-width: 100%;
+  padding: 8px;
+  color: var(--text);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+
+.fact-select[aria-pressed="true"] {
+  color: var(--gold);
+  border-color: var(--gold);
+  background: rgb(240 205 115 / 10%);
+}
+
+.fact-select:disabled {
+  opacity: 1;
+  color: var(--muted);
+}
+
 @media (max-width: 620px) {
   .birth-form,
   .chart-result {
@@ -372,4 +395,68 @@ button:disabled {
     font-size: 11px;
     content: attr(data-label);
   }
+}
+
+
+/* FW-02/03: native SVG CSS pixels, no font-shrinking viewBox scale. */
+.chart-composition { display: grid; grid-template-columns: minmax(200px, 1fr) minmax(328px, 720px); gap: 24px; align-items: start; }
+.chart-summary, .wheel-panel, .wheel-image { min-width: 0; }
+.chart-summary button { margin: 8px 8px 8px 0; }
+.wheel-image { width: 100%; overflow: hidden; background: #080706; border-radius: 12px; }
+.wheel-image > svg { display: block; max-width: none; }
+.wheel-legend { color: var(--muted); font-size: 12px; }
+.wheel-measure { position: fixed; left: -100000px; top: 0; visibility: hidden; pointer-events: none; }
+.fact-select { min-height: 44px; }
+.birth-editor[hidden] { display: none; }
+@media (max-width: 700px) {
+  .chart-composition { grid-template-columns: minmax(0, 1fr); }
+  .chart-result { padding-inline: 0; }
+}
+
+/* Owner20.10: full-size composition and a deliberate aspect-only reading mode. */
+.container { width: min(100%, 1440px); }
+.chart-composition { grid-template-columns: minmax(240px, 1fr) minmax(0, 940px); }
+.wheel-image { scroll-margin-top: 24px; }
+.wheel-image:focus { outline: 2px solid var(--gold); outline-offset: 4px; }
+.aspect-toolbar { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 20px; flex-wrap: wrap; }
+.aspect-toolbar h2 { font-size: clamp(22px, 3vw, 30px); }
+.chart-result[data-aspect-focus="true"] .chart-composition { display: block; }
+.chart-result[data-aspect-focus="true"] .wheel-panel { max-width: 1100px; margin-inline: auto; }
+.chart-result[data-aspect-focus="true"] [data-fact-group="facts-aspects"] { order: -1; }
+@media (max-width: 1024px) {
+  .chart-composition { grid-template-columns: minmax(0, 1fr); }
+}
+
+.chart-result[data-aspect-focus="true"] .wheel-panel { max-width: min(1100px, calc(100svh - 200px)); }
+.aspect-toolbar { position: sticky; top: 0; z-index: 2; background: var(--card); padding-block: 8px; }
+
+/* Owner fixes004..008: respect browser zoom; size the native drawing frame to viewport. */
+main[data-page-mode="form"] { max-width: 680px; }
+main[data-page-mode="form"] .birth-form { max-width: none; }
+main[data-page-mode="chart"] { padding-block: 24px; }
+main[data-page-mode="chart"] .chart-result { margin-top: 0; padding: 20px; }
+.wheel-panel { width: 100%; max-width: min(940px, calc(100svh - 160px)); justify-self: center; }
+.chart-result[data-aspect-focus="true"] .wheel-panel { max-width: min(940px, calc(100svh - 200px)); }
+.facts-table { width: auto; max-width: 100%; table-layout: auto; }
+.facts-table th, .facts-table td { padding: 4px 12px; vertical-align: middle; }
+/* Rectangular native target: Q44 has a 1px inset, including fractional table positions. */
+.facts-table .fact-select { padding: 0; font: inherit; line-height: inherit; display: inline-flex; align-items: center; min-width: 46px; min-height: 46px; border-radius: 0; }
+.aspect-legend { margin-top: 16px; color: var(--text); font-size: 14px; }
+.aspect-legend h3 { margin: 0 0 8px; font-size: 16px; font-weight: 500; }
+.aspect-colors { display: flex; flex-wrap: wrap; gap: 8px 18px; padding: 0; margin: 0; list-style: none; }
+.aspect-legend-item, .aspect-style { display: inline-flex; gap: 8px; align-items: center; }
+.aspect-sample { width: 24px; flex-shrink: 0; border-top: 2px solid var(--aspect-color, var(--text)); }
+.conjunction-sample { border: none; color: var(--aspect-color); font-size: 20px; line-height: 1; text-align: center; }
+.aspect-styles { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-top: 12px; color: var(--muted); }
+.aspect-sample.working { border-top-style: dashed; }
+@media(max-width:1024px) {
+ .chart-summary { order: 1; }
+ .wheel-panel { order: 0; }
+}
+@media(max-width:700px) {
+ main[data-page-mode="chart"] .chart-result { padding: 12px 0; }
+ .facts-table { width: 100%; }
+ .facts-table th, .facts-table td { padding: 0; }
+ .facts-table tbody tr { padding-block: 8px; }
+ .aspect-legend { font-size: 13px; padding-inline: 8px; }
 }

@@ -1,0 +1,68 @@
+@startuml
+' ARCHIVED / SUPERSEDED: historical research, not the current UI contract.
+' Source 883b6d3a47f7113e44ede73c9ad16b40f15bbdaf:docs/project_management/change_plans/ui-chart-wheel/developer/sequence_diagrams/ui/001-result-renderer-lifecycle.puml
+' DRAFT Developer TASK-D-005. InputSHA34f187a; AssignmentSHA0046ac7; AnalystContractSHA2736e28.
+' R001-01/02/03/04; REQ-WHEEL-01/10/11; AS-WHEEL-24. Isolated proof only, not production.
+title DRAFT v2: revoke -> remove -> HTML B -> guarded dispose -> guarded draw
+autonumber
+hide footbox
+participant "Existing accept owner" as Session
+control "ResultController" as Result
+participant "Keyed HTML presenter" as HTML
+participant "Revision-gated DOM adapter" as DOM
+participant "Wheel renderer (value frames)" as Wheel
+actor User
+Session -> Result : accepted B + acceptanceSeq/cause/snapshot
+Result -> DOM : revoke old instance/revision and native capabilities
+Result -> DOM : remove imagery A
+Result -> Result : full-B index, once policy / reconcile
+Result -> HTML : publish B facts/source rows/summary, retained controls
+alt retiring instance (replacement)
+  Result -> Wheel : guarded synchronous dispose A, once
+  alt dispose throw
+    Wheel --> Result : retired failure
+    Result -> Result : diagnostic; B remains published; continue
+  end
+else same instance, new revision
+  Result -> Result : retain instance; prior revision already revoked
+end
+Result -> Wheel : update readonly B + fresh RevisionSink
+note over DOM, Wheel
+Leaf receives no live host/node or mutable currentHost.
+Only closed, copied value frames and readonly numeric metrics.
+Same-origin contract discipline, not a security sandbox.
+end note
+Wheel -> DOM : publish(frame, captured revision token)
+DOM -> DOM : validate/copy frame; guard immediately before synchronous keyed patch
+alt current token
+  DOM -> DOM : patch B, retain live keyed controls; no await in write transaction
+  DOM --> Wheel : committed
+else revoked token, even before old promise settles
+  DOM --> Wheel : revoked, no DOM write
+end
+alt current factory/update sync throw or async rejection
+  Wheel --> Result : leaf failure, current token
+  Result -> DOM : clear only wheel imagery
+  Result -> HTML : visible local SVG warning; HTML B stays
+  note over Session, Result
+  Expected SVG leaf failure does not set requiresReconciliation or issue HTTP.
+  Unexpected HTML/controller failure uses existing safe-read/fallback.
+  end note
+else stale async rejection
+  Wheel --> Result : retired token + failure
+  Result -> Result : diagnostic only; do not replace B warning/state
+else current update completed with valid frame
+  Wheel --> Result : completion
+  Result -> Result : rendered current revision
+end
+User -> DOM : native canonical activation on live node
+DOM -> DOM : current token + connected capability + canonical key
+DOM -> Result : canonical intent
+Result -> HTML : selection uses accepted B, keyed patch
+Result -> DOM : selection frame, retain active point/row
+note over Result, DOM
+Planet activation does not focus()/scroll.
+Frame patch/resize does not remount focused control.
+Bounded run04 proves principle; full mounted integration NOT RUN.
+end note
+@enduml

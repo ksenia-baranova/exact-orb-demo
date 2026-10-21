@@ -1,0 +1,8 @@
+{
+  "author": "Codex / Developer",
+  "stopped_utc": "2026-10-19T17:23:49.4531102+00:00",
+  "candidate": "run07-ports",
+  "reason": "29/29 composition + C0/order/column row audit/leader clipping/no shared centerline segments; 28/28 boundary; 13/13 native calibrations; 7/7 unique analytic controls",
+  "earlier_stop": "stop.json preserved; addressed post-audit branch finding under variant06/07 inside original timebox",
+  "next": "Documentation and preservation audit only. No further placement/browser iterations."
+}

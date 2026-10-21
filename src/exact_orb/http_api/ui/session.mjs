@@ -1,5 +1,5 @@
 // REQ-UI-01/03/08/09: текущая карта и изменяемый черновик имеют разные источники.
-import { planRecovery, recoveredStatus, recoveryMessage } from "./recovery.mjs";
+import { planRecovery, recoveredStatus, recoveryMessage, intentMatchesBirth } from "./recovery.mjs";
 import { validVersion, validCurrent, validBootstrap, validBuild, validError } from "./response.mjs";
 const sessionErrors = new Set(["SESSION_REQUIRED", "SESSION_EXPIRED", "SESSION_NOT_FOUND"]);
 const fields = { "birth.date": "date", "birth.time": "time", "birth.place": "place" };
@@ -22,11 +22,14 @@ export function issueMessage(issue) {
 
 export function createSessionCoordinator({ apiClient, form, onChange, onRenderError, clock = browserClock } = {}) {
   let state = { phase: "idle", sessionReady: false, view: null, source: null, submittedIntent: null,
-    resultSummary: null, sessionRenewed: false,
+    resultSummary: null, sessionRenewed: false, acceptance: null, attemptId: null,
     fieldIssues: {}, error: null, requiresReconciliation: false, requestId: null, recovery: null };
   let disposed = false, controller = null, retryAt = 0, retryTimer = null, pendingForeground = false;
   let submittedPlaceName = "";
   let sessionRefreshPending = false;
+  let acceptanceSeq = 0, attemptSeq = 0, activeAttempt = null, confirmedIntent = null;
+  const tuple = birth => birth ? { birth_date: birth.birth_date, birth_time: birth.birth_time, place_id: birth.place.place_id } : null;
+  const sameIntent = (a, b) => Boolean(a && b && a.birth_date === b.birth_date && a.birth_time === b.birth_time && a.place_id === b.place_id);
   const busy = () => state.phase !== "idle";
   function snapshot() {
     const copy = structuredClone(state);
@@ -44,8 +47,11 @@ export function createSessionCoordinator({ apiClient, form, onChange, onRenderEr
   function publish() {
     if (disposed || !onChange) return true;
     try { onChange(snapshot()); return true; }
-    catch {
-      // Ошибка renderer имеет видимый исход; восстановление только безопасным чтением.
+    catch { return presentationFailed(); }
+  }
+  function presentationFailed() {
+      if (disposed) return false;
+      // Ошибка controller/HTML имеет видимый исход; восстановление только безопасным чтением.
       state.error = { message: "Не удалось показать ответ сервера. Введённые данные сохранены. Повторите проверку карты.",
         userMessage: null, code: null, detailCode: null, status: null, retryable: false,
         generalIssues: [], requestId: state.requestId, retryAfter: null };
@@ -53,7 +59,6 @@ export function createSessionCoordinator({ apiClient, form, onChange, onRenderEr
       if (state.recovery) state.recovery.status = "check_failed";
       if (onRenderError) onRenderError(snapshot());
       return false;
-    }
   }
   function phase(value) { state.phase = value; return publish(); }
   function cooldown(outcome) {
@@ -92,13 +97,32 @@ export function createSessionCoordinator({ apiClient, form, onChange, onRenderEr
     cooldown(outcome);
     return false;
   }
-  function accept(outcome, source) {
+  function accept(outcome, source, cause = "automatic_current") {
+    const next = outcome.body;
+    const matchedGoal = source === "current" && activeAttempt && state.recovery
+      && recoveredStatus(state.recovery, next) === "matched"
+      && sameIntent(activeAttempt.intent, state.recovery.intent);
+    // Owner A006: a fresh GET may confirm a live already_applied target, without
+    // claiming that this POST produced the chart. Stale/different/failed reads keep it pending.
+    const alreadyConfirmed = source === "current" && activeAttempt?.confirmation === "already_applied"
+      && next.status === "chart_ready" && !next.chart_stale && intentMatchesBirth(activeAttempt.intent, next.birth);
+    const goal = source === "build" || matchedGoal || alreadyConfirmed;
+    const attempt = goal ? activeAttempt : null;
+    const actualCause = goal ? source === "build" ? "own_committed"
+      : alreadyConfirmed ? "already_applied_target_confirmed" : "matched_recovery"
+      : acceptanceSeq === 0 && cause === "automatic_current" ? "initial_current" : cause;
+    state.acceptance = Object.freeze({ seq: ++acceptanceSeq, cause: actualCause,
+      attemptId: attempt?.id ?? null, reset: Boolean(attempt?.changed),
+      submitted: attempt ? Object.freeze({ ...attempt.intent }) : null,
+      allowCollapse: Boolean(goal || actualCause === "initial_current" && next.status === "chart_ready") });
+    if (goal) activeAttempt = null; // Once per live target, never reconstructed from matched status.
+    confirmedIntent = source === "build" ? { ...state.submittedIntent } : tuple(next.birth);
     state.view = structuredClone(outcome.body);
     state.source = source;
     // Это экранная сводка конкретной committed карты, а не выдуманный BirthViewDTO.
     state.resultSummary = source === "build" ? Object.freeze({ chartIdentity: state.view.chart.chart_identity,
       birthDate: state.submittedIntent.birth_date, birthTime: state.submittedIntent.birth_time,
-      placeName: submittedPlaceName }) : null;
+      placeName: submittedPlaceName, placeId: state.submittedIntent.place_id }) : null;
     if (source === "current" && sessionRefreshPending) {
       state.sessionRenewed = true;
       sessionRefreshPending = false;
@@ -126,25 +150,25 @@ export function createSessionCoordinator({ apiClient, form, onChange, onRenderEr
     return outcome;
   }
   const missingSession = (outcome) => outcome.kind === "http" && outcome.status === 409 && sessionErrors.has(outcome.body?.code);
-  async function read(allowRecovery) {
+  async function read(allowRecovery, cause = "automatic_current") {
     if (!phase("reading")) return false;
     const outcome = await call("current");
     if (disposed) return false;
-    if (missingSession(outcome) && allowRecovery) return bootstrapAndRead(false);
+    if (missingSession(outcome) && allowRecovery) return bootstrapAndRead(false, cause);
     if (outcome.kind === "http" && outcome.status === 200 && validCurrent(outcome.body)) {
       state.sessionReady = true;
-      return accept(outcome, "current");
+      return accept(outcome, "current", cause);
     }
     state.sessionReady = false;
     return error(outcome, true);
   }
-  async function bootstrapAndRead(allowRecovery) {
+  async function bootstrapAndRead(allowRecovery, cause = "automatic_current") {
     state.sessionReady = false;
     if (!phase("bootstrapping")) return false;
     const outcome = await call("bootstrap");
     if (disposed) return false;
     if (outcome.kind !== "http" || outcome.status !== 200 || !validBootstrap(outcome.body)) return error(outcome, true);
-    return read(allowRecovery);
+    return read(allowRecovery, cause);
   }
   function begin() {
     controller = new AbortController();
@@ -190,7 +214,7 @@ export function createSessionCoordinator({ apiClient, form, onChange, onRenderEr
     return readSession(true);
   }
   return Object.freeze({
-    snapshot,
+    snapshot, presentationFailed,
     open: () => readSession(), recheck, foreground,
     async submit() {
       if (!snapshot().canSubmit) return false;
@@ -201,6 +225,8 @@ export function createSessionCoordinator({ apiClient, form, onChange, onRenderEr
       state.sessionRenewed = false;
       state.submittedIntent = Object.freeze({ ...prepared.intent });
       submittedPlaceName = form.snapshot().place.display_name;
+      state.attemptId = ++attemptSeq;
+      activeAttempt = { id: attemptSeq, intent: state.submittedIntent, changed: !sameIntent(state.submittedIntent, confirmedIntent) };
       let accepted = false, rendered;
       try {
         if (phase("building")) {
@@ -208,14 +234,21 @@ export function createSessionCoordinator({ apiClient, form, onChange, onRenderEr
           if (disposed) return false;
           if (missingSession(outcome)) {
             sessionRefreshPending = true;
-            accepted = await bootstrapAndRead(false);
+            activeAttempt = null;
+            accepted = await bootstrapAndRead(false, "session_refresh_current");
           }
-          else if (outcome.kind === "http" && ((outcome.status === 200 && outcome.body?.status === "already_applied" && validVersion(outcome.body))
-            || (outcome.status === 409 && outcome.body?.code === "RESULT_SUPERSEDED"))) accepted = await read(true);
+          else if (outcome.kind === "http" && outcome.status === 200 && outcome.body?.status === "already_applied" && validVersion(outcome.body)) {
+            activeAttempt.confirmation = "already_applied";
+            accepted = await read(true, "already_applied_current");
+          } else if (outcome.kind === "http" && outcome.status === 409 && outcome.body?.code === "RESULT_SUPERSEDED") {
+            activeAttempt = null;
+            accepted = await read(true, "superseded_current");
+          }
           else if (outcome.kind === "http" && outcome.status === 200 && validBuild(outcome.body)) {
             accepted = accept({ ...outcome, body: { ...outcome.body, birth: null, chart_stale: false } }, "build");
           } else {
             state.recovery = planRecovery(outcome, state.submittedIntent, state.view, submittedPlaceName);
+            if (!state.recovery) activeAttempt = null;
             state.requiresReconciliation = state.recovery !== null;
             error(outcome);
             if (state.recovery && !restartRequired() && clock.now() >= retryAt) await checkRecovery();

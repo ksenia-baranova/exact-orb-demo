@@ -1,0 +1,7 @@
+{
+  "candidate": "v5 paint order only; geometry v3 and boundary v4 retained",
+  "registered_utc": "2026-10-19T17:10:43.063511+00:00",
+  "cause": "Visual review found true-anchor dot drawn over its own unmoved glyph. In particular a hollow circle can be mistaken for a dotted Sun symbol.",
+  "fix": "Paint all true marks below foreground labels. Own white label knockout covers the mark only when label remains at its default anchor; moved labels leave marks visible. All foreign anchors retain gap2. No numeric criteria or source glyph mapping changes.",
+  "check": "Repeat measured matrix and boundary, then stop. All earlier records/screenshots remain immutable."
+}

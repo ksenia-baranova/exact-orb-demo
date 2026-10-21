@@ -1,0 +1,24 @@
+{
+  "bug_id": "DEV-FIND-WHEEL-010",
+  "debt_id": "DEBT-UI-003",
+  "author": "Codex / Developer",
+  "reported_by": "Owner",
+  "date": "2026-10-20",
+  "owner_instruction": "заведи техдолг баг - увелисить значки планет",
+  "input_sha": "0da99518ada67603b08ab4220d337e3a5e3aae60",
+  "branch": "dev/ui-chart-wheel",
+  "working_tree": "Existing local first-five table changes and previous date debt preserved",
+  "observation": "Owner requests larger planet icons on wheel; no new screenshot, browser or viewport supplied",
+  "configured_sizes": {
+    "main_text_glyph": 16,
+    "retrograde_R": 12,
+    "vectors": "native shapes; final painted bbox is not equal to font-size by definition"
+  },
+  "source_hashes_sha256_raw": {
+    "wheel_layout.mjs": "1fd3396dff20c6e97d077373e877fd3705d7e838b77cbe2d1592b422f8efff0b",
+    "wheel_svg.mjs": "9019f48e338899d53ed414ffe989f75ed59c682a6a789f537869eb71980f4678"
+  },
+  "browser_reproduction": "NOT_RUN",
+  "production_change": "NONE",
+  "registry_publication": "LOCAL_ONLY; Manager main publication/registry SHA pending"
+}

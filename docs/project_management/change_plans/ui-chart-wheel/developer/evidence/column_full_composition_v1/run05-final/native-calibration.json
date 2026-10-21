@@ -1,0 +1,324 @@
+{
+  "records": [
+    {
+      "id": "gap-equal",
+      "kind": "gap",
+      "expected": true,
+      "boxes": [
+        [
+          0,
+          0,
+          16,
+          16
+        ],
+        [
+          18,
+          0,
+          34,
+          16
+        ]
+      ],
+      "em": null,
+      "clip": [
+        0,
+        0,
+        200,
+        120
+      ],
+      "computedFont": null
+    },
+    {
+      "id": "gap-below",
+      "kind": "gap",
+      "expected": false,
+      "boxes": [
+        [
+          0,
+          0,
+          16,
+          16
+        ],
+        [
+          17.984375,
+          0,
+          33.984375,
+          16
+        ]
+      ],
+      "em": null,
+      "clip": [
+        0,
+        0,
+        200,
+        120
+      ],
+      "computedFont": null
+    },
+    {
+      "id": "diagonal-positive",
+      "kind": "gap",
+      "expected": true,
+      "boxes": [
+        [
+          0,
+          0,
+          16,
+          16
+        ],
+        [
+          19,
+          20,
+          35,
+          36
+        ]
+      ],
+      "em": null,
+      "clip": [
+        0,
+        0,
+        200,
+        120
+      ],
+      "computedFont": null
+    },
+    {
+      "id": "diagonal-negative",
+      "kind": "gap",
+      "expected": false,
+      "boxes": [
+        [
+          0,
+          0,
+          16,
+          16
+        ],
+        [
+          17,
+          17,
+          33,
+          33
+        ]
+      ],
+      "em": null,
+      "clip": [
+        0,
+        0,
+        200,
+        120
+      ],
+      "computedFont": null
+    },
+    {
+      "id": "forbidden-clear",
+      "kind": "gap",
+      "expected": true,
+      "boxes": [
+        [
+          0,
+          0,
+          20,
+          20
+        ],
+        [
+          22,
+          0,
+          38,
+          16
+        ]
+      ],
+      "em": null,
+      "clip": [
+        0,
+        0,
+        200,
+        120
+      ],
+      "computedFont": null
+    },
+    {
+      "id": "forbidden-intersection",
+      "kind": "gap",
+      "expected": false,
+      "boxes": [
+        [
+          0,
+          0,
+          20,
+          20
+        ],
+        [
+          19,
+          5,
+          35,
+          21
+        ]
+      ],
+      "em": null,
+      "clip": [
+        0,
+        0,
+        200,
+        120
+      ],
+      "computedFont": null
+    },
+    {
+      "id": "svg-clip-positive",
+      "kind": "clip",
+      "expected": true,
+      "boxes": [
+        [
+          0,
+          0,
+          16,
+          16
+        ]
+      ],
+      "em": null,
+      "clip": [
+        0,
+        0,
+        200,
+        120
+      ],
+      "computedFont": null
+    },
+    {
+      "id": "svg-clip-negative",
+      "kind": "clip",
+      "expected": false,
+      "boxes": [
+        [
+          -1,
+          0,
+          15,
+          16
+        ]
+      ],
+      "em": null,
+      "clip": [
+        0,
+        0,
+        200,
+        120
+      ],
+      "computedFont": null
+    },
+    {
+      "id": "point-em-equal",
+      "kind": "em",
+      "expected": true,
+      "boxes": [
+        [
+          20,
+          13,
+          33.484375,
+          34
+        ]
+      ],
+      "em": [
+        16
+      ],
+      "clip": [
+        0,
+        0,
+        200,
+        120
+      ],
+      "computedFont": 16
+    },
+    {
+      "id": "point-em-below",
+      "kind": "em",
+      "expected": false,
+      "boxes": [
+        [
+          20,
+          13,
+          33.46875,
+          34
+        ]
+      ],
+      "em": [
+        15.9844
+      ],
+      "clip": [
+        0,
+        0,
+        200,
+        120
+      ],
+      "computedFont": 15.9844
+    },
+    {
+      "id": "aux-em-equal",
+      "kind": "em",
+      "expected": true,
+      "boxes": [
+        [
+          20,
+          17,
+          28,
+          33
+        ]
+      ],
+      "em": [
+        12
+      ],
+      "clip": [
+        0,
+        0,
+        200,
+        120
+      ],
+      "computedFont": 12
+    },
+    {
+      "id": "aux-em-below",
+      "kind": "em",
+      "expected": false,
+      "boxes": [
+        [
+          20,
+          17,
+          28,
+          33
+        ]
+      ],
+      "em": [
+        11.9844
+      ],
+      "clip": [
+        0,
+        0,
+        200,
+        120
+      ],
+      "computedFont": 11.9844
+    },
+    {
+      "id": "scale-reduces-effective-em",
+      "kind": "em",
+      "expected": false,
+      "boxes": [
+        [
+          10,
+          6,
+          17,
+          17
+        ]
+      ],
+      "em": [
+        8
+      ],
+      "clip": [
+        0,
+        0,
+        200,
+        120
+      ],
+      "computedFont": 16
+    }
+  ],
+  "limits": "native measurements independent of compose; ink dimensions do not define font em; no screenshot pass inference"
+}

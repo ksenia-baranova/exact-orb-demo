@@ -1,0 +1,55 @@
+{
+  "id": "cosmogram-360",
+  "width": 360,
+  "fixture": "cosmogram",
+  "checks": [
+    {
+      "name": "numbered-houses",
+      "actual": [],
+      "expected": [],
+      "pass": true
+    },
+    {
+      "name": "published-cusps",
+      "actual": 0,
+      "expected": 0,
+      "pass": true
+    },
+    {
+      "name": "ruler",
+      "actual": 360,
+      "expected": 360,
+      "pass": true
+    },
+    {
+      "name": "no-page-overflow",
+      "actual": false,
+      "expected": false,
+      "pass": true
+    },
+    {
+      "name": "collapsed-form-does-not-duplicate-summary",
+      "actual": true,
+      "expected": true,
+      "pass": true
+    }
+  ],
+  "requests": [
+    "bootstrap",
+    "current"
+  ],
+  "errors": [],
+  "normal": {
+    "width": 318,
+    "height": 318,
+    "houseNumbers": [],
+    "cuspCount": 0,
+    "ticks": 360,
+    "aspectRatio": 0.3312037806357107,
+    "overflow": false,
+    "zoom": 1,
+    "formHidden": true
+  },
+  "pass": false,
+  "error": "AssertionError [ERR_ASSERTION]: positive source aspect fixture"
+}

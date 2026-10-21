@@ -1,0 +1,574 @@
+{
+  "author": "Codex / Developer",
+  "purpose": "Owner visual revision, no full geometry feasibility claim",
+  "browser": "155.0.8059.40",
+  "viewport": [
+    360,
+    900
+  ],
+  "DPR": 2,
+  "htmlSHA256": "702bda2752af3c9b42b7675a827425dd5a9c64ee891b20a7ec40bb94c4a830e5",
+  "dataSHA256": "1d2289649b13a0620a0140897deb5e469cb701e4a929ea497a36932cc4a95dc5",
+  "records": [
+    {
+      "fixture": "F1",
+      "variant": "inside",
+      "state": {
+        "variant": "inside",
+        "fixture": "F1",
+        "sourceUnchanged": true,
+        "points": [
+          "sun",
+          "moon",
+          "mercury",
+          "venus",
+          "mars",
+          "jupiter",
+          "saturn",
+          "uranus",
+          "neptune",
+          "pluto",
+          "chiron",
+          "true_node",
+          "south_node",
+          "mean_apog",
+          "selena",
+          "pars_fortune"
+        ],
+        "expectedPoints": [
+          "sun",
+          "moon",
+          "mercury",
+          "venus",
+          "mars",
+          "jupiter",
+          "saturn",
+          "uranus",
+          "neptune",
+          "pluto",
+          "chiron",
+          "true_node",
+          "south_node",
+          "mean_apog",
+          "selena",
+          "pars_fortune"
+        ],
+        "R": 5,
+        "expectedR": 5,
+        "conjunctions": 3,
+        "expectedConjunctions": 3,
+        "removedText": false,
+        "svgTargets": 0,
+        "overflow": false,
+        "externalPositions": [],
+        "nameBounds": [],
+        "textSizes": [
+          16,
+          16,
+          16,
+          16,
+          16,
+          16,
+          12,
+          16,
+          16,
+          16,
+          12,
+          16,
+          16,
+          16,
+          12,
+          16,
+          12,
+          16,
+          16,
+          12,
+          16,
+          16,
+          16,
+          16,
+          12,
+          12,
+          12,
+          12,
+          12
+        ]
+      },
+      "screenshot": "F1-inside.png",
+      "sha256": "d38f6d60b2fa0b04437a5f34b08c6b25ff2924288692d35a0eff7e513f8b75d0"
+    },
+    {
+      "fixture": "F3-max",
+      "variant": "inside",
+      "state": {
+        "variant": "inside",
+        "fixture": "F3-max",
+        "sourceUnchanged": true,
+        "points": [
+          "sun",
+          "moon",
+          "mercury",
+          "venus",
+          "mars",
+          "jupiter",
+          "saturn",
+          "uranus",
+          "neptune",
+          "pluto",
+          "chiron",
+          "true_node",
+          "south_node",
+          "mean_apog",
+          "selena",
+          "pars_fortune"
+        ],
+        "expectedPoints": [
+          "sun",
+          "moon",
+          "mercury",
+          "venus",
+          "mars",
+          "jupiter",
+          "saturn",
+          "uranus",
+          "neptune",
+          "pluto",
+          "chiron",
+          "true_node",
+          "south_node",
+          "mean_apog",
+          "selena",
+          "pars_fortune"
+        ],
+        "R": 8,
+        "expectedR": 8,
+        "conjunctions": 4,
+        "expectedConjunctions": 4,
+        "removedText": false,
+        "svgTargets": 0,
+        "overflow": false,
+        "externalPositions": [],
+        "nameBounds": [],
+        "textSizes": [
+          16,
+          12,
+          16,
+          16,
+          12,
+          16,
+          16,
+          12,
+          16,
+          16,
+          12,
+          16,
+          16,
+          12,
+          16,
+          16,
+          12,
+          16,
+          16,
+          12,
+          16,
+          16,
+          12,
+          16,
+          16,
+          16,
+          16,
+          16,
+          12,
+          12,
+          12,
+          12,
+          12
+        ]
+      },
+      "screenshot": "F3-max-inside.png",
+      "sha256": "516a38cdc52b03f951ba1eca839211ca6f5c3df5deb8bc85f36893ec320be156"
+    },
+    {
+      "fixture": "F3-max",
+      "variant": "callouts",
+      "state": {
+        "variant": "callouts",
+        "fixture": "F3-max",
+        "sourceUnchanged": true,
+        "points": [
+          "sun",
+          "moon",
+          "mercury",
+          "venus",
+          "mars",
+          "jupiter",
+          "saturn",
+          "uranus",
+          "neptune",
+          "pluto",
+          "chiron",
+          "true_node",
+          "south_node",
+          "mean_apog",
+          "selena",
+          "pars_fortune"
+        ],
+        "expectedPoints": [
+          "sun",
+          "moon",
+          "mercury",
+          "venus",
+          "mars",
+          "jupiter",
+          "saturn",
+          "uranus",
+          "neptune",
+          "pluto",
+          "chiron",
+          "true_node",
+          "south_node",
+          "mean_apog",
+          "selena",
+          "pars_fortune"
+        ],
+        "R": 8,
+        "expectedR": 8,
+        "conjunctions": 4,
+        "expectedConjunctions": 4,
+        "removedText": false,
+        "svgTargets": 0,
+        "overflow": false,
+        "externalPositions": [
+          {
+            "key": "sun",
+            "row": 40,
+            "anchor": [
+              144.00986940146714,
+              220.74341461505438
+            ],
+            "label": [
+              10,
+              40
+            ]
+          },
+          {
+            "key": "moon",
+            "row": 64,
+            "anchor": [
+              144.00597042716385,
+              221.02263993318024
+            ],
+            "label": [
+              10,
+              64
+            ]
+          },
+          {
+            "key": "mercury",
+            "row": 88,
+            "anchor": [
+              144.0030461548663,
+              221.3018771601301
+            ],
+            "label": [
+              10,
+              88
+            ]
+          },
+          {
+            "key": "venus",
+            "row": 112,
+            "anchor": [
+              144.00109662020586,
+              221.5811228934865
+            ],
+            "label": [
+              10,
+              112
+            ]
+          },
+          {
+            "key": "mars",
+            "row": 136,
+            "anchor": [
+              144.000121846937,
+              221.86037373072818
+            ],
+            "label": [
+              10,
+              136
+            ]
+          },
+          {
+            "key": "jupiter",
+            "row": 160,
+            "anchor": [
+              144.000121846937,
+              222.1396262692719
+            ],
+            "label": [
+              10,
+              160
+            ]
+          },
+          {
+            "key": "saturn",
+            "row": 184,
+            "anchor": [
+              144.00109662020586,
+              222.41887710651358
+            ],
+            "label": [
+              10,
+              184
+            ]
+          },
+          {
+            "key": "uranus",
+            "row": 208,
+            "anchor": [
+              144.0030461548663,
+              222.6981228398699
+            ],
+            "label": [
+              10,
+              208
+            ]
+          },
+          {
+            "key": "neptune",
+            "row": 232,
+            "anchor": [
+              144.00597042716385,
+              222.97736006681987
+            ],
+            "label": [
+              10,
+              232
+            ]
+          },
+          {
+            "key": "pluto",
+            "row": 256,
+            "anchor": [
+              144.00986940146714,
+              223.25658538494574
+            ],
+            "label": [
+              10,
+              256
+            ]
+          },
+          {
+            "key": "chiron",
+            "row": 280,
+            "anchor": [
+              144.01474303026845,
+              223.53579539197523
+            ],
+            "label": [
+              10,
+              280
+            ]
+          },
+          {
+            "key": "true_node",
+            "row": 304,
+            "anchor": [
+              144.02059125418413,
+              223.81498668582256
+            ],
+            "label": [
+              10,
+              304
+            ]
+          },
+          {
+            "key": "south_node",
+            "row": 328,
+            "anchor": [
+              144.02741400195544,
+              224.0941558646299
+            ],
+            "label": [
+              10,
+              328
+            ]
+          },
+          {
+            "key": "mean_apog",
+            "row": 352,
+            "anchor": [
+              144.03521119044927,
+              224.37329952680895
+            ],
+            "label": [
+              10,
+              352
+            ]
+          },
+          {
+            "key": "selena",
+            "row": 376,
+            "anchor": [
+              144.04398272465943,
+              224.65241427108225
+            ],
+            "label": [
+              10,
+              376
+            ]
+          },
+          {
+            "key": "pars_fortune",
+            "row": 400,
+            "anchor": [
+              144.05372849770748,
+              224.93149669652462
+            ],
+            "label": [
+              10,
+              400
+            ]
+          }
+        ],
+        "nameBounds": [
+          {
+            "id": "sun",
+            "x": 31,
+            "width": 41.91015625
+          },
+          {
+            "id": "moon",
+            "x": 30,
+            "width": 27.921875
+          },
+          {
+            "id": "mercury",
+            "x": 31,
+            "width": 56.904296875
+          },
+          {
+            "id": "venus",
+            "x": 31,
+            "width": 39.515625
+          },
+          {
+            "id": "mars",
+            "x": 31,
+            "width": 29.935546875
+          },
+          {
+            "id": "jupiter",
+            "x": 31,
+            "width": 44.375
+          },
+          {
+            "id": "saturn",
+            "x": 31,
+            "width": 38.318359375
+          },
+          {
+            "id": "uranus",
+            "x": 31,
+            "width": 26.96875
+          },
+          {
+            "id": "neptune",
+            "x": 31,
+            "width": 39.44921875
+          },
+          {
+            "id": "pluto",
+            "x": 31,
+            "width": 39.63671875
+          },
+          {
+            "id": "chiron",
+            "x": 30,
+            "width": 36.13671875
+          },
+          {
+            "id": "true_node",
+            "x": 31,
+            "width": 49.71875
+          },
+          {
+            "id": "south_node",
+            "x": 31,
+            "width": 57.75
+          },
+          {
+            "id": "mean_apog",
+            "x": 30,
+            "width": 35.341796875
+          },
+          {
+            "id": "selena",
+            "x": 31,
+            "width": 39.34375
+          },
+          {
+            "id": "pars_fortune",
+            "x": 31,
+            "width": 42.263671875
+          }
+        ],
+        "textSizes": [
+          16,
+          12,
+          12,
+          16,
+          12,
+          16,
+          12,
+          12,
+          16,
+          12,
+          16,
+          12,
+          12,
+          16,
+          12,
+          16,
+          12,
+          12,
+          16,
+          12,
+          16,
+          12,
+          12,
+          16,
+          12,
+          16,
+          12,
+          12,
+          16,
+          12,
+          16,
+          12,
+          12,
+          16,
+          12,
+          16,
+          12,
+          12,
+          16,
+          12,
+          16,
+          16,
+          16,
+          16,
+          12,
+          12,
+          12,
+          12,
+          12
+        ]
+      },
+      "screenshot": "F3-max-callouts.png",
+      "sha256": "55c84e1215b5160d239f073d81a1f564c86f36bc8b0025c9fa085ca4b7288e74"
+    }
+  ],
+  "checks": "content/DTO/IDs/R/conjunctions/removed words/no SVG targets/no whole-page overflow; not annulus/gap/minimality/production acceptance"
+}

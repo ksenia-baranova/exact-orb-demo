@@ -1,0 +1,2 @@
+# Preserve captured stdout bytes; CRLF is an original process line ending.
+*.log -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol

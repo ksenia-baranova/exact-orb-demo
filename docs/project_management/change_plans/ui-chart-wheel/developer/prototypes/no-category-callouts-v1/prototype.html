@@ -1,0 +1,65 @@
+<!doctype html><html lang="ru"><meta charset="utf-8"><title>Колесо — варианты подписей</title>
+<style>
+*{box-sizing:border-box}body{margin:0;padding:16px;background:#edf2f6;color:#19354a;font:14px/20px 'Segoe UI',sans-serif}.prototype{width:328px;background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 2px 12px #19354a0d}header{padding:16px 16px 8px}h1{font-size:17px;line-height:23px;margin:0 0 5px;font-weight:600}.subtitle{font-size:12px;line-height:18px;color:#667b8b}svg{display:block;overflow:hidden}svg text{font-family:'Segoe UI Symbol','Segoe UI',sans-serif;fill:#193e55}.ring{fill:none;stroke:#dce6ed;stroke-width:.8}.cusp{stroke:#e7edf2;stroke-width:.7}.aspect{stroke:#408b78;stroke-width:1;fill:none;opacity:.65}.leader{fill:none;stroke:#829bad;stroke-width:.65}.anchor{fill:#476b83}.footer{padding:10px 16px 14px;color:#647b8b;font-size:12px;line-height:18px;border-top:1px solid #edf2f6}
+</style>
+<main class="prototype"><header><h1 id="heading"></h1><div id="subtitle" class="subtitle"></div></header><div id="mount"></div><div id="footer" class="footer"></div></main>
+<script>
+const ns='http://www.w3.org/2000/svg',query=new URLSearchParams(location.search),variant=query.get('variant')||'inside',fixture=query.get('fixture')||'F3-max';
+const n=(tag,attrs={},text)=>{const e=document.createElementNS(ns,tag);for(const[k,v]of Object.entries(attrs))e.setAttribute(k,String(v));if(text!==undefined)e.textContent=text;return e};
+let svg,data,source,externalPositions=[];
+const names={sun:'Солнце',moon:'Луна',mercury:'Меркурий',venus:'Венера',mars:'Марс',jupiter:'Юпитер',saturn:'Сатурн',uranus:'Уран',neptune:'Нептун',pluto:'Плутон',chiron:'Хирон',true_node:'Сев. узел',south_node:'Южн. узел',mean_apog:'Лилит',selena:'Селена',pars_fortune:'Парс Ф.'};
+function decoration(cx,cy,D){
+ const xy=(lng,r)=>{const t=(lng-data.origin)*Math.PI/180;return [cx-r*Math.cos(t),cy+r*Math.sin(t)]};
+ for(const ratio of [.49,.40,.29,.22,.11])svg.append(n('circle',{class:'ring',cx,cy,r:D*ratio}));
+ for(const h of data.chart.houses??[]){const a=xy(h.cusp_longitude,D*.27),b=xy(h.cusp_longitude,D*.49);svg.append(n('line',{class:'cusp',x1:a[0],y1:a[1],x2:b[0],y2:b[1]}))}
+ const ep=new Map([...data.chart.points.map(p=>[p.id,p.longitude]),...Object.entries(data.chart.angles??{}).map(([id,p])=>[id,p.longitude])]);
+ for(const a of data.chart.aspects.filter(a=>a.category!=='background'&&a.type!=='conjunction')){const p=xy(ep.get(a.from),D*.27),q=xy(ep.get(a.to),D*.27);svg.append(n('line',{class:'aspect',x1:p[0],y1:p[1],x2:q[0],y2:q[1],...(a.category==='working'?{'stroke-dasharray':'3 2'}:{})}))}
+ return xy;
+}
+function label(g,x,y,{name=false}={}){
+ const group=n('g',{'data-point-key':g.key,transform:`translate(${x} ${y})`});svg.append(group);
+ group.append(n('text',{'font-size':16,x:name?0:-8,y:6},g.metrics[0].text));
+ if(g.metrics.some(m=>m.text==='R'))group.append(n('text',{'font-size':12,x:name?18:8,y:10,'data-retrograde':g.key},'R'));
+ if(name)group.append(n('text',{'font-size':12,x:31,y:6,'data-name':g.key},names[g.key]||g.key));
+ return group;
+}
+function inside(){
+ svg=n('svg',{width:328,height:328,viewBox:'0 0 328 328',role:'img','aria-label':'Колесо с подписями внутри'});decoration(164,164,328);
+ for(const g of data.groups){
+  const[x,y]=g.P.map(Number);if(g.leader)svg.append(n('line',{class:'leader',x1:g.A[0],y1:g.A[1],x2:x,y2:y}));svg.append(n('circle',{class:'anchor',cx:g.A[0],cy:g.A[1],r:1}));
+  if(g.kind==='point')label(g,x,y);
+  else if(g.kind==='marker')svg.append(n('text',{'font-size':16,x:x-8,y:y+6,'data-conjunction':g.key},g.metrics[0].text));
+  else svg.append(n('text',{'font-size':12,x,y},g.key.slice(6).toUpperCase()));
+ }
+ document.getElementById('heading').textContent='A · Подписи внутри колеса';
+ document.getElementById('footer').textContent='Символы ☌ и R сохранены. Выбор — в таблицах.';
+}
+function callouts(){
+ const cx=224,cy=222,D=200;
+ svg=n('svg',{width:328,height:440,viewBox:'0 0 328 440',role:'img','aria-label':'Колесо с выносной колонкой для скученной группы'});const xy=decoration(cx,cy,D);
+ const points=data.groups.filter(g=>g.kind==='point').sort((a,b)=>a.rank-b.rank);
+ // This is a named visual alternative for the all-conflicting F3-max fixture.
+ // It deliberately uses an external column, not the previously checked annulus.
+ for(const[i,g]of points.entries()){
+  const p=data.chart.points.find(p=>p.id===g.key),a=xy(p.longitude,D*.40),row=40+i*24;
+  svg.append(n('path',{class:'leader',d:`M ${a[0]} ${a[1]} C 134 ${a[1]}, 126 ${row}, 117 ${row}`}));
+  svg.append(n('circle',{class:'anchor',cx:a[0],cy:a[1],r:1}));
+  const group=label(g,10,row,{name:true});externalPositions.push({key:g.key,row,anchor:a,label:[10,row]});
+ }
+ const markers=data.groups.filter(g=>g.kind==='marker');
+ for(const[i,g]of markers.entries()){
+  const t=g.theta0,r=D*.22,a=[cx-r*Math.cos(t),cy+r*Math.sin(t)],p=[171,cy+(i-(markers.length-1)/2)*18];
+  svg.append(n('line',{class:'leader',x1:a[0],y1:a[1],x2:p[0],y2:p[1]}));svg.append(n('text',{'font-size':16,x:p[0]-8,y:p[1]+6,'data-conjunction':g.key},g.metrics[0].text));
+ }
+ const angles=[['asc',202,cy-17],['mc',202,cy],['vertex',202,cy+17],['dsc',254,cy-6],['ic',254,cy+11]];
+ for(const[key,x,y]of angles)if(data.chart.angles?.[key]){const a=xy(data.chart.angles[key].longitude,D*.11);svg.append(n('line',{class:'leader',x1:a[0],y1:a[1],x2:x,y2:y}));svg.append(n('text',{'font-size':12,x,y},key==='vertex'?'Vx':key.toUpperCase()));}
+ document.getElementById('heading').textContent='B · Выносная колонка';
+ document.getElementById('footer').textContent='Скученная группа вынесена в колонку. Колесо меньше, блок выше. Выбор — в таблицах.';
+}
+fetch('./data.json').then(r=>r.json()).then(all=>{
+ data=structuredClone(all[fixture]);source=JSON.stringify(data.chart);
+ if(variant==='callouts')callouts();else inside();document.getElementById('mount').append(svg);
+ document.getElementById('subtitle').textContent=fixture==='F3-max'?'Плотный набор · экран 360 px':'Обычная карта · экран 360 px';window.previewReady=true;
+ window.previewState=()=>({variant,fixture,sourceUnchanged:source===JSON.stringify(data.chart),points:[...svg.querySelectorAll('[data-point-key]')].map(e=>e.dataset.pointKey),expectedPoints:data.chart.points.map(p=>p.id),R:svg.querySelectorAll('[data-retrograde]').length,expectedR:data.chart.points.filter(p=>p.retrograde).length,conjunctions:svg.querySelectorAll('[data-conjunction]').length,expectedConjunctions:data.groups.filter(g=>g.kind==='marker').length,removedText:/(точн|рабоч)/i.test(document.body.innerText),svgTargets:svg.querySelectorAll('[tabindex],[role=button]').length,overflow:document.documentElement.scrollWidth>innerWidth,externalPositions,nameBounds:[...svg.querySelectorAll('[data-name]')].map(e=>({id:e.dataset.name,x:e.getBBox().x,width:e.getBBox().width})),textSizes:[...svg.querySelectorAll('text')].map(e=>parseFloat(getComputedStyle(e).fontSize))});
+});
+</script></html>

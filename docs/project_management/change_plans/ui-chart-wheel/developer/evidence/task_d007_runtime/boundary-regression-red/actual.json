@@ -1,0 +1,23 @@
+{
+  "subject": "TASK-D-007 full application SVG integration",
+  "started": "2026-10-20T08:53:46.184Z",
+  "cases": [],
+  "sources": {
+    "chart_state.mjs": "4b01e6623624b3027d1b45c07f8185afded2558eca5e2e352d22c183a172e63d",
+    "facts.mjs": "da334d2229b63de82b819c2933eb4e8015a2424c415977f74e5961a884565930",
+    "form.mjs": "4f44f1289e8aa46e463e4d517161df474ea4c94b008f0616b9e01bd65b590ebd",
+    "index.html": "f184bf2bedcb34f5daf056a26b0fb86cca080f92314d4712a631fff429425b12",
+    "main.mjs": "04c93f5ce16f57aff2ab7dbf986c2ec11ca98d594aca4d6ca9982826dc73223e",
+    "places.mjs": "857593b5b335c4612823dc1d4b58e5dca628671cd3ff51e371ac8641bb820bfb",
+    "recovery.mjs": "405eae1bb36ee3387337fa1d34d5af48d7385bbfbc295ea5a9ae391d48d07414",
+    "response.mjs": "045770e93485c9f8111c6bd03bf9ce9a16e19d05f5e9624931ae63f84bfcbb8d",
+    "result_controller.mjs": "2d1ebfdd81cb8f2a4bae901a299dbd2be09d451b3425c3e9d85838dc3af9aaf7",
+    "session.mjs": "cff830d2f6e490290696cd2846cabd53d17b1f49a8b624c6765bf289cc162088",
+    "styles.css": "a0c53b30357b5a92d714cf34aee48f5535ad5c2592a5810372b8e500a796cf91",
+    "transport.mjs": "18b46104d161eb6ca3c094c507e2011bbba3aec91ad62622c38cae234693dc60",
+    "wheel_layout.mjs": "9d3bca7e58649cd8798ddff62640e9d82f2392d9716c6e18f782a1eebb0c01ff",
+    "wheel_svg.mjs": "3fe102c23578357c98e22b568c315e0fd9b7d0bbd102bc6df0aa356ec5875f78"
+  },
+  "browser": "155.0.8059.40",
+  "error": "Error: page.evaluate: Error: retired-owner-failure-keeps-B: [\"HTML after-owner-B\",\"\",1]\n    at check (http://127.0.0.1:54750/controls/controls.mjs:12:154)\n    at window.runBoundary (http://127.0.0.1:54750/controls/controls.mjs:70:2)\n    at async <anonymous>:337:30"
+}

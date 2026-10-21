@@ -1,0 +1,11 @@
+{
+  "variant": "F",
+  "recorded_utc": "2026-10-19T11:03:09.452307+00:00",
+  "reason": "post-layout rounding of D/E breaks tight contacts; instead quantize each seed before domain/pair/order validation",
+  "reference": "same explicitly physical Af32 proposal as E, A_ideal retained; C0 membership must match published default semantics",
+  "construction": "B joint radial-lane beam seeds, CSP forward-checking only if beam fails; placement tests quantized final seed values; at most existing96 beam / existing CSP15s/cell",
+  "precision": "grid1/1024 CSS px before checks, SVG binary32 origins, exact full binary decimal output, integer origin in local browser harness; full actual measurement separately",
+  "compression": "only representable axis contacts, max24 sweeps, exact tightness verifier distinguishes residual fail/unproven; no unrestricted chord position accepted",
+  "thresholds": "unchanged 0.5/2/1/16/12; selected contour included; no SVG focus/hit; same annuli/clip/source rows/longitudes; no product fallback",
+  "limits": "one fresh finite construction, parent90min; no new dependencies, full zodiac/palette or runtime integration"
+}

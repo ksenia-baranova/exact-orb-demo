@@ -1,0 +1,1620 @@
+{
+  "id": "published-natal-1440",
+  "width": 1440,
+  "fixture": "published-natal",
+  "checks": [
+    {
+      "name": "numbered-houses",
+      "actual": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "expected": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "pass": true
+    },
+    {
+      "name": "published-cusps",
+      "actual": 12,
+      "expected": 12,
+      "pass": true
+    },
+    {
+      "name": "ruler",
+      "actual": 360,
+      "expected": 360,
+      "pass": true
+    },
+    {
+      "name": "no-page-overflow",
+      "actual": false,
+      "expected": false,
+      "pass": true
+    },
+    {
+      "name": "collapsed-form-does-not-duplicate-summary",
+      "actual": true,
+      "expected": true,
+      "pass": true
+    },
+    {
+      "name": "useful-aspect-area",
+      "actual": true,
+      "expected": true,
+      "pass": true
+    },
+    {
+      "name": "focus-wheel",
+      "actual": "chart-wheel",
+      "expected": "chart-wheel",
+      "pass": true
+    },
+    {
+      "name": "aspect-only-row",
+      "actual": 1,
+      "expected": 1,
+      "pass": true
+    },
+    {
+      "name": "two-point-rows",
+      "actual": [
+        "mean_apog",
+        "pars_fortune"
+      ],
+      "expected": [
+        "mean_apog",
+        "pars_fortune"
+      ],
+      "pass": true
+    },
+    {
+      "name": "two-graphic-points",
+      "actual": [
+        "mean_apog",
+        "pars_fortune"
+      ],
+      "expected": [
+        "mean_apog",
+        "pars_fortune"
+      ],
+      "pass": true
+    },
+    {
+      "name": "published-houses-only",
+      "actual": [
+        6,
+        11
+      ],
+      "expected": [
+        6,
+        11
+      ],
+      "pass": true
+    },
+    {
+      "name": "graphic-house-numbers-only",
+      "actual": [
+        6,
+        11
+      ],
+      "expected": [
+        6,
+        11
+      ],
+      "pass": true
+    },
+    {
+      "name": "focused-page",
+      "actual": [
+        true,
+        true,
+        true
+      ],
+      "expected": [
+        true,
+        true,
+        true
+      ],
+      "pass": true
+    },
+    {
+      "name": "only-chosen-graphic",
+      "actual": [
+        1,
+        0
+      ],
+      "expected": [
+        1,
+        0
+      ],
+      "pass": true
+    },
+    {
+      "name": "view-scrolls-to-wheel",
+      "actual": true,
+      "expected": true,
+      "pass": true
+    },
+    {
+      "name": "activation-no-HTTP",
+      "actual": 2,
+      "expected": 2,
+      "pass": true
+    },
+    {
+      "name": "close-restores-native-source-focus",
+      "actual": true,
+      "expected": true,
+      "pass": true
+    },
+    {
+      "name": "close-restores-all-points",
+      "actual": 16,
+      "expected": 16,
+      "pass": true
+    },
+    {
+      "name": "background-no-line-marker",
+      "actual": 0,
+      "expected": 0,
+      "pass": true
+    },
+    {
+      "name": "safe-recovery-stays-reachable",
+      "actual": true,
+      "expected": true,
+      "pass": true
+    },
+    {
+      "name": "recovery-positive-keeps-aspect-mode",
+      "actual": "true",
+      "expected": "true",
+      "pass": true
+    },
+    {
+      "name": "recovery-focus-is-live-wheel",
+      "actual": true,
+      "expected": true,
+      "pass": true
+    },
+    {
+      "name": "S1-returns-whole-map",
+      "actual": true,
+      "expected": true,
+      "pass": true
+    },
+    {
+      "name": "S1-source-rows",
+      "actual": 47,
+      "expected": 47,
+      "pass": true
+    },
+    {
+      "name": "zero-page-errors",
+      "actual": [],
+      "expected": [],
+      "pass": true
+    }
+  ],
+  "requests": [
+    "bootstrap",
+    "current",
+    "bootstrap",
+    "current",
+    "bootstrap",
+    "current",
+    "bootstrap",
+    "current"
+  ],
+  "errors": [],
+  "chart": {
+    "chart_identity": "eo:calc:v2:471780444330e2d9108e7ae97652bb4a47d3142ffc14cb238a587a6002df8eee",
+    "kind": "natal",
+    "zodiac": "tropical",
+    "house_system": "P",
+    "points": [
+      {
+        "id": "sun",
+        "longitude": 159.34074778029736,
+        "sign": "Virgo",
+        "degree": 9,
+        "minute": 20,
+        "house": 4,
+        "retrograde": false
+      },
+      {
+        "id": "moon",
+        "longitude": 7.664949064158727,
+        "sign": "Aries",
+        "degree": 7,
+        "minute": 39,
+        "house": 11,
+        "retrograde": false
+      },
+      {
+        "id": "mercury",
+        "longitude": 142.09770491769441,
+        "sign": "Leo",
+        "degree": 22,
+        "minute": 5,
+        "house": 3,
+        "retrograde": false
+      },
+      {
+        "id": "venus",
+        "longitude": 125.5987958919479,
+        "sign": "Leo",
+        "degree": 5,
+        "minute": 35,
+        "house": 2,
+        "retrograde": false
+      },
+      {
+        "id": "mars",
+        "longitude": 144.79275143392266,
+        "sign": "Leo",
+        "degree": 24,
+        "minute": 47,
+        "house": 3,
+        "retrograde": false
+      },
+      {
+        "id": "jupiter",
+        "longitude": 308.6836676177389,
+        "sign": "Aquarius",
+        "degree": 8,
+        "minute": 41,
+        "house": 9,
+        "retrograde": true
+      },
+      {
+        "id": "saturn",
+        "longitude": 232.6155421895736,
+        "sign": "Scorpio",
+        "degree": 22,
+        "minute": 36,
+        "house": 6,
+        "retrograde": false
+      },
+      {
+        "id": "uranus",
+        "longitude": 254.00365980527386,
+        "sign": "Sagittarius",
+        "degree": 14,
+        "minute": 0,
+        "house": 6,
+        "retrograde": false
+      },
+      {
+        "id": "neptune",
+        "longitude": 270.87690779987076,
+        "sign": "Capricorn",
+        "degree": 0,
+        "minute": 52,
+        "house": 6,
+        "retrograde": true
+      },
+      {
+        "id": "pluto",
+        "longitude": 212.65770399299151,
+        "sign": "Scorpio",
+        "degree": 2,
+        "minute": 39,
+        "house": 5,
+        "retrograde": false
+      },
+      {
+        "id": "chiron",
+        "longitude": 74.44553413224777,
+        "sign": "Gemini",
+        "degree": 14,
+        "minute": 26,
+        "house": 12,
+        "retrograde": false
+      },
+      {
+        "id": "true_node",
+        "longitude": 40.9113848348305,
+        "sign": "Taurus",
+        "degree": 10,
+        "minute": 54,
+        "house": 11,
+        "retrograde": true
+      },
+      {
+        "id": "south_node",
+        "longitude": 220.9113848348305,
+        "sign": "Scorpio",
+        "degree": 10,
+        "minute": 54,
+        "house": 5,
+        "retrograde": true
+      },
+      {
+        "id": "mean_apog",
+        "longitude": 40.201551132952346,
+        "sign": "Taurus",
+        "degree": 10,
+        "minute": 12,
+        "house": 11,
+        "retrograde": false
+      },
+      {
+        "id": "selena",
+        "longitude": 225.50257012821265,
+        "sign": "Scorpio",
+        "degree": 15,
+        "minute": 30,
+        "house": 5,
+        "retrograde": true
+      },
+      {
+        "id": "pars_fortune",
+        "longitude": 249.78151332909155,
+        "sign": "Sagittarius",
+        "degree": 9,
+        "minute": 46,
+        "house": 6,
+        "retrograde": false
+      }
+    ],
+    "angles": {
+      "asc": {
+        "longitude": 98.10571461295291,
+        "sign": "Cancer",
+        "degree": 8,
+        "minute": 6
+      },
+      "mc": {
+        "longitude": 327.62940719926064,
+        "sign": "Aquarius",
+        "degree": 27,
+        "minute": 37
+      },
+      "vertex": {
+        "longitude": 229.73871832539606,
+        "sign": "Scorpio",
+        "degree": 19,
+        "minute": 44
+      },
+      "dsc": {
+        "longitude": 278.1057146129529,
+        "sign": "Capricorn",
+        "degree": 8,
+        "minute": 6
+      },
+      "ic": {
+        "longitude": 147.62940719926064,
+        "sign": "Leo",
+        "degree": 27,
+        "minute": 37
+      }
+    },
+    "houses": [
+      {
+        "number": 1,
+        "cusp_longitude": 98.10571461295291,
+        "sign": "Cancer",
+        "degree": 8,
+        "minute": 6
+      },
+      {
+        "number": 2,
+        "cusp_longitude": 111.86113073362736,
+        "sign": "Cancer",
+        "degree": 21,
+        "minute": 51
+      },
+      {
+        "number": 3,
+        "cusp_longitude": 127.21128222848128,
+        "sign": "Leo",
+        "degree": 7,
+        "minute": 12
+      },
+      {
+        "number": 4,
+        "cusp_longitude": 147.62940719926064,
+        "sign": "Leo",
+        "degree": 27,
+        "minute": 37
+      },
+      {
+        "number": 5,
+        "cusp_longitude": 179.74928469285112,
+        "sign": "Virgo",
+        "degree": 29,
+        "minute": 44
+      },
+      {
+        "number": 6,
+        "cusp_longitude": 231.38720474173113,
+        "sign": "Scorpio",
+        "degree": 21,
+        "minute": 23
+      },
+      {
+        "number": 7,
+        "cusp_longitude": 278.1057146129529,
+        "sign": "Capricorn",
+        "degree": 8,
+        "minute": 6
+      },
+      {
+        "number": 8,
+        "cusp_longitude": 291.86113073362736,
+        "sign": "Capricorn",
+        "degree": 21,
+        "minute": 51
+      },
+      {
+        "number": 9,
+        "cusp_longitude": 307.2112822284813,
+        "sign": "Aquarius",
+        "degree": 7,
+        "minute": 12
+      },
+      {
+        "number": 10,
+        "cusp_longitude": 327.62940719926064,
+        "sign": "Aquarius",
+        "degree": 27,
+        "minute": 37
+      },
+      {
+        "number": 11,
+        "cusp_longitude": 359.7492846928511,
+        "sign": "Pisces",
+        "degree": 29,
+        "minute": 44
+      },
+      {
+        "number": 12,
+        "cusp_longitude": 51.38720474173114,
+        "sign": "Taurus",
+        "degree": 21,
+        "minute": 23
+      }
+    ],
+    "aspects": [
+      {
+        "from": "mean_apog",
+        "to": "pars_fortune",
+        "type": "quincunx",
+        "orb": 0.4200378038607937,
+        "category": "exact"
+      },
+      {
+        "from": "moon",
+        "to": "asc",
+        "type": "square",
+        "orb": 0.4407655487941611,
+        "category": "exact"
+      },
+      {
+        "from": "sun",
+        "to": "pars_fortune",
+        "type": "square",
+        "orb": 0.4407655487941611,
+        "category": "exact"
+      },
+      {
+        "from": "uranus",
+        "to": "chiron",
+        "type": "opposition",
+        "orb": 0.4418743269739025,
+        "category": "exact"
+      },
+      {
+        "from": "mercury",
+        "to": "saturn",
+        "type": "square",
+        "orb": 0.5178372718792161,
+        "category": "exact"
+      },
+      {
+        "from": "jupiter",
+        "to": "asc",
+        "type": "quincunx",
+        "orb": 0.577953004785968,
+        "category": "exact"
+      },
+      {
+        "from": "sun",
+        "to": "jupiter",
+        "type": "quincunx",
+        "orb": 0.6570801625584863,
+        "category": "exact"
+      },
+      {
+        "from": "true_node",
+        "to": "mean_apog",
+        "type": "conjunction",
+        "orb": 0.7098337018781535,
+        "category": "exact"
+      },
+      {
+        "from": "sun",
+        "to": "mean_apog",
+        "type": "trine",
+        "orb": 0.8608033526549832,
+        "category": "exact"
+      },
+      {
+        "from": "moon",
+        "to": "jupiter",
+        "type": "sextile",
+        "orb": 1.018718553580129,
+        "category": "working"
+      },
+      {
+        "from": "chiron",
+        "to": "selena",
+        "type": "quincunx",
+        "orb": 1.0570359959648954,
+        "category": "working"
+      },
+      {
+        "from": "jupiter",
+        "to": "pars_fortune",
+        "type": "sextile",
+        "orb": 1.0978457113526758,
+        "category": "working"
+      },
+      {
+        "from": "true_node",
+        "to": "pars_fortune",
+        "type": "quincunx",
+        "orb": 1.1298715057389472,
+        "category": "working"
+      },
+      {
+        "from": "sun",
+        "to": "asc",
+        "type": "sextile",
+        "orb": 1.2350331673444543,
+        "category": "working"
+      },
+      {
+        "from": "jupiter",
+        "to": "mean_apog",
+        "type": "square",
+        "orb": 1.517883515213498,
+        "category": "working"
+      },
+      {
+        "from": "sun",
+        "to": "true_node",
+        "type": "trine",
+        "orb": 1.5706370545331367,
+        "category": "working"
+      },
+      {
+        "from": "pars_fortune",
+        "to": "asc",
+        "type": "quincunx",
+        "orb": 1.6757987161386438,
+        "category": "working"
+      },
+      {
+        "from": "sun",
+        "to": "moon",
+        "type": "quincunx",
+        "orb": 1.6757987161386438,
+        "category": "working"
+      },
+      {
+        "from": "neptune",
+        "to": "pluto",
+        "type": "sextile",
+        "orb": 1.78079619312075,
+        "category": "working"
+      },
+      {
+        "from": "moon",
+        "to": "venus",
+        "type": "trine",
+        "orb": 2.066153172210818,
+        "category": "working"
+      },
+      {
+        "from": "mean_apog",
+        "to": "asc",
+        "type": "sextile",
+        "orb": 2.095836519999466,
+        "category": "working"
+      },
+      {
+        "from": "mars",
+        "to": "saturn",
+        "type": "square",
+        "orb": 2.177209244349058,
+        "category": "working"
+      },
+      {
+        "from": "jupiter",
+        "to": "true_node",
+        "type": "square",
+        "orb": 2.2277172170915946,
+        "category": "working"
+      },
+      {
+        "from": "mercury",
+        "to": "vertex",
+        "type": "square",
+        "orb": 2.358986592298379,
+        "category": "working"
+      },
+      {
+        "from": "mercury",
+        "to": "mars",
+        "type": "conjunction",
+        "orb": 2.695046516228217,
+        "category": "working"
+      },
+      {
+        "from": "true_node",
+        "to": "asc",
+        "type": "sextile",
+        "orb": 2.8056702218775627,
+        "category": "working"
+      },
+      {
+        "from": "mars",
+        "to": "mc",
+        "type": "opposition",
+        "orb": 2.83665576533798,
+        "category": "working"
+      },
+      {
+        "from": "saturn",
+        "to": "vertex",
+        "type": "conjunction",
+        "orb": 2.8768238641775383,
+        "category": "working"
+      },
+      {
+        "from": "venus",
+        "to": "pluto",
+        "type": "square",
+        "orb": 2.941091898956415,
+        "category": "working"
+      },
+      {
+        "from": "venus",
+        "to": "jupiter",
+        "type": "opposition",
+        "orb": 3.0848717257909755,
+        "category": "background"
+      },
+      {
+        "from": "neptune",
+        "to": "mc",
+        "type": "sextile",
+        "orb": 3.247500600610124,
+        "category": "background"
+      },
+      {
+        "from": "sun",
+        "to": "uranus",
+        "type": "square",
+        "orb": 4.662912024976492,
+        "category": "background"
+      },
+      {
+        "from": "venus",
+        "to": "neptune",
+        "type": "quincunx",
+        "orb": 4.721888092077137,
+        "category": "background"
+      },
+      {
+        "from": "moon",
+        "to": "pluto",
+        "type": "quincunx",
+        "orb": 5.007245071167205,
+        "category": "background"
+      },
+      {
+        "from": "saturn",
+        "to": "mc",
+        "type": "square",
+        "orb": 5.013865009687038,
+        "category": "background"
+      },
+      {
+        "from": "pluto",
+        "to": "mc",
+        "type": "trine",
+        "orb": 5.028296793730874,
+        "category": "background"
+      },
+      {
+        "from": "sun",
+        "to": "chiron",
+        "type": "square",
+        "orb": 5.104786351950409,
+        "category": "background"
+      },
+      {
+        "from": "jupiter",
+        "to": "uranus",
+        "type": "sextile",
+        "orb": 5.319992187534979,
+        "category": "background"
+      },
+      {
+        "from": "pluto",
+        "to": "asc",
+        "type": "trine",
+        "orb": 5.448010619961394,
+        "category": "background"
+      },
+      {
+        "from": "mercury",
+        "to": "mc",
+        "type": "opposition",
+        "orb": 5.531702281566226,
+        "category": "background"
+      },
+      {
+        "from": "jupiter",
+        "to": "chiron",
+        "type": "trine",
+        "orb": 5.761866514508881,
+        "category": "background"
+      },
+      {
+        "from": "uranus",
+        "to": "asc",
+        "type": "quincunx",
+        "orb": 5.897945192320947,
+        "category": "background"
+      },
+      {
+        "from": "moon",
+        "to": "uranus",
+        "type": "trine",
+        "orb": 6.338710741115136,
+        "category": "background"
+      },
+      {
+        "from": "sun",
+        "to": "pluto",
+        "type": "sextile",
+        "orb": 6.683043787305849,
+        "category": "background"
+      },
+      {
+        "from": "moon",
+        "to": "chiron",
+        "type": "sextile",
+        "orb": 6.780585068089067,
+        "category": "background"
+      },
+      {
+        "from": "moon",
+        "to": "neptune",
+        "type": "square",
+        "orb": 6.788041264287983,
+        "category": "background"
+      }
+    ]
+  },
+  "normal": {
+    "groups": [
+      {
+        "key": "sign:0",
+        "parts": [
+          [
+            363.0047607421875,
+            8.421195983886719,
+            380.0047607421875,
+            29.42120361328125
+          ]
+        ]
+      },
+      {
+        "key": "sign:1",
+        "parts": [
+          [
+            168.96246337890625,
+            86.4031982421875,
+            185.96246337890625,
+            107.4031982421875
+          ]
+        ]
+      },
+      {
+        "key": "sign:2",
+        "parts": [
+          [
+            40.40789794921875,
+            250.958740234375,
+            56.40789794921875,
+            271.958740234375
+          ]
+        ]
+      },
+      {
+        "key": "sign:3",
+        "parts": [
+          [
+            10.42120361328125,
+            457.9952392578125,
+            27.42120361328125,
+            478.9952392578125
+          ]
+        ]
+      },
+      {
+        "key": "sign:4",
+        "parts": [
+          [
+            89.4031982421875,
+            652.0375366210938,
+            104.4031982421875,
+            673.0375366210938
+          ]
+        ]
+      },
+      {
+        "key": "sign:5",
+        "parts": [
+          [
+            252.958740234375,
+            781.0921020507812,
+            269.958740234375,
+            802.0921020507812
+          ]
+        ]
+      },
+      {
+        "key": "sign:6",
+        "parts": [
+          [
+            460.4952392578125,
+            810.5787963867188,
+            476.4952392578125,
+            831.5787963867188
+          ]
+        ]
+      },
+      {
+        "key": "sign:7",
+        "parts": [
+          [
+            654.03759765625,
+            732.5968017578125,
+            671.03759765625,
+            753.5968017578125
+          ]
+        ]
+      },
+      {
+        "key": "sign:8",
+        "parts": [
+          [
+            784.092041015625,
+            568.041259765625,
+            799.092041015625,
+            589.041259765625
+          ]
+        ]
+      },
+      {
+        "key": "sign:9",
+        "parts": [
+          [
+            811.578857421875,
+            361.0047302246094,
+            830.578857421875,
+            382.0047302246094
+          ]
+        ]
+      },
+      {
+        "key": "sign:10",
+        "parts": [
+          [
+            733.5968017578125,
+            166.96246337890625,
+            752.5968017578125,
+            187.96246337890625
+          ]
+        ]
+      },
+      {
+        "key": "sign:11",
+        "parts": [
+          [
+            572.041259765625,
+            37.907928466796875,
+            585.041259765625,
+            58.907928466796875
+          ]
+        ]
+      },
+      {
+        "key": "sun",
+        "parts": [
+          [
+            232.3692626953125,
+            736.8959350585938,
+            247.3536376953125,
+            759.3959350585938
+          ]
+        ]
+      },
+      {
+        "key": "moon",
+        "parts": [
+          [
+            417.55938720703125,
+            34.422149658203125,
+            428.20001220703125,
+            56.922149658203125
+          ]
+        ]
+      },
+      {
+        "key": "mercury",
+        "parts": [
+          [
+            141.44671630859375,
+            664.5525512695312,
+            151.94671630859375,
+            687.0525512695312
+          ]
+        ]
+      },
+      {
+        "key": "venus",
+        "parts": [
+          [
+            80.4891357421875,
+            577.2709350585938,
+            90.9891357421875,
+            599.7709350585938
+          ]
+        ]
+      },
+      {
+        "key": "mars",
+        "parts": [
+          [
+            156.9051513671875,
+            681.1255493164062,
+            169.5145263671875,
+            703.6255493164062
+          ]
+        ]
+      },
+      {
+        "key": "jupiter",
+        "parts": [
+          [
+            730.18505859375,
+            209.7960205078125,
+            743.99755859375,
+            232.2960205078125
+          ],
+          [
+            720.18505859375,
+            223.61517333984375,
+            728.18505859375,
+            239.61517333984375
+          ]
+        ]
+      },
+      {
+        "key": "saturn",
+        "parts": [
+          [
+            680.744873046875,
+            672.1439819335938,
+            691.244873046875,
+            694.6439819335938
+          ]
+        ]
+      },
+      {
+        "key": "uranus",
+        "parts": [
+          [
+            754.953857421875,
+            561.6162109375,
+            768.453857421875,
+            584.1162109375
+          ]
+        ]
+      },
+      {
+        "key": "neptune",
+        "parts": [
+          [
+            783.613525390625,
+            455.85382080078125,
+            799.113525390625,
+            478.35382080078125
+          ],
+          [
+            773.613525390625,
+            453.165283203125,
+            781.613525390625,
+            469.165283203125
+          ]
+        ]
+      },
+      {
+        "key": "pluto",
+        "parts": [
+          [
+            570.294921875,
+            749.242919921875,
+            580.794921875,
+            771.742919921875
+          ]
+        ]
+      },
+      {
+        "key": "chiron",
+        "parts": [
+          [
+            72.77734375,
+            262.1735534667969,
+            81.47735595703125,
+            277.3735656738281
+          ]
+        ]
+      },
+      {
+        "key": "true_node",
+        "parts": [
+          [
+            210.3426513671875,
+            94.11328125,
+            224.0301513671875,
+            116.61328125
+          ],
+          [
+            219.8712158203125,
+            118.61328125,
+            227.8712158203125,
+            134.61328125
+          ]
+        ]
+      },
+      {
+        "key": "south_node",
+        "parts": [
+          [
+            615.9698486328125,
+            723.38671875,
+            629.6573486328125,
+            745.88671875
+          ],
+          [
+            612.1287841796875,
+            705.38671875,
+            620.1287841796875,
+            721.38671875
+          ]
+        ]
+      },
+      {
+        "key": "mean_apog",
+        "parts": [
+          [
+            229.69464111328125,
+            83.4049072265625,
+            240.00714111328125,
+            105.9049072265625
+          ]
+        ]
+      },
+      {
+        "key": "selena",
+        "parts": [
+          [
+            639.298095703125,
+            709.892822265625,
+            655.3980712890625,
+            724.892822265625
+          ],
+          [
+            637.843017578125,
+            691.892822265625,
+            645.843017578125,
+            707.892822265625
+          ]
+        ]
+      },
+      {
+        "key": "pars_fortune",
+        "parts": [
+          [
+            742.27197265625,
+            590.35888671875,
+            756.77197265625,
+            604.85888671875
+          ]
+        ]
+      },
+      {
+        "key": "angle:asc",
+        "parts": [
+          [
+            186.4383544921875,
+            412,
+            209.5535888671875,
+            428
+          ]
+        ]
+      },
+      {
+        "key": "angle:mc",
+        "parts": [
+          [
+            554.72265625,
+            243.127197265625,
+            573.498046875,
+            259.127197265625
+          ]
+        ]
+      },
+      {
+        "key": "angle:vertex",
+        "parts": [
+          [
+            560.2633056640625,
+            577.9292602539062,
+            574.7164306640625,
+            593.9292602539062
+          ]
+        ]
+      },
+      {
+        "key": "angle:dsc",
+        "parts": [
+          [
+            630.6094970703125,
+            412,
+            653.3985595703125,
+            428
+          ]
+        ]
+      },
+      {
+        "key": "angle:ic",
+        "parts": [
+          [
+            270.2930908203125,
+            580.872802734375,
+            281.4864501953125,
+            596.872802734375
+          ]
+        ]
+      },
+      {
+        "key": "conj:[\"mean_apog\",\"true_node\",\"conjunction\"]",
+        "parts": [
+          [
+            249.743896484375,
+            148.56228637695312,
+            259.368896484375,
+            171.06228637695312
+          ]
+        ]
+      },
+      {
+        "key": "conj:[\"mars\",\"mercury\",\"conjunction\"]",
+        "parts": [
+          [
+            198.5146484375,
+            628.0060424804688,
+            208.1396484375,
+            650.5060424804688
+          ]
+        ]
+      },
+      {
+        "key": "conj:[\"saturn\",\"vertex\",\"conjunction\"]",
+        "parts": [
+          [
+            625.688720703125,
+            633.9215698242188,
+            635.313720703125,
+            656.4215698242188
+          ]
+        ]
+      },
+      {
+        "key": "house:1",
+        "parts": [
+          [
+            97.65374755859375,
+            447.86077880859375,
+            106.27874755859375,
+            468.86077880859375
+          ]
+        ]
+      },
+      {
+        "key": "house:2",
+        "parts": [
+          [
+            117.308837890625,
+            526.54296875,
+            126.308837890625,
+            547.54296875
+          ]
+        ]
+      },
+      {
+        "key": "house:3",
+        "parts": [
+          [
+            167.84814453125,
+            612.4598388671875,
+            176.47314453125,
+            633.4598388671875
+          ]
+        ]
+      },
+      {
+        "key": "house:4",
+        "parts": [
+          [
+            282.583251953125,
+            701.1896362304688,
+            292.583251953125,
+            722.1896362304688
+          ]
+        ]
+      },
+      {
+        "key": "house:5",
+        "parts": [
+          [
+            511.8154296875,
+            715.0756225585938,
+            520.4404296875,
+            736.0756225585938
+          ]
+        ]
+      },
+      {
+        "key": "house:6",
+        "parts": [
+          [
+            709.5830078125,
+            536.5128173828125,
+            718.5830078125,
+            557.5128173828125
+          ]
+        ]
+      },
+      {
+        "key": "house:7",
+        "parts": [
+          [
+            733.53369140625,
+            371.13922119140625,
+            742.53369140625,
+            392.13922119140625
+          ]
+        ]
+      },
+      {
+        "key": "house:8",
+        "parts": [
+          [
+            713.691162109375,
+            292.4570617675781,
+            722.691162109375,
+            313.4570617675781
+          ]
+        ]
+      },
+      {
+        "key": "house:9",
+        "parts": [
+          [
+            663.33935546875,
+            206.5401611328125,
+            672.33935546875,
+            227.5401611328125
+          ]
+        ]
+      },
+      {
+        "key": "house:10",
+        "parts": [
+          [
+            543.604248046875,
+            117.81039428710938,
+            561.229248046875,
+            138.81039428710938
+          ]
+        ]
+      },
+      {
+        "key": "house:11",
+        "parts": [
+          [
+            315.2470703125,
+            103.92440795898438,
+            332.4970703125,
+            124.92440795898438
+          ]
+        ]
+      },
+      {
+        "key": "house:12",
+        "parts": [
+          [
+            117.10455322265625,
+            282.4871826171875,
+            134.7296142578125,
+            303.4871826171875
+          ]
+        ]
+      }
+    ],
+    "width": 840,
+    "height": 840,
+    "houseNumbers": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ],
+    "cuspCount": 12,
+    "ticks": 360,
+    "aspectRatio": 0.7411993466890775,
+    "overflow": false,
+    "zoom": 1,
+    "formHidden": true
+  },
+  "selected": {
+    "width": 840,
+    "height": 840,
+    "groups": [
+      {
+        "key": "sign:0",
+        "parts": [
+          [
+            363.0047607421875,
+            8.421195983886719,
+            380.0047607421875,
+            29.42119598388672
+          ]
+        ]
+      },
+      {
+        "key": "sign:1",
+        "parts": [
+          [
+            168.96246337890625,
+            86.4031982421875,
+            185.96246337890625,
+            107.4031982421875
+          ]
+        ]
+      },
+      {
+        "key": "sign:2",
+        "parts": [
+          [
+            40.407928466796875,
+            250.958740234375,
+            56.407928466796875,
+            271.958740234375
+          ]
+        ]
+      },
+      {
+        "key": "sign:3",
+        "parts": [
+          [
+            10.42120361328125,
+            457.9952392578125,
+            27.42120361328125,
+            478.9952392578125
+          ]
+        ]
+      },
+      {
+        "key": "sign:4",
+        "parts": [
+          [
+            89.4031982421875,
+            652.0375366210938,
+            104.4031982421875,
+            673.0375366210938
+          ]
+        ]
+      },
+      {
+        "key": "sign:5",
+        "parts": [
+          [
+            252.958740234375,
+            781.0921020507812,
+            269.958740234375,
+            802.0921020507812
+          ]
+        ]
+      },
+      {
+        "key": "sign:6",
+        "parts": [
+          [
+            460.4952392578125,
+            810.5787963867188,
+            476.4952392578125,
+            831.5787963867188
+          ]
+        ]
+      },
+      {
+        "key": "sign:7",
+        "parts": [
+          [
+            654.0375366210938,
+            732.5968017578125,
+            671.0375366210938,
+            753.5968017578125
+          ]
+        ]
+      },
+      {
+        "key": "sign:8",
+        "parts": [
+          [
+            784.092041015625,
+            568.041259765625,
+            799.092041015625,
+            589.041259765625
+          ]
+        ]
+      },
+      {
+        "key": "sign:9",
+        "parts": [
+          [
+            811.578857421875,
+            361.0047302246094,
+            830.578857421875,
+            382.0047302246094
+          ]
+        ]
+      },
+      {
+        "key": "sign:10",
+        "parts": [
+          [
+            733.5968017578125,
+            166.9624481201172,
+            752.5968017578125,
+            187.96246337890625
+          ]
+        ]
+      },
+      {
+        "key": "sign:11",
+        "parts": [
+          [
+            572.041259765625,
+            37.907928466796875,
+            585.041259765625,
+            58.907928466796875
+          ]
+        ]
+      },
+      {
+        "key": "mean_apog",
+        "parts": [
+          [
+            215.260498046875,
+            90.53561401367188,
+            225.572998046875,
+            113.03561401367188
+          ]
+        ]
+      },
+      {
+        "key": "pars_fortune",
+        "parts": [
+          [
+            743.40380859375,
+            590.9688720703125,
+            757.90380859375,
+            605.4688720703125
+          ]
+        ]
+      },
+      {
+        "key": "house:6",
+        "parts": [
+          [
+            710.7632446289062,
+            537.0225830078125,
+            719.7632446289062,
+            558.0225830078125
+          ]
+        ]
+      },
+      {
+        "key": "house:11",
+        "parts": [
+          [
+            314.8612060546875,
+            102.69793701171875,
+            332.1112060546875,
+            123.69793701171875
+          ]
+        ]
+      }
+    ],
+    "focus": "chart-wheel",
+    "scrollTop": 86.59375,
+    "scrollBottom": 926.59375,
+    "viewportHeight": 1000,
+    "toolbarBottom": 66.59375,
+    "aspectRows": 1,
+    "pointIds": [
+      "mean_apog",
+      "pars_fortune"
+    ],
+    "houses": [
+      6,
+      11
+    ],
+    "houseNumbers": [
+      6,
+      11
+    ],
+    "graphicPoints": [
+      "mean_apog",
+      "pars_fortune"
+    ],
+    "formHidden": true,
+    "headingHidden": true,
+    "summaryHidden": true,
+    "lines": 1,
+    "markers": 0
+  },
+  "pass": true
+}

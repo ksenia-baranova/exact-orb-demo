@@ -1,0 +1,198 @@
+{
+  "created_utc": "2026-10-18T21:28:00.175992+00:00",
+  "spec_sha256": "80b73cda18ae50bd1a5b05f1cd2ddb291ce0ccda5d8549c2b73815a0e5ed9ec0",
+  "cells": [
+    {
+      "fixture": "sparse",
+      "size": 720,
+      "viewport": 1440,
+      "variant": "F",
+      "file": "sparse-720-F.json",
+      "sha256": "c655e5b3fcb2b6c62cb15bf11e77d1a497954e026cd493d6ade9cc49185e1a36"
+    },
+    {
+      "fixture": "sparse",
+      "size": 720,
+      "viewport": 1440,
+      "variant": "E",
+      "file": "sparse-720-E.json",
+      "sha256": "328290327fd11879ae8134388a715f742586a3d22b578ca593fcc3f53e212596"
+    },
+    {
+      "fixture": "sparse",
+      "size": 448,
+      "viewport": 768,
+      "variant": "F",
+      "file": "sparse-448-F.json",
+      "sha256": "13cec7d1e0022b7a086caf3d15a600d47f6e69bf1bd281e3611f717c5a965f48"
+    },
+    {
+      "fixture": "sparse",
+      "size": 448,
+      "viewport": 768,
+      "variant": "E",
+      "file": "sparse-448-E.json",
+      "sha256": "b916efb9457680ac04cd07ed0e08877517e8f07de918b97fd5ee55c144125a98"
+    },
+    {
+      "fixture": "sparse",
+      "size": 328,
+      "viewport": 360,
+      "variant": "F",
+      "file": "sparse-328-F.json",
+      "sha256": "08ee4f0aa7156ee3c9a099c139a9d87e06ed4db712b05c2508d173a7e9c29e84"
+    },
+    {
+      "fixture": "sparse",
+      "size": 328,
+      "viewport": 360,
+      "variant": "E",
+      "file": "sparse-328-E.json",
+      "sha256": "ac9fdd74322d044f55b2b1dff76dde2e2cdab392f2eeb2f1c989a5da44d41da2"
+    },
+    {
+      "fixture": "F1",
+      "size": 720,
+      "viewport": 1440,
+      "variant": "F",
+      "file": "F1-720-F.json",
+      "sha256": "bdb81200bc7ce417754b02db3b387fcac1ed4ac497f5305451558b30f6fc0b79"
+    },
+    {
+      "fixture": "F1",
+      "size": 720,
+      "viewport": 1440,
+      "variant": "E",
+      "file": "F1-720-E.json",
+      "sha256": "cf1b841d664d816e904046a065369c7d255e934a8713f2a92e87b1b4b758a5af"
+    },
+    {
+      "fixture": "F1",
+      "size": 448,
+      "viewport": 768,
+      "variant": "F",
+      "file": "F1-448-F.json",
+      "sha256": "529a06609e70d6451521431c4c60ac02185b4424c4dd083f6d83a1904f1e46ec"
+    },
+    {
+      "fixture": "F1",
+      "size": 448,
+      "viewport": 768,
+      "variant": "E",
+      "file": "F1-448-E.json",
+      "sha256": "90056e4efacb3db12d7d2ceb47e4ab1f945dc4ba42f4a1764a4e5f563009e919"
+    },
+    {
+      "fixture": "F1",
+      "size": 328,
+      "viewport": 360,
+      "variant": "F",
+      "file": "F1-328-F.json",
+      "sha256": "2ca33213008b67834eb2508e844fc7b6d4252d4d510e35b5b0d5bd959dfb21d3"
+    },
+    {
+      "fixture": "F1",
+      "size": 328,
+      "viewport": 360,
+      "variant": "E",
+      "file": "F1-328-E.json",
+      "sha256": "c16a4a9ca2b60577d431d3064416f60276174e3468f25aaf14c8570725ec3e96"
+    },
+    {
+      "fixture": "F3",
+      "size": 720,
+      "viewport": 1440,
+      "variant": "F",
+      "file": "F3-720-F.json",
+      "sha256": "8c4ca4d017793a6ebd7e4e0fe7ce5158f3fc559680aa3c94113e7ec2695b29fe"
+    },
+    {
+      "fixture": "F3",
+      "size": 720,
+      "viewport": 1440,
+      "variant": "E",
+      "file": "F3-720-E.json",
+      "sha256": "03e92745738d94356222932441f3540ce778c638255afa7bc7ef340fed14fab7"
+    },
+    {
+      "fixture": "F3",
+      "size": 448,
+      "viewport": 768,
+      "variant": "F",
+      "file": "F3-448-F.json",
+      "sha256": "e14cbd49ccf120756c15cb0d1c8cc9b0a04d8088820da4957a91fa49560d2aa2"
+    },
+    {
+      "fixture": "F3",
+      "size": 448,
+      "viewport": 768,
+      "variant": "E",
+      "file": "F3-448-E.json",
+      "sha256": "205758c42bb1d7420bcda4a2201c1705fd83cd52beba436f6b9018c4a9d05245"
+    },
+    {
+      "fixture": "F3",
+      "size": 328,
+      "viewport": 360,
+      "variant": "F",
+      "file": "F3-328-F.json",
+      "sha256": "9c3523ab8af28a4b2593c37bd09141d59bbad1e4f6e1f10b906f7215fde0d627"
+    },
+    {
+      "fixture": "F3",
+      "size": 328,
+      "viewport": 360,
+      "variant": "E",
+      "file": "F3-328-E.json",
+      "sha256": "3878982fbd9901aa7a1c3d63a4a94cb42fba5085f9de1f4f9988d039cbb3e9ea"
+    },
+    {
+      "fixture": "F3-max",
+      "size": 720,
+      "viewport": 1440,
+      "variant": "F",
+      "file": "F3-max-720-F.json",
+      "sha256": "2dd1e1ad0d8b6a569b71ec25f16743c310ffd58494cb3ca953f2b8557e3bd415"
+    },
+    {
+      "fixture": "F3-max",
+      "size": 720,
+      "viewport": 1440,
+      "variant": "E",
+      "file": "F3-max-720-E.json",
+      "sha256": "a6aa2966b37a76535188fb03b0fa093131c4d02f4107b0bb4c9a39fccc8616be"
+    },
+    {
+      "fixture": "F3-max",
+      "size": 448,
+      "viewport": 768,
+      "variant": "F",
+      "file": "F3-max-448-F.json",
+      "sha256": "f41151c46ec05241e4d25e300dee68d812334a98213b8a945718845b1872f751"
+    },
+    {
+      "fixture": "F3-max",
+      "size": 448,
+      "viewport": 768,
+      "variant": "E",
+      "file": "F3-max-448-E.json",
+      "sha256": "3d4fd3e403759aa28bb10e2b1df7651918b7863dcbcbb24564615897b260d7e0"
+    },
+    {
+      "fixture": "F3-max",
+      "size": 328,
+      "viewport": 360,
+      "variant": "F",
+      "file": "F3-max-328-F.json",
+      "sha256": "4d3866b4ad9d4833968f724bed463a8a1c467b1fc0209907e1157f917f872cca"
+    },
+    {
+      "fixture": "F3-max",
+      "size": 328,
+      "viewport": 360,
+      "variant": "E",
+      "file": "F3-max-328-E.json",
+      "sha256": "3608cb2478c0504b857b9746b89a94abccf9e520be40bcaacf76759107c2c98d"
+    }
+  ]
+}

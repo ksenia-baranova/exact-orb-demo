@@ -1,0 +1,149 @@
+{
+  "started": "2026-10-19T11:04:29.443Z",
+  "node": "v24.19.0",
+  "os": "win32 10.0.26200",
+  "specSHA256": "0f6bedc425036a286c8eb37db04a1797d33ab583a21082c5aada6e486eddf5b4",
+  "records": [
+    {
+      "file": "sparse-720-E.json",
+      "sha256": "8b4add7d77da76fc792e47092effa20b7dd26819bf62ebe486280b9502d1760b"
+    },
+    {
+      "file": "sparse-448-E.json",
+      "sha256": "7483b25c0dd3e182bf007df7e4919fa8e95edc33322de152523603430d9f8d59"
+    },
+    {
+      "file": "sparse-328-E.json",
+      "sha256": "0d25e13c15b3d9630f961919c2de946649a4d80fd1d07fb8f9d88a8e66928a71"
+    },
+    {
+      "file": "F1-720-E.json",
+      "sha256": "ef38ad3c72845d84f2571efa6ce00037f52896f63d690d6103d6ce946960e748"
+    },
+    {
+      "file": "F1-448-E.json",
+      "sha256": "27912342706a291b9a42e1e310184b82fd39d2a9be88fd9bf1b229df8dc17eca"
+    },
+    {
+      "file": "F1-328-E.json",
+      "sha256": "6124e1e57f1634f933ca1b115a6d178ce136aad12e67fee6d3cdf709fccb9c0e"
+    },
+    {
+      "file": "F3-720-E.json",
+      "sha256": "bc01791517c1406e5ecb27bb8d702e64a381f21140b536147df2209126a5f9e8"
+    },
+    {
+      "file": "F3-448-E.json",
+      "sha256": "8f82c4884afce194b709830cc316f68b0b3dc686bc84f8ad8f7deb752974f4c0"
+    },
+    {
+      "file": "F3-328-E.json",
+      "sha256": "48cd113fced5329420dec72e8eb6dd4c56f23cb48198471f5673dd3ace6f58e2"
+    },
+    {
+      "file": "F3-max-720-E.json",
+      "sha256": "35848a4c094222b264d7087bf3f7d468fe9f619dbdaf89b01aea79e0139d1765"
+    },
+    {
+      "file": "F3-max-448-E.json",
+      "sha256": "0177b19418736f3dcb937d36a8590a8de945d2408e24a0fe0f4834b42fcb96ab"
+    },
+    {
+      "file": "F3-max-328-E.json",
+      "sha256": "b50aa77833b584e54a28c5384ea50eba89c3c3b192f7656293999bfcb60e7108"
+    },
+    {
+      "file": "sparse-720-F.json",
+      "sha256": "b3aeca145cfd3e6d11cb394c0024575c94cb3aa681a71f0550de101c58133dd4"
+    },
+    {
+      "file": "sparse-448-F.json",
+      "sha256": "9bd19c3a442f86fe1ac1b877dcce07fa9d6c36e7a410cef8e052276529916be3"
+    },
+    {
+      "file": "sparse-328-F.json",
+      "sha256": "f96066717afe1e610a5f6522c014d4880d99f5416a9d1694b3b20e2bcdcdfc98"
+    },
+    {
+      "file": "F1-720-F.json",
+      "sha256": "acf5bf4eb71fc8b6996d7963da4ed33bb5a104604727a7cef413c1b26b65ff9b"
+    },
+    {
+      "file": "F1-448-F.json",
+      "sha256": "beb258754166cd398ba45cbff63df8d9cb29a7a9aaeaaa5d81c26e33389f526f"
+    },
+    {
+      "file": "F1-328-F.json",
+      "sha256": "e2d239a47fae11abed2a3eb8a96e46c05cd8a152a8e9e67800c236a1aa861014"
+    },
+    {
+      "file": "F3-720-F.json",
+      "sha256": "c623e077b3d0fbf9071aae0d50bc847cca85ab01a448bee1b8eef4772d7d81df"
+    },
+    {
+      "file": "F3-448-F.json",
+      "sha256": "c04020ef15c0703efbc7ed305896248b112812d5aaa29de98fbcbccf8a26fefb"
+    },
+    {
+      "file": "F3-328-F.json",
+      "sha256": "5281c6a9369d522ea91e84549330c628ca23e8f49e6525a894ee0dec3290bc92"
+    },
+    {
+      "file": "F3-max-720-F.json",
+      "sha256": "4cd8b4688e3c80b2993362ed3bfd18f69d5c8ed46e75d0c3b4922709df8bf171"
+    },
+    {
+      "file": "F3-max-448-F.json",
+      "sha256": "b62f790dd25a85023d9cedfa21b1b167ff78ed3ca1a1cd796aedd18232ac9903"
+    },
+    {
+      "file": "F3-max-328-F.json",
+      "sha256": "114bfe06675cfcc13a9363466b098614dc8bfb7cbb868b7e287fc7842e1ea7f5"
+    }
+  ],
+  "controls": [
+    {
+      "id": "em16-boundary",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "em16-below",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "id": "em12-boundary",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "em12-below",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "id": "passive-no-SVG-tabindex",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "passive-no-SVG-buttons",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "font-texts-present",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "id": "DTO-unchanged",
+      "actual": true,
+      "expected": true
+    }
+  ],
+  "browser": "155.0.8059.40",
+  "browserPath": "C:/Program Files/Google/Chrome/Application/chrome.exe",
+  "ended": "2026-10-19T11:04:32.363Z"
+}

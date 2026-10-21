@@ -1,0 +1,36 @@
+{
+  "package_sha": "d24a24e04be32d0522674735388e9d2ea3e65c93",
+  "purpose": "fresh selective source/followup replay; not archived run03 or a new layout",
+  "copies_unmodified": [
+    {
+      "source": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/source_audit.py",
+      "target": "docs/project_management/change_plans/ui-chart-wheel/tester/evidence/task_t004_replay/source_audit.py",
+      "sha256": "2224121f9366b71d981c0b3ac02f8de43f6d2f8cd8b40429110a6d33bdd0bbf3"
+    },
+    {
+      "source": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/orientation_audit.py",
+      "target": "docs/project_management/change_plans/ui-chart-wheel/tester/evidence/task_t004_replay/orientation_audit.py",
+      "sha256": "d865674711e4cd9c5f9f710e8a2bdc38a982b0712c279695fd034ea86c5801aa"
+    },
+    {
+      "source": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/source_controls.mjs",
+      "target": "docs/project_management/change_plans/ui-chart-wheel/tester/evidence/task_t004_replay/source_controls.mjs",
+      "sha256": "85e39582fa3f1a6c73f40db4950b15db38bdd768a4d0e4ba8fcb6af15733af41"
+    },
+    {
+      "source": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/run_followup.cjs",
+      "target": "docs/project_management/change_plans/ui-chart-wheel/tester/evidence/task_t004_replay/run_followup.cjs",
+      "sha256": "66e49b46ab65a0d79ef80fca1eac7634a6320ce5c0a407ea3212e1018581e0af"
+    },
+    {
+      "source": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/lifecycle.html",
+      "target": "docs/project_management/change_plans/ui-chart-wheel/tester/evidence/task_t004_replay/lifecycle.html",
+      "sha256": "3e340940679dbdcf14c2d0fe3b4d8c99336fc230e657998b26de4a5086ea5242"
+    },
+    {
+      "source": "docs/project_management/change_plans/ui-chart-wheel/developer/evidence/task_d003_research/fixtures.json",
+      "target": "docs/project_management/change_plans/ui-chart-wheel/tester/evidence/task_t004_replay/fixtures.json",
+      "sha256": "3515eafe3afed043ab58feba197bba7be5c5cbfb124b59c9dfb8f98678f2018a"
+    }
+  ]
+}

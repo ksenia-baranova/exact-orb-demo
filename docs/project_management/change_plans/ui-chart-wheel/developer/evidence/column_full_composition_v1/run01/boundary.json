@@ -1,0 +1,515 @@
+{
+  "controls": [
+    {
+      "id": "COPY-installed-is-distinct",
+      "actual": false,
+      "expected": false,
+      "pass": true
+    },
+    {
+      "id": "COPY-current-original-mutation",
+      "actual": "A",
+      "expected": "A",
+      "pass": true
+    },
+    {
+      "id": "ORDER-revoke-remove-HTML-dispose-draw",
+      "actual": [
+        "revoke",
+        "remove",
+        "html",
+        "dispose-fault",
+        "draw"
+      ],
+      "expected": [
+        "revoke",
+        "remove",
+        "html",
+        "dispose-fault",
+        "draw"
+      ],
+      "pass": true
+    },
+    {
+      "id": "DISPOSE-fault-sees-new-HTML",
+      "actual": "HTML B",
+      "expected": "HTML B",
+      "pass": true
+    },
+    {
+      "id": "STALE-before-settlement",
+      "actual": false,
+      "expected": false,
+      "pass": true
+    },
+    {
+      "id": "STALE-original-reference-keeps-B",
+      "actual": "B",
+      "expected": "B",
+      "pass": true
+    },
+    {
+      "id": "STALE-after-settlement",
+      "actual": false,
+      "expected": false,
+      "pass": true
+    },
+    {
+      "id": "REVISION-same-instance",
+      "actual": 3,
+      "expected": 3,
+      "pass": true
+    },
+    {
+      "id": "REVISION-old-revision-refused",
+      "actual": false,
+      "expected": false,
+      "pass": true
+    },
+    {
+      "id": "STALE-rejection-locality",
+      "actual": [
+        "HTML D",
+        "D",
+        ""
+      ],
+      "expected": [
+        "HTML D",
+        "D",
+        ""
+      ],
+      "pass": true
+    },
+    {
+      "id": "FAULT-factory",
+      "actual": [
+        "svg_unavailable",
+        "HTML factory",
+        0
+      ],
+      "expected": [
+        "svg_unavailable",
+        "HTML factory",
+        0
+      ],
+      "pass": true
+    },
+    {
+      "id": "FAULT-sync",
+      "actual": [
+        "svg_unavailable",
+        "HTML sync",
+        0
+      ],
+      "expected": [
+        "svg_unavailable",
+        "HTML sync",
+        0
+      ],
+      "pass": true
+    },
+    {
+      "id": "FAULT-async",
+      "actual": [
+        "svg_unavailable",
+        "HTML async",
+        0
+      ],
+      "expected": [
+        "svg_unavailable",
+        "HTML async",
+        0
+      ],
+      "pass": true
+    },
+    {
+      "id": "FAULT-revokes-current-authority",
+      "actual": false,
+      "expected": false,
+      "pass": true
+    },
+    {
+      "id": "VALIDATION-event-attribute-local",
+      "actual": [
+        0,
+        "HTML unsafe"
+      ],
+      "expected": [
+        0,
+        "HTML unsafe"
+      ],
+      "pass": true
+    },
+    {
+      "id": "REAL-SVG-16-source-points",
+      "actual": 16,
+      "expected": 16,
+      "pass": true
+    },
+    {
+      "id": "REAL-SVG-no-interactive-targets",
+      "actual": 0,
+      "expected": 0,
+      "pass": true
+    },
+    {
+      "id": "REAL-SVG-copy-isolation",
+      "actual": "<svg width=\"328\" height=\"332.5\" viewBox=\"0 0 328 332.5\" role=\"img\" aria-label=\"Карта: положения, дома и аспекты; управление в таблицах\" xmlns=\"http://www.w3.org/2000/svg\" style=\"font-family: &quot;Segoe UI Symbol&quot;, &quot;Segoe UI&quot;, sans-serif; overflow: hidden; display: block;\"><path d=\"M232.5164973395843,60.81397765635192 A106.5 106.5 0 0 0 177.7866570001174,67.43147750662492 L187.48193322544086,91.55618722331742 A80.5 80.5 0 0 1 228.85049798907548,86.55422724259465 Z\" fill=\"#f8fafc\" stroke=\"#bdcdd9\" stroke-width=\"0.5\" data-sector=\"0\"></path><path d=\"M177.7866570001174,67.43147750662492 A106.5 106.5 0 0 0 133.6979748462092,100.52732065623451 L154.1566852123929,116.57229401715378 A80.5 80.5 0 0 1 187.48193322544086,91.55618722331742 Z\" fill=\"#eef4f7\" stroke=\"#bdcdd9\" stroke-width=\"0.5\" data-sector=\"1\"></path><path d=\"M133.6979748462092,100.52732065623451 A106.5 106.5 0 0 0 112.06397765635192,151.2335026604157 L137.80422724259466,154.89950201092452 A80.5 80.5 0 0 1 154.1566852123929,116.57229401715378 Z\" fill=\"#f8fafc\" stroke=\"#bdcdd9\" stroke-width=\"0.5\" data-sector=\"2\"></path><path d=\"M112.06397765635192,151.2335026604157 A106.5 106.5 0 0 0 118.68147750662492,205.9633429998826 L142.8061872233174,196.26806677455914 A80.5 80.5 0 0 1 137.80422724259466,154.89950201092452 Z\" fill=\"#eef4f7\" stroke=\"#bdcdd9\" stroke-width=\"0.5\" data-sector=\"3\"></path><path d=\"M118.68147750662492,205.9633429998826 A106.5 106.5 0 0 0 151.7773206562345,250.0520251537908 L167.82229401715378,229.5933147876071 A80.5 80.5 0 0 1 142.8061872233174,196.26806677455914 Z\" fill=\"#f8fafc\" stroke=\"#bdcdd9\" stroke-width=\"0.5\" data-sector=\"4\"></path><path d=\"M151.7773206562345,250.0520251537908 A106.5 106.5 0 0 0 202.4835026604157,271.68602234364806 L206.14950201092455,245.94577275740534 A80.5 80.5 0 0 1 167.82229401715378,229.5933147876071 Z\" fill=\"#eef4f7\" stroke=\"#bdcdd9\" stroke-width=\"0.5\" data-sector=\"5\"></path><path d=\"M202.4835026604157,271.68602234364806 A106.5 106.5 0 0 0 257.21334299988257,265.0685224933751 L247.51806677455914,240.9438127766826 A80.5 80.5 0 0 1 206.14950201092455,245.94577275740534 Z\" fill=\"#f8fafc\" stroke=\"#bdcdd9\" stroke-width=\"0.5\" data-sector=\"6\"></path><path d=\"M257.21334299988257,265.0685224933751 A106.5 106.5 0 0 0 301.30202515379074,231.9726793437655 L280.8433147876071,215.92770598284622 A80.5 80.5 0 0 1 247.51806677455914,240.9438127766826 Z\" fill=\"#eef4f7\" stroke=\"#bdcdd9\" stroke-width=\"0.5\" data-sector=\"7\"></path><path d=\"M301.30202515379074,231.9726793437655 A106.5 106.5 0 0 0 322.93602234364806,181.26649733958433 L297.19577275740534,177.60049798907548 A80.5 80.5 0 0 1 280.8433147876071,215.92770598284622 Z\" fill=\"#f8fafc\" stroke=\"#bdcdd9\" stroke-width=\"0.5\" data-sector=\"8\"></path><path d=\"M322.93602234364806,181.26649733958433 A106.5 106.5 0 0 0 316.3185224933751,126.53665700011746 L292.1938127766826,136.23193322544088 A80.5 80.5 0 0 1 297.19577275740534,177.60049798907548 Z\" fill=\"#eef4f7\" stroke=\"#bdcdd9\" stroke-width=\"0.5\" data-sector=\"9\"></path><path d=\"M316.3185224933751,126.53665700011746 A106.5 106.5 0 0 0 283.2226793437655,82.44797484620923 L267.1777059828462,102.9066852123929 A80.5 80.5 0 0 1 292.1938127766826,136.23193322544088 Z\" fill=\"#f8fafc\" stroke=\"#bdcdd9\" stroke-width=\"0.5\" data-sector=\"10\"></path><path d=\"M283.2226793437655,82.44797484620923 A106.5 106.5 0 0 0 232.5164973395843,60.81397765635192 L228.85049798907545,86.55422724259465 A80.5 80.5 0 0 1 267.1777059828462,102.9066852123929 Z\" fill=\"#eef4f7\" stroke=\"#bdcdd9\" stroke-width=\"0.5\" data-sector=\"11\"></path><circle cx=\"217.5\" cy=\"166.25\" r=\"106.5\" fill=\"none\" stroke=\"#c6d4df\" stroke-width=\"0.7\"></circle><circle cx=\"217.5\" cy=\"166.25\" r=\"80.5\" fill=\"none\" stroke=\"#c6d4df\" stroke-width=\"0.7\"></circle><circle cx=\"217.5\" cy=\"166.25\" r=\"28.755000000000003\" fill=\"none\" stroke=\"#c6d4df\" stroke-width=\"0.7\"></circle><line x1=\"188.745\" y1=\"166.25\" x2=\"137\" y2=\"166.25\" stroke=\"#aebfc9\" stroke-width=\"0.7\" data-house=\"1\"></line><line x1=\"189.56970498162744\" y1=\"173.08729809110827\" x2=\"139.30877242291805\" y2=\"185.39110576714364\" stroke=\"#aebfc9\" stroke-width=\"0.7\" data-house=\"2\"></line><line x1=\"192.3760387713447\" y1=\"180.2370153063842\" x2=\"147.16514070920707\" y2=\"205.40683297388028\" stroke=\"#aebfc9\" stroke-width=\"0.7\" data-house=\"3\"></line><line x1=\"198.83416463819026\" y1=\"188.1231939882088\" x2=\"165.24474885669682\" y2=\"227.48429372459776\" stroke=\"#aebfc9\" stroke-width=\"0.7\" data-house=\"4\"></line><line x1=\"213.3210156407231\" y1=\"194.69971203237247\" x2=\"205.80087842386394\" y2=\"245.89534232676\" stroke=\"#aebfc9\" stroke-width=\"0.7\" data-house=\"5\"></line><line x1=\"237.21394503643546\" y1=\"187.18347549023818\" x2=\"272.6894479371606\" y2=\"224.85353945276205\" stroke=\"#aebfc9\" stroke-width=\"0.7\" data-house=\"6\"></line><line x1=\"246.255\" y1=\"166.25\" x2=\"298\" y2=\"166.25\" stroke=\"#aebfc9\" stroke-width=\"0.7\" data-house=\"7\"></line><line x1=\"245.43029501837256\" y1=\"159.41270190889173\" x2=\"295.6912275770819\" y2=\"147.10889423285636\" stroke=\"#aebfc9\" stroke-width=\"0.7\" data-house=\"8\"></line><line x1=\"242.62396122865528\" y1=\"152.26298469361578\" x2=\"287.8348592907929\" y2=\"127.09316702611966\" stroke=\"#aebfc9\" stroke-width=\"0.7\" data-house=\"9\"></line><line x1=\"236.16583536180974\" y1=\"144.3768060117912\" x2=\"269.75525114330316\" y2=\"105.01570627540224\" stroke=\"#aebfc9\" stroke-width=\"0.7\" data-house=\"10\"></line><line x1=\"221.67898435927694\" y1=\"137.80028796762753\" x2=\"229.19912157613606\" y2=\"86.60465767324\" stroke=\"#aebfc9\" stroke-width=\"0.7\" data-house=\"11\"></line><line x1=\"197.78605496356454\" y1=\"145.31652450976185\" x2=\"162.31055206283935\" y2=\"107.64646054723798\" stroke=\"#aebfc9\" stroke-width=\"0.7\" data-house=\"12\"></line><line x1=\"202.22140396730867\" y1=\"141.88989884524636\" x2=\"242.81236582115335\" y2=\"179.89309941091494\" stroke=\"#8a632f\" stroke-width=\"1\" stroke-dasharray=\"none\" data-aspect=\"mean_apog|pars_fortune|quincunx\" data-source-index=\"0\"></line><line x1=\"217.7212045713504\" y1=\"137.49585084657147\" x2=\"188.745\" y2=\"166.25\" stroke=\"#ad3e42\" stroke-width=\"1\" stroke-dasharray=\"none\" data-aspect=\"asc|moon|square\" data-source-index=\"1\"></line><line x1=\"203.66258298007884\" y1=\"191.45666410330404\" x2=\"242.81236582115335\" y2=\"179.89309941091494\" stroke=\"#ad3e42\" stroke-width=\"1\" stroke-dasharray=\"none\" data-aspect=\"pars_fortune|sun|square\" data-source-index=\"2\"></line><line x1=\"243.74812566064887\" y1=\"177.99248373653492\" x2=\"191.1620958833471\" y2=\"154.71029325580594\" stroke=\"#944e82\" stroke-width=\"1\" stroke-dasharray=\"none\" data-aspect=\"chiron|uranus|opposition\" data-source-index=\"3\"></line><line x1=\"196.8125918409687\" y1=\"186.22200963002086\" x2=\"237.6581634639544\" y2=\"186.75605936694063\" stroke=\"#ad3e42\" stroke-width=\"1\" stroke-dasharray=\"none\" data-aspect=\"mercury|saturn|square\" data-source-index=\"4\"></line><line x1=\"242.25626755109315\" y1=\"151.62203903687555\" x2=\"188.745\" y2=\"166.25\" stroke=\"#8a632f\" stroke-width=\"1\" stroke-dasharray=\"none\" data-aspect=\"asc|jupiter|quincunx\" data-source-index=\"5\"></line><line x1=\"203.66258298007884\" y1=\"191.45666410330404\" x2=\"242.25626755109315\" y2=\"151.62203903687555\" stroke=\"#8a632f\" stroke-width=\"1\" stroke-dasharray=\"none\" data-aspect=\"jupiter|sun|quincunx\" data-source-index=\"6\"></line><line x1=\"203.66258298007884\" y1=\"191.45666410330404\" x2=\"202.22140396730867\" y2=\"141.88989884524636\" stroke=\"#386bb0\" stroke-width=\"1\" stroke-dasharray=\"none\" data-aspect=\"mean_apog|sun|trine\" data-source-index=\"8\"></line><line x1=\"217.7212045713504\" y1=\"137.49585084657147\" x2=\"242.25626755109315\" y2=\"151.62203903687555\" stroke=\"#277566\" stroke-width=\"1\" stroke-dasharray=\"4 3\" data-aspect=\"jupiter|moon|sextile\" data-source-index=\"9\"></line><line x1=\"191.1620958833471\" y1=\"154.71029325580594\" x2=\"234.96383856274227\" y2=\"189.0943508915109\" stroke=\"#8a632f\" stroke-width=\"1\" stroke-dasharray=\"4 3\" data-aspect=\"chiron|selena|quincunx\" data-source-index=\"10\"></line><line x1=\"242.25626755109315\" y1=\"151.62203903687555\" x2=\"242.81236582115335\" y2=\"179.89309941091494\" stroke=\"#277566\" stroke-width=\"1\" stroke-dasharray=\"4 3\" data-aspect=\"jupiter|pars_fortune|sextile\" data-source-index=\"11\"></line><line x1=\"201.92078847997155\" y1=\"142.08104897985407\" x2=\"242.81236582115335\" y2=\"179.89309941091494\" stroke=\"#8a632f\" stroke-width=\"1\" stroke-dasharray=\"4 3\" data-aspect=\"pars_fortune|true_node|quincunx\" data-source-index=\"12\"></line><line x1=\"203.66258298007884\" y1=\"191.45666410330404\" x2=\"188.745\" y2=\"166.25\" stroke=\"#277566\" stroke-width=\"1\" stroke-dasharray=\"4 3\" data-aspect=\"asc|sun|sextile\" data-source-index=\"13\"></line><line x1=\"242.25626755109315\" y1=\"151.62203903687555\" x2=\"202.22140396730867\" y2=\"141.88989884524636\" stroke=\"#ad3e42\" stroke-width=\"1\" stroke-dasharray=\"4 3\" data-aspect=\"jupiter|mean_apog|square\" data-source-index=\"14\"></line><line x1=\"203.66258298007884\" y1=\"191.45666410330404\" x2=\"201.92078847997155\" y2=\"142.08104897985407\" stroke=\"#386bb0\" stroke-width=\"1\" stroke-dasharray=\"4 3\" data-aspect=\"sun|true_node|trine\" data-source-index=\"15\"></line><line x1=\"242.81236582115335\" y1=\"179.89309941091494\" x2=\"188.745\" y2=\"166.25\" stroke=\"#8a632f\" stroke-width=\"1\" stroke-dasharray=\"4 3\" data-aspect=\"asc|pars_fortune|quincunx\" data-source-index=\"16\"></line><line x1=\"203.66258298007884\" y1=\"191.45666410330404\" x2=\"217.7212045713504\" y2=\"137.49585084657147\" stroke=\"#8a632f\" stroke-width=\"1\" stroke-dasharray=\"4 3\" data-aspect=\"moon|sun|quincunx\" data-source-index=\"17\"></line><line x1=\"246.02644265567864\" y1=\"169.86829993398536\" x2=\"229.44824188090078\" y2=\"192.40510544722557\" stroke=\"#277566\" stroke-width=\"1\" stroke-dasharray=\"4 3\" data-aspect=\"neptune|pluto|sextile\" data-source-index=\"18\"></line><line x1=\"217.7212045713504\" y1=\"137.49585084657147\" x2=\"191.9924003507341\" y2=\"179.52450131390145\" stroke=\"#386bb0\" stroke-width=\"1\" stroke-dasharray=\"4 3\" data-aspect=\"moon|venus|trine\" data-source-index=\"19\"></line><line x1=\"202.22140396730867\" y1=\"141.88989884524636\" x2=\"188.745\" y2=\"166.25\" stroke=\"#277566\" stroke-width=\"1\" stroke-dasharray=\"4 3\" data-aspect=\"asc|mean_apog|sextile\" data-source-index=\"20\"></line><line x1=\"197.7745590054478\" y1=\"187.1726432978828\" x2=\"237.6581634639544\" y2=\"186.75605936694063\" stroke=\"#ad3e42\" stroke-width=\"1\" stroke-dasharray=\"4 3\" data-aspect=\"mars|saturn|square\" data-source-index=\"21\"></line><line x1=\"242.25626755109315\" y1=\"151.62203903687555\" x2=\"201.92078847997155\" y2=\"142.08104897985407\" stroke=\"#ad3e42\" stroke-width=\"1\" stroke-dasharray=\"4 3\" data-aspect=\"jupiter|true_node|square\" data-source-index=\"22\"></line><line x1=\"196.8125918409687\" y1=\"186.22200963002086\" x2=\"236.6035812710993\" y2=\"187.7419335476942\" stroke=\"#ad3e42\" stroke-width=\"1\" stroke-dasharray=\"4 3\" data-aspect=\"mercury|vertex|square\" data-source-index=\"23\"></line><line x1=\"201.92078847997155\" y1=\"142.08104897985407\" x2=\"188.745\" y2=\"166.25\" stroke=\"#277566\" stroke-width=\"1\" stroke-dasharray=\"4 3\" data-aspect=\"asc|true_node|sextile\" data-source-index=\"25\"></line><line x1=\"197.7745590054478\" y1=\"187.1726432978828\" x2=\"236.16583536180974\" y2=\"144.3768060117912\" stroke=\"#944e82\" stroke-width=\"1\" stroke-dasharray=\"4 3\" data-aspect=\"mars|mc|opposition\" data-source-index=\"26\"></line><line x1=\"191.9924003507341\" y1=\"179.52450131390145\" x2=\"229.44824188090078\" y2=\"192.40510544722557\" stroke=\"#ad3e42\" stroke-width=\"1\" stroke-dasharray=\"4 3\" data-aspect=\"pluto|venus|square\" data-source-index=\"28\"></line><path d=\"M185.49901819423553 224.54397193078483 L175.1533203125 214 L134.433299326428 164.84357416008712 L91 141.75\" fill=\"none\" stroke=\"white\" stroke-width=\"3.5\" data-leader-bridge=\"sun\"></path><path d=\"M185.49901819423553 224.54397193078483 L175.1533203125 214 L134.433299326428 164.84357416008712 L91 141.75\" fill=\"none\" stroke=\"#6e8798\" stroke-width=\"0.75\" data-leader=\"sun\"></path><path d=\"M169.65744591981985 212.4380939104986 L120.33056683740244 141.91547305556216 L91 92.75\" fill=\"none\" stroke=\"white\" stroke-width=\"3.5\" data-leader-bridge=\"mercury\"></path><path d=\"M169.65744591981985 212.4380939104986 L120.33056683740244 141.91547305556216 L91 92.75\" fill=\"none\" stroke=\"#6e8798\" stroke-width=\"0.75\" data-leader=\"mercury\"></path><path d=\"M158.51007210307142 196.9491597069882 L120.33056683740244 141.91547305556216 L91 68.25\" fill=\"none\" stroke=\"white\" stroke-width=\"3.5\" data-leader-bridge=\"venus\"></path><path d=\"M158.51007210307142 196.9491597069882 L120.33056683740244 141.91547305556216 L91 68.25\" fill=\"none\" stroke=\"#6e8798\" stroke-width=\"0.75\" data-leader=\"venus\"></path><path d=\"M171.8821308941846 214.6365685727423 L134.433299326428 164.84357416008712 L91 117.25\" fill=\"none\" stroke=\"white\" stroke-width=\"3.5\" data-leader-bridge=\"mars\"></path><path d=\"M171.8821308941846 214.6365685727423 L134.433299326428 164.84357416008712 L91 117.25\" fill=\"none\" stroke=\"#6e8798\" stroke-width=\"0.75\" data-leader=\"mars\"></path><path d=\"M264.1186009512421 213.67315937755356 L260.4765625 218 L151.67414099748953 235.73217372913416 L91 239.75\" fill=\"none\" stroke=\"white\" stroke-width=\"3.5\" data-leader-bridge=\"saturn\"></path><path d=\"M264.1186009512421 213.67315937755356 L260.4765625 218 L151.67414099748953 235.73217372913416 L91 239.75\" fill=\"none\" stroke=\"#6e8798\" stroke-width=\"0.75\" data-leader=\"saturn\"></path><path d=\"M278.2024989196018 193.40615261622577 L260.4765625 218 L169.66547305556216 240.41943316259756 L91 288.75\" fill=\"none\" stroke=\"white\" stroke-width=\"3.5\" data-leader-bridge=\"uranus\"></path><path d=\"M278.2024989196018 193.40615261622577 L260.4765625 218 L169.66547305556216 240.41943316259756 L91 288.75\" fill=\"none\" stroke=\"#6e8798\" stroke-width=\"0.75\" data-leader=\"uranus\"></path><path d=\"M283.4714288507261 174.6178297899505 L260.4765625 218 L191.16547305556216 265.91943316259756 L91 313.25\" fill=\"none\" stroke=\"white\" stroke-width=\"3.5\" data-leader-bridge=\"neptune\"></path><path d=\"M283.4714288507261 174.6178297899505 L260.4765625 218 L191.16547305556216 265.91943316259756 L91 313.25\" fill=\"none\" stroke=\"#6e8798\" stroke-width=\"0.75\" data-leader=\"neptune\"></path><path d=\"M245.13199739453665 226.7373765341854 L175.1533203125 214 L112.933299326428 190.34357416008712 L91 166.25\" fill=\"none\" stroke=\"white\" stroke-width=\"3.5\" data-leader-bridge=\"pluto\"></path><path d=\"M245.13199739453665 226.7373765341854 L175.1533203125 214 L112.933299326428 190.34357416008712 L91 166.25\" fill=\"none\" stroke=\"#6e8798\" stroke-width=\"0.75\" data-leader=\"pluto\"></path><path d=\"M181.47087233239816 110.35588618189169 L150.01782627086584 103.42414099748954 L91 43.75\" fill=\"none\" stroke=\"white\" stroke-width=\"3.5\" data-leader-bridge=\"true_node\"></path><path d=\"M181.47087233239816 110.35588618189169 L150.01782627086584 103.42414099748954 L91 43.75\" fill=\"none\" stroke=\"#6e8798\" stroke-width=\"0.75\" data-leader=\"true_node\"></path><path d=\"M253.5291276676018 222.14411381810834 L175.1533203125 214 L91 190.75\" fill=\"none\" stroke=\"white\" stroke-width=\"3.5\" data-leader-bridge=\"south_node\"></path><path d=\"M253.5291276676018 222.14411381810834 L175.1533203125 214 L91 190.75\" fill=\"none\" stroke=\"#6e8798\" stroke-width=\"0.75\" data-leader=\"south_node\"></path><path d=\"M182.16608811775438 109.91382448996293 L171.51782627086584 77.92414099748954 L91 19.25\" fill=\"none\" stroke=\"white\" stroke-width=\"3.5\" data-leader-bridge=\"mean_apog\"></path><path d=\"M182.16608811775438 109.91382448996293 L171.51782627086584 77.92414099748954 L91 19.25\" fill=\"none\" stroke=\"#6e8798\" stroke-width=\"0.75\" data-leader=\"mean_apog\"></path><path d=\"M257.8875939635667 219.0807888814285 L175.1533203125 214 L151.67414099748953 210.23217372913416 L132.17414099748953 210.23217372913416 L91 215.25\" fill=\"none\" stroke=\"white\" stroke-width=\"3.5\" data-leader-bridge=\"selena\"></path><path d=\"M257.8875939635667 219.0807888814285 L175.1533203125 214 L151.67414099748953 210.23217372913416 L132.17414099748953 210.23217372913416 L91 215.25\" fill=\"none\" stroke=\"#6e8798\" stroke-width=\"0.75\" data-leader=\"selena\"></path><path d=\"M276.0384220868266 197.80159488178901 L260.4765625 218 L169.66547305556216 240.41943316259756 L91 264.25\" fill=\"none\" stroke=\"white\" stroke-width=\"3.5\" data-leader-bridge=\"pars_fortune\"></path><path d=\"M276.0384220868266 197.80159488178901 L260.4765625 218 L169.66547305556216 240.41943316259756 L91 264.25\" fill=\"none\" stroke=\"#6e8798\" stroke-width=\"0.75\" data-leader=\"pars_fortune\"></path><path d=\"M251.4619222597321 204.4578818625675 L251 207.75\" fill=\"none\" stroke=\"white\" stroke-width=\"3.5\" data-leader-bridge=\"angle:vertex\"></path><path d=\"M251.4619222597321 204.4578818625675 L251 207.75\" fill=\"none\" stroke=\"#6e8798\" stroke-width=\"0.75\" data-leader=\"angle:vertex\"></path><path d=\"M268.62 166.25 L267 167.75\" fill=\"none\" stroke=\"white\" stroke-width=\"3.5\" data-leader-bridge=\"angle:dsc\"></path><path d=\"M268.62 166.25 L267 167.75\" fill=\"none\" stroke=\"#6e8798\" stroke-width=\"0.75\" data-leader=\"angle:dsc\"></path><path d=\"M184.31629269011603 205.13567820126008 L183 203.75\" fill=\"none\" stroke=\"white\" stroke-width=\"3.5\" data-leader-bridge=\"angle:ic\"></path><path d=\"M184.31629269011603 205.13567820126008 L183 203.75\" fill=\"none\" stroke=\"#6e8798\" stroke-width=\"0.75\" data-leader=\"angle:ic\"></path><g data-label=\"sign:0\" data-kind=\"sign\" transform=\"translate(206.15642583991288 72.433299326428)\" aria-label=\"sign:0\"><rect x=\"-8.5\" y=\"-10.5\" width=\"17\" height=\"21\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-7.5\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"sign:0:0\">♈</text></g><g data-label=\"sign:1\" data-kind=\"sign\" transform=\"translate(160.76782627086584 90.67414099748954)\" aria-label=\"sign:1\"><rect x=\"-8.5\" y=\"-10.5\" width=\"17\" height=\"21\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-7.5\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"sign:1:0\">♉</text></g><g data-label=\"sign:2\" data-kind=\"sign\" transform=\"translate(130.58056683740244 129.16547305556216)\" aria-label=\"sign:2\"><rect x=\"-8\" y=\"-10.5\" width=\"16\" height=\"21\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-7\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"sign:2:0\">♊</text></g><g data-label=\"sign:3\" data-kind=\"sign\" transform=\"translate(123.683299326428 177.59357416008712)\" aria-label=\"sign:3\"><rect x=\"-8.5\" y=\"-10.5\" width=\"17\" height=\"21\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-7.5\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"sign:3:0\">♋</text></g><g data-label=\"sign:4\" data-kind=\"sign\" transform=\"translate(141.92414099748953 222.98217372913416)\" aria-label=\"sign:4\"><rect x=\"-7.5\" y=\"-10.5\" width=\"15\" height=\"21\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-6.5\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"sign:4:0\">♌</text></g><g data-label=\"sign:5\" data-kind=\"sign\" transform=\"translate(180.41547305556216 253.16943316259756)\" aria-label=\"sign:5\"><rect x=\"-8.5\" y=\"-10.5\" width=\"17\" height=\"21\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-7.5\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"sign:5:0\">♍</text></g><g data-label=\"sign:6\" data-kind=\"sign\" transform=\"translate(228.84357416008712 260.066700673572)\" aria-label=\"sign:6\"><rect x=\"-8\" y=\"-10.5\" width=\"16\" height=\"21\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-7\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"sign:6:0\">♎</text></g><g data-label=\"sign:7\" data-kind=\"sign\" transform=\"translate(274.23217372913416 241.82585900251047)\" aria-label=\"sign:7\"><rect x=\"-8.5\" y=\"-10.5\" width=\"17\" height=\"21\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-7.5\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"sign:7:0\">♏</text></g><g data-label=\"sign:8\" data-kind=\"sign\" transform=\"translate(304.41943316259756 203.33452694443784)\" aria-label=\"sign:8\"><rect x=\"-7.5\" y=\"-10.5\" width=\"15\" height=\"21\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-6.5\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"sign:8:0\">♐</text></g><g data-label=\"sign:9\" data-kind=\"sign\" transform=\"translate(311.316700673572 154.9064258399129)\" aria-label=\"sign:9\"><rect x=\"-9.5\" y=\"-10.5\" width=\"19\" height=\"21\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-8.5\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"sign:9:0\">♑</text></g><g data-label=\"sign:10\" data-kind=\"sign\" transform=\"translate(293.07585900251047 109.51782627086583)\" aria-label=\"sign:10\"><rect x=\"-9.5\" y=\"-10.5\" width=\"19\" height=\"21\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-8.5\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"sign:10:0\">♒</text></g><g data-label=\"sign:11\" data-kind=\"sign\" transform=\"translate(254.58452694443787 79.33056683740246)\" aria-label=\"sign:11\"><rect x=\"-6.5\" y=\"-10.5\" width=\"13\" height=\"21\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-5.5\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"sign:11:0\">♓</text></g><g data-label=\"sun\" data-kind=\"point\" transform=\"translate(36.59765625 141.75)\" aria-label=\"Солнце\"><rect x=\"-7.4921875\" y=\"-11.25\" width=\"14.984375\" height=\"22.5\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-6.7421875\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"sun:0\">☉</text><rect x=\"12.4921875\" y=\"-8\" width=\"41.91015625\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"12.4921875\" y=\"5\" font-size=\"12\" fill=\"#193e55\" data-component=\"sun:1\">Солнце</text></g><circle cx=\"185.49901819423553\" cy=\"224.54397193078483\" r=\"1\" fill=\"#305b75\" data-anchor=\"sun\"></circle><g data-label=\"moon\" data-kind=\"point\" transform=\"translate(218.01156682298037 99.75196770290397)\" aria-label=\"Луна\"><rect x=\"-5.3203125\" y=\"-11.25\" width=\"10.640625\" height=\"22.5\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-4.5703125\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"moon:0\">☽</text></g><circle cx=\"218.01156682298037\" cy=\"99.75196770290397\" r=\"1\" fill=\"#305b75\" data-anchor=\"moon\"></circle><g data-label=\"mercury\" data-kind=\"point\" transform=\"translate(23.845703125 92.75)\" aria-label=\"Меркурий\"><rect x=\"-5.25\" y=\"-11.25\" width=\"10.5\" height=\"22.5\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-4.5\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"mercury:0\">☿</text><rect x=\"10.25\" y=\"-8\" width=\"56.904296875\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"10.25\" y=\"5\" font-size=\"12\" fill=\"#193e55\" data-component=\"mercury:1\">Меркурий</text></g><circle cx=\"169.65744591981985\" cy=\"212.4380939104986\" r=\"1\" fill=\"#305b75\" data-anchor=\"mercury\"></circle><g data-label=\"venus\" data-kind=\"point\" transform=\"translate(41.234375 68.25)\" aria-label=\"Венера\"><rect x=\"-5.25\" y=\"-11.25\" width=\"10.5\" height=\"22.5\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-4.5\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"venus:0\">♀</text><rect x=\"10.25\" y=\"-8\" width=\"39.515625\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"10.25\" y=\"5\" font-size=\"12\" fill=\"#193e55\" data-component=\"venus:1\">Венера</text></g><circle cx=\"158.51007210307142\" cy=\"196.9491597069882\" r=\"1\" fill=\"#305b75\" data-anchor=\"venus\"></circle><g data-label=\"mars\" data-kind=\"point\" transform=\"translate(49.759765625 117.25)\" aria-label=\"Марс\"><rect x=\"-6.3046875\" y=\"-11.25\" width=\"12.609375\" height=\"22.5\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-5.5546875\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"mars:0\">♂</text><rect x=\"11.3046875\" y=\"-8\" width=\"29.935546875\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"11.3046875\" y=\"5\" font-size=\"12\" fill=\"#193e55\" data-component=\"mars:1\">Марс</text></g><circle cx=\"171.8821308941846\" cy=\"214.6365685727423\" r=\"1\" fill=\"#305b75\" data-anchor=\"mars\"></circle><g data-label=\"jupiter\" data-kind=\"point\" transform=\"translate(274.75236627187246 132.42077363770557)\" aria-label=\"Юпитер, ретроградная\"><rect x=\"-6.90625\" y=\"-11.25\" width=\"13.8125\" height=\"22.5\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-6.15625\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"jupiter:0\">♃</text><rect x=\"8.90625\" y=\"-5\" width=\"8\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"8.90625\" y=\"8\" font-size=\"12\" fill=\"#193e55\" data-component=\"jupiter:1\">R</text></g><circle cx=\"274.75236627187246\" cy=\"132.42077363770557\" r=\"1\" fill=\"#305b75\" data-anchor=\"jupiter\"></circle><g data-label=\"saturn\" data-kind=\"point\" transform=\"translate(42.431640625 239.75)\" aria-label=\"Сатурн\"><rect x=\"-5.25\" y=\"-11.25\" width=\"10.5\" height=\"22.5\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-4.5\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"saturn:0\">♄</text><rect x=\"10.25\" y=\"-8\" width=\"38.318359375\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"10.25\" y=\"5\" font-size=\"12\" fill=\"#193e55\" data-component=\"saturn:1\">Сатурн</text></g><circle cx=\"264.1186009512421\" cy=\"213.67315937755356\" r=\"1\" fill=\"#305b75\" data-anchor=\"saturn\"></circle><g data-label=\"uranus\" data-kind=\"point\" transform=\"translate(52.28125 288.75)\" aria-label=\"Уран\"><rect x=\"-6.75\" y=\"-11.25\" width=\"13.5\" height=\"22.5\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-6\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"uranus:0\">♅</text><rect x=\"11.75\" y=\"-8\" width=\"26.96875\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"11.75\" y=\"5\" font-size=\"12\" fill=\"#193e55\" data-component=\"uranus:1\">Уран</text></g><circle cx=\"278.2024989196018\" cy=\"193.40615261622577\" r=\"1\" fill=\"#305b75\" data-anchor=\"uranus\"></circle><g data-label=\"neptune\" data-kind=\"point\" transform=\"translate(28.80078125 313.25)\" aria-label=\"Нептун, ретроградная\"><rect x=\"-7.75\" y=\"-11.25\" width=\"15.5\" height=\"22.5\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-7\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"neptune:0\">♆</text><rect x=\"9.75\" y=\"-5\" width=\"8\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"9.75\" y=\"8\" font-size=\"12\" fill=\"#193e55\" data-component=\"neptune:1\">R</text><rect x=\"22.75\" y=\"-8\" width=\"39.44921875\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"22.75\" y=\"5\" font-size=\"12\" fill=\"#193e55\" data-component=\"neptune:2\">Нептун</text></g><circle cx=\"283.4714288507261\" cy=\"174.6178297899505\" r=\"1\" fill=\"#305b75\" data-anchor=\"neptune\"></circle><g data-label=\"pluto\" data-kind=\"point\" transform=\"translate(41.11328125 166.25)\" aria-label=\"Плутон\"><rect x=\"-5.25\" y=\"-11.25\" width=\"10.5\" height=\"22.5\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-4.5\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"pluto:0\">♇</text><rect x=\"10.25\" y=\"-8\" width=\"39.63671875\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"10.25\" y=\"5\" font-size=\"12\" fill=\"#193e55\" data-component=\"pluto:1\">Плутон</text></g><circle cx=\"245.13199739453665\" cy=\"226.7373765341854\" r=\"1\" fill=\"#305b75\" data-anchor=\"pluto\"></circle><g data-label=\"chiron\" data-kind=\"point\" transform=\"translate(156.58987571700857 139.5627978268508)\" aria-label=\"Хирон\"><rect x=\"-5.25\" y=\"-11.25\" width=\"10.5\" height=\"22.5\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-4.5\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"chiron:0\">⚷</text></g><circle cx=\"156.58987571700857\" cy=\"139.5627978268508\" r=\"1\" fill=\"#305b75\" data-anchor=\"chiron\"></circle><g data-label=\"true_node\" data-kind=\"point\" transform=\"translate(19.4375 43.75)\" aria-label=\"Сев. узел, ретроградная\"><rect x=\"-6.84375\" y=\"-11.25\" width=\"13.6875\" height=\"22.5\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-6.09375\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"true_node:0\">☊</text><rect x=\"8.84375\" y=\"-5\" width=\"8\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"8.84375\" y=\"8\" font-size=\"12\" fill=\"#193e55\" data-component=\"true_node:1\">R</text><rect x=\"21.84375\" y=\"-8\" width=\"49.71875\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"21.84375\" y=\"5\" font-size=\"12\" fill=\"#193e55\" data-component=\"true_node:2\">Сев. узел</text></g><circle cx=\"181.47087233239816\" cy=\"110.35588618189169\" r=\"1\" fill=\"#305b75\" data-anchor=\"true_node\"></circle><g data-label=\"south_node\" data-kind=\"point\" transform=\"translate(11.40625 190.75)\" aria-label=\"Южн. узел, ретроградная\"><rect x=\"-6.84375\" y=\"-11.25\" width=\"13.6875\" height=\"22.5\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-6.09375\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"south_node:0\">☋</text><rect x=\"8.84375\" y=\"-5\" width=\"8\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"8.84375\" y=\"8\" font-size=\"12\" fill=\"#193e55\" data-component=\"south_node:1\">R</text><rect x=\"21.84375\" y=\"-8\" width=\"57.75\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"21.84375\" y=\"5\" font-size=\"12\" fill=\"#193e55\" data-component=\"south_node:2\">Южн. узел</text></g><circle cx=\"253.5291276676018\" cy=\"222.14411381810834\" r=\"1\" fill=\"#305b75\" data-anchor=\"south_node\"></circle><g data-label=\"mean_apog\" data-kind=\"point\" transform=\"translate(45.501953125 19.25)\" aria-label=\"Лилит\"><rect x=\"-5.15625\" y=\"-11.25\" width=\"10.3125\" height=\"22.5\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-4.40625\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"mean_apog:0\">⚸</text><rect x=\"10.15625\" y=\"-8\" width=\"35.341796875\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"11.15625\" y=\"5\" font-size=\"12\" fill=\"#193e55\" data-component=\"mean_apog:1\">Лилит</text></g><circle cx=\"182.16608811775438\" cy=\"109.91382448996293\" r=\"1\" fill=\"#305b75\" data-anchor=\"mean_apog\"></circle><g data-label=\"selena\" data-kind=\"point\" transform=\"translate(29.1640625 215.25)\" aria-label=\"Селена, ретроградная\"><rect x=\"-7.4921875\" y=\"-11.25\" width=\"14.984375\" height=\"22.5\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-6.7421875\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"selena:0\">⚪</text><rect x=\"9.4921875\" y=\"-5\" width=\"8\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"9.4921875\" y=\"8\" font-size=\"12\" fill=\"#193e55\" data-component=\"selena:1\">R</text><rect x=\"22.4921875\" y=\"-8\" width=\"39.34375\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"22.4921875\" y=\"5\" font-size=\"12\" fill=\"#193e55\" data-component=\"selena:2\">Селена</text></g><circle cx=\"257.8875939635667\" cy=\"219.0807888814285\" r=\"1\" fill=\"#305b75\" data-anchor=\"selena\"></circle><g data-label=\"pars_fortune\" data-kind=\"point\" transform=\"translate(36.244140625 264.25)\" aria-label=\"Парс Ф.\"><rect x=\"-7.4921875\" y=\"-11.25\" width=\"14.984375\" height=\"22.5\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-6.7421875\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"pars_fortune:0\">⊗</text><rect x=\"12.4921875\" y=\"-8\" width=\"42.263671875\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"12.4921875\" y=\"5\" font-size=\"12\" fill=\"#193e55\" data-component=\"pars_fortune:1\">Парс Ф.</text></g><circle cx=\"276.0384220868266\" cy=\"197.80159488178901\" r=\"1\" fill=\"#305b75\" data-anchor=\"pars_fortune\"></circle><g data-label=\"angle:asc\" data-kind=\"angle\" transform=\"translate(166.38 166.25)\" aria-label=\"angle:asc\"><rect x=\"-11.5576171875\" y=\"-8\" width=\"23.115234375\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-10.5576171875\" y=\"5\" font-size=\"12\" fill=\"#193e55\" data-component=\"angle:asc:0\">ASC</text></g><circle cx=\"166.38\" cy=\"166.25\" r=\"1\" fill=\"#305b75\" data-anchor=\"angle:asc\"></circle><g data-label=\"angle:mc\" data-kind=\"angle\" transform=\"translate(250.68370730988394 127.36432179873991)\" aria-label=\"angle:mc\"><rect x=\"-9.3876953125\" y=\"-8\" width=\"18.775390625\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-9.3876953125\" y=\"5\" font-size=\"12\" fill=\"#193e55\" data-component=\"angle:mc:0\">MC</text></g><circle cx=\"250.68370730988394\" cy=\"127.36432179873991\" r=\"1\" fill=\"#305b75\" data-anchor=\"angle:mc\"></circle><g data-label=\"angle:vertex\" data-kind=\"angle\" transform=\"translate(251 207.75)\" aria-label=\"angle:vertex\"><rect x=\"-7.2265625\" y=\"-8\" width=\"14.453125\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-6.2265625\" y=\"5\" font-size=\"12\" fill=\"#193e55\" data-component=\"angle:vertex:0\">Vx</text></g><circle cx=\"251.4619222597321\" cy=\"204.4578818625675\" r=\"1\" fill=\"#305b75\" data-anchor=\"angle:vertex\"></circle><g data-label=\"angle:dsc\" data-kind=\"angle\" transform=\"translate(267 167.75)\" aria-label=\"angle:dsc\"><rect x=\"-11.39453125\" y=\"-8\" width=\"22.7890625\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-11.39453125\" y=\"5\" font-size=\"12\" fill=\"#193e55\" data-component=\"angle:dsc:0\">DSC</text></g><circle cx=\"268.62\" cy=\"166.25\" r=\"1\" fill=\"#305b75\" data-anchor=\"angle:dsc\"></circle><g data-label=\"angle:ic\" data-kind=\"angle\" transform=\"translate(183 203.75)\" aria-label=\"angle:ic\"><rect x=\"-5.5966796875\" y=\"-8\" width=\"11.193359375\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-5.5966796875\" y=\"5\" font-size=\"12\" fill=\"#193e55\" data-component=\"angle:ic:0\">IC</text></g><circle cx=\"184.31629269011603\" cy=\"205.13567820126008\" r=\"1\" fill=\"#305b75\" data-anchor=\"angle:ic\"></circle><g data-label=\"conj:mean_apog|true_node|conjunction\" data-kind=\"marker\" transform=\"translate(202.0710962236401 141.98547391255022)\" aria-label=\"conj:mean_apog|true_node|conjunction\"><rect x=\"-4.8125\" y=\"-11.25\" width=\"9.625\" height=\"22.5\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-4.0625\" y=\"6.5\" font-size=\"16\" fill=\"#385f8a\" data-component=\"conj:mean_apog|true_node|conjunction:0\">☌</text></g><circle cx=\"202.0710962236401\" cy=\"141.98547391255022\" r=\"1\" fill=\"#305b75\" data-anchor=\"conj:mean_apog|true_node|conjunction\"></circle><g data-label=\"conj:mars|mercury|conjunction\" data-kind=\"marker\" transform=\"translate(197.29357542320827 186.6973264639518)\" aria-label=\"conj:mars|mercury|conjunction\"><rect x=\"-4.8125\" y=\"-11.25\" width=\"9.625\" height=\"22.5\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-4.0625\" y=\"6.5\" font-size=\"16\" fill=\"#385f8a\" data-component=\"conj:mars|mercury|conjunction:0\">☌</text></g><circle cx=\"197.29357542320827\" cy=\"186.6973264639518\" r=\"1\" fill=\"#305b75\" data-anchor=\"conj:mars|mercury|conjunction\"></circle><g data-label=\"conj:saturn|vertex|conjunction\" data-kind=\"marker\" transform=\"translate(237.13087236752685 187.24899645731742)\" aria-label=\"conj:saturn|vertex|conjunction\"><rect x=\"-4.8125\" y=\"-11.25\" width=\"9.625\" height=\"22.5\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-4.0625\" y=\"6.5\" font-size=\"16\" fill=\"#385f8a\" data-component=\"conj:saturn|vertex|conjunction:0\">☌</text></g><circle cx=\"237.13087236752685\" cy=\"187.24899645731742\" r=\"1\" fill=\"#305b75\" data-anchor=\"conj:saturn|vertex|conjunction\"></circle></svg>",
+      "expected": "<svg width=\"328\" height=\"332.5\" viewBox=\"0 0 328 332.5\" role=\"img\" aria-label=\"Карта: положения, дома и аспекты; управление в таблицах\" xmlns=\"http://www.w3.org/2000/svg\" style=\"font-family: &quot;Segoe UI Symbol&quot;, &quot;Segoe UI&quot;, sans-serif; overflow: hidden; display: block;\"><path d=\"M232.5164973395843,60.81397765635192 A106.5 106.5 0 0 0 177.7866570001174,67.43147750662492 L187.48193322544086,91.55618722331742 A80.5 80.5 0 0 1 228.85049798907548,86.55422724259465 Z\" fill=\"#f8fafc\" stroke=\"#bdcdd9\" stroke-width=\"0.5\" data-sector=\"0\"></path><path d=\"M177.7866570001174,67.43147750662492 A106.5 106.5 0 0 0 133.6979748462092,100.52732065623451 L154.1566852123929,116.57229401715378 A80.5 80.5 0 0 1 187.48193322544086,91.55618722331742 Z\" fill=\"#eef4f7\" stroke=\"#bdcdd9\" stroke-width=\"0.5\" data-sector=\"1\"></path><path d=\"M133.6979748462092,100.52732065623451 A106.5 106.5 0 0 0 112.06397765635192,151.2335026604157 L137.80422724259466,154.89950201092452 A80.5 80.5 0 0 1 154.1566852123929,116.57229401715378 Z\" fill=\"#f8fafc\" stroke=\"#bdcdd9\" stroke-width=\"0.5\" data-sector=\"2\"></path><path d=\"M112.06397765635192,151.2335026604157 A106.5 106.5 0 0 0 118.68147750662492,205.9633429998826 L142.8061872233174,196.26806677455914 A80.5 80.5 0 0 1 137.80422724259466,154.89950201092452 Z\" fill=\"#eef4f7\" stroke=\"#bdcdd9\" stroke-width=\"0.5\" data-sector=\"3\"></path><path d=\"M118.68147750662492,205.9633429998826 A106.5 106.5 0 0 0 151.7773206562345,250.0520251537908 L167.82229401715378,229.5933147876071 A80.5 80.5 0 0 1 142.8061872233174,196.26806677455914 Z\" fill=\"#f8fafc\" stroke=\"#bdcdd9\" stroke-width=\"0.5\" data-sector=\"4\"></path><path d=\"M151.7773206562345,250.0520251537908 A106.5 106.5 0 0 0 202.4835026604157,271.68602234364806 L206.14950201092455,245.94577275740534 A80.5 80.5 0 0 1 167.82229401715378,229.5933147876071 Z\" fill=\"#eef4f7\" stroke=\"#bdcdd9\" stroke-width=\"0.5\" data-sector=\"5\"></path><path d=\"M202.4835026604157,271.68602234364806 A106.5 106.5 0 0 0 257.21334299988257,265.0685224933751 L247.51806677455914,240.9438127766826 A80.5 80.5 0 0 1 206.14950201092455,245.94577275740534 Z\" fill=\"#f8fafc\" stroke=\"#bdcdd9\" stroke-width=\"0.5\" data-sector=\"6\"></path><path d=\"M257.21334299988257,265.0685224933751 A106.5 106.5 0 0 0 301.30202515379074,231.9726793437655 L280.8433147876071,215.92770598284622 A80.5 80.5 0 0 1 247.51806677455914,240.9438127766826 Z\" fill=\"#eef4f7\" stroke=\"#bdcdd9\" stroke-width=\"0.5\" data-sector=\"7\"></path><path d=\"M301.30202515379074,231.9726793437655 A106.5 106.5 0 0 0 322.93602234364806,181.26649733958433 L297.19577275740534,177.60049798907548 A80.5 80.5 0 0 1 280.8433147876071,215.92770598284622 Z\" fill=\"#f8fafc\" stroke=\"#bdcdd9\" stroke-width=\"0.5\" data-sector=\"8\"></path><path d=\"M322.93602234364806,181.26649733958433 A106.5 106.5 0 0 0 316.3185224933751,126.53665700011746 L292.1938127766826,136.23193322544088 A80.5 80.5 0 0 1 297.19577275740534,177.60049798907548 Z\" fill=\"#eef4f7\" stroke=\"#bdcdd9\" stroke-width=\"0.5\" data-sector=\"9\"></path><path d=\"M316.3185224933751,126.53665700011746 A106.5 106.5 0 0 0 283.2226793437655,82.44797484620923 L267.1777059828462,102.9066852123929 A80.5 80.5 0 0 1 292.1938127766826,136.23193322544088 Z\" fill=\"#f8fafc\" stroke=\"#bdcdd9\" stroke-width=\"0.5\" data-sector=\"10\"></path><path d=\"M283.2226793437655,82.44797484620923 A106.5 106.5 0 0 0 232.5164973395843,60.81397765635192 L228.85049798907545,86.55422724259465 A80.5 80.5 0 0 1 267.1777059828462,102.9066852123929 Z\" fill=\"#eef4f7\" stroke=\"#bdcdd9\" stroke-width=\"0.5\" data-sector=\"11\"></path><circle cx=\"217.5\" cy=\"166.25\" r=\"106.5\" fill=\"none\" stroke=\"#c6d4df\" stroke-width=\"0.7\"></circle><circle cx=\"217.5\" cy=\"166.25\" r=\"80.5\" fill=\"none\" stroke=\"#c6d4df\" stroke-width=\"0.7\"></circle><circle cx=\"217.5\" cy=\"166.25\" r=\"28.755000000000003\" fill=\"none\" stroke=\"#c6d4df\" stroke-width=\"0.7\"></circle><line x1=\"188.745\" y1=\"166.25\" x2=\"137\" y2=\"166.25\" stroke=\"#aebfc9\" stroke-width=\"0.7\" data-house=\"1\"></line><line x1=\"189.56970498162744\" y1=\"173.08729809110827\" x2=\"139.30877242291805\" y2=\"185.39110576714364\" stroke=\"#aebfc9\" stroke-width=\"0.7\" data-house=\"2\"></line><line x1=\"192.3760387713447\" y1=\"180.2370153063842\" x2=\"147.16514070920707\" y2=\"205.40683297388028\" stroke=\"#aebfc9\" stroke-width=\"0.7\" data-house=\"3\"></line><line x1=\"198.83416463819026\" y1=\"188.1231939882088\" x2=\"165.24474885669682\" y2=\"227.48429372459776\" stroke=\"#aebfc9\" stroke-width=\"0.7\" data-house=\"4\"></line><line x1=\"213.3210156407231\" y1=\"194.69971203237247\" x2=\"205.80087842386394\" y2=\"245.89534232676\" stroke=\"#aebfc9\" stroke-width=\"0.7\" data-house=\"5\"></line><line x1=\"237.21394503643546\" y1=\"187.18347549023818\" x2=\"272.6894479371606\" y2=\"224.85353945276205\" stroke=\"#aebfc9\" stroke-width=\"0.7\" data-house=\"6\"></line><line x1=\"246.255\" y1=\"166.25\" x2=\"298\" y2=\"166.25\" stroke=\"#aebfc9\" stroke-width=\"0.7\" data-house=\"7\"></line><line x1=\"245.43029501837256\" y1=\"159.41270190889173\" x2=\"295.6912275770819\" y2=\"147.10889423285636\" stroke=\"#aebfc9\" stroke-width=\"0.7\" data-house=\"8\"></line><line x1=\"242.62396122865528\" y1=\"152.26298469361578\" x2=\"287.8348592907929\" y2=\"127.09316702611966\" stroke=\"#aebfc9\" stroke-width=\"0.7\" data-house=\"9\"></line><line x1=\"236.16583536180974\" y1=\"144.3768060117912\" x2=\"269.75525114330316\" y2=\"105.01570627540224\" stroke=\"#aebfc9\" stroke-width=\"0.7\" data-house=\"10\"></line><line x1=\"221.67898435927694\" y1=\"137.80028796762753\" x2=\"229.19912157613606\" y2=\"86.60465767324\" stroke=\"#aebfc9\" stroke-width=\"0.7\" data-house=\"11\"></line><line x1=\"197.78605496356454\" y1=\"145.31652450976185\" x2=\"162.31055206283935\" y2=\"107.64646054723798\" stroke=\"#aebfc9\" stroke-width=\"0.7\" data-house=\"12\"></line><line x1=\"202.22140396730867\" y1=\"141.88989884524636\" x2=\"242.81236582115335\" y2=\"179.89309941091494\" stroke=\"#8a632f\" stroke-width=\"1\" stroke-dasharray=\"none\" data-aspect=\"mean_apog|pars_fortune|quincunx\" data-source-index=\"0\"></line><line x1=\"217.7212045713504\" y1=\"137.49585084657147\" x2=\"188.745\" y2=\"166.25\" stroke=\"#ad3e42\" stroke-width=\"1\" stroke-dasharray=\"none\" data-aspect=\"asc|moon|square\" data-source-index=\"1\"></line><line x1=\"203.66258298007884\" y1=\"191.45666410330404\" x2=\"242.81236582115335\" y2=\"179.89309941091494\" stroke=\"#ad3e42\" stroke-width=\"1\" stroke-dasharray=\"none\" data-aspect=\"pars_fortune|sun|square\" data-source-index=\"2\"></line><line x1=\"243.74812566064887\" y1=\"177.99248373653492\" x2=\"191.1620958833471\" y2=\"154.71029325580594\" stroke=\"#944e82\" stroke-width=\"1\" stroke-dasharray=\"none\" data-aspect=\"chiron|uranus|opposition\" data-source-index=\"3\"></line><line x1=\"196.8125918409687\" y1=\"186.22200963002086\" x2=\"237.6581634639544\" y2=\"186.75605936694063\" stroke=\"#ad3e42\" stroke-width=\"1\" stroke-dasharray=\"none\" data-aspect=\"mercury|saturn|square\" data-source-index=\"4\"></line><line x1=\"242.25626755109315\" y1=\"151.62203903687555\" x2=\"188.745\" y2=\"166.25\" stroke=\"#8a632f\" stroke-width=\"1\" stroke-dasharray=\"none\" data-aspect=\"asc|jupiter|quincunx\" data-source-index=\"5\"></line><line x1=\"203.66258298007884\" y1=\"191.45666410330404\" x2=\"242.25626755109315\" y2=\"151.62203903687555\" stroke=\"#8a632f\" stroke-width=\"1\" stroke-dasharray=\"none\" data-aspect=\"jupiter|sun|quincunx\" data-source-index=\"6\"></line><line x1=\"203.66258298007884\" y1=\"191.45666410330404\" x2=\"202.22140396730867\" y2=\"141.88989884524636\" stroke=\"#386bb0\" stroke-width=\"1\" stroke-dasharray=\"none\" data-aspect=\"mean_apog|sun|trine\" data-source-index=\"8\"></line><line x1=\"217.7212045713504\" y1=\"137.49585084657147\" x2=\"242.25626755109315\" y2=\"151.62203903687555\" stroke=\"#277566\" stroke-width=\"1\" stroke-dasharray=\"4 3\" data-aspect=\"jupiter|moon|sextile\" data-source-index=\"9\"></line><line x1=\"191.1620958833471\" y1=\"154.71029325580594\" x2=\"234.96383856274227\" y2=\"189.0943508915109\" stroke=\"#8a632f\" stroke-width=\"1\" stroke-dasharray=\"4 3\" data-aspect=\"chiron|selena|quincunx\" data-source-index=\"10\"></line><line x1=\"242.25626755109315\" y1=\"151.62203903687555\" x2=\"242.81236582115335\" y2=\"179.89309941091494\" stroke=\"#277566\" stroke-width=\"1\" stroke-dasharray=\"4 3\" data-aspect=\"jupiter|pars_fortune|sextile\" data-source-index=\"11\"></line><line x1=\"201.92078847997155\" y1=\"142.08104897985407\" x2=\"242.81236582115335\" y2=\"179.89309941091494\" stroke=\"#8a632f\" stroke-width=\"1\" stroke-dasharray=\"4 3\" data-aspect=\"pars_fortune|true_node|quincunx\" data-source-index=\"12\"></line><line x1=\"203.66258298007884\" y1=\"191.45666410330404\" x2=\"188.745\" y2=\"166.25\" stroke=\"#277566\" stroke-width=\"1\" stroke-dasharray=\"4 3\" data-aspect=\"asc|sun|sextile\" data-source-index=\"13\"></line><line x1=\"242.25626755109315\" y1=\"151.62203903687555\" x2=\"202.22140396730867\" y2=\"141.88989884524636\" stroke=\"#ad3e42\" stroke-width=\"1\" stroke-dasharray=\"4 3\" data-aspect=\"jupiter|mean_apog|square\" data-source-index=\"14\"></line><line x1=\"203.66258298007884\" y1=\"191.45666410330404\" x2=\"201.92078847997155\" y2=\"142.08104897985407\" stroke=\"#386bb0\" stroke-width=\"1\" stroke-dasharray=\"4 3\" data-aspect=\"sun|true_node|trine\" data-source-index=\"15\"></line><line x1=\"242.81236582115335\" y1=\"179.89309941091494\" x2=\"188.745\" y2=\"166.25\" stroke=\"#8a632f\" stroke-width=\"1\" stroke-dasharray=\"4 3\" data-aspect=\"asc|pars_fortune|quincunx\" data-source-index=\"16\"></line><line x1=\"203.66258298007884\" y1=\"191.45666410330404\" x2=\"217.7212045713504\" y2=\"137.49585084657147\" stroke=\"#8a632f\" stroke-width=\"1\" stroke-dasharray=\"4 3\" data-aspect=\"moon|sun|quincunx\" data-source-index=\"17\"></line><line x1=\"246.02644265567864\" y1=\"169.86829993398536\" x2=\"229.44824188090078\" y2=\"192.40510544722557\" stroke=\"#277566\" stroke-width=\"1\" stroke-dasharray=\"4 3\" data-aspect=\"neptune|pluto|sextile\" data-source-index=\"18\"></line><line x1=\"217.7212045713504\" y1=\"137.49585084657147\" x2=\"191.9924003507341\" y2=\"179.52450131390145\" stroke=\"#386bb0\" stroke-width=\"1\" stroke-dasharray=\"4 3\" data-aspect=\"moon|venus|trine\" data-source-index=\"19\"></line><line x1=\"202.22140396730867\" y1=\"141.88989884524636\" x2=\"188.745\" y2=\"166.25\" stroke=\"#277566\" stroke-width=\"1\" stroke-dasharray=\"4 3\" data-aspect=\"asc|mean_apog|sextile\" data-source-index=\"20\"></line><line x1=\"197.7745590054478\" y1=\"187.1726432978828\" x2=\"237.6581634639544\" y2=\"186.75605936694063\" stroke=\"#ad3e42\" stroke-width=\"1\" stroke-dasharray=\"4 3\" data-aspect=\"mars|saturn|square\" data-source-index=\"21\"></line><line x1=\"242.25626755109315\" y1=\"151.62203903687555\" x2=\"201.92078847997155\" y2=\"142.08104897985407\" stroke=\"#ad3e42\" stroke-width=\"1\" stroke-dasharray=\"4 3\" data-aspect=\"jupiter|true_node|square\" data-source-index=\"22\"></line><line x1=\"196.8125918409687\" y1=\"186.22200963002086\" x2=\"236.6035812710993\" y2=\"187.7419335476942\" stroke=\"#ad3e42\" stroke-width=\"1\" stroke-dasharray=\"4 3\" data-aspect=\"mercury|vertex|square\" data-source-index=\"23\"></line><line x1=\"201.92078847997155\" y1=\"142.08104897985407\" x2=\"188.745\" y2=\"166.25\" stroke=\"#277566\" stroke-width=\"1\" stroke-dasharray=\"4 3\" data-aspect=\"asc|true_node|sextile\" data-source-index=\"25\"></line><line x1=\"197.7745590054478\" y1=\"187.1726432978828\" x2=\"236.16583536180974\" y2=\"144.3768060117912\" stroke=\"#944e82\" stroke-width=\"1\" stroke-dasharray=\"4 3\" data-aspect=\"mars|mc|opposition\" data-source-index=\"26\"></line><line x1=\"191.9924003507341\" y1=\"179.52450131390145\" x2=\"229.44824188090078\" y2=\"192.40510544722557\" stroke=\"#ad3e42\" stroke-width=\"1\" stroke-dasharray=\"4 3\" data-aspect=\"pluto|venus|square\" data-source-index=\"28\"></line><path d=\"M185.49901819423553 224.54397193078483 L175.1533203125 214 L134.433299326428 164.84357416008712 L91 141.75\" fill=\"none\" stroke=\"white\" stroke-width=\"3.5\" data-leader-bridge=\"sun\"></path><path d=\"M185.49901819423553 224.54397193078483 L175.1533203125 214 L134.433299326428 164.84357416008712 L91 141.75\" fill=\"none\" stroke=\"#6e8798\" stroke-width=\"0.75\" data-leader=\"sun\"></path><path d=\"M169.65744591981985 212.4380939104986 L120.33056683740244 141.91547305556216 L91 92.75\" fill=\"none\" stroke=\"white\" stroke-width=\"3.5\" data-leader-bridge=\"mercury\"></path><path d=\"M169.65744591981985 212.4380939104986 L120.33056683740244 141.91547305556216 L91 92.75\" fill=\"none\" stroke=\"#6e8798\" stroke-width=\"0.75\" data-leader=\"mercury\"></path><path d=\"M158.51007210307142 196.9491597069882 L120.33056683740244 141.91547305556216 L91 68.25\" fill=\"none\" stroke=\"white\" stroke-width=\"3.5\" data-leader-bridge=\"venus\"></path><path d=\"M158.51007210307142 196.9491597069882 L120.33056683740244 141.91547305556216 L91 68.25\" fill=\"none\" stroke=\"#6e8798\" stroke-width=\"0.75\" data-leader=\"venus\"></path><path d=\"M171.8821308941846 214.6365685727423 L134.433299326428 164.84357416008712 L91 117.25\" fill=\"none\" stroke=\"white\" stroke-width=\"3.5\" data-leader-bridge=\"mars\"></path><path d=\"M171.8821308941846 214.6365685727423 L134.433299326428 164.84357416008712 L91 117.25\" fill=\"none\" stroke=\"#6e8798\" stroke-width=\"0.75\" data-leader=\"mars\"></path><path d=\"M264.1186009512421 213.67315937755356 L260.4765625 218 L151.67414099748953 235.73217372913416 L91 239.75\" fill=\"none\" stroke=\"white\" stroke-width=\"3.5\" data-leader-bridge=\"saturn\"></path><path d=\"M264.1186009512421 213.67315937755356 L260.4765625 218 L151.67414099748953 235.73217372913416 L91 239.75\" fill=\"none\" stroke=\"#6e8798\" stroke-width=\"0.75\" data-leader=\"saturn\"></path><path d=\"M278.2024989196018 193.40615261622577 L260.4765625 218 L169.66547305556216 240.41943316259756 L91 288.75\" fill=\"none\" stroke=\"white\" stroke-width=\"3.5\" data-leader-bridge=\"uranus\"></path><path d=\"M278.2024989196018 193.40615261622577 L260.4765625 218 L169.66547305556216 240.41943316259756 L91 288.75\" fill=\"none\" stroke=\"#6e8798\" stroke-width=\"0.75\" data-leader=\"uranus\"></path><path d=\"M283.4714288507261 174.6178297899505 L260.4765625 218 L191.16547305556216 265.91943316259756 L91 313.25\" fill=\"none\" stroke=\"white\" stroke-width=\"3.5\" data-leader-bridge=\"neptune\"></path><path d=\"M283.4714288507261 174.6178297899505 L260.4765625 218 L191.16547305556216 265.91943316259756 L91 313.25\" fill=\"none\" stroke=\"#6e8798\" stroke-width=\"0.75\" data-leader=\"neptune\"></path><path d=\"M245.13199739453665 226.7373765341854 L175.1533203125 214 L112.933299326428 190.34357416008712 L91 166.25\" fill=\"none\" stroke=\"white\" stroke-width=\"3.5\" data-leader-bridge=\"pluto\"></path><path d=\"M245.13199739453665 226.7373765341854 L175.1533203125 214 L112.933299326428 190.34357416008712 L91 166.25\" fill=\"none\" stroke=\"#6e8798\" stroke-width=\"0.75\" data-leader=\"pluto\"></path><path d=\"M181.47087233239816 110.35588618189169 L150.01782627086584 103.42414099748954 L91 43.75\" fill=\"none\" stroke=\"white\" stroke-width=\"3.5\" data-leader-bridge=\"true_node\"></path><path d=\"M181.47087233239816 110.35588618189169 L150.01782627086584 103.42414099748954 L91 43.75\" fill=\"none\" stroke=\"#6e8798\" stroke-width=\"0.75\" data-leader=\"true_node\"></path><path d=\"M253.5291276676018 222.14411381810834 L175.1533203125 214 L91 190.75\" fill=\"none\" stroke=\"white\" stroke-width=\"3.5\" data-leader-bridge=\"south_node\"></path><path d=\"M253.5291276676018 222.14411381810834 L175.1533203125 214 L91 190.75\" fill=\"none\" stroke=\"#6e8798\" stroke-width=\"0.75\" data-leader=\"south_node\"></path><path d=\"M182.16608811775438 109.91382448996293 L171.51782627086584 77.92414099748954 L91 19.25\" fill=\"none\" stroke=\"white\" stroke-width=\"3.5\" data-leader-bridge=\"mean_apog\"></path><path d=\"M182.16608811775438 109.91382448996293 L171.51782627086584 77.92414099748954 L91 19.25\" fill=\"none\" stroke=\"#6e8798\" stroke-width=\"0.75\" data-leader=\"mean_apog\"></path><path d=\"M257.8875939635667 219.0807888814285 L175.1533203125 214 L151.67414099748953 210.23217372913416 L132.17414099748953 210.23217372913416 L91 215.25\" fill=\"none\" stroke=\"white\" stroke-width=\"3.5\" data-leader-bridge=\"selena\"></path><path d=\"M257.8875939635667 219.0807888814285 L175.1533203125 214 L151.67414099748953 210.23217372913416 L132.17414099748953 210.23217372913416 L91 215.25\" fill=\"none\" stroke=\"#6e8798\" stroke-width=\"0.75\" data-leader=\"selena\"></path><path d=\"M276.0384220868266 197.80159488178901 L260.4765625 218 L169.66547305556216 240.41943316259756 L91 264.25\" fill=\"none\" stroke=\"white\" stroke-width=\"3.5\" data-leader-bridge=\"pars_fortune\"></path><path d=\"M276.0384220868266 197.80159488178901 L260.4765625 218 L169.66547305556216 240.41943316259756 L91 264.25\" fill=\"none\" stroke=\"#6e8798\" stroke-width=\"0.75\" data-leader=\"pars_fortune\"></path><path d=\"M251.4619222597321 204.4578818625675 L251 207.75\" fill=\"none\" stroke=\"white\" stroke-width=\"3.5\" data-leader-bridge=\"angle:vertex\"></path><path d=\"M251.4619222597321 204.4578818625675 L251 207.75\" fill=\"none\" stroke=\"#6e8798\" stroke-width=\"0.75\" data-leader=\"angle:vertex\"></path><path d=\"M268.62 166.25 L267 167.75\" fill=\"none\" stroke=\"white\" stroke-width=\"3.5\" data-leader-bridge=\"angle:dsc\"></path><path d=\"M268.62 166.25 L267 167.75\" fill=\"none\" stroke=\"#6e8798\" stroke-width=\"0.75\" data-leader=\"angle:dsc\"></path><path d=\"M184.31629269011603 205.13567820126008 L183 203.75\" fill=\"none\" stroke=\"white\" stroke-width=\"3.5\" data-leader-bridge=\"angle:ic\"></path><path d=\"M184.31629269011603 205.13567820126008 L183 203.75\" fill=\"none\" stroke=\"#6e8798\" stroke-width=\"0.75\" data-leader=\"angle:ic\"></path><g data-label=\"sign:0\" data-kind=\"sign\" transform=\"translate(206.15642583991288 72.433299326428)\" aria-label=\"sign:0\"><rect x=\"-8.5\" y=\"-10.5\" width=\"17\" height=\"21\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-7.5\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"sign:0:0\">♈</text></g><g data-label=\"sign:1\" data-kind=\"sign\" transform=\"translate(160.76782627086584 90.67414099748954)\" aria-label=\"sign:1\"><rect x=\"-8.5\" y=\"-10.5\" width=\"17\" height=\"21\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-7.5\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"sign:1:0\">♉</text></g><g data-label=\"sign:2\" data-kind=\"sign\" transform=\"translate(130.58056683740244 129.16547305556216)\" aria-label=\"sign:2\"><rect x=\"-8\" y=\"-10.5\" width=\"16\" height=\"21\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-7\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"sign:2:0\">♊</text></g><g data-label=\"sign:3\" data-kind=\"sign\" transform=\"translate(123.683299326428 177.59357416008712)\" aria-label=\"sign:3\"><rect x=\"-8.5\" y=\"-10.5\" width=\"17\" height=\"21\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-7.5\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"sign:3:0\">♋</text></g><g data-label=\"sign:4\" data-kind=\"sign\" transform=\"translate(141.92414099748953 222.98217372913416)\" aria-label=\"sign:4\"><rect x=\"-7.5\" y=\"-10.5\" width=\"15\" height=\"21\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-6.5\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"sign:4:0\">♌</text></g><g data-label=\"sign:5\" data-kind=\"sign\" transform=\"translate(180.41547305556216 253.16943316259756)\" aria-label=\"sign:5\"><rect x=\"-8.5\" y=\"-10.5\" width=\"17\" height=\"21\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-7.5\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"sign:5:0\">♍</text></g><g data-label=\"sign:6\" data-kind=\"sign\" transform=\"translate(228.84357416008712 260.066700673572)\" aria-label=\"sign:6\"><rect x=\"-8\" y=\"-10.5\" width=\"16\" height=\"21\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-7\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"sign:6:0\">♎</text></g><g data-label=\"sign:7\" data-kind=\"sign\" transform=\"translate(274.23217372913416 241.82585900251047)\" aria-label=\"sign:7\"><rect x=\"-8.5\" y=\"-10.5\" width=\"17\" height=\"21\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-7.5\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"sign:7:0\">♏</text></g><g data-label=\"sign:8\" data-kind=\"sign\" transform=\"translate(304.41943316259756 203.33452694443784)\" aria-label=\"sign:8\"><rect x=\"-7.5\" y=\"-10.5\" width=\"15\" height=\"21\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-6.5\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"sign:8:0\">♐</text></g><g data-label=\"sign:9\" data-kind=\"sign\" transform=\"translate(311.316700673572 154.9064258399129)\" aria-label=\"sign:9\"><rect x=\"-9.5\" y=\"-10.5\" width=\"19\" height=\"21\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-8.5\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"sign:9:0\">♑</text></g><g data-label=\"sign:10\" data-kind=\"sign\" transform=\"translate(293.07585900251047 109.51782627086583)\" aria-label=\"sign:10\"><rect x=\"-9.5\" y=\"-10.5\" width=\"19\" height=\"21\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-8.5\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"sign:10:0\">♒</text></g><g data-label=\"sign:11\" data-kind=\"sign\" transform=\"translate(254.58452694443787 79.33056683740246)\" aria-label=\"sign:11\"><rect x=\"-6.5\" y=\"-10.5\" width=\"13\" height=\"21\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-5.5\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"sign:11:0\">♓</text></g><g data-label=\"sun\" data-kind=\"point\" transform=\"translate(36.59765625 141.75)\" aria-label=\"Солнце\"><rect x=\"-7.4921875\" y=\"-11.25\" width=\"14.984375\" height=\"22.5\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-6.7421875\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"sun:0\">☉</text><rect x=\"12.4921875\" y=\"-8\" width=\"41.91015625\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"12.4921875\" y=\"5\" font-size=\"12\" fill=\"#193e55\" data-component=\"sun:1\">Солнце</text></g><circle cx=\"185.49901819423553\" cy=\"224.54397193078483\" r=\"1\" fill=\"#305b75\" data-anchor=\"sun\"></circle><g data-label=\"moon\" data-kind=\"point\" transform=\"translate(218.01156682298037 99.75196770290397)\" aria-label=\"Луна\"><rect x=\"-5.3203125\" y=\"-11.25\" width=\"10.640625\" height=\"22.5\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-4.5703125\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"moon:0\">☽</text></g><circle cx=\"218.01156682298037\" cy=\"99.75196770290397\" r=\"1\" fill=\"#305b75\" data-anchor=\"moon\"></circle><g data-label=\"mercury\" data-kind=\"point\" transform=\"translate(23.845703125 92.75)\" aria-label=\"Меркурий\"><rect x=\"-5.25\" y=\"-11.25\" width=\"10.5\" height=\"22.5\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-4.5\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"mercury:0\">☿</text><rect x=\"10.25\" y=\"-8\" width=\"56.904296875\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"10.25\" y=\"5\" font-size=\"12\" fill=\"#193e55\" data-component=\"mercury:1\">Меркурий</text></g><circle cx=\"169.65744591981985\" cy=\"212.4380939104986\" r=\"1\" fill=\"#305b75\" data-anchor=\"mercury\"></circle><g data-label=\"venus\" data-kind=\"point\" transform=\"translate(41.234375 68.25)\" aria-label=\"Венера\"><rect x=\"-5.25\" y=\"-11.25\" width=\"10.5\" height=\"22.5\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-4.5\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"venus:0\">♀</text><rect x=\"10.25\" y=\"-8\" width=\"39.515625\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"10.25\" y=\"5\" font-size=\"12\" fill=\"#193e55\" data-component=\"venus:1\">Венера</text></g><circle cx=\"158.51007210307142\" cy=\"196.9491597069882\" r=\"1\" fill=\"#305b75\" data-anchor=\"venus\"></circle><g data-label=\"mars\" data-kind=\"point\" transform=\"translate(49.759765625 117.25)\" aria-label=\"Марс\"><rect x=\"-6.3046875\" y=\"-11.25\" width=\"12.609375\" height=\"22.5\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-5.5546875\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"mars:0\">♂</text><rect x=\"11.3046875\" y=\"-8\" width=\"29.935546875\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"11.3046875\" y=\"5\" font-size=\"12\" fill=\"#193e55\" data-component=\"mars:1\">Марс</text></g><circle cx=\"171.8821308941846\" cy=\"214.6365685727423\" r=\"1\" fill=\"#305b75\" data-anchor=\"mars\"></circle><g data-label=\"jupiter\" data-kind=\"point\" transform=\"translate(274.75236627187246 132.42077363770557)\" aria-label=\"Юпитер, ретроградная\"><rect x=\"-6.90625\" y=\"-11.25\" width=\"13.8125\" height=\"22.5\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-6.15625\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"jupiter:0\">♃</text><rect x=\"8.90625\" y=\"-5\" width=\"8\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"8.90625\" y=\"8\" font-size=\"12\" fill=\"#193e55\" data-component=\"jupiter:1\">R</text></g><circle cx=\"274.75236627187246\" cy=\"132.42077363770557\" r=\"1\" fill=\"#305b75\" data-anchor=\"jupiter\"></circle><g data-label=\"saturn\" data-kind=\"point\" transform=\"translate(42.431640625 239.75)\" aria-label=\"Сатурн\"><rect x=\"-5.25\" y=\"-11.25\" width=\"10.5\" height=\"22.5\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-4.5\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"saturn:0\">♄</text><rect x=\"10.25\" y=\"-8\" width=\"38.318359375\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"10.25\" y=\"5\" font-size=\"12\" fill=\"#193e55\" data-component=\"saturn:1\">Сатурн</text></g><circle cx=\"264.1186009512421\" cy=\"213.67315937755356\" r=\"1\" fill=\"#305b75\" data-anchor=\"saturn\"></circle><g data-label=\"uranus\" data-kind=\"point\" transform=\"translate(52.28125 288.75)\" aria-label=\"Уран\"><rect x=\"-6.75\" y=\"-11.25\" width=\"13.5\" height=\"22.5\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-6\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"uranus:0\">♅</text><rect x=\"11.75\" y=\"-8\" width=\"26.96875\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"11.75\" y=\"5\" font-size=\"12\" fill=\"#193e55\" data-component=\"uranus:1\">Уран</text></g><circle cx=\"278.2024989196018\" cy=\"193.40615261622577\" r=\"1\" fill=\"#305b75\" data-anchor=\"uranus\"></circle><g data-label=\"neptune\" data-kind=\"point\" transform=\"translate(28.80078125 313.25)\" aria-label=\"Нептун, ретроградная\"><rect x=\"-7.75\" y=\"-11.25\" width=\"15.5\" height=\"22.5\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-7\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"neptune:0\">♆</text><rect x=\"9.75\" y=\"-5\" width=\"8\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"9.75\" y=\"8\" font-size=\"12\" fill=\"#193e55\" data-component=\"neptune:1\">R</text><rect x=\"22.75\" y=\"-8\" width=\"39.44921875\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"22.75\" y=\"5\" font-size=\"12\" fill=\"#193e55\" data-component=\"neptune:2\">Нептун</text></g><circle cx=\"283.4714288507261\" cy=\"174.6178297899505\" r=\"1\" fill=\"#305b75\" data-anchor=\"neptune\"></circle><g data-label=\"pluto\" data-kind=\"point\" transform=\"translate(41.11328125 166.25)\" aria-label=\"Плутон\"><rect x=\"-5.25\" y=\"-11.25\" width=\"10.5\" height=\"22.5\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-4.5\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"pluto:0\">♇</text><rect x=\"10.25\" y=\"-8\" width=\"39.63671875\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"10.25\" y=\"5\" font-size=\"12\" fill=\"#193e55\" data-component=\"pluto:1\">Плутон</text></g><circle cx=\"245.13199739453665\" cy=\"226.7373765341854\" r=\"1\" fill=\"#305b75\" data-anchor=\"pluto\"></circle><g data-label=\"chiron\" data-kind=\"point\" transform=\"translate(156.58987571700857 139.5627978268508)\" aria-label=\"Хирон\"><rect x=\"-5.25\" y=\"-11.25\" width=\"10.5\" height=\"22.5\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-4.5\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"chiron:0\">⚷</text></g><circle cx=\"156.58987571700857\" cy=\"139.5627978268508\" r=\"1\" fill=\"#305b75\" data-anchor=\"chiron\"></circle><g data-label=\"true_node\" data-kind=\"point\" transform=\"translate(19.4375 43.75)\" aria-label=\"Сев. узел, ретроградная\"><rect x=\"-6.84375\" y=\"-11.25\" width=\"13.6875\" height=\"22.5\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-6.09375\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"true_node:0\">☊</text><rect x=\"8.84375\" y=\"-5\" width=\"8\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"8.84375\" y=\"8\" font-size=\"12\" fill=\"#193e55\" data-component=\"true_node:1\">R</text><rect x=\"21.84375\" y=\"-8\" width=\"49.71875\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"21.84375\" y=\"5\" font-size=\"12\" fill=\"#193e55\" data-component=\"true_node:2\">Сев. узел</text></g><circle cx=\"181.47087233239816\" cy=\"110.35588618189169\" r=\"1\" fill=\"#305b75\" data-anchor=\"true_node\"></circle><g data-label=\"south_node\" data-kind=\"point\" transform=\"translate(11.40625 190.75)\" aria-label=\"Южн. узел, ретроградная\"><rect x=\"-6.84375\" y=\"-11.25\" width=\"13.6875\" height=\"22.5\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-6.09375\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"south_node:0\">☋</text><rect x=\"8.84375\" y=\"-5\" width=\"8\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"8.84375\" y=\"8\" font-size=\"12\" fill=\"#193e55\" data-component=\"south_node:1\">R</text><rect x=\"21.84375\" y=\"-8\" width=\"57.75\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"21.84375\" y=\"5\" font-size=\"12\" fill=\"#193e55\" data-component=\"south_node:2\">Южн. узел</text></g><circle cx=\"253.5291276676018\" cy=\"222.14411381810834\" r=\"1\" fill=\"#305b75\" data-anchor=\"south_node\"></circle><g data-label=\"mean_apog\" data-kind=\"point\" transform=\"translate(45.501953125 19.25)\" aria-label=\"Лилит\"><rect x=\"-5.15625\" y=\"-11.25\" width=\"10.3125\" height=\"22.5\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-4.40625\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"mean_apog:0\">⚸</text><rect x=\"10.15625\" y=\"-8\" width=\"35.341796875\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"11.15625\" y=\"5\" font-size=\"12\" fill=\"#193e55\" data-component=\"mean_apog:1\">Лилит</text></g><circle cx=\"182.16608811775438\" cy=\"109.91382448996293\" r=\"1\" fill=\"#305b75\" data-anchor=\"mean_apog\"></circle><g data-label=\"selena\" data-kind=\"point\" transform=\"translate(29.1640625 215.25)\" aria-label=\"Селена, ретроградная\"><rect x=\"-7.4921875\" y=\"-11.25\" width=\"14.984375\" height=\"22.5\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-6.7421875\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"selena:0\">⚪</text><rect x=\"9.4921875\" y=\"-5\" width=\"8\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"9.4921875\" y=\"8\" font-size=\"12\" fill=\"#193e55\" data-component=\"selena:1\">R</text><rect x=\"22.4921875\" y=\"-8\" width=\"39.34375\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"22.4921875\" y=\"5\" font-size=\"12\" fill=\"#193e55\" data-component=\"selena:2\">Селена</text></g><circle cx=\"257.8875939635667\" cy=\"219.0807888814285\" r=\"1\" fill=\"#305b75\" data-anchor=\"selena\"></circle><g data-label=\"pars_fortune\" data-kind=\"point\" transform=\"translate(36.244140625 264.25)\" aria-label=\"Парс Ф.\"><rect x=\"-7.4921875\" y=\"-11.25\" width=\"14.984375\" height=\"22.5\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-6.7421875\" y=\"6.5\" font-size=\"16\" fill=\"#193e55\" data-component=\"pars_fortune:0\">⊗</text><rect x=\"12.4921875\" y=\"-8\" width=\"42.263671875\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"12.4921875\" y=\"5\" font-size=\"12\" fill=\"#193e55\" data-component=\"pars_fortune:1\">Парс Ф.</text></g><circle cx=\"276.0384220868266\" cy=\"197.80159488178901\" r=\"1\" fill=\"#305b75\" data-anchor=\"pars_fortune\"></circle><g data-label=\"angle:asc\" data-kind=\"angle\" transform=\"translate(166.38 166.25)\" aria-label=\"angle:asc\"><rect x=\"-11.5576171875\" y=\"-8\" width=\"23.115234375\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-10.5576171875\" y=\"5\" font-size=\"12\" fill=\"#193e55\" data-component=\"angle:asc:0\">ASC</text></g><circle cx=\"166.38\" cy=\"166.25\" r=\"1\" fill=\"#305b75\" data-anchor=\"angle:asc\"></circle><g data-label=\"angle:mc\" data-kind=\"angle\" transform=\"translate(250.68370730988394 127.36432179873991)\" aria-label=\"angle:mc\"><rect x=\"-9.3876953125\" y=\"-8\" width=\"18.775390625\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-9.3876953125\" y=\"5\" font-size=\"12\" fill=\"#193e55\" data-component=\"angle:mc:0\">MC</text></g><circle cx=\"250.68370730988394\" cy=\"127.36432179873991\" r=\"1\" fill=\"#305b75\" data-anchor=\"angle:mc\"></circle><g data-label=\"angle:vertex\" data-kind=\"angle\" transform=\"translate(251 207.75)\" aria-label=\"angle:vertex\"><rect x=\"-7.2265625\" y=\"-8\" width=\"14.453125\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-6.2265625\" y=\"5\" font-size=\"12\" fill=\"#193e55\" data-component=\"angle:vertex:0\">Vx</text></g><circle cx=\"251.4619222597321\" cy=\"204.4578818625675\" r=\"1\" fill=\"#305b75\" data-anchor=\"angle:vertex\"></circle><g data-label=\"angle:dsc\" data-kind=\"angle\" transform=\"translate(267 167.75)\" aria-label=\"angle:dsc\"><rect x=\"-11.39453125\" y=\"-8\" width=\"22.7890625\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-11.39453125\" y=\"5\" font-size=\"12\" fill=\"#193e55\" data-component=\"angle:dsc:0\">DSC</text></g><circle cx=\"268.62\" cy=\"166.25\" r=\"1\" fill=\"#305b75\" data-anchor=\"angle:dsc\"></circle><g data-label=\"angle:ic\" data-kind=\"angle\" transform=\"translate(183 203.75)\" aria-label=\"angle:ic\"><rect x=\"-5.5966796875\" y=\"-8\" width=\"11.193359375\" height=\"16\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-5.5966796875\" y=\"5\" font-size=\"12\" fill=\"#193e55\" data-component=\"angle:ic:0\">IC</text></g><circle cx=\"184.31629269011603\" cy=\"205.13567820126008\" r=\"1\" fill=\"#305b75\" data-anchor=\"angle:ic\"></circle><g data-label=\"conj:mean_apog|true_node|conjunction\" data-kind=\"marker\" transform=\"translate(202.0710962236401 141.98547391255022)\" aria-label=\"conj:mean_apog|true_node|conjunction\"><rect x=\"-4.8125\" y=\"-11.25\" width=\"9.625\" height=\"22.5\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-4.0625\" y=\"6.5\" font-size=\"16\" fill=\"#385f8a\" data-component=\"conj:mean_apog|true_node|conjunction:0\">☌</text></g><circle cx=\"202.0710962236401\" cy=\"141.98547391255022\" r=\"1\" fill=\"#305b75\" data-anchor=\"conj:mean_apog|true_node|conjunction\"></circle><g data-label=\"conj:mars|mercury|conjunction\" data-kind=\"marker\" transform=\"translate(197.29357542320827 186.6973264639518)\" aria-label=\"conj:mars|mercury|conjunction\"><rect x=\"-4.8125\" y=\"-11.25\" width=\"9.625\" height=\"22.5\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-4.0625\" y=\"6.5\" font-size=\"16\" fill=\"#385f8a\" data-component=\"conj:mars|mercury|conjunction:0\">☌</text></g><circle cx=\"197.29357542320827\" cy=\"186.6973264639518\" r=\"1\" fill=\"#305b75\" data-anchor=\"conj:mars|mercury|conjunction\"></circle><g data-label=\"conj:saturn|vertex|conjunction\" data-kind=\"marker\" transform=\"translate(237.13087236752685 187.24899645731742)\" aria-label=\"conj:saturn|vertex|conjunction\"><rect x=\"-4.8125\" y=\"-11.25\" width=\"9.625\" height=\"22.5\" rx=\"1\" fill=\"white\" opacity=\"0.94\"></rect><text x=\"-4.0625\" y=\"6.5\" font-size=\"16\" fill=\"#385f8a\" data-component=\"conj:saturn|vertex|conjunction:0\">☌</text></g><circle cx=\"237.13087236752685\" cy=\"187.24899645731742\" r=\"1\" fill=\"#305b75\" data-anchor=\"conj:saturn|vertex|conjunction\"></circle></svg>",
+      "pass": true
+    },
+    {
+      "id": "HTML-focus-live-retained",
+      "actual": [
+        true,
+        true
+      ],
+      "expected": [
+        true,
+        true
+      ],
+      "pass": true
+    },
+    {
+      "id": "DISPOSE-controller-idempotent",
+      "actual": 1,
+      "expected": 1,
+      "pass": true
+    },
+    {
+      "id": "DISPOSE-revoked-final-sink",
+      "actual": false,
+      "expected": false,
+      "pass": true
+    },
+    {
+      "id": "ALTERNATE-recovers",
+      "actual": [
+        "HTML ALTERNATE",
+        "Alternative renderer"
+      ],
+      "expected": [
+        "HTML ALTERNATE",
+        "Alternative renderer"
+      ],
+      "pass": true
+    }
+  ],
+  "trace": [
+    {
+      "event": "revoke",
+      "identity": "A"
+    },
+    {
+      "event": "remove",
+      "identity": "A"
+    },
+    {
+      "event": "html",
+      "identity": "A"
+    },
+    {
+      "event": "draw",
+      "identity": "A"
+    },
+    {
+      "event": "install-copy",
+      "identity": "A"
+    },
+    {
+      "event": "revoke",
+      "identity": "B",
+      "revision": 1
+    },
+    {
+      "event": "remove",
+      "identity": "B"
+    },
+    {
+      "event": "html",
+      "identity": "B"
+    },
+    {
+      "event": "dispose-fault",
+      "identity": "B",
+      "html": "HTML B"
+    },
+    {
+      "event": "draw",
+      "identity": "B"
+    },
+    {
+      "event": "install-copy",
+      "identity": "B"
+    },
+    {
+      "event": "stale-refused",
+      "identity": "A"
+    },
+    {
+      "event": "stale-refused",
+      "identity": "A"
+    },
+    {
+      "event": "revoke",
+      "identity": "C",
+      "revision": 2
+    },
+    {
+      "event": "remove",
+      "identity": "C"
+    },
+    {
+      "event": "html",
+      "identity": "C"
+    },
+    {
+      "event": "dispose",
+      "identity": "C"
+    },
+    {
+      "event": "draw",
+      "identity": "C"
+    },
+    {
+      "event": "revoke",
+      "identity": "D",
+      "revision": 3
+    },
+    {
+      "event": "remove",
+      "identity": "D"
+    },
+    {
+      "event": "html",
+      "identity": "D"
+    },
+    {
+      "event": "draw",
+      "identity": "D"
+    },
+    {
+      "event": "install-copy",
+      "identity": "D"
+    },
+    {
+      "event": "stale-refused",
+      "identity": "C"
+    },
+    {
+      "event": "stale-rejection",
+      "identity": "C"
+    },
+    {
+      "event": "revoke",
+      "identity": "factory",
+      "revision": 4
+    },
+    {
+      "event": "remove",
+      "identity": "factory"
+    },
+    {
+      "event": "html",
+      "identity": "factory"
+    },
+    {
+      "event": "dispose",
+      "identity": "factory"
+    },
+    {
+      "event": "local-fault",
+      "identity": "factory",
+      "html": "HTML factory"
+    },
+    {
+      "event": "revoke",
+      "identity": "sync",
+      "revision": 5
+    },
+    {
+      "event": "remove",
+      "identity": "sync"
+    },
+    {
+      "event": "html",
+      "identity": "sync"
+    },
+    {
+      "event": "dispose",
+      "identity": "sync"
+    },
+    {
+      "event": "draw",
+      "identity": "sync"
+    },
+    {
+      "event": "local-fault",
+      "identity": "sync",
+      "html": "HTML sync"
+    },
+    {
+      "event": "revoke",
+      "identity": "async",
+      "revision": 6
+    },
+    {
+      "event": "remove",
+      "identity": "async"
+    },
+    {
+      "event": "html",
+      "identity": "async"
+    },
+    {
+      "event": "dispose",
+      "identity": "async"
+    },
+    {
+      "event": "draw",
+      "identity": "async"
+    },
+    {
+      "event": "local-fault",
+      "identity": "async",
+      "html": "HTML async"
+    },
+    {
+      "event": "revoke",
+      "identity": "failed-later",
+      "revision": 7
+    },
+    {
+      "event": "remove",
+      "identity": "failed-later"
+    },
+    {
+      "event": "html",
+      "identity": "failed-later"
+    },
+    {
+      "event": "dispose",
+      "identity": "failed-later"
+    },
+    {
+      "event": "draw",
+      "identity": "failed-later"
+    },
+    {
+      "event": "install-copy",
+      "identity": "failed-later"
+    },
+    {
+      "event": "local-fault",
+      "identity": "failed-later",
+      "html": "HTML failed-later"
+    },
+    {
+      "event": "stale-refused",
+      "identity": "failed-later"
+    },
+    {
+      "event": "revoke",
+      "identity": "unsafe",
+      "revision": 8
+    },
+    {
+      "event": "remove",
+      "identity": "unsafe"
+    },
+    {
+      "event": "html",
+      "identity": "unsafe"
+    },
+    {
+      "event": "dispose",
+      "identity": "unsafe"
+    },
+    {
+      "event": "draw",
+      "identity": "unsafe"
+    },
+    {
+      "event": "local-fault",
+      "identity": "unsafe",
+      "html": "HTML unsafe"
+    },
+    {
+      "event": "revoke",
+      "identity": "REAL-F1",
+      "revision": 9
+    },
+    {
+      "event": "remove",
+      "identity": "REAL-F1"
+    },
+    {
+      "event": "html",
+      "identity": "REAL-F1"
+    },
+    {
+      "event": "dispose",
+      "identity": "REAL-F1"
+    },
+    {
+      "event": "draw",
+      "identity": "REAL-F1"
+    },
+    {
+      "event": "install-copy",
+      "identity": "REAL-F1"
+    },
+    {
+      "event": "revoke",
+      "identity": "REAL-B",
+      "revision": 10
+    },
+    {
+      "event": "remove",
+      "identity": "REAL-B"
+    },
+    {
+      "event": "html",
+      "identity": "REAL-B"
+    },
+    {
+      "event": "dispose",
+      "identity": "REAL-B"
+    },
+    {
+      "event": "draw",
+      "identity": "REAL-B"
+    },
+    {
+      "event": "install-copy",
+      "identity": "REAL-B"
+    },
+    {
+      "event": "stale-refused",
+      "identity": "REAL-B"
+    },
+    {
+      "event": "revoke",
+      "identity": "ALTERNATE"
+    },
+    {
+      "event": "remove",
+      "identity": "ALTERNATE"
+    },
+    {
+      "event": "html",
+      "identity": "ALTERNATE"
+    },
+    {
+      "event": "draw",
+      "identity": "ALTERNATE"
+    },
+    {
+      "event": "install-copy",
+      "identity": "ALTERNATE"
+    }
+  ],
+  "limits": "isolated real SVG clone seam; no production controller/session; same-origin contract not security boundary",
+  "httpBuildCalls": 0,
+  "disposeCount": 2
+}

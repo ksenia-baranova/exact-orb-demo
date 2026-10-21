@@ -1,0 +1,26 @@
+{
+  "finding": "DEV-FIND-WHEEL-004",
+  "reported_by": "Owner",
+  "registered_by": "Codex / Developer",
+  "date": "2026-10-20",
+  "head": "e0daa0e814d3d1fd34cadb8c17d064f19c4810f5",
+  "branch": "dev/ui-chart-wheel",
+  "candidate_state": "uncommitted local UI; screenshot not independently bound to CandidateSHA",
+  "browser": "Yandex Browser, version unknown",
+  "URL": "https://exact-orb.localhost/",
+  "capture_pixels": [
+    1920,
+    1200
+  ],
+  "visible_browser_zoom_percent": 50,
+  "screenshot": {
+    "file": "yandex-start-page-owner.png",
+    "sha256": "eab259619cf1a10eeddc57b781e13a986002df00c9d272891e116121c035df55",
+    "source_filename": "codex-clipboard-5fb325be-0a3b-4330-97e2-3144f3976e37.png"
+  },
+  "runtime_reproduction_performed": false,
+  "source_fingerprints_at_registration": {
+    "src/exact_orb/http_api/ui/index.html": "87d9d939ed69089167055b44ba65e53107dd1ade88c7a81041304985a98bf532",
+    "src/exact_orb/http_api/ui/styles.css": "3a37eff6cb8f9b94184102ac5817eaf2d2a4a561e2f3198422c6eca9c3d0cc5d"
+  }
+}

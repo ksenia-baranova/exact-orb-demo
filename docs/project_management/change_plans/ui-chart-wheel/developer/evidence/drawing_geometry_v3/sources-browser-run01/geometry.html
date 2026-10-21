@@ -1,0 +1,48 @@
+<!doctype html><html lang="ru"><meta charset="utf-8"><title>Passive wheel geometry v3</title>
+<style>*{box-sizing:border-box}body{margin:16px;background:#f6f8fb;color:#172b46;font:14px 'Segoe UI',sans-serif}h1{font-size:17px;margin:0 0 10px}p{margin:8px 0;max-width:720px}svg{display:block;background:white;overflow:hidden;pointer-events:none}svg text{font-family:'Segoe UI Symbol','Segoe UI',sans-serif;fill:#12334b}.muted{color:#566c80}.grid{stroke:#d1dce6;fill:none}.aspect{stroke:#3c8975;stroke-width:1}.leader{stroke:#758ca1;stroke-width:.7}.anchor{fill:#426b89}button{font:inherit;min-height:44px;min-width:44px}#title{overflow-wrap:anywhere}</style>
+<h1>Геометрия пассивного SVG — исследовательский прототип</h1><p id="title"></p><p class="muted">Без кликов и фокуса внутри SVG. Шрифты 16/12 px; зазор ≥2 px. Полный зодиак и палитра ещё не моделируются.</p><div id="mount"></div><p id="stats"></p><button id="outside">HTML: выбор остаётся в таблицах</button>
+<script>
+const ns='http://www.w3.org/2000/svg';let data,svg,source;
+const $=id=>document.getElementById(id),num=x=>Number(x),rectangle=b=>({left:b.x??b.left,top:b.y??b.top,right:(b.x??b.left)+b.width,bottom:(b.y??b.top)+b.height,width:b.width,height:b.height});
+function node(tag,attrs={},text){const n=document.createElementNS(ns,tag);for(const[k,v]of Object.entries(attrs))n.setAttribute(k,v);if(text!==undefined)n.textContent=text;return n}
+window.drawGeometry=d=>{
+ data=structuredClone(d);source=JSON.stringify(data.chart);const S=d.size,C=S/2;svg=node('svg',{width:S,height:S,viewBox:`0 0 ${S} ${S}`,role:'img','aria-label':'Пассивная исследовательская карта'});$('mount').replaceChildren(svg);
+ for(const ratio of [.49,.40,.29,.22,.11])svg.append(node('circle',{class:'grid',cx:C,cy:C,r:S*ratio}));
+ const xy=(lng,r)=>{const t=(lng-d.origin)*Math.PI/180;return [C-r*Math.cos(t),C+r*Math.sin(t)]};
+ for(const h of d.chart.houses??[]){const p=xy(h.cusp_longitude,S*.27),q=xy(h.cusp_longitude,S*.49);svg.append(node('line',{class:'grid',x1:p[0],y1:p[1],x2:q[0],y2:q[1]}))}
+ const ep=new Map([...d.chart.points.map(p=>[p.id,p.longitude]),...Object.entries(d.chart.angles??{}).map(([key,p])=>[key,p.longitude])]);
+ for(const a of d.chart.aspects.filter(a=>a.category!=='background'&&a.type!=='conjunction')){const p=xy(ep.get(a.from),S*.27),q=xy(ep.get(a.to),S*.27);svg.append(node('line',{class:'aspect',x1:p[0],y1:p[1],x2:q[0],y2:q[1],...(a.category==='working'?{'stroke-dasharray':'3 2'}:{})}))}
+ for(const [i,g]of d.groups.entries()){
+  const [x,y]=g.P.map(num);if(g.leader)svg.append(node('line',{class:'leader',x1:g.A[0],y1:g.A[1],x2:x,y2:y}));svg.append(node('circle',{class:'anchor',cx:g.A[0],cy:g.A[1],r:1.1,'data-anchor':i}));
+  const group=node('g',{id:'group-'+i,transform:`translate(${x} ${y})`});svg.append(group);
+  if(g.kind==='angle')group.append(node('text',{x:0,y:0,'font-size':12},g.key.slice(6).toUpperCase()));
+  else for(const[k,m]of g.metrics.entries())group.append(node('text',{x:k===0?-8:8,y:k===0?6:10,'font-size':m.size},m.text));
+ }
+ $('title').textContent=`${d.fixture} · ${d.variant}${d.seed_variant?' (seed '+d.seed_variant+')':''} · колесо ${S} px · viewport ${d.viewport} px`;
+ const ds=d.groups.map(g=>Math.hypot(+g.P[0]-g.A[0],+g.P[1]-g.A[1]));$('stats').textContent=`Смещено ${ds.filter(x=>x>0).length} меток; наибольшее смещение ${Math.max(...ds).toFixed(2)} px. Истинные отметки сохранены.`;
+};
+window.measureGeometry=()=>{
+ const M=svg.getScreenCTM(),rect=svg.getBoundingClientRect(),groups=[],texts=[];let maxComponentDrift=0;
+ for(const[i,g]of data.groups.entries()){
+  const group=$('group-'+i),m=group.getScreenCTM(),P=[m.e-M.e,m.f-M.f],components=[];
+  for(const[k,e]of [...group.children].entries()){
+   const s=getComputedStyle(e),ctx=document.createElement('canvas').getContext('2d');ctx.font=`${s.fontSize} ${s.fontFamily}`;const met=ctx.measureText(e.textContent),x=+e.getAttribute('x'),y=+e.getAttribute('y'),ink=[x-met.actualBoundingBoxLeft,y-met.actualBoundingBoxAscent,x+met.actualBoundingBoxRight,y+met.actualBoundingBoxDescent];
+   // Conservative union of normal and the selected glyph contour. Category/R
+   // keep their actual ink; passive SVG has no focus rectangle.
+   const box=(k===0&&g.kind!=='angle')?[ink[0]-.75,ink[1]-.75,ink[2]+.75,ink[3]+.75]:ink;
+   components.push(box);const expected=g.components[k];if(expected)maxComponentDrift=Math.max(maxComponentDrift,...box.map((v,j)=>Math.abs(v-expected[j])));
+   texts.push({group:g.key,text:e.textContent,computedFont:s.fontFamily,fontSize:parseFloat(s.fontSize),effectiveEm:Math.hypot(m.c*parseFloat(s.fontSize),m.d*parseFloat(s.fontSize)),ink,bbox:rectangle(e.getBBox()),CSSRect:rectangle(e.getBoundingClientRect())});
+  }
+  const anchor=svg.querySelector(`[data-anchor="${i}"]`).getBoundingClientRect();groups.push({key:g.key,P,components,matrix:[m.a,m.b,m.c,m.d,m.e,m.f],actualAnchorCSS:[(anchor.left+anchor.right)/2,(anchor.top+anchor.bottom)/2],expectedAnchorCSS:[M.a*g.A[0]+M.c*g.A[1]+M.e,M.b*g.A[0]+M.d*g.A[1]+M.f]});
+ }
+ return {frame:data.size,viewport:[innerWidth,innerHeight],matrix:[M.a,M.b,M.c,M.d,M.e,M.f],svgRect:rectangle(rect),DPR:devicePixelRatio,zoom:visualViewport.scale,groups,texts,maxComponentDrift,interactiveSVG:svg.querySelectorAll('[tabindex],[role=button],a,button').length,chartUnchanged:source===JSON.stringify(data.chart),pageOverflow:document.documentElement.scrollWidth>innerWidth};
+};
+window.geometryControls=()=>{
+ const controls=[],add=(id,a,e)=>controls.push({id,actual:a,expected:e});
+ const e=node('text',{x:0,y:0,'font-size':16},'☉'),a=node('text',{x:0,y:0,'font-size':12},'R');svg.append(e,a);
+ add('em16-boundary',parseFloat(getComputedStyle(e).fontSize)>=16,true);e.setAttribute('font-size','15.99');add('em16-below',parseFloat(getComputedStyle(e).fontSize)>=16,false);
+ add('em12-boundary',parseFloat(getComputedStyle(a).fontSize)>=12,true);a.setAttribute('font-size','11.99');add('em12-below',parseFloat(getComputedStyle(a).fontSize)>=12,false);e.remove();a.remove();
+ add('passive-no-SVG-tabindex',svg.querySelectorAll('[tabindex]').length===0,true);add('passive-no-SVG-buttons',svg.querySelectorAll('[role=button]').length===0,true);add('font-texts-present',svg.querySelectorAll('text').length>0,true);add('DTO-unchanged',source===JSON.stringify(data.chart),true);return controls;
+};
+window.geometryReady=true;
+</script></html>

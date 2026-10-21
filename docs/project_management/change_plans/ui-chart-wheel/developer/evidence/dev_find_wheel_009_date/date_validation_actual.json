@@ -1,0 +1,38 @@
+{
+  "kind": "pure form diagnostic; not browser or HTTP evidence",
+  "cases": [
+    {
+      "date": "146464-03-20",
+      "expected_ok": false,
+      "actual_ok": false,
+      "date_error": "Укажите корректную дату рождения.",
+      "intent_present": false,
+      "passed": true
+    },
+    {
+      "date": "1985-09-02",
+      "expected_ok": true,
+      "actual_ok": true,
+      "date_error": null,
+      "intent_present": true,
+      "passed": true
+    },
+    {
+      "date": "0001-01-01",
+      "expected_ok": true,
+      "actual_ok": true,
+      "date_error": null,
+      "intent_present": true,
+      "passed": true
+    },
+    {
+      "date": "9999-12-31",
+      "expected_ok": true,
+      "actual_ok": true,
+      "date_error": null,
+      "intent_present": true,
+      "passed": true
+    }
+  ],
+  "passed": true
+}

@@ -1,0 +1,22 @@
+{
+  "input_sha": "3b95934c884caa9f40ea70e935991457058b87b9",
+  "foreign_sources_unchanged": 3,
+  "all_current_ui_hashes_match": 14,
+  "native_cases": 6,
+  "native_checks": 484,
+  "native_enabled_controls": 372,
+  "selected_aspect_controls": 6,
+  "calibration_controls_per_case": 4,
+  "red_positive_controls_reached": true,
+  "replay_before_after": {
+    "before": 3,
+    "after": 3
+  },
+  "local_doc_links": 19,
+  "style_lf_sha256": "e4b4539fbe051e66c9f8226bc6834828e925eb3b12aea6f93e6fdfa20d53bfec",
+  "scope": "Only CSS production change; no foreign artifact edits; no gate transitions",
+  "all_node": "229 passed",
+  "related_python": "53 passed in 14.84s",
+  "full_pytest": "2959 passed, 1 skipped in 312.24s",
+  "git_diff_check": "passed"
+}

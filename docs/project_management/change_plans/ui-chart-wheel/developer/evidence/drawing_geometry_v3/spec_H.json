@@ -1,0 +1,9 @@
+{
+  "variant": "H",
+  "recorded_utc": "2026-10-19T11:17:05.919874+00:00",
+  "reason": "G is tight in10/12 cells; six remaining labels all in720px cells require a different seed, not loosening constraints",
+  "construction": "retain G if all directional certificates exist; otherwise run alternative precision-aware CSP seed with per-distance15000-node stop continuing to next distance cap while total15s/cell remains; same exact-contact compaction/repair; choose fewer unproved groups then lower max displacement",
+  "unchanged": "all spec_F/G precision/C0/annuli/clip/gap/font/order/source/physical-reference constraints; no product fallback",
+  "stop": "one alternative seed per unresolved cell then stop irrespective of outcome; parent90min, no further iterations",
+  "production": "research candidate only; independent rational and fresh native verification required"
+}

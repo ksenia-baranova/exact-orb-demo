@@ -1,0 +1,57 @@
+{
+  "task_id": "TASK-A-001",
+  "author": "Codex / Functional Analyst",
+  "package_version": "v3-review",
+  "date": "2026-10-15",
+  "input_sha": "2169845b770754e11ae8b5cb1e13ffcd780784c8",
+  "main_baseline": "535551026af6eedaf2a0aa5c0daa96fa94655ec1",
+  "source_ref": "origin/analysis/ui-chart-wheel; v3 publication is the first commit adding the publication-v3 section of analyst_artifact.md",
+  "manifest_self_excluded": true,
+  "files": [
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/analyst/decision_input.patch",
+      "sha256": "0c88337410a9561c1af709bc5864bdd6c7ec1fe0c0e67ed3ab17894bb3c13bfb"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/analyst/findings.md",
+      "sha256": "4640af07d7b09a284e4cf5abfb28e79372199c823c7171d0d307325982b776f5"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/analyst/requirements.md",
+      "sha256": "3cfd3dadba7213465ffbec8da866cefd496905792ec971671bf920b4c2ddd684"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/analyst/scenarios.md",
+      "sha256": "b3a7942f9feb76877f43f95f04a33ba44a7931620a5da6226f38991bb797dccd"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/analyst/sequence_diagrams/ui/001-chart-presentation.puml",
+      "sha256": "a2062567689495f8a9a4b16bcb9616e7b8ef3d12a7421a44135a721bd25d7116"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/analyst/sequence_diagrams/ui/002-wheel-table-selection.puml",
+      "sha256": "af1fb9396708bd728a336edcbe4e37ad6db04fdeba03d12f50483e90e0a915c5"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/analyst/sequence_diagrams/ui/003-edit-and-recovery.puml",
+      "sha256": "a7bee13c5502ddde382630affe76c0cfb3ba3c81f9b3c622e40f27f1fbfac610"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/analyst/sources.md",
+      "sha256": "b88be56857dd13e642147e70f02e05ce689cd794fc078ced504cdb7765fef853"
+    },
+    {
+      "path": "docs/project_management/change_plans/ui-chart-wheel/analyst_artifact.md",
+      "sha256": "636c3ac812168324a93d4554b7936d25c6df6250000a4614023af7ae3966c8c2"
+    }
+  ],
+  "original_analysis_input_sha": "5188b523089acc8081585e869c482ee0d343cfba",
+  "previous_package_sha": "cb254226e567a68c1e75db6ab2c663d35a04d4c1",
+  "hash_basis": "UTF-8 file bytes with CRLF normalized to LF; matches Git blob contents",
+  "owner_evidence": {
+    "date": "2026-10-15",
+    "source_thread_id": "01a13458-36ca-7021-9246-a73b3d3b2b0d",
+    "registration": "new DP-O-012/013 evidence pending Manager registration",
+    "additional_direct_reply": "Да, снимать только исчезнувший выбор (рекомендуется)"
+  }
+}

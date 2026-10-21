@@ -1,0 +1,1481 @@
+{
+  "id": "F3-max-360",
+  "width": 360,
+  "fixture": "F3-max",
+  "checks": [
+    {
+      "name": "numbered-houses",
+      "actual": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "expected": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "pass": true
+    },
+    {
+      "name": "published-cusps",
+      "actual": 12,
+      "expected": 12,
+      "pass": true
+    },
+    {
+      "name": "ruler",
+      "actual": 360,
+      "expected": 360,
+      "pass": true
+    },
+    {
+      "name": "no-page-overflow",
+      "actual": false,
+      "expected": false,
+      "pass": true
+    },
+    {
+      "name": "collapsed-form-does-not-duplicate-summary",
+      "actual": true,
+      "expected": true,
+      "pass": true
+    },
+    {
+      "name": "focus-wheel",
+      "actual": "chart-wheel",
+      "expected": "chart-wheel",
+      "pass": true
+    },
+    {
+      "name": "aspect-only-row",
+      "actual": 1,
+      "expected": 1,
+      "pass": true
+    },
+    {
+      "name": "two-point-rows",
+      "actual": [
+        "moon",
+        "sun"
+      ],
+      "expected": [
+        "moon",
+        "sun"
+      ],
+      "pass": true
+    },
+    {
+      "name": "two-graphic-points",
+      "actual": [
+        "moon",
+        "sun"
+      ],
+      "expected": [
+        "moon",
+        "sun"
+      ],
+      "pass": true
+    },
+    {
+      "name": "published-houses-only",
+      "actual": [
+        4,
+        11
+      ],
+      "expected": [
+        4,
+        11
+      ],
+      "pass": true
+    },
+    {
+      "name": "graphic-house-numbers-only",
+      "actual": [
+        4,
+        11
+      ],
+      "expected": [
+        4,
+        11
+      ],
+      "pass": true
+    },
+    {
+      "name": "focused-page",
+      "actual": [
+        true,
+        true,
+        true
+      ],
+      "expected": [
+        true,
+        true,
+        true
+      ],
+      "pass": true
+    },
+    {
+      "name": "only-chosen-graphic",
+      "actual": [
+        0,
+        1
+      ],
+      "expected": [
+        0,
+        1
+      ],
+      "pass": true
+    },
+    {
+      "name": "view-scrolls-to-wheel",
+      "actual": true,
+      "expected": true,
+      "pass": true
+    },
+    {
+      "name": "activation-no-HTTP",
+      "actual": 2,
+      "expected": 2,
+      "pass": true
+    },
+    {
+      "name": "close-restores-native-source-focus",
+      "actual": true,
+      "expected": true,
+      "pass": true
+    },
+    {
+      "name": "close-restores-all-points",
+      "actual": 16,
+      "expected": 16,
+      "pass": true
+    },
+    {
+      "name": "background-no-line-marker",
+      "actual": 0,
+      "expected": 0,
+      "pass": true
+    },
+    {
+      "name": "safe-recovery-stays-reachable",
+      "actual": true,
+      "expected": true,
+      "pass": true
+    },
+    {
+      "name": "recovery-positive-keeps-aspect-mode",
+      "actual": "true",
+      "expected": "true",
+      "pass": true
+    },
+    {
+      "name": "recovery-focus-is-live-wheel",
+      "actual": true,
+      "expected": true,
+      "pass": true
+    },
+    {
+      "name": "S1-returns-whole-map",
+      "actual": true,
+      "expected": true,
+      "pass": true
+    },
+    {
+      "name": "S1-source-rows",
+      "actual": 6,
+      "expected": 6,
+      "pass": true
+    },
+    {
+      "name": "zero-page-errors",
+      "actual": [],
+      "expected": [],
+      "pass": true
+    }
+  ],
+  "requests": [
+    "bootstrap",
+    "current",
+    "bootstrap",
+    "current",
+    "bootstrap",
+    "current",
+    "bootstrap",
+    "current"
+  ],
+  "errors": [],
+  "chart": {
+    "chart_identity": "controlled-ui-F3-max",
+    "kind": "natal",
+    "zodiac": "tropical",
+    "house_system": "P",
+    "points": [
+      {
+        "id": "sun",
+        "longitude": 358.5,
+        "sign": "Pisces",
+        "degree": 28,
+        "minute": 30,
+        "house": 4,
+        "retrograde": true
+      },
+      {
+        "id": "moon",
+        "longitude": 358.7,
+        "sign": "Pisces",
+        "degree": 28,
+        "minute": 42,
+        "house": 11,
+        "retrograde": false
+      },
+      {
+        "id": "mercury",
+        "longitude": 358.9,
+        "sign": "Pisces",
+        "degree": 28,
+        "minute": 54,
+        "house": 3,
+        "retrograde": true
+      },
+      {
+        "id": "venus",
+        "longitude": 359.1,
+        "sign": "Pisces",
+        "degree": 29,
+        "minute": 6,
+        "house": 2,
+        "retrograde": false
+      },
+      {
+        "id": "mars",
+        "longitude": 359.3,
+        "sign": "Pisces",
+        "degree": 29,
+        "minute": 18,
+        "house": 3,
+        "retrograde": true
+      },
+      {
+        "id": "jupiter",
+        "longitude": 359.5,
+        "sign": "Pisces",
+        "degree": 29,
+        "minute": 30,
+        "house": 9,
+        "retrograde": false
+      },
+      {
+        "id": "saturn",
+        "longitude": 359.7,
+        "sign": "Pisces",
+        "degree": 29,
+        "minute": 42,
+        "house": 6,
+        "retrograde": true
+      },
+      {
+        "id": "uranus",
+        "longitude": 359.9,
+        "sign": "Pisces",
+        "degree": 29,
+        "minute": 54,
+        "house": 6,
+        "retrograde": false
+      },
+      {
+        "id": "neptune",
+        "longitude": 0.10000000000002274,
+        "sign": "Aries",
+        "degree": 0,
+        "minute": 6,
+        "house": 6,
+        "retrograde": true
+      },
+      {
+        "id": "pluto",
+        "longitude": 0.30000000000001137,
+        "sign": "Aries",
+        "degree": 0,
+        "minute": 18,
+        "house": 5,
+        "retrograde": false
+      },
+      {
+        "id": "chiron",
+        "longitude": 0.5,
+        "sign": "Aries",
+        "degree": 0,
+        "minute": 30,
+        "house": 12,
+        "retrograde": true
+      },
+      {
+        "id": "true_node",
+        "longitude": 0.6999999999999886,
+        "sign": "Aries",
+        "degree": 0,
+        "minute": 42,
+        "house": 11,
+        "retrograde": false
+      },
+      {
+        "id": "south_node",
+        "longitude": 0.8999999999999773,
+        "sign": "Aries",
+        "degree": 0,
+        "minute": 54,
+        "house": 5,
+        "retrograde": true
+      },
+      {
+        "id": "mean_apog",
+        "longitude": 1.1000000000000227,
+        "sign": "Aries",
+        "degree": 1,
+        "minute": 6,
+        "house": 11,
+        "retrograde": false
+      },
+      {
+        "id": "selena",
+        "longitude": 1.3000000000000114,
+        "sign": "Aries",
+        "degree": 1,
+        "minute": 18,
+        "house": 5,
+        "retrograde": true
+      },
+      {
+        "id": "pars_fortune",
+        "longitude": 1.5,
+        "sign": "Aries",
+        "degree": 1,
+        "minute": 30,
+        "house": 6,
+        "retrograde": false
+      }
+    ],
+    "angles": {
+      "asc": {
+        "longitude": 359.4,
+        "sign": "Pisces",
+        "degree": 29,
+        "minute": 24
+      },
+      "mc": {
+        "longitude": 359.5,
+        "sign": "Pisces",
+        "degree": 29,
+        "minute": 30
+      },
+      "vertex": {
+        "longitude": 359.6,
+        "sign": "Pisces",
+        "degree": 29,
+        "minute": 36
+      },
+      "dsc": {
+        "longitude": 179.4,
+        "sign": "Virgo",
+        "degree": 29,
+        "minute": 24
+      },
+      "ic": {
+        "longitude": 179.5,
+        "sign": "Virgo",
+        "degree": 29,
+        "minute": 30
+      }
+    },
+    "houses": [
+      {
+        "number": 1,
+        "cusp_longitude": 98.10571461295291,
+        "sign": "Cancer",
+        "degree": 8,
+        "minute": 6
+      },
+      {
+        "number": 2,
+        "cusp_longitude": 111.86113073362736,
+        "sign": "Cancer",
+        "degree": 21,
+        "minute": 51
+      },
+      {
+        "number": 3,
+        "cusp_longitude": 127.21128222848128,
+        "sign": "Leo",
+        "degree": 7,
+        "minute": 12
+      },
+      {
+        "number": 4,
+        "cusp_longitude": 147.62940719926064,
+        "sign": "Leo",
+        "degree": 27,
+        "minute": 37
+      },
+      {
+        "number": 5,
+        "cusp_longitude": 179.74928469285112,
+        "sign": "Virgo",
+        "degree": 29,
+        "minute": 44
+      },
+      {
+        "number": 6,
+        "cusp_longitude": 231.38720474173113,
+        "sign": "Scorpio",
+        "degree": 21,
+        "minute": 23
+      },
+      {
+        "number": 7,
+        "cusp_longitude": 278.1057146129529,
+        "sign": "Capricorn",
+        "degree": 8,
+        "minute": 6
+      },
+      {
+        "number": 8,
+        "cusp_longitude": 291.86113073362736,
+        "sign": "Capricorn",
+        "degree": 21,
+        "minute": 51
+      },
+      {
+        "number": 9,
+        "cusp_longitude": 307.2112822284813,
+        "sign": "Aquarius",
+        "degree": 7,
+        "minute": 12
+      },
+      {
+        "number": 10,
+        "cusp_longitude": 327.62940719926064,
+        "sign": "Aquarius",
+        "degree": 27,
+        "minute": 37
+      },
+      {
+        "number": 11,
+        "cusp_longitude": 359.7492846928511,
+        "sign": "Pisces",
+        "degree": 29,
+        "minute": 44
+      },
+      {
+        "number": 12,
+        "cusp_longitude": 51.38720474173114,
+        "sign": "Taurus",
+        "degree": 21,
+        "minute": 23
+      }
+    ],
+    "aspects": [
+      {
+        "from": "sun",
+        "to": "moon",
+        "type": "conjunction",
+        "category": "exact",
+        "orb": 0.2
+      },
+      {
+        "from": "mercury",
+        "to": "venus",
+        "type": "conjunction",
+        "category": "working",
+        "orb": 0.2
+      },
+      {
+        "from": "mars",
+        "to": "jupiter",
+        "type": "conjunction",
+        "category": "exact",
+        "orb": 0.2
+      },
+      {
+        "from": "saturn",
+        "to": "uranus",
+        "type": "conjunction",
+        "category": "working",
+        "orb": 0.2
+      },
+      {
+        "from": "neptune",
+        "to": "pluto",
+        "type": "conjunction",
+        "category": "background",
+        "orb": 0.2
+      }
+    ]
+  },
+  "normal": {
+    "groups": [
+      {
+        "key": "sign:0",
+        "parts": [
+          [
+            117.796875,
+            216.5625,
+            134.796875,
+            237.5625
+          ]
+        ]
+      },
+      {
+        "key": "sign:1",
+        "parts": [
+          [
+            141.375,
+            256.4375,
+            158.375,
+            277.4375
+          ]
+        ]
+      },
+      {
+        "key": "sign:2",
+        "parts": [
+          [
+            182.25,
+            279.1875,
+            198.25,
+            300.1875
+          ]
+        ]
+      },
+      {
+        "key": "sign:3",
+        "parts": [
+          [
+            228.0625,
+            278.703125,
+            245.0625,
+            299.703125
+          ]
+        ]
+      },
+      {
+        "key": "sign:4",
+        "parts": [
+          [
+            268.9375,
+            255.125,
+            283.9375,
+            276.125
+          ]
+        ]
+      },
+      {
+        "key": "sign:5",
+        "parts": [
+          [
+            290.6875,
+            214.75,
+            307.6875,
+            235.75
+          ]
+        ]
+      },
+      {
+        "key": "sign:6",
+        "parts": [
+          [
+            290.703125,
+            168.4375,
+            306.703125,
+            189.4375
+          ]
+        ]
+      },
+      {
+        "key": "sign:7",
+        "parts": [
+          [
+            266.625,
+            128.5625,
+            283.625,
+            149.5625
+          ]
+        ]
+      },
+      {
+        "key": "sign:8",
+        "parts": [
+          [
+            227.25,
+            105.8125,
+            242.25,
+            126.8125
+          ]
+        ]
+      },
+      {
+        "key": "sign:9",
+        "parts": [
+          [
+            178.9375,
+            106.296875,
+            197.9375,
+            127.296875
+          ]
+        ]
+      },
+      {
+        "key": "sign:10",
+        "parts": [
+          [
+            139.0625,
+            129.875,
+            158.0625,
+            150.875
+          ]
+        ]
+      },
+      {
+        "key": "sign:11",
+        "parts": [
+          [
+            119.3125,
+            170.25,
+            132.3125,
+            191.25
+          ]
+        ]
+      },
+      {
+        "key": "sun",
+        "parts": [
+          [
+            19.10546875,
+            8,
+            34.08984375,
+            30.5
+          ],
+          [
+            36.08984375,
+            14.25,
+            44.08984375,
+            30.25
+          ],
+          [
+            49.08984375,
+            11.25,
+            91,
+            27.25
+          ]
+        ]
+      },
+      {
+        "key": "moon",
+        "parts": [
+          [
+            47.4375,
+            32.5,
+            58.078125,
+            55
+          ],
+          [
+            63.078125,
+            35.75,
+            91,
+            51.75
+          ]
+        ]
+      },
+      {
+        "key": "mercury",
+        "parts": [
+          [
+            8.595703125,
+            57,
+            19.095703125,
+            79.5
+          ],
+          [
+            21.095703125,
+            63.25,
+            29.095703125,
+            79.25
+          ],
+          [
+            34.095703125,
+            60.25,
+            91,
+            76.25
+          ]
+        ]
+      },
+      {
+        "key": "venus",
+        "parts": [
+          [
+            35.984375,
+            81.5,
+            46.484375,
+            104
+          ],
+          [
+            51.484375,
+            84.75,
+            91,
+            100.75
+          ]
+        ]
+      },
+      {
+        "key": "mars",
+        "parts": [
+          [
+            33.455078125,
+            106,
+            46.064453125,
+            128.5
+          ],
+          [
+            48.064453125,
+            112.25,
+            56.064453125,
+            128.25
+          ],
+          [
+            61.064453125,
+            109.25,
+            91,
+            125.25
+          ]
+        ]
+      },
+      {
+        "key": "jupiter",
+        "parts": [
+          [
+            27.8125,
+            130.5,
+            41.625,
+            153
+          ],
+          [
+            46.625,
+            133.75,
+            91,
+            149.75
+          ]
+        ]
+      },
+      {
+        "key": "saturn",
+        "parts": [
+          [
+            27.181640625,
+            155,
+            37.681640625,
+            177.5
+          ],
+          [
+            39.681640625,
+            161.25,
+            47.681640625,
+            177.25
+          ],
+          [
+            52.681640625,
+            158.25,
+            91,
+            174.25
+          ]
+        ]
+      },
+      {
+        "key": "uranus",
+        "parts": [
+          [
+            45.53125,
+            179.5,
+            59.03125,
+            202
+          ],
+          [
+            64.03125,
+            182.75,
+            91,
+            198.75
+          ]
+        ]
+      },
+      {
+        "key": "neptune",
+        "parts": [
+          [
+            21.05078125,
+            204,
+            36.55078125,
+            226.5
+          ],
+          [
+            38.55078125,
+            210.25,
+            46.55078125,
+            226.25
+          ],
+          [
+            51.55078125,
+            207.25,
+            91,
+            223.25
+          ]
+        ]
+      },
+      {
+        "key": "pluto",
+        "parts": [
+          [
+            35.86328125,
+            228.5,
+            46.36328125,
+            251
+          ],
+          [
+            51.36328125,
+            231.75,
+            91,
+            247.75
+          ]
+        ]
+      },
+      {
+        "key": "chiron",
+        "parts": [
+          [
+            29.36328125,
+            253,
+            39.86328125,
+            275.5
+          ],
+          [
+            41.86328125,
+            259.25,
+            49.86328125,
+            275.25
+          ],
+          [
+            54.86328125,
+            256.25,
+            91,
+            272.25
+          ]
+        ]
+      },
+      {
+        "key": "true_node",
+        "parts": [
+          [
+            22.59375,
+            277.5,
+            36.28125,
+            300
+          ],
+          [
+            41.28125,
+            280.75,
+            91,
+            296.75
+          ]
+        ]
+      },
+      {
+        "key": "south_node",
+        "parts": [
+          [
+            4.5625,
+            302,
+            18.25,
+            324.5
+          ],
+          [
+            20.25,
+            308.25,
+            28.25,
+            324.25
+          ],
+          [
+            33.25,
+            305.25,
+            91,
+            321.25
+          ]
+        ]
+      },
+      {
+        "key": "mean_apog",
+        "parts": [
+          [
+            40.345703125,
+            326.5,
+            50.658203125,
+            349
+          ],
+          [
+            55.658203125,
+            329.75,
+            91,
+            345.75
+          ]
+        ]
+      },
+      {
+        "key": "selena",
+        "parts": [
+          [
+            21.375,
+            351,
+            36.65625,
+            373.5
+          ],
+          [
+            38.65625,
+            357.25,
+            46.65625,
+            373.25
+          ],
+          [
+            51.65625,
+            354.25,
+            91,
+            370.25
+          ]
+        ]
+      },
+      {
+        "key": "pars_fortune",
+        "parts": [
+          [
+            28.751953125,
+            375.5,
+            43.736328125,
+            398
+          ],
+          [
+            48.736328125,
+            378.75,
+            91,
+            394.75
+          ]
+        ]
+      },
+      {
+        "key": "angle:asc",
+        "parts": [
+          [
+            172.681640625,
+            251.125,
+            195.796875,
+            267.125
+          ]
+        ]
+      },
+      {
+        "key": "angle:mc",
+        "parts": [
+          [
+            154.3935546875,
+            207.921875,
+            173.1689453125,
+            223.921875
+          ]
+        ]
+      },
+      {
+        "key": "angle:vertex",
+        "parts": [
+          [
+            156.5546875,
+            183.171875,
+            171.0078125,
+            199.171875
+          ]
+        ]
+      },
+      {
+        "key": "angle:dsc",
+        "parts": [
+          [
+            248.859375,
+            166.625,
+            271.6484375,
+            182.625
+          ]
+        ]
+      },
+      {
+        "key": "angle:ic",
+        "parts": [
+          [
+            264.21875,
+            194.921875,
+            275.412109375,
+            210.921875
+          ]
+        ]
+      },
+      {
+        "key": "conj:[\"moon\",\"sun\",\"conjunction\"]",
+        "parts": [
+          [
+            142.7685546875,
+            191.3671875,
+            152.3935546875,
+            213.8671875
+          ]
+        ]
+      },
+      {
+        "key": "conj:[\"mercury\",\"venus\",\"conjunction\"]",
+        "parts": [
+          [
+            198.21875,
+            176.921875,
+            207.84375,
+            199.421875
+          ]
+        ]
+      },
+      {
+        "key": "conj:[\"jupiter\",\"mars\",\"conjunction\"]",
+        "parts": [
+          [
+            188.59375,
+            201.421875,
+            198.21875,
+            223.921875
+          ]
+        ]
+      },
+      {
+        "key": "conj:[\"saturn\",\"uranus\",\"conjunction\"]",
+        "parts": [
+          [
+            209.84375,
+            191.9375,
+            219.46875,
+            214.4375
+          ]
+        ]
+      },
+      {
+        "key": "house:1",
+        "parts": [
+          [
+            219.84375,
+            232.953125,
+            226.3125,
+            248.953125
+          ]
+        ]
+      },
+      {
+        "key": "house:2",
+        "parts": [
+          [
+            228.78125,
+            229.078125,
+            235.78125,
+            245.078125
+          ]
+        ]
+      },
+      {
+        "key": "house:3",
+        "parts": [
+          [
+            235.78125,
+            211.078125,
+            242.25,
+            227.078125
+          ]
+        ]
+      },
+      {
+        "key": "house:4",
+        "parts": [
+          [
+            246.4375,
+            205.671875,
+            254.4375,
+            221.671875
+          ]
+        ]
+      },
+      {
+        "key": "house:5",
+        "parts": [
+          [
+            239.859375,
+            177.625,
+            246.859375,
+            193.625
+          ]
+        ]
+      },
+      {
+        "key": "house:6",
+        "parts": [
+          [
+            218.96875,
+            156.875,
+            225.96875,
+            172.875
+          ]
+        ]
+      },
+      {
+        "key": "house:7",
+        "parts": [
+          [
+            198.421875,
+            157.046875,
+            205.421875,
+            173.046875
+          ]
+        ]
+      },
+      {
+        "key": "house:8",
+        "parts": [
+          [
+            189.21875,
+            160.921875,
+            196.21875,
+            176.921875
+          ]
+        ]
+      },
+      {
+        "key": "house:9",
+        "parts": [
+          [
+            182.21875,
+            178.921875,
+            189.21875,
+            194.921875
+          ]
+        ]
+      },
+      {
+        "key": "house:10",
+        "parts": [
+          [
+            168.734375,
+            157.640625,
+            182.203125,
+            173.640625
+          ]
+        ]
+      },
+      {
+        "key": "house:11",
+        "parts": [
+          [
+            170.671875,
+            225.921875,
+            183.609375,
+            241.921875
+          ]
+        ]
+      },
+      {
+        "key": "house:12",
+        "parts": [
+          [
+            195.796875,
+            233.125,
+            209.265625,
+            249.125
+          ]
+        ]
+      }
+    ],
+    "width": 318,
+    "height": 406,
+    "houseNumbers": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ],
+    "cuspCount": 12,
+    "ticks": 360,
+    "aspectRatio": 0.27000000676498037,
+    "overflow": false,
+    "zoom": 1,
+    "formHidden": true
+  },
+  "selected": {
+    "width": 318,
+    "height": 226,
+    "groups": [
+      {
+        "key": "sign:0",
+        "parts": [
+          [
+            103.078125,
+            128.578125,
+            120.078125,
+            149.578125
+          ]
+        ]
+      },
+      {
+        "key": "sign:1",
+        "parts": [
+          [
+            128.625,
+            171.796875,
+            145.625,
+            192.796875
+          ]
+        ]
+      },
+      {
+        "key": "sign:2",
+        "parts": [
+          [
+            172.875,
+            196.453125,
+            188.875,
+            217.453125
+          ]
+        ]
+      },
+      {
+        "key": "sign:3",
+        "parts": [
+          [
+            222.578125,
+            195.921875,
+            239.578125,
+            216.921875
+          ]
+        ]
+      },
+      {
+        "key": "sign:4",
+        "parts": [
+          [
+            266.796875,
+            170.375,
+            281.796875,
+            191.375
+          ]
+        ]
+      },
+      {
+        "key": "sign:5",
+        "parts": [
+          [
+            290.453125,
+            126.625,
+            307.453125,
+            147.625
+          ]
+        ]
+      },
+      {
+        "key": "sign:6",
+        "parts": [
+          [
+            290.421875,
+            76.421875,
+            306.421875,
+            97.421875
+          ]
+        ]
+      },
+      {
+        "key": "sign:7",
+        "parts": [
+          [
+            264.375,
+            33.203125,
+            281.375,
+            54.203125
+          ]
+        ]
+      },
+      {
+        "key": "sign:8",
+        "parts": [
+          [
+            221.625,
+            8.546875,
+            236.625,
+            29.546875
+          ]
+        ]
+      },
+      {
+        "key": "sign:9",
+        "parts": [
+          [
+            169.421875,
+            9.078125,
+            188.421875,
+            30.078125
+          ]
+        ]
+      },
+      {
+        "key": "sign:10",
+        "parts": [
+          [
+            126.203125,
+            34.625,
+            145.203125,
+            55.625
+          ]
+        ]
+      },
+      {
+        "key": "sign:11",
+        "parts": [
+          [
+            104.546875,
+            78.375,
+            117.546875,
+            99.375
+          ]
+        ]
+      },
+      {
+        "key": "sun",
+        "parts": [
+          [
+            4.10546875,
+            88.65625,
+            19.08984375,
+            111.15625
+          ],
+          [
+            21.08984375,
+            94.90625,
+            29.08984375,
+            110.90625
+          ],
+          [
+            34.08984375,
+            91.90625,
+            76,
+            107.90625
+          ]
+        ]
+      },
+      {
+        "key": "moon",
+        "parts": [
+          [
+            32.4375,
+            113.15625,
+            43.078125,
+            135.65625
+          ],
+          [
+            48.078125,
+            116.40625,
+            76,
+            132.40625
+          ]
+        ]
+      },
+      {
+        "key": "conj:[\"moon\",\"sun\",\"conjunction\"]",
+        "parts": [
+          [
+            170.765625,
+            101.3359375,
+            180.390625,
+            123.8359375
+          ]
+        ]
+      },
+      {
+        "key": "house:4",
+        "parts": [
+          [
+            240.875,
+            116.21875,
+            248.875,
+            132.21875
+          ]
+        ]
+      },
+      {
+        "key": "house:11",
+        "parts": [
+          [
+            161.34375,
+            125.8359375,
+            174.28125,
+            141.8359375
+          ]
+        ]
+      }
+    ],
+    "focus": "chart-wheel",
+    "scrollTop": 135.1875,
+    "scrollBottom": 361.1875,
+    "viewportHeight": 1000,
+    "toolbarBottom": 115.1875,
+    "aspectRows": 1,
+    "pointIds": [
+      "moon",
+      "sun"
+    ],
+    "houses": [
+      4,
+      11
+    ],
+    "houseNumbers": [
+      4,
+      11
+    ],
+    "graphicPoints": [
+      "moon",
+      "sun"
+    ],
+    "formHidden": true,
+    "headingHidden": true,
+    "summaryHidden": true,
+    "lines": 0,
+    "markers": 1
+  },
+  "pass": true
+}

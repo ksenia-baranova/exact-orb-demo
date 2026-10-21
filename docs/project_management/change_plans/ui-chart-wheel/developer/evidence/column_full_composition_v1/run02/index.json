@@ -1,0 +1,151 @@
+{
+  "author": "Codex / Developer",
+  "started": "2026-10-19T16:25:20.107Z",
+  "finished": "2026-10-19T16:25:31.949Z",
+  "browser": "155.0.8059.40",
+  "node": "v24.19.0",
+  "scale": "SVG 1 unit = CSS px; page zoom1; browser headless; recorded DPR1/2",
+  "sources": {
+    "composition.mjs": "56caf5834d332b16a0272a0d9a1cfdd00dbcce9a623917b3c08aa20b8b002cb5",
+    "harness.html": "6b111250a917be865b98371addf8f4570fd1508ec37e9ef53f5dbcc4d372f30d",
+    "browser.cjs": "29e373d60e088804644081311a9c04f4b0b1ef5f36e50b72bcfc6ec4ef4fd943",
+    "boundary.mjs": "9b54c56ab5b88f88965fd98dafc02ba98df88ce6c72bda9032aa22acd2dd5dcd",
+    "boundary.html": "91745d176cd5909a3ba81bea5d6128ee6c0e1784fc1701ec289243dcb0b2bf94",
+    "spec.json": "9741c43f6521f6d02f39aaf0185209d9b38ce69c6576e9a8dcc34d766db18301",
+    "variant02.json": "09f393f227c562c7a05516982c207b44cf41b96b6efec27bad33d21901954f70",
+    "data.json": "dcf43f3b2569e9f8d1a0442424d2a9c2be5abf6d3af1c1cdfec1ed2168b70629"
+  },
+  "records": [
+    {
+      "id": "sparse-720-normal-none-dpr1",
+      "status": "MEASURED",
+      "elapsed_ms": 332
+    },
+    {
+      "id": "sparse-448-normal-none-dpr1",
+      "status": "MEASURED",
+      "elapsed_ms": 152
+    },
+    {
+      "id": "sparse-328-normal-none-dpr1",
+      "status": "MEASURED",
+      "elapsed_ms": 142
+    },
+    {
+      "id": "F1-720-normal-none-dpr1",
+      "status": "MEASURED",
+      "elapsed_ms": 199
+    },
+    {
+      "id": "F1-448-normal-none-dpr1",
+      "status": "MEASURED",
+      "elapsed_ms": 193
+    },
+    {
+      "id": "F1-328-normal-none-dpr1",
+      "status": "MEASURED",
+      "elapsed_ms": 274
+    },
+    {
+      "id": "F3-720-normal-none-dpr1",
+      "status": "MEASURED",
+      "elapsed_ms": 406
+    },
+    {
+      "id": "F3-448-normal-none-dpr1",
+      "status": "MEASURED",
+      "elapsed_ms": 253
+    },
+    {
+      "id": "F3-328-normal-none-dpr1",
+      "status": "MEASURED",
+      "elapsed_ms": 295
+    },
+    {
+      "id": "F3-max-720-normal-none-dpr1",
+      "status": "MEASURED",
+      "elapsed_ms": 2333
+    },
+    {
+      "id": "F3-max-448-normal-none-dpr1",
+      "status": "MEASURED",
+      "elapsed_ms": 730
+    },
+    {
+      "id": "F3-max-328-normal-none-dpr1",
+      "status": "MEASURED",
+      "elapsed_ms": 396
+    },
+    {
+      "id": "published-natal-720-normal-none-dpr1",
+      "status": "MEASURED",
+      "elapsed_ms": 185
+    },
+    {
+      "id": "published-natal-448-normal-none-dpr1",
+      "status": "MEASURED",
+      "elapsed_ms": 187
+    },
+    {
+      "id": "published-natal-328-normal-none-dpr1",
+      "status": "MEASURED",
+      "elapsed_ms": 264
+    },
+    {
+      "id": "cosmogram-720-normal-none-dpr1",
+      "status": "MEASURED",
+      "elapsed_ms": 145
+    },
+    {
+      "id": "cosmogram-448-normal-none-dpr1",
+      "status": "MEASURED",
+      "elapsed_ms": 138
+    },
+    {
+      "id": "cosmogram-328-normal-none-dpr1",
+      "status": "MEASURED",
+      "elapsed_ms": 146
+    },
+    {
+      "id": "multigroup-control-720-normal-none-dpr1",
+      "status": "MEASURED",
+      "elapsed_ms": 2332
+    },
+    {
+      "id": "multigroup-control-448-normal-none-dpr1",
+      "status": "MEASURED",
+      "elapsed_ms": 736
+    },
+    {
+      "id": "multigroup-control-328-normal-none-dpr1",
+      "status": "MEASURED",
+      "elapsed_ms": 435
+    },
+    {
+      "id": "F3-max-328-fallback-none-dpr1",
+      "status": "MEASURED",
+      "elapsed_ms": 395
+    },
+    {
+      "id": "F1-328-normal-point-dpr2",
+      "status": "MEASURED",
+      "elapsed_ms": 306
+    },
+    {
+      "id": "F3-max-328-normal-conjunction-dpr2",
+      "status": "MEASURED",
+      "elapsed_ms": 422
+    },
+    {
+      "id": "F1-448-normal-aspect-dpr1",
+      "status": "MEASURED",
+      "elapsed_ms": 185
+    },
+    {
+      "id": "published-natal-328-normal-background-dpr1",
+      "status": "MEASURED",
+      "elapsed_ms": 260
+    }
+  ],
+  "boundaryControls": 22
+}

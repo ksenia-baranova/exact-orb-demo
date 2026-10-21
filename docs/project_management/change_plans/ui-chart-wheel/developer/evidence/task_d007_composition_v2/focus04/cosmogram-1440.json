@@ -1,0 +1,571 @@
+{
+  "id": "cosmogram-1440",
+  "width": 1440,
+  "fixture": "cosmogram",
+  "checks": [
+    {
+      "name": "numbered-houses",
+      "actual": [],
+      "expected": [],
+      "pass": true
+    },
+    {
+      "name": "published-cusps",
+      "actual": 0,
+      "expected": 0,
+      "pass": true
+    },
+    {
+      "name": "ruler",
+      "actual": 360,
+      "expected": 360,
+      "pass": true
+    },
+    {
+      "name": "no-page-overflow",
+      "actual": false,
+      "expected": false,
+      "pass": true
+    },
+    {
+      "name": "collapsed-form-does-not-duplicate-summary",
+      "actual": true,
+      "expected": true,
+      "pass": true
+    },
+    {
+      "name": "useful-aspect-area",
+      "actual": true,
+      "expected": true,
+      "pass": true
+    },
+    {
+      "name": "focus-wheel",
+      "actual": "chart-wheel",
+      "expected": "chart-wheel",
+      "pass": true
+    },
+    {
+      "name": "aspect-only-row",
+      "actual": 1,
+      "expected": 1,
+      "pass": true
+    },
+    {
+      "name": "two-point-rows",
+      "actual": [
+        "chiron",
+        "uranus"
+      ],
+      "expected": [
+        "chiron",
+        "uranus"
+      ],
+      "pass": true
+    },
+    {
+      "name": "two-graphic-points",
+      "actual": [
+        "chiron",
+        "uranus"
+      ],
+      "expected": [
+        "chiron",
+        "uranus"
+      ],
+      "pass": true
+    },
+    {
+      "name": "published-houses-only",
+      "actual": [],
+      "expected": [],
+      "pass": true
+    },
+    {
+      "name": "graphic-house-numbers-only",
+      "actual": [],
+      "expected": [],
+      "pass": true
+    },
+    {
+      "name": "focused-page",
+      "actual": [
+        true,
+        true,
+        true
+      ],
+      "expected": [
+        true,
+        true,
+        true
+      ],
+      "pass": true
+    },
+    {
+      "name": "only-chosen-graphic",
+      "actual": [
+        1,
+        0
+      ],
+      "expected": [
+        1,
+        0
+      ],
+      "pass": true
+    },
+    {
+      "name": "view-scrolls-to-wheel",
+      "actual": true,
+      "expected": true,
+      "pass": true
+    },
+    {
+      "name": "activation-no-HTTP",
+      "actual": 2,
+      "expected": 2,
+      "pass": true
+    },
+    {
+      "name": "close-restores-native-source-focus",
+      "actual": true,
+      "expected": true,
+      "pass": true
+    },
+    {
+      "name": "close-restores-all-points",
+      "actual": 2,
+      "expected": 2,
+      "pass": true
+    },
+    {
+      "name": "safe-recovery-stays-reachable",
+      "actual": true,
+      "expected": true,
+      "pass": true
+    },
+    {
+      "name": "recovery-positive-keeps-aspect-mode",
+      "actual": "true",
+      "expected": "true",
+      "pass": true
+    },
+    {
+      "name": "recovery-focus-is-live-wheel",
+      "actual": true,
+      "expected": true,
+      "pass": true
+    },
+    {
+      "name": "S1-returns-whole-map",
+      "actual": true,
+      "expected": true,
+      "pass": true
+    },
+    {
+      "name": "S1-source-rows",
+      "actual": 2,
+      "expected": 2,
+      "pass": true
+    },
+    {
+      "name": "zero-page-errors",
+      "actual": [],
+      "expected": [],
+      "pass": true
+    }
+  ],
+  "requests": [
+    "bootstrap",
+    "current",
+    "bootstrap",
+    "current",
+    "bootstrap",
+    "current",
+    "bootstrap",
+    "current"
+  ],
+  "errors": [],
+  "chart": {
+    "chart_identity": "eo:calc:v2:4c52e4cba142fe93852fa1498d9e770e85c94ca5d4466f551f214ccb870afcf7",
+    "kind": "cosmogram",
+    "zodiac": "tropical",
+    "house_system": null,
+    "points": [
+      {
+        "id": "uranus",
+        "longitude": 254.00767962503068,
+        "sign": "Sagittarius",
+        "degree": 14,
+        "minute": 0,
+        "house": null,
+        "retrograde": false
+      },
+      {
+        "id": "chiron",
+        "longitude": 74.45583944094797,
+        "sign": "Gemini",
+        "degree": 14,
+        "minute": 27,
+        "house": null,
+        "retrograde": false
+      }
+    ],
+    "angles": null,
+    "houses": null,
+    "aspects": [
+      {
+        "from": "uranus",
+        "to": "chiron",
+        "type": "opposition",
+        "orb": 0.45438143185427293,
+        "category": "exact"
+      }
+    ]
+  },
+  "normal": {
+    "groups": [
+      {
+        "key": "sign:0",
+        "parts": [
+          [
+            22.96875,
+            577,
+            39.96875,
+            598
+          ]
+        ]
+      },
+      {
+        "key": "sign:1",
+        "parts": [
+          [
+            140.46875,
+            780.53125,
+            157.46875,
+            801.53125
+          ]
+        ]
+      },
+      {
+        "key": "sign:2",
+        "parts": [
+          [
+            344.5,
+            898.03125,
+            360.5,
+            919.03125
+          ]
+        ]
+      },
+      {
+        "key": "sign:3",
+        "parts": [
+          [
+            579,
+            898.03125,
+            596,
+            919.03125
+          ]
+        ]
+      },
+      {
+        "key": "sign:4",
+        "parts": [
+          [
+            783.53125,
+            780.53125,
+            798.53125,
+            801.53125
+          ]
+        ]
+      },
+      {
+        "key": "sign:5",
+        "parts": [
+          [
+            900.03125,
+            577,
+            917.03125,
+            598
+          ]
+        ]
+      },
+      {
+        "key": "sign:6",
+        "parts": [
+          [
+            900.53125,
+            342,
+            916.53125,
+            363
+          ]
+        ]
+      },
+      {
+        "key": "sign:7",
+        "parts": [
+          [
+            782.53125,
+            138.46875,
+            799.53125,
+            159.46875
+          ]
+        ]
+      },
+      {
+        "key": "sign:8",
+        "parts": [
+          [
+            580,
+            20.96875,
+            595,
+            41.96875
+          ]
+        ]
+      },
+      {
+        "key": "sign:9",
+        "parts": [
+          [
+            343,
+            20.96875,
+            362,
+            41.96875
+          ]
+        ]
+      },
+      {
+        "key": "sign:10",
+        "parts": [
+          [
+            139.46875,
+            138.46875,
+            158.46875,
+            159.46875
+          ]
+        ]
+      },
+      {
+        "key": "sign:11",
+        "parts": [
+          [
+            24.96875,
+            342,
+            37.96875,
+            363
+          ]
+        ]
+      },
+      {
+        "key": "uranus",
+        "parts": [
+          [
+            580.3125,
+            50.3125,
+            593.8125,
+            72.8125
+          ]
+        ]
+      },
+      {
+        "key": "chiron",
+        "parts": [
+          [
+            350.890625,
+            868.09375,
+            361.390625,
+            890.59375
+          ]
+        ]
+      }
+    ],
+    "width": 940,
+    "height": 940,
+    "houseNumbers": [],
+    "cuspCount": 0,
+    "ticks": 360,
+    "aspectRatio": 0.7937347019179185,
+    "overflow": false,
+    "zoom": 1,
+    "formHidden": true
+  },
+  "selected": {
+    "width": 1100,
+    "height": 1100,
+    "groups": [
+      {
+        "key": "sign:0",
+        "parts": [
+          [
+            25.703125,
+            677.703125,
+            42.703125,
+            698.703125
+          ]
+        ]
+      },
+      {
+        "key": "sign:1",
+        "parts": [
+          [
+            163.90625,
+            917.09375,
+            180.90625,
+            938.09375
+          ]
+        ]
+      },
+      {
+        "key": "sign:2",
+        "parts": [
+          [
+            403.796875,
+            1055.296875,
+            419.796875,
+            1076.296875
+          ]
+        ]
+      },
+      {
+        "key": "sign:3",
+        "parts": [
+          [
+            679.703125,
+            1055.296875,
+            696.703125,
+            1076.296875
+          ]
+        ]
+      },
+      {
+        "key": "sign:4",
+        "parts": [
+          [
+            920.09375,
+            917.09375,
+            935.09375,
+            938.09375
+          ]
+        ]
+      },
+      {
+        "key": "sign:5",
+        "parts": [
+          [
+            1057.296875,
+            677.703125,
+            1074.296875,
+            698.703125
+          ]
+        ]
+      },
+      {
+        "key": "sign:6",
+        "parts": [
+          [
+            1057.796875,
+            401.296875,
+            1073.796875,
+            422.296875
+          ]
+        ]
+      },
+      {
+        "key": "sign:7",
+        "parts": [
+          [
+            919.09375,
+            161.90625,
+            936.09375,
+            182.90625
+          ]
+        ]
+      },
+      {
+        "key": "sign:8",
+        "parts": [
+          [
+            680.703125,
+            23.703125,
+            695.703125,
+            44.703125
+          ]
+        ]
+      },
+      {
+        "key": "sign:9",
+        "parts": [
+          [
+            402.296875,
+            23.703125,
+            421.296875,
+            44.703125
+          ]
+        ]
+      },
+      {
+        "key": "sign:10",
+        "parts": [
+          [
+            162.90625,
+            161.90625,
+            181.90625,
+            182.90625
+          ]
+        ]
+      },
+      {
+        "key": "sign:11",
+        "parts": [
+          [
+            27.703125,
+            401.296875,
+            40.703125,
+            422.296875
+          ]
+        ]
+      },
+      {
+        "key": "uranus",
+        "parts": [
+          [
+            682.34375,
+            53.40625,
+            695.84375,
+            75.90625
+          ]
+        ]
+      },
+      {
+        "key": "chiron",
+        "parts": [
+          [
+            409.453125,
+            1025.15625,
+            419.953125,
+            1047.65625
+          ]
+        ]
+      }
+    ],
+    "focus": "chart-wheel",
+    "scrollTop": 23.59375,
+    "aspectRows": 1,
+    "pointIds": [
+      "chiron",
+      "uranus"
+    ],
+    "houses": [],
+    "houseNumbers": [],
+    "graphicPoints": [
+      "chiron",
+      "uranus"
+    ],
+    "formHidden": true,
+    "headingHidden": true,
+    "summaryHidden": true,
+    "lines": 1,
+    "markers": 0
+  },
+  "pass": true
+}

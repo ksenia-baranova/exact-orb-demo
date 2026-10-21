@@ -1,0 +1,8 @@
+{
+  "candidate": "v6 targeted leader routing correction",
+  "registered_utc": "2026-10-19T17:19:03.805515+00:00",
+  "reason": "Independent post-audit of run05-final found shared positive-length centerline segments. Full bounded feasibility conclusion is qualified; stop.json is preserved as the earlier stop before this newly established defect.",
+  "authority": "Current direct Owner instruction to work out full composition remains active. This is a concrete corrective continuation inside the original 90 minute ceiling, not a new product scope or production start.",
+  "fix": "Reject collinear positive-length overlap with every already routed leader. Use per-leader clearance ports in visibility graph. Reduce white bridge underlay to1.5; normal leader.75, selected owner1.5. Crossings without shared branches remain allowed. All label/anchor/font/clip predicates unchanged.",
+  "stop": "One fixed verification matrix plus exact branch audit; stop again on result or original deadline; do not erase old stop or failures."
+}

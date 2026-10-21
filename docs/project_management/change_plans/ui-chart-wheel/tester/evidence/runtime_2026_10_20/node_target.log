@@ -1,0 +1,244 @@
+TAP version 13
+# Subtest: acceptance sequence changes only on valid acceptance, not phase/clear/render; attempt is immutable
+ok 1 - acceptance sequence changes only on valid acceptance, not phase/clear/render; attempt is immutable
+  ---
+  duration_ms: 19.4463
+  type: 'test'
+  ...
+# Subtest: same birth but changed chart identity does not reset an own committed target
+ok 2 - same birth but changed chart identity does not reset an own committed target
+  ---
+  duration_ms: 0.9454
+  type: 'test'
+  ...
+# Subtest: fresh matched recovery consumes the active changed-birth target once; later matched is automatic
+ok 3 - fresh matched recovery consumes the active changed-birth target once; later matched is automatic
+  ---
+  duration_ms: 2.66
+  type: 'test'
+  ...
+# Subtest: stale match and failed safe GET do not consume pending goal; fresh positive control later does
+ok 4 - stale match and failed safe GET do not consume pending goal; fresh positive control later does
+  ---
+  duration_ms: 1.8888
+  type: 'test'
+  ...
+# Subtest: already_applied fresh target confirms once, changed=false
+ok 5 - already_applied fresh target confirms once, changed=false
+  ---
+  duration_ms: 1.5955
+  type: 'test'
+  ...
+# Subtest: already_applied fresh target confirms once, changed=true
+ok 6 - already_applied fresh target confirms once, changed=true
+  ---
+  duration_ms: 1.1255
+  type: 'test'
+  ...
+# Subtest: already_applied stale GET does not consume live target; fresh later confirms
+ok 7 - already_applied stale GET does not consume live target; fresh later confirms
+  ---
+  duration_ms: 1.4723
+  type: 'test'
+  ...
+# Subtest: already_applied different GET does not consume live target; fresh later confirms
+ok 8 - already_applied different GET does not consume live target; fresh later confirms
+  ---
+  duration_ms: 1.4281
+  type: 'test'
+  ...
+# Subtest: already_applied failed GET does not consume live target; fresh later confirms
+ok 9 - already_applied failed GET does not consume live target; fresh later confirms
+  ---
+  duration_ms: 1.0122
+  type: 'test'
+  ...
+# Subtest: RESULT_SUPERSEDED never confirms own target even when GET matches
+ok 10 - RESULT_SUPERSEDED never confirms own target even when GET matches
+  ---
+  duration_ms: 0.7931
+  type: 'test'
+  ...
+# Subtest: mounted editor collapses once; opening it and repeated publish never hide it again
+ok 11 - mounted editor collapses once; opening it and repeated publish never hide it again
+  ---
+  duration_ms: 9.3685
+  type: 'test'
+  ...
+# Subtest: submitted B with draft C remains open; edit then revert before acceptance can collapse once
+ok 12 - submitted B with draft C remains open; edit then revert before acceptance can collapse once
+  ---
+  duration_ms: 22.1188
+  type: 'test'
+  ...
+# Subtest: Owner aspect view focuses wheel, shows source endpoints/houses only, and restores full tables on exit
+ok 13 - Owner aspect view focuses wheel, shows source endpoints/houses only, and restores full tables on exit
+  ---
+  duration_ms: 15.5704
+  type: 'test'
+  ...
+# Subtest: Owner aspect view does not invent a house for unknown time or an angle
+ok 14 - Owner aspect view does not invent a house for unknown time or an angle
+  ---
+  duration_ms: 5.0281
+  type: 'test'
+  ...
+# Subtest: mounted aspect view hides unrelated form; planet activation still keeps native focus and no HTTP
+ok 15 - mounted aspect view hides unrelated form; planet activation still keeps native focus and no HTTP
+  ---
+  duration_ms: 31.1223
+  type: 'test'
+  ...
+# Subtest: AS-WHEEL-16: facts are immediately visible, with independent five/all and all points
+ok 16 - AS-WHEEL-16: facts are immediately visible, with independent five/all and all points
+  ---
+  duration_ms: 11.9199
+  type: 'test'
+  ...
+# Subtest: AS-WHEEL-11/13: one point replaces another; toggle resets only the general aspects disclosure
+ok 17 - AS-WHEEL-11/13: one point replaces another; toggle resets only the general aspects disclosure
+  ---
+  duration_ms: 12.017
+  type: 'test'
+  ...
+# Subtest: AS-WHEEL-28: S1 counts the full DTO before filtering; all source rows survive
+ok 18 - AS-WHEEL-28: S1 counts the full DTO before filtering; all source rows survive
+  ---
+  duration_ms: 6.1826
+  type: 'test'
+  ...
+# Subtest: AS-WHEEL-12/13: a unique aspect focuses its wheel; closing it restores general five/all
+ok 19 - AS-WHEEL-12/13: a unique aspect focuses its wheel; closing it restores general five/all
+  ---
+  duration_ms: 9.9313
+  type: 'test'
+  ...
+# Subtest: AS-WHEEL-30: automatic accepted DTO reconciles unordered pair/type and displays its new facts
+ok 20 - AS-WHEEL-30: automatic accepted DTO reconciles unordered pair/type and displays its new facts
+  ---
+  duration_ms: 6.8333
+  type: 'test'
+  ...
+# Subtest: AS-WHEEL-29/30: duplicate/reversed/category variants disable only their full-source group
+ok 21 - AS-WHEEL-29/30: duplicate/reversed/category variants disable only their full-source group
+  ---
+  duration_ms: 1.828
+  type: 'test'
+  ...
+# Subtest: AS-WHEEL-28: different published type is a different address; sole reverse and background are ordinary
+ok 22 - AS-WHEEL-28: different published type is a different address; sole reverse and background are ordinary
+  ---
+  duration_ms: 2.3718
+  type: 'test'
+  ...
+# Subtest: AS-WHEEL-11/28: point filter includes background, angles and ambiguous occurrences in DTO order
+ok 23 - AS-WHEEL-11/28: point filter includes background, angles and ambiguous occurrences in DTO order
+  ---
+  duration_ms: 3.0096
+  type: 'test'
+  ...
+# Subtest: AS-WHEEL-30: absent selection alone clears on acceptance; point selection and expansions otherwise persist
+ok 24 - AS-WHEEL-30: absent selection alone clears on acceptance; point selection and expansions otherwise persist
+  ---
+  duration_ms: 0.5434
+  type: 'test'
+  ...
+# Subtest: accepted addressing state does not share mutable DTO or snapshots
+ok 25 - accepted addressing state does not share mutable DTO or snapshots
+  ---
+  duration_ms: 0.5116
+  type: 'test'
+  ...
+# Subtest: AS-WHEEL-23/30: point controls and focus survive updates; detached/disposed callbacks cannot select B
+ok 26 - AS-WHEEL-23/30: point controls and focus survive updates; detached/disposed callbacks cannot select B
+  ---
+  duration_ms: 9.4442
+  type: 'test'
+  ...
+# Subtest: REQ-WHEEL-11: mounted HTML activation and reveal perform no HTTP or draft changes
+ok 27 - REQ-WHEEL-11: mounted HTML activation and reveal perform no HTTP or draft changes
+  ---
+  duration_ms: 23.1622
+  type: 'test'
+  ...
+# Subtest: 006: seven visible legend entries identify the actual type palette, conjunction and stroke categories
+ok 28 - 006: seven visible legend entries identify the actual type palette, conjunction and stroke categories
+  ---
+  duration_ms: 8.7224
+  type: 'test'
+  ...
+# Subtest: 007: southern-node label is concise and published point facts/order are preserved
+ok 29 - 007: southern-node label is concise and published point facts/order are preserved
+  ---
+  duration_ms: 1.0803
+  type: 'test'
+  ...
+# Subtest: gap includes equality, rejects diagonal near-overlap and handles fractional coordinates
+ok 30 - gap includes equality, rejects diagonal near-overlap and handles fractional coordinates
+  ---
+  duration_ms: 1.0337
+  type: 'test'
+  ...
+# Subtest: cyclic cut crosses 0 degrees and exact ties use canonical IDs, independent of input/locale
+ok 31 - cyclic cut crosses 0 degrees and exact ties use canonical IDs, independent of input/locale
+  ---
+  duration_ms: 0.6028
+  type: 'test'
+  ...
+# Subtest: shared route regression: positive length is forbidden, crossing/touch/parallel remain distinct
+ok 32 - shared route regression: positive length is forbidden, crossing/touch/parallel remain distinct
+  ---
+  duration_ms: 0.1405
+  type: 'test'
+  ...
+# Subtest: invalid viewport and missing real measurements report typed local layout errors
+ok 33 - invalid viewport and missing real measurements report typed local layout errors
+  ---
+  duration_ms: 1.3031
+  type: 'test'
+  ...
+# Subtest: numbered house sectors cross zero using consecutive published cusps, not point longitudes
+ok 34 - numbered house sectors cross zero using consecutive published cusps, not point longitudes
+  ---
+  duration_ms: 0.1899
+  type: 'test'
+  ...
+# Subtest: internal house rows contain complete glyph/R bounds across 0 at 720
+ok 35 - internal house rows contain complete glyph/R bounds across 0 at 720
+  ---
+  duration_ms: 9.0971
+  type: 'test'
+  ...
+# Subtest: internal house rows contain complete glyph/R bounds across 0 at 448
+ok 36 - internal house rows contain complete glyph/R bounds across 0 at 448
+  ---
+  duration_ms: 5.4969
+  type: 'test'
+  ...
+# Subtest: internal house rows contain complete glyph/R bounds across 0 at 328
+ok 37 - internal house rows contain complete glyph/R bounds across 0 at 328
+  ---
+  duration_ms: 3.3579
+  type: 'test'
+  ...
+# Subtest: published house controls placement even if source longitude is across a cusp
+ok 38 - published house controls placement even if source longitude is across a cusp
+  ---
+  duration_ms: 0.5637
+  type: 'test'
+  ...
+# Subtest: cosmogram clusters use internal rows without inventing houses
+ok 39 - cosmogram clusters use internal rows without inventing houses
+  ---
+  duration_ms: 18.8209
+  type: 'test'
+  ...
+1..39
+# tests 39
+# suites 0
+# pass 39
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 197.6918

@@ -1,0 +1,17 @@
+{
+  "pointCount": 16,
+  "columnCount": 0,
+  "wholeWheel": true,
+  "bounds": [
+    381.5,
+    157.8125,
+    883.5,
+    659.8125
+  ],
+  "narrow": {
+    "width": 319,
+    "svgWidth": 303,
+    "noOverflow": true,
+    "points": 16
+  }
+}
