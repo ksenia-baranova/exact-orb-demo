@@ -18,7 +18,7 @@ description: "Выполнять роль Developer в процессе рабо
 
 Шаблоны артефактов — `docs/development_approach/artifacts/`: план, промт, DP, баг (поля FIXED, fixed_in, regression_test).
 
-Правила процесса — `docs/development_approach/process/change-process-v2.md`. Целиком не читай, открывай нужный раздел: «Виды задач», «Баги», «Тип изменения «рефакторинг»», правила коммитов.
+Правила процесса — `docs/development_approach/process/change-process-v3.md`. Целиком не читай, открывай нужный раздел: «Виды задач», «Баги», «Тип изменения «рефакторинг»», правила коммитов.
 
 ## Что сделать по виду задачи
 

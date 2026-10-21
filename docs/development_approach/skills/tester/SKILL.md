@@ -18,7 +18,7 @@ description: "Выполнять роль Tester в процессе работ�
 
 Код и тесты Developer'а читай только после того, как твой план написан. Иначе ты проверяешь реализацию, а не требование.
 
-Шаблоны — `docs/development_approach/artifacts/`: `test-plan.md`, `bug.md`, `dp.md`. Правила процесса — `docs/development_approach/process/change-process-v2.md`, открывай нужный раздел.
+Шаблоны — `docs/development_approach/artifacts/`: `test-plan.md`, `bug.md`, `dp.md`. Правила процесса — `docs/development_approach/process/change-process-v3.md`, открывай нужный раздел.
 
 ## Что сделать по виду задачи
 

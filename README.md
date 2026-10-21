@@ -128,7 +128,7 @@ mock не считается доказательством интеграции
 по себе не служит метрикой качества.
 
 Документы метода: [принципы](docs/development_approach/development-approach.md),
-[процесс](docs/development_approach/process/change-process-v2.md),
+[процесс](docs/development_approach/process/change-process-v3.md),
 [роли](docs/development_approach/roles.md),
 [шаблоны](docs/development_approach/artifacts/README.md),
 [инструкции ролей](docs/development_approach/skills/README.md).

@@ -1,7 +1,7 @@
 @startuml
 title exact-orb — Статусы Decision Point (простой процесс)
 
-' Источник: «Процесс работы над изменением v2», раздел «DP и правила ALIGNMENT».
+' Источник: «Процесс работы над изменением v3», раздел «DP и правила ALIGNMENT».
 ' Один DP — один файл dp/DP-*.md. Кто решает, задаёт поле addressed_to.
 
 hide empty description

@@ -34,7 +34,7 @@ Skill не расширяет разрешения. Коммит своей за
 
 ## Процесс и артефакты
 
-Все skills работают по [процессу работы над изменением](../process/change-process-v2.md): один запуск — одна задача `tasks/TASK-*.md` в папке `docs/project_management/changes/<change-id>/`. Роль меняет только status и resolution своей задачи и пишет только свои файлы; переходы change проверяет оркестратор. Шаблоны артефактов — в [artifacts/](../artifacts/README.md).
+Все skills работают по [процессу работы над изменением](../process/change-process-v3.md): один запуск — одна задача `tasks/TASK-*.md` в папке `docs/project_management/changes/<change-id>/`. Роль меняет только status и resolution своей задачи и пишет только свои файлы; переходы change проверяет оркестратор. Шаблоны артефактов — в [artifacts/](../artifacts/README.md).
 
 | Role | Виды задач | Основные артефакты |
 |---|---|---|

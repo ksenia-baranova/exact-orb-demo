@@ -17,7 +17,7 @@ description: "Выполнять роль Analyst в процессе работ
 4. Действующие требования в `docs/requirements/current/`, которые задевает изменение, связанные ADR и `docs/sequence_diagrams/`.
 5. `AGENTS.md`. Код и тесты читай, чтобы понять текущее поведение, но не выводи из кода, каким оно должно быть.
 
-Правила процесса — `docs/development_approach/process/change-process-v2.md`. Открывай нужный раздел: «Виды задач», «DP и правила ALIGNMENT».
+Правила процесса — `docs/development_approach/process/change-process-v3.md`. Открывай нужный раздел: «Виды задач», «DP и правила ALIGNMENT».
 
 Шаблоны — `docs/development_approach/artifacts/`: `docs/development_approach/artifacts/requirements.md` для инкремента, диаграмм и переноса, `docs/development_approach/artifacts/dp.md` для вопросов. Прочитай шаблон требований перед первой записью в `requirements.md`.
 

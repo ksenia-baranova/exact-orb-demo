@@ -1,7 +1,7 @@
 @startuml
 title exact-orb — Статусы бага (простой процесс)
 
-' Источник: «Процесс работы над изменением v2», раздел «Баги».
+' Источник: «Процесс работы над изменением v3», раздел «Баги».
 ' Один баг — один файл bugs/BUG-*.md. Заводит Tester (test), Reviewer (code_review)
 ' или Manager со слов owner'а (accept). FIXED ставит Developer, CLOSED — автор бага.
 
