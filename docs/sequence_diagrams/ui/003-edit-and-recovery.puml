@@ -1,0 +1,76 @@
+@startuml
+' Transfer21.10: existing HTTP/recovery contract + explicit Owner policy20.10.
+title Draft isolation, recovery and accepted-once target confirmation
+autonumber
+hide footbox
+actor User
+participant "Page / editor" as Main
+control "Session coordinator" as Session
+participant "Existing HTTP API" as API
+participant "Existing correlated log" as Log
+control "HTML / passive SVG" as Views
+User -> Main : edit draft B (confirmed A stays)
+User -> Main : explicit build with manual gate
+Main -> Session : immutable submitted B / live attempt
+Session -> API : POST /charts/natal
+API -> Log : existing request_id/run_id, component transitions, terminal event
+User -> Main : optionally edit C while B is pending
+alt committed POST chart_ready
+ API --> Session : committed DTO B
+ Session -> Session : own live target confirmed once
+else already_applied
+ API --> Session : status only, no ChartDTO
+ Session -> API : GET /charts/current
+ API -> Log : separate current request / response / terminal
+ API --> Session : actual current view
+ Session -> Session : confirm only live target + fresh chart_ready birth=B
+else lost response / STATE_COMMIT_FAILED / BUILD_TIMEOUT
+ API --> Session : existing uncertain outcome
+ ref over Session, API
+ Existing recovery policy:
+ lost response -> bootstrap/current;
+ commit failure -> Retry-After then current;
+ timeout -> Retry-After + explicit restart confirmation, bootstrap/current.
+ No automatic POST or health polling.
+ end ref
+ Session -> API : permitted safe read
+ API -> Log : current request / response / terminal
+ API --> Session : actual current or failed read
+ Session -> Session : fresh matched live target may confirm once
+else RESULT_SUPERSEDED
+ API --> Session : superseded
+ Session -> API : GET current
+ API --> Session : actual view
+ Session -> Session : preserving ordinary current, even if birth=B
+else validation / capacity / other existing error
+ API --> Session : existing ErrorDTO / Retry-After
+ Session -> Main : keep draft/confirmed A; existing permitted next action
+end
+alt accepted chart_ready
+ Session -> Main : actual facts + acceptanceSeq/cause/submitted target
+ Main -> Views : same accepted snapshot, apply policy once
+ alt live changed-birth target confirmed
+  Views -> Views : clear selection; three tables first5 once
+ else ordinary current / same birth
+  Views -> Views : reconcile present unique selection, preserve disclosures
+ end
+ alt allowCollapse and current draft=B
+  Main -> Main : live focus fallback BEFORE hiding editor
+  Main -> Main : collapse fields, recovery remains outside
+ else different draft C / no collapse permission
+  Main -> Main : keep user-open editor and draft
+ end
+else confirmed empty / unavailable
+ Session -> Views : remove numeric facts/image/selection, keep permitted birth/draft
+else failed safe read
+ Session -> Main : no new acceptance; keep A/draft, recheck only
+end
+note over Main, Views
+Stale/different/empty/failed GET does not confirm B or consume the live target.
+already_applied facts come only from GET, no producer-provenance assertion.
+Later ordinary current never repeats reset/collapse or hides a user-opened editor.
+Manual retry after successful old/empty check follows existing explicit action/gate.
+S1 absent/ambiguous clears only affected selection, source rows survive.
+Local SVG failure keeps same accepted HTML and a visible image warning.
+end note
+@enduml

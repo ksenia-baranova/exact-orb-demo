@@ -1,0 +1,279 @@
+{
+  "source_sha": "883b6d3a47f7113e44ede73c9ad16b40f15bbdaf",
+  "moves": [
+    {
+      "source": "docs/project_management/change_plans/ui-chart-wheel/analyst/requirements.md",
+      "source_sha": "883b6d3a47f7113e44ede73c9ad16b40f15bbdaf",
+      "source_sha256": "addac6499c126e61d7890e9aab5fe4c59977e6eebab9e136770b8afdd1face6c",
+      "target": "docs/requirements/current/ui/chart-wheel.md",
+      "source_bytes": 91167,
+      "source_git_sha256_lf": "71028bd69e874f4b2f6597a55973de04f638c619c8cdada5b13ccd67dc6c8f6c",
+      "target_sha256": "6c912cf1123e57c1e5c98822201150ca32e29176c6f664b3522a6110c724e82d"
+    },
+    {
+      "source": "docs/project_management/change_plans/ui-chart-wheel/analyst/scenarios.md",
+      "source_sha": "883b6d3a47f7113e44ede73c9ad16b40f15bbdaf",
+      "source_sha256": "762e4a6ebae5129d1d8eacef1a4768f3e081db18a8611e1b1f37039146d75809",
+      "target": "docs/requirements/current/ui/scenarios.md",
+      "source_bytes": 104568,
+      "source_git_sha256_lf": "ab3967b0c8655bcb8fb1f60ca0158b2ffb3edad2033d00a3d79f0e2d8ee48acd",
+      "target_sha256": "fae73be5f3552b1712d260774e7b218af5aa9ca5bead2045c099eb9b24d1f0bf"
+    },
+    {
+      "source": "docs/project_management/change_plans/ui-chart-wheel/analyst/sequence_diagrams/ui/001-chart-presentation.puml",
+      "source_sha": "883b6d3a47f7113e44ede73c9ad16b40f15bbdaf",
+      "source_sha256": "d9712d89d0f090fd4ff8f855cb833e59e6945a29049e9489278353145d6c4a87",
+      "target": "docs/sequence_diagrams/ui/001-chart-presentation.puml",
+      "source_bytes": 6616,
+      "source_git_sha256_lf": "1e4f9041b722a3eb40e6c75a0d4dca317b4813ece66fb5dc49cfb8527befa7d5",
+      "target_sha256": "6cdcbb60cdf5e07814a5ce3dd7314ebbbed0b96a903f330083640b5fbbbbd696"
+    },
+    {
+      "source": "docs/project_management/change_plans/ui-chart-wheel/analyst/sequence_diagrams/ui/002-wheel-table-selection.puml",
+      "source_sha": "883b6d3a47f7113e44ede73c9ad16b40f15bbdaf",
+      "source_sha256": "edba2ab6f56d18fb82c8f344a70caf0a660d393ad6fd31b228ff8146cfa2df2b",
+      "target": "docs/sequence_diagrams/ui/002-wheel-table-selection.puml",
+      "source_bytes": 9436,
+      "source_git_sha256_lf": "a4bc0f7fac487b4530251ecd10174f1dc14acdd47cbf833546c6c99201cee1f5",
+      "target_sha256": "7056e7482a613bb3fb001227b25b77aece3a69edbc3fe2531e77a1846d707baf"
+    },
+    {
+      "source": "docs/project_management/change_plans/ui-chart-wheel/analyst/sequence_diagrams/ui/003-edit-and-recovery.puml",
+      "source_sha": "883b6d3a47f7113e44ede73c9ad16b40f15bbdaf",
+      "source_sha256": "5d22a2e18abab9a164a8ae6429f6148b6a65276bb59dc9d7ee37c8b39dbd41a0",
+      "target": "docs/sequence_diagrams/ui/003-edit-and-recovery.puml",
+      "source_bytes": 6617,
+      "source_git_sha256_lf": "fc97dbe39b8cde933c1f364165df23bfbedf55553e64c110315f134de178c152",
+      "target_sha256": "90a5cd31de21cdaa85000771f0ca8a60d3335fbeedda99e02e8da1462658085d"
+    },
+    {
+      "source": "docs/project_management/change_plans/ui-chart-wheel/developer/sequence_diagrams/ui/001-result-renderer-lifecycle.puml",
+      "source_sha": "883b6d3a47f7113e44ede73c9ad16b40f15bbdaf",
+      "source_sha256": "e48e4cafcac18dc81215ef43845139c66f8ccdf14659b761b1cf32300b518f20",
+      "target": "docs/sequence_diagrams/research/ui-chart-wheel/001-result-renderer-lifecycle.puml",
+      "source_bytes": 2985,
+      "source_git_sha256_lf": "b483e6050ff43fc53b812c0ffedf06f68f41659271100b13bd0a1bef90d28ec0",
+      "target_sha256": "ed214598be4e1257efea6377f6a1841ad5acb206df93fa86b3d857dd19f55dbe"
+    },
+    {
+      "source": "docs/project_management/change_plans/ui-chart-wheel/developer/sequence_diagrams/ui/002-acceptance-selection-focus.puml",
+      "source_sha": "883b6d3a47f7113e44ede73c9ad16b40f15bbdaf",
+      "source_sha256": "9a23911c75411f81d14e10450000fa3a5f2f4dd5a76ccbc829eb0b3384cc7114",
+      "target": "docs/sequence_diagrams/research/ui-chart-wheel/002-acceptance-selection-focus.puml",
+      "source_bytes": 3130,
+      "source_git_sha256_lf": "66675a279664c0d63e8c67b0964e0db6c4d433b8eccb6b14768f1d90e5ff0c8a",
+      "target_sha256": "563486a13b16bc54552c96f23f495ad6a44c96888721bd52d5a3c83bcc22719c"
+    },
+    {
+      "source": "docs/project_management/change_plans/ui-chart-wheel/developer/sequence_diagrams/ui/003-passive-copy-install.puml",
+      "source_sha": "883b6d3a47f7113e44ede73c9ad16b40f15bbdaf",
+      "source_sha256": "3111a2491af1c4684e830c25f414f5b045df998d78fcd4904bbe6d56e0cdfc6b",
+      "target": "docs/sequence_diagrams/ui/technical/003-passive-copy-install.puml",
+      "source_bytes": 2941,
+      "source_git_sha256_lf": "8d008d8705568be8c0f54345b92a151c2125d3c4b8aff1fa5368e67c0a1ff9b1",
+      "target_sha256": "8d8ff8a7c8e2333c20e23e892570fb8f825af819ab82ad831a1e3795c24df41b"
+    },
+    {
+      "source": "docs/project_management/change_plans/ui-chart-wheel/developer/sequence_diagrams/ui/004-column-layout-revision.puml",
+      "source_sha": "883b6d3a47f7113e44ede73c9ad16b40f15bbdaf",
+      "source_sha256": "41b19506a13268374c7f8e92e6b28f4be20274ec4d03197549ad7a591e635ef1",
+      "target": "docs/sequence_diagrams/research/ui-chart-wheel/004-column-layout-revision.puml",
+      "source_bytes": 2545,
+      "source_git_sha256_lf": "15bf446eceb960fc06cd2b424697ce490d394b948cfb7132cb2fafcf070ed696",
+      "target_sha256": "ff777e172b05dd99ef82d5fd30fc31cd3097ad086e6862b2def5fe6b90f8bef4"
+    },
+    {
+      "source": "docs/project_management/change_plans/ui-chart-wheel/developer/sequence_diagrams/ui/005-accepted-once-editor.puml",
+      "source_sha": "883b6d3a47f7113e44ede73c9ad16b40f15bbdaf",
+      "source_sha256": "d04adb53c4b83d7e21ad3afc42caaa8906dec4c6cab14d485651ac733614dd36",
+      "target": "docs/sequence_diagrams/ui/technical/005-accepted-once-editor.puml",
+      "source_bytes": 2462,
+      "source_git_sha256_lf": "cfc320fbed70c926a6a452e14c1dc1ed28de1d83c87666071eff659a80da9d50",
+      "target_sha256": "9ca42c5581e3cc720b29e2b870492fab57fb625aec3d035d112bc4aae8bf935d"
+    },
+    {
+      "source": "docs/project_management/change_plans/ui-chart-wheel/developer/sequence_diagrams/ui/006-aspect-reading-mode.puml",
+      "source_sha": "883b6d3a47f7113e44ede73c9ad16b40f15bbdaf",
+      "source_sha256": "2ae4acefbbebb9d2ecef1d6d8d5d58a6b89c5307efebbb0baa91c2ad8fbd137d",
+      "target": "docs/sequence_diagrams/ui/technical/006-aspect-reading-mode.puml",
+      "source_bytes": 2345,
+      "source_git_sha256_lf": "e189641c948ca4ff9674ca68b506c2a6c55ae19dbca9576c1f88f073a203a8c6",
+      "target_sha256": "6be23bbcd76e9725483f1705845da9ee71051d77c132d96c91e03d7c6903c0cb"
+    },
+    {
+      "source": "docs/project_management/change_plans/ui-chart-wheel/developer/sequence_diagrams/ui/007-internal-house-rows.puml",
+      "source_sha": "883b6d3a47f7113e44ede73c9ad16b40f15bbdaf",
+      "source_sha256": "fc4217811383283e8afee9440230c8e4eece6ff4e0ced1e57f5fca118262affb",
+      "target": "docs/sequence_diagrams/ui/technical/007-internal-house-rows.puml",
+      "source_bytes": 1578,
+      "source_git_sha256_lf": "3f311ea9be447d45191cdfb2b7fed84590b3b9f9142a3cea549c592d4aa62162",
+      "target_sha256": "f8bcf6baed5f69f56eca878aa09152ae5af5a27a10d16b2458c4c1a01ff831db"
+    },
+    {
+      "source": "docs/project_management/change_plans/ui-chart-wheel/developer/sequence_diagrams/ui/008-viewport-legend-vectors.puml",
+      "source_sha": "883b6d3a47f7113e44ede73c9ad16b40f15bbdaf",
+      "source_sha256": "202a9f70824e7d4e662ccbe8007531c6bc3596944e056238882c6f9dbea493a7",
+      "target": "docs/sequence_diagrams/ui/technical/008-viewport-legend-vectors.puml",
+      "source_bytes": 1835,
+      "source_git_sha256_lf": "480757e12ac6190f915ec385936e63a03245f2045422f263f2f3febf3febafed",
+      "target_sha256": "da68d7952ef30e10a33ab569aa747c29f1034eda77b9aa7008104525ef55b2cb"
+    }
+  ],
+  "phase": "TRANSFERRED_SOURCE_COPIES_REMOVED",
+  "requested_by": "Owner21.10: transfer requirements/sequences to target and remove from change",
+  "executor": "Codex / Manager; direct instruction, no invented role approval",
+  "navigation_updated": [
+    "docs/project_management/change_plans/ui-chart-wheel/analyst_artifact.md",
+    "docs/project_management/change_plans/ui-chart-wheel/developer/drawing_adr_column_draft.md",
+    "docs/project_management/change_plans/ui-chart-wheel/developer/full_wheel_implementation_plan.md",
+    "docs/project_management/change_plans/ui-chart-wheel/developer/owner_decision_house_rows_2026-10-20.md",
+    "docs/project_management/change_plans/ui-chart-wheel/developer_artifact.md",
+    "docs/project_management/change_plans/ui-chart-wheel/manager/prompts/task-a-008-table-only-selection-contract-delta.md",
+    "docs/project_management/change_plans/ui-chart-wheel/manager_artifact.md",
+    "docs/project_management/change_plans/ui-chart-wheel/tester_artifact.md",
+    "docs/project_management/technical_debt.md"
+  ],
+  "historical_reports_preserved": [
+    "docs/project_management/change_plans/ui-chart-wheel/developer/column_renderer_design_v1.md",
+    "docs/project_management/change_plans/ui-chart-wheel/developer/drawing_adr_draft.md",
+    "docs/project_management/change_plans/ui-chart-wheel/developer/findings.md",
+    "docs/project_management/change_plans/ui-chart-wheel/developer/implementation_plan.md",
+    "docs/project_management/change_plans/ui-chart-wheel/developer/task_d003_implementation_plan.md",
+    "docs/project_management/change_plans/ui-chart-wheel/developer/task_d003_research_report.md",
+    "docs/project_management/change_plans/ui-chart-wheel/developer/task_d005_feasibility_report.md",
+    "docs/project_management/change_plans/ui-chart-wheel/developer/task_d005_implementation_plan.md",
+    "docs/project_management/change_plans/ui-chart-wheel/developer/task_d006_controller_html_plan.md",
+    "docs/project_management/change_plans/ui-chart-wheel/tester/coverage_matrix.md",
+    "docs/project_management/change_plans/ui-chart-wheel/tester/defects.md",
+    "docs/project_management/change_plans/ui-chart-wheel/tester/task_t003_review.md",
+    "docs/project_management/change_plans/ui-chart-wheel/tester/task_t004_review.md",
+    "docs/project_management/change_plans/ui-chart-wheel/tester/task_t005_review.md",
+    "docs/project_management/change_plans/ui-chart-wheel/tester/task_t006_review.md",
+    "docs/project_management/change_plans/ui-chart-wheel/tester/test_plan.md",
+    "docs/project_management/change_plans/ui-chart-wheel/tester/testability_review.md"
+  ],
+  "original_birth_sha256": "36a534f92b826454c0f145c6ea1acc92ab95e08e31bef17221f4005bb18fac1b",
+  "validation": {
+    "requirements": 22,
+    "scenarios": 53,
+    "sequences": 11,
+    "current_sequences": 8,
+    "historical_sequences": 3,
+    "unchanged_req_ui": [
+      "02",
+      "07"
+    ],
+    "unchanged_as_ui": [
+      "01",
+      "02",
+      "03",
+      "04",
+      "05",
+      "06",
+      "07",
+      "08",
+      "09",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15",
+      "16",
+      "17",
+      "18",
+      "19",
+      "20",
+      "21",
+      "23"
+    ],
+    "current_markdown": 20,
+    "local_links": 1058,
+    "tables": 83,
+    "new_link_errors": 0,
+    "preexisting_link_errors": [
+      [
+        "docs/project_management/Roadmap/roadmap.md",
+        "../../../prompts/2026-08-26/01-freeze-swiss-ephemeris-runtime.md",
+        "missing"
+      ],
+      [
+        "docs/project_management/Roadmap/roadmap.md",
+        "../../../prompts/2026-09-04/01-session-contracts.md",
+        "missing"
+      ]
+    ],
+    "puml_structure": "PASS; render NOT RUN (local renderer unavailable)",
+    "src_tests": "UNCHANGED",
+    "raw_evidence_manifests": "UNCHANGED",
+    "independent_tester_transfer_review": "NOT RUN",
+    "product_tests_this_transfer": "NOT RUN (documentation only)"
+  },
+  "targets": [
+    {
+      "path": "docs/requirements/current/ui/birth-form-and-facts.md",
+      "sha256": "fa569640506e4c41c6b7089f0d6b0a63d7031155f102dc589027121983858b65"
+    },
+    {
+      "path": "docs/requirements/current/ui/chart-wheel.md",
+      "sha256": "6c912cf1123e57c1e5c98822201150ca32e29176c6f664b3522a6110c724e82d"
+    },
+    {
+      "path": "docs/requirements/current/ui/scenarios.md",
+      "sha256": "fae73be5f3552b1712d260774e7b218af5aa9ca5bead2045c099eb9b24d1f0bf"
+    },
+    {
+      "path": "docs/sequence_diagrams/research/ui-chart-wheel/001-result-renderer-lifecycle.puml",
+      "sha256": "ed214598be4e1257efea6377f6a1841ad5acb206df93fa86b3d857dd19f55dbe"
+    },
+    {
+      "path": "docs/sequence_diagrams/research/ui-chart-wheel/002-acceptance-selection-focus.puml",
+      "sha256": "563486a13b16bc54552c96f23f495ad6a44c96888721bd52d5a3c83bcc22719c"
+    },
+    {
+      "path": "docs/sequence_diagrams/research/ui-chart-wheel/004-column-layout-revision.puml",
+      "sha256": "ff777e172b05dd99ef82d5fd30fc31cd3097ad086e6862b2def5fe6b90f8bef4"
+    },
+    {
+      "path": "docs/sequence_diagrams/research/ui-chart-wheel/README.md",
+      "sha256": "7fb15e3bd7f34b6d3fde00c3f0dd0ff83c0c8b10569b32235bc5b8b821dc51f7"
+    },
+    {
+      "path": "docs/sequence_diagrams/ui/001-chart-presentation.puml",
+      "sha256": "6cdcbb60cdf5e07814a5ce3dd7314ebbbed0b96a903f330083640b5fbbbbd696"
+    },
+    {
+      "path": "docs/sequence_diagrams/ui/002-wheel-table-selection.puml",
+      "sha256": "7056e7482a613bb3fb001227b25b77aece3a69edbc3fe2531e77a1846d707baf"
+    },
+    {
+      "path": "docs/sequence_diagrams/ui/003-edit-and-recovery.puml",
+      "sha256": "90a5cd31de21cdaa85000771f0ca8a60d3335fbeedda99e02e8da1462658085d"
+    },
+    {
+      "path": "docs/sequence_diagrams/ui/README.md",
+      "sha256": "8db571030c10c7b70de1f9412d586d84e731473019cd7f63e17992eef9c96a9d"
+    },
+    {
+      "path": "docs/sequence_diagrams/ui/technical/003-passive-copy-install.puml",
+      "sha256": "8d8ff8a7c8e2333c20e23e892570fb8f825af819ab82ad831a1e3795c24df41b"
+    },
+    {
+      "path": "docs/sequence_diagrams/ui/technical/005-accepted-once-editor.puml",
+      "sha256": "9ca42c5581e3cc720b29e2b870492fab57fb625aec3d035d112bc4aae8bf935d"
+    },
+    {
+      "path": "docs/sequence_diagrams/ui/technical/006-aspect-reading-mode.puml",
+      "sha256": "6be23bbcd76e9725483f1705845da9ee71051d77c132d96c91e03d7c6903c0cb"
+    },
+    {
+      "path": "docs/sequence_diagrams/ui/technical/007-internal-house-rows.puml",
+      "sha256": "f8bcf6baed5f69f56eca878aa09152ae5af5a27a10d16b2458c4c1a01ff831db"
+    },
+    {
+      "path": "docs/sequence_diagrams/ui/technical/008-viewport-legend-vectors.puml",
+      "sha256": "da68d7952ef30e10a33ab569aa747c29f1034eda77b9aa7008104525ef55b2cb"
+    }
+  ],
+  "removed_source_count": 13
+}

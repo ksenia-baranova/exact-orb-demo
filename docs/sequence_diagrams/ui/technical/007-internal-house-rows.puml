@@ -1,4 +1,6 @@
 @startuml
+' Transfer21.10 by Codex / Manager on explicit Owner instruction.
+' Source 883b6d3a47f7113e44ede73c9ad16b40f15bbdaf:docs/project_management/change_plans/ui-chart-wheel/developer/sequence_diagrams/ui/007-internal-house-rows.puml; no invented ADR approval.
 title DRAFT: internal house rows, immutable source facts
 participant "facts / controller" as Owner
 participant "passive SVG leaf" as Leaf

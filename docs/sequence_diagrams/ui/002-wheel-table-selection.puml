@@ -1,0 +1,65 @@
+@startuml
+' Transfer21.10: Analyst2736e28 + Owner passive SVG / aspect reading / first-five.
+title HTML selection, full-source S1 and aspect return
+autonumber
+hide footbox
+actor User
+control "Accepted source / selection" as Facts
+participant "Retained HTML controls" as HTML
+participant "Page / editor mode" as Page
+participant "Passive SVG" as Wheel
+Facts -> Facts : index ALL accepted aspects by unordered IDs + published type
+alt >1 source matches (S1)
+ Facts -> HTML : keep source rows/order/facts; accessible local warning
+ Facts -> HTML : disable only ambiguous aspect activation
+ Facts -> Wheel : suppress only ambiguous line/conjunction
+ opt selected address became absent or ambiguous
+  Facts -> Facts : clear only aspect; restore disclosures, no planet filter
+  Facts -> Page : exit reading, preserve draft and unaffected facts
+ end
+else unique address (including unique reverse)
+ Facts -> Facts : address selection using new facts and original from/to
+end
+User -> HTML : native point activation, pointer / Enter / Space
+HTML -> Facts : canonical point ID
+alt repeated selected point
+ Facts -> Facts : selection none; aspects first5
+else another point / previously selected aspect
+ Facts -> Facts : point replaces previous selection
+ Facts -> HTML : all source aspects of ID, no limit5
+end
+Facts -> HTML : keyed patch; points disclosure preserved
+Facts -> Wheel : passive emphasis, no HTTP
+note over HTML, Wheel
+Point activation does not call focus/scroll.
+SVG has no intents, tab stops, selectable targets or SVG Q44 controls.
+HTML keyboard access / effective Q44 remain required.
+end note
+User -> HTML : activate unique aspect row
+HTML -> Facts : canonical aspect address
+Facts -> Facts : save all three disclosure values; clear point filter
+Facts -> Page : enter reading; recovery/return stay reachable
+Facts -> HTML : one aspect, all source participants, only their source houses
+Facts -> Wheel : selected pair / true endpoints; background no line or marker
+Facts -> HTML : focus/scroll to reading region; record live origin
+opt current frame settled and user still in reading region
+ Facts -> HTML : adjust scroll after reflow, never from retired callback
+end
+User -> HTML : return / Escape / same aspect row
+HTML -> Facts : close reading / clear aspect
+Facts -> Page : restore normal page and editor visibility
+Facts -> Wheel : complete composition
+Facts -> HTML : previous independent points/houses/aspects disclosures
+Facts -> HTML : focus retained live origin control
+opt a normal table has >5 rows
+ User -> HTML : toggle first5 / all for this table
+ HTML -> Facts : update only this disclosure
+ Facts -> HTML : source rows, no sort / recompute / HTTP
+end
+note over Facts, Wheel
+S1 cardinality is full-source, BEFORE any display subset or filter.
+Unknown time / angles receive no invented house.
+Late return to unique enables selection, never auto-reselects.
+Failed reads do not reconcile unaccepted data; acceptance is001/003.
+end note
+@enduml

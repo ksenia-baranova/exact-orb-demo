@@ -1,4 +1,6 @@
 @startuml
+' Transfer21.10 by Codex / Manager on explicit Owner instruction.
+' Source 883b6d3a47f7113e44ede73c9ad16b40f15bbdaf:docs/project_management/change_plans/ui-chart-wheel/developer/sequence_diagrams/ui/006-aspect-reading-mode.puml; no invented ADR approval.
 ' DRAFT Codex / Developer,20.10.2026. Direct Owner feedback and explicit endpoint-house clarification.
 title Aspect reading mode: same accepted DTO, focused HTML region, relevant facts only
 autonumber

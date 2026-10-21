@@ -1,4 +1,6 @@
 @startuml
+' Transfer21.10 by Codex / Manager on explicit Owner instruction.
+' Source 883b6d3a47f7113e44ede73c9ad16b40f15bbdaf:docs/project_management/change_plans/ui-chart-wheel/developer/sequence_diagrams/ui/003-passive-copy-install.puml; no invented ADR approval.
 ' DRAFT Developer,20.10.2026; implemented D007, InputSHA e0daa0e.
 title DRAFT: implemented passive SVG, revision-local surface and copy/install
 autonumber

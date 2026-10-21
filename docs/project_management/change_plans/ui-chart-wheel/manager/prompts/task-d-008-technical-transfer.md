@@ -1,0 +1,13 @@
+# TASK-D-008 — чистовой технический пакет M1-8 перед merge
+
+**Обновление21.10 / Manager§2.28:** Technical sequences уже перенесены текущим Manager по прямому Owner-поручению§2.28:5 актуальных и3 архивных схемы, карта analyst/transfer_map.md. Не создавай их вторую копию и не повторяй перенос. NOT_STARTED относится к оставшемуся нормативному ADR / responsibilities и конкретному review-ready документу.
+
+Сначала обнови dev/ui-chart-wheel из опубликованной change/ui-chart-wheel через Git, сохрани local/index. Используй Developer skill. Input883b6d3a47f7113e44ede73c9ad16b40f15bbdaf и [Manager §2.27](../../manager_artifact.md#227-завершение-реализации-техдолг-и-подготовка-к-main); Assignment — первый Manager commit с этим заданием.
+
+Это документальное завершение после приёмки runtime Owner21.10, а не возврат D007 / новое исследование. Текущий исходник: developer/drawing_adr_column_draft.md (заголовок исторический, последняя редакция — internal house rows), technical sequences и full_wheel_implementation_plan. Сверь с фактическими result_controller / wheel_svg / wheel_layout / session / facts / main и подписанными Owner-дельтами20.10.
+
+Подготовь нормативный drawing/component ADR в docs/requirements/decisions/ с проверкой свободного номера (кандидат0042 не зарезервирован автоматически), актуализируй индекс и необходимые component/technical sequences. Сохрани provenance, явные Owner choices и точно отличи принятые решения от DRAFT/неполученного R002 approval. Не ставь ACCEPTED от имени владельца без названного подтверждения. Принятие кода не является свидетельством отдельного чужого architecture review.
+
+Переноси текущие технические схемы с картой source→target/версий; имена/подпапку выбери без коллизии с Analyst001…003. Старую колонку/value-frame схемы не публикуй как текущую реализацию. Поведение first-five / aspect mode / already_applied / местный SVG failure не меняй. DEBT-UI-004 остаётся OPEN; не делай новый geometry-spike и не ослабляй gap2 ради закрытия документов. Ранее принятые долги002/003 и весь raw evidence сохраняются.
+
+Статус NOT_STARTED. Назначение Developer; reviewer Manager по комплектности, Tester T008 по соответствию поставке, владелец архитектурного решения — Owner. Собственные оценка/confidence/срок до STARTED, эскалация Manager/Owner при влиянии. Completion: review-ready нормативный пакет / необходимые опубликованные approvals с источниками, transfer map и signed handoff на точной версии. Если нужна конкретная подпись по оставшемуся новому решению — передай одну адресную развилку с готовым документом, не запускай общий круг. Production/src/tests/API/golden не меняются. Commit/push/PR/merge/сообщения — по отдельному поручению.
