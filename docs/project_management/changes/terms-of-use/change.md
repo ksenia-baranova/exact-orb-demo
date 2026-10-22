@@ -1,7 +1,7 @@
 ---
 id: terms-of-use
-status: ANALYSIS  # пишет оркестратор
-cycle: 0  # пишет оркестратор: номер цикла ALIGNMENT
+status: ALIGNMENT  # пишет оркестратор
+cycle: 1  # пишет оркестратор: номер цикла ALIGNMENT
 ---
 # terms-of-use M1-9 — Условия использования
 Тип: feature

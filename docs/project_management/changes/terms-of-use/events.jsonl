@@ -1,3 +1,5 @@
 {"ts": "2026-10-22T14:19:31+00:00", "n": 1, "from": "—", "to": "INTAKE", "cycle": 0, "created": ["TASK-M-01"], "data": {}}
 {"ts": "2026-10-22T15:33:12+00:00", "n": 2, "from": "INTAKE", "to": "ANALYSIS", "cycle": 0, "created": ["TASK-A-01"], "data": {}}
 {"ts": "2026-10-22T16:24:18+00:00", "n": null, "from": "ANALYSIS", "to": "ANALYSIS", "cycle": 0, "created": ["TASK-O-01"], "data": {}}
+{"ts": "2026-10-22T17:08:30+00:00", "n": null, "from": "ANALYSIS", "to": "ANALYSIS", "cycle": 0, "created": ["TASK-A-02"], "data": {}}
+{"ts": "2026-10-22T17:22:24+00:00", "n": 3, "from": "ANALYSIS", "to": "ALIGNMENT", "cycle": 1, "created": ["TASK-D-01", "TASK-T-01"], "data": {}}
