@@ -1,6 +1,6 @@
 ---
 id: terms-of-use
-status: INTAKE  # пишет оркестратор
+status: ANALYSIS  # пишет оркестратор
 cycle: 0  # пишет оркестратор: номер цикла ALIGNMENT
 ---
 # terms-of-use M1-9 — Условия использования
