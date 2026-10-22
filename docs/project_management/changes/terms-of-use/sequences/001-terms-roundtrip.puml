@@ -1,0 +1,38 @@
+@startuml
+' target: docs/sequence_diagrams/ui/009-terms-roundtrip.puml
+' REQ: REQ-TERMS-01, REQ-TERMS-02, REQ-TERMS-03, REQ-TERMS-04, REQ-TERMS-05, REQ-TERMS-06, REQ-TERMS-08
+' scenarios: AS-TERMS-01..07, AS-TERMS-12, AS-TERMS-14..15, AS-UI-21
+title M1-9: чтение условий и два возврата
+autonumber
+actor "Пользователь" as User
+participant "main.mjs" as Page
+note over Page
+Форма и страница условий — состояния UI композиции main.mjs.
+Технический способ перехода и хранения черновика выбирает Developer.
+Текст утверждает Owner отдельно; OPEN DP-A-01 блокирует полный C6.
+end note
+User -> Page : Открывает ссылку под checkbox (REQ-TERMS-01)
+Page --> User : Страница, текст C1..C8, две кнопки; focus на странице\n(REQ-TERMS-01/06/08)
+note over Page
+Открытие не меняет checkbox и не запускает POST (REQ-TERMS-01/05).
+Пустые и ошибочные поля не закрывают чтение (AS-TERMS-02).
+end note
+alt T1: checkbox снят, действие «Согласен»
+ User -> Page : Нажимает «Согласен» (REQ-TERMS-02)
+ Page --> User : Форма, checkbox выбран, прежний черновик (REQ-TERMS-02/04)
+else T2: checkbox выбран, действие «Согласен»
+ User -> Page : Нажимает «Согласен» (REQ-TERMS-02)
+ Page --> User : Форма, checkbox выбран, прежний черновик (REQ-TERMS-02/04)
+else T3: checkbox снят, действие «Вернуться к форме»
+ User -> Page : Нажимает «Вернуться к форме» (REQ-TERMS-03)
+ Page --> User : Форма, checkbox снят, прежний черновик (REQ-TERMS-03/04)
+else T4: checkbox выбран, действие «Вернуться к форме»
+ User -> Page : Нажимает «Вернуться к форме» (REQ-TERMS-03)
+ Page --> User : Форма, checkbox выбран, прежний черновик (REQ-TERMS-03/04)
+end
+note over User, Page
+При каждом возврате focus в видимой форме (REQ-TERMS-08).
+Счётчик POST не увеличивается; построение — отдельное действие (REQ-TERMS-05).
+Повторный переход использует текущее состояние checkbox (AS-TERMS-07).
+end note
+@enduml

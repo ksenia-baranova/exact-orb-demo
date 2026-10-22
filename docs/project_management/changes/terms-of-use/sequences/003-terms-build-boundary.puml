@@ -1,0 +1,55 @@
+@startuml
+' target: docs/sequence_diagrams/ui/011-terms-build-boundary.puml
+' REQ: REQ-UI-03, REQ-TERMS-02, REQ-TERMS-05, REQ-TERMS-07
+' scenarios: AS-TERMS-11, AS-TERMS-13, AS-UI-20, AS-UI-21
+title M1-9: ознакомление и граница явного POST
+autonumber
+actor "Пользователь" as User
+participant "main.mjs" as Page
+control "session.mjs" as Session
+participant "HTTP API" as Api
+note over User, Page
+Открытие условий, «Согласен» и «Вернуться к форме»:
+нет нового POST, нет нового расчёта (REQ-TERMS-05).
+Отдельное построение ниже — позитивный контроль запрета.
+end note
+User -> Page : Явно нажимает построение (REQ-UI-03)
+alt G1: предыдущий POST ещё ожидает ответа
+ Page --> User : Прежнее ожидание; нового POST нет (REQ-UI-03)
+else G2: POST не ожидается, checkbox снят
+ Page --> User : Требование отметки, прежний черновик; POST нет (REQ-UI-03)
+else G3: POST не ожидается, checkbox выбран, поля невалидны
+ Page --> User : Ошибки полей, прежний черновик; POST нет (REQ-UI-03)
+else G4: POST не ожидается, checkbox выбран, поля валидны
+ Page -> Session : Явное намерение birth_date/birth_time/place_id (REQ-UI-03)
+ Session -> Api : POST /charts/natal, только три поля (REQ-UI-03)
+ note over Session, Api
+ Действующие request_id/run_id, http_message send/receive,
+ application-переходы и terminal — по HTTP/Build Natal контракту.
+ Нет отдельного persistence-события ознакомления.
+ end note
+ alt R1: committed 200 chart_ready
+  Api --> Session : ChartDTO (REQ-UI-03)
+  Session --> Page : Подтверждённые факты (REQ-UI-03)
+  Page --> User : Фактическая карта, сводка и таблицы (REQ-UI-03)
+ else R2: 200 already_applied без chart
+  Api --> Session : Только статус и state_version (REQ-UI-03)
+  Session -> Api : GET /charts/current (REQ-UI-03)
+  Api --> Session : Фактическое состояние current (REQ-UI-03)
+  Session --> Page : Представление actual current (REQ-UI-03)
+  Page --> User : Результат GET (REQ-UI-03)
+ else R3: ошибочный ответ либо потеря ответа
+  note over Session, Api
+  Ошибочный ответ получен либо ответ потерян.
+  Потеря ответа не представляется ответом сервера (REQ-UI-03).
+  end note
+  Session --> Page : Состояние и разрешённое действие REQ-UI-09
+  Page --> User : Прежний черновик, разрешённая карта, сообщение (REQ-UI-03)
+ end
+end
+note over User, Api
+Внешние HTTP/recovery запреты действуют до G1..G4.
+Checkbox не входит в POST, ChartSpec, SessionState или журнал подтверждений.
+Действующие серверные маршруты и события этим изменением не добавляются.
+end note
+@enduml
