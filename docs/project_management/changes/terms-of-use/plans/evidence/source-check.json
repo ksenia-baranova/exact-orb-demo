@@ -1,0 +1,20 @@
+{
+  "checked": "2026-11-02 Europe/Moscow",
+  "deliveryCommit": "58aa6b956ccbb9bec9948340e955dc4ba133ce25",
+  "url": "https://github.com/ksenia-baranova/exact-orb-demo",
+  "commitLinks": [
+    {
+      "href": "https://github.com/ksenia-baranova/exact-orb-demo/commit/9f36ee8c8d6b3105de0ed633c23abe7fdeac7fea",
+      "text": "9f36ee8"
+    }
+  ],
+  "title": "GitHub - ksenia-baranova/exact-orb-demo: R&D case study of specification-driven software development with coding agents, human architectural control, executable constraints, and deterministic verification. · GitHub",
+  "exactCommitApi": {
+    "tool": "GitHub.fetch_commit",
+    "repo": "ksenia-baranova/exact-orb-demo",
+    "sha": "58aa6b956ccbb9bec9948340e955dc4ba133ce25",
+    "httpStatus": 422,
+    "message": "No commit found for SHA: 58aa6b956ccbb9bec9948340e955dc4ba133ce25"
+  },
+  "C7": "NOT RUN: exact delivery commit is not published; root repository accessibility is not a version match"
+}

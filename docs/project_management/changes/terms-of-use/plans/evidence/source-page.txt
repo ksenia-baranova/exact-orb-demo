@@ -1,0 +1,967 @@
+- link "Skip to content":
+  - /url: "#start-of-content"
+- banner:
+  - heading "Navigation Menu" [level=2]
+  - link "Homepage":
+    - /url: /
+  - navigation "Global":
+    - list:
+      - button "Products":
+        - text: Products
+      - button "Developers":
+        - text: Developers
+      - button "Businesses":
+        - text: Businesses
+      - button "Resources":
+        - text: Resources
+      - link "Pricing":
+        - /url: https://github.com/pricing
+  - button "Search or jump to, type / to search":
+    - generic: Search
+    - generic: /
+  - link "Sign in":
+    - /url: /login?return_to=https%3A%2F%2Fgithub.com%2Fksenia-baranova%2Fexact-orb-demo
+    - generic: Sign in
+  - link "Sign up":
+    - /url: /signup?ref_cta=Sign+up&ref_loc=header+logged+out&ref_page=%2F%3Cuser-name%3E%2F%3Crepo-name%3E&source=header-repo&source_repo=ksenia-baranova%2Fexact-orb-demo
+    - generic: Sign up
+  - button "Appearance settings":
+- main:
+  - generic "Global navigation menu":
+    - navigation "Breadcrumbs":
+      - list:
+        - link "ksenia-baranova":
+          - /url: /ksenia-baranova
+          - generic: ksenia-baranova
+        - link "exact-orb-demo":
+          - /url: /ksenia-baranova/exact-orb-demo
+          - generic: exact-orb-demo
+    - heading "Repository navigation" [level=2]
+    - navigation "Repository":
+      - list:
+        - link "Code":
+          - /url: /ksenia-baranova/exact-orb-demo
+          - generic: Code
+        - link "Issues":
+          - /url: /ksenia-baranova/exact-orb-demo/issues
+          - generic: Issues
+        - link "Pull requests":
+          - /url: /ksenia-baranova/exact-orb-demo/pulls
+          - generic: Pull requests
+        - link "Actions":
+          - /url: /ksenia-baranova/exact-orb-demo/actions
+          - generic: Actions
+        - link "Projects":
+          - /url: /ksenia-baranova/exact-orb-demo/projects
+          - generic: Projects
+        - link "Security and quality":
+          - /url: /ksenia-baranova/exact-orb-demo/security
+          - generic: Security and quality
+        - link "Insights":
+          - /url: /ksenia-baranova/exact-orb-demo/pulse
+          - generic: Insights
+  - img "ksenia-baranova"
+  - generic "exact-orb-demo":
+    - strong:
+      - link "exact-orb-demo":
+        - /url: /ksenia-baranova/exact-orb-demo
+  - generic: Public
+  - list:
+    - link "You must be signed in to change notification settings":
+      - /url: /login?return_to=%2Fksenia-baranova%2Fexact-orb-demo
+      - generic: Notifications
+    - link "You must be signed in to fork a repository":
+      - /url: /login?return_to=%2Fksenia-baranova%2Fexact-orb-demo
+      - text: Fork
+      - generic: "0"
+      - generic: (0)
+    - link "Star (0)":
+      - /url: /login?return_to=%2Fksenia-baranova%2Fexact-orb-demo
+      - text: Star
+      - generic: "0"
+      - generic: (0)
+  - button "main branch":
+    - generic: main
+  - link "58 Branches":
+    - /url: /ksenia-baranova/exact-orb-demo/branches
+    - strong: "58"
+    - text: Branches
+  - link "0 Tags":
+    - /url: /ksenia-baranova/exact-orb-demo/tags
+    - strong: "0"
+    - text: Tags
+  - combobox "Go to file"
+  - button "Code":
+    - generic: Code
+  - heading "Latest commit" [level=2]
+  - link "ksenia-baranova":
+    - /url: /ksenia-baranova
+    - img "ksenia-baranova"
+  - link "commits by ksenia-baranova":
+    - /url: /ksenia-baranova/exact-orb-demo/commits?author=ksenia-baranova
+    - text: ksenia-baranova
+  - link "Merge pull request":
+    - /url: /ksenia-baranova/exact-orb-demo/commit/9f36ee8c8d6b3105de0ed633c23abe7fdeac7fea
+  - link "#83":
+    - /url: https://github.com/ksenia-baranova/exact-orb-demo/pull/83
+  - link "from ksenia-baranova/docs/improving-developer-…":
+    - /url: /ksenia-baranova/exact-orb-demo/commit/9f36ee8c8d6b3105de0ed633c23abe7fdeac7fea
+  - button "Open commit details":
+  - link "Commit 9f36ee8":
+    - /url: /ksenia-baranova/exact-orb-demo/commit/9f36ee8c8d6b3105de0ed633c23abe7fdeac7fea
+    - text: 9f36ee8
+  - text: ·
+  - generic "Oct 21, 2026, 18:34 GMT+3": Oct 21, 20262 weeks ago
+  - heading "History" [level=2]
+  - link "338 Commits":
+    - /url: /ksenia-baranova/exact-orb-demo/commits/main/
+    - generic: 338 Commits
+  - heading "Folders and files" [level=2]
+  - table "Folders and files":
+    - rowgroup:
+      - row "Name Last commit message Last commit date":
+        - columnheader "Name"
+        - columnheader "Last commit message":
+          - generic "Last commit message"
+        - columnheader "Last commit date":
+          - generic "Last commit date"
+    - rowgroup:
+      - 'row "data, (Directory) feat(place-catalog): version validated GeoNames snapshot Oct 3, 2026last month"':
+        - cell "data, (Directory)":
+          - link "data, (Directory)":
+            - /url: /ksenia-baranova/exact-orb-demo/tree/main/data
+            - text: data
+        - 'cell "feat(place-catalog): version validated GeoNames snapshot"':
+          - 'link "feat(place-catalog): version validated GeoNames snapshot"':
+            - /url: /ksenia-baranova/exact-orb-demo/commit/cd42c5da3e751dc3a425882e1a12ffaf6b42993f
+        - cell "Oct 3, 2026last month":
+          - generic: Oct 3, 2026last month
+      - 'row "docs, (Directory) docs: update architecture diagrams, overview, and scenarios Oct 21, 20262 weeks ago"':
+        - cell "docs, (Directory)":
+          - link "docs, (Directory)":
+            - /url: /ksenia-baranova/exact-orb-demo/tree/main/docs
+            - text: docs
+        - 'cell "docs: update architecture diagrams, overview, and scenarios"':
+          - 'link "docs: update architecture diagrams, overview, and scenarios"':
+            - /url: /ksenia-baranova/exact-orb-demo/commit/4cf4f83becea07ee93e95320c8aaa829d71d9522
+        - cell "Oct 21, 20262 weeks ago":
+          - generic: Oct 21, 20262 weeks ago
+      - 'row "ephe, (Directory) docs: update architecture diagrams, overview, and scenarios Sep 7, 20262 months ago"':
+        - cell "ephe, (Directory)":
+          - link "ephe, (Directory)":
+            - /url: /ksenia-baranova/exact-orb-demo/tree/main/ephe
+            - text: ephe
+        - 'cell "docs: update architecture diagrams, overview, and scenarios"':
+          - 'link "docs: update architecture diagrams, overview, and scenarios"':
+            - /url: /ksenia-baranova/exact-orb-demo/commit/7f05723e16d286131bef6e1d654b4cdf1e06cc65
+        - cell "Sep 7, 20262 months ago":
+          - generic: Sep 7, 20262 months ago
+      - 'row "prompts, (Directory) fix(ui): исправить округление орбиса на половине минуты Oct 8, 20263 weeks ago"':
+        - cell "prompts, (Directory)":
+          - link "prompts, (Directory)":
+            - /url: /ksenia-baranova/exact-orb-demo/tree/main/prompts
+            - text: prompts
+        - 'cell "fix(ui): исправить округление орбиса на половине минуты"':
+          - 'link "fix(ui): исправить округление орбиса на половине минуты"':
+            - /url: /ksenia-baranova/exact-orb-demo/commit/a576253c4e132498ae394c67237a6f29d3e0c4ee
+        - cell "Oct 8, 20263 weeks ago":
+          - generic: Oct 8, 20263 weeks ago
+      - 'row "scripts, (Directory) docs: update architecture diagrams, overview, and scenarios Oct 21, 20262 weeks ago"':
+        - cell "scripts, (Directory)":
+          - link "scripts, (Directory)":
+            - /url: /ksenia-baranova/exact-orb-demo/tree/main/scripts
+            - text: scripts
+        - 'cell "docs: update architecture diagrams, overview, and scenarios"':
+          - 'link "docs: update architecture diagrams, overview, and scenarios"':
+            - /url: /ksenia-baranova/exact-orb-demo/commit/3a500ec6220f10c6c753b3d2f3bef1ef385f1b77
+        - cell "Oct 21, 20262 weeks ago":
+          - generic: Oct 21, 20262 weeks ago
+      - 'row "src/exact_orb, (Directory) fix(ui-chart-wheel): restore effective HTML hit targets Oct 20, 20262 weeks ago"':
+        - cell "src/exact_orb, (Directory)":
+          - link "src/exact_orb, (Directory)":
+            - /url: /ksenia-baranova/exact-orb-demo/tree/main/src/exact_orb
+            - text: src/exact_orb
+        - 'cell "fix(ui-chart-wheel): restore effective HTML hit targets"':
+          - 'link "fix(ui-chart-wheel): restore effective HTML hit targets"':
+            - /url: /ksenia-baranova/exact-orb-demo/commit/99741958b4bbee8884505920f4a02f2f19dea3e3
+        - cell "Oct 20, 20262 weeks ago":
+          - generic: Oct 20, 20262 weeks ago
+      - 'row "tests, (Directory) fix(ui-chart-wheel): show first five planets by default Oct 20, 20262 weeks ago"':
+        - cell "tests, (Directory)":
+          - link "tests, (Directory)":
+            - /url: /ksenia-baranova/exact-orb-demo/tree/main/tests
+            - text: tests
+        - 'cell "fix(ui-chart-wheel): show first five planets by default"':
+          - 'link "fix(ui-chart-wheel): show first five planets by default"':
+            - /url: /ksenia-baranova/exact-orb-demo/commit/3c2744ee2ecfe64ebe1d2f5b306a23d008d5064d
+        - cell "Oct 20, 20262 weeks ago":
+          - generic: Oct 20, 20262 weeks ago
+      - 'row ".gitattributes, (File) fix(session): harden stored chart errors and format checks Sep 27, 20262 months ago"':
+        - cell ".gitattributes, (File)":
+          - link ".gitattributes, (File)":
+            - /url: /ksenia-baranova/exact-orb-demo/blob/main/.gitattributes
+            - text: .gitattributes
+        - 'cell "fix(session): harden stored chart errors and format checks"':
+          - 'link "fix(session): harden stored chart errors and format checks"':
+            - /url: /ksenia-baranova/exact-orb-demo/commit/111925b5f08fb99d064fb3e85f36c5d6b5d22ba3
+        - cell "Sep 27, 20262 months ago":
+          - generic: Sep 27, 20262 months ago
+      - 'row ".gitignore, (File) feat(place-catalog): version validated GeoNames snapshot Oct 3, 2026last month"':
+        - cell ".gitignore, (File)":
+          - link ".gitignore, (File)":
+            - /url: /ksenia-baranova/exact-orb-demo/blob/main/.gitignore
+            - text: .gitignore
+        - 'cell "feat(place-catalog): version validated GeoNames snapshot"':
+          - 'link "feat(place-catalog): version validated GeoNames snapshot"':
+            - /url: /ksenia-baranova/exact-orb-demo/commit/cd42c5da3e751dc3a425882e1a12ffaf6b42993f
+        - cell "Oct 3, 2026last month":
+          - generic: Oct 3, 2026last month
+      - 'row "AGENTS.md, (File) docs: update architecture diagrams, overview, and scenarios Oct 21, 20262 weeks ago"':
+        - cell "AGENTS.md, (File)":
+          - link "AGENTS.md, (File)":
+            - /url: /ksenia-baranova/exact-orb-demo/blob/main/AGENTS.md
+            - text: AGENTS.md
+        - 'cell "docs: update architecture diagrams, overview, and scenarios"':
+          - 'link "docs: update architecture diagrams, overview, and scenarios"':
+            - /url: /ksenia-baranova/exact-orb-demo/commit/8f209753ff6c204fd171f277392502b9863d00ea
+        - cell "Oct 21, 20262 weeks ago":
+          - generic: Oct 21, 20262 weeks ago
+      - 'row "CONTRIBUTING.md, (File) chore(license): выбрать AGPL-3.0 на публичной фазе Sep 3, 20262 months ago"':
+        - cell "CONTRIBUTING.md, (File)":
+          - link "CONTRIBUTING.md, (File)":
+            - /url: /ksenia-baranova/exact-orb-demo/blob/main/CONTRIBUTING.md
+            - text: CONTRIBUTING.md
+        - 'cell "chore(license): выбрать AGPL-3.0 на публичной фазе"':
+          - 'link "chore(license): выбрать AGPL-3.0 на публичной фазе"':
+            - /url: /ksenia-baranova/exact-orb-demo/commit/f81523afc4b6c709d837b9bf7fb0bf7fededeed6
+        - cell "Sep 3, 20262 months ago":
+          - generic: Sep 3, 20262 months ago
+      - 'row "LICENSE, (File) chore(license): выбрать AGPL-3.0 на публичной фазе Sep 3, 20262 months ago"':
+        - cell "LICENSE, (File)":
+          - link "LICENSE, (File)":
+            - /url: /ksenia-baranova/exact-orb-demo/blob/main/LICENSE
+            - text: LICENSE
+        - 'cell "chore(license): выбрать AGPL-3.0 на публичной фазе"':
+          - 'link "chore(license): выбрать AGPL-3.0 на публичной фазе"':
+            - /url: /ksenia-baranova/exact-orb-demo/commit/f81523afc4b6c709d837b9bf7fb0bf7fededeed6
+        - cell "Sep 3, 20262 months ago":
+          - generic: Sep 3, 20262 months ago
+      - 'row "README.md, (File) docs: update architecture diagrams, overview, and scenarios Oct 21, 20262 weeks ago"':
+        - cell "README.md, (File)":
+          - link "README.md, (File)":
+            - /url: /ksenia-baranova/exact-orb-demo/blob/main/README.md
+            - text: README.md
+        - 'cell "docs: update architecture diagrams, overview, and scenarios"':
+          - 'link "docs: update architecture diagrams, overview, and scenarios"':
+            - /url: /ksenia-baranova/exact-orb-demo/commit/329ec5ed10454ba6d8586c26fe106946cf88709a
+        - cell "Oct 21, 20262 weeks ago":
+          - generic: Oct 21, 20262 weeks ago
+      - 'row "pyproject.toml, (File) docs: update architecture diagrams, overview, and scenarios Oct 21, 20262 weeks ago"':
+        - cell "pyproject.toml, (File)":
+          - link "pyproject.toml, (File)":
+            - /url: /ksenia-baranova/exact-orb-demo/blob/main/pyproject.toml
+            - text: pyproject.toml
+        - 'cell "docs: update architecture diagrams, overview, and scenarios"':
+          - 'link "docs: update architecture diagrams, overview, and scenarios"':
+            - /url: /ksenia-baranova/exact-orb-demo/commit/e0904aeebf8fa0abb3837e76dc6e37d3ac100c87
+        - cell "Oct 21, 20262 weeks ago":
+          - generic: Oct 21, 20262 weeks ago
+  - heading "Repository files navigation" [level=2]
+  - navigation "Repository files":
+    - list:
+      - link "README":
+        - /url: "#"
+        - generic: README
+      - link "Contributing":
+        - /url: "#"
+        - generic: Contributing
+      - link "AGPL-3.0 license":
+        - /url: "#"
+        - generic: AGPL-3.0 license
+  - button "Outline":
+  - article:
+    - heading "exact-orb" [level=1]
+    - 'link "Permalink: exact-orb"':
+      - /url: "#exact-orb"
+    - paragraph:
+      - strong: Исследовательский проект. Не продукт, не сервис, не коммерческое предложение.
+    - paragraph: "Предмет исследования — управляемая разработка с AI-агентами: как делегировать исполнение, сохраняя контроль над требованиями, решениями и качеством. Цель — методология, которую можно проверить и перенести в enterprise-команду."
+    - paragraph: Полигон — система расчёта астрологических карт, сочетающая строго вычислимые факты и будущую LLM-интерпретацию. Проект не исследует и не утверждает научную валидность астрологии, не оказывает услуг и никому ничего не предсказывает.
+    - paragraph:
+      - code: Python 3.11+
+      - text: ·
+      - code: Swiss Ephemeris
+      - text: ·
+      - code: FastAPI
+      - text: ·
+      - code: AGPL-3.0
+      - text: · активная R&D-разработка
+    - heading "Оглавление" [level=2]
+    - 'link "Permalink: Оглавление"':
+      - /url: "#оглавление"
+    - list:
+      - link "О проекте":
+        - /url: "#%D0%BE-%D0%BF%D1%80%D0%BE%D0%B5%D0%BA%D1%82%D0%B5"
+      - link "Метод разработки":
+        - /url: "#%D0%BC%D0%B5%D1%82%D0%BE%D0%B4-%D1%80%D0%B0%D0%B7%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%BA%D0%B8"
+      - 'link "Примеры: что показал эксперимент"':
+        - /url: "#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80%D1%8B-%D1%87%D1%82%D0%BE-%D0%BF%D0%BE%D0%BA%D0%B0%D0%B7%D0%B0%D0%BB-%D1%8D%D0%BA%D1%81%D0%BF%D0%B5%D1%80%D0%B8%D0%BC%D0%B5%D0%BD%D1%82"
+      - link "Текущее состояние":
+        - /url: "#%D1%82%D0%B5%D0%BA%D1%83%D1%89%D0%B5%D0%B5-%D1%81%D0%BE%D1%81%D1%82%D0%BE%D1%8F%D0%BD%D0%B8%D0%B5"
+      - link "Быстрый старт":
+        - /url: "#%D0%B1%D1%8B%D1%81%D1%82%D1%80%D1%8B%D0%B9-%D1%81%D1%82%D0%B0%D1%80%D1%82"
+      - link "Пример результата":
+        - /url: "#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80-%D1%80%D0%B5%D0%B7%D1%83%D0%BB%D1%8C%D1%82%D0%B0%D1%82%D0%B0"
+      - link "Архитектура":
+        - /url: "#%D0%B0%D1%80%D1%85%D0%B8%D1%82%D0%B5%D0%BA%D1%82%D1%83%D1%80%D0%B0"
+      - link "Известные ограничения":
+        - /url: "#%D0%B8%D0%B7%D0%B2%D0%B5%D1%81%D1%82%D0%BD%D1%8B%D0%B5-%D0%BE%D0%B3%D1%80%D0%B0%D0%BD%D0%B8%D1%87%D0%B5%D0%BD%D0%B8%D1%8F"
+      - link "Документация":
+        - /url: "#%D0%B4%D0%BE%D0%BA%D1%83%D0%BC%D0%B5%D0%BD%D1%82%D0%B0%D1%86%D0%B8%D1%8F"
+      - link "Структура репозитория":
+        - /url: "#%D1%81%D1%82%D1%80%D1%83%D0%BA%D1%82%D1%83%D1%80%D0%B0-%D1%80%D0%B5%D0%BF%D0%BE%D0%B7%D0%B8%D1%82%D0%BE%D1%80%D0%B8%D1%8F"
+      - link "Что дальше":
+        - /url: "#%D1%87%D1%82%D0%BE-%D0%B4%D0%B0%D0%BB%D1%8C%D1%88%D0%B5"
+      - link "Лицензия":
+        - /url: "#%D0%BB%D0%B8%D1%86%D0%B5%D0%BD%D0%B7%D0%B8%D1%8F"
+    - heading "О проекте" [level=2]
+    - 'link "Permalink: О проекте"':
+      - /url: "#о-проекте"
+    - paragraph: "Исследовательский вопрос: насколько далеко можно масштабировать разработку, делегируя AI-агентам код и техническую проработку, но сохраняя за человеком управление требованиями, архитектурой и качеством? Какие механизмы контроля для этого необходимы и сколько они стоят?"
+    - paragraph:
+      - strong: Кто ведёт разработку.
+      - text: Проект ведёт один человек; весь код написан AI-агентами, а не вручную. Автор формулирует требования и сценарии, принимает архитектурные решения, читает и ревьюит реализацию, анализирует диагностические журналы. Проверка качества опирается на явные контракты, исполняемые проверки и независимое тестирование. Это опыт одного оператора; его результаты пока нельзя автоматически переносить на команду.
+    - heading "Отличительные особенности подхода" [level=3]
+    - 'link "Permalink: Отличительные особенности подхода"':
+      - /url: "#отличительные-особенности-подхода"
+    - paragraph: "Метод исследуется с позиции руководителя инженерной команды: как управлять результатом, когда существенную часть исполнения берут на себя AI-агенты."
+    - list:
+      - strong: Формализованный процесс, вероятностные исполнители.
+      - text: Изменения проходят через роли, состояния и gates. Детерминированная автоматизация переходов — планируемый следующий шаг, а не уже реализованная возможность.
+      - strong: Решение отделено от рекомендации.
+      - text: Агент может находить развилки и предлагать варианты; значимые решения подтверждает уполномоченный человек.
+      - strong: Артефакты важнее истории диалога.
+      - text: Требования, ADR, реестр решений и результаты проверок сохраняют инженерный контекст; prompts — журнал поручений, а не source of truth.
+      - strong: Проверка независима от исполнителя.
+      - text: "Зелёные тесты и совпадение мнений моделей сами по себе не доказывают корректность: нужны контракты, воспроизводимые контрпримеры и независимое тестирование."
+    - heading "Почему собственный процесс" [level=3]
+    - 'link "Permalink: Почему собственный процесс"':
+      - /url: "#почему-собственный-процесс"
+    - paragraph: "Автор длительное время работала QA-инженером, бизнес- и функциональным аналитиком, тимлидом и руководителем инженерных команд. Этот опыт позволяет рассматривать процесс с позиции разных ролей: что каждой нужно для работы и что руководителю необходимо для контроля результата. Сопоставимого опыта непосредственного написания кода у автора нет."
+    - paragraph: Цель — перенести накопленный инженерный и управленческий опыт в среду агентной разработки. Сначала автор определяет необходимую модель управления и проверяет её на реальных изменениях проекта. Следующий шаг — сопоставить проверенную модель с готовыми решениями и выбрать подходящие инструменты и компоненты.
+    - heading "Как читать репозиторий" [level=3]
+    - 'link "Permalink: Как читать репозиторий"':
+      - /url: "#как-читать-репозиторий"
+    - paragraph:
+      - text: Это дневник эксперимента. Код и документация показывают текущее состояние, а каждый PR в
+      - code: main
+      - text: "сохраняет контекст очередного изменения: что обнаружилось, что пришлось пересмотреть и на чём основаны последующие решения."
+    - heading "Почему такой полигон" [level=3]
+    - 'link "Permalink: Почему такой полигон"':
+      - /url: "#почему-такой-полигон"
+    - paragraph: "Главный архитектурный принцип полигона:"
+    - blockquote:
+      - paragraph:
+        - strong: LLM не является источником расчётных фактов.
+    - paragraph: Положения, дома, аспекты, конфигурации и другие показатели появляются только в детерминированном расчёте. Языковая модель может объяснять рассчитанное, но не достраивает отсутствующие факты.
+    - code: structured input → deterministic resolution → deterministic calculation → validated chart artifact → evidence selection → LLM interpretation
+    - button "Copy code to clipboard":
+    - paragraph: "Предметная область заменяема: тот же контур — детерминированный источник фактов, явные контракты, вероятностный слой строго за ними — применим к любой области, где ошибка модели в фактах недопустима. Зато она позволяет публиковать процесс, требования и код без корпоративных данных."
+    - heading "Метод разработки" [level=2]
+    - 'link "Permalink: Метод разработки"':
+      - /url: "#метод-разработки"
+    - paragraph: "Единица работы — change с ролями Owner, Manager, Analyst, Developer, Tester и Reviewer. Каждый запуск агента — одна задача в git; роль меняет только статус своей задачи, а статус change выводит оркестратор по таблице переходов (сейчас это человек). Один файл — один автор. Вопросы к Owner задают двое: Manager — о скоупе, сроках и приёмке, Analyst — о требованиях. Роли может совмещать один человек, запуская каждую отдельной задачей."
+    - code: INTAKE → ANALYSIS → ALIGNMENT → APPROVAL → READY_FOR_DEVELOPMENT → IN_DEVELOPMENT → READY_FOR_TEST ⇄ BUG_FIX → DONE → ACCEPTED
+    - button "Copy code to clipboard":
+    - paragraph: Analyst пишет инкремент требований с источниками, Developer и Tester делают ревью, план и оценки (чч и мч), Owner утверждает план. Developer реализует по одному промту на задачу, Tester пишет приёмочные тесты, Reviewer другой моделью в отдельной сессии проверяет код. После DONE Analyst переносит инкремент в requirements/current/, Owner принимает изменение. Для рефакторинга без изменения поведения анализ пропускается.
+    - paragraph: "Если найден дефект реализации, Developer устраняет его с regression-тестом, а перепроверяет тот, кто завёл баг: Tester или Reviewer. Пробел в требованиях оформляется как decision point (DP) и возвращается к Analyst."
+    - paragraph: Проверки включают component, contract, property-based, integration, persistence conformance, concurrency, golden и module-boundary tests; mock не считается доказательством интеграции, а количество тестов само по себе не служит метрикой качества.
+    - paragraph:
+      - text: "Документы метода:"
+      - link "принципы":
+        - /url: /ksenia-baranova/exact-orb-demo/blob/main/docs/development_approach/development-approach.md
+      - text: ","
+      - link "процесс":
+        - /url: /ksenia-baranova/exact-orb-demo/blob/main/docs/development_approach/process/change-process-v3.md
+      - text: ","
+      - link "роли":
+        - /url: /ksenia-baranova/exact-orb-demo/blob/main/docs/development_approach/roles.md
+      - text: ","
+      - link "шаблоны":
+        - /url: /ksenia-baranova/exact-orb-demo/blob/main/docs/development_approach/artifacts/README.md
+      - text: ","
+      - link "инструкции ролей":
+        - /url: /ksenia-baranova/exact-orb-demo/blob/main/docs/development_approach/skills/README.md
+      - text: .
+    - 'heading "Примеры: что показал эксперимент" [level=2]'
+    - 'link "Permalink: Примеры: что показал эксперимент"':
+      - /url: "#примеры-что-показал-эксперимент"
+    - paragraph: "Примеры отдельных изменений, а не статистика эффективности метода: они показывают классы найденных ошибок и ограничения проверок."
+    - heading "Дефекты, найденные человеком" [level=3]
+    - 'link "Permalink: Дефекты, найденные человеком"':
+      - /url: "#дефекты-найденные-человеком"
+    - paragraph:
+      - text: Часть дефектов обнаружена при зелёных тестах, часть — до реализации. Подробности — в
+      - link "разборах":
+        - /url: /ksenia-baranova/exact-orb-demo/blob/main/docs/project_management/problems_detected_by_human
+      - text: ":"
+    - table:
+      - rowgroup:
+        - row "№ Что обнаружено Итог":
+          - columnheader "№"
+          - columnheader "Что обнаружено"
+          - columnheader "Итог"
+      - rowgroup:
+        - 'row "001 Полный DEBUG-вывод показал, что BuildNatalSuccess хранит одни данные в нескольких местах: структурно валидный, но противоречивый результат ADR-0027, канонические владельцы значений"':
+          - cell "001"
+          - 'cell "Полный DEBUG-вывод показал, что BuildNatalSuccess хранит одни данные в нескольких местах: структурно валидный, но противоречивый результат"'
+          - cell "ADR-0027, канонические владельцы значений"
+        - 'row "002 Разбор полной карты выявил ошибки самих требований: два пространства имён точек, аспект оси узлов к себе, ложная точность при неизвестном времени ADR-0029…0032"':
+          - cell "002"
+          - 'cell "Разбор полной карты выявил ошибки самих требований: два пространства имён точек, аспект оси узлов к себе, ложная точность при неизвестном времени"'
+          - cell "ADR-0029…0032"
+        - 'row "003 Ревью спецификации Orchestrator: ответственность незаметно перетекала между компонентами, outcome-контракты неполны Требования отправлены на переработку до реализации"':
+          - cell "003"
+          - 'cell "Ревью спецификации Orchestrator: ответственность незаметно перетекала между компонентами, outcome-контракты неполны"'
+          - cell "Требования отправлены на переработку до реализации"
+        - 'row "004 Ревью реализации Orchestrator: внутренние сбои commit-flow теряли terminal-событие Воспроизведено, исправлено, regression-случаи"':
+          - cell "004"
+          - 'cell "Ревью реализации Orchestrator: внутренние сбои commit-flow теряли terminal-событие"'
+          - cell "Воспроизведено, исправлено, regression-случаи"
+        - 'row "005 Журнал не показывал, кто координирует вызовы: поток выглядел как хореография ADR-0035…0038, интеграционный тест"':
+          - cell "005"
+          - 'cell "Журнал не показывал, кто координирует вызовы: поток выглядел как хореография"'
+          - cell "ADR-0035…0038, интеграционный тест"
+    - blockquote:
+      - paragraph:
+        - strong: Структурно валидная модель ≠ семантически корректная модель.
+    - 'heading "Пример: кто находил дефекты в UI-change (M1-7)" [level=3]'
+    - 'link "Permalink: Пример: кто находил дефекты в UI-change (M1-7)"':
+      - /url: "#пример-кто-находил-дефекты-в-ui-change-m1-7"
+    - paragraph:
+      - text: В этом изменении из 10 дефектов реализации 8 нашло ревью кода другой моделью ещё до независимого тестирования, 1 — ручная проверка владельца, 1 — Tester. На момент ревью 126 зелёных UI-тестов найденных моделью случаев не покрывали (
+      - link "реестр":
+        - /url: /ksenia-baranova/exact-orb-demo/blob/main/docs/testing/ui-birth-form-and-facts/manual-test-bugs.md
+      - text: ","
+      - link "разбор":
+        - /url: /ksenia-baranova/exact-orb-demo/blob/main/docs/project_management/problems_detected_by_human/006-ui-review-found-counterexamples-missed-by-green-tests.md
+      - text: ).
+    - paragraph: На одном change ревью другой моделью помогло найти воспроизводимые контрпримеры, но его результат нельзя обобщать без дальнейших измерений.
+    - paragraph: "Открытый вопрос: сколько стоит такой контроль? По наблюдению автора, документация и артефакты change растут быстрее кода. Это качественное наблюдение, а не результат количественного сравнения. Стоимость ведения артефактов и польза каждого правила процесса требуют дальнейших измерений."
+    - heading "Текущее состояние" [level=2]
+    - 'link "Permalink: Текущее состояние"':
+      - /url: "#текущее-состояние"
+    - paragraph: "Работает пользовательский сценарий: в браузере ввести данные рождения, выбрать место из подсказок, построить натальную карту или космограмму и увидеть SVG-колесо вместе с опубликованными фактами. Интерпретации пока нет."
+    - paragraph: "Колесо пассивно: планета или аспект выбираются в HTML-таблице. Выбор планеты показывает все её аспекты, выбор аспекта открывает отдельный режим чтения с его участниками. В обычном виде таблицы точек, домов и аспектов показывают первые пять строк с независимым раскрытием. Планеты размещаются внутри своих опубликованных домов, при необходимости несколькими рядами; точные положения и исходные данные сохраняются. Космограмма не получает вымышленных домов."
+    - paragraph: Пассивность относится к текущему M1-8. Активное управление колесом запланировано как отдельная будущая фича; её scope, сроки и оценка будут определены отдельно.
+    - table:
+      - rowgroup:
+        - row "Область Состояние":
+          - columnheader "Область"
+          - columnheader "Состояние"
+      - rowgroup:
+        - row "Детерминированный расчёт натала и космограммы Реализован; аспектная модель пересмотрена ADR-0029…0032, достоинства и диспозиторы — ADR-0033":
+          - cell "Детерминированный расчёт натала и космограммы"
+          - cell "Реализован; аспектная модель пересмотрена ADR-0029…0032, достоинства и диспозиторы — ADR-0033"
+        - row "Транзиты Реализованы в engine/; application flow для них нет":
+          - cell "Транзиты"
+          - cell "Реализованы в engine/; application flow для них нет"
+        - row "Resolution данных рождения и каталог мест Реализованы (M1-5)":
+          - cell "Resolution данных рождения и каталог мест"
+          - cell "Реализованы (M1-5)"
+        - row "Calculation identity, cache артефактов, single-flight Реализованы":
+          - cell "Calculation identity, cache артефактов, single-flight"
+          - cell "Реализованы"
+        - 'row "Сессии: in-memory и SQLite, ContextService Реализованы"':
+          - 'cell "Сессии: in-memory и SQLite, ContextService"'
+          - cell "Реализованы"
+        - row "Application Orchestrator, BuildNatalHandler, process runtime Реализованы, приняты на реальном стеке":
+          - cell "Application Orchestrator, BuildNatalHandler, process runtime"
+          - cell "Реализованы, приняты на реальном стеке"
+        - 'row "HTTP API: FastAPI, анонимная сессия, поиск мест, построение карты Реализован (M1-6); формальный итог приёмки M1-6 не записан"':
+          - 'cell "HTTP API: FastAPI, анонимная сессия, поиск мест, построение карты"'
+          - cell "Реализован (M1-6); формальный итог приёмки M1-6 не записан"
+        - 'row "Web UI: форма, поиск мест, построение и восстановление карты Реализован и принят (M1-7); M1-8 добавляет SVG, выбор и сводку/редактор"':
+          - 'cell "Web UI: форма, поиск мест, построение и восстановление карты"'
+          - cell "Реализован и принят (M1-7); M1-8 добавляет SVG, выбор и сводку/редактор"
+        - row "Chart Renderer (M1-8) Реализован; пассивное SVG, внутренние ряды планет, легенда, отдельный режим аспекта, локальный отказ изображения с сохранением HTML":
+          - cell "Chart Renderer (M1-8)"
+          - cell "Реализован; пассивное SVG, внутренние ряды планет, легенда, отдельный режим аспекта, локальный отказ изображения с сохранением HTML"
+        - row "Полный перенос прототипа V2 (M1-8.1) Отдельный будущий этап; наличие колеса не означает завершения всех экранов V2":
+          - cell "Полный перенос прототипа V2 (M1-8.1)"
+          - cell "Отдельный будущий этап; наличие колеса не означает завершения всех экранов V2"
+        - row "Удалённый сервер Не развёрнут; публичный трафик закрыт до решений по данным и условиям использования":
+          - cell "Удалённый сервер"
+          - cell "Не развёрнут; публичный трафик закрыт до решений по данным и условиям использования"
+        - row "Интерпретация, agent runtime Нет; LLM gateway — инфраструктурный слой, agent orchestration — каркас":
+          - cell "Интерпретация, agent runtime"
+          - cell "Нет; LLM gateway — инфраструктурный слой, agent orchestration — каркас"
+        - row "Research corpus Whitelist-проекция и in-memory corpus":
+          - cell "Research corpus"
+          - cell "Whitelist-проекция и in-memory corpus"
+    - paragraph:
+      - text: "M1-8 проверен независимым Tester: исправление HTML hit-area закрыто ретестом на"
+      - code: "9974195"
+      - text: ", итоговый пакет интегрирован в change"
+      - code: 883b6d3
+      - text: . Проверки включают 229 Node UI tests, 2959 Python tests и один прежний skip
+      - code: DEBT-CALC-001
+      - text: ; адресный native retest выполнен в Chrome/Yandex на 1440/768/360 px. Это evidence перечисленных версий и сценариев, а не гарантия любой плотности, всех браузеров или готовности публичного сервиса.
+      - link "Отчёт и ограничения Tester":
+        - /url: /ksenia-baranova/exact-orb-demo/blob/main/docs/project_management/change_plans/ui-chart-wheel/tester/retest_2026_10_20_004.md
+      - text: ","
+      - link "сводка подготовки к merge":
+        - /url: /ksenia-baranova/exact-orb-demo/blob/main/docs/project_management/change_plans/ui-chart-wheel/manager_artifact.md#227-%D0%B7%D0%B0%D0%B2%D0%B5%D1%80%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D1%80%D0%B5%D0%B0%D0%BB%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D0%B8-%D1%82%D0%B5%D1%85%D0%B4%D0%BE%D0%BB%D0%B3-%D0%B8-%D0%BF%D0%BE%D0%B4%D0%B3%D0%BE%D1%82%D0%BE%D0%B2%D0%BA%D0%B0-%D0%BA-main
+      - text: .
+    - paragraph:
+      - 'link "Архив: интерфейс M1-7 на локальном стенде, тестовые данные"':
+        - /url: /ksenia-baranova/exact-orb-demo/blob/main/docs/testing/ui-birth-form-and-facts/evidence/AS-UI-16-20261009-b.png
+        - 'img "Архив: интерфейс M1-7 на локальном стенде, тестовые данные"'
+    - paragraph:
+      - link "Снимок M1-8 после независимого ретеста":
+        - /url: /ksenia-baranova/exact-orb-demo/blob/main/docs/project_management/change_plans/ui-chart-wheel/tester/evidence/retest_2026_10_20_004/green02/Chrome-1440.png
+      - text: и
+      - link "мобильный пример":
+        - /url: /ksenia-baranova/exact-orb-demo/blob/main/docs/project_management/change_plans/ui-chart-wheel/tester/evidence/retest_2026_10_20_004/green02/Chrome-360.png
+      - text: содержат тестовые данные.
+      - link "UI/UX-прототип":
+        - /url: /ksenia-baranova/exact-orb-demo/blob/main/docs/ui_ux/web-prototype.html
+      - text: остаётся черновиком будущих экранов, а не источником расчётных фактов.
+    - paragraph:
+      - text: Подробный план и статусы вех — в
+      - link "roadmap":
+        - /url: /ksenia-baranova/exact-orb-demo/blob/main/docs/project_management/Roadmap/roadmap.md
+      - text: .
+    - paragraph:
+      - text: "Текущий контракт UI:"
+      - link "колесо":
+        - /url: /ksenia-baranova/exact-orb-demo/blob/main/docs/requirements/current/ui/chart-wheel.md
+      - text: ","
+      - link "форма и факты":
+        - /url: /ksenia-baranova/exact-orb-demo/blob/main/docs/requirements/current/ui/birth-form-and-facts.md
+      - text: ","
+      - link "сценарии":
+        - /url: /ksenia-baranova/exact-orb-demo/blob/main/docs/requirements/current/ui/scenarios.md
+      - text: ","
+      - link "sequences":
+        - /url: /ksenia-baranova/exact-orb-demo/blob/main/docs/sequence_diagrams/ui/README.md
+      - text: .
+    - heading "Быстрый старт" [level=2]
+    - 'link "Permalink: Быстрый старт"':
+      - /url: "#быстрый-старт"
+    - paragraph: Требуется Python 3.11+.
+    - generic: git clone https://github.com/ksenia-baranova/exact-orb-demo.git cd exact-orb-demo python -m venv .venv
+    - button "Copy code to clipboard":
+    - paragraph: "Linux / macOS:"
+    - generic: source .venv/bin/activate
+    - button "Copy code to clipboard":
+    - paragraph: "Windows:"
+    - generic: .venv\Scripts\Activate.ps1
+    - button "Copy code to clipboard":
+    - paragraph: "Установка и проверки:"
+    - text: pip install -e
+    - generic: "\".[dev]\""
+    - text: pytest
+    - button "Copy code to clipboard":
+    - paragraph:
+      - strong: "CLI — прямой вызов расчётного движка:"
+    - text: exact-orb
+    - generic: "\"02.09.1985 00.45 gmt+4\""
+    - text: "--lat 55.7522 --lon 37.6155 --place"
+    - generic: "\"Moscow\""
+    - text: exact-orb
+    - generic: "\"02.09.1985 00.45 gmt+4\""
+    - text: "--lat 55.7522 --lon 37.6155 --place"
+    - generic: "\"Moscow\""
+    - text: "--format json"
+    - button "Copy code to clipboard":
+    - paragraph: CLI пока не проходит через Application Orchestrator; браузерный сценарий проходит.
+    - paragraph:
+      - strong: Web UI локально.
+      - text: HTTP API требует HTTPS во всех окружениях (
+      - link "ADR-0039":
+        - /url: /ksenia-baranova/exact-orb-demo/blob/main/docs/requirements/decisions/0039-https-in-all-environments.md
+      - text: ), поэтому локальный стенд — Uvicorn за Caddy с сертификатом mkcert на
+      - link "https://exact-orb.localhost":
+        - /url: https://exact-orb.localhost
+      - text: ". Пошаговая инструкция (PowerShell):"
+      - link "docs/runbooks/http_api_local_https.md":
+        - /url: /ksenia-baranova/exact-orb-demo/blob/main/docs/runbooks/http_api_local_https.md
+        - code: docs/runbooks/http_api_local_https.md
+      - text: .
+    - paragraph:
+      - text: Каталог мест
+      - link "data/places.sqlite":
+        - /url: /ksenia-baranova/exact-orb-demo/blob/main/data/README.md
+        - code: data/places.sqlite
+      - text: приходит вместе с checkout.
+    - heading "Пример результата" [level=2]
+    - 'link "Permalink: Пример результата"':
+      - /url: "#пример-результата"
+    - paragraph:
+      - text: Фрагмент human-readable вывода CLI для карты из примера выше. Полный эталон —
+      - link "tests/golden/natal_1985_human.txt":
+        - /url: /ksenia-baranova/exact-orb-demo/blob/main/tests/golden/natal_1985_human.txt
+        - code: tests/golden/natal_1985_human.txt
+      - text: .
+    - code: "НАТАЛЬНАЯ КАРТА 2 сентября 1985, 00:45 (+04:00) · Москва 55.75N 37.62E · Плацидус ПЛАНЕТЫ Солнце Дева 09°20'27\" 4 дом Луна Овен 07°39'54\" 11 дом Юпитер Водолей 08°41'01\" R 9 дом ... ДОМА 1 (ASC) Рак 08°06'21\" упр. Луна (11 дом) 4 (IC) Лев 27°37'46\" упр. Солнце (4 дом) + Меркурий [Дева] ... АСПЕКТЫ ТОЧНЫЕ (орбис < 1°) Луна □ ASC 0°26' Уран ☍ Хирон 0°27' ... КОНФИГУРАЦИИ ПЛОТНЫЕ (< 3°) Йод max 1°41' apex: Солнце · base: Юпитер, Луна СИЛА И СТРУКТУРА Плутон обитель эсс. 5 акц. 2 итого 7 сильная (посл.) Стихии: огонь 10 (40.0%, excess), земля 4 (16.0%, deficit), ... Луна: полнолуние, фаза 5, элонгация 208.324°"
+    - button "Copy code to clipboard":
+    - paragraph: Это выход детерминированного ядра; интерпретации этих фактов проект пока не даёт.
+    - heading "Архитектура" [level=2]
+    - 'link "Permalink: Архитектура"':
+      - /url: "#архитектура"
+    - paragraph:
+      - text: Modular monolith с явными границами (
+      - link "service_ready_architecture.md":
+        - /url: /ksenia-baranova/exact-orb-demo/blob/main/docs/architecture/service_ready_architecture.md
+      - text: ","
+      - link "ADR-0021":
+        - /url: /ksenia-baranova/exact-orb-demo/blob/main/docs/requirements/decisions/0021-modular-monolith-service-seams.md
+      - text: ).
+    - paragraph: "Путь построения карты:"
+    - code: "Browser ─HTTPS─▶ FastAPI ─▶ Application Orchestrator │ load SessionSnapshot (ContextService) ▼ BuildNatalHandler │ │ BirthDataResolver ChartArtifactResolver (каталог мест, tz) │ cache ─ codec ─ validation ▼ EngineService → Swiss Ephemeris │ ▼ BuildNatalSuccess {artifact, delta} Orchestrator: проверка версии → CAS commit │ ▼ типизированный ApplicationResult"
+    - button "Copy code to clipboard":
+    - paragraph: "Ключевые решения:"
+    - list:
+      - strong: Владение состоянием.
+      - text: Handler возвращает BuildNatalOutcome; при успехе BuildNatalSuccess содержит артефакт и StateDelta. Orchestrator координирует CAS commit через ContextService. Устаревший результат не перезаписывает новое состояние (
+      - link "ADR-0006":
+        - /url: /ksenia-baranova/exact-orb-demo/blob/main/docs/requirements/decisions/0006-application-orchestrator.md
+      - text: ","
+      - link "ADR-0014":
+        - /url: /ksenia-baranova/exact-orb-demo/blob/main/docs/requirements/decisions/0014-explicit-state-mutations.md
+      - text: ).
+      - strong: Неизвестное время рождения.
+      - text: Строится космограмма. Техническое полуденное положение не выдаётся за время рождения; зависящие от времени аспекты не представляются достоверными фактами момента рождения (
+      - link "ADR-0032":
+        - /url: /ksenia-baranova/exact-orb-demo/blob/main/docs/requirements/decisions/0032-unknown-birth-time-aspect-semantics.md
+      - text: ).
+      - strong: Cache не источник истины.
+      - text: Ключ учитывает ChartSpec и CalculationVersion, включая версии движка, профилей и эфемерид; повреждённый или устаревший артефакт пересчитывается, сбой cache не блокирует расчёт. Одновременные запросы с одинаковым расчётным ключом объединяются через single-flight (
+      - link "ADR-0017":
+        - /url: /ksenia-baranova/exact-orb-demo/blob/main/docs/requirements/decisions/0017-calculation-cache-and-chartspec.md
+      - text: ).
+      - strong: LLM отделена от расчёта.
+      - text: Детерминированные операции не проходят через agent runtime; будущий runtime располагается за interpretation handler (
+      - link "ADR-0020":
+        - /url: /ksenia-baranova/exact-orb-demo/blob/main/docs/requirements/decisions/0020-agent-runtime-behind-handlers.md
+      - text: ).
+      - strong: Наблюдаемость и данные.
+      - text: Полные DEBUG payload помогают находить межкомпонентные дефекты, но не считаются production-safe (
+      - link "ADR-0028":
+        - /url: /ksenia-baranova/exact-orb-demo/blob/main/docs/requirements/decisions/0028-full-debug-component-boundary-payloads.md
+      - text: ","
+      - link "ADR-0034":
+        - /url: /ksenia-baranova/exact-orb-demo/blob/main/docs/requirements/decisions/0034-birth-data-and-terms-of-use.md
+      - text: ).
+      - strong: Research corpus
+      - text: получает только whitelist-проекцию признаков (
+      - link "требования":
+        - /url: /ksenia-baranova/exact-orb-demo/blob/main/docs/requirements/component_responsibilities/exact-orb_research_corpus.md
+      - text: ","
+      - link "ADR-0023":
+        - /url: /ksenia-baranova/exact-orb-demo/blob/main/docs/requirements/decisions/0023-research-corpora-and-consent.md
+      - text: ).
+    - heading "Архитектура как исполняемое ограничение" [level=3]
+    - 'link "Permalink: Архитектура как исполняемое ограничение"':
+      - /url: "#архитектура-как-исполняемое-ограничение"
+    - paragraph:
+      - text: Правило зависимости, которое можно проверить, становится тестом.
+      - link "tests/test_module_boundaries.py":
+        - /url: /ksenia-baranova/exact-orb-demo/blob/main/tests/test_module_boundaries.py
+        - code: tests/test_module_boundaries.py
+      - text: "помимо разбора импортов импортирует модули в отдельном процессе (транзитивные протечки) и сканирует AST research-слоя на скрытые входы:"
+      - code: datetime.now()
+      - text: ","
+      - code: uuid4()
+      - text: ","
+      - code: random
+      - text: и чтение
+      - code: os.environ
+      - text: . Такие проверки ловят нарушения заданных границ даже при зелёных функциональных тестах.
+    - paragraph: Проверяемые архитектурные инварианты закрепляются автоматическими тестами; остальные ограничения контролируются при review.
+    - paragraph:
+      - text: "Подробнее:"
+      - link "component responsibilities":
+        - /url: /ksenia-baranova/exact-orb-demo/blob/main/docs/requirements/component_responsibilities
+      - text: ","
+      - link "sequence diagrams":
+        - /url: /ksenia-baranova/exact-orb-demo/blob/main/docs/sequence_diagrams
+      - text: ","
+      - link "реестр ADR":
+        - /url: /ksenia-baranova/exact-orb-demo/blob/main/docs/requirements/decisions/README.md
+      - text: .
+    - heading "Известные ограничения" [level=2]
+    - 'link "Permalink: Известные ограничения"':
+      - /url: "#известные-ограничения"
+    - paragraph:
+      - text: Ограничения и условия возврата собраны в
+      - link "реестре технического долга":
+        - /url: /ksenia-baranova/exact-orb-demo/blob/main/docs/project_management/technical_debt.md
+      - text: .
+    - paragraph: Миграционная опись ещё требует согласования недостающих обязательных реквизитов; исходные решения и ограничения сохраняются.
+    - table:
+      - rowgroup:
+        - row "Ограничение Где отслеживается":
+          - columnheader "Ограничение"
+          - columnheader "Где отслеживается"
+      - rowgroup:
+        - row "Методология проверена только одним оператором, совмещающим все роли; работа распределённой команды и интеграции с корпоративными системами не проверялись Этапы 2–3 развития методологии":
+          - cell "Методология проверена только одним оператором, совмещающим все роли; работа распределённой команды и интеграции с корпоративными системами не проверялись"
+          - cell "Этапы 2–3 развития методологии"
+        - row "Интерпретации нет; соляр и синастрия не входят в текущие требования Roadmap M2":
+          - cell "Интерпретации нет; соляр и синастрия не входят в текущие требования"
+          - cell "Roadmap M2"
+        - 'row "Публичный запуск закрыт: нет страницы условий использования, общего IP-limit на прокси, решений по PII в журналах DEBT-UI-001, DEBT-HTTP-002, DEBT-LOG-001, ADR-0034"':
+          - 'cell "Публичный запуск закрыт: нет страницы условий использования, общего IP-limit на прокси, решений по PII в журналах"'
+          - cell "DEBT-UI-001, DEBT-HTTP-002, DEBT-LOG-001, ADR-0034"
+        - row "Нет CI; воспроизводимость golden-эталонов на других платформах не подтверждена Roadmap M1-11":
+          - cell "Нет CI; воспроизводимость golden-эталонов на других платформах не подтверждена"
+          - cell "Roadmap M1-11"
+        - row "Один property-тест конфигураций аспектов пропущен до исправления генератора DEBT-CALC-001":
+          - cell "Один property-тест конфигураций аспектов пропущен до исправления генератора"
+          - cell "DEBT-CALC-001"
+        - row "Расчётный движок читает процессную конфигурацию DEBT-ARCH-001":
+          - cell "Расчётный движок читает процессную конфигурацию"
+          - cell "DEBT-ARCH-001"
+        - row "UX ввода года и размер значков планет требуют отдельной доработки DEBT-UI-002 / DEBT-UI-003, принятые ранее Owner обязательства":
+          - cell "UX ввода года и размер значков планет требуют отдельной доработки"
+          - cell "DEBT-UI-002 / DEBT-UI-003, принятые ранее Owner обязательства"
+        - row "Независимый oracle предельной плотности, точности gap2 и радиальных anchors ещё не завершён; TEST-FIND-WHEEL-002 не объявлен исправленным DEBT-UI-004":
+          - cell "Независимый oracle предельной плотности, точности gap2 и радиальных anchors ещё не завершён; TEST-FIND-WHEEL-002 не объявлен исправленным"
+          - cell "DEBT-UI-004":
+            - link "DEBT-UI-004":
+              - /url: /ksenia-baranova/exact-orb-demo/blob/main/docs/project_management/technical_debt.md#debt-ui-004
+        - row "NatalTool вызывает расчёт мимо ChartArtifactResolver Roadmap M3-1":
+          - cell "NatalTool вызывает расчёт мимо ChartArtifactResolver"
+          - cell "Roadmap M3-1"
+        - row "CLI не проходит через application-слой —":
+          - cell "CLI не проходит через application-слой"
+          - cell "—"
+    - heading "Документация" [level=2]
+    - 'link "Permalink: Документация"':
+      - /url: "#документация"
+    - table:
+      - rowgroup:
+        - row "Где Что":
+          - columnheader "Где"
+          - columnheader "Что"
+      - rowgroup:
+        - 'row "docs/development_approach/ Метод: принципы, процесс, роли, шаблоны, skills, эксперименты"':
+          - cell "docs/development_approach/":
+            - link "docs/development_approach/":
+              - /url: /ksenia-baranova/exact-orb-demo/blob/main/docs/development_approach/README.md
+              - code: docs/development_approach/
+          - 'cell "Метод: принципы, процесс, роли, шаблоны, skills, эксперименты"'
+        - row "docs/project_management/ Roadmap, change plans, техдолг, разборы дефектов":
+          - cell "docs/project_management/":
+            - link "docs/project_management/":
+              - /url: /ksenia-baranova/exact-orb-demo/blob/main/docs/project_management
+              - code: docs/project_management/
+          - cell "Roadmap, change plans, техдолг, разборы дефектов":
+            - link "Roadmap":
+              - /url: /ksenia-baranova/exact-orb-demo/blob/main/docs/project_management/Roadmap/roadmap.md
+            - text: ", change plans,"
+            - link "техдолг":
+              - /url: /ksenia-baranova/exact-orb-demo/blob/main/docs/project_management/technical_debt.md
+            - text: ", разборы дефектов"
+        - 'row "docs/requirements/ Требования: current/ — чистовые, тематические документы до переноса, ADR"':
+          - cell "docs/requirements/":
+            - link "docs/requirements/":
+              - /url: /ksenia-baranova/exact-orb-demo/blob/main/docs/requirements/README.md
+              - code: docs/requirements/
+          - 'cell "Требования: current/ — чистовые, тематические документы до переноса, ADR"':
+            - text: "Требования:"
+            - link "current/":
+              - /url: /ksenia-baranova/exact-orb-demo/blob/main/docs/requirements/current
+              - code: current/
+            - text: — чистовые, тематические документы до переноса,
+            - link "ADR":
+              - /url: /ksenia-baranova/exact-orb-demo/blob/main/docs/requirements/decisions/README.md
+        - row "docs/architecture/ Модульный монолит, service seams, архитектурные схемы":
+          - cell "docs/architecture/":
+            - link "docs/architecture/":
+              - /url: /ksenia-baranova/exact-orb-demo/blob/main/docs/architecture/service_ready_architecture.md
+              - code: docs/architecture/
+          - cell "Модульный монолит, service seams, архитектурные схемы"
+        - row "docs/sequence_diagrams/ Позитивные, негативные и concurrency-сценарии в PlantUML":
+          - cell "docs/sequence_diagrams/":
+            - link "docs/sequence_diagrams/":
+              - /url: /ksenia-baranova/exact-orb-demo/blob/main/docs/sequence_diagrams
+              - code: docs/sequence_diagrams/
+          - cell "Позитивные, негативные и concurrency-сценарии в PlantUML"
+        - row "docs/testing/ Отчёты Tester и evidence прежних change":
+          - cell "docs/testing/":
+            - link "docs/testing/":
+              - /url: /ksenia-baranova/exact-orb-demo/blob/main/docs/testing
+              - code: docs/testing/
+          - cell "Отчёты Tester и evidence прежних change"
+        - row "docs/runbooks/ Локальный HTTPS-стенд":
+          - cell "docs/runbooks/":
+            - link "docs/runbooks/":
+              - /url: /ksenia-baranova/exact-orb-demo/blob/main/docs/runbooks/http_api_local_https.md
+              - code: docs/runbooks/
+          - cell "Локальный HTTPS-стенд"
+        - row "docs/ui_ux/ Целевой дизайн, прототип, рендеры":
+          - cell "docs/ui_ux/":
+            - link "docs/ui_ux/":
+              - /url: /ksenia-baranova/exact-orb-demo/blob/main/docs/ui_ux/README.md
+              - code: docs/ui_ux/
+          - cell "Целевой дизайн, прототип, рендеры"
+        - row "prompts/ История bounded implementation tasks":
+          - cell "prompts/":
+            - link "prompts/":
+              - /url: /ksenia-baranova/exact-orb-demo/blob/main/prompts
+              - code: prompts/
+          - cell "История bounded implementation tasks"
+    - paragraph: "Диаграммы хранятся в PlantUML: человек читает их при review, агент — как машиночитаемую часть спецификации."
+    - heading "Структура репозитория" [level=2]
+    - 'link "Permalink: Структура репозитория"':
+      - /url: "#структура-репозитория"
+    - code: "src/exact_orb/ ├── application/ команды, handlers, Orchestrator, composition и runtime ├── birth/ данные рождения, часовые пояса, каталог мест ├── calculation/ граница расчёта, артефакты, cache, ключи, версии ├── engine/ детерминированные расчёты ├── http_api/ FastAPI: маршруты, DTO, admission; ui/ — браузерный клиент ├── session/ состояние, диалог, persistence ├── research/ whitelist-проекция и corpus ├── interpretation/ подготовка evidence и prompts ├── llm/ LLM gateway ├── orchestration/ каркас будущего agent runtime ├── intent/, tools/ контракты планирования и agent-facing инструменты ├── cli.py CLI └── http_server.py фабрика локального приложения tests/ автоматические проверки, включая golden/, fixtures/, http_api/, ui/ docs/ требования, ADR, процесс, планы, отчёты (см. «Документация») data/ проверенный снимок каталога мест places.sqlite ephe/ файлы Swiss Ephemeris — см. ephe/README.md prompts/ история поручений агентам scripts/ вспомогательные скрипты"
+    - button "Copy code to clipboard":
+    - heading "Что дальше" [level=2]
+    - 'link "Permalink: Что дальше"':
+      - /url: "#что-дальше"
+    - paragraph: "Развитие методологии: сначала проверка изменений на одном полигоне, затем разделение ролей между участниками enterprise-команды, после этого — интеграции с Jira, Confluence и другими системами. Автоматизация состояний, переходов и запуска ролевых агентов должна закреплять уже проверенный процесс, а не подменять его. Сейчас состояние change хранится в Markdown рядом с кодом."
+    - paragraph: "Развитие полигона:"
+    - list:
+      - strong: M1 — завершение UI и развёртывание.
+      - text: Реализация колеса M1-8 завершена; подготовка его интеграции и принятые ограничения отражены в change. Далее — оставшийся перенос прототипа V2 (M1-8.1), условия использования (M1-9), замеры конкурентности, CI, развёртывание и сквозная приёмка. Перенос долга не означает его исправления.
+      - strong: M2 — интерпретация.
+      - text: InterpretSelectionHandler → InterpretationService → LLM Gateway, с отбором evidence, проверкой выхода на «чужие» факты и бюджетом расходов.
+      - strong: M3 — агентный слой.
+      - text: Agent Runtime, tools и streaming.
+    - paragraph: Сначала детерминированный расчёт и lifecycle карты, затем проверенная интерпретация и только после этого — runtime агентов.
+    - heading "Лицензия" [level=2]
+    - 'link "Permalink: Лицензия"':
+      - /url: "#лицензия"
+    - paragraph:
+      - text: GNU Affero General Public License v3.0. Политика contributions —
+      - link "CONTRIBUTING.md":
+        - /url: /ksenia-baranova/exact-orb-demo/blob/main/CONTRIBUTING.md
+        - code: CONTRIBUTING.md
+      - text: .
+  - heading "About" [level=2]
+  - paragraph: R&D case study of specification-driven software development with coding agents, human architectural control, executable constraints, and deterministic verification.
+  - heading "Topics" [level=3]
+  - link "ai-assisted-development":
+    - /url: /topics/ai-assisted-development
+  - link "coding-agents":
+    - /url: /topics/coding-agents
+  - link "context-engineering":
+    - /url: /topics/context-engineering
+  - link "human-in-the-loop":
+    - /url: /topics/human-in-the-loop
+  - link "human-in-the-loop-ai":
+    - /url: /topics/human-in-the-loop-ai
+  - link "llm":
+    - /url: /topics/llm
+  - link "python":
+    - /url: /topics/python
+  - link "requirements-engineering":
+    - /url: /topics/requirements-engineering
+  - link "research":
+    - /url: /topics/research
+  - link "software-architecture":
+    - /url: /topics/software-architecture
+  - link "software-engineering":
+    - /url: /topics/software-engineering
+  - link "spec-driven-development":
+    - /url: /topics/spec-driven-development
+  - link "specification-driven-development":
+    - /url: /topics/specification-driven-development
+  - heading "Resources" [level=3]
+  - link "Readme":
+    - /url: "#readme-ov-file"
+    - text: Readme
+  - link "AGPL-3.0 license":
+    - /url: "#AGPL-3.0-1-ov-file"
+    - text: AGPL-3.0 license
+  - heading "Contributing" [level=3]
+  - link "Contributing":
+    - /url: "#contributing-ov-file"
+    - text: Contributing
+  - link "Activity":
+    - /url: /ksenia-baranova/exact-orb-demo/activity
+    - text: Activity
+  - heading "Stars" [level=3]
+  - strong: "0"
+  - text: stars
+  - heading "Watchers" [level=3]
+  - strong: "0"
+  - text: watching
+  - heading "Forks" [level=3]
+  - link "0 forks":
+    - /url: /ksenia-baranova/exact-orb-demo/forks
+    - strong: "0"
+    - text: forks
+  - link "Report repository":
+    - /url: /contact/report-content?content_url=https%3A%2F%2Fgithub.com%2Fksenia-baranova%2Fexact-orb-demo&report=ksenia-baranova+%28user%29
+  - heading "Releases" [level=2]:
+    - link "Releases":
+      - /url: /ksenia-baranova/exact-orb-demo/releases
+  - generic: No releases published
+  - heading "Contributors (2)" [level=2]:
+    - link "Contributors":
+      - /url: /ksenia-baranova/exact-orb-demo/graphs/contributors
+    - generic: "2"
+    - generic: (2)
+  - list:
+    - link "@ksenia-baranova":
+      - /url: /ksenia-baranova
+      - img "@ksenia-baranova"
+    - generic "ksenia-baranova Ksenia Baranova":
+      - link "ksenia-baranovaKsenia Baranova":
+        - /url: /ksenia-baranova
+        - strong: ksenia-baranova
+        - text: Ksenia Baranova
+    - link "@claude":
+      - /url: /claude
+      - img "@claude"
+    - generic "claude Claude":
+      - link "claudeClaude":
+        - /url: /claude
+        - strong: claude
+        - text: Claude
+  - heading "Languages" [level=2]
+  - 'progressbar "Python: 89.2%"'
+  - 'progressbar "JavaScript: 10.3%"'
+  - 'progressbar "Other: 0.5%"'
+  - list:
+    - link "Python 89.2%":
+      - /url: /ksenia-baranova/exact-orb-demo/search?l=python
+      - generic: Python
+      - generic: 89.2%
+    - link "JavaScript 10.3%":
+      - /url: /ksenia-baranova/exact-orb-demo/search?l=javascript
+      - generic: JavaScript
+      - generic: 10.3%
+    - link "Other 0.5%":
+      - /url: /ksenia-baranova/exact-orb-demo/search?l=Other
+      - generic: Other
+      - generic: 0.5%
+- contentinfo:
+  - heading "Footer" [level=2]
+  - link "GitHub Homepage":
+    - /url: https://github.com
+  - generic: © 2026 GitHub, Inc.
+  - navigation "Footer":
+    - heading "Footer navigation" [level=3]
+    - list "Footer navigation":
+      - link "Terms":
+        - /url: https://docs.github.com/site-policy/github-terms/github-terms-of-service
+      - link "Privacy":
+        - /url: https://docs.github.com/site-policy/privacy-policies/github-privacy-statement
+      - link "Security":
+        - /url: https://github.com/security
+      - link "Status":
+        - /url: https://www.githubstatus.com/
+      - link "Community":
+        - /url: https://github.community/
+      - link "Docs":
+        - /url: https://docs.github.com/
+      - link "Contact":
+        - /url: https://support.github.com?tags=dotcom-footer
+      - button "Manage cookies"
+      - button "Do not share my personal information"
