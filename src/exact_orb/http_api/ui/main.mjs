@@ -9,7 +9,12 @@ export const api = createApiClient();
 
 export function mountBirthForm(document, { apiClient = api, clock } = {}) {
   const element = document.getElementById("birth-form");
-  let aspectMode = false;
+  let aspectMode = false, termsOpen = false;
+  const pageMain = document.getElementById("page-main");
+  const birthPage = document.getElementById("birth-page"), termsPage = document.getElementById("terms-page");
+  const termsLink = document.getElementById("terms-link"), termsHeading = document.getElementById("terms-page-heading");
+  const termsAgree = document.getElementById("terms-agree"), termsBack = document.getElementById("terms-back");
+  const TERMS_RETURN_ACTIONS = Object.freeze({ agree: true, back: null });
   const pageHeading = document.getElementById("birth-page-heading"), pageIntro = document.getElementById("birth-page-intro");
   const result = mountChartResult(document, { onFatal: () => session?.presentationFailed(),
     onAspectModeChange(mode) { aspectMode = mode; applyPageMode(); } });
@@ -62,7 +67,7 @@ export function mountBirthForm(document, { apiClient = api, clock } = {}) {
     if (pageHeading) pageHeading.hidden = reading;
     if (pageIntro) pageIntro.hidden = reading;
     // Use accepted view before the first immutable drawing snapshot, even before editor collapse.
-    element.parentNode?.setAttribute('data-page-mode',sessionState?.view?.status==='chart_ready'?'chart':'form');
+    pageMain.setAttribute('data-page-mode', termsOpen ? 'terms' : sessionState?.view?.status === 'chart_ready' ? 'chart' : 'form');
   }
   function setEditorOpen(open) {
     editor.hidden = !open;
@@ -71,6 +76,33 @@ export function mountBirthForm(document, { apiClient = api, clock } = {}) {
     if (!open && inEditor(document.activeElement)) result.editButton.focus();
     applyPageMode();
   }
+  function renderPage() {
+    birthPage.hidden = termsOpen;
+    termsPage.hidden = !termsOpen;
+    applyPageMode();
+  }
+  function openTerms(event) {
+    event.preventDefault();
+    termsOpen = true;
+    renderPage();
+    termsHeading.focus();
+  }
+  function returnFromTerms(action) {
+    if (!termsOpen) return;
+    const nextAcknowledged = TERMS_RETURN_ACTIONS[action];
+    if (nextAcknowledged !== null) form.acknowledge(nextAcknowledged);
+    acknowledged.checked = form.snapshot().acknowledged;
+    termsOpen = false;
+    setEditorOpen(true);
+    renderErrors();
+    renderPage();
+    termsLink.focus();
+  }
+  const agreeTerms = () => returnFromTerms("agree");
+  const backFromTerms = () => returnFromTerms("back");
+  termsLink.addEventListener("click", openTerms);
+  termsAgree.addEventListener("click", agreeTerms);
+  termsBack.addEventListener("click", backFromTerms);
   const edit = () => setEditorOpen(editor.hidden);
   result.editButton.addEventListener("click", edit);
   function matchesDraft(intent) {
@@ -308,6 +340,9 @@ export function mountBirthForm(document, { apiClient = api, clock } = {}) {
       document.removeEventListener("visibilitychange", visible);
       document.defaultView.removeEventListener("online", online);
       result.editButton.removeEventListener("click", edit);
+      termsLink.removeEventListener("click", openTerms);
+      termsAgree.removeEventListener("click", agreeTerms);
+      termsBack.removeEventListener("click", backFromTerms);
       places.dispose(); session.dispose(); result.dispose();
     } });
 }
