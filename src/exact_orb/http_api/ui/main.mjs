@@ -17,7 +17,7 @@ export function mountBirthForm(document, { apiClient = api, clock } = {}) {
   const TERMS_RETURN_ACTIONS = Object.freeze({ agree: true, back: null });
   const pageHeading = document.getElementById("birth-page-heading"), pageIntro = document.getElementById("birth-page-intro");
   const result = mountChartResult(document, { onFatal: () => session?.presentationFailed(),
-    onAspectModeChange(mode) { aspectMode = mode; applyPageMode(); } });
+    onAspectModeChange(mode) { aspectMode = mode; renderPage(); } });
   element.after(result.element);
   const form = createBirthForm();
   const date = document.getElementById("birth-date");
@@ -49,7 +49,7 @@ export function mountBirthForm(document, { apiClient = api, clock } = {}) {
   element.insertBefore(submitted, overallError);
   element.insertBefore(readAgain, overallError);
   let places, session, sessionState;
-  let draftEdited = false, birthRestored = false, consumedAcceptance = 0;
+  let draftProtected = false, birthRestored = false, consumedAcceptance = 0;
   const editor = document.createElement("div");
   editor.id = "birth-editor"; editor.className = "birth-editor";
   for (const child of [...element.children]) {
@@ -59,7 +59,9 @@ export function mountBirthForm(document, { apiClient = api, clock } = {}) {
   result.editButton.setAttribute("aria-controls", "birth-editor");
   result.editButton.setAttribute("aria-expanded", "true");
   const inEditor = node => { for (let at = node; at; at = at.parentNode) if (at === editor) return true; return false; };
-  function applyPageMode() {
+  function renderPage() {
+    birthPage.hidden = termsOpen;
+    termsPage.hidden = !termsOpen;
     const recoveryVisible = sessionState?.error || sessionState?.requiresReconciliation
       || sessionState?.recovery && sessionState.recovery.status !== "matched";
     element.hidden = !recoveryVisible && (aspectMode || editor.hidden && sessionState?.view?.status === "chart_ready");
@@ -73,16 +75,12 @@ export function mountBirthForm(document, { apiClient = api, clock } = {}) {
     editor.hidden = !open;
     result.editButton.setAttribute("aria-expanded", String(open));
     result.editButton.textContent = open ? "Свернуть редактор" : "Изменить данные";
-    if (!open && inEditor(document.activeElement)) result.editButton.focus();
-    applyPageMode();
-  }
-  function renderPage() {
-    birthPage.hidden = termsOpen;
-    termsPage.hidden = !termsOpen;
-    applyPageMode();
+    if (!termsOpen && !open && inEditor(document.activeElement)) result.editButton.focus();
+    renderPage();
   }
   function openTerms(event) {
     event.preventDefault();
+    draftProtected = true;
     termsOpen = true;
     renderPage();
     termsHeading.focus();
@@ -95,7 +93,6 @@ export function mountBirthForm(document, { apiClient = api, clock } = {}) {
     termsOpen = false;
     setEditorOpen(true);
     renderErrors();
-    renderPage();
     termsLink.focus();
   }
   const agreeTerms = () => returnFromTerms("agree");
@@ -133,8 +130,8 @@ export function mountBirthForm(document, { apiClient = api, clock } = {}) {
     const recheckHadFocus = document.activeElement === readAgain;
     sessionState = state;
     const view = state.view;
-    // Восстановление не затирает ввод, сделанный во время запроса или после него.
-    if (state.source === "current" && view?.birth && !state.recovery && !draftEdited && !birthRestored) {
+    // Восстановление не затирает изменённый или открытый для чтения условий черновик, даже пустой.
+    if (state.source === "current" && view?.birth && !state.recovery && !draftProtected && !birthRestored) {
       const birth = view.birth;
       form.setDate(birth.birth_date);
       form.setTime(birth.birth_time ?? "");
@@ -190,18 +187,18 @@ export function mountBirthForm(document, { apiClient = api, clock } = {}) {
     if (state.acceptance && state.acceptance.seq !== consumedAcceptance) {
       consumedAcceptance = state.acceptance.seq;
       if (state.acceptance.allowCollapse) {
-        const collapse = state.acceptance.submitted ? matchesDraft(state.acceptance.submitted) : !draftEdited;
+        const collapse = state.acceptance.submitted ? matchesDraft(state.acceptance.submitted) : !draftProtected;
         setEditorOpen(!collapse);
       }
     }
     if (view?.status !== "chart_ready") {
       setEditorOpen(true);
-      if (focusedResult) date.focus();
-    } else if (recheckHadFocus && readAgain.hidden) {
+      if (!termsOpen && focusedResult) date.focus();
+    } else if (!termsOpen && recheckHadFocus && readAgain.hidden) {
       if (aspectMode) document.getElementById("chart-wheel").focus({ preventScroll: true });
       else result.editButton.focus();
     }
-    renderErrors(); applyPageMode();
+    renderErrors(); renderPage();
   }
 
   function renderFailure(state) {
@@ -216,11 +213,11 @@ export function mountBirthForm(document, { apiClient = api, clock } = {}) {
     readAgain.disabled = !state.canRecheck;
     readAgain.textContent = state.recovery?.kind === "timeout" && !state.recovery.restartConfirmed
       ? "Проверить после перезапуска" : "Повторить проверку карты";
-    applyPageMode();
+    renderPage();
   }
 
   function edited(field) {
-    draftEdited = true;
+    draftProtected = true;
     setEditorOpen(true);
     session.clearFieldError(field);
     renderErrors();
@@ -332,7 +329,7 @@ export function mountBirthForm(document, { apiClient = api, clock } = {}) {
     }
     await session.submit();
     const issueField = Object.keys(session.snapshot().fieldIssues)[0];
-    if (issueField) { setEditorOpen(true); fields[issueField].focus(); }
+    if (!termsOpen && issueField) { setEditorOpen(true); fields[issueField].focus(); }
   });
   const ready = session.open();
   return Object.freeze({ form, places, session, result, ready,

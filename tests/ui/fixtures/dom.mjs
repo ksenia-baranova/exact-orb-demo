@@ -24,7 +24,7 @@ export function documentPort() {
       click() { if (!this.disabled) return this.emit("click"); },
       setAttribute(name, value) { attributes.set(name, String(value)); },
       getAttribute(name) {
-        if (name.startsWith("data-")) return this.dataset[name.slice(5).replace(/-([a-z])/g, (_, c) => c.toUpperCase())];
+        if (name.startsWith("data-")) return this.dataset[name.slice(5).replace(/-([a-z])/g, (_, c) => c.toUpperCase())] ?? attributes.get(name);
         return attributes.get(name) ?? this[name];
       },
       removeAttribute(name) { attributes.delete(name); },
