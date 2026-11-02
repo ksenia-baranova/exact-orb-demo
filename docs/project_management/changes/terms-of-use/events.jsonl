@@ -4,3 +4,10 @@
 {"ts": "2026-10-22T17:08:30+00:00", "n": null, "from": "ANALYSIS", "to": "ANALYSIS", "cycle": 0, "created": ["TASK-A-02"], "data": {}}
 {"ts": "2026-10-22T17:22:24+00:00", "n": 3, "from": "ANALYSIS", "to": "ALIGNMENT", "cycle": 1, "created": ["TASK-D-01", "TASK-T-01"], "data": {}}
 {"ts": "2026-10-22T18:13:20+00:00", "n": 5, "from": "ALIGNMENT", "to": "APPROVAL", "cycle": 1, "created": ["TASK-M-02"], "data": {"accepted_risk": false}}
+{"ts": "2026-11-01T18:55:24+00:00", "n": null, "from": "APPROVAL", "to": "APPROVAL", "cycle": 1, "created": ["TASK-O-02"], "data": {}}
+{"ts": "2026-11-01T19:09:35+00:00", "n": 6, "from": "APPROVAL", "to": "READY_FOR_DEVELOPMENT", "cycle": 1, "created": ["TASK-D-02"], "data": {"tag": "terms-of-use-approved-1"}}
+{"ts": "2026-11-01T19:33:21+00:00", "n": 9, "from": "READY_FOR_DEVELOPMENT", "to": "IN_DEVELOPMENT", "cycle": 1, "created": ["TASK-D-03"], "data": {}}
+{"ts": "2026-11-01T19:55:10+00:00", "n": null, "from": "IN_DEVELOPMENT", "to": "IN_DEVELOPMENT", "cycle": 1, "created": ["TASK-D-04"], "data": {}}
+{"ts": "2026-11-02T12:21:26+00:00", "n": 10, "from": "IN_DEVELOPMENT", "to": "READY_FOR_TEST", "cycle": 1, "created": ["TASK-T-02"], "data": {"need_test": true}}
+{"ts": "2026-11-02T15:48:10+00:00", "n": null, "from": "READY_FOR_TEST", "to": "READY_FOR_TEST", "cycle": 1, "created": ["TASK-R-01"], "data": {}}
+{"ts": "2026-11-02T17:12:25+00:00", "n": null, "from": "READY_FOR_TEST", "to": "READY_FOR_TEST", "cycle": 1, "created": ["TASK-A-03"], "data": {"manual": true, "source_task": "TASK-R-01", "dp": ["DP-R-01"], "reason": "code_review/needs_decision skipped by automatic subflow"}}
