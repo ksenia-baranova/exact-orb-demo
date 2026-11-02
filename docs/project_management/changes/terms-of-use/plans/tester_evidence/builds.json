@@ -1,0 +1,127 @@
+{
+  "scenario": "builds",
+  "examples": 20,
+  "browser": "155.0.8059.40",
+  "evidence": [
+    {
+      "method": "manual",
+      "input": "00:00",
+      "nativeTime": "00:00",
+      "posts": 1
+    },
+    {
+      "method": "manual",
+      "input": "14:30",
+      "nativeTime": "14:30",
+      "posts": 1
+    },
+    {
+      "method": "manual",
+      "input": "23:59",
+      "nativeTime": "23:59",
+      "posts": 1
+    },
+    {
+      "method": "manual",
+      "input": null,
+      "nativeTime": "14:30",
+      "posts": 1
+    },
+    {
+      "method": "manual",
+      "input": "",
+      "nativeTime": "",
+      "posts": 0
+    },
+    {
+      "method": "manual",
+      "input": "-00:01",
+      "nativeTime": "-00:0",
+      "posts": 0
+    },
+    {
+      "method": "manual",
+      "input": "24:00",
+      "nativeTime": "24:00",
+      "posts": 0
+    },
+    {
+      "method": "manual",
+      "input": "12:6",
+      "nativeTime": "12:6",
+      "posts": 0
+    },
+    {
+      "method": "manual",
+      "input": "date",
+      "nativeTime": "14:30",
+      "posts": 0
+    },
+    {
+      "method": "manual",
+      "input": "place",
+      "nativeTime": "14:30",
+      "posts": 0
+    },
+    {
+      "method": "page",
+      "input": "00:00",
+      "nativeTime": "00:00",
+      "posts": 1
+    },
+    {
+      "method": "page",
+      "input": "14:30",
+      "nativeTime": "14:30",
+      "posts": 1
+    },
+    {
+      "method": "page",
+      "input": "23:59",
+      "nativeTime": "23:59",
+      "posts": 1
+    },
+    {
+      "method": "page",
+      "input": null,
+      "nativeTime": "14:30",
+      "posts": 1
+    },
+    {
+      "method": "page",
+      "input": "",
+      "nativeTime": "",
+      "posts": 0
+    },
+    {
+      "method": "page",
+      "input": "-00:01",
+      "nativeTime": "-00:0",
+      "posts": 0
+    },
+    {
+      "method": "page",
+      "input": "24:00",
+      "nativeTime": "24:00",
+      "posts": 0
+    },
+    {
+      "method": "page",
+      "input": "12:6",
+      "nativeTime": "12:6",
+      "posts": 0
+    },
+    {
+      "method": "page",
+      "input": "date",
+      "nativeTime": "14:30",
+      "posts": 0
+    },
+    {
+      "method": "page",
+      "input": "place",
+      "nativeTime": "14:30",
+      "posts": 0
+    }
+  ]
+}

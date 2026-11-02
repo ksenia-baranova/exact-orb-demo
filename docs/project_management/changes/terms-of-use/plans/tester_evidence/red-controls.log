@@ -1,0 +1,112 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+true !== false
+
+    at back (file:///C:/Users/KateUser/.codex/worktrees/f7fa/exact-orb-recovered/tests/acceptance/terms_acceptance.mjs:40:10)
+    at run (file:///C:/Users/KateUser/.codex/worktrees/f7fa/exact-orb-recovered/tests/acceptance/terms_acceptance.mjs:65:7)
+    at async file:///C:/Users/KateUser/.codex/worktrees/f7fa/exact-orb-recovered/tests/acceptance/terms_acceptance.mjs:218:1 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: true,
+  expected: false,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.22.1
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+true !== false
+
+    at back (file:///C:/Users/KateUser/.codex/worktrees/f7fa/exact-orb-recovered/tests/acceptance/terms_acceptance.mjs:40:10)
+    at agree (file:///C:/Users/KateUser/.codex/worktrees/f7fa/exact-orb-recovered/tests/acceptance/terms_acceptance.mjs:46:19)
+    at run (file:///C:/Users/KateUser/.codex/worktrees/f7fa/exact-orb-recovered/tests/acceptance/terms_acceptance.mjs:97:32)
+    at async file:///C:/Users/KateUser/.codex/worktrees/f7fa/exact-orb-recovered/tests/acceptance/terms_acceptance.mjs:218:1 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: true,
+  expected: false,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.22.1
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
++ actual - expected
+
+  {
+    birth_date: '1990-09-02',
++   birth_time: '00:00',
+-   birth_time: 'WRONG',
+    place_id: '524901'
+  }
+
+    at run (file:///C:/Users/KateUser/.codex/worktrees/f7fa/exact-orb-recovered/tests/acceptance/terms_acceptance.mjs:136:14)
+    at async file:///C:/Users/KateUser/.codex/worktrees/f7fa/exact-orb-recovered/tests/acceptance/terms_acceptance.mjs:218:1 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: { birth_date: '1990-09-02', birth_time: '00:00', place_id: '524901' },
+  expected: { birth_date: '1990-09-02', birth_time: 'WRONG', place_id: '524901' },
+  operator: 'deepStrictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.22.1
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+true !== false
+
+    at back (file:///C:/Users/KateUser/.codex/worktrees/f7fa/exact-orb-recovered/tests/acceptance/terms_acceptance.mjs:40:10)
+    at run (file:///C:/Users/KateUser/.codex/worktrees/f7fa/exact-orb-recovered/tests/acceptance/terms_acceptance.mjs:149:16)
+    at async file:///C:/Users/KateUser/.codex/worktrees/f7fa/exact-orb-recovered/tests/acceptance/terms_acceptance.mjs:218:1 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: true,
+  expected: false,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.22.1
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+true !== false
+
+    at back (file:///C:/Users/KateUser/.codex/worktrees/f7fa/exact-orb-recovered/tests/acceptance/terms_acceptance.mjs:40:10)
+    at agree (file:///C:/Users/KateUser/.codex/worktrees/f7fa/exact-orb-recovered/tests/acceptance/terms_acceptance.mjs:46:19)
+    at run (file:///C:/Users/KateUser/.codex/worktrees/f7fa/exact-orb-recovered/tests/acceptance/terms_acceptance.mjs:166:30)
+    at async file:///C:/Users/KateUser/.codex/worktrees/f7fa/exact-orb-recovered/tests/acceptance/terms_acceptance.mjs:218:1 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: true,
+  expected: false,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.22.1
+roundtrips exit=1 expected=1
+gates exit=1 expected=1
+payload exit=1 expected=1
+current exit=1 expected=1
+recovery exit=1 expected=1

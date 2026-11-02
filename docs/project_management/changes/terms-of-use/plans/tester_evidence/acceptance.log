@@ -1,0 +1,14 @@
+.....{"scenario":"roundtrips","examples":41,"status":"PASS"}
+.{"scenario":"isolation","examples":8,"status":"PASS"}
+.{"scenario":"gates","examples":18,"status":"PASS"}
+.{"scenario":"payload","examples":8,"status":"PASS"}
+.{"scenario":"current","examples":14,"status":"PASS"}
+.{"scenario":"recovery","examples":20,"status":"PASS"}
+.{"scenario":"issues","examples":24,"status":"PASS"}
+.{"scenario":"presentation","examples":1,"status":"PASS","browser":"155.0.8059.40"}
+.{"scenario":"keyboard","examples":20,"status":"PASS","browser":"155.0.8059.40"}
+.{"scenario":"targets","examples":27,"status":"PASS","browser":"155.0.8059.40"}
+.{"scenario":"reload","examples":12,"status":"PASS","browser":"155.0.8059.40"}
+.{"scenario":"builds","examples":20,"status":"PASS","browser":"155.0.8059.40"}
+.
+17 passed in 23.45s
