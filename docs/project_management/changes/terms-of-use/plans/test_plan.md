@@ -618,7 +618,7 @@ req: REQ-TERMS-04, REQ-TERMS-05, REQ-UI-03
 риск: высокий
 автотест: tests/acceptance/test_terms_ui.py::test_terms_composition[current] + связанные tests/ui/terms.test.mjs
 статус: PASS
-Проверено TASK-T-02 @ `6db88e0`; все строки и заданные произведения примеров — PASS; см. [карту evidence](tester_evidence/README.md#coverage).
+Перепроверено [TASK-T-03](../tasks/TASK-T-03.md) на production-базе `0d6a8fc48d11f33bcf874aaf7c8d259da087e1c6` с исправленной acceptance-дельтой: **40 примеров PASS** (24 с удержанным первичным GET: D1/D2/D3 × оба возврата × оба checkbox × ответ во время чтения/после возврата; 2 контроля восстановления без правок/условий; прежние 14 повторного current/already_applied). Старый PASS TASK-T-02 сам по себе не доказывал защиту первичного заполнения — BUG-001. Новый оракул и независимый план до чтения реализации — TASK-A-03 и TASK-T-03. Отключение hydration guard в изолированной копии даёт ожидаемый FAIL при сохранённых PASS контролях; после восстановления — PASS. BUG-001 FIXED, независимое закрытие Reviewer ещё не выполнено. DP-R-01 остаётся ON_HOLD; нетронутая пустая форма после открытия условий не получила нового нормативного оракула.
 
 Given принята A, открыт изменённый D и разрешённое безопасное чтение удержано барьером
 When после перехода условий и возврата завершается automatic current с картой B
@@ -660,6 +660,9 @@ Then журнал показывает только фактическую пе�
 | 2026-11-02 | тот же | `node --test tests/ui/*.test.mjs` | 282 | 0 | 0 |
 | 2026-11-02 | тот же | `python -m pytest tests/http_api tests/test_module_boundaries.py -q` | 347 | 0 | 0 |
 | 2026-11-02 | тот же | `python -m pytest -q` | 2977, отдельно 1 SKIPPED | 0 | 0 |
+| 2026-11-03 | 0d6a8fc48d11f33bcf874aaf7c8d259da087e1c6 + только acceptance-дельта TASK-T-03, изолированный снимок | `python -m pytest 'tests/acceptance/test_terms_ui.py::test_terms_composition[current]' -q -s` | 1, 40 примеров T-29 | 0 | 0 |
+| 2026-11-03 | тот же; команды/матрица/мутация в TASK-T-03 | `python -m pytest tests/acceptance/test_terms_ui.py::test_terms_composition -q -s`; `node --test --test-reporter=dot tests/ui/*.test.mjs` | 7, 159 примеров; 282 UI | 0 | 0 |
+| 2026-11-03 | тот же, вне sandbox | `python -m pytest tests/http_api tests/test_module_boundaries.py -q`; `python -m pytest -q` | 347; 2977, отдельно 1 SKIPPED DEBT-CALC-001 | 0 | 0 |
 
 Проверки самой документации перечислены в TASK-T-01; они не являются выполнением T-01…T-30. В будущем test: сначала целевые приёмочные проверки, затем связанные UI/HTTP и полный pytest; команды выбирать после чтения существующих runner/fixtures. Req coverage script и mutation/red-control исполняемых тестов относятся к test. На высоком риске отдельно подтвердить, что проверка падает на неверном ожидаемом/контрольном дефекте, с восстановлением исходного состояния.
 

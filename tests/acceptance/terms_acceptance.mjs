@@ -2,7 +2,7 @@
 import assert from 'node:assert/strict';
 import { mountBirthForm } from '../../src/exact_orb/http_api/ui/main.mjs';
 import { documentPort } from '../ui/fixtures/dom.mjs';
-import { harness, views, ready, response, committed, failure, deferred, currentPath, buildPath } from '../ui/fixtures/session.mjs';
+import { harness, views, ready, response, committed, failure, deferred, currentPath, buildPath, placeWithoutRegion } from '../ui/fixtures/session.mjs';
 
 const scenario = process.argv[2];
 let examples = 0;
@@ -16,6 +16,34 @@ async function mount(saved = true) {
   const ui = mountBirthForm(document, { apiClient: h.apiClient, clock: h.clock });
   await ui.ready;
   return { h, ui, document, get: id => document.getElementById(id) };
+}
+async function mountPendingCurrent() {
+  const h = harness(), document = documentPort(), pending = deferred();
+  const createElement = document.createElement;
+  // This leaf DOM port does not model layout or browser scrolling.
+  document.createElement = tag => Object.assign(createElement(tag), { scrollIntoView() {} });
+  h.queue(currentPath, pending.promise);
+  const entered = h.entered(currentPath);
+  const ui = mountBirthForm(document, { apiClient: h.apiClient, clock: h.clock });
+  await entered; // The first GET has started; ui.ready still awaits its controlled response.
+  assert.equal(h.calls.filter(call => call.path === currentPath).length, 1);
+  assert.equal(ui.session.snapshot().phase, 'reading');
+  assert.equal(ui.session.snapshot().view, null);
+  return { h, ui, document, pending, get: id => document.getElementById(id) };
+}
+function visibleFocus(m, expected) {
+  assert.ok(expected);
+  assert.equal(m.document.activeElement, expected);
+  for (let node = expected; node; node = node.parentNode) assert.equal(node.hidden, false);
+}
+function acceptedCurrent(m, b) {
+  assert.deepEqual(m.ui.session.snapshot().view, b);
+  assert.equal(m.ui.result.element.dataset.chartIdentity, b.chart.chart_identity);
+  assert.equal(m.get('chart-birth-summary').textContent,
+    `Дата: ${b.birth.birth_date}. Место: ${b.birth.place.display_name}. `
+    + (b.birth.time_unknown ? 'Точное время неизвестно.' : `Время: ${b.birth.birth_time}.`));
+  assert.equal(m.h.calls.filter(call => call.path === currentPath).length, 1);
+  assert.equal(m.h.builds().length, 0);
 }
 function edit(m, id, value) {
   const node = m.get(id), check = typeof value === 'boolean';
@@ -138,6 +166,88 @@ async function run() {
       pending.resolve(response(committed())); await sending; m.ui.dispose(); examples++;
     }
   } else if (scenario === 'current') {
+    for (const unknown of [false,true]) {
+      // Given тот же удержанный первичный GET, без правок и без открытия условий
+      const m = await mountPendingCurrent(), b = ready(false, unknown);
+      // When доставлен B
+      m.pending.resolve(response(b)); await m.ui.ready;
+      // Then форма заполнена birth B, редактор свёрнут, checkbox снят
+      acceptedCurrent(m,b);
+      assert.equal(m.get('birth-editor').hidden,true);
+      assert.equal(m.get('birth-edit').getAttribute('aria-expanded'),'false');
+      assert.equal(m.get('terms-acknowledged').checked,false);
+      assert.equal(m.ui.form.snapshot().acknowledged,false);
+      assert.equal(m.get('terms-page').hidden,true);
+      m.get('birth-edit').click();
+      assert.equal(m.get('birth-form').hidden,false);
+      assert.equal(m.get('birth-editor').hidden,false);
+      const restored = values(m);
+      assert.equal(restored.date,b.birth.birth_date);
+      assert.equal(restored.text,b.birth.place.display_name);
+      assert.equal(restored.place.place_id,b.birth.place.place_id);
+      assert.equal(restored.place.display_name,b.birth.place.display_name);
+      assert.equal(restored.time,b.birth.birth_time ?? '');
+      assert.equal(restored.unknown,unknown);
+      assert.deepEqual(restored.raw,[b.birth.birth_date,b.birth.place.display_name,b.birth.birth_time ?? '']);
+      assert.equal(m.get('time-unknown').checked,unknown);
+      acceptedCurrent(m,b); m.ui.dispose(); examples++;
+    }
+    console.log(JSON.stringify({scenario,control:'initial-current-restoration',examples:2,status:'PASS'}));
+    for (const kind of ['D1','D2','D3']) for (const action of ['agree','back'])
+      for (const checked of [false,true]) for (const afterReturn of [false,true]) {
+        // Given первичный GET /charts/current удержан управляемым ответом, восстановление ещё не закончено
+        const m = await mountPendingCurrent(), b = ready(), unknown = kind === 'D2';
+        const time = kind === 'D1' ? '23:59' : kind === 'D2' ? '12:00' : '12:6';
+        edit(m,'birth-date','2000-02-29'); edit(m,'birth-time',time);
+        edit(m,'time-unknown',unknown); edit(m,'terms-acknowledged',checked);
+        const query = kind === 'D3' ? 'Го' : 'Гонк';
+        m.get('birth-place').focus();
+        if (kind !== 'D3') m.h.queue('/places?'+new URLSearchParams({query}),response({items:[placeWithoutRegion]}));
+        edit(m,'birth-place',query);
+        if (kind !== 'D3') {
+          await m.h.clock.advance(250);
+          assert.equal(m.get('place-list').hidden,false);
+          m.get('birth-place').emit('keydown',{key:'ArrowDown'});
+          m.get('birth-place').emit('keydown',{key:'Enter'});
+        }
+        const before = values(m), selected = kind === 'D3' ? null : placeWithoutRegion;
+        const text = selected?.display_name ?? query;
+        assert.deepEqual(before,{date:'2000-02-29',text,place:selected,time,unknown,
+          raw:['2000-02-29',text,time]});
+        // When условия открыты; ответ B доставляется во время чтения либо после каждого возврата
+        open(m);
+        assert.equal(m.get('terms-acknowledged').checked,checked);
+        const acknowledged = action === 'agree' || checked;
+        if (afterReturn) back(m,action,acknowledged);
+        const focus = m.document.activeElement;
+        assert.equal(m.ui.session.snapshot().view,null,'initial current is still pending');
+        m.pending.resolve(response(b)); await m.ui.ready;
+        // Then каждый компонент D сохранён при доставке и после возврата; карта/сводка принадлежат B, POST = 0
+        const label = `${kind} ${action} checked=${checked} afterReturn=${afterReturn}`;
+        assert.deepEqual(values(m),before,'initial current must preserve D: '+label);
+        assert.equal(m.get('time-unknown').checked,unknown);
+        acceptedCurrent(m,b); visibleFocus(m,focus);
+        assert.equal(m.get('terms-acknowledged').checked,afterReturn ? acknowledged : checked);
+        if (!afterReturn) {
+          assert.equal(m.get('terms-page').hidden,false);
+          assert.equal(m.get('birth-page').hidden,true);
+          assert.equal(m.get('page-main').getAttribute('data-page-mode'),'terms');
+          back(m,action,acknowledged);
+        }
+        assert.equal(m.get('terms-page').hidden,true);
+        assert.equal(m.get('birth-page').hidden,false);
+        assert.equal(m.get('birth-form').hidden,false);
+        assert.equal(m.get('birth-editor').hidden,false);
+        assert.equal(m.get('terms-acknowledged').checked,acknowledged);
+        assert.deepEqual(values(m),before,label);
+        visibleFocus(m,m.get('terms-link'));
+        if (unknown) {
+          edit(m,'time-unknown',false);
+          assert.equal(m.get('birth-time').value,time,'hidden time survives reading and current');
+          assert.equal(m.get('birth-time').disabled,false);
+        }
+        acceptedCurrent(m,b); m.ui.dispose(); examples++;
+      }
     for (const action of ['agree','back']) for (const checked of [false,true]) for (const changed of [false,true]) {
       // Given принята A, открыт изменённый D и разрешённое безопасное чтение удержано барьером
       const m = await mount(), pending = deferred();
