@@ -150,6 +150,35 @@ async function run() {
       assert.equal(m.get('birth-form').getAttribute('aria-busy'),'true');
       pending.resolve(response(committed())); await first; m.ui.dispose(); examples++;
     }
+  } else if (scenario === 'acknowledgement_error') {
+    // Given валидная форма с незавершённой отметкой ознакомления и завершённым исходным восстановлением
+    const m = await mount();
+    m.get('birth-edit').click();
+    assert.equal(m.get('birth-form').hidden, false);
+    assert.equal(m.get('birth-editor').hidden, false);
+    const checkbox = m.get('terms-acknowledged'), error = m.get('acknowledged-error');
+    assert.equal(checkbox.checked, false);
+    const baseline = m.h.builds().length;
+    // When пользователь пытается построить карту без отметки
+    await submit(m);
+    // Then ошибка отметки видна и aria-invalid=true; POST отсутствует
+    assert.equal(error.hidden, false, 'G2 must show the acknowledgement error');
+    assert.equal(error.textContent, 'Поставьте отметку ознакомления с условиями сервиса.');
+    assert.equal(checkbox.getAttribute('aria-invalid'), 'true');
+    assert.equal(m.h.builds().length, baseline);
+    // When пользователь открывает условия и нажимает Согласен
+    open(m);
+    assert.equal(m.h.builds().length, baseline, 'opening terms must not build');
+    back(m, 'agree', true);
+    // Then форма видна, checkbox выбран, ошибка скрыта и aria-invalid=false; нового POST нет
+    assert.equal(error.hidden, true, 'agree must hide the existing G2 error');
+    assert.equal(error.textContent, '');
+    assert.equal(checkbox.getAttribute('aria-invalid'), 'false');
+    assert.equal(m.h.builds().length, baseline, 'agree must not build');
+    // And отдельное явное построение отправляет ровно один POST
+    await submit(m);
+    assert.equal(m.h.builds().length, baseline + 1, 'positive G4 control');
+    m.ui.dispose(); examples++;
   } else if (scenario === 'payload') {
     for (const method of ['manual','page']) for (const time of ['00:00','14:30','23:59',null]) {
       // Given подготовлены валидные поля, нет ожидающего POST и HTTP/recovery допускает build

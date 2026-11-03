@@ -643,6 +643,25 @@ Then журнал показывает только фактическую пе�
 Ожидаемый результат: для чтения/возврата нет нового POST/build trace и persistence-события подтверждения; для разрешённого POST есть X-Request-ID, run_id=request_id, http_message send/receive на фактических межкомпонентных переходах и terminal по HTTP §12/Build Natal. Порядок сопоставлен с 003: явный build → session.mjs → API → исход/разрешённый current; одних start/finish недостаточно. Для static resources не требуются вымышленные business events; полный payload не требуется на INFO. Позитивный контроль захвата — реальный build и, при R2, реальный GET с их собственными событиями, а не пустой список logs.
 Источник ожидаемого: REQ-UI-03, REQ-TERMS-05/07; AS-UI-20/21 в инкременте; раздел сценариев requirements.md; sequences/003-terms-build-boundary.puml; действующий HTTP §12; ADR-0034 §3/4. Известный privacy-долг повторно не оценивается.
 
+### T-31 Согласен снимает уже показанную ошибку G2
+req: REQ-UI-03, REQ-TERMS-02, REQ-TERMS-05
+вид: негативный G2 → позитивный T1
+уровень: UI
+риск: средний
+автотест: tests/acceptance/test_terms_ui.py::test_terms_composition[acknowledgement_error]
+статус: PASS
+Проверено TASK-T-04 @ `0d6a8fc48d11f33bcf874aaf7c8d259da087e1c6` + acceptance-правки TASK-T-04: 1 PASS целевым pytest и в общем приёмочном наборе. Контроль без перерисовки ошибок в изолированной копии: FAIL; после восстановления: PASS. BUG-002 → FIXED, закрывает Reviewer.
+
+Given валидная форма с незавершённой отметкой ознакомления и завершённым исходным восстановлением
+When пользователь пытается построить карту без отметки
+Then ошибка отметки видна и aria-invalid=true; POST отсутствует
+When пользователь открывает условия и нажимает Согласен
+Then форма видна, checkbox выбран, ошибка скрыта и aria-invalid=false; нового POST нет
+And отдельное явное построение отправляет ровно один POST
+
+Ожидаемый результат: перед возвратом виден текст «Поставьте отметку ознакомления с условиями сервиса.» и `aria-invalid="true"`; после возврата checkbox выбран, ошибка скрыта, текст очищен и `aria-invalid="false"`; прирост POST при открытии/возврате = 0. Позитивный контроль — отдельное построение G4 через тот же счётчик отправляет ровно один POST.
+Источник ожидаемого: REQ-UI-03 G2/G4, REQ-TERMS-02 T1, AS-TERMS-03, REQ-TERMS-05; [BUG-002](../bugs/BUG-002.md) и прямое поручение Owner в [TASK-T-04](../tasks/TASK-T-04.md). План записан до чтения реализации и Developer-тестов в TASK-T-04. Проверка чувствительности: изолированная копия без перерисовки ошибок при «Согласен» должна дать FAIL после подтверждённого G2; рабочий production не меняется.
+
 ## Исследовательские сессии
 
 | Цель | Лимит | Итог |
@@ -663,6 +682,11 @@ Then журнал показывает только фактическую пе�
 | 2026-11-03 | 0d6a8fc48d11f33bcf874aaf7c8d259da087e1c6 + только acceptance-дельта TASK-T-03, изолированный снимок | `python -m pytest 'tests/acceptance/test_terms_ui.py::test_terms_composition[current]' -q -s` | 1, 40 примеров T-29 | 0 | 0 |
 | 2026-11-03 | тот же; команды/матрица/мутация в TASK-T-03 | `python -m pytest tests/acceptance/test_terms_ui.py::test_terms_composition -q -s`; `node --test --test-reporter=dot tests/ui/*.test.mjs` | 7, 159 примеров; 282 UI | 0 | 0 |
 | 2026-11-03 | тот же, вне sandbox | `python -m pytest tests/http_api tests/test_module_boundaries.py -q`; `python -m pytest -q` | 347; 2977, отдельно 1 SKIPPED DEBT-CALC-001 | 0 | 0 |
+
+| 2026-11-03 | 0d6a8fc48d11f33bcf874aaf7c8d259da087e1c6 + acceptance-дельты TASK-T-03/TASK-T-04; свои изменения описаны в TASK-T-04 | `python -m pytest 'tests/acceptance/test_terms_ui.py::test_terms_composition[acknowledgement_error]' -q -s --tb=short` | 1 (T-31) | 0 | 0 |
+| 2026-11-03 | тот же, вне sandbox | `python -u -m pytest tests/acceptance -q -s --tb=short --show-capture=no` | 18 | 0 | 0 |
+| 2026-11-03 | тот же | `node --test tests/ui/*.test.mjs`; `python -u -m pytest tests/http_api tests/test_module_boundaries.py -q` (Python вне sandbox) | 282 UI; 347 Python | 0 | 0 |
+| 2026-11-03 | тот же, вне sandbox | `python -u -m pytest -q` | 2978, отдельно 1 SKIPPED DEBT-CALC-001 | 0 | 0 |
 
 Проверки самой документации перечислены в TASK-T-01; они не являются выполнением T-01…T-30. В будущем test: сначала целевые приёмочные проверки, затем связанные UI/HTTP и полный pytest; команды выбирать после чтения существующих runner/fixtures. Req coverage script и mutation/red-control исполняемых тестов относятся к test. На высоком риске отдельно подтвердить, что проверка падает на неверном ожидаемом/контрольном дефекте, с восстановлением исходного состояния.
 

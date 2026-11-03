@@ -14,13 +14,14 @@ ROOT = Path(__file__).resolve().parents[2]
     pytest.param("roundtrips", marks=pytest.mark.req("REQ-TERMS-01", "REQ-TERMS-02", "REQ-TERMS-03", "REQ-TERMS-04", "REQ-TERMS-05")),
     pytest.param("isolation", marks=pytest.mark.req("REQ-UI-03", "REQ-TERMS-05")),
     pytest.param("gates", marks=pytest.mark.req("REQ-UI-03", "REQ-TERMS-07")),
+    pytest.param("acknowledgement_error", marks=pytest.mark.req("REQ-UI-03", "REQ-TERMS-02", "REQ-TERMS-05")),
     pytest.param("payload", marks=pytest.mark.req("REQ-UI-03", "REQ-TERMS-02", "REQ-TERMS-05", "REQ-TERMS-07")),
     pytest.param("current", marks=pytest.mark.req("REQ-UI-03", "REQ-TERMS-04", "REQ-TERMS-05")),
     pytest.param("recovery", marks=pytest.mark.req("REQ-UI-03")),
     pytest.param("issues", marks=pytest.mark.req("REQ-UI-03")),
 ])
 def test_terms_composition(scenario):
-    # Given записаны оракулы и примеры в T-02…18/T-29 до чтения реализации
+    # Given записаны оракулы и примеры в T-02…18/T-29/T-31 до чтения реализации
     node = shutil.which("node")
     assert node, "Node is required; missing runtime is not PASS"
     # When выполняются независимые проверки публичного mount/form/session/transport
