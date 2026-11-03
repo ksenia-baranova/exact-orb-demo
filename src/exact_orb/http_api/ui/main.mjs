@@ -75,7 +75,7 @@ export function mountBirthForm(document, { apiClient = api, clock } = {}) {
     editor.hidden = !open;
     result.editButton.setAttribute("aria-expanded", String(open));
     result.editButton.textContent = open ? "Свернуть редактор" : "Изменить данные";
-    if (!termsOpen && !open && inEditor(document.activeElement)) result.editButton.focus();
+    if (!open && inEditor(document.activeElement)) result.editButton.focus();
     renderPage();
   }
   function openTerms(event) {
@@ -193,8 +193,8 @@ export function mountBirthForm(document, { apiClient = api, clock } = {}) {
     }
     if (view?.status !== "chart_ready") {
       setEditorOpen(true);
-      if (!termsOpen && focusedResult) date.focus();
-    } else if (!termsOpen && recheckHadFocus && readAgain.hidden) {
+      if (focusedResult) date.focus();
+    } else if (recheckHadFocus && readAgain.hidden) {
       if (aspectMode) document.getElementById("chart-wheel").focus({ preventScroll: true });
       else result.editButton.focus();
     }
