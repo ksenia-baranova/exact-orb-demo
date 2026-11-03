@@ -1,6 +1,6 @@
 ---
 id: terms-of-use
-status: READY_FOR_TEST  # пишет оркестратор
+status: BUG_FIX  # пишет оркестратор
 cycle: 1  # пишет оркестратор: номер цикла ALIGNMENT
 ---
 # terms-of-use M1-9 — Условия использования
