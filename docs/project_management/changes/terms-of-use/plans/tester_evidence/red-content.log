@@ -1,0 +1,33 @@
+Command: TERMS_BAD_ORACLE=1 python -m pytest test_terms_browser[presentation]
+Output excerpt; long assertion lines truncated to 500 characters.
+F                                                                        [100%]
+================================== FAILURES ===================================
+______________________ test_terms_browser[presentation] _______________________
+tests\acceptance\test_terms_ui.py:58: in test_terms_browser
+    assert result.returncode == 0, result.stdout + result.stderr
+E   AssertionError: AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+E     + actual - expected
+E
+E     + '������� ������������� ������� Exact Orb � ����������������� ������ �� ���������� ���������� � ������ � ���������� �������. ��������������� ����� ������������ ��� ���������� ������� ������������. ������ �� ���������� ������� ������������� ��������������� �������������. ���������� ������� �� �������� �������, ������� ��� �������������. ������ ������� ����� �����������. ����������� ������� � ����������� �������� ������ � ����������� �� �������������. ����� ������ ������������ � ����� ��� �
+E     - '������� ������������� ������� Exact Orb � ����������������� ������ �� ���������� ���������� � ������ � ���������� �������. ��������������� ����� ������������ ��� ���������� ������� ������������. ������ �� ���������� ������� ������������� ��������������� �������������. ���������� ������� �� �������� �������, ������� ��� �������������. ������ ������� ����� �����������. ����������� ������� � ����������� �������� ������ � ����������� �� �������������. ����� ������ ������������ � ����� ��� �
+E
+E         at C:\Users\KateUser\.codex\worktrees\f7fa\exact-orb-recovered\tests\acceptance\terms_browser.cjs:84:14 {
+E       generatedMessage: true,
+E       code: 'ERR_ASSERTION',
+E       actual: '� ����� ���� ��������, ��������� ��������� ����� � ������� ����� �������� � ��������� �� ������. ���� ����� ����������, ������������ �������� ������� ����� ����������. ��� � ������� ��� ������� �� ���������. ���������� � ������� ���� ���������� ������ �� ���������� ����� � ����; ������������ �� ������ ���������� ��������. ��� ����������� ������� ����� ������������ ��� ���������� � �����. � ������� �������� ���������� ����� �������� ������ �� ����������. �������� ������ � �������
+E       expected: '� ����� ���� ��������, ��������� ��������� ����� � ������� ����� �������� � ��������� �� ������. ���� ����� ����������, ������������ �������� ������� ����� ����������. ��� � ������� ��� ������� �� ���������. ���������� � ������� ���� ���������� ������ �� ���������� ����� � ����; ������������ �� ������ ���������� ��������. ��� ����������� ������� ����� ������������ ��� ���������� � �����. � ������� �������� ���������� ����� �������� ������ �� ����������. �������� ������ � �����
+E       operator: 'strictEqual',
+E       diff: 'simple'
+E     }
+E
+E   assert 1 == 0
+E    +  where 1 = CompletedProcess(args=['C:\\Users\\KateUser\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\node\\bin\\n...������. ������ � ����� ��������: ��������; ��������� � �����....',\n  operator: 'strictEqual',\n  diff: 'simple'\n}\n").returncode
+=========================== short test summary info ===========================
+FAILED tests/acceptance/test_terms_ui.py::test_terms_browser[presentation] - ...
+1 failed in 1.38s
+E
+E   assert 1 == 0
+E    +  where 1 = CompletedProcess(args=['C:\\Users\\KateUser\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\node\\bin\\n...������. ������ � ����� ��������: ��������; ��������� � �����....',\n  operator: 'strictEqual',\n  diff: 'simple'\n}\n").returncode
+=========================== short test summary info ===========================
+FAILED tests/acceptance/test_terms_ui.py::test_terms_browser[presentation] - ...
+1 failed in 1.38s

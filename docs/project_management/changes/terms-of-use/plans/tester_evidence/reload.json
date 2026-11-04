@@ -1,0 +1,79 @@
+{
+  "scenario": "reload",
+  "examples": 12,
+  "browser": "155.0.8059.40",
+  "evidence": [
+    {
+      "saved": false,
+      "method": "none",
+      "mode": "reload",
+      "checked": false
+    },
+    {
+      "saved": false,
+      "method": "none",
+      "mode": "reopen",
+      "checked": false
+    },
+    {
+      "saved": false,
+      "method": "manual",
+      "mode": "reload",
+      "checked": false
+    },
+    {
+      "saved": false,
+      "method": "manual",
+      "mode": "reopen",
+      "checked": false
+    },
+    {
+      "saved": false,
+      "method": "page",
+      "mode": "reload",
+      "checked": false
+    },
+    {
+      "saved": false,
+      "method": "page",
+      "mode": "reopen",
+      "checked": false
+    },
+    {
+      "saved": true,
+      "method": "none",
+      "mode": "reload",
+      "checked": false
+    },
+    {
+      "saved": true,
+      "method": "none",
+      "mode": "reopen",
+      "checked": false
+    },
+    {
+      "saved": true,
+      "method": "manual",
+      "mode": "reload",
+      "checked": false
+    },
+    {
+      "saved": true,
+      "method": "manual",
+      "mode": "reopen",
+      "checked": false
+    },
+    {
+      "saved": true,
+      "method": "page",
+      "mode": "reload",
+      "checked": false
+    },
+    {
+      "saved": true,
+      "method": "page",
+      "mode": "reopen",
+      "checked": false
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "approved_commit": "02cbd17e33ceffe52d465bdf6b8faf1d3c76864c",
+  "delivery_commit": "58aa6b956ccbb9bec9948340e955dc4ba133ce25",
+  "approved_text_sha256": "ee474d44cd2d8231660e3d5ab5a7d9946b72084ddabad7f22a0686281d7840a0",
+  "browser_text_matches": true,
+  "preserved_tracked_files": 3744,
+  "tracked_changes": [],
+  "assets": {
+    "chart_state.mjs": "fbcb0826154353bc5ff26a509a6aebd63b2c57661ff6f7caa6841240c3be1531",
+    "facts.mjs": "260c79ac178564a215ea45598ad78b2131f42eb332d8761ffaccecb30d645a69",
+    "form.mjs": "01c67968c92569cfa039c08a29b097bee8f9e7d06b335a9d58575b0fb31bdad3",
+    "index.html": "d08e7da01b4c69256fded595fda27090c66660d828b2c0a5580d646ddda6a99c",
+    "main.mjs": "2ca4874ed2c55a447afb8ec1d0801d0ccf571fffd1789b9521451dab3ca3a3a1",
+    "places.mjs": "9261d46e9c716db979ee4dc7454a4a656c6d350f78f5883c7635103af56b9dcb",
+    "recovery.mjs": "b5d3cd889cd12ae42b9461429c1eef98d1ddc737cde2ce7e83189cb2e3ff81b5",
+    "response.mjs": "124eed92a2be48598eb38f2deaae6f826bced0491e0acf82384c681fca27942c",
+    "result_controller.mjs": "30918ddbc17243cf21c90a9a9e381813811e489d2235ec8b2e23159b8a5ed7bf",
+    "session.mjs": "05ab6545943345c00946c93c16a8e25ba23ecca2e548cad3b547cbcf73f80ba1",
+    "styles.css": "4678100967592141b4dbdfbc4c722522cd15dd0823becbcb24e2f8a2754db501",
+    "transport.mjs": "bc1ca991d76af8ec6af63cdf69cb25bc00053a77cb1d12d8ae67fccea4140fdb",
+    "wheel_layout.mjs": "1fd3396dff20c6e97d077373e877fd3705d7e838b77cbe2d1592b422f8efff0b",
+    "wheel_svg.mjs": "9019f48e338899d53ed414ffe989f75ed59c682a6a789f537869eb71980f4678"
+  }
+}

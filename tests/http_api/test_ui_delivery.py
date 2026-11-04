@@ -6,6 +6,7 @@
 
 from __future__ import annotations
 
+from hashlib import sha256
 from html.parser import HTMLParser
 from importlib.resources import files
 import json
@@ -25,6 +26,80 @@ UI_RESOURCES = (
     "index.html", "styles.css", "main.mjs", "transport.mjs", "form.mjs",
     "places.mjs", "session.mjs", "facts.mjs", "chart_state.mjs", "result_controller.mjs", "wheel_layout.mjs", "wheel_svg.mjs", "recovery.mjs", "response.mjs",
 )
+
+
+APPROVED_TERMS_SHA256 = "ee474d44cd2d8231660e3d5ab5a7d9946b72084ddabad7f22a0686281d7840a0"
+
+
+class TermsContent(HTMLParser):
+    """Recover the approved Markdown from the actual static page, including links/table."""
+
+    def __init__(self) -> None:
+        super().__init__()
+        self.active = False
+        self.block = None
+        self.text = ""
+        self.row: list[str] = []
+        self.parts: list[str] = []
+        self.href = ""
+
+    def handle_starttag(self, tag, attrs) -> None:
+        values = dict(attrs)
+        if tag == "article" and values.get("id") == "terms-content":
+            self.active = True
+        if not self.active:
+            return
+        if tag in {"h1", "h2", "p", "th", "td"}:
+            self.block = tag
+            self.text = ""
+        elif tag == "tr":
+            self.row = []
+        elif tag == "a":
+            self.href = values["href"]
+            self.text += "["
+        elif tag == "strong":
+            self.text += "**"
+
+    def handle_data(self, data) -> None:
+        if self.active and self.block:
+            self.text += data
+
+    def handle_endtag(self, tag) -> None:
+        if not self.active:
+            return
+        if tag == "a":
+            self.text += "](" + self.href + ")"
+        elif tag == "strong":
+            self.text += "**"
+        elif tag in {"h1", "h2", "p"}:
+            self.parts.append(("### " if tag != "p" else "") + self.text.strip() + "\n\n")
+            self.block = None
+        elif tag in {"th", "td"}:
+            self.row.append(self.text.strip())
+            self.block = None
+        elif tag == "tr":
+            self.parts.append("| " + " | ".join(self.row) + " |\n")
+        elif tag == "thead":
+            self.parts.append("| --- | --- | --- |\n")
+        elif tag == "table":
+            self.parts.append("\n")
+        elif tag == "article":
+            self.active = False
+
+
+def test_static_terms_match_the_exact_owner_approved_text() -> None:
+    repository = Path(__file__).resolve().parents[2]
+    draft = (repository / "docs/project_management/changes/terms-of-use/terms_draft.md").read_text(encoding="utf-8")
+    approved = draft.split("## Текст для страницы после утверждения Owner\n", 1)[1].split("## Сверка Analyst", 1)[0].strip() + "\n"
+    assert sha256(approved.encode()).hexdigest() == APPROVED_TERMS_SHA256
+    parser = TermsContent()
+    page = files("exact_orb.http_api").joinpath("ui/index.html").read_text(encoding="utf-8")
+    parser.feed(page)
+    published = "".join(parser.parts).rstrip() + "\n"
+    assert published == approved
+    assert sha256(published.encode()).hexdigest() == APPROVED_TERMS_SHA256
+    assert "Сверка Analyst" not in page
+    assert "черновик Analyst" not in page
 
 
 class AssetReferences(HTMLParser):
@@ -170,6 +245,7 @@ def test_installed_wheel_serves_assets_without_source_checkout(tmp_path: Path) -
     probe = '''
 import asyncio
 from datetime import datetime, timezone
+from hashlib import sha256
 from importlib.resources import files
 import json
 from pathlib import Path
@@ -197,6 +273,8 @@ async def check():
             response = await client.get(path)
             assert response.status_code == 200, (path, response.status_code)
             assert response.content == resource.joinpath(name).read_bytes()
+            if name == "index.html":
+                assert sha256(response.content).hexdigest() == sys.argv[4]
             if name.endswith((".mjs", ".css")):
                 assert response.headers.get("cache-control") == "no-cache"
                 cached = await client.get(path, headers={"If-None-Match": response.headers["etag"]})
@@ -210,7 +288,7 @@ print(f"installed wheel: {len(names)} UI resources delivered without checkout")
     env = dict(os.environ, PYTHONPATH=str(installed), PYTHONDONTWRITEBYTECODE="1")
     checked = subprocess.run(
         [sys.executable, "-B", "-c", probe, str(installed), json.dumps(vars(http_settings())),
-         json.dumps(UI_RESOURCES)],
+         json.dumps(UI_RESOURCES), sha256((repository / "src/exact_orb/http_api/ui/index.html").read_bytes()).hexdigest()],
         cwd=tmp_path, env=env, capture_output=True, text=True, timeout=30,
     )
     assert checked.returncode == 0, checked.stdout + checked.stderr

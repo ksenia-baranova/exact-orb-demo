@@ -1,0 +1,20 @@
+{
+  "scenario": "presentation",
+  "examples": 1,
+  "browser": "155.0.8059.40",
+  "evidence": [
+    {
+      "font": [
+        "system-ui, sans-serif",
+        "13px",
+        "normal",
+        "400"
+      ],
+      "approvedText": true,
+      "hrefs": [
+        "mailto:exact_orb@mail.ru",
+        "https://github.com/ksenia-baranova/exact-orb-demo"
+      ]
+    }
+  ]
+}

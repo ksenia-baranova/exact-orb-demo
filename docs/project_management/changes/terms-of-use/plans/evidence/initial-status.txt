@@ -1,0 +1,18 @@
+ M docs/project_management/changes/terms-of-use/change.md
+ M docs/project_management/changes/terms-of-use/events.jsonl
+?? "Claude outputs/"
+?? _local/
+?? docs/architecture/deployment.md
+?? docs/development_approach/experiment-002-role-based-change-development.md
+?? docs/project_management/changes/terms-of-use/plans/evidence/
+?? docs/project_management/changes/terms-of-use/tasks/TASK-D-04.md
+?? prompts/2026-08-22/10-data-selector.md
+?? prompts/2026-08-22/10-include-gates-computation.md
+?? prompts/2026-08-22/11-include-gates-computation-tests.md
+?? prompts/2026-08-26/
+?? prompts/2026-08-27/05-run-id-correlation.md
+?? prompts/2026-09-04/
+?? prompts/2026-09-06/03-research-corpus-fixes.md
+?? prompts/2026-09-08/00-build-natal-handler-plan-decisions.md
+?? prompts/2026-09-08/05-align-build-natal-docs.md
+?? prompts/2026-09-09/02-align-build-natal-documentation.md

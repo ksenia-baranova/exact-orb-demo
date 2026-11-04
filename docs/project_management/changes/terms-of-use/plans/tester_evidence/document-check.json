@@ -1,0 +1,9 @@
+{
+  "status": "PASS",
+  "cards": 30,
+  "card_pass": 30,
+  "tables": "consistent",
+  "local_links": "exist",
+  "production_and_foreign_tests": "unchanged",
+  "orchestrator_fields": "unchanged"
+}

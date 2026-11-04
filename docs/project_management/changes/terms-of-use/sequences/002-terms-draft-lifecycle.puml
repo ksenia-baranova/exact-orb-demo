@@ -1,0 +1,36 @@
+@startuml
+' target: docs/sequence_diagrams/ui/010-terms-draft-lifecycle.puml
+' REQ: REQ-TERMS-04, REQ-TERMS-07
+' scenarios: AS-TERMS-08..10, AS-TERMS-16..18
+title M1-9: черновик текущего перехода и новая загрузка
+autonumber
+actor "Пользователь" as User
+participant "main.mjs" as Page
+User -> Page : Вводит черновик (REQ-TERMS-04)
+User -> Page : Открывает условия и возвращается\nодной из двух кнопок (REQ-TERMS-04)
+alt D1: дата валидна, место выбрано, время известно
+ Page --> User : Прежние дата, place_id/название, HH:MM;\nнеизвестность снята (REQ-TERMS-04)
+else D2: дата валидна, место выбрано, время явно неизвестно
+ Page --> User : Прежние дата, place_id/название, строка времени;\nнеизвестность выбрана (REQ-TERMS-04)
+else D3: остальные состояния, включая пустые/ошибочные
+ Page --> User : Прежний незавершённый ввод;\nplace_id не подставлен (REQ-TERMS-04)
+end
+note over User, Page
+Каждая строка D проверяется с каждым возвратом.
+Checkbox определяется T1..T4, а не видом черновика.
+Новая загрузка ниже — отдельное действие, не возврат кнопкой.
+Сохранение черновика сквозь reload не добавляется.
+end note
+User -> Page : Новая загрузка формы (REQ-TERMS-07)
+alt L1: отметка снята или первое открытие
+ Page --> User : Checkbox снят (REQ-TERMS-07)
+else L2: отметка была выбрана вручную
+ Page --> User : Checkbox снят (REQ-TERMS-07)
+else L3: отметка была выбрана через «Согласен»
+ Page --> User : Checkbox снят (REQ-TERMS-07)
+end
+note over Page
+Восстановленная карта не выбирает checkbox.
+Значение не хранится как подтверждение между посещениями.
+end note
+@enduml

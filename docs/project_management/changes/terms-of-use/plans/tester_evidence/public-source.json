@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "deployment_sha": "6db88e0ea07c65db9e7aaa79731e5ab54c2f66c5",
+  "public_ref": "refs/heads/change/terms-of-use",
+  "tree": "c22ac718625d53610a36239b006b9256527dec06",
+  "anonymous": true,
+  "private": false,
+  "repository_url": "https://github.com/ksenia-baranova/exact-orb-demo",
+  "assets": {
+    "src/exact_orb/http_api/ui/index.html": "d08e7da01b4c69256fded595fda27090c66660d828b2c0a5580d646ddda6a99c",
+    "src/exact_orb/http_api/ui/main.mjs": "2ca4874ed2c55a447afb8ec1d0801d0ccf571fffd1789b9521451dab3ca3a3a1",
+    "src/exact_orb/http_api/ui/styles.css": "4678100967592141b4dbdfbc4c722522cd15dd0823becbcb24e2f8a2754db501",
+    "LICENSE": "5132c7f0475b02c8107a2e0f0363e70423c62d2664ab927e76193226e5e05905"
+  }
+}

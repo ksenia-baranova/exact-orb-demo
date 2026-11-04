@@ -1,0 +1,23 @@
+{
+  "status": "PASS",
+  "source_negative_controls": [
+    {
+      "changed": "status",
+      "rejected": true
+    },
+    {
+      "changed": "private",
+      "rejected": true
+    },
+    {
+      "changed": "deployment_sha",
+      "rejected": true
+    }
+  ],
+  "unapproved_packet": "a362a9eb236cca59c01d3fcb885ca74faf57c448",
+  "contact_accepted_without_text_approval": true,
+  "approved_packet": "02cbd17e33ceffe52d465bdf6b8faf1d3c76864c",
+  "approved_text_sha256": "ee474d44cd2d8231660e3d5ab5a7d9946b72084ddabad7f22a0686281d7840a0",
+  "debt_closed_by_tester": false,
+  "runtime_sha": "6db88e0ea07c65db9e7aaa79731e5ab54c2f66c5"
+}

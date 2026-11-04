@@ -1,0 +1,127 @@
+{
+  "scenario": "keyboard",
+  "examples": 20,
+  "browser": "155.0.8059.40",
+  "evidence": [
+    {
+      "width": 359,
+      "action": "agree",
+      "checked": false,
+      "overflow": 0
+    },
+    {
+      "width": 359,
+      "action": "agree",
+      "checked": true,
+      "overflow": 0
+    },
+    {
+      "width": 359,
+      "action": "back",
+      "checked": false,
+      "overflow": 0
+    },
+    {
+      "width": 359,
+      "action": "back",
+      "checked": true,
+      "overflow": 0
+    },
+    {
+      "width": 360,
+      "action": "agree",
+      "checked": false,
+      "overflow": 0
+    },
+    {
+      "width": 360,
+      "action": "agree",
+      "checked": true,
+      "overflow": 0
+    },
+    {
+      "width": 360,
+      "action": "back",
+      "checked": false,
+      "overflow": 0
+    },
+    {
+      "width": 360,
+      "action": "back",
+      "checked": true,
+      "overflow": 0
+    },
+    {
+      "width": 361,
+      "action": "agree",
+      "checked": false,
+      "overflow": 0
+    },
+    {
+      "width": 361,
+      "action": "agree",
+      "checked": true,
+      "overflow": 0
+    },
+    {
+      "width": 361,
+      "action": "back",
+      "checked": false,
+      "overflow": 0
+    },
+    {
+      "width": 361,
+      "action": "back",
+      "checked": true,
+      "overflow": 0
+    },
+    {
+      "width": 768,
+      "action": "agree",
+      "checked": false,
+      "overflow": 0
+    },
+    {
+      "width": 768,
+      "action": "agree",
+      "checked": true,
+      "overflow": 0
+    },
+    {
+      "width": 768,
+      "action": "back",
+      "checked": false,
+      "overflow": 0
+    },
+    {
+      "width": 768,
+      "action": "back",
+      "checked": true,
+      "overflow": 0
+    },
+    {
+      "width": 1440,
+      "action": "agree",
+      "checked": false,
+      "overflow": 0
+    },
+    {
+      "width": 1440,
+      "action": "agree",
+      "checked": true,
+      "overflow": 0
+    },
+    {
+      "width": 1440,
+      "action": "back",
+      "checked": false,
+      "overflow": 0
+    },
+    {
+      "width": 1440,
+      "action": "back",
+      "checked": true,
+      "overflow": 0
+    }
+  ]
+}

@@ -24,7 +24,7 @@ export function documentPort() {
       click() { if (!this.disabled) return this.emit("click"); },
       setAttribute(name, value) { attributes.set(name, String(value)); },
       getAttribute(name) {
-        if (name.startsWith("data-")) return this.dataset[name.slice(5).replace(/-([a-z])/g, (_, c) => c.toUpperCase())];
+        if (name.startsWith("data-")) return this.dataset[name.slice(5).replace(/-([a-z])/g, (_, c) => c.toUpperCase())] ?? attributes.get(name);
         return attributes.get(name) ?? this[name];
       },
       removeAttribute(name) { attributes.delete(name); },
@@ -66,11 +66,15 @@ export function documentPort() {
     return (!tag || element.tagName === tag) && (!attribute || (expected === undefined
       ? element.getAttribute(attribute) !== undefined : element.getAttribute(attribute) === expected));
   }
-  const main = node("main"), form = node("form", "birth-form");
+  const main = node("main", "page-main"), birth = node("section", "birth-page"), form = node("form", "birth-form");
+  birth.append(node("h1", "birth-page-heading"), node("p", "birth-page-intro"), form);
+  const terms = node("section", "terms-page"); terms.hidden = true;
+  terms.append(node("h1", "terms-page-heading"), node("button", "terms-agree"), node("button", "terms-back"));
+  main.append(birth, terms);
   for (const id of ["birth-date", "birth-place", "birth-time", "time-unknown", "terms-acknowledged",
     "place-list", "place-status", "place-retry", "form-error", "date-error", "place-error", "time-error", "acknowledged-error"]) form.append(node("div", id));
-  const build = node("button", "build-button"); build.type = "submit"; form.append(build); main.append(form);
+  const build = node("button", "build-button"); build.type = "submit"; form.append(node("a", "terms-link"), build);
   document = { ...events(), visibilityState: "visible", defaultView: events(), activeElement: null, root: main,
-    getElementById: (id) => main.querySelector(`#${id}`), createElement: (tag) => node(tag) };
+    getElementById: (id) => main.id === id ? main : main.querySelector(`#${id}`), createElement: (tag) => node(tag) };
   return document;
 }

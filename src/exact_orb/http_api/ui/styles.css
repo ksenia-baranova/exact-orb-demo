@@ -150,10 +150,57 @@ input:disabled {
   accent-color: var(--gold);
 }
 
+.check small,
+.terms-link {
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 400;
+}
+
 .check small {
   display: block;
-  font-size: 13px;
 }
+
+.terms-link {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 10px 12px;
+  color: var(--gold);
+}
+
+.terms-page {
+  max-width: 80ch;
+  margin-inline: auto;
+  overflow-wrap: anywhere;
+}
+
+.terms-page h2 {
+  margin-top: 28px;
+  color: var(--gold);
+  font-size: 22px;
+  font-weight: 400;
+}
+
+.terms-page a { color: var(--gold); }
+.terms-page table { width: 100%; table-layout: fixed; border-collapse: collapse; }
+.terms-page th, .terms-page td {
+  padding: 8px;
+  border: 1px solid var(--line);
+  vertical-align: top;
+  text-align: left;
+}
+
+.terms-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.terms-actions button { min-width: 44px; }
 
 .place-input-wrap {
   position: relative;
